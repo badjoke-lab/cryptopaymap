@@ -9,15 +9,15 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import ClusterLayer from '@/components/ClusterLayer';
 import FilterPanel from '@/components/FilterPanel';
 import PlacePanel from '@/components/PlacePanel';
-import { loadAllPlaces, type Place } from '@/utils/loadPlaces'; // ← utils 側に合わせる
+import { loadAllPlaces, type Place, type CityIndex } from '@/utils/loadPlaces';
 
 // react-leaflet は SSR させない
 const MapContainer = dynamicImport(
-  () => import('react-leaflet').then(m => m.MapContainer),
+  () => import('react-leaflet').then((m) => m.MapContainer),
   { ssr: false }
 );
 const TileLayer = dynamicImport(
-  () => import('react-leaflet').then(m => m.TileLayer),
+  () => import('react-leaflet').then((m) => m.TileLayer),
   { ssr: false }
 );
 
@@ -27,7 +27,7 @@ const tileURL =
 const tileAttr =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-// FilterPanel が期待する型に合わせる
+// FilterPanel が期待する UI フィルタ型（Set で保持）
 type UIFilters = {
   coins: Set<string>;
   categories: Set<string>;
@@ -35,20 +35,22 @@ type UIFilters = {
 };
 
 export default function MapPage() {
+  // SSR/SSG で Leaflet を触らない
   if (typeof window === 'undefined') return null;
 
   const router = useRouter();
   const sp = useSearchParams();
 
   const [places, setPlaces] = useState<Place[]>([]);
+  const [cities, setCities] = useState<CityIndex[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Place | null>(null);
 
-  // URL から初期値を復元（Set で保持）
+  // URL → フィルタ初期値
   const [flt, setFlt] = useState<UIFilters>(() => {
     const coins = new Set((sp.get('coins') ?? '').split(',').filter(Boolean));
-    const cats  = new Set((sp.get('cats') ?? '').split(',').filter(Boolean));
-    const city  = sp.get('city') ?? null;
+    const cats = new Set((sp.get('cats') ?? '').split(',').filter(Boolean));
+    const city = sp.get('city') ?? null;
     return { coins, categories: cats, city };
   });
 
@@ -64,7 +66,7 @@ export default function MapPage() {
     })();
   }, []);
 
-  // データ読み込み
+  // データ読み込み（places）
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -74,31 +76,55 @@ export default function MapPage() {
     })();
   }, []);
 
-  // フィルタ適用
+  // 都市インデックス（FilterPanel 用）
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch('/data/places/index.json', { cache: 'no-store' });
+        const json = await res.json();
+        setCities(Array.isArray(json?.cities) ? json.cities : []);
+      } catch {
+        setCities([]);
+      }
+    })();
+  }, []);
+
+  // フィルタ適用後の点群
   const filtered = useMemo(() => {
     if (!places.length) return [];
-    return places.filter(p => {
+    return places.filter((p) => {
       const coinOK =
-        flt.coins.size === 0 || (p.coins ?? []).some(c => flt.coins.has(c));
+        flt.coins.size === 0 || (p.coins ?? []).some((c) => flt.coins.has(c));
       const catOK =
         flt.categories.size === 0 ||
         (p.category ? flt.categories.has(p.category) : false);
       const cityOK =
-        !flt.city ||
-        (p.city && p.city.toLowerCase() === flt.city.toLowerCase());
+        !flt.city || (p.city && p.city.toLowerCase() === flt.city.toLowerCase());
       return coinOK && catOK && cityOK;
     });
   }, [places, flt]);
 
-  // URL へ同期
+  // URL 同期（シェア用）
   useEffect(() => {
     const q = new URLSearchParams();
     if (flt.coins.size) q.set('coins', Array.from(flt.coins).join(','));
-    if (flt.categories.size)
-      q.set('cats', Array.from(flt.categories).join(','));
+    if (flt.categories.size) q.set('cats', Array.from(flt.categories).join(','));
     if (flt.city) q.set('city', flt.city);
     router.replace(`/map${q.toString() ? `?${q}` : ''}`);
   }, [flt, router]);
+
+  // FilterPanel に渡す「候補リスト」
+  const coinOptions = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of places) for (const c of p.coins ?? []) s.add(c);
+    return Array.from(s).sort();
+  }, [places]);
+
+  const categoryOptions = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of places) if (p.category) s.add(p.category);
+    return Array.from(s).sort();
+  }, [places]);
 
   // モーダル開閉
   const openPlace = (p: Place) => {
@@ -117,16 +143,25 @@ export default function MapPage() {
 
   return (
     <div style={{ height: 'calc(100vh - 52px)', width: '100%', position: 'relative' }}>
+      {/* フィルタ（← 必須プロップを全部渡す） */}
       <div className="absolute left-3 top-3 z-[1000]">
-        {/* FilterPanel は Set を受け取る前提 */}
-        <FilterPanel value={flt} onChange={setFlt} />
+        <FilterPanel
+          coins={coinOptions}
+          categories={categoryOptions}
+          cities={cities}
+          value={flt}
+          onChange={setFlt}
+          onClose={() => {}}
+        />
       </div>
 
+      {/* 地図 */}
       <MapContainer center={[20, 0]} zoom={2} style={{ height: '100%', width: '100%' }}>
         <TileLayer url={tileURL} attribution={tileAttr} />
         {!loading && <ClusterLayer points={filtered} onSelect={openPlace} />}
       </MapContainer>
 
+      {/* 詳細モーダル */}
       <PlacePanel open={!!selected} place={selected} onClose={closePlace} />
     </div>
   );
