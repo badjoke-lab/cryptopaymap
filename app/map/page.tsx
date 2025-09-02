@@ -176,9 +176,15 @@ export default function MapPage() {
         {!loading && <ClusterLayer points={filtered} onSelect={openById} />}
       </MapContainer>
 
-      {/* 詳細モーダル（選択時のみ描画） */}
+      {/* 詳細モーダル（PlacePanel の props 仕様に合わせる） */}
       {selected && (
-        <PlacePanel open={true} place={selected} onClose={closePlace} />
+        <PlacePanel
+          place={selected}
+          all={places}
+          mapCenter={[selected.lat, selected.lon] as [number, number]}
+          onClose={closePlace}
+          onSelect={openById}
+        />
       )}
     </div>
   );
