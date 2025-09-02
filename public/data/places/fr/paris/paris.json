@@ -1,0 +1,590 @@
+[
+  {
+    "id": "osm:node:691614099",
+    "name": "Khara Tuki",
+    "category": "jewelry",
+    "lat": 48.8646929,
+    "lng": 2.3500426,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://khara-tuki.com/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "phone"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:815830612",
+    "name": "Le Greffulhe",
+    "category": "restaurant",
+    "lat": 48.8731505,
+    "lng": 2.3255205,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://legreffulhe.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "indoor_seating"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:1089313449",
+    "name": "L'invitée",
+    "category": "restaurant",
+    "lat": 48.8499899,
+    "lng": 2.3459219,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.linvitee.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "cuisine",
+      "currency:XBT",
+      "currency:XMR"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:1901202883",
+    "name": "Danse Cadix (Rock4You)",
+    "category": "dancing_school",
+    "lat": 48.8344837,
+    "lng": 2.2883046,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.danse-cadix.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:housenumber",
+      "contact:postcode",
+      "contact:street"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:2244578060",
+    "name": "N'Importe Quoi",
+    "category": "bar",
+    "lat": 48.8607815,
+    "lng": 2.3438855,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.nimportequoi.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "currency:XBT"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:2630584155",
+    "name": "Le Sof's Bar",
+    "category": "bar",
+    "lat": 48.866108,
+    "lng": 2.3480098,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:housenumber",
+      "contact:phone"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:2996093212",
+    "name": "Rock that Alésia (Rock4You, Vendredis)",
+    "category": "other",
+    "lat": 48.8295775,
+    "lng": 2.3245668,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.rock4you.dance/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "dance:style",
+      "leisure",
+      "name",
+      "operator"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:3239628074",
+    "name": "Boucherie Moderne",
+    "category": "butcher",
+    "lat": 48.8506104,
+    "lng": 2.3925275,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.boucherie-gillotjohn.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "contact:email",
+      "contact:phone",
+      "currency:XBT",
+      "delivery",
+      "name",
+      "opening_hours"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:4136415192",
+    "name": "Barnacle",
+    "category": "optician",
+    "lat": 48.8456492,
+    "lng": 2.2776216,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "phone",
+      "shop"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:5602730924",
+    "name": "Le Carlie",
+    "category": "bar",
+    "lat": 48.8626955,
+    "lng": 2.3521138,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "brewery",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:facebook"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:5729212321",
+    "name": "Chez Ginette",
+    "category": "restaurant",
+    "lat": 48.8897379,
+    "lng": 2.3387128,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:housenumber",
+      "contact:instagram"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:10772576426",
+    "name": "Itiopia",
+    "category": "grocery",
+    "lat": 48.8900044,
+    "lng": 2.345774,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:12258277242",
+    "name": "Danse Volontaire (Rock4You)",
+    "category": "dancing_school",
+    "lat": 48.8416222,
+    "lng": 2.3074957,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.danse-volontaires.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "dance:style",
+      "name",
+      "operator"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:12258290051",
+    "name": "Rock That Boat (Rock4You, Lundis)",
+    "category": "bar",
+    "lat": 48.8621181,
+    "lng": 2.3224959,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.rock4you.dance/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "dance:style",
+      "name",
+      "opening_hours",
+      "operator"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:12336006611",
+    "name": "HomeProjectRentals",
+    "category": "tool_hire",
+    "lat": 48.8758003,
+    "lng": 2.4037261,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.leboncoin.fr/profile/c1066ddf-5ea8-4245-8382-4a6f4ac37c0d/offers",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:12908609013",
+    "name": "Dr SYED Abbas (General practitioner)",
+    "category": "doctors",
+    "lat": 48.872113,
+    "lng": 2.3404427,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://air-dr.com/webapp/#doctor-profile&id=1025403",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "healthcare",
+      "healthcare:speciality",
+      "name"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:12912120793",
+    "name": "Fais ci Fais ça",
+    "category": "other",
+    "lat": 48.857873,
+    "lng": 2.2852746,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "http://www.fais-ci-fais-ca.com/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "craft",
+      "currency:XBT",
+      "email",
+      "name"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:way:76032165",
+    "name": "Bitcoin Bazar",
+    "category": "yes",
+    "lat": 48.8905017,
+    "lng": 2.333032,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://bitcoinbazar.fr/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "currency:XBT",
+      "name",
+      "opening_hours"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:way:868175261",
+    "name": "Bistrot du Passage",
+    "category": "restaurant",
+    "lat": 48.8542093,
+    "lng": 2.3253329,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.bistrot-du-passage.com/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT"
+    ],
+    "notes": ""
+  }
+]

@@ -1,0 +1,250 @@
+[
+  {
+    "id": "osm:node:10078071561",
+    "name": "Lion Windows",
+    "category": "other",
+    "lat": 34.0431486,
+    "lng": -118.445344,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://www.lionwindowsanddoors.com/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "check_date",
+      "craft",
+      "currency:XBT",
+      "name",
+      "note"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:10109931124",
+    "name": "Tribute Counseling & Psychotherapy Services",
+    "category": "other",
+    "lat": 34.2344685,
+    "lng": -118.536422,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://tributecps.com",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date:currency:XBT",
+      "contact:twitter",
+      "currency:XBT",
+      "description"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:10126754821",
+    "name": "Bedlam Hills Galleria",
+    "category": "clothes",
+    "lat": 34.0856218,
+    "lng": -118.3484915,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:10980910081",
+    "name": "PaintOrDip",
+    "category": "other",
+    "lat": 33.739576,
+    "lng": -118.280925,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://paintordip.com/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:11577190689",
+    "name": "Sasha Mac",
+    "category": "hairdresser",
+    "lat": 34.0449741,
+    "lng": -118.3371725,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:11867936647",
+    "name": "Grade A Ink",
+    "category": "tattoo",
+    "lat": 34.1825879,
+    "lng": -118.3962949,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "payment:coinos"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:12300477932",
+    "name": "Highland Tamalezzz",
+    "category": "fast_food",
+    "lat": 34.0738766,
+    "lng": -118.2092069,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "opening_hours"
+    ],
+    "notes": ""
+  },
+  {
+    "id": "osm:node:13057189707",
+    "name": "Fuse HVAC Service & Installation",
+    "category": "other",
+    "lat": 33.9809352,
+    "lng": -118.3842823,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "",
+    "website": "https://fuselac.com/",
+    "hours": "",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram"
+    ],
+    "notes": ""
+  }
+]

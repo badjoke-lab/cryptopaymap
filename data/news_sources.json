@@ -1,0 +1,19 @@
+{
+  "sources": [
+    {
+      "id": "coindesk",
+      "type": "rss",
+      "url": "https://www.coindesk.com/arc/outboundfeeds/rss/?outputType=xml"
+    },
+    {
+      "id": "cointelegraph",
+      "type": "rss",
+      "url": "https://cointelegraph.com/rss"
+    },
+    {
+      "id": "theblock",
+      "type": "rss",
+      "url": "https://www.theblock.co/rss"
+    }
+  ]
+}

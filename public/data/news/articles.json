@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "id": "buffalo-history-museum-crypto-donations",
+      "title": "Buffalo History Museum now accepts cryptocurrency donations",
+      "url": "https://www.wgrz.com/article/news/local/cryptocurrency-donation-now-being-accepted-at-buffalo-history-museum-bitcoin-ethereum-usd-coin/71-fc62a122-8870-4bbe-ac74-d30638897ca3",
+      "publisher": "WGRZ",
+      "published_at": "2021-12-20T00:00:00Z",
+      "language": "en",
+      "coins": ["BTC", "ETH", "USDC"],
+      "cities": ["New York"],
+      "summary": "Buffalo History Museum accepts cryptocurrency donations including Bitcoin, Ethereum and USD Coin."
+    },
+    {
+      "id": "tokyo-dot-raw-cafe-accepts-bitcoin",
+      "title": "DOT RAW cafe in Tokyo accepts Bitcoin payments",
+      "url": "https://zenmarket.jp/en/blog/post/9201/where-can-i-use-bitcoin-in-japan",
+      "publisher": "ZenMarket Blog",
+      "published_at": "2020-06-03T00:00:00Z",
+      "language": "en",
+      "coins": ["BTC"],
+      "cities": ["Tokyo"],
+      "summary": "The DOT RAW café in Roppongi is listed among venues that accept Bitcoin."
+    }
+  ]
+}

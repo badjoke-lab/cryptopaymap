@@ -1,0 +1,122 @@
+{
+  "generated_at": "2025-09-01T16:15:56.769Z",
+  "coins": {
+    "BTC": {
+      "total": 973,
+      "added_30d": 973,
+      "top_cities": [
+        {
+          "city": "San Salvador",
+          "country": "SV",
+          "count": 498,
+          "added_30d": 498,
+          "share": 0.5118191161356629
+        },
+        {
+          "city": "Buenos Aires",
+          "country": "AR",
+          "count": 89,
+          "added_30d": 89,
+          "share": 0.09146968139773895
+        },
+        {
+          "city": "London",
+          "country": "GB",
+          "count": 78,
+          "added_30d": 78,
+          "share": 0.08016443987667009
+        },
+        {
+          "city": "Bangkok",
+          "country": "TH",
+          "count": 76,
+          "added_30d": 76,
+          "share": 0.07810894141829394
+        },
+        {
+          "city": "Mexico City",
+          "country": "MX",
+          "count": 65,
+          "added_30d": 65,
+          "share": 0.06680369989722508
+        },
+        {
+          "city": "Berlin",
+          "country": "DE",
+          "count": 56,
+          "added_30d": 56,
+          "share": 0.05755395683453238
+        },
+        {
+          "city": "Tokyo",
+          "country": "JP",
+          "count": 40,
+          "added_30d": 40,
+          "share": 0.041109969167523124
+        },
+        {
+          "city": "Paris",
+          "country": "FR",
+          "count": 19,
+          "added_30d": 19,
+          "share": 0.019527235354573486
+        },
+        {
+          "city": "Miami",
+          "country": "US",
+          "count": 19,
+          "added_30d": 19,
+          "share": 0.019527235354573486
+        },
+        {
+          "city": "New York",
+          "country": "US",
+          "count": 15,
+          "added_30d": 15,
+          "share": 0.015416238437821172
+        },
+        {
+          "city": "Los Angeles",
+          "country": "US",
+          "count": 8,
+          "added_30d": 8,
+          "share": 0.008221993833504625
+        },
+        {
+          "city": "Toronto",
+          "country": "CA",
+          "count": 6,
+          "added_30d": 6,
+          "share": 0.006166495375128468
+        },
+        {
+          "city": "San Francisco",
+          "country": "US",
+          "count": 4,
+          "added_30d": 4,
+          "share": 0.0041109969167523125
+        }
+      ]
+    },
+    "ETH": {
+      "total": 3,
+      "added_30d": 3,
+      "top_cities": [
+        {
+          "city": "Berlin",
+          "country": "DE",
+          "count": 2,
+          "added_30d": 2,
+          "share": 0.6666666666666666
+        },
+        {
+          "city": "New York",
+          "country": "US",
+          "count": 1,
+          "added_30d": 1,
+          "share": 0.3333333333333333
+        }
+      ]
+    }
+  }
+}
