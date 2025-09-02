@@ -34,6 +34,11 @@ type UIFilters = {
   city: string | null;
 };
 
+// Place を URL 用の一意キーに
+const citySlug = (v?: string | null) =>
+  (v ?? 'city').toLowerCase().replace(/\s+/g, '-');
+const placeKey = (p: Place) => `${citySlug(p.city)}:${p.id}`;
+
 export default function MapPage() {
   // SSR/SSG で Leaflet を触らない
   if (typeof window === 'undefined') return null;
@@ -104,6 +109,13 @@ export default function MapPage() {
     });
   }, [places, flt]);
 
+  // onSelect のために id→Place の逆引きマップを用意
+  const idMap = useMemo(() => {
+    const m = new Map<string, Place>();
+    for (const p of filtered) m.set(placeKey(p), p);
+    return m;
+  }, [filtered]);
+
   // URL 同期（シェア用）
   useEffect(() => {
     const q = new URLSearchParams();
@@ -113,23 +125,11 @@ export default function MapPage() {
     router.replace(`/map${q.toString() ? `?${q}` : ''}`);
   }, [flt, router]);
 
-  // FilterPanel に渡す「候補リスト」
-  const coinOptions = useMemo(() => {
-    const s = new Set<string>();
-    for (const p of places) for (const c of p.coins ?? []) s.add(c);
-    return Array.from(s).sort();
-  }, [places]);
-
-  const categoryOptions = useMemo(() => {
-    const s = new Set<string>();
-    for (const p of places) if (p.category) s.add(p.category);
-    return Array.from(s).sort();
-  }, [places]);
-
-  // モーダル開閉
-  const openPlace = (p: Place) => {
+  // モーダル開閉（id で受ける：ClusterLayer の型に合わせる）
+  const openById = (id: string) => {
+    const p = idMap.get(id);
+    if (!p) return;
     setSelected(p);
-    const id = `${(p.city || 'city').toLowerCase().replace(/\s+/g, '-')}:${p.id}`;
     const q = new URLSearchParams(window.location.search);
     q.set('select', id);
     router.replace(`/map?${q}`);
@@ -143,11 +143,11 @@ export default function MapPage() {
 
   return (
     <div style={{ height: 'calc(100vh - 52px)', width: '100%', position: 'relative' }}>
-      {/* フィルタ（← 必須プロップを全部渡す） */}
+      {/* フィルタ（必須プロップを全部渡す） */}
       <div className="absolute left-3 top-3 z-[1000]">
         <FilterPanel
-          coins={coinOptions}
-          categories={categoryOptions}
+          coins={Array.from(new Set(places.flatMap((p) => p.coins ?? []))).sort()}
+          categories={Array.from(new Set(places.map((p) => p.category).filter(Boolean) as string[])).sort()}
           cities={cities}
           value={flt}
           onChange={setFlt}
@@ -158,7 +158,7 @@ export default function MapPage() {
       {/* 地図 */}
       <MapContainer center={[20, 0]} zoom={2} style={{ height: '100%', width: '100%' }}>
         <TileLayer url={tileURL} attribution={tileAttr} />
-        {!loading && <ClusterLayer points={filtered} onSelect={openPlace} />}
+        {!loading && <ClusterLayer points={filtered} onSelect={openById} />}
       </MapContainer>
 
       {/* 詳細モーダル */}
