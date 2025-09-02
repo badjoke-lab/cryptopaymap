@@ -46,4 +46,22 @@ a.brand { text-decoration: none;}
 /* iOS/モバイルのパン/ピンチ誤動作を抑制 */
 .leaflet-container { touch-action: pan-x pan-y; }
 
+/* --- Leaflet 画像/タイルの白帯・縮み対策 --- */
+.leaflet-container img,
+.leaflet-container .leaflet-tile,
+.leaflet-container .leaflet-pane,
+.leaflet-container .leaflet-map-pane,
+.leaflet-container .leaflet-tile-pane {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* iOS等でのパン/ズーム安定化 */
+.leaflet-container {
+  touch-action: pan-x pan-y;
+}
+
+/* まだ無ければ：レイアウト全高確保 */
+html, body, #__next { height: 100%; }
+
 

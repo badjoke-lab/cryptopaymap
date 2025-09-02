@@ -1,35 +1,25 @@
-// app/map/page.tsx
 'use client';
-import 'leaflet/dist/leaflet.css';   
-export const dynamic = 'force-dynamic'; // ← 追加：/map は常に動的レンダー
 
 import { useEffect, useMemo, useState } from 'react';
-import dynamicImport from 'next/dynamic';
-import { useRouter, useSearchParams } from 'next/navigation';
+import dynamic from 'next/dynamic';
+import 'leaflet/dist/leaflet.css';
 
-// react-leaflet / Leaflet を含むものは SSR させない
-const MapContainer = dynamicImport(
-  () => import('react-leaflet').then((m) => m.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamicImport(
-  () => import('react-leaflet').then((m) => m.TileLayer),
-  { ssr: false }
-);
-// ★ ClusterLayer も動的 import（ssr:false）
-const ClusterLayer = dynamicImport(() => import('@/components/ClusterLayer'), {
-  ssr: false,
-});
-
+import ClusterLayer from '@/components/ClusterLayer';
 import FilterPanel from '@/components/FilterPanel';
 import PlacePanel from '@/components/PlacePanel';
-import { loadAllPlaces, type Place, type CityIndex } from '@/utils/loadPlaces';
+import { loadAllPlaces, type Place } from '@/utils/loadPlaces';
 
-const tileURL =
-  process.env.NEXT_PUBLIC_MAP_TILES_URL ||
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const tileAttr =
-  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+const MapContainer = dynamic(
+  () => import('react-leaflet').then(m => m.MapContainer),
+  { ssr: false }
+);
+const TileLayer = dynamic(
+  () => import('react-leaflet').then(m => m.TileLayer),
+  { ssr: false }
+);
+
+const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+const tileAttr = '&copy; OpenStreetMap contributors';
 
 type UIFilters = {
   coins: Set<string>;
@@ -37,132 +27,94 @@ type UIFilters = {
   city: string | null;
 };
 
-const citySlug = (v?: string | null) =>
-  (v ?? 'city').toLowerCase().replace(/\s+/g, '-');
-const placeKey = (p: Place) => `${citySlug(p.city)}:${p.id}`;
+// CityIndex は構造的型付けなので同じ形なら OK
+type CityIndex = { city: string; country?: string };
 
 export default function MapPage() {
-  // サーバ実行時は描画しない（安全ガード）
-  if (typeof window === 'undefined') return null;
-
-  const router = useRouter();
-  const sp = useSearchParams();
-
   const [places, setPlaces] = useState<Place[]>([]);
-  const [cities, setCities] = useState<CityIndex[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<Place | null>(null);
+  const [iconReady, setIconReady] = useState(false);
 
-  // URL → 初期フィルタ
-  const [flt, setFlt] = useState<UIFilters>(() => {
-    const coins = new Set((sp.get('coins') ?? '').split(',').filter(Boolean));
-    const cats = new Set((sp.get('cats') ?? '').split(',').filter(Boolean));
-    const city = sp.get('city') ?? null;
-    return { coins, categories: cats, city };
+  const [flt, setFlt] = useState<UIFilters>({
+    coins: new Set(),
+    categories: new Set(),
+    city: null,
   });
 
-  // Leaflet デフォルトアイコンの設定はクライアントで
+  const [selected, setSelected] = useState<Place | null>(null);
+
+  // データ読み込み
   useEffect(() => {
+    loadAllPlaces().then((p) => {
+      setPlaces(p);
+      setLoading(false);
+    });
+  }, []);
+
+  // Leaflet のデフォルトマーカー画像を public 配下の絶対パスに固定
+  useEffect(() => {
+    let mounted = true;
     (async () => {
       const L = (await import('leaflet')).default;
-      const iconRetinaUrl = '/leaflet/marker-icon-2x.png';
-      const iconUrl = '/leaflet/marker-icon.png';
-      const shadowUrl = '/leaflet/marker-shadow.png';
-      // @ts-ignore
-      L.Icon.Default.mergeOptions({ iconRetinaUrl, iconUrl, shadowUrl });
+      L.Icon.Default.mergeOptions({
+        iconUrl: '/leaflet/marker-icon.png',
+        iconRetinaUrl: '/leaflet/marker-icon-2x.png',
+        shadowUrl: '/leaflet/marker-shadow.png',
+      });
+      if (mounted) setIconReady(true);
     })();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  // places 読み込み
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      const all = await loadAllPlaces();
-      setPlaces(all);
-      setLoading(false);
-    })();
-  }, []);
+  // フィルタ用のマスター
+  const allCoins = useMemo<string[]>(() => {
+    const s = new Set<string>();
+    for (const p of places) (p.coins || []).forEach((c) => s.add(c.toUpperCase()));
+    return [...s].sort();
+  }, [places]);
 
-  // 都市一覧（FilterPanel 用）
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch('/data/places/index.json', { cache: 'no-store' });
-        const json = await res.json();
-        setCities(Array.isArray(json?.cities) ? json.cities : []);
-      } catch {
-        setCities([]);
-      }
-    })();
-  }, []);
+  const allCats = useMemo<string[]>(() => {
+    const s = new Set<string>();
+    for (const p of places) if (p.category) s.add(p.category);
+    return [...s].sort();
+  }, [places]);
 
-  // フィルタ適用後の点群
+  const cities = useMemo<CityIndex[]>(() => {
+    const m = new Map<string, CityIndex>();
+    for (const p of places) if (!m.has(p.city)) m.set(p.city, { city: p.city, country: p.country });
+    return [...m.values()].sort((a, b) => a.city.localeCompare(b.city));
+  }, [places]);
+
+  // 絞り込み
   const filtered = useMemo(() => {
     if (!places.length) return [];
     return places.filter((p) => {
       const coinOK =
-        flt.coins.size === 0 || (p.coins ?? []).some((c) => flt.coins.has(c));
+        flt.coins.size === 0 ||
+        (p.coins || []).some((c) => flt.coins.has(c.toUpperCase()));
       const catOK =
         flt.categories.size === 0 ||
         (p.category ? flt.categories.has(p.category) : false);
-      const cityOK =
-        !flt.city || (p.city && p.city.toLowerCase() === flt.city.toLowerCase());
+      const cityOK = !flt.city || p.city === flt.city;
       return coinOK && catOK && cityOK;
     });
   }, [places, flt]);
 
-  // id → Place 逆引き
-  const idMap = useMemo(() => {
-    const m = new Map<string, Place>();
-    for (const p of filtered) m.set(placeKey(p), p);
-    return m;
-  }, [filtered]);
-
-  // URL 同期
-  useEffect(() => {
-    const q = new URLSearchParams();
-    if (flt.coins.size) q.set('coins', Array.from(flt.coins).join(','));
-    if (flt.categories.size) q.set('cats', Array.from(flt.categories).join(','));
-    if (flt.city) q.set('city', flt.city);
-    router.replace(`/map${q.toString() ? `?${q}` : ''}`);
-  }, [flt, router]);
-
-  // FilterPanel 候補
-  const coinOptions = useMemo(() => {
-    const s = new Set<string>();
-    for (const p of places) for (const c of p.coins ?? []) s.add(c);
-    return Array.from(s).sort();
-  }, [places]);
-
-  const categoryOptions = useMemo(() => {
-    const s = new Set<string>();
-    for (const p of places) if (p.category) s.add(p.category);
-    return Array.from(s).sort();
-  }, [places]);
-
-  // モーダル開閉
+  // 詳細の開閉
   const openById = (id: string) => {
-    const p = idMap.get(id);
-    if (!p) return;
-    setSelected(p);
-    const q = new URLSearchParams(window.location.search);
-    q.set('select', id);
-    router.replace(`/map?${q}`);
+    setSelected(places.find((x) => x.id === id) || null);
   };
-  const closePlace = () => {
-    setSelected(null);
-    const q = new URLSearchParams(window.location.search);
-    q.delete('select');
-    router.replace(`/map${q.toString() ? `?${q}` : ''}`);
-  };
+  const closePlace = () => setSelected(null);
 
   return (
     <div style={{ height: 'calc(100vh - 52px)', width: '100%', position: 'relative' }}>
-      {/* フィルタ */}
+      {/* フィルタ（UI 側で開閉を持つ想定。必要なら onClose の実装に差し替え） */}
       <div className="absolute left-3 top-3 z-[1000]">
         <FilterPanel
-          coins={coinOptions}
-          categories={categoryOptions}
+          coins={allCoins}
+          categories={allCats}
           cities={cities}
           value={flt}
           onChange={setFlt}
@@ -170,13 +122,14 @@ export default function MapPage() {
         />
       </div>
 
-      {/* 地図 */}
       <MapContainer center={[20, 0]} zoom={2} style={{ height: '100%', width: '100%' }}>
         <TileLayer url={tileURL} attribution={tileAttr} />
-        {!loading && <ClusterLayer points={filtered} onSelect={openById} />}
+        {!loading && iconReady && (
+          <ClusterLayer points={filtered} onSelect={openById} />
+        )}
       </MapContainer>
 
-      {/* 詳細モーダル */}
+      {/* 詳細モーダル（選択時のみ描画） */}
       {selected && (
         <PlacePanel
           place={selected}
