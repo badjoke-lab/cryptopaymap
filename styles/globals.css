@@ -1,9 +1,10 @@
 /* ========== Base ========== */
 * { box-sizing: border-box; }
-html, body, #__next { height: 100%; }
+html, body { height: 100%; }
 body {
   margin: 0;
-  font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
   color: #111;
   background: #fff;
 }
@@ -12,7 +13,7 @@ a { color: inherit; text-decoration: none; }
 /* ========== Header (Nav) ========== */
 .nav { position: sticky; top: 0; z-index: 2000; background: #fff; border-bottom: 1px solid #eee; }
 .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 12px; align-items: center; padding: 10px 12px; }
-.nav .brand { font-weight: 800; font-size: 22px; margin-right: auto; }  /* 少しだけ大きく */
+.nav .brand { font-weight: 800; font-size: 22px; margin-right: auto; }
 .nav a.link { padding: 6px 10px; border-radius: 8px; color: #111; }
 .nav a.link.active { background: #eef2ff; border: 1px solid #c7d2fe; }
 
@@ -29,7 +30,7 @@ a { color: inherit; text-decoration: none; }
 .badge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid #ddd; background: #fff; }
 
 /* ========== Filter Panel ========== */
-/* 浮遊ボタン／パネルの見た目だけCSSで整える（動作はTSX側） */
+/* 見た目のみ。開閉のロジックは TSX 側 */
 .filter-toggle {
   position: absolute;
   left: 12px; top: 12px; z-index: 1000;
@@ -59,61 +60,45 @@ a { color: inherit; text-decoration: none; }
 .select { width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; }
 
 /* ========== Leaflet / Map fixes ========== */
-/* Next.js のグローバル img スタイルでタイルやアイコンが縮む/切れるのを防止 */
-.leaflet-container img,
-.leaflet-container .leaflet-tile,
-.leaflet-container .leaflet-pane,
-.leaflet-container .leaflet-map-pane,
-.leaflet-container .leaflet-tile-pane {
-  max-width: none !important;
-  max-height: none !important;
-}
-
-/* タイル白帯対策（念のため 256px を強制） */
-.leaflet-container .leaflet-tile { width: 256px !important; height: 256px !important; }
-
-/* iOS 等のパン/ピンチ挙動安定化 */
-.leaflet-container { touch-action: pan-x pan-y; }
-
-/* --- マーカー画像の落下対策（表示強制の保険） ---
-   JS 側で L.Icon.Default.mergeOptions({ iconUrl: '/leaflet/...' }) を行うのが本筋。
-   万一 src 解決に失敗しても視覚的に崩れないよう、サイズと object-fit を明示。 */
-.leaflet-marker-icon {
-  width: 25px; height: 41px;
-  object-fit: contain;
-  image-rendering: auto;
-}
-.leaflet-marker-shadow { width: 41px; height: 41px; object-fit: contain; }
-
-/* ========== Utilities ========== */
-.hidden { display: none !important; }
-
-/* Leaflet が親レイアウトのリサイズで崩れるのを抑える保険 */
-.leaflet-container {
-  outline: none;
-  background: #f8fafb; /* 読み込み中の見た目を少しマシに */
-}
-
-/* ポップアップ微調整（任意） */
-.leaflet-popup-content {
-  margin: 8px 12px;
-}
-
-/* --- Leaflet × Tailwind 衝突対策（白いスキマの根治） --- */
+/* Tailwind/Reset が Leaflet 内の img に当たってタイルが縮むのを防ぐ */
 .leaflet-container img,
 .leaflet-pane img,
 .leaflet-marker-icon,
 .leaflet-tile,
 .leaflet-shadow-pane img {
-  max-width: none !important; /* Tailwind preflight を打ち消す */
+  max-width: none !important;
+  max-height: none !important;
 }
 
+/* タイルの白帯対策（サイズ固定＋インライン隙間除去＋GPU hack） */
 .leaflet-container .leaflet-tile {
+  width: 256px !important;
+  height: 256px !important;
+  display: block;
   backface-visibility: hidden;
-  transform: translateZ(0); /* スクロール時のブロック化を抑える保険 */
+  transform: translateZ(0);
 }
 
+/* パン/ピンチの挙動安定化 & 背景色（読み込み中の見た目） */
 .leaflet-container {
+  touch-action: pan-x pan-y;
   outline: none;
-  background: #f8fafb; /* 読み込み中の見た目だけ改善（任意） */
+  background: #f8fafb;
 }
+
+/* マーカー画像の落下に備えて寸法を明示（本筋は JS で iconUrl を指定） */
+.leaflet-marker-icon {
+  width: 25px; height: 41px;
+  object-fit: contain;
+  image-rendering: auto;
+}
+.leaflet-marker-shadow {
+  width: 41px; height: 41px;
+  object-fit: contain;
+}
+
+/* ポップアップ微調整（任意） */
+.leaflet-popup-content { margin: 8px 12px; }
+
+/* ========== Utilities ========== */
+.hidden { display: none !important; }
