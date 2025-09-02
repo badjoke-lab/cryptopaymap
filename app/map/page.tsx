@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import ClusterLayer from '@/components/ClusterLayer';
 import FilterPanel from '@/components/FilterPanel';
 import PlacePanel from '@/components/PlacePanel';
-import { loadAllPlaces, type Place } from '@/utils/loadPlaces'; // ← ここを修正
+import { loadAllPlaces, type Place } from '@/utils/loadPlaces'; // ← utils 側に合わせる
 
 // react-leaflet は SSR させない
 const MapContainer = dynamicImport(
@@ -27,10 +27,11 @@ const tileURL =
 const tileAttr =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-type Filters = {
-  coins: string[];
-  cats: string[];
-  city?: string;
+// FilterPanel が期待する型に合わせる
+type UIFilters = {
+  coins: Set<string>;
+  categories: Set<string>;
+  city: string | null;
 };
 
 export default function MapPage() {
@@ -43,13 +44,15 @@ export default function MapPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Place | null>(null);
 
-  const [flt, setFlt] = useState<Filters>(() => {
-    const coins = (sp.get('coins') ?? '').split(',').filter(Boolean);
-    const cats  = (sp.get('cats') ?? '').split(',').filter(Boolean);
-    const city  = sp.get('city') ?? undefined;
-    return { coins, cats, city };
+  // URL から初期値を復元（Set で保持）
+  const [flt, setFlt] = useState<UIFilters>(() => {
+    const coins = new Set((sp.get('coins') ?? '').split(',').filter(Boolean));
+    const cats  = new Set((sp.get('cats') ?? '').split(',').filter(Boolean));
+    const city  = sp.get('city') ?? null;
+    return { coins, categories: cats, city };
   });
 
+  // Leaflet デフォルトアイコン
   useEffect(() => {
     (async () => {
       const L = (await import('leaflet')).default;
@@ -61,33 +64,43 @@ export default function MapPage() {
     })();
   }, []);
 
+  // データ読み込み
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const all = await loadAllPlaces(); // ← 関数名も修正
+      const all = await loadAllPlaces();
       setPlaces(all);
       setLoading(false);
     })();
   }, []);
 
+  // フィルタ適用
   const filtered = useMemo(() => {
     if (!places.length) return [];
     return places.filter(p => {
-      const coinOK = !flt.coins.length || (p.coins ?? []).some(c => flt.coins.includes(c));
-      const catOK  = !flt.cats.length  || (p.category ? flt.cats.includes(p.category) : false);
-      const cityOK = !flt.city || (p.city && p.city.toLowerCase() === flt.city.toLowerCase());
+      const coinOK =
+        flt.coins.size === 0 || (p.coins ?? []).some(c => flt.coins.has(c));
+      const catOK =
+        flt.categories.size === 0 ||
+        (p.category ? flt.categories.has(p.category) : false);
+      const cityOK =
+        !flt.city ||
+        (p.city && p.city.toLowerCase() === flt.city.toLowerCase());
       return coinOK && catOK && cityOK;
     });
   }, [places, flt]);
 
+  // URL へ同期
   useEffect(() => {
     const q = new URLSearchParams();
-    if (flt.coins.length) q.set('coins', flt.coins.join(','));
-    if (flt.cats.length)  q.set('cats', flt.cats.join(','));
-    if (flt.city)         q.set('city', flt.city);
+    if (flt.coins.size) q.set('coins', Array.from(flt.coins).join(','));
+    if (flt.categories.size)
+      q.set('cats', Array.from(flt.categories).join(','));
+    if (flt.city) q.set('city', flt.city);
     router.replace(`/map${q.toString() ? `?${q}` : ''}`);
   }, [flt, router]);
 
+  // モーダル開閉
   const openPlace = (p: Place) => {
     setSelected(p);
     const id = `${(p.city || 'city').toLowerCase().replace(/\s+/g, '-')}:${p.id}`;
@@ -105,6 +118,7 @@ export default function MapPage() {
   return (
     <div style={{ height: 'calc(100vh - 52px)', width: '100%', position: 'relative' }}>
       <div className="absolute left-3 top-3 z-[1000]">
+        {/* FilterPanel は Set を受け取る前提 */}
         <FilterPanel value={flt} onChange={setFlt} />
       </div>
 
