@@ -5,29 +5,25 @@ import { useMap, Marker, Popup } from 'react-leaflet';
 import type { PointFeature, ClusterFeature, AnyProps } from 'supercluster';
 import type { Place } from '@/utils/loadPlaces';
 
-// ClusterLayer が受け取る props
 type Props = {
   points: Place[];
   onSelect: (id: string) => void;
 };
 
-// supercluster はデフォルトエクスポートのクラス
-type SuperclusterClass = (await import('supercluster')).default;
-type SCIndex = InstanceType<SuperclusterClass>;
-
-// supercluster の返すジオメトリ型
+// supercluster が返すフィーチャ型（クラスタ or 単点）
 type SCFeature = PointFeature<AnyProps> | ClusterFeature<AnyProps>;
 
 export default function ClusterLayer({ points, onSelect }: Props) {
   const map = useMap();
 
-  // supercluster のインデックスを保持
-  const indexRef = React.useRef<SCIndex | null>(null);
+  // supercluster のインデックスを保持（動的 import なので any で保持して十分）
+  const indexRef = React.useRef<any>(null);
 
-  // ポイント → Supercluster にロード
+  // ポイント → supercluster へロード
   React.useEffect(() => {
     let cancelled = false;
-    (async () => {
+
+    async function buildIndex() {
       const Supercluster = (await import('supercluster')).default;
 
       const idx = new Supercluster<AnyProps, AnyProps>({
@@ -46,23 +42,27 @@ export default function ClusterLayer({ points, onSelect }: Props) {
       }));
 
       idx.load(features);
-      if (!cancelled) indexRef.current = idx;
-      refresh(); // 初回描画
-    })();
+      if (!cancelled) {
+        indexRef.current = idx;
+        refresh(); // 初回描画
+      }
+    }
 
+    buildIndex();
     return () => {
       cancelled = true;
       indexRef.current = null;
     };
-    // points が変わったら作り直す
-  }, [points]);
+  }, [points]); // points が変化したら作り直し
 
   // 表示中クラスタ
   const [clusters, setClusters] = React.useState<SCFeature[]>([]);
 
-  // Map の表示範囲からクラスタを取り出して state 更新
+  // 表示範囲からクラスタ一覧を取得
   const refresh = React.useCallback(() => {
-    if (!indexRef.current) return;
+    const idx = indexRef.current;
+    if (!idx) return;
+
     const b = map.getBounds();
     const bbox: [number, number, number, number] = [
       b.getWest(),
@@ -71,8 +71,8 @@ export default function ClusterLayer({ points, onSelect }: Props) {
       b.getNorth(),
     ];
     const z = Math.round(map.getZoom());
-    const result = indexRef.current.getClusters(bbox, z);
-    setClusters(result as SCFeature[]);
+    const result = idx.getClusters(bbox, z) as SCFeature[];
+    setClusters(result);
   }, [map]);
 
   // move/zoom のたびに再計算
@@ -85,44 +85,42 @@ export default function ClusterLayer({ points, onSelect }: Props) {
     };
   }, [map, refresh]);
 
-  // クラスタをクリックしたらズームイン
-  const zoomToCluster = React.useCallback((clusterId: number) => {
-    const idx = indexRef.current;
-    if (!idx) return;
-    const expansionZoom = Math.min(idx.getClusterExpansionZoom(clusterId), 18);
-    const cluster = clusters.find(
-      (f): f is ClusterFeature<AnyProps> =>
-        'properties' in f && (f as any).properties.cluster === true
-    );
-    if (!cluster) return;
-    const [lng, lat] = (cluster.geometry as any).coordinates as [number, number];
-    map.setView([lat, lng], expansionZoom, { animate: true });
-  }, [clusters, map]);
+  // クラスタクリックでズームイン
+  const zoomToCluster = React.useCallback(
+    (clusterId: number, lng: number, lat: number) => {
+      const idx = indexRef.current;
+      if (!idx) return;
+      const next = Math.min(idx.getClusterExpansionZoom(clusterId), 18);
+      map.setView([lat, lng], next, { animate: true });
+    },
+    [map]
+  );
 
   return (
     <>
       {clusters.map((f) => {
         const [lng, lat] = (f.geometry as any).coordinates as [number, number];
+        const props: any = (f as any).properties;
 
         // クラスタ（複数点の塊）
-        if ((f as any).properties.cluster) {
-          const count = (f as any).properties.point_count as number;
-          const cid = (f as any).properties.cluster_id as number;
+        if (props?.cluster) {
+          const count = props.point_count as number;
+          const cid = props.cluster_id as number;
           return (
             <Marker
               key={`c-${cid}`}
               position={[lat, lng]}
-              eventHandlers={{ click: () => zoomToCluster(cid) }}
+              eventHandlers={{ click: () => zoomToCluster(cid, lng, lat) }}
             >
               <Popup>
-                <div style={{ fontWeight: 700 }}>{count}</div>
+                <div style={{ fontWeight: 700, fontSize: 16 }}>{count}</div>
               </Popup>
             </Marker>
           );
         }
 
         // 単一ポイント
-        const id = (f.properties as any)?.id as string;
+        const id = props?.id as string;
         return (
           <Marker
             key={id}
@@ -130,7 +128,7 @@ export default function ClusterLayer({ points, onSelect }: Props) {
             eventHandlers={{ click: () => onSelect(id) }}
           >
             <Popup>
-              <div style={{ fontWeight: 700 }}>{(f.properties as any)?.title}</div>
+              <div style={{ fontWeight: 700 }}>{props?.title}</div>
               <button
                 onClick={() => onSelect(id)}
                 style={{
