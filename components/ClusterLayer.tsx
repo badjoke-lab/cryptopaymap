@@ -15,8 +15,6 @@ type SCFeature = PointFeature<AnyProps> | ClusterFeature<AnyProps>;
 
 export default function ClusterLayer({ points, onSelect }: Props) {
   const map = useMap();
-
-  // supercluster のインデックスを保持（動的 import なので any で保持して十分）
   const indexRef = React.useRef<any>(null);
 
   // ポイント → supercluster へロード
@@ -33,7 +31,7 @@ export default function ClusterLayer({ points, onSelect }: Props) {
 
       const features: PointFeature<AnyProps>[] = points.map((p) => ({
         type: 'Feature',
-        geometry: { type: 'Point', coordinates: [p.lon, p.lat] },
+        geometry: { type: 'Point', coordinates: [p.lng, p.lat] }, // ← lng に修正
         properties: {
           id: p.id,
           title: p.name,
@@ -44,7 +42,7 @@ export default function ClusterLayer({ points, onSelect }: Props) {
       idx.load(features);
       if (!cancelled) {
         indexRef.current = idx;
-        refresh(); // 初回描画
+        refresh();
       }
     }
 
@@ -53,7 +51,7 @@ export default function ClusterLayer({ points, onSelect }: Props) {
       cancelled = true;
       indexRef.current = null;
     };
-  }, [points]); // points が変化したら作り直し
+  }, [points]);
 
   // 表示中クラスタ
   const [clusters, setClusters] = React.useState<SCFeature[]>([]);
@@ -75,7 +73,6 @@ export default function ClusterLayer({ points, onSelect }: Props) {
     setClusters(result);
   }, [map]);
 
-  // move/zoom のたびに再計算
   React.useEffect(() => {
     refresh();
     map.on('moveend zoomend', refresh);
@@ -102,7 +99,6 @@ export default function ClusterLayer({ points, onSelect }: Props) {
         const [lng, lat] = (f.geometry as any).coordinates as [number, number];
         const props: any = (f as any).properties;
 
-        // クラスタ（複数点の塊）
         if (props?.cluster) {
           const count = props.point_count as number;
           const cid = props.cluster_id as number;
@@ -119,7 +115,6 @@ export default function ClusterLayer({ points, onSelect }: Props) {
           );
         }
 
-        // 単一ポイント
         const id = props?.id as string;
         return (
           <Marker
