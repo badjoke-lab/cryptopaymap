@@ -1,39 +1,65 @@
-*{box-sizing:border-box}html,body{height:100%}body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";color:#111;background:#fff}
-a{color:inherit}
-.nav{position:sticky;top:0;z-index:2000;background:#fff;border-bottom:1px solid #eee}
-.nav-inner{max-width:1100px;margin:0 auto;display:flex;gap:12px;align-items:center;padding:10px 12px}
-.nav .brand{font-weight:800;margin-right:auto}
-.nav a.link{padding:6px 10px;border-radius:8px;text-decoration:none;color:#111}
-.nav a.link.active{background:#eef2ff;border:1px solid #c7d2fe}
-.footer{border-top:1px solid #eee;padding:10px 12px;color:#666;font-size:12px}
-.container{max-width:1100px;margin:0 auto;padding:12px}
-.badge{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid #ddd;background:#fff}
+/* ========== Base ========== */
+* { box-sizing: border-box; }
+html, body, #__next { height: 100%; }
+body {
+  margin: 0;
+  font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
+  color: #111;
+  background: #fff;
+}
+a { color: inherit; text-decoration: none; }
+
+/* ========== Header (Nav) ========== */
+.nav { position: sticky; top: 0; z-index: 2000; background: #fff; border-bottom: 1px solid #eee; }
+.nav-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 12px; align-items: center; padding: 10px 12px; }
+.nav .brand { font-weight: 800; font-size: 22px; margin-right: auto; }  /* 少しだけ大きく */
+.nav a.link { padding: 6px 10px; border-radius: 8px; color: #111; }
+.nav a.link.active { background: #eef2ff; border: 1px solid #c7d2fe; }
 
 /* Mobile header tweaks */
 @media (max-width: 640px) {
-  .nav-inner{flex-wrap:wrap;gap:6px 8px;padding:8px 10px}
-  .nav .brand{flex:1 0 100%;font-size:16px;margin-right:0}
-  .nav a.link{padding:6px 10px;font-size:14px}
+  .nav-inner { flex-wrap: wrap; gap: 6px 8px; padding: 8px 10px; }
+  .nav .brand { flex: 1 0 100%; font-size: 18px; margin-right: 0; }
+  .nav a.link { padding: 6px 10px; font-size: 14px; }
 }
 
+/* ========== Footer & Layout ========== */
+.container { max-width: 1100px; margin: 0 auto; padding: 12px; }
+.footer { border-top: 1px solid #eee; padding: 10px 12px; color: #666; font-size: 12px; }
+.badge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid #ddd; background: #fff; }
 
-a.brand { text-decoration: none;}
+/* ========== Filter Panel ========== */
+/* 浮遊ボタン／パネルの見た目だけCSSで整える（動作はTSX側） */
+.filter-toggle {
+  position: absolute;
+  left: 12px; top: 12px; z-index: 1000;
+  padding: 8px 12px; border-radius: 10px;
+  border: 1px solid #e5e7eb; background: #fff;
+  box-shadow: 0 2px 10px rgba(0,0,0,.07);
+  cursor: pointer;
+}
+.filter-panel {
+  position: absolute;
+  left: 12px; top: 12px; z-index: 1001;
+  width: min(92vw, 340px);
+  max-height: calc(100vh - 24px);
+  overflow: auto;
+  padding: 12px;
+  border: 1px solid #e5e7eb; background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+.filter-panel h4 { margin: 8px 0 6px; font-size: 14px; color: #374151; }
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px 10px; }
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 6px 10px; border-radius: 999px; border: 1px solid #e5e7eb; background: #fff;
+  font-size: 12px;
+}
+.select { width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; }
 
-/* --- Leaflet fix: Next.js のグローバル img スタイルでタイルが縮む問題 --- */
-.leaflet-container img {
-  max-width: none !important;
-  max-height: none !important;
-}
-.leaflet-container .leaflet-tile {
-  width: 256px !important;
-  height: 256px !important;
-}
-/* iOS のスクロール系挙動の安定化（任意） */
-.leaflet-container {
-  touch-action: pan-x pan-y;
-}
-
-/* Leaflet tile sizing guard for Next.js */
+/* ========== Leaflet / Map fixes ========== */
+/* Next.js のグローバル img スタイルでタイルやアイコンが縮む/切れるのを防止 */
 .leaflet-container img,
 .leaflet-container .leaflet-tile,
 .leaflet-container .leaflet-pane,
@@ -43,25 +69,21 @@ a.brand { text-decoration: none;}
   max-height: none !important;
 }
 
-/* iOS/モバイルのパン/ピンチ誤動作を抑制 */
+/* タイル白帯対策（念のため 256px を強制） */
+.leaflet-container .leaflet-tile { width: 256px !important; height: 256px !important; }
+
+/* iOS 等のパン/ピンチ挙動安定化 */
 .leaflet-container { touch-action: pan-x pan-y; }
 
-/* --- Leaflet 画像/タイルの白帯・縮み対策 --- */
-.leaflet-container img,
-.leaflet-container .leaflet-tile,
-.leaflet-container .leaflet-pane,
-.leaflet-container .leaflet-map-pane,
-.leaflet-container .leaflet-tile-pane {
-  max-width: none !important;
-  max-height: none !important;
+/* --- マーカー画像の落下対策（表示強制の保険） ---
+   JS 側で L.Icon.Default.mergeOptions({ iconUrl: '/leaflet/...' }) を行うのが本筋。
+   万一 src 解決に失敗しても視覚的に崩れないよう、サイズと object-fit を明示。 */
+.leaflet-marker-icon {
+  width: 25px; height: 41px;
+  object-fit: contain;
+  image-rendering: auto;
 }
+.leaflet-marker-shadow { width: 41px; height: 41px; object-fit: contain; }
 
-/* iOS等でのパン/ズーム安定化 */
-.leaflet-container {
-  touch-action: pan-x pan-y;
-}
-
-/* まだ無ければ：レイアウト全高確保 */
-html, body, #__next { height: 100%; }
-
-
+/* ========== Utilities ========== */
+.hidden { display: none !important; }

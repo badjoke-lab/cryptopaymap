@@ -1,140 +1,230 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import dynamic from 'next/dynamic';
-import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useMemo, useState, useCallback, Suspense } from 'react';
+import dynamicImport from 'next/dynamic';
+import { useSearchParams } from 'next/navigation';
 
-import ClusterLayer from '@/components/ClusterLayer';
 import FilterPanel from '@/components/FilterPanel';
 import PlacePanel from '@/components/PlacePanel';
-import { loadAllPlaces, type Place } from '@/utils/loadPlaces';
+import { loadAllPlaces, type Place, type CityIndex } from '@/utils/loadPlaces';
 
-const MapContainer = dynamic(
-  () => import('react-leaflet').then(m => m.MapContainer),
+// react-leaflet は SSR 無効で動的 import
+const MapContainer = dynamicImport(
+  () => import('react-leaflet').then((m) => m.MapContainer),
   { ssr: false }
 );
-const TileLayer = dynamic(
-  () => import('react-leaflet').then(m => m.TileLayer),
+const TileLayer = dynamicImport(
+  () => import('react-leaflet').then((m) => m.TileLayer),
+  { ssr: false }
+);
+const ClusterLayer = dynamicImport(
+  () => import('@/components/ClusterLayer'),
   { ssr: false }
 );
 
+// OSM タイル
 const tileURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-const tileAttr = '&copy; OpenStreetMap contributors';
+const tileAttr =
+  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
+// フィルタUIの型
 type UIFilters = {
   coins: Set<string>;
   categories: Set<string>;
   city: string | null;
 };
 
-// CityIndex は構造的型付けなので同じ形なら OK
-type CityIndex = { city: string; country?: string };
-
+// 外側は Suspense だけ（必須）
 export default function MapPage() {
+  return (
+    <Suspense fallback={<div style={{height:'calc(100vh - 52px)'}}>Loading map…</div>}>
+      <MapPageInner />
+    </Suspense>
+  );
+}
+
+// 実処理は内側へ（useSearchParams はここで使う）
+function MapPageInner() {
+  // ---- データ読み込み ----
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
-  const [iconReady, setIconReady] = useState(false);
 
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const all = await loadAllPlaces(); // クライアントのみ
+      if (!cancelled) {
+        setPlaces(all);
+        setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ---- Marker アイコン（クライアントのみ）----
+  useEffect(() => {
+    (async () => {
+      const L = await import('leaflet');
+      const base = typeof window !== 'undefined' ? window.location.origin : '';
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: `${base}/leaflet/marker-icon-2x.png`,
+        iconUrl:       `${base}/leaflet/marker-icon.png`,
+        shadowUrl:     `${base}/leaflet/marker-shadow.png`,
+      });
+    })();
+  }, []);
+
+  // ---- フィルタ候補 ----
+  const coinsList = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of places) for (const c of (p.coins ?? [])) s.add(String(c).toUpperCase());
+    return [...s].sort();
+  }, [places]);
+
+  const categoriesList = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of places) {
+      if (p.category) s.add(p.category);
+      for (const cc of (p as any).categories ?? []) s.add(String(cc));
+    }
+    return [...s].sort();
+  }, [places]);
+
+  const cities: CityIndex[] = useMemo(() => {
+    const m = new Map<string, CityIndex>();
+    for (const p of places) {
+      const city = p.city ?? 'Unknown';
+      if (!m.has(city)) {
+        const path = (p as any).path ?? (p as any).cityPath ?? '';
+        m.set(city, { city, country: p.country ?? '', path });
+      }
+    }
+    return [...m.values()].sort((a, b) => a.city.localeCompare(b.city));
+  }, [places]);
+
+  // ---- URLクエリ <-> UI 状態 ----
+  const sp = useSearchParams();
   const [flt, setFlt] = useState<UIFilters>({
     coins: new Set(),
     categories: new Set(),
     city: null,
   });
+  const [showFilter, setShowFilter] = useState(false);
 
-  const [selected, setSelected] = useState<Place | null>(null);
-
-  // データ読み込み
   useEffect(() => {
-    loadAllPlaces().then((p) => {
-      setPlaces(p);
-      setLoading(false);
-    });
-  }, []);
+    const cityQ  = sp.get('city');
+    const coinsQ = sp.get('coins');
+    const catsQ  = sp.get('categories');
 
-  // Leaflet のデフォルトマーカー画像を public 配下の絶対パスに固定
-  useEffect(() => {
-    let mounted = true;
-    (async () => {
-      const L = (await import('leaflet')).default;
-      L.Icon.Default.mergeOptions({
-        iconUrl: '/leaflet/marker-icon.png',
-        iconRetinaUrl: '/leaflet/marker-icon-2x.png',
-        shadowUrl: '/leaflet/marker-shadow.png',
-      });
-      if (mounted) setIconReady(true);
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+    setFlt((prev) => ({
+      coins: coinsQ
+        ? new Set(coinsQ.split(',').map(s => s.trim().toUpperCase()).filter(Boolean))
+        : prev.coins,
+      categories: catsQ
+        ? new Set(catsQ.split(',').map(s => s.trim()).filter(Boolean))
+        : prev.categories,
+      city: cityQ ?? prev.city,
+    }));
+  }, [sp]);
 
-  // フィルタ用のマスター
-  const allCoins = useMemo<string[]>(() => {
-    const s = new Set<string>();
-    for (const p of places) (p.coins || []).forEach((c) => s.add(c.toUpperCase()));
-    return [...s].sort();
-  }, [places]);
-
-  const allCats = useMemo<string[]>(() => {
-    const s = new Set<string>();
-    for (const p of places) if (p.category) s.add(p.category);
-    return [...s].sort();
-  }, [places]);
-
-  const cities = useMemo<CityIndex[]>(() => {
-    const m = new Map<string, CityIndex>();
-    for (const p of places) if (!m.has(p.city)) m.set(p.city, { city: p.city, country: p.country });
-    return [...m.values()].sort((a, b) => a.city.localeCompare(b.city));
-  }, [places]);
-
-  // 絞り込み
+  // ---- 絞り込み ----
   const filtered = useMemo(() => {
     if (!places.length) return [];
-    return places.filter((p) => {
-      const coinOK =
-        flt.coins.size === 0 ||
-        (p.coins || []).some((c) => flt.coins.has(c.toUpperCase()));
-      const catOK =
-        flt.categories.size === 0 ||
-        (p.category ? flt.categories.has(p.category) : false);
-      const cityOK = !flt.city || p.city === flt.city;
-      return coinOK && catOK && cityOK;
-    });
+
+    const coinOK = (p: Place) => {
+      if (!flt.coins.size) return true;
+      const pc = (p.coins ?? []).map(c => String(c).toUpperCase());
+      for (const c of flt.coins) if (pc.includes(c)) return true;
+      return false;
+    };
+
+    const catOK = (p: Place) => {
+      if (!flt.categories.size) return true;
+      const list = new Set<string>([
+        ...(p.category ? [p.category] : []),
+        ...(((p as any).categories as string[]) ?? []),
+      ]);
+      for (const c of flt.categories) if (list.has(c)) return true;
+      return false;
+    };
+
+    const cityOK = (p: Place) => !flt.city || (p.city ?? 'Unknown') === flt.city;
+
+    return places.filter(p => coinOK(p) && catOK(p) && cityOK(p));
   }, [places, flt]);
 
-  // 詳細の開閉
-  const openById = (id: string) => {
-    setSelected(places.find((x) => x.id === id) || null);
-  };
-  const closePlace = () => setSelected(null);
+  // ---- 選択中スポット ----
+  const [selected, setSelected] = useState<Place | null>(null);
+
+  const openById = useCallback((id: string) => {
+    const p = places.find(x => x.id === id) ?? null;
+    setSelected(p);
+    if (typeof window !== 'undefined') {
+      const u = new URL(window.location.href);
+      if (p) u.searchParams.set('select', p.id);
+      else u.searchParams.delete('select');
+      window.history.replaceState(null, '', u.toString());
+    }
+  }, [places]);
+
+  const closePlace = useCallback(() => {
+    setSelected(null);
+    if (typeof window !== 'undefined') {
+      const u = new URL(window.location.href);
+      u.searchParams.delete('select');
+      window.history.replaceState(null, '', u.toString());
+    }
+  }, []);
+
+  useEffect(() => {
+    const sel = sp.get('select');
+    if (sel) openById(sel);
+    else setSelected(null);
+  }, [sp, openById]);
+
+  // 地図の初期センター
+  const mapCenter: [number, number] = selected ? [selected.lat, selected.lng] : [20, 0];
+  const mapZoom = selected ? 10 : 2;
 
   return (
     <div style={{ height: 'calc(100vh - 52px)', width: '100%', position: 'relative' }}>
-      {/* フィルタ（UI 側で開閉を持つ想定。必要なら onClose の実装に差し替え） */}
-      <div className="absolute left-3 top-3 z-[1000]">
-        <FilterPanel
-          coins={allCoins}
-          categories={allCats}
-          cities={cities}
-          value={flt}
-          onChange={setFlt}
-          onClose={() => {}}
-        />
-      </div>
+      {/* フィルタトグル */}
+      {!showFilter && (
+        <button className="filter-toggle" onClick={() => setShowFilter(true)}>
+          Filters
+        </button>
+      )}
+      {showFilter && (
+        <div className="filter-panel">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h4 style={{ margin: 0 }}>Filters</h4>
+            <button className="chip" onClick={() => setShowFilter(false)}>Close</button>
+          </div>
+          <div style={{ marginTop: 8 }}>
+            <FilterPanel
+              coins={coinsList}
+              categories={categoriesList}
+              cities={cities}
+              value={flt}
+              onChange={setFlt as any}
+              onClose={() => setShowFilter(false)}
+            />
+          </div>
+        </div>
+      )}
 
-      <MapContainer center={[20, 0]} zoom={2} style={{ height: '100%', width: '100%' }}>
+      {/* 地図 */}
+      <MapContainer center={mapCenter} zoom={mapZoom} style={{ height: '100%', width: '100%' }}>
         <TileLayer url={tileURL} attribution={tileAttr} />
-        {!loading && iconReady && (
-          <ClusterLayer points={filtered} onSelect={openById} />
-        )}
+        {!loading && <ClusterLayer points={filtered} onSelect={openById} />}
       </MapContainer>
 
-      {/* 詳細モーダル（選択時のみ描画） */}
+      {/* 詳細モーダル */}
       {selected && (
         <PlacePanel
           place={selected}
           all={places}
-          mapCenter={[selected.lat, selected.lng] as [number, number]}
+          mapCenter={[selected.lat, selected.lng]}
           onClose={closePlace}
           onSelect={openById}
         />

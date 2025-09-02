@@ -7,8 +7,14 @@
       "publisher": "WGRZ",
       "published_at": "2021-12-20T00:00:00Z",
       "language": "en",
-      "coins": ["BTC", "ETH", "USDC"],
-      "cities": ["New York"],
+      "coins": [
+        "BTC",
+        "ETH",
+        "USDC"
+      ],
+      "cities": [
+        "New York"
+      ],
       "summary": "Buffalo History Museum accepts cryptocurrency donations including Bitcoin, Ethereum and USD Coin."
     },
     {
@@ -18,9 +24,14 @@
       "publisher": "ZenMarket Blog",
       "published_at": "2020-06-03T00:00:00Z",
       "language": "en",
-      "coins": ["BTC"],
-      "cities": ["Tokyo"],
+      "coins": [
+        "BTC"
+      ],
+      "cities": [
+        "Tokyo"
+      ],
       "summary": "The DOT RAW café in Roppongi is listed among venues that accept Bitcoin."
     }
-  ]
+  ],
+  "generated_at": "2025-09-02T16:37:27.911Z"
 }
