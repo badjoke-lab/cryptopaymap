@@ -33,4 +33,17 @@ a.brand { text-decoration: none;}
   touch-action: pan-x pan-y;
 }
 
+/* Leaflet tile sizing guard for Next.js */
+.leaflet-container img,
+.leaflet-container .leaflet-tile,
+.leaflet-container .leaflet-pane,
+.leaflet-container .leaflet-map-pane,
+.leaflet-container .leaflet-tile-pane {
+  max-width: none !important;
+  max-height: none !important;
+}
+
+/* iOS/モバイルのパン/ピンチ誤動作を抑制 */
+.leaflet-container { touch-action: pan-x pan-y; }
+
 

@@ -1,5 +1,6 @@
 // app/map/page.tsx
 'use client';
+import 'leaflet/dist/leaflet.css';   
 export const dynamic = 'force-dynamic'; // ← 追加：/map は常に動的レンダー
 
 import { useEffect, useMemo, useState } from 'react';
