@@ -1,16 +1,12 @@
 // app/map/page.tsx
 'use client';
+export const dynamic = 'force-dynamic'; // ← 追加：/map は常に動的レンダー
 
 import { useEffect, useMemo, useState } from 'react';
 import dynamicImport from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import ClusterLayer from '@/components/ClusterLayer';
-import FilterPanel from '@/components/FilterPanel';
-import PlacePanel from '@/components/PlacePanel';
-import { loadAllPlaces, type Place, type CityIndex } from '@/utils/loadPlaces';
-
-// react-leaflet は SSR させない
+// react-leaflet / Leaflet を含むものは SSR させない
 const MapContainer = dynamicImport(
   () => import('react-leaflet').then((m) => m.MapContainer),
   { ssr: false }
@@ -19,6 +15,14 @@ const TileLayer = dynamicImport(
   () => import('react-leaflet').then((m) => m.TileLayer),
   { ssr: false }
 );
+// ★ ClusterLayer も動的 import（ssr:false）
+const ClusterLayer = dynamicImport(() => import('@/components/ClusterLayer'), {
+  ssr: false,
+});
+
+import FilterPanel from '@/components/FilterPanel';
+import PlacePanel from '@/components/PlacePanel';
+import { loadAllPlaces, type Place, type CityIndex } from '@/utils/loadPlaces';
 
 const tileURL =
   process.env.NEXT_PUBLIC_MAP_TILES_URL ||
@@ -26,20 +30,18 @@ const tileURL =
 const tileAttr =
   '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
-// FilterPanel が期待する UI フィルタ型（Set で保持）
 type UIFilters = {
   coins: Set<string>;
   categories: Set<string>;
   city: string | null;
 };
 
-// Place を URL 用の一意キーに
 const citySlug = (v?: string | null) =>
   (v ?? 'city').toLowerCase().replace(/\s+/g, '-');
 const placeKey = (p: Place) => `${citySlug(p.city)}:${p.id}`;
 
 export default function MapPage() {
-  // SSR/SSG で Leaflet を触らない
+  // サーバ実行時は描画しない（安全ガード）
   if (typeof window === 'undefined') return null;
 
   const router = useRouter();
@@ -50,7 +52,7 @@ export default function MapPage() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Place | null>(null);
 
-  // URL → フィルタ初期値
+  // URL → 初期フィルタ
   const [flt, setFlt] = useState<UIFilters>(() => {
     const coins = new Set((sp.get('coins') ?? '').split(',').filter(Boolean));
     const cats = new Set((sp.get('cats') ?? '').split(',').filter(Boolean));
@@ -58,7 +60,7 @@ export default function MapPage() {
     return { coins, categories: cats, city };
   });
 
-  // Leaflet デフォルトアイコン
+  // Leaflet デフォルトアイコンの設定はクライアントで
   useEffect(() => {
     (async () => {
       const L = (await import('leaflet')).default;
@@ -70,7 +72,7 @@ export default function MapPage() {
     })();
   }, []);
 
-  // データ読み込み（places）
+  // places 読み込み
   useEffect(() => {
     (async () => {
       setLoading(true);
@@ -80,7 +82,7 @@ export default function MapPage() {
     })();
   }, []);
 
-  // 都市インデックス（FilterPanel 用）
+  // 都市一覧（FilterPanel 用）
   useEffect(() => {
     (async () => {
       try {
@@ -108,14 +110,14 @@ export default function MapPage() {
     });
   }, [places, flt]);
 
-  // onSelect 用：id → Place の逆引き
+  // id → Place 逆引き
   const idMap = useMemo(() => {
     const m = new Map<string, Place>();
     for (const p of filtered) m.set(placeKey(p), p);
     return m;
   }, [filtered]);
 
-  // URL 同期（シェア用）
+  // URL 同期
   useEffect(() => {
     const q = new URLSearchParams();
     if (flt.coins.size) q.set('coins', Array.from(flt.coins).join(','));
@@ -124,7 +126,7 @@ export default function MapPage() {
     router.replace(`/map${q.toString() ? `?${q}` : ''}`);
   }, [flt, router]);
 
-  // FilterPanel に渡す候補
+  // FilterPanel 候補
   const coinOptions = useMemo(() => {
     const s = new Set<string>();
     for (const p of places) for (const c of p.coins ?? []) s.add(c);
@@ -137,7 +139,7 @@ export default function MapPage() {
     return Array.from(s).sort();
   }, [places]);
 
-  // モーダル開閉（id で受ける：ClusterLayer の型に合わせる）
+  // モーダル開閉
   const openById = (id: string) => {
     const p = idMap.get(id);
     if (!p) return;
@@ -146,7 +148,6 @@ export default function MapPage() {
     q.set('select', id);
     router.replace(`/map?${q}`);
   };
-
   const closePlace = () => {
     setSelected(null);
     const q = new URLSearchParams(window.location.search);
@@ -156,7 +157,7 @@ export default function MapPage() {
 
   return (
     <div style={{ height: 'calc(100vh - 52px)', width: '100%', position: 'relative' }}>
-      {/* フィルタ（必須プロップを全部渡す） */}
+      {/* フィルタ */}
       <div className="absolute left-3 top-3 z-[1000]">
         <FilterPanel
           coins={coinOptions}
@@ -174,7 +175,7 @@ export default function MapPage() {
         {!loading && <ClusterLayer points={filtered} onSelect={openById} />}
       </MapContainer>
 
-      {/* 詳細モーダル（PlacePanel の props 仕様に合わせる） */}
+      {/* 詳細モーダル */}
       {selected && (
         <PlacePanel
           place={selected}
