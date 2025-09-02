@@ -181,7 +181,7 @@ export default function MapPage() {
         <PlacePanel
           place={selected}
           all={places}
-          mapCenter={[selected.lat, selected.lon] as [number, number]}
+          mapCenter={[selected.lat, selected.lng] as [number, number]}
           onClose={closePlace}
           onSelect={openById}
         />
