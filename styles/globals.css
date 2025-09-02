@@ -19,3 +19,18 @@ a{color:inherit}
 
 a.brand { text-decoration: none;}
 
+/* --- Leaflet fix: Next.js のグローバル img スタイルでタイルが縮む問題 --- */
+.leaflet-container img {
+  max-width: none !important;
+  max-height: none !important;
+}
+.leaflet-container .leaflet-tile {
+  width: 256px !important;
+  height: 256px !important;
+}
+/* iOS のスクロール系挙動の安定化（任意） */
+.leaflet-container {
+  touch-action: pan-x pan-y;
+}
+
+

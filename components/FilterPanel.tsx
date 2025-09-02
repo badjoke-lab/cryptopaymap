@@ -1,27 +1,155 @@
 'use client';
-import * as React from 'react';
-import type { CityIndex } from '@/utils/loadPlaces';
-export default function FilterPanel({ coins, categories, cities, value, onChange, onClose }:
-  { coins:string[]; categories:string[]; cities:CityIndex[]; value:{coins:Set<string>;categories:Set<string>;city:string|null}; onChange:(v:any)=>void; onClose:()=>void; }){
-  const toggle = (set:Set<string>, v:string)=>{ const n=new Set(set); if(n.has(v)) n.delete(v); else n.add(v);
-    onChange({ ...value, coins: set===value.coins? n : value.coins, categories: set===value.categories? n : value.categories, city: value.city }); };
-  const setCity=(c:string)=>onChange({ ...value, city: c||null });
-  return (<div style={{position:'absolute',top:64,left:12,zIndex:1300,background:'#fff',border:'1px solid #ddd',borderRadius:12,padding:12,width:300,boxShadow:'0 6px 24px rgba(0,0,0,.12)'}}>
-    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}><b>Filters</b><button onClick={onClose} className="badge">Close</button></div>
-    <div style={{marginBottom:8}}><div style={{fontWeight:600,marginBottom:4}}>Coins</div><div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-      {coins.map(c=>(<label key={c} style={{fontSize:14}}><input type="checkbox" checked={value.coins.has(c)} onChange={()=>toggle(value.coins,c)}/> {c}</label>))}
-    </div></div>
-    <div style={{marginBottom:8}}><div style={{fontWeight:600,marginBottom:4}}>Category</div><div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
-      {categories.map(cat=>(<label key={cat} style={{fontSize:14}}><input type="checkbox" checked={value.categories.has(cat)} onChange={()=>toggle(value.categories,cat)}/> {cat}</label>))}
-    </div></div>
-    <div style={{marginBottom:8}}><div style={{fontWeight:600,marginBottom:4}}>City</div>
-      <select value={value.city ?? ''} onChange={e=>setCity(e.target.value)} style={{width:'100%',padding:'6px',borderRadius:8,border:'1px solid #ddd'}}>
-        <option value=''>All cities</option>
-        {cities.map(c=>(<option key={c.path} value={c.city}>{c.city} ({c.country})</option>))}
-      </select>
+
+import { useMemo, useState } from 'react';
+
+export type CityIndex = {
+  city: string;
+  country: string;
+  code?: string;
+};
+
+export type UIFilters = {
+  coins: Set<string>;
+  categories: Set<string>;
+  city: string | null;
+};
+
+type Props = {
+  /** チェック可能なコイン一覧（例: ["BTC","ETH","USDT"]） */
+  coins: string[];
+  /** チェック可能なカテゴリ一覧（OSMタグ由来の文字列） */
+  categories: string[];
+  /** 都市セレクト用の一覧 */
+  cities: CityIndex[];
+  /** 現在の選択状態（Set を受け取る） */
+  value: UIFilters;
+  /** 値が変わったら上位に通知 */
+  onChange: (v: UIFilters) => void;
+  /** パネルを閉じた時に（必要なら）呼ばれる */
+  onClose?: () => void;
+};
+
+/**
+ * Map 左上のフィルタ UI。
+ * 初期状態は「閉じる」= false。ボタンで開閉します。
+ */
+export default function FilterPanel({
+  coins,
+  categories,
+  cities,
+  value,
+  onChange,
+  onClose,
+}: Props) {
+  // ★ 初期は閉じておく
+  const [open, setOpen] = useState(false);
+
+  // 表示用にソート
+  const sortedCoins = useMemo(
+    () => [...new Set(coins.map((c) => c.toUpperCase()))].sort(),
+    [coins]
+  );
+  const sortedCats = useMemo(() => [...categories].sort(), [categories]);
+  const sortedCities = useMemo(
+    () => [...cities].sort((a, b) => a.city.localeCompare(b.city)),
+    [cities]
+  );
+
+  const toggleCoin = (c: string) => {
+    const next = new Set(value.coins);
+    if (next.has(c)) next.delete(c);
+    else next.add(c);
+    onChange({ ...value, coins: next });
+  };
+
+  const toggleCat = (cat: string) => {
+    const next = new Set(value.categories);
+    if (next.has(cat)) next.delete(cat);
+    else next.add(cat);
+    onChange({ ...value, categories: next });
+  };
+
+  const setCity = (city: string) => {
+    onChange({ ...value, city: city || null });
+  };
+
+  if (!open) {
+    return (
+      <button
+        className="rounded-md border px-3 py-1 bg-white shadow"
+        onClick={() => setOpen(true)}
+        aria-label="Open filters"
+      >
+        Filters
+      </button>
+    );
+  }
+
+  return (
+    <div className="rounded-lg bg-white p-3 shadow-lg w-[340px] max-h-[80vh] overflow-auto">
+      <div className="flex items-center justify-between mb-2">
+        <strong>Filters</strong>
+        <button
+          className="text-sm underline"
+          onClick={() => {
+            setOpen(false);
+            onClose?.();
+          }}
+        >
+          Close
+        </button>
+      </div>
+
+      {/* Coins */}
+      <section className="mb-3">
+        <div className="font-semibold mb-1">Coins</div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+          {sortedCoins.map((c) => (
+            <label key={c} className="inline-flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={value.coins.has(c)}
+                onChange={() => toggleCoin(c)}
+              />
+              <span>{c}</span>
+            </label>
+          ))}
+        </div>
+      </section>
+
+      {/* Category */}
+      <section className="mb-3">
+        <div className="font-semibold mb-1">Category</div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-2">
+          {sortedCats.map((cat) => (
+            <label key={cat} className="inline-flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={value.categories.has(cat)}
+                onChange={() => toggleCat(cat)}
+              />
+              <span>{cat}</span>
+            </label>
+          ))}
+        </div>
+      </section>
+
+      {/* City */}
+      <section className="mb-1">
+        <div className="font-semibold mb-1">City</div>
+        <select
+          className="w-full border rounded-md px-2 py-1 bg-white"
+          value={value.city ?? ''}
+          onChange={(e) => setCity(e.target.value)}
+        >
+          <option value="">All</option>
+          {sortedCities.map((c) => (
+            <option key={`${c.country}:${c.city}`} value={c.city}>
+              {c.city} {c.country ? `(${c.country})` : ''}
+            </option>
+          ))}
+        </select>
+      </section>
     </div>
-    <div style={{display:'flex',gap:8,justifyContent:'flex-end'}}>
-      <button onClick={()=>onChange({ coins: new Set(coins), categories: new Set(), city: null })} className="badge">Reset</button>
-      <button onClick={onClose} className="badge">Apply</button>
-    </div>
-  </div>); }
+  );
+}
