@@ -1,3 +1,4 @@
+// app/map/page.tsx
 'use client';
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -109,7 +110,7 @@ export default function MapPage() {
     });
   }, [places, flt]);
 
-  // onSelect のために id→Place の逆引きマップを用意
+  // onSelect 用：id → Place の逆引き
   const idMap = useMemo(() => {
     const m = new Map<string, Place>();
     for (const p of filtered) m.set(placeKey(p), p);
@@ -125,6 +126,19 @@ export default function MapPage() {
     router.replace(`/map${q.toString() ? `?${q}` : ''}`);
   }, [flt, router]);
 
+  // FilterPanel に渡す候補
+  const coinOptions = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of places) for (const c of p.coins ?? []) s.add(c);
+    return Array.from(s).sort();
+  }, [places]);
+
+  const categoryOptions = useMemo(() => {
+    const s = new Set<string>();
+    for (const p of places) if (p.category) s.add(p.category);
+    return Array.from(s).sort();
+  }, [places]);
+
   // モーダル開閉（id で受ける：ClusterLayer の型に合わせる）
   const openById = (id: string) => {
     const p = idMap.get(id);
@@ -134,6 +148,7 @@ export default function MapPage() {
     q.set('select', id);
     router.replace(`/map?${q}`);
   };
+
   const closePlace = () => {
     setSelected(null);
     const q = new URLSearchParams(window.location.search);
@@ -146,8 +161,8 @@ export default function MapPage() {
       {/* フィルタ（必須プロップを全部渡す） */}
       <div className="absolute left-3 top-3 z-[1000]">
         <FilterPanel
-          coins={Array.from(new Set(places.flatMap((p) => p.coins ?? []))).sort()}
-          categories={Array.from(new Set(places.map((p) => p.category).filter(Boolean) as string[])).sort()}
+          coins={coinOptions}
+          categories={categoryOptions}
           cities={cities}
           value={flt}
           onChange={setFlt}
@@ -161,8 +176,10 @@ export default function MapPage() {
         {!loading && <ClusterLayer points={filtered} onSelect={openById} />}
       </MapContainer>
 
-      {/* 詳細モーダル */}
-      <PlacePanel open={!!selected} place={selected} onClose={closePlace} />
+      {/* 詳細モーダル（選択時のみ描画） */}
+      {selected && (
+        <PlacePanel open={true} place={selected} onClose={closePlace} />
+      )}
     </div>
   );
 }
