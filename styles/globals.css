@@ -1,36 +1,33 @@
-/* ========== Base ========== */
+/* ===== Base ===== */
 * { box-sizing: border-box; }
-html, body { height: 100%; }
+html, body, #__next { height: 100%; }
 body {
   margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";
   color: #111;
   background: #fff;
 }
 a { color: inherit; text-decoration: none; }
 
-/* ========== Header (Nav) ========== */
+/* ===== Header (Nav) ===== */
 .nav { position: sticky; top: 0; z-index: 2000; background: #fff; border-bottom: 1px solid #eee; }
 .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; gap: 12px; align-items: center; padding: 10px 12px; }
 .nav .brand { font-weight: 800; font-size: 22px; margin-right: auto; }
 .nav a.link { padding: 6px 10px; border-radius: 8px; color: #111; }
 .nav a.link.active { background: #eef2ff; border: 1px solid #c7d2fe; }
 
-/* Mobile header tweaks */
 @media (max-width: 640px) {
   .nav-inner { flex-wrap: wrap; gap: 6px 8px; padding: 8px 10px; }
   .nav .brand { flex: 1 0 100%; font-size: 18px; margin-right: 0; }
   .nav a.link { padding: 6px 10px; font-size: 14px; }
 }
 
-/* ========== Footer & Layout ========== */
+/* ===== Layout / Footer ===== */
 .container { max-width: 1100px; margin: 0 auto; padding: 12px; }
 .footer { border-top: 1px solid #eee; padding: 10px 12px; color: #666; font-size: 12px; }
 .badge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid #ddd; background: #fff; }
 
-/* ========== Filter Panel ========== */
-/* 見た目のみ。開閉のロジックは TSX 側 */
+/* ===== Filter Toggle (見た目だけ) ===== */
 .filter-toggle {
   position: absolute;
   left: 12px; top: 12px; z-index: 1000;
@@ -39,66 +36,21 @@ a { color: inherit; text-decoration: none; }
   box-shadow: 0 2px 10px rgba(0,0,0,.07);
   cursor: pointer;
 }
-.filter-panel {
-  position: absolute;
-  left: 12px; top: 12px; z-index: 1001;
-  width: min(92vw, 340px);
-  max-height: calc(100vh - 24px);
-  overflow: auto;
-  padding: 12px;
-  border: 1px solid #e5e7eb; background: #fff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,.08);
-}
-.filter-panel h4 { margin: 8px 0 6px; font-size: 14px; color: #374151; }
-.filter-row { display: flex; flex-wrap: wrap; gap: 6px 10px; }
-.chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 6px 10px; border-radius: 999px; border: 1px solid #e5e7eb; background: #fff;
-  font-size: 12px;
-}
-.select { width: 100%; padding: 8px; border: 1px solid #e5e7eb; border-radius: 8px; }
 
-/* ========== Leaflet / Map fixes ========== */
-/* Tailwind/Reset が Leaflet 内の img に当たってタイルが縮むのを防ぐ */
+/* ===== Leaflet / Map 最小限の安全オーバーライド ===== */
+/* Tailwind の preflight（img{max-width:100%}）を打ち消す */
 .leaflet-container img,
-.leaflet-pane img,
-.leaflet-marker-icon,
-.leaflet-tile,
-.leaflet-shadow-pane img {
+.leaflet-container .leaflet-tile {
   max-width: none !important;
   max-height: none !important;
+  border: 0;
+  padding: 0;
+  margin: 0;
 }
 
-/* タイルの白帯対策（サイズ固定＋インライン隙間除去＋GPU hack） */
-.leaflet-container .leaflet-tile {
-  width: 256px !important;
-  height: 256px !important;
-  display: block;
-  backface-visibility: hidden;
-  transform: translateZ(0);
-}
-
-/* パン/ピンチの挙動安定化 & 背景色（読み込み中の見た目） */
+/* 余計な強制サイズは入れない（ここが壊しポイントだった） */
 .leaflet-container {
   touch-action: pan-x pan-y;
   outline: none;
-  background: #f8fafb;
+  background: #f8fafb; /* 読み込み中の背景だけ */
 }
-
-/* マーカー画像の落下に備えて寸法を明示（本筋は JS で iconUrl を指定） */
-.leaflet-marker-icon {
-  width: 25px; height: 41px;
-  object-fit: contain;
-  image-rendering: auto;
-}
-.leaflet-marker-shadow {
-  width: 41px; height: 41px;
-  object-fit: contain;
-}
-
-/* ポップアップ微調整（任意） */
-.leaflet-popup-content { margin: 8px 12px; }
-
-/* ========== Utilities ========== */
-.hidden { display: none !important; }
