@@ -1,0 +1,30 @@
+/* app/about/page.module.css */
+.wrap{max-width:960px;margin:0 auto;padding:24px 24px 48px}
+.hero{margin-bottom:16px}
+.h1{font-size:32px;font-weight:800;margin:0 0 6px}
+.lead{font-size:16px;color:#111827;margin:0 0 8px;line-height:1.5}
+.ctaRow{display:flex;gap:10px;flex-wrap:wrap;margin:8px 0 6px}
+.btnPrimary{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:10px;border:1px solid #1f2937;background:#111827;color:#fff;text-decoration:none;font-weight:600;font-size:14px}
+.btnPrimary:hover{background:#0f172a}
+.btnGhost{display:inline-flex;align-items:center;justify-content:center;padding:8px 14px;border-radius:10px;border:1px solid #e5e7eb;background:#fff;color:#111827;text-decoration:none;font-weight:600;font-size:14px}
+.btnGhost:hover{background:#f9fafb}
+.link{text-decoration:underline;color:#111827}
+.note{font-size:12px;color:#6b7280;margin:4px 0 0}
+
+.section{margin:20px 0 26px}
+.h2{font-size:18px;font-weight:700;margin:0 0 10px}
+.list{margin:0;padding:0 0 0 18px}
+.sublist{margin:6px 0 0 18px;padding:0}
+.text{margin:0;color:#111827}
+.muted{color:#6b7280}
+
+/* ← 修正：ローカルクラス .wrap を含めてから :global(code) を指定 */
+.wrap :global(code){
+  background:#f3f4f6;border:1px solid #e5e7eb;border-radius:6px;
+  padding:1px 4px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px
+}
+
+.ctaBlock{display:flex;align-items:center;justify-content:space-between;gap:12px;border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:12px 14px}
+.ctaTitle{margin:0;font-weight:700}
+.foot{margin-top:28px;display:flex;gap:8px;align-items:center;font-size:12px;color:#6b7280}
+.sep{margin:0 8px;color:#9ca3af}

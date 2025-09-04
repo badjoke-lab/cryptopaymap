@@ -1,0 +1,43 @@
+.wrap{max-width:960px;margin:0 auto;padding:20px 24px 40px}
+.head{margin-bottom:8px}
+.titleRow{display:flex;align-items:baseline;gap:12px;justify-content:space-between;flex-wrap:wrap}
+.h1{font-size:28px;font-weight:800;margin:0}
+.sub{margin:6px 0 0;font-size:13px;color:#374151}
+.muted{color:#6b7280}
+.alink{color:#111827;text-decoration:underline}
+.sep{margin:0 8px;color:#9ca3af}
+
+/* coin switcher */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border:1px solid #e5e7eb;border-radius:9999px;background:#fff;text-decoration:none;color:#111827;font-size:12px}
+.chip:hover{background:#f9fafb}
+.chipActive{box-shadow:0 0 0 2px #3b82f6 inset}
+.more{font-size:12px;color:#6b7280;padding:6px 4px}
+
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:18px 0 22px}
+.card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;padding:14px 16px}
+.ctitle{font-size:12px;color:#6b7280}
+.cnum{font-size:28px;font-weight:800;line-height:1.2;margin-top:4px}
+.slash{color:#9ca3af;padding:0 6px}
+.cmuted{font-size:12px;color:#9ca3af;margin-top:4px}
+
+.section{margin:20px 0 26px}
+.h2{font-size:16px;font-weight:700;margin:0 0 8px}
+
+.tableWrap{border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;background:#fff}
+.table{width:100%;border-collapse:collapse}
+.th,.td{padding:10px 12px;font-size:14px}
+.th{background:#f8fafc;font-weight:600;border-bottom:1px solid #eef2f7}
+.td{border-top:1px solid #f3f4f6}
+.left{text-align:left}
+.right{text-align:right}
+.tr:hover .td{background:#fafafa}
+
+.news{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.newsItem{border:1px solid #e5e7eb;border-radius:12px;padding:12px 14px;background:#fff}
+.ntitle{display:inline-block;font-weight:700;text-decoration:none;color:#111827}
+.ntitle:hover{text-decoration:underline}
+.nsub{font-size:12px;color:#6b7280;margin-top:4px}
+.ndate{font-size:11px;color:#9ca3af;margin-top:2px}
+
+.foot{margin-top:28px;display:flex;gap:8px;align-items:center;font-size:12px;color:#6b7280}

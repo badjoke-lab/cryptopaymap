@@ -3,16 +3,31 @@
     {
       "id": "topic_ny_crypto_donations",
       "title": "NY museum accepts crypto donations",
-      "coins": ["BTC", "ETH", "USDC"],
-      "cities": ["New York"],
-      "articles": ["buffalo-history-museum-crypto-donations"]
+      "coins": [
+        "BTC",
+        "ETH",
+        "USDC"
+      ],
+      "cities": [
+        "New York"
+      ],
+      "articles": [
+        "buffalo-history-museum-crypto-donations"
+      ]
     },
     {
       "id": "topic_tokyo_cafe_btc",
       "title": "DOT RAW café accepts Bitcoin in Tokyo",
-      "coins": ["BTC"],
-      "cities": ["Tokyo"],
-      "articles": ["tokyo-dot-raw-cafe-accepts-bitcoin"]
+      "coins": [
+        "BTC"
+      ],
+      "cities": [
+        "Tokyo"
+      ],
+      "articles": [
+        "tokyo-dot-raw-cafe-accepts-bitcoin"
+      ]
     }
-  ]
+  ],
+  "generated_at": "2025-09-03T16:50:46.935Z"
 }
