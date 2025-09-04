@@ -1,78 +1,57 @@
-'use client';
+// app/discover/page.tsx
+import Link from "next/link";
+import { getHotTopics } from "@/lib/discoverAdapter";
 
-import { useEffect, useState } from 'react';
+export const revalidate = 600; // 10分ISR
 
-type Topic = {
-  id: string;
-  title: string;
-  coins: string[];
-  city?: string;
-  count?: number;
-};
-
-type HotTopics = {
-  topics: Topic[];
-};
-
-export default function DiscoverPage() {
-  const [topics, setTopics] = useState<Topic[] | null>(null); // null=ロード中
-
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        // ビルドスクリプトで生成される集計をクライアントから読む
-        const res = await fetch('/data/aggregates/hot-topics.json', {
-          // Vercel上で最新反映を取りこぼさないようにする
-          cache: 'no-store',
-        });
-        if (!res.ok) throw new Error('fetch failed');
-        const json = (await res.json()) as HotTopics;
-        if (!cancelled) setTopics(json.topics ?? []);
-      } catch {
-        if (!cancelled) setTopics([]); // 失敗時は空扱い
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+export default async function DiscoverPage() {
+  const { topics } = await getHotTopics();
 
   return (
-    <div className="p-4">
-      <h1 className="text-4xl font-bold mb-6">Discover</h1>
+    <main style={{ padding: "24px 20px 60px" }}>
+      <h1 style={{ fontSize: 42, fontWeight: 700, margin: "6px 0 24px" }}>Discover</h1>
 
-      <h2 className="text-2xl font-semibold mb-3">Hot Topics</h2>
+      <h2 style={{ fontSize: 28, fontWeight: 700, margin: "0 0 14px" }}>Hot Topics</h2>
 
-      {topics === null && <p>Loading…</p>}
-      {topics !== null && topics.length === 0 && <p>No hot topics yet.</p>}
-
-      {topics && topics.length > 0 && (
-        <div className="grid gap-3 md:grid-cols-2">
-          {topics.map((t) => (
-            <a
-              key={t.id}
-              href={`/discover?tab=news&topic=${encodeURIComponent(t.id)}`}
-              className="block rounded-xl border bg-white p-4 shadow hover:shadow-md transition"
+      {topics.length === 0 ? (
+        <p>No hot topics yet.</p>
+      ) : (
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+            gap: 16,
+            marginTop: 8,
+          }}
+        >
+          {topics.map((t, i) => (
+            <Link
+              key={i}
+              href={t.url}
+              style={{
+                display: "block",
+                border: "1px solid #e5e7eb",
+                borderRadius: 12,
+                padding: 14,
+                background: "#fff",
+                textDecoration: "none",
+              }}
             >
-              <div className="text-xl font-semibold">{t.title}</div>
-              <div className="text-sm text-gray-600 mt-1">
-                {t.coins.join(', ')}
-                {t.city ? ` · ${t.city}` : ''}
-                {typeof t.count === 'number' ? ` · ${t.count} pubs` : ''}
-              </div>
-            </a>
+              <div style={{ fontWeight: 700, color: "#111827", lineHeight: 1.25 }}>{t.title}</div>
+              {t.subtitle && <div style={{ marginTop: 6, color: "#6b7280", fontSize: 14 }}>{t.subtitle}</div>}
+              {t.published_at && (
+                <div style={{ marginTop: 6, color: "#9ca3af", fontSize: 12 }}>
+                  {new Date(t.published_at).toLocaleString()}
+                </div>
+              )}
+            </Link>
           ))}
         </div>
       )}
 
-      <p className="text-sm text-gray-500 mt-10">
-        Data sources: OpenStreetMap contributors. Use at your own risk. No
-        warranty.
+      <p style={{ marginTop: 28, color: "#6b7280" }}>
+        Data sources: OpenStreetMap contributors. Use at your own risk. No warranty.
       </p>
-    </div>
+    </main>
   );
 }
-
-// SSRは使わずクライアント描画
-export const dynamic = 'force-dynamic';
