@@ -1,0 +1,90 @@
+{
+  "BTC": {
+    "total": 15320,
+    "added_30d": 720,
+    "top_cities": [
+      {
+        "rank": 1,
+        "city": "Tokyo",
+        "country": "Japan",
+        "count": 1320,
+        "added_30d": 70,
+        "share": "8.6%"
+      },
+      {
+        "rank": 2,
+        "city": "San Salvador",
+        "country": "El Salvador",
+        "count": 973,
+        "added_30d": 65,
+        "share": "6.3%"
+      }
+    ]
+  },
+  "ETH": {
+    "total": 10450,
+    "added_30d": 540,
+    "top_cities": [
+      {
+        "rank": 1,
+        "city": "Berlin",
+        "country": "Germany",
+        "count": 1120,
+        "added_30d": 40,
+        "share": "10.7%"
+      },
+      {
+        "rank": 2,
+        "city": "New York",
+        "country": "USA",
+        "count": 880,
+        "added_30d": 38,
+        "share": "8.4%"
+      }
+    ]
+  },
+  "USDT": {
+    "total": 7620,
+    "added_30d": 480,
+    "top_cities": [
+      {
+        "rank": 1,
+        "city": "Bangkok",
+        "country": "Thailand",
+        "count": 1150,
+        "added_30d": 55,
+        "share": "15.1%"
+      },
+      {
+        "rank": 2,
+        "city": "Manila",
+        "country": "Philippines",
+        "count": 980,
+        "added_30d": 50,
+        "share": "12.8%"
+      }
+    ]
+  },
+  "USDC": {
+    "total": 5280,
+    "added_30d": 210,
+    "top_cities": [
+      {
+        "rank": 1,
+        "city": "New York",
+        "country": "USA",
+        "count": 2100,
+        "added_30d": 30,
+        "share": "39.8%"
+      },
+      {
+        "rank": 2,
+        "city": "Toronto",
+        "country": "Canada",
+        "count": 620,
+        "added_30d": 22,
+        "share": "11.7%"
+      }
+    ]
+  }
+}

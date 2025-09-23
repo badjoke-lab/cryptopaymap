@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import 'leaflet/dist/leaflet.css';
+
+/* ---------- Leaflet pane ordering ---------- */
+.leaflet-tile-pane      { z-index: 200 !important; }
+.leaflet-overlay-pane   { z-index: 400 !important; }
+.leaflet-marker-pane    { z-index: 600 !important; }
+.leaflet-popup-pane     { z-index: 700 !important; }
+.leaflet-top, .leaflet-bottom { z-index: 800 !important; }
+
+/* ---------- Modal ---------- */
+.cpm-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 2000 !important;
+}
+.cpm-modal {
+  position: fixed; right: 0; top: 0;
+  height: 100vh; width: min(420px,100vw);
+  background:#fff; z-index: 2100 !important;
+  display:flex; flex-direction:column;
+  box-shadow:-14px 0 40px rgba(0,0,0,.25);
+}
+.cpm-modal__header {
+  padding: 14px 16px;
+  border-bottom: 1px solid #eee;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.cpm-modal__body { padding: 12px 16px; overflow:auto; }
+
+/* ---------- Clusters & markers ---------- */
+.cluster-green  { background:#86efac; border:3px solid #22c55e; color:#14532d; }
+.cluster-yellow { background:#fde68a; border:3px solid #f59e0b; color:#713f12; }
+.cluster-orange { background:#fdba74; border:3px solid #f97316; color:#7c2d12; }
+.cluster-red    { background:#fca5a5; border:3px solid #ef4444; color:#7f1d1d; }
+.cluster {
+  border-radius:9999px;
+  width:42px; height:42px;
+  display:grid; place-items:center;
+  font-weight:700;
+  box-shadow:0 2px 6px rgba(0,0,0,.15);
+}
+.marker-dot {
+  width:12px; height:12px;
+  border-radius:9999px;
+  background:#2563eb;
+  border:2px solid #1d4ed8;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+
+/* a11y */
+:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+
+.leaflet-marker-icon,
+.leaflet-marker-shadow {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* ---------- Header / Nav ---------- */
+header,
+[data-site-header] {
+  position: relative;   /* ← fixed/stickyをやめる */
+  width: 100%;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+}
+
+/* 小幅でもリンク欠落を防ぐため横スクロール許可 */
+header nav,
+[data-site-nav] {
+  display: flex; gap: 16px;
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+header nav a,
+[data-site-nav] a {
+  padding: 10px 0;
+}
+
+/* ---------- Map layout ---------- */
+.map-screen {
+  height: 100dvh;   /* シンプルに画面全高 */
+}
+@supports (height: 100svh) {
+  .map-screen { height: 100svh; }
+}
+
+/* ---------- z-index helpers ---------- */
+.z-header{ z-index:50; } .z-fab{ z-index:40; } .z-sheet{ z-index:60; }
+.z-backdrop{ z-index:55; } .z-leaflet{ z-index:30; } .z-credit{ z-index:20; }
+
+/* ---------- Leaflet controls ---------- */
+.leaflet-control-zoom {
+  position: absolute !important;
+  right: 12px !important;
+  bottom: calc(12px + env(safe-area-inset-bottom,0)) !important;
+  top: auto !important; left: auto !important;
+  margin: 0 !important;
+  z-index: 1000 !important;
+}
+
+/* Filters ボタン（カスタムクラス前提） */
+.leaflet-control.custom-filters {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 1000 !important;
+}
+
+/* ---------- Credit badge ---------- */
+.cpm-credit {
+  position:absolute;
+  right: 10px; bottom: 10px;
+  padding: 2px 6px;
+  background: rgba(255,255,255,.85);
+  border-radius: 6px;
+  font-size: 12px;
+}
+
+/* Clamp map while zooming so it can't bleed into the header */
+.map-screen, .map-screen .leaflet-container { overflow: hidden !important; }
+/* 視覚的に区切る（任意） */
+.map-screen { border-top: 1px solid #e5e7eb; }
+
+/* もし map を包む上位が .map-root / .map-container 等なら */
+.map-root, .map-container { overflow: hidden !important; }
+
+/* ヘッダーを必ず最前面に */
+header, [data-site-header]{
+  position: relative;
+  z-index: 5000;          /* ← Leaflet(〜800)より高く */
+  background: #fff;       /* 不透明で重なり時の透け防止 */
+}
+
+/* 地図側は確実にクリップ（念押し） */
+.map-screen, .map-screen .leaflet-container{ overflow: hidden !important; }
+
+:root { --header-h: 56px; } /* 実際のヘッダー高に合わせて調整。不明なら 56px で様子見 */
+
+/* 地図を“ヘッダー下に固定”して、上にはみ出させない */
+.map-screen{
+  position: fixed !important;
+  top: var(--header-h) !important;  /* ←ココで物理的に区切る */
+  left: 0; right: 0; bottom: 0;
+  height: auto !important;          /* 100vh 等を打ち消す */
+  overflow: hidden !important;
+  z-index: 1;                        /* ヘッダーより常に下 */
+}
+.map-screen .leaflet-container{ height: 100% !important; width: 100% !important; }
+

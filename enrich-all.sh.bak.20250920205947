@@ -1,0 +1,224 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ========= 設定 =========
+# ルート（都市JSONが置いてあるディレクトリの親）※public/data/places をデフォルト
+: "${ROOT:=public/data/places}"
+# Nominatim 逆ジオのリクエスト上限（都市ごとに min(未住所件数, MAX_NOMI) を使う）
+: "${MAX_NOMI:=100}"
+# 連続アクセス抑制のウェイト秒
+: "${SLEEP:=2}"
+# User-Agent（OSM/Nominatimのマナー）
+UA='CryptoPayMap/1.0 (contact@example.com)'
+
+# 作業キャッシュ
+CACHE=".cache-enrich"
+mkdir -p "$CACHE"
+
+# ========= 関数 =========
+
+list_targets() {
+  # CITY が指定されていればそれだけ処理。なければ index.json から全都市。
+  local idx="$ROOT/index.json"
+  if [[ -n "${CITY:-}" ]]; then
+    local p="$ROOT/$CITY"
+    [[ -f "$p" ]] && echo "$p"
+    return 0
+  fi
+  [[ -f "$idx" ]] || { echo "index.json not found: $idx" >&2; return 1; }
+  jq -r '.cities[].path' "$idx" | while read -r rel; do
+    [[ -n "$rel" ]] && echo "$ROOT/$rel"
+  done
+}
+
+fetch_overpass_map() {
+  # 入力: $1=都市JSON
+  local src="$1"
+  : > "$CACHE/ids.ql"
+  : > "$CACHE/overpass.ndjson"
+
+  # JSON中の .id が "osm:node:123" / "osm:way:456" / "osm:relation:789" のものだけ抽出
+  jq -r '.[] | .id | capture("osm:(?<t>node|way|relation):(?<i>\\d+)") | "\(.t)(\(.i));"' "$src" \
+    > "$CACHE/ids.ql" || true
+
+  # 200件ずつ分割して Overpass へ
+  split -l 200 "$CACHE/ids.ql" "$CACHE/ids.part." || true
+  shopt -s nullglob
+  for f in "$CACHE"/ids.part.*; do
+    # クエリ生成
+    {
+      echo '[out:json][timeout:60];('
+      sed -n 'p' "$f" | sed 's/^/node(/; s/);$/);/' | sed 's/^node(node/ node(/' > /dev/null
+    } >/dev/null 2>&1
+    # 上の sed はノード以外の型も混ざるためここで再生成
+    # partファイルは "node(123);" などの1行形式なのでそのまま差し込む
+    local body
+    body=$(printf '[out:json][timeout:60];(\n%s\n);\nout tags center;\n' "$(cat "$f")")
+    local resp="$CACHE/resp.$(basename "$f").json"
+    curl -sS -A "$UA" --fail \
+      --data-urlencode "data=${body}" \
+      https://overpass-api.de/api/interpreter \
+      -o "$resp"
+
+    # elements を NDJSON 化して追記
+    jq -e '.elements|type=="array"' "$resp" >/dev/null || continue
+    jq -c '.elements[]?' "$resp" >> "$CACHE/overpass.ndjson"
+    sleep "$SLEEP"
+  done
+  shopt -u nullglob
+
+  # Overpass から拾う追加項目のマップを作る
+  # website / hours / last_verified / 支払いタグ / SNS / phone / cuisine など
+  jq -s '
+    map({
+      key:  ("osm:"+.type+":" + (.id|tostring)),
+      value:{
+        website: (.tags["contact:website"] // .tags.website // .tags.url),
+        hours:   (.tags.opening_hours),
+        last_verified: (.tags["check_date:currency:XBT"] // .tags.check_date),
+        phone: (.tags["contact:phone"] // .tags.phone),
+        instagram: (.tags["contact:instagram"]),
+        twitter: (.tags["contact:twitter"]),
+        cuisine: (.tags.cuisine),
+
+        # 支払い→最終的に .payment.{lightning,onchain,credit_cards,cash} へ
+        _pay: {
+          lightning:       ((.tags["payment:lightning"]//"")|test("^(yes|true)$";"i")),
+          onchain:         (((.tags["payment:onchain"]//.tags["payment:bitcoin"]//"")|test("^(yes|true)$";"i"))),
+          credit_cards:    ((.tags["payment:credit_cards"]//"")|test("^(yes|true)$";"i")),
+          cash:            ((.tags["payment:cash"]//"")|test("^(yes|true)$";"i"))
+        },
+
+        # 元の tags へも残す（UIのバッジ用途）
+        tags: ([
+          (if ((.tags["payment:lightning"]//"")|test("^(yes|true)$";"i")) then "payment:lightning" else empty end),
+          (if ((.tags["payment:onchain"]//.tags["payment:bitcoin"]//"")|test("^(yes|true)$";"i")) then "payment:onchain" else empty end),
+          (if ((.tags["payment:credit_cards"]//"")|test("^(yes|true)$";"i")) then "payment:credit_cards" else empty end),
+          (if ((.tags["payment:cash"]//"")|test("^(yes|true)$";"i")) then "payment:cash" else empty end)
+        ])
+      }
+    })
+    | from_entries
+  ' "$CACHE/overpass.ndjson" > "$CACHE/enrich.map.json"
+}
+
+build_nominatim_map() {
+  # 住所が空のレコードだけ逆ジオ（上限は min(未住所件数, MAX_NOMI)）
+  local step1="$CACHE/step1.json"
+  : > "$CACHE/nomi.ndjson"
+
+  local missing
+  missing="$(jq '[.[] | select((.address//"")|length==0)] | length' "$step1")"
+  local limit="${MAX_NOMI}"
+  if [[ "$missing" -lt "$limit" ]]; then limit="$missing"; fi
+
+  jq -r '.[] | select((.address//"")|length==0) | "\(.lat)\t\(.lng)\t\(.id)"' "$step1" \
+    | head -n "$limit" \
+    | while IFS=$'\t' read -r lat lon oid; do
+        local r="$CACHE/nomi.$(echo "$oid" | tr '/:' '_').json"
+        curl -sS -A "$UA" --fail \
+          "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&addressdetails=1" \
+          -o "$r" || continue
+        jq -e 'has("display_name")' "$r" >/dev/null || continue
+        jq -c --arg id "$oid" '{id:$id, address:(.display_name // "")}' "$r" >> "$CACHE/nomi.ndjson"
+        sleep "$SLEEP"
+      done
+
+  # id→{address} のマップに
+  jq -s 'map({key:.id, value:{address:.address}}) | from_entries' "$CACHE/nomi.ndjson" \
+    > "$CACHE/nomi.map.json"
+}
+
+enrich_one() {
+  local src="$1"
+  echo ">>> $src"
+
+  # 1) Overpassで id→各種付加情報 のマップ
+  fetch_overpass_map "$src"
+
+  # 2) マージ（website/hours/last_verified/tags/SNS/phone など）
+  jq -s '
+    (.[0]) as $base | (.[1]) as $map |
+    $base
+    | map(. as $p | ($map[$p.id] // {}) as $e |
+      . + {
+        website:       (if (($p.website//"")|length>0) then $p.website else ($e.website // $p.website) end),
+        hours:         (if (($p.hours  //"")|length>0) then $p.hours   else ($e.hours   // $p.hours)   end),
+        last_verified: ($p.last_verified // $e.last_verified),
+        phone:         ($p.phone     // $e.phone),
+        instagram:     ($p.instagram // $e.instagram),
+        twitter:       ($p.twitter   // $e.twitter),
+        cuisine:       ($p.cuisine   // $e.cuisine),
+        tags:          (( $p.tags // [] ) + ( $e.tags // [] )),
+        _pay:          ($e._pay // {})
+      })
+  ' "$src" "$CACHE/enrich.map.json" > "$CACHE/step1.json"
+
+  # 3) 住所の逆ジオ（空のものだけ）
+  build_nominatim_map
+  jq -s '
+    (.[0]) as $base | (.[1]) as $nomi |
+    $base
+    | map( if ((.address//"")|length>0) then . else (. + ($nomi[.id] // {})) end )
+  ' "$CACHE/step1.json" "$CACHE/nomi.map.json" > "$CACHE/step2.json"
+
+  # 4) クリーニングと .payment の生成
+  jq '
+    # エントリごとの整形
+    map(
+      if type=="object" then
+        (
+          # website を https:// プレフィクス補正
+          .website |= (
+            if type=="string" and (.|length)>0
+            then ( if test("^https?://") then . else "https://" + . end )
+            else .
+            end
+          )
+          # tags を配列化 + 重複排除
+          | .tags |= (
+              if type=="array" then (unique)
+              elif type=="string" then [ . ]
+              elif . == null then []
+              else .
+              end
+            )
+          # 支払いフラグを .payment に反映
+          | .payment |= (
+              ( .payment // {} ) as $p
+              | ( ._pay // {} ) as $q
+              | {
+                  lightning:    ( ($p.lightning    // false) or ($q.lightning    // false) ),
+                  onchain:      ( ($p.onchain      // false) or ($q.onchain      // false) ),
+                  credit_cards: ( ($p.credit_cards // false) or ($q.credit_cards // false) ),
+                  cash:         ( ($p.cash         // false) or ($q.cash         // false) )
+                }
+            )
+          # 一時項目は削除
+          | del(._pay)
+          # 空文字や空配列のキーを落とす（必要ならコメントアウト）
+          | with_entries(
+              if (.value|type=="string") then
+                (if (.value|gsub("^\\s+|\\s+$";"")|length)==0 then empty else . end)
+              elif (.value|type=="array") then
+                (if ((.value|length)==0) then empty else . end)
+              else
+                .
+              end
+            )
+        )
+      else
+        .
+      end
+    )
+  ' "$CACHE/step2.json" > "$CACHE/step3.json"
+
+  # 5) 上書き
+  mv "$CACHE/step3.json" "$src"
+}
+
+# ========= 実行 =========
+while read -r file; do
+  [[ -f "$file" ]] || continue
+  enrich_one "$file"
+done < <(list_targets)

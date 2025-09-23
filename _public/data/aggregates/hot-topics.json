@@ -1,0 +1,28 @@
+[
+  {
+    "id": "topic-btc-sansalvador",
+    "title": "BTC payments surge in San Salvador",
+    "coins": [
+      "BTC"
+    ],
+    "cities": [
+      "San Salvador"
+    ],
+    "publisher_count": 3,
+    "trend": "+",
+    "last_seen": "2025-09-05"
+  },
+  {
+    "id": "topic-eth-berlin",
+    "title": "ETH payments grow in Berlin",
+    "coins": [
+      "ETH"
+    ],
+    "cities": [
+      "Berlin"
+    ],
+    "publisher_count": 2,
+    "trend": "+",
+    "last_seen": "2025-09-04"
+  }
+]

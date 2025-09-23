@@ -1,0 +1,22 @@
+name: Fetch News
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # 6時間ごと
+  workflow_dispatch: {}
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 18 }
+      - run: npm i node-fetch@2 fast-xml-parser
+      - run: node scripts/news/fetch_articles.js
+      - run: node scripts/news/build_topics.js
+      - run: node scripts/news/build_hot.js
+      - run: |
+          git config user.name "news-bot"
+          git config user.email "bot@example.com"
+          git add public/data/news/articles.json public/data/news/topics.json public/data/aggregates/hot-topics.json
+          git commit -m "chore(news): update data" || echo "no changes"
+          git push

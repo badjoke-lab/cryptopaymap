@@ -1,0 +1,82 @@
+[
+  {
+    "id": "tokyo-satoshi-coffee",
+    "name": "Satoshi Coffee",
+    "address": "1-1-1 Marunouchi, Chiyoda, Tokyo",
+    "website": "https://example.com/satoshi",
+    "coins": [
+      "BTC",
+      "USDT"
+    ],
+    "city": "Tokyo",
+    "country": "Japan",
+    "category": "cafe",
+    "lat": 35.681236,
+    "lng": 139.767125,
+    "last_verified": "2025-08-01"
+  },
+  {
+    "id": "osaka-vitalik-pizza",
+    "name": "Vitalik Pizza",
+    "address": "2-2-2 Umeda, Osaka",
+    "website": "https://example.com/vitalik",
+    "coins": [
+      "ETH",
+      "USDC"
+    ],
+    "city": "Osaka",
+    "country": "Japan",
+    "category": "restaurant",
+    "lat": 34.702485,
+    "lng": 135.495951,
+    "last_verified": "2025-08-01"
+  },
+  {
+    "id": "berlin-chain-store",
+    "name": "Berlin Chain Store",
+    "address": "Alexanderplatz, Berlin",
+    "website": "https://example.com/berlin",
+    "coins": [
+      "ETH",
+      "USDT"
+    ],
+    "city": "Berlin",
+    "country": "Germany",
+    "category": "shop",
+    "lat": 52.52,
+    "lng": 13.405,
+    "last_verified": "2025-08-01"
+  },
+  {
+    "id": "nyc-crypto-deli",
+    "name": "NYC Crypto Deli",
+    "address": "Wall St, New York",
+    "website": "https://example.com/nyc",
+    "coins": [
+      "BTC",
+      "USDC"
+    ],
+    "city": "New York",
+    "country": "USA",
+    "category": "restaurant",
+    "lat": 40.7128,
+    "lng": -74.006,
+    "last_verified": "2025-08-01"
+  },
+  {
+    "id": "bangkok-chain-hub",
+    "name": "Bangkok Chain Hub",
+    "address": "Sukhumvit, Bangkok",
+    "website": "https://example.com/bkk",
+    "coins": [
+      "USDT",
+      "USDC"
+    ],
+    "city": "Bangkok",
+    "country": "Thailand",
+    "category": "shop",
+    "lat": 13.7563,
+    "lng": 100.5018,
+    "last_verified": "2025-08-01"
+  }
+]

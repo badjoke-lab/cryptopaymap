@@ -1,0 +1,78 @@
+{
+  "hot_topics": [
+    {
+      "id": "topic-btc-sansalvador",
+      "title": "BTC payments surge in San Salvador",
+      "coins": [
+        "BTC"
+      ],
+      "cities": [
+        "San Salvador"
+      ],
+      "publisher_count": 3,
+      "trend": "+",
+      "last_seen": "2025-09-05"
+    },
+    {
+      "id": "topic-eth-berlin",
+      "title": "ETH payments grow in Berlin",
+      "coins": [
+        "ETH"
+      ],
+      "cities": [
+        "Berlin"
+      ],
+      "publisher_count": 2,
+      "trend": "+",
+      "last_seen": "2025-09-04"
+    }
+  ],
+  "new_arrivals_30d": [
+    {
+      "name": "New BTC Cafe",
+      "city": "Prague"
+    },
+    {
+      "name": "ETH Hub",
+      "city": "London"
+    }
+  ],
+  "recently_verified_30d": [
+    {
+      "name": "Crypto Bar",
+      "city": "Warsaw"
+    },
+    {
+      "name": "USDT Retail",
+      "city": "Manila"
+    }
+  ],
+  "hot_cities_30d": [
+    {
+      "city": "San Salvador",
+      "added_30d": 120
+    },
+    {
+      "city": "Berlin",
+      "added_30d": 58
+    },
+    {
+      "city": "Bangkok",
+      "added_30d": 42
+    }
+  ],
+  "popular_categories": [
+    {
+      "category": "cafe",
+      "share": "24%"
+    },
+    {
+      "category": "restaurant",
+      "share": "22%"
+    },
+    {
+      "category": "shop",
+      "share": "18%"
+    }
+  ]
+}

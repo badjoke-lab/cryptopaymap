@@ -1,0 +1,16 @@
+{
+  "version":"20250922203959",
+  "files": [
+    {"path":"public/data/places.all.json","sha256":"cff6d008ff90d321c1d73075cbe61246e84db37dc42e5c5938612fa6b48a2ee4"},
+    {"path":"public/data/shards/AR.json","sha256":"a870998a5799a5522fb016b5d7cc7efa4e231a738febbd685081723caeaf4609"},
+    {"path":"public/data/shards/CA.json","sha256":"ee04a6be18631044e4b069ef4f7c0859b57348288aee9c51443048a501da27f9"},
+    {"path":"public/data/shards/DE.json","sha256":"5e18e47fe627691d4a8a9669df3089166343dc1057ab0ed4ae0da5a7d47da0a8"},
+    {"path":"public/data/shards/FR.json","sha256":"bea59d5d4882994581598c1571a32278e42f255a39153a47e6b75eee42ad36ee"},
+    {"path":"public/data/shards/GB.json","sha256":"496deb34a316f12e3c514ac9bcb9b8f5965651b27e611e6591fb90fd9cb50916"},
+    {"path":"public/data/shards/JP.json","sha256":"bf3bcd7f56b77a2aafee6f82b2cafb2819975c6d11acdc9d4839d2249beeccfb"},
+    {"path":"public/data/shards/MX.json","sha256":"22c24660e8f7671f27dd9abc47302d6099109a9694ff59e83ff00544994d0bbe"},
+    {"path":"public/data/shards/SV.json","sha256":"fc2210d8fbeea25b23b4844264c83def975556ac670159137e51c7495eb270ba"},
+    {"path":"public/data/shards/TH.json","sha256":"a938b574ff57d1389fc8d3f3ffa2bfa38b8426fc59a0393b492a5a732288fb2c"},
+    {"path":"public/data/shards/US.json","sha256":"eacdf6bd9101294dd850cfc8d0360eeac81e8b4c7789a640c6bfd14f48e7b9e5"}
+  ]
+}

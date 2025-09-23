@@ -1,0 +1,760 @@
++ set -euo pipefail
++ UA='CryptoPayMap/1.0 (contact@example.com)'
++ ROOT=public/data/places
++ CACHE=.cache-enrich
++ SLEEP=2
++ mkdir -p .cache-enrich
++ list_targets
++ local idx=public/data/places/index.json
++ '[' -f public/data/places/index.json ']'
++ read -r file
++ jq -r '.cities[].path' public/data/places/index.json
++ read -r rel
++ '[' -n de/berlin/berlin.json ']'
++ echo public/data/places/de/berlin/berlin.json
++ read -r rel
++ '[' -n us/new-york/new-york.json ']'
++ echo public/data/places/us/new-york/new-york.json
++ read -r rel
++ '[' -f public/data/places/de/berlin/berlin.json ']'
++ '[' -n sv/san-salvador/san-salvador.json ']'
++ echo public/data/places/sv/san-salvador/san-salvador.json
++ enrich_one public/data/places/de/berlin/berlin.json
++ read -r rel
++ '[' -n gb/london/london.json ']'
++ local src=public/data/places/de/berlin/berlin.json
++ echo public/data/places/gb/london/london.json
++ read -r rel
++ echo '>>> public/data/places/de/berlin/berlin.json'
+>>> public/data/places/de/berlin/berlin.json
++ fetch_overpass_map public/data/places/de/berlin/berlin.json
++ '[' -n jp/tokyo/tokyo.json ']'
++ echo public/data/places/jp/tokyo/tokyo.json
++ read -r rel
++ local src=public/data/places/de/berlin/berlin.json
++ '[' -n fr/paris/paris.json ']'
++ jq -r '.[] | .id | capture("osm:(?<t>node|way|relation):(?<i>\\d+)") | "\(.t)(\(.i));"' public/data/places/de/berlin/berlin.json
++ echo public/data/places/fr/paris/paris.json
++ read -r rel
++ '[' -n us/san-francisco/san-francisco.json ']'
++ echo public/data/places/us/san-francisco/san-francisco.json
++ read -r rel
++ '[' -n us/los-angeles/los-angeles.json ']'
++ echo public/data/places/us/los-angeles/los-angeles.json
++ read -r rel
++ '[' -n us/miami/miami.json ']'
++ echo public/data/places/us/miami/miami.json
++ read -r rel
++ '[' -n mx/mexico-city/mexico-city.json ']'
++ echo public/data/places/mx/mexico-city/mexico-city.json
++ read -r rel
++ '[' -n ca/toronto/toronto.json ']'
++ echo public/data/places/ca/toronto/toronto.json
++ read -r rel
++ '[' -n ar/buenos-aires/buenos-aires.json ']'
++ echo public/data/places/ar/buenos-aires/buenos-aires.json
++ read -r rel
++ '[' -n th/bangkok/bangkok.json ']'
++ echo public/data/places/th/bangkok/bangkok.json
++ read -r rel
++ :
++ '[' '!' -s .cache-enrich/ids.ql ']'
++ split -l 200 .cache-enrich/ids.ql .cache-enrich/ids.part.
++ shopt -s nullglob
++ for f in '"$CACHE"/ids.part.*'
+++ cat .cache-enrich/ids.part.aa
++ printf '[out:json][timeout:60];(\n%s\n);\nout tags center;\n' 'node(303319474);
+node(318526010);
+node(318704396);
+node(415551815);
+node(941439093);
+node(1263799847);
+node(1372898402);
+node(1765786432);
+node(2521156202);
+node(2537196472);
+node(2641068367);
+node(2935266552);
+node(3036860727);
+node(3037805664);
+node(3039050673);
+node(3039051050);
+node(3675739247);
+node(3734954314);
+node(3747274058);
+node(3937876098);
+node(4211986089);
+node(4294659989);
+node(4841008105);
+node(4965923057);
+node(4970428921);
+node(7069855803);
+node(7610691602);
+node(8145412017);
+node(8311143284);
+node(9215009717);
+node(9346510854);
+node(9911287150);
+node(10084805955);
+node(10118305052);
+node(10134931577);
+node(10272682416);
+node(10277742928);
+node(10297995578);
+node(10313585322);
+node(10698030584);
+node(11054531199);
+node(11183254526);
+node(11377463071);
+node(11861712699);
+node(11918209446);
+node(11931158041);
+node(12009761189);
+node(12170692127);
+node(12219015529);
+node(12277896916);
+node(12386806388);
+node(12400272704);
+node(12459074874);
+node(12754079336);
+node(12850682170);
+node(12853222862);'
+++ basename .cache-enrich/ids.part.aa
++ local resp=.cache-enrich/resp.ids.part.aa.json
+++ cat .cache-enrich/query.ql
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail --data-urlencode 'data=[out:json][timeout:60];(
+node(303319474);
+node(318526010);
+node(318704396);
+node(415551815);
+node(941439093);
+node(1263799847);
+node(1372898402);
+node(1765786432);
+node(2521156202);
+node(2537196472);
+node(2641068367);
+node(2935266552);
+node(3036860727);
+node(3037805664);
+node(3039050673);
+node(3039051050);
+node(3675739247);
+node(3734954314);
+node(3747274058);
+node(3937876098);
+node(4211986089);
+node(4294659989);
+node(4841008105);
+node(4965923057);
+node(4970428921);
+node(7069855803);
+node(7610691602);
+node(8145412017);
+node(8311143284);
+node(9215009717);
+node(9346510854);
+node(9911287150);
+node(10084805955);
+node(10118305052);
+node(10134931577);
+node(10272682416);
+node(10277742928);
+node(10297995578);
+node(10313585322);
+node(10698030584);
+node(11054531199);
+node(11183254526);
+node(11377463071);
+node(11861712699);
+node(11918209446);
+node(11931158041);
+node(12009761189);
+node(12170692127);
+node(12219015529);
+node(12277896916);
+node(12386806388);
+node(12400272704);
+node(12459074874);
+node(12754079336);
+node(12850682170);
+node(12853222862);
+);
+out tags center;' https://overpass-api.de/api/interpreter -o .cache-enrich/resp.ids.part.aa.json
++ jq -e '.elements|type=="array"' .cache-enrich/resp.ids.part.aa.json
++ jq -c '.elements[]?' .cache-enrich/resp.ids.part.aa.json
++ sleep 2
++ shopt -u nullglob
++ '[' -s .cache-enrich/overpass.ndjson ']'
++ jq -s '
+      map({
+        key:  ("osm:"+.type+":" + (.id|tostring)),
+        value:{
+          website: (.tags["contact:website"] // .tags.website // .tags.url),
+          hours:   (.tags.opening_hours),
+          last_verified: (.tags["check_date:currency:XBT"] // .tags.check_date),
+          tags: ([
+            (if ((.tags["payment:lightning"]//"")|test("^(yes|true)$";"i")) then "payment:lightning" else empty end),
+            (if ((.tags["payment:onchain"]//.tags["payment:bitcoin"]//"")|test("^(yes|true)$";"i")) then "payment:onchain" else empty end)
+          ])
+        }
+      })
+      | from_entries
+    ' .cache-enrich/overpass.ndjson
++ jq -s '
+    (.[0]) as $base | (.[1]) as $map |
+    $base
+    | map(. as $p | ($map[$p.id] // {}) as $e |
+      . + {
+        website:       (if (($p.website//"")|length>0) then $p.website else ($e.website // $p.website) end),
+        hours:         (if (($p.hours  //"")|length>0) then $p.hours   else ($e.hours   // $p.hours)   end),
+        last_verified: ($p.last_verified // $e.last_verified),
+        tags:          (( $p.tags // [] ) + ( $e.tags // [] ))
+      })
+  ' public/data/places/de/berlin/berlin.json .cache-enrich/enrich.map.json
++ build_nominatim_map .cache-enrich/step1.json
++ local step1=.cache-enrich/step1.json
++ :
++ jq -r '.[] | select((.address//"")|length==0) | "\(.lat)\t\(.lng)\t\(.id)"' .cache-enrich/step1.json
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:303319474
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_303319474.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4905098&lon=13.4260706&addressdetails=1' -o .cache-enrich/nomi.osm_node_303319474.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_303319474.json
++ jq -c --arg id osm:node:303319474 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_303319474.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:318526010
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_318526010.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5148686&lon=13.3811135&addressdetails=1' -o .cache-enrich/nomi.osm_node_318526010.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_318526010.json
++ jq -c --arg id osm:node:318526010 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_318526010.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:318704396
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_318704396.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5219305&lon=13.4529113&addressdetails=1' -o .cache-enrich/nomi.osm_node_318704396.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_318704396.json
++ jq -c --arg id osm:node:318704396 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_318704396.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:415551815
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_415551815.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5439319&lon=13.4175949&addressdetails=1' -o .cache-enrich/nomi.osm_node_415551815.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_415551815.json
++ jq -c --arg id osm:node:415551815 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_415551815.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:941439093
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_941439093.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4963757&lon=13.4208114&addressdetails=1' -o .cache-enrich/nomi.osm_node_941439093.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_941439093.json
++ jq -c --arg id osm:node:941439093 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_941439093.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:1263799847
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_1263799847.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5109844&lon=13.4671354&addressdetails=1' -o .cache-enrich/nomi.osm_node_1263799847.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_1263799847.json
++ jq -c --arg id osm:node:1263799847 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_1263799847.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:1372898402
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_1372898402.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5177555&lon=13.4581799&addressdetails=1' -o .cache-enrich/nomi.osm_node_1372898402.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_1372898402.json
++ jq -c --arg id osm:node:1372898402 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_1372898402.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:1765786432
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_1765786432.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5847198&lon=13.2860195&addressdetails=1' -o .cache-enrich/nomi.osm_node_1765786432.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_1765786432.json
++ jq -c --arg id osm:node:1765786432 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_1765786432.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:2521156202
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_2521156202.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4921303&lon=13.4576505&addressdetails=1' -o .cache-enrich/nomi.osm_node_2521156202.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_2521156202.json
++ jq -c --arg id osm:node:2521156202 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_2521156202.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:2537196472
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_2537196472.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5663684&lon=13.524798&addressdetails=1' -o .cache-enrich/nomi.osm_node_2537196472.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_2537196472.json
++ jq -c --arg id osm:node:2537196472 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_2537196472.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:2641068367
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_2641068367.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5036356&lon=13.454467&addressdetails=1' -o .cache-enrich/nomi.osm_node_2641068367.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_2641068367.json
++ jq -c --arg id osm:node:2641068367 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_2641068367.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:2935266552
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_2935266552.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5064668&lon=13.4693373&addressdetails=1' -o .cache-enrich/nomi.osm_node_2935266552.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_2935266552.json
++ jq -c --arg id osm:node:2935266552 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_2935266552.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3036860727
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3036860727.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4922712&lon=13.4209764&addressdetails=1' -o .cache-enrich/nomi.osm_node_3036860727.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3036860727.json
++ jq -c --arg id osm:node:3036860727 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3036860727.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3037805664
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3037805664.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5038258&lon=13.3251553&addressdetails=1' -o .cache-enrich/nomi.osm_node_3037805664.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3037805664.json
++ jq -c --arg id osm:node:3037805664 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3037805664.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3039050673
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3039050673.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5486396&lon=13.4534484&addressdetails=1' -o .cache-enrich/nomi.osm_node_3039050673.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3039050673.json
++ jq -c --arg id osm:node:3039050673 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3039050673.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3039051050
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3039051050.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5497611&lon=13.4568566&addressdetails=1' -o .cache-enrich/nomi.osm_node_3039051050.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3039051050.json
++ jq -c --arg id osm:node:3039051050 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3039051050.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3675739247
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3675739247.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.502001&lon=13.3335705&addressdetails=1' -o .cache-enrich/nomi.osm_node_3675739247.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3675739247.json
++ jq -c --arg id osm:node:3675739247 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3675739247.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3734954314
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3734954314.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5281875&lon=13.3914357&addressdetails=1' -o .cache-enrich/nomi.osm_node_3734954314.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3734954314.json
++ jq -c --arg id osm:node:3734954314 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3734954314.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3747274058
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3747274058.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4782382&lon=13.4213181&addressdetails=1' -o .cache-enrich/nomi.osm_node_3747274058.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3747274058.json
++ jq -c --arg id osm:node:3747274058 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3747274058.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:3937876098
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_3937876098.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5322911&lon=13.395606&addressdetails=1' -o .cache-enrich/nomi.osm_node_3937876098.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_3937876098.json
++ jq -c --arg id osm:node:3937876098 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_3937876098.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:4211986089
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_4211986089.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.6372706&lon=13.2051209&addressdetails=1' -o .cache-enrich/nomi.osm_node_4211986089.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_4211986089.json
++ jq -c --arg id osm:node:4211986089 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_4211986089.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:4294659989
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_4294659989.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.536497&lon=13.410587&addressdetails=1' -o .cache-enrich/nomi.osm_node_4294659989.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_4294659989.json
++ jq -c --arg id osm:node:4294659989 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_4294659989.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:4841008105
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_4841008105.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5335929&lon=13.4036081&addressdetails=1' -o .cache-enrich/nomi.osm_node_4841008105.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_4841008105.json
++ jq -c --arg id osm:node:4841008105 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_4841008105.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:4965923057
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_4965923057.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5126351&lon=13.3897599&addressdetails=1' -o .cache-enrich/nomi.osm_node_4965923057.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_4965923057.json
++ jq -c --arg id osm:node:4965923057 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_4965923057.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:4970428921
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_4970428921.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.525194&lon=13.402099&addressdetails=1' -o .cache-enrich/nomi.osm_node_4970428921.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_4970428921.json
++ jq -c --arg id osm:node:4970428921 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_4970428921.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:7069855803
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_7069855803.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.531497&lon=13.4341735&addressdetails=1' -o .cache-enrich/nomi.osm_node_7069855803.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_7069855803.json
++ jq -c --arg id osm:node:7069855803 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_7069855803.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:7610691602
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_7610691602.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4877308&lon=13.4310767&addressdetails=1' -o .cache-enrich/nomi.osm_node_7610691602.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_7610691602.json
++ jq -c --arg id osm:node:7610691602 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_7610691602.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:8145412017
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_8145412017.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5367859&lon=13.4175276&addressdetails=1' -o .cache-enrich/nomi.osm_node_8145412017.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_8145412017.json
++ jq -c --arg id osm:node:8145412017 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_8145412017.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:8311143284
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_8311143284.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5111776&lon=13.3958388&addressdetails=1' -o .cache-enrich/nomi.osm_node_8311143284.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_8311143284.json
++ jq -c --arg id osm:node:8311143284 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_8311143284.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:9215009717
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_9215009717.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5131962&lon=13.4525181&addressdetails=1' -o .cache-enrich/nomi.osm_node_9215009717.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_9215009717.json
++ jq -c --arg id osm:node:9215009717 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_9215009717.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:9346510854
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_9346510854.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.3764876&lon=13.6222673&addressdetails=1' -o .cache-enrich/nomi.osm_node_9346510854.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_9346510854.json
++ jq -c --arg id osm:node:9346510854 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_9346510854.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:9911287150
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_9911287150.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4926714&lon=13.3701572&addressdetails=1' -o .cache-enrich/nomi.osm_node_9911287150.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_9911287150.json
++ jq -c --arg id osm:node:9911287150 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_9911287150.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10084805955
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10084805955.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5342275&lon=13.4161615&addressdetails=1' -o .cache-enrich/nomi.osm_node_10084805955.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10084805955.json
++ jq -c --arg id osm:node:10084805955 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10084805955.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10118305052
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10118305052.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5408009&lon=13.4068129&addressdetails=1' -o .cache-enrich/nomi.osm_node_10118305052.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10118305052.json
++ jq -c --arg id osm:node:10118305052 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10118305052.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10134931577
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10134931577.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.533571&lon=13.4036851&addressdetails=1' -o .cache-enrich/nomi.osm_node_10134931577.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10134931577.json
++ jq -c --arg id osm:node:10134931577 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10134931577.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10272682416
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10272682416.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5342249&lon=13.4020906&addressdetails=1' -o .cache-enrich/nomi.osm_node_10272682416.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10272682416.json
++ jq -c --arg id osm:node:10272682416 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10272682416.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10277742928
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10277742928.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.3960596&lon=13.5323935&addressdetails=1' -o .cache-enrich/nomi.osm_node_10277742928.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10277742928.json
++ jq -c --arg id osm:node:10277742928 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10277742928.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10297995578
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10297995578.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4917336&lon=13.2906484&addressdetails=1' -o .cache-enrich/nomi.osm_node_10297995578.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10297995578.json
++ jq -c --arg id osm:node:10297995578 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10297995578.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10313585322
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10313585322.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.511438&lon=13.4268672&addressdetails=1' -o .cache-enrich/nomi.osm_node_10313585322.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10313585322.json
++ jq -c --arg id osm:node:10313585322 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10313585322.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:10698030584
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_10698030584.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5280242&lon=13.3417811&addressdetails=1' -o .cache-enrich/nomi.osm_node_10698030584.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_10698030584.json
++ jq -c --arg id osm:node:10698030584 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_10698030584.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:11054531199
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_11054531199.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5112322&lon=13.4592291&addressdetails=1' -o .cache-enrich/nomi.osm_node_11054531199.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_11054531199.json
++ jq -c --arg id osm:node:11054531199 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_11054531199.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:11183254526
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_11183254526.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.525895&lon=13.4489086&addressdetails=1' -o .cache-enrich/nomi.osm_node_11183254526.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_11183254526.json
++ jq -c --arg id osm:node:11183254526 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_11183254526.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:11377463071
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_11377463071.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5259171&lon=13.4980609&addressdetails=1' -o .cache-enrich/nomi.osm_node_11377463071.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_11377463071.json
++ jq -c --arg id osm:node:11377463071 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_11377463071.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:11861712699
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_11861712699.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4907057&lon=13.3631375&addressdetails=1' -o .cache-enrich/nomi.osm_node_11861712699.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_11861712699.json
++ jq -c --arg id osm:node:11861712699 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_11861712699.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:11918209446
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_11918209446.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.512325&lon=13.4176575&addressdetails=1' -o .cache-enrich/nomi.osm_node_11918209446.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_11918209446.json
++ jq -c --arg id osm:node:11918209446 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_11918209446.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:11931158041
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_11931158041.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4976631&lon=13.4252092&addressdetails=1' -o .cache-enrich/nomi.osm_node_11931158041.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_11931158041.json
++ jq -c --arg id osm:node:11931158041 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_11931158041.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12009761189
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12009761189.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.6188846&lon=13.303273&addressdetails=1' -o .cache-enrich/nomi.osm_node_12009761189.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12009761189.json
++ jq -c --arg id osm:node:12009761189 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12009761189.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12170692127
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12170692127.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5958764&lon=13.316332&addressdetails=1' -o .cache-enrich/nomi.osm_node_12170692127.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12170692127.json
++ jq -c --arg id osm:node:12170692127 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12170692127.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12219015529
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12219015529.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5294096&lon=13.6148571&addressdetails=1' -o .cache-enrich/nomi.osm_node_12219015529.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12219015529.json
++ jq -c --arg id osm:node:12219015529 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12219015529.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12277896916
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12277896916.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.490285&lon=13.393468&addressdetails=1' -o .cache-enrich/nomi.osm_node_12277896916.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12277896916.json
++ jq -c --arg id osm:node:12277896916 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12277896916.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12386806388
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12386806388.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5370744&lon=13.4189075&addressdetails=1' -o .cache-enrich/nomi.osm_node_12386806388.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12386806388.json
++ jq -c --arg id osm:node:12386806388 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12386806388.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12400272704
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12400272704.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.537711&lon=13.2647765&addressdetails=1' -o .cache-enrich/nomi.osm_node_12400272704.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12400272704.json
++ jq -c --arg id osm:node:12400272704 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12400272704.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12459074874
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12459074874.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4896111&lon=13.3835322&addressdetails=1' -o .cache-enrich/nomi.osm_node_12459074874.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12459074874.json
++ jq -c --arg id osm:node:12459074874 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12459074874.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12754079336
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12754079336.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5096218&lon=13.4678152&addressdetails=1' -o .cache-enrich/nomi.osm_node_12754079336.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12754079336.json
++ jq -c --arg id osm:node:12754079336 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12754079336.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12850682170
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12850682170.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.5654187&lon=13.3939563&addressdetails=1' -o .cache-enrich/nomi.osm_node_12850682170.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12850682170.json
++ jq -c --arg id osm:node:12850682170 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12850682170.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
+++ echo osm:node:12853222862
+++ tr /: _
++ local r=.cache-enrich/nomi.osm_node_12853222862.json
++ curl -sS -A 'CryptoPayMap/1.0 (contact@example.com)' --fail 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=52.4246474&lon=13.5856438&addressdetails=1' -o .cache-enrich/nomi.osm_node_12853222862.json
++ jq -e 'has("display_name")' .cache-enrich/nomi.osm_node_12853222862.json
++ jq -c --arg id osm:node:12853222862 '{id:$id, address:(.display_name // "")}' .cache-enrich/nomi.osm_node_12853222862.json
++ sleep 2
++ IFS='	'
++ read -r lat lon oid
++ '[' -s .cache-enrich/nomi.ndjson ']'
++ jq -s 'map({key:.id, value:{address:.address}}) | from_entries' .cache-enrich/nomi.ndjson
++ jq -s '
+    (.[0]) as $base | (.[1]) as $nomi |
+    $base
+    | map( if ((.address//"")|length>0) then . else (. + ($nomi[.id] // {})) end )
+  ' .cache-enrich/step1.json .cache-enrich/nomi.map.json
++ jq '
+    map(
+      if type=="object" then
+        (
+          .website |= (
+            if type=="string" and (.|length)>0
+            then ( if test("^https?://") then . else "https://" + . end )
+            else .
+            end
+          )
+          | .tags |= (
+              if type=="array" then .
+              elif type=="string" then [ . ]
+              elif . == null then []
+              else .
+              end
+            )
+          | with_entries(
+              if (.value|type=="string" and (.value|gsub("^\\s+|\\s+$";"")|length)==0)
+              then empty else .
+              end
+            )
+        )
+      else
+        .  # 配列に文字列/数値が混入しても落とさない
+      end
+    )
+  ' .cache-enrich/step2.json
+jq: error (at .cache-enrich/step2.json:1829): Cannot index string with string "value"

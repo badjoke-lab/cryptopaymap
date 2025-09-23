@@ -1,0 +1,3557 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.62.8 e802775f",
+  "osm3s": {
+    "timestamp_osm_base": "2025-09-20T15:24:11Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 12393018418,
+  "lat": 13.6609396,
+  "lon": -89.2531669,
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "Wendy's",
+    "brand:wikidata": "Q550258",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "name": "Wendy's",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393048568,
+  "lat": 13.7016677,
+  "lon": -89.2353766,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "http://www.superselectos.com/",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 12393064200,
+  "lat": 13.6640266,
+  "lon": -89.2603057,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Volaris",
+    "not:brand:wikidata": "Q942741",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "travel_agency",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393071636,
+  "lat": 13.7020576,
+  "lon": -89.2299571,
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "Pollo Campero",
+    "brand:wikidata": "Q942741",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Pollo Campero",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393071637,
+  "lat": 13.7154719,
+  "lon": -89.0979047,
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "Pollo Campero",
+    "brand:wikidata": "Q942741",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Pollo Campero",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393071641,
+  "lat": 13.6792096,
+  "lon": -89.2695396,
+  "tags": {
+    "amenity": "restaurant",
+    "brand": "Pollo Campestre",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Pollo Campestre",
+    "not:brand:wikidata": "Q942741",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393071642,
+  "lat": 13.6931965,
+  "lon": -89.2194165,
+  "tags": {
+    "amenity": "restaurant",
+    "brand": "Pollo Campestre",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Pollo Campestre",
+    "not:brand:wikidata": "Q942741",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393071643,
+  "lat": 13.7898660,
+  "lon": -89.1760471,
+  "tags": {
+    "amenity": "restaurant",
+    "brand": "Pollo Campestre",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Pollo Campestre",
+    "not:brand:wikidata": "Q942741",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393086957,
+  "lat": 13.7112104,
+  "lon": -89.2076687,
+  "tags": {
+    "brand": "Dollarcity",
+    "brand:wikidata": "Q107120814",
+    "check_date:currency:XBT": "2025-04-20",
+    "currency:XBT": "yes",
+    "name": "Dollarcity",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "variety_store",
+    "website": "https://dollarcity.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12393086958,
+  "lat": 13.7048907,
+  "lon": -89.1801493,
+  "tags": {
+    "brand": "Dollarcity",
+    "brand:wikidata": "Q107120814",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Dollarcity",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "variety_store",
+    "website": "https://dollarcity.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105504,
+  "lat": 13.7222948,
+  "lon": -89.2290504,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105505,
+  "lat": 13.9574746,
+  "lon": -89.1863849,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105507,
+  "lat": 13.7163010,
+  "lon": -89.0987402,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105508,
+  "lat": 13.7339719,
+  "lon": -89.0798264,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105509,
+  "lat": 13.6728051,
+  "lon": -89.2415253,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105510,
+  "lat": 13.7961717,
+  "lon": -89.1774099,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393105511,
+  "lat": 13.6977511,
+  "lon": -89.1906671,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393123123,
+  "lat": 13.7232123,
+  "lon": -89.1879565,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393123125,
+  "lat": 13.7168994,
+  "lon": -89.1440873,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393123131,
+  "lat": 13.6744950,
+  "lon": -89.2858104,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393123133,
+  "lat": 13.7020443,
+  "lon": -89.1493806,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393125691,
+  "lat": 13.7028786,
+  "lon": -89.1957364,
+  "tags": {
+    "amenity": "bank",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393125692,
+  "lat": 13.7033778,
+  "lon": -89.1958010,
+  "tags": {
+    "amenity": "bank",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393125693,
+  "lat": 13.6979282,
+  "lon": -89.1507890,
+  "tags": {
+    "amenity": "bank",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393125694,
+  "lat": 13.7147532,
+  "lon": -89.1411429,
+  "tags": {
+    "amenity": "bank",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12393195554,
+  "lat": 13.6719049,
+  "lon": -89.2876537,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super 7",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 12393195555,
+  "lat": 13.6711112,
+  "lon": -89.2637433,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super 7",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 12393195556,
+  "lat": 13.7168414,
+  "lon": -89.2063252,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super 7",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 12393195557,
+  "lat": 13.8067841,
+  "lon": -89.1706907,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super 7",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 12393195558,
+  "lat": 13.7956686,
+  "lon": -89.1779694,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super 7",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 12395253291,
+  "lat": 13.7055094,
+  "lon": -89.2108880,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Siman",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "department_store"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286904,
+  "lat": 13.6789360,
+  "lon": -89.2756560,
+  "tags": {
+    "addr:city": "Santa Ana",
+    "addr:street": "Calle Libertad Oriente",
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286905,
+  "lat": 13.6778614,
+  "lon": -89.2641418,
+  "tags": {
+    "addr:city": "Santa Ana",
+    "addr:street": "Calle Libertad Oriente",
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286906,
+  "lat": 13.6769283,
+  "lon": -89.2543417,
+  "tags": {
+    "addr:city": "Santa Ana",
+    "addr:street": "Calle Libertad Oriente",
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286907,
+  "lat": 13.6791890,
+  "lon": -89.2481645,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286908,
+  "lat": 13.6831824,
+  "lon": -89.2227652,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286909,
+  "lat": 13.7019977,
+  "lon": -89.2350355,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395286910,
+  "lat": 13.7923795,
+  "lon": -89.1750185,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356652,
+  "lat": 13.7056250,
+  "lon": -89.2098400,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Rio do Brasil",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356653,
+  "lat": 13.7065913,
+  "lon": -89.2119836,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Rio do Brasil",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356654,
+  "lat": 13.7050475,
+  "lon": -89.2139737,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Rio do Brasil",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356656,
+  "lat": 13.6777222,
+  "lon": -89.2512371,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Rio do Brasil",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356657,
+  "lat": 13.6784890,
+  "lon": -89.2764618,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Rio do Brasil",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356662,
+  "lat": 13.6985727,
+  "lon": -89.1937804,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356663,
+  "lat": 13.7059195,
+  "lon": -89.2109029,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356664,
+  "lat": 13.9595971,
+  "lon": -89.1825766,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356665,
+  "lat": 13.7941729,
+  "lon": -89.1776799,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356667,
+  "lat": 13.7921044,
+  "lon": -89.1745508,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356668,
+  "lat": 13.7068833,
+  "lon": -89.2113062,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356669,
+  "lat": 13.6992961,
+  "lon": -89.1934205,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356670,
+  "lat": 13.7295347,
+  "lon": -89.2099159,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356672,
+  "lat": 13.6795654,
+  "lon": -89.2487884,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356674,
+  "lat": 13.7099024,
+  "lon": -89.1371226,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356676,
+  "lat": 13.7057613,
+  "lon": -89.2115677,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356677,
+  "lat": 13.6983273,
+  "lon": -89.1509260,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395356679,
+  "lat": 13.7151166,
+  "lon": -89.1407183,
+  "tags": {
+    "brand": "RadioShack",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Lee Shoes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395358232,
+  "lat": 13.6779343,
+  "lon": -89.2508986,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "MD",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "shoes"
+  }
+},
+{
+  "type": "node",
+  "id": 12395358236,
+  "lat": 13.6776719,
+  "lon": -89.2544650,
+  "tags": {
+    "brand": "RadioShack",
+    "brand:wikidata": "Q1195490",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "RadioShack",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.radioshackla.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395358237,
+  "lat": 13.7052337,
+  "lon": -89.2106276,
+  "tags": {
+    "brand": "RadioShack",
+    "brand:wikidata": "Q1195490",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "RadioShack",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.radioshackla.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395358238,
+  "lat": 13.6795053,
+  "lon": -89.2490633,
+  "tags": {
+    "brand": "RadioShack",
+    "brand:wikidata": "Q1195490",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "RadioShack",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.radioshackla.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395358241,
+  "lat": 13.7902926,
+  "lon": -89.1758909,
+  "tags": {
+    "brand": "RadioShack",
+    "brand:wikidata": "Q1195490",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "RadioShack",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.radioshackla.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395358245,
+  "lat": 13.7071885,
+  "lon": -89.2120608,
+  "tags": {
+    "brand": "RadioShack",
+    "brand:wikidata": "Q1195490",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "RadioShack",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.radioshackla.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395391992,
+  "lat": 13.6788325,
+  "lon": -89.2752222,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395391993,
+  "lat": 13.6985851,
+  "lon": -89.1508283,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395391995,
+  "lat": 13.7148902,
+  "lon": -89.1403776,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395391996,
+  "lat": 13.7160841,
+  "lon": -89.2137370,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395391998,
+  "lat": 13.7063677,
+  "lon": -89.2116508,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395402114,
+  "lat": 13.6990460,
+  "lon": -89.1505829,
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "Taco Bell",
+    "brand:wikidata": "Q752941",
+    "check_date:currency:XBT": "2024-12-04",
+    "cuisine": "tex-mex",
+    "currency:XBT": "yes",
+    "name": "Taco Bell",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes",
+    "website": "https://tacobell.com.sv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395404301,
+  "lat": 13.7036827,
+  "lon": -89.1502317,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395404305,
+  "lat": 13.6795511,
+  "lon": -89.2488821,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395404307,
+  "lat": 13.7023174,
+  "lon": -89.2296774,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395404308,
+  "lat": 13.6383525,
+  "lon": -89.1275953,
+  "tags": {
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "website": "https://www.lacuracaonline.com/elsalvador/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395474463,
+  "lat": 13.7107823,
+  "lon": -89.2467940,
+  "tags": {
+    "amenity": "dentist",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "healthcare": "dentist",
+    "name": "Natural Dent, Dra. Laura Lemus",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "https://www.naturaldentsv.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395474464,
+  "lat": 13.7013217,
+  "lon": -89.2408846,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-07-24",
+    "cuisine": "juice",
+    "currency:XBT": "yes",
+    "name": "Elixir Juices",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "phone": "71272917",
+    "website": "https://www.elixirjuicesv.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12395474465,
+  "lat": 13.6764565,
+  "lon": -89.2836313,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2024-12-04",
+    "cuisine": "hot_dog",
+    "currency:XBT": "yes",
+    "name": "Freakie Dogs",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "75653770"
+  }
+},
+{
+  "type": "node",
+  "id": 12395474466,
+  "lat": 13.7033022,
+  "lon": -89.2397120,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Naturaland",
+    "organic": "only",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "21305655",
+    "shop": "supermarket",
+    "website": "https://www.facebook.com/naturalandsv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504833,
+  "lat": 13.6670703,
+  "lon": -89.2707667,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "TenGo! Todo Market",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504836,
+  "lat": 13.7053837,
+  "lon": -89.2099254,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504838,
+  "lat": 13.6793389,
+  "lon": -89.2482767,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504839,
+  "lat": 13.6787663,
+  "lon": -89.2749510,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504840,
+  "lat": 13.7933949,
+  "lon": -89.1774241,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504841,
+  "lat": 13.6992234,
+  "lon": -89.1514667,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504842,
+  "lat": 13.7160293,
+  "lon": -89.2137384,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504843,
+  "lat": 13.7298023,
+  "lon": -89.2102052,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504844,
+  "lat": 13.7902410,
+  "lon": -89.1757445,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12396504847,
+  "lat": 13.7045817,
+  "lon": -89.2138670,
+  "tags": {
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics"
+  }
+},
+{
+  "type": "node",
+  "id": 12434547965,
+  "lat": 13.6922075,
+  "lon": -89.2383384,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "206",
+    "addr:street": "Avenida las Magnolias",
+    "check_date": "2024-12-19",
+    "check_date:currency:XBT": "2024-12-19",
+    "currency:XBT": "yes",
+    "name": "Vivo Latam - Bienes Raices El Salvador",
+    "office": "estate_agent",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "+503 7653 1000",
+    "survey:date": "2024-12-19",
+    "website": "https://www.vivolatam.com"
+  }
+},
+{
+  "type": "node",
+  "id": 12487536941,
+  "lat": 13.7004558,
+  "lon": -89.2236896,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-01-09",
+    "cuisine": "pakistani",
+    "currency:XBT": "yes",
+    "name": "PaliLo",
+    "payment:lightning": "yes",
+    "phone": "73093807"
+  }
+},
+{
+  "type": "node",
+  "id": 12487540541,
+  "lat": 13.7036098,
+  "lon": -89.2346340,
+  "tags": {
+    "check_date:currency:XBT": "2025-01-09",
+    "currency:XBT": "yes",
+    "name": "Pet Food Express El Salvador",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "73654045",
+    "shop": "pet"
+  }
+},
+{
+  "type": "node",
+  "id": 12487544752,
+  "lat": 13.6849587,
+  "lon": -89.2377180,
+  "tags": {
+    "check_date:currency:XBT": "2025-01-09",
+    "currency:XBT": "yes",
+    "name": "Viprint",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "21241069",
+    "shop": "copyshop"
+  }
+},
+{
+  "type": "node",
+  "id": 12487544753,
+  "lat": 13.6929121,
+  "lon": -89.2370904,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-01-09",
+    "cuisine": "cajun",
+    "currency:XBT": "yes",
+    "name": "Bubba's",
+    "payment:lightning": "yes",
+    "phone": "25664416",
+    "website": "https://www.bubbassv.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12489343820,
+  "lat": 13.6929149,
+  "lon": -89.2368981,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-01-10",
+    "cuisine": "kebab",
+    "currency:XBT": "yes",
+    "name": "Kebabs San Benito",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12489662239,
+  "lat": 13.6942995,
+  "lon": -89.2306096,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2025-01-10",
+    "currency:XBT": "yes",
+    "name": "La Neveria",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "http://www.laneveria.com.sv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12489662240,
+  "lat": 13.7111669,
+  "lon": -89.2311587,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2025-01-10",
+    "currency:XBT": "yes",
+    "name": "La Neveria",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "http://www.laneveria.com.sv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12489662241,
+  "lat": 13.7942706,
+  "lon": -89.1780915,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2025-01-10",
+    "currency:XBT": "yes",
+    "name": "La Neveria",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "http://www.laneveria.com.sv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12489662242,
+  "lat": 13.6787495,
+  "lon": -89.3006666,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2025-01-10",
+    "currency:XBT": "yes",
+    "name": "La Neveria",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "http://www.laneveria.com.sv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12489662243,
+  "lat": 13.7111543,
+  "lon": -89.2481582,
+  "tags": {
+    "amenity": "ice_cream",
+    "check_date:currency:XBT": "2025-01-10",
+    "currency:XBT": "yes",
+    "name": "La Neveria",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "http://www.laneveria.com.sv/"
+  }
+},
+{
+  "type": "node",
+  "id": 12501337971,
+  "lat": 13.7001314,
+  "lon": -89.2089691,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Alameda Franklin Delano Roosevelt",
+    "amenity": "restaurant",
+    "check_date": "2025-01-14",
+    "currency:XBT": "yes",
+    "name": "Restaurante Copacabana",
+    "opening_hours": "Tu-Su 11:00-23:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 12521743099,
+  "lat": 13.6802673,
+  "lon": -89.2298637,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "1",
+    "addr:street": "Pasaje 1",
+    "check_date": "2025-01-21",
+    "contact:instagram": "https://www.instagram.com/barf_rawdogfood/",
+    "currency:XBT": "yes",
+    "name": "BARF Raw Dog Food",
+    "opening_hours": "Mo-Fr 08:00-17:00; Sa 09:00-16:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "no",
+    "phone": "+503 7805 7181",
+    "shop": "pet"
+  }
+},
+{
+  "type": "node",
+  "id": 12552233985,
+  "lat": 13.7048639,
+  "lon": -89.2445768,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-02-02",
+    "contact:instagram": "https://instagram.com/holandeserrantebbq",
+    "cuisine": "barbecue",
+    "currency:XBT": "yes",
+    "name": "El Holandés Errante BBQ",
+    "opening_hours": "Tu 18:00-21:30; We-Sa 12:00-14:30, 18:00-21:30; Su 12:00-14:30",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "77859304"
+  }
+},
+{
+  "type": "node",
+  "id": 12560493446,
+  "lat": 13.6928791,
+  "lon": -89.2427246,
+  "tags": {
+    "amenity": "cafe",
+    "check_date:currency:XBT": "2025-02-05",
+    "currency:XBT": "yes",
+    "name": "Alquimia Coffee",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "76721507",
+    "website": "https://www.alquimiacoffee.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12591011386,
+  "lat": 13.7346605,
+  "lon": -89.2188641,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "25",
+    "addr:street": "Calle al Volcán",
+    "check_date": "2025-02-15",
+    "contact:instagram": "https://www.instagram.com/_fermento.vivo?igsh=MWRwN3h6ejFxeHdjaw==",
+    "currency:XBT": "yes",
+    "description": "Tipos de bebidas en oferta: Kombucha - Kefir - Chucrut.",
+    "name": "Fermento Vivo",
+    "opening_hours": "Mo-Su 06:00-17:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "phone": "+503 76 041 429",
+    "shop": "beverages"
+  }
+},
+{
+  "type": "node",
+  "id": 12596221077,
+  "lat": 13.6785357,
+  "lon": -89.2371607,
+  "tags": {
+    "addr:city": "Antiguo Cuscatlán",
+    "addr:housenumber": "6",
+    "addr:postcode": "1502",
+    "addr:street": "Calle del Cantábrico",
+    "amenity": "restaurant",
+    "check_date": "2025-02-17",
+    "contact:instagram": "https://www.instagram.com/unapenda.chakulasv?igsh=eW96eTZ0bzczcTh5",
+    "cuisine": "african",
+    "currency:XBT": "yes",
+    "name": "Unapenda Chakula",
+    "opening_hours": "Tu-Su 11:00-18:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "no",
+    "phone": "+503 7979 0032"
+  }
+},
+{
+  "type": "node",
+  "id": 12615301807,
+  "lat": 13.6668049,
+  "lon": -89.2704105,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-02-24",
+    "cuisine": "pizza",
+    "currency:XBT": "yes",
+    "name": "Nine Hundred Pizza",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "+50322789000",
+    "website": "https://www.9hundredpizza.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12615301808,
+  "lat": 13.6906902,
+  "lon": -89.2398897,
+  "tags": {
+    "check_date:currency:XBT": "2025-02-24",
+    "contact:instagram": "https://www.instagram.com/arigatoteahouse/",
+    "currency:XBT": "yes",
+    "name": "ARIGATO Tea House",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "phone": "+50379282828",
+    "shop": "tea"
+  }
+},
+{
+  "type": "node",
+  "id": 12616312545,
+  "lat": 13.6970482,
+  "lon": -89.1906240,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-02-24",
+    "cuisine": "pizza",
+    "currency:XBT": "yes",
+    "name": "La Clasica Pizza",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "website": "https://www.pizzerialaclasica.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12620686155,
+  "lat": 13.7078533,
+  "lon": -89.2378935,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "83 Avenida Norte",
+    "amenity": "restaurant",
+    "check_date": "2025-02-26",
+    "contact:instagram": "https://www.instagram.com/ladoblenelson?igsh=MXBkNmczYWQ2MGxkMQ==",
+    "cuisine": "tacos",
+    "currency:XBT": "yes",
+    "name": "Taquería La Doble Nelson",
+    "opening_hours": "Tu-Su 12:00-21:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 12637725477,
+  "lat": 13.7095854,
+  "lon": -89.1997964,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "32",
+    "addr:postcode": "1102",
+    "addr:street": "Calle Doctor Carlos Gonzalez",
+    "amenity": "restaurant",
+    "check_date": "2025-03-05",
+    "contact:instagram": "https://www.instagram.com/cevi_chera?igsh=MWtjZGU5MmdlNnoxdQ==",
+    "contact:twitter": "https://x.com/Cevi_chera",
+    "currency:XBT": "yes",
+    "delivery": "yes",
+    "name": "CeviChera",
+    "opening_hours": "Tu-Sa 12:00-18:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes",
+    "phone": "+503 7214 9924"
+  }
+},
+{
+  "type": "node",
+  "id": 12668917600,
+  "lat": 13.7037725,
+  "lon": -89.2471548,
+  "tags": {
+    "addr:city": "San Salvador",
+    "amenity": "doctors",
+    "currency:XBT": "yes",
+    "healthcare": "doctor",
+    "name": "Hospital de Diagóstico Escalón",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12770634457,
+  "lat": 13.7067385,
+  "lon": -89.2121403,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Centro Comercial Metrocentro",
+    "amenity": "restaurant",
+    "check_date": "2025-04-20",
+    "currency:XBT": "yes",
+    "name": "San Martin",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12777715890,
+  "lat": 13.7074353,
+  "lon": -89.2383754,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "147",
+    "addr:street": "83a Avenida Norte",
+    "amenity": "restaurant",
+    "check_date": "2025-04-23",
+    "contact:instagram": "https://www.instagram.com/oyechicosv/",
+    "cuisine": "cuban",
+    "currency:XBT": "yes",
+    "delivery": "yes",
+    "name": "Oye Chico - Cuban Food",
+    "opening_hours": "Mo-Su 12:00-21:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes",
+    "website": "https://oyechicosv.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12835123723,
+  "lat": 13.7175270,
+  "lon": -89.2466465,
+  "tags": {
+    "check_date": "2025-05-10",
+    "currency:XBT": "yes",
+    "internet_access": "yes",
+    "name": "The Jaguar House 3.0",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "tourism": "chalet",
+    "website": "https://airbtc.online/properties/the-jaguar-house-3-0/"
+  }
+},
+{
+  "type": "node",
+  "id": 12840920597,
+  "lat": 13.6754349,
+  "lon": -89.2869973,
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:housenumber": "1",
+    "addr:postcode": "0511",
+    "addr:street": "1a Calle Oriente",
+    "amenity": "restaurant",
+    "check_date": "2025-05-16",
+    "contact:instagram": "https://www.instagram.com/oshun_restaurante?igsh=MXJmM3hkaGI5eHBtZw==",
+    "cuisine": "cuban;salvadoran",
+    "currency:XBT": "yes",
+    "delivery": "yes",
+    "name": "Oshun",
+    "opening_hours": "Mo off; Tu-Su 12:00-02:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes",
+    "phone": "+503 2522 7299"
+  }
+},
+{
+  "type": "node",
+  "id": 12855606598,
+  "lat": 13.7062611,
+  "lon": -89.2332975,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "3924",
+    "addr:street": "7a Calle Poniente, 75 avenida norte",
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-05-22",
+    "cuisine": "pizza;sandwich",
+    "currency:XBT": "yes",
+    "diet:vegetarian": "yes",
+    "name": "Donatto's Escalón",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 12869785590,
+  "lat": 13.6973378,
+  "lon": -89.2496836,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:postcode": "1101",
+    "addr:street": "Avenida Jerusalén",
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-05-28",
+    "contact:instagram": "https://www.instagram.com/indiankitchenelsalvador?igsh=Z2RoMDdzZG5iZTFi",
+    "currency:XBT": "yes",
+    "name": "The Indian Kitchen",
+    "opening_hours": "Mo off; Tu-Su 12:00-21:00",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes",
+    "phone": "+503 2270 5980"
+  }
+},
+{
+  "type": "node",
+  "id": 12899917081,
+  "lat": 13.7103634,
+  "lon": -89.2021420,
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "307",
+    "addr:postcode": "1102",
+    "addr:street": "Pasaje 5",
+    "amenity": "doctors",
+    "check_date:currency:XBT": "2025-06-09",
+    "currency:XBT": "yes",
+    "description": "Edificio Diagonal. Local 307. Tercer Nivel. Colonia Médica",
+    "healthcare": "doctor",
+    "healthcare:speciality": "cardiology",
+    "name": "Dr. Samuel Isaac Merino Barrera",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "no",
+    "payment:onchain": "yes",
+    "phone": "+503 2398 1346"
+  }
+},
+{
+  "type": "node",
+  "id": 12992877838,
+  "lat": 13.6765545,
+  "lon": -89.2862305,
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "3a Calle Oriente",
+    "air_conditioning": "yes",
+    "amenity": "cafe",
+    "cuisine": "cake;ukrainian;salvadoran",
+    "currency:XBT": "yes",
+    "indoor_seating": "yes",
+    "name": "Dulce Kava",
+    "opening_hours": "Tu-Su 09:00-21:00",
+    "payment:cash": "yes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "survey:date": "2025-07-10",
+    "website": "https://dulcekava.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 12995936085,
+  "lat": 13.6984298,
+  "lon": -89.2301745,
+  "tags": {
+    "amenity": "cafe",
+    "check_date:currency:XBT": "2025-07-12",
+    "currency:XBT": "yes",
+    "name": "CAFÉTERO",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12996007483,
+  "lat": 13.6701247,
+  "lon": -89.2809839,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-07-12",
+    "currency:XBT": "yes",
+    "name": "Cevichera",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12996582341,
+  "lat": 13.7247499,
+  "lon": -89.1032217,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-13",
+    "currency:XBT": "yes",
+    "name": "Chocolate Tu Buen Gusto",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "chocolate"
+  }
+},
+{
+  "type": "node",
+  "id": 12997978708,
+  "lat": 13.6678538,
+  "lon": -89.1928590,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-13",
+    "currency:XBT": "yes",
+    "name": "El Contador SV",
+    "office": "accountant",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12998000737,
+  "lat": 13.7183198,
+  "lon": -89.2221316,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-13",
+    "currency:XBT": "yes",
+    "name": "Fotocopias, Impresiones y Tienda",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "copyshop"
+  }
+},
+{
+  "type": "node",
+  "id": 12998007648,
+  "lat": 13.6935972,
+  "lon": -89.2434500,
+  "tags": {
+    "amenity": "restaurant",
+    "check_date:currency:XBT": "2025-07-13",
+    "currency:XBT": "yes",
+    "name": "Good Karma (Restaurant & juice bar)",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 12999082949,
+  "lat": 13.6764601,
+  "lon": -89.2358702,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-14",
+    "currency:XBT": "yes",
+    "name": "Lic. Carlos Artiga - Abogado y Notario",
+    "office": "lawyer",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13002463560,
+  "lat": 13.6684655,
+  "lon": -89.2564657,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-07-15",
+    "currency:XBT": "yes",
+    "name": "Snack:time",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13002472246,
+  "lat": 13.6786410,
+  "lon": -89.2702213,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-07-15",
+    "currency:XBT": "yes",
+    "name": "Super Emanuel",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13002563155,
+  "lat": 13.7108659,
+  "lon": -89.1442496,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-15",
+    "currency:XBT": "yes",
+    "name": "TazasyTazas",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "gift"
+  }
+},
+{
+  "type": "node",
+  "id": 13002622047,
+  "lat": 13.6743447,
+  "lon": -89.2278452,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-15",
+    "currency:XBT": "yes",
+    "name": "Tienda Memo",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "node",
+  "id": 13002646966,
+  "lat": 13.6884975,
+  "lon": -89.1901923,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-15",
+    "currency:XBT": "yes",
+    "name": "Tienda las Vegas",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13004324421,
+  "lat": 13.6838170,
+  "lon": -89.1341006,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-16",
+    "currency:XBT": "yes",
+    "name": "Variedades Villa ABC",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "variety_store"
+  }
+},
+{
+  "type": "node",
+  "id": 13004347541,
+  "lat": 13.6706220,
+  "lon": -89.2106786,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-07-16",
+    "currency:XBT": "yes",
+    "name": "Zanders",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13004356234,
+  "lat": 13.6803616,
+  "lon": -89.3098572,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-07-16",
+    "cuisine": "mexican",
+    "currency:XBT": "yes",
+    "name": "ᑎᗩᑕᕼO ᗩᖇGᑌETᗩ",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13010777308,
+  "lat": 13.6984108,
+  "lon": -89.2431313,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "name": "Rejuveness Center",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "beauty"
+  }
+},
+{
+  "type": "node",
+  "id": 13010913382,
+  "lat": 13.6991826,
+  "lon": -89.2287192,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-19",
+    "craft": "photographer",
+    "currency:XBT": "yes",
+    "name": "Foto Magica",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13011929780,
+  "lat": 13.6780804,
+  "lon": -89.2364290,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "name": "D'luxe salon",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "beauty"
+  }
+},
+{
+  "type": "node",
+  "id": 13011941329,
+  "lat": 13.6732670,
+  "lon": -89.2412943,
+  "tags": {
+    "amenity": "fast_food",
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "name": "Plazzo",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13012012721,
+  "lat": 13.7045348,
+  "lon": -89.2459464,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "name": "Coffice",
+    "office": "coworking",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13012105547,
+  "lat": 13.7024760,
+  "lon": -89.2313763,
+  "tags": {
+    "amenity": "pharmacy",
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "healthcare": "pharmacy",
+    "name": "Avante Farmacias - Casa Matriz",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13012106417,
+  "lat": 13.7028102,
+  "lon": -89.2316260,
+  "tags": {
+    "amenity": "clinic",
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "healthcare": "clinic",
+    "name": "Avante Centro Medico Especializado",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13012118611,
+  "lat": 13.7023771,
+  "lon": -89.2311019,
+  "tags": {
+    "amenity": "cafe",
+    "check_date:currency:XBT": "2025-07-19",
+    "currency:XBT": "yes",
+    "name": "Avante Cafeteria - Coffee Shop",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13014685168,
+  "lat": 13.6940195,
+  "lon": -89.2386627,
+  "tags": {
+    "amenity": "cafe",
+    "check_date:currency:XBT": "2025-07-21",
+    "currency:XBT": "yes",
+    "name": "Motivos",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13015798677,
+  "lat": 13.7130043,
+  "lon": -89.1942642,
+  "tags": {
+    "check_date:currency:XBT": "2025-07-21",
+    "currency:XBT": "yes",
+    "name": "AEX A/C Auto",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "shop": "car_parts"
+  }
+},
+{
+  "type": "node",
+  "id": 13015874335,
+  "lat": 13.7036482,
+  "lon": -89.2349921,
+  "tags": {
+    "amenity": "cafe",
+    "check_date:currency:XBT": "2025-07-21",
+    "currency:XBT": "yes",
+    "name": "Moclatte Bistro Cafe",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13017354662,
+  "lat": 13.6982379,
+  "lon": -89.2407236,
+  "tags": {
+    "amenity": "cafe",
+    "check_date:currency:XBT": "2025-07-22",
+    "currency:XBT": "yes",
+    "name": "Carajo Coffee Shop",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 13051276410,
+  "lat": 13.6665185,
+  "lon": -89.1849450,
+  "tags": {
+    "addr:city": "Col. Los Andes",
+    "addr:housenumber": "52",
+    "addr:street": "2 calle Ote",
+    "check_date:currency:XBT": "2025-08-06",
+    "contact:email": "legal.notarial@gmail.com",
+    "currency:XBT": "yes",
+    "name": "M&R office Lawyer and Notary",
+    "office": "notary",
+    "payment:lightning": "yes",
+    "payment:lightning_contactless": "yes",
+    "payment:onchain": "yes",
+    "phone": "+503 76885868"
+  }
+},
+{
+  "type": "way",
+  "id": 140157599,
+  "center": {
+    "lat": 13.6929631,
+    "lon": -89.2293928
+  },
+  "tags": {
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 273503129,
+  "center": {
+    "lat": 13.6982408,
+    "lon": -89.2280633
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:postcode": "00503",
+    "addr:street": "Alameda Manuel Enrique Araujo",
+    "branch": "Escalón",
+    "brand": "Walmart",
+    "brand:wikidata": "Q483551",
+    "building": "yes",
+    "building:levels": "2",
+    "check_date:currency:XBT": "2024-12-02",
+    "currency:XBT": "yes",
+    "height": "8",
+    "level": "1",
+    "name": "Walmart",
+    "payment:cash": "yes",
+    "payment:credit_cards": "yes",
+    "payment:debit_cards": "yes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "department_store"
+  }
+},
+{
+  "type": "way",
+  "id": 290281805,
+  "center": {
+    "lat": 13.6716378,
+    "lon": -89.2549280
+  },
+  "tags": {
+    "addr:street": "Boulevard Santa Elena",
+    "amenity": "bank",
+    "atm": "yes",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 290281857,
+  "center": {
+    "lat": 13.6632399,
+    "lon": -89.2491245
+  },
+  "tags": {
+    "addr:city": "Antiguo Cuscatlán",
+    "addr:housenumber": "86",
+    "addr:street": "Avenida El Pepeto Norte",
+    "branch": "Santa Elena",
+    "brand": "PriceSmart",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "PriceSmart",
+    "opening_hours": "Mo-Su 09:00-20:30",
+    "operator": "PriceSmart",
+    "payment:cash": "yes",
+    "payment:credit_cards": "yes",
+    "payment:debit_cards": "yes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "wholesale",
+    "source": "KG Ground Survey 2016;Bing"
+  }
+},
+{
+  "type": "way",
+  "id": 290783222,
+  "center": {
+    "lat": 13.6612403,
+    "lon": -89.2547144
+  },
+  "tags": {
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super 7",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "convenience",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 291888341,
+  "center": {
+    "lat": 13.6615541,
+    "lon": -89.2505387
+  },
+  "tags": {
+    "addr:city": "Antiguo Cuscatlán",
+    "addr:street": "Boulevard Orden de Malta",
+    "amenity": "ice_cream",
+    "branch": "Santa Elena",
+    "brand": "Boston",
+    "building": "commercial",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "outdoor_seating": "yes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 298048061,
+  "center": {
+    "lat": 13.6673000,
+    "lon": -89.2665676
+  },
+  "tags": {
+    "amenity": "bank",
+    "atm": "yes",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 298334638,
+  "center": {
+    "lat": 13.7016677,
+    "lon": -89.2322055
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Paseo General Escalón",
+    "building": "retail",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "operator": "Super Selectos",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "way",
+  "id": 310437012,
+  "center": {
+    "lat": 13.6769838,
+    "lon": -89.2642604
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "Boulevard Merliot",
+    "building": "yes",
+    "check_date": "2023-11-30",
+    "currency:XBT": "yes",
+    "name": "Freund Merliot",
+    "payment:cryptocurrencies": "yes",
+    "payment:lightning": "yes",
+    "shop": "hardware"
+  }
+},
+{
+  "type": "way",
+  "id": 321184547,
+  "center": {
+    "lat": 13.7031306,
+    "lon": -89.2408413
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:housenumber": "867",
+    "addr:street": "Paseo General Escalón",
+    "amenity": "fast_food",
+    "brand": "McDonald's",
+    "brand:wikidata": "Q38076",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "contact:email": "servicio.cliente@mcd.com.sv",
+    "contact:phone": "+503 2509 9999",
+    "contact:website": "https://domicilio.mcdonalds.com.sv",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "McDonald's",
+    "opening_hours": "Fr-Sa 06:00-22:30; Mo-Th 06:00-22:00; Su 06:30-21:30",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 321184548,
+  "center": {
+    "lat": 13.7025589,
+    "lon": -89.2408621
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Paseo General Escalón",
+    "brand": "Dollarcity",
+    "brand:wikidata": "Q107120814",
+    "building": "commercial",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Dollarcity",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "variety_store",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 335169728,
+  "center": {
+    "lat": 13.6734711,
+    "lon": -89.2733427
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "Avenida El Boquerón",
+    "amenity": "bank",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Banco Cuscatlán Pirámide",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 368708865,
+  "center": {
+    "lat": 13.7044467,
+    "lon": -89.2502039
+  },
+  "tags": {
+    "building": "commercial",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 371663653,
+  "center": {
+    "lat": 13.6837858,
+    "lon": -89.2361650
+  },
+  "tags": {
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "brand:wikipedia": "en:Puma Energy",
+    "building": "roof",
+    "currency:XBT": "yes",
+    "name": "Puma",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "survey:date": "2024-10-17"
+  }
+},
+{
+  "type": "way",
+  "id": 371843920,
+  "center": {
+    "lat": 13.6834712,
+    "lon": -89.2279932
+  },
+  "tags": {
+    "amenity": "bank",
+    "atm": "yes",
+    "branch": "Los Próceres",
+    "brand": "Banco Cuscatlán",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 371844167,
+  "center": {
+    "lat": 13.6837892,
+    "lon": -89.2323923
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Boulevard Los Próceres",
+    "amenity": "fast_food",
+    "branch": "Los Próceres",
+    "brand": "McDonald's",
+    "brand:wikidata": "Q38076",
+    "brand:wikipedia": "en:McDonald's",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "contact:email": "servicio.cliente@mcd.com.sv",
+    "contact:phone": "+503 2509 9999",
+    "contact:website": "https://domicilio.mcdonalds.com.sv",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "McDonald's",
+    "opening_hours": "Fr-Sa 06:00-23:00; Mo-Th,Su 06:00-22:00",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 371844331,
+  "center": {
+    "lat": 13.6830730,
+    "lon": -89.2378175
+  },
+  "tags": {
+    "addr:city": "Antiguo Cuscatlan",
+    "addr:street": "Boulevard Los Próceres",
+    "amenity": "fast_food",
+    "branch": "La Sultana",
+    "brand": "Wendy's",
+    "brand:wikidata": "Q550258",
+    "brand:wikipedia": "en:Wendy's",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "Wendy's",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 373852358,
+  "center": {
+    "lat": 13.6786318,
+    "lon": -89.2382527
+  },
+  "tags": {
+    "amenity": "ice_cream",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "layer": "1",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 374041412,
+  "center": {
+    "lat": 13.7163532,
+    "lon": -89.2130666
+  },
+  "tags": {
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "way",
+  "id": 374041655,
+  "center": {
+    "lat": 13.7168540,
+    "lon": -89.2062285
+  },
+  "tags": {
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "building": "roof",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Puma",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 374338658,
+  "center": {
+    "lat": 13.7080566,
+    "lon": -89.2270938
+  },
+  "tags": {
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Puma",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 374752197,
+  "center": {
+    "lat": 13.7053445,
+    "lon": -89.2120268
+  },
+  "tags": {
+    "alt_name": "Cinemark Metrocentro San Salvador",
+    "amenity": "cinema",
+    "branch": "San Salvador",
+    "brand": "Cinemark",
+    "brand:wikidata": "Q707530",
+    "building": "yes",
+    "building:levels": "2",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "height": "12",
+    "layer": "1",
+    "name": "Cinemark",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 374772574,
+  "center": {
+    "lat": 13.7078420,
+    "lon": -89.2110834
+  },
+  "tags": {
+    "alt_name": "Kentucky Fried Chicken",
+    "amenity": "fast_food",
+    "brand": "KFC",
+    "brand:wikidata": "Q524757",
+    "brand:wikipedia": "en:KFC",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "KFC",
+    "payment:lightning": "yes",
+    "source": "KG Ground Survey 2016",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 375006288,
+  "center": {
+    "lat": 13.6615139,
+    "lon": -89.1832635
+  },
+  "tags": {
+    "building": "yes",
+    "check_date:currency:XBT": "2025-03-13",
+    "currency:XBT": "yes",
+    "name": "Maxi Despensa",
+    "operator": "walmart",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket"
+  }
+},
+{
+  "type": "way",
+  "id": 375749720,
+  "center": {
+    "lat": 13.6700768,
+    "lon": -89.2551637
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Boulevard Santa Elena",
+    "brand": "Dollarcity",
+    "brand:wikidata": "Q107120814",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Dollarcity",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "variety_store"
+  }
+},
+{
+  "type": "way",
+  "id": 375996303,
+  "center": {
+    "lat": 13.6707968,
+    "lon": -89.2552865
+  },
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "McDonald's",
+    "brand:wikidata": "Q38076",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "contact:email": "servicio.cliente@mcd.com.sv",
+    "contact:phone": "+503 2509 9999",
+    "contact:website": "https://domicilio.mcdonalds.com.sv",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "name": "McDonald's",
+    "opening_hours": "Fr-Sa 06:00-01:00; Mo-Th,Su 06:00-23:00",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 378054494,
+  "center": {
+    "lat": 13.6796611,
+    "lon": -89.2765962
+  },
+  "tags": {
+    "addr:street": "Calle Chiltiupan",
+    "amenity": "fast_food",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2015"
+  }
+},
+{
+  "type": "way",
+  "id": 378055227,
+  "center": {
+    "lat": 13.6799078,
+    "lon": -89.2736656
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "Calle Chiltiupan",
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "brand:wikipedia": "en:Puma Energy",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Gasolinera Puma Chiltiupan",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 378151296,
+  "center": {
+    "lat": 13.6785361,
+    "lon": -89.2628853
+  },
+  "tags": {
+    "addr:city": "Antiguo Cuscatlán",
+    "addr:street": "Calle El Pedregal",
+    "brand": "Dollarcity",
+    "brand:wikidata": "Q107120814",
+    "building": "retail",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Dollarcity",
+    "operator": "Gold Tree",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "variety_store",
+    "source": "KG Ground Survey 2015"
+  }
+},
+{
+  "type": "way",
+  "id": 378183748,
+  "center": {
+    "lat": 13.7023947,
+    "lon": -89.2385614
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Paseo General Escalón",
+    "amenity": "bank",
+    "amenity_1": "yes",
+    "atm": "yes",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "Banco Cuscatlán",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2015"
+  }
+},
+{
+  "type": "way",
+  "id": 378235886,
+  "center": {
+    "lat": 13.6719387,
+    "lon": -89.2768563
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "4a Calle Oriente",
+    "amenity": "fast_food",
+    "branch": "Británica",
+    "brand": "McDonald's",
+    "brand:wikidata": "Q38076",
+    "brand:wikipedia": "en:McDonald's",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "contact:email": "servicio.cliente@mcd.com.sv",
+    "contact:phone": "+503 2509 9999",
+    "contact:website": "https://domicilio.mcdonalds.com.sv",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "internet_access": "wlan",
+    "name": "McDonald's",
+    "opening_hours": "Fr-Sa 06:00-23:00; Mo-Th,Su 06:00-22:00",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2015",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 378329222,
+  "center": {
+    "lat": 13.6728616,
+    "lon": -89.2856644
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "2a Calle Oriente",
+    "branch": "Santa Tecla",
+    "brand": "La Curacao",
+    "brand:wikidata": "Q5194599",
+    "brand:wikipedia": "en:Curacao (retail store)",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "La Curacao",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "source": "KG Ground Survey 2015"
+  }
+},
+{
+  "type": "way",
+  "id": 378329226,
+  "center": {
+    "lat": 13.6733544,
+    "lon": -89.2860137
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "3a Avenida Sur",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 378329234,
+  "center": {
+    "lat": 13.6729541,
+    "lon": -89.2863933
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "2a Calle Oriente",
+    "amenity": "fast_food",
+    "branch": "Santa Tecla",
+    "brand": "Pollo Campero",
+    "brand:wikidata": "Q942741",
+    "brand:wikipedia": "en:Pollo Campero",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Pollo Campero",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2015",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 378330796,
+  "center": {
+    "lat": 13.6733561,
+    "lon": -89.2865238
+  },
+  "tags": {
+    "addr:city": "Santa Tecla",
+    "addr:street": "2a Calle Oriente",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Omnisport",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "electronics",
+    "source": "KG Ground Survey 2015"
+  }
+},
+{
+  "type": "way",
+  "id": 378372735,
+  "center": {
+    "lat": 13.6714438,
+    "lon": -89.2636126
+  },
+  "tags": {
+    "amenity": "ice_cream",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premium Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 378374319,
+  "center": {
+    "lat": 13.6714315,
+    "lon": -89.2549900
+  },
+  "tags": {
+    "addr:street": "Boulevard Santa Elena",
+    "amenity": "restaurant",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-10",
+    "cuisine": "international",
+    "currency:XBT": "yes",
+    "name": "Kreef",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 378380416,
+  "center": {
+    "lat": 13.7016555,
+    "lon": -89.2313751
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Paseo General Escalón",
+    "amenity": "fast_food",
+    "brand": "Wendy's",
+    "brand:wikidata": "Q550258",
+    "brand:wikipedia": "en:Wendy's",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "Wendy's",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2015",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 378380417,
+  "center": {
+    "lat": 13.7021604,
+    "lon": -89.2313015
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Paseo General Escalón",
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "brand:wikipedia": "en:Puma Energy",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Puma",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2015"
+  }
+},
+{
+  "type": "way",
+  "id": 378380421,
+  "center": {
+    "lat": 13.7014605,
+    "lon": -89.2300878
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Paseo General Escalón",
+    "building": "yes",
+    "check_date": "2023-11-22",
+    "currency:XBT": "yes",
+    "name": "Dollar City",
+    "opening_hours": "Mo-Su 09:00-20:00",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "general",
+    "source": "KG Ground Survey 2015;local knowledge"
+  }
+},
+{
+  "type": "way",
+  "id": 379539329,
+  "center": {
+    "lat": 13.8726088,
+    "lon": -89.1724129
+  },
+  "tags": {
+    "addr:city": "Guazapa",
+    "addr:street": "Troncal del Norte",
+    "amenity": "fuel",
+    "building": "roof",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Texaco Guazapa",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2014"
+  }
+},
+{
+  "type": "way",
+  "id": 379627423,
+  "center": {
+    "lat": 13.9574528,
+    "lon": -89.1849767
+  },
+  "tags": {
+    "addr:city": "Aguilares",
+    "addr:street": "Troncal del Norte",
+    "amenity": "fuel",
+    "brand": "Texaco",
+    "brand:wikidata": "Q775060",
+    "building": "roof",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Texaco",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2014"
+  }
+},
+{
+  "type": "way",
+  "id": 382289412,
+  "center": {
+    "lat": 13.6835158,
+    "lon": -89.2304659
+  },
+  "tags": {
+    "amenity": "fast_food",
+    "branch": "Los Próceres",
+    "brand": "Wendy's",
+    "brand:wikidata": "Q550258",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "burger",
+    "currency:XBT": "yes",
+    "drive_through": "yes",
+    "name": "Wendy's",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 386418258,
+  "center": {
+    "lat": 13.7042143,
+    "lon": -89.2061446
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Boulevard Tutunichapa",
+    "brand": "PriceSmart",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "PriceSmart",
+    "opening_hours": "Mo-Su 09:00-20:30",
+    "operator": "PriceSmart",
+    "payment:cash": "yes",
+    "payment:credit_cards": "yes",
+    "payment:debit_cards": "yes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "wholesale",
+    "source": "Visit",
+    "website": "https://pricesmart.com/"
+  }
+},
+{
+  "type": "way",
+  "id": 388289891,
+  "center": {
+    "lat": 13.7007730,
+    "lon": -89.2250404
+  },
+  "tags": {
+    "amenity": "fuel",
+    "brand": "Texaco",
+    "building": "roof",
+    "check_date:currency:XBT": "2024-12-04",
+    "compressed_air": "yes",
+    "currency:XBT": "yes",
+    "name": "Texaco Salvador del Mundo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 395443160,
+  "center": {
+    "lat": 13.7005844,
+    "lon": -89.1915824
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Avenida España",
+    "branch": "Avenida España",
+    "brand": "Super Selectos",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Super Selectos",
+    "opening_hours": "Mo-Su 07:00-21:30",
+    "operator": "Grupo Calleja SA de CV",
+    "payment:cash": "yes",
+    "payment:credit_cards": "yes",
+    "payment:debit_cards": "yes",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "shop": "supermarket",
+    "source": "KG Ground Survey 2016;local knowledge;aerial imagery",
+    "website": "http://superselectos.com/"
+  }
+},
+{
+  "type": "way",
+  "id": 395906289,
+  "center": {
+    "lat": 13.6713498,
+    "lon": -89.2555131
+  },
+  "tags": {
+    "amenity": "fast_food",
+    "brand": "Taco Bell",
+    "brand:wikidata": "Q752941",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "tex-mex",
+    "currency:XBT": "yes",
+    "name": "Taco Bell",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 396093167,
+  "center": {
+    "lat": 13.7007608,
+    "lon": -89.2205912
+  },
+  "tags": {
+    "amenity": "fast_food",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "ice_cream",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 396098993,
+  "center": {
+    "lat": 13.6660378,
+    "lon": -89.2641754
+  },
+  "tags": {
+    "addr:street": "Bulevar Orden de Malta",
+    "amenity": "fast_food",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "name": "Don Pollo",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 396263621,
+  "center": {
+    "lat": 13.7006424,
+    "lon": -89.2136014
+  },
+  "tags": {
+    "addr:street": "Alameda Franklin Delano Roosevelt",
+    "amenity": "bank",
+    "brand": "BAC Credomatic",
+    "brand:wikidata": "Q5715556",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "BAC Credomatic",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 396263636,
+  "center": {
+    "lat": 13.7009034,
+    "lon": -89.2155915
+  },
+  "tags": {
+    "addr:street": "Boulevard de Los Héroes",
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "check_date:currency:XBT": "2024-12-03",
+    "compressed_air": "yes",
+    "currency:XBT": "yes",
+    "landuse": "retail",
+    "name": "Puma Roosevelt",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 396763278,
+  "center": {
+    "lat": 13.7100699,
+    "lon": -89.2036819
+  },
+  "tags": {
+    "addr:city": "San Salvador",
+    "addr:street": "Avenida José Gustavo Guerrero",
+    "amenity": "fast_food",
+    "branch": "Fuente Luminosa",
+    "brand": "Pollo Campero",
+    "brand:wikidata": "Q942741",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-02",
+    "cuisine": "chicken",
+    "currency:XBT": "yes",
+    "layer": "1",
+    "name": "Pollo Campero",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "way",
+  "id": 396775432,
+  "center": {
+    "lat": 13.7350915,
+    "lon": -89.2174859
+  },
+  "tags": {
+    "amenity": "fuel",
+    "brand": "Puma",
+    "brand:wikidata": "Q7259769",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "Puma La Gloria (Constitución y Calle al Volcán)",
+    "opening_hours": "24/7",
+    "operator": "Puma",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "self_service": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 396777618,
+  "center": {
+    "lat": 13.7156736,
+    "lon": -89.2145905
+  },
+  "tags": {
+    "addr:street": "Calle San Antonio Abad",
+    "amenity": "ice_cream",
+    "building": "yes",
+    "check_date:currency:XBT": "2024-12-03",
+    "currency:XBT": "yes",
+    "name": "BOSTON Premiun Ice Cream",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+},
+{
+  "type": "way",
+  "id": 396788110,
+  "center": {
+    "lat": 13.7213695,
+    "lon": -89.2168946
+  },
+  "tags": {
+    "addr:street": "Avenida Bernal",
+    "amenity": "fuel",
+    "building": "roof",
+    "check_date:currency:XBT": "2024-12-04",
+    "currency:XBT": "yes",
+    "name": "Dlc",
+    "payment:lightning": "yes",
+    "payment:onchain": "yes",
+    "source": "KG Ground Survey 2016"
+  }
+}
+
+  ]
+}

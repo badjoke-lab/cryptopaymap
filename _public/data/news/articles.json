@@ -1,0 +1,36 @@
+[
+  {
+    "id": "a1",
+    "title": "Cafe in Tokyo now accepts BTC",
+    "publisher": "Example News",
+    "published_at": "2025-09-01",
+    "summary": "Local cafe adopts Bitcoin payments.",
+    "coins": [
+      "BTC"
+    ],
+    "cities": [
+      "Tokyo"
+    ],
+    "countries": [
+      "Japan"
+    ],
+    "url": "https://example.com/a1"
+  },
+  {
+    "id": "a2",
+    "title": "Berlin shops adopt ETH",
+    "publisher": "Example Times",
+    "published_at": "2025-09-04",
+    "summary": "More stores in Berlin accept ETH.",
+    "coins": [
+      "ETH"
+    ],
+    "cities": [
+      "Berlin"
+    ],
+    "countries": [
+      "Germany"
+    ],
+    "url": "https://example.com/a2"
+  }
+]
