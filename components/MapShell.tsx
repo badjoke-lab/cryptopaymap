@@ -1,12 +1,14 @@
 // components/MapShell.tsx
 "use client";
+
+import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster/dist/MarkerCluster.css";
 import "leaflet.markercluster/dist/MarkerCluster.Default.css";
+
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import SideModal from "./SideModal";
 import MapDetail from "./MapDetail";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import "leaflet.markercluster";
 
 /** ---- モバイル専用: Filters FAB / Sheet ---- */
@@ -32,6 +34,7 @@ function MobileFilterFab({ count, onOpen }: { count: number; onOpen: () => void 
     </button>
   );
 }
+
 function MobileFilterSheet(props: {
   open: boolean; onClose: () => void;
   coin: string; setCoin: (v: string) => void; coinOptions: string[];
@@ -46,18 +49,21 @@ function MobileFilterSheet(props: {
     city, setCity, cityOptions,
     onApply, onReset,
   } = props;
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [open]);
+
   if (!open) return null;
+
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-[1050]" onClick={onClose} />
       <div
         className="fixed left-0 right-0 bottom-0 z-[1060] lg:hidden
-                      rounded-t-2xl bg-white shadow-xl p-4 pb-[calc(env(safe-area-inset-bottom,0)+12px)]
-                      max-h-[80svh] overflow-y-auto"
+                   rounded-t-2xl bg-white shadow-xl p-4 pb-[calc(env(safe-area-inset-bottom,0)+12px)]
+                   max-h-[80svh] overflow-y-auto"
       >
         <div className="h-1.5 w-10 bg-gray-300 rounded-full mx-auto mb-3" />
         <h3 className="text-base font-semibold mb-3">Filters</h3>
@@ -103,10 +109,19 @@ const blueIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowUrl: "",
 });
+
 type Place = {
-  id: string; name: string; city?: string; country?: string; category?: string; coins?: string[];
-  last_verified?: string; lat: number; lng: number; address?: string; url?: string;
-  // 追加キーも保持して MapDetail に渡す
+  id: string;
+  name: string;
+  city?: string;
+  country?: string;
+  category?: string;
+  coins?: string[];
+  last_verified?: string;
+  lat: number;
+  lng: number;
+  address?: string;
+  url?: string;
   [key: string]: any;
 };
 type IndexCity = { path: string };
@@ -119,10 +134,16 @@ const runtimeBase = () => {
 };
 const withBase = (p: string) => `${runtimeBase()}${p.startsWith("/") ? p : `/${p}`}`;
 const safeBtnId = (id: string) => `vd_${id.replace(/[^a-zA-Z0-9_-]/g, "_")}`;
+
 async function fetchJSON<T = any>(url: string) {
-  try { const r = await fetch(url, { cache: "no-store" }); return r.ok ? await r.json() : null; }
-  catch { return null; }
+  try {
+    const r = await fetch(url, { cache: "no-store" });
+    return r.ok ? ((await r.json()) as T) : null;
+  } catch {
+    return null;
+  }
 }
+
 const toNum = (v: any) =>
   typeof v === "number" && Number.isFinite(v) ? v :
   typeof v === "string" ? (() => { const n = parseFloat(v.trim()); return Number.isFinite(n) ? n : null; })() : null;
@@ -235,11 +256,11 @@ export default function MapShell() {
     if (mapRef.current) return;
     const el = containerRef.current; if (!el) return;
 
-    // StrictMode対策
+    // StrictMode対策: Leaflet が同要素に2回アタッチされないように
     if ((el as any)._leaflet_id) {
       try {
         (el as any)._leaflet_id = null;
-        (el as any).innerHTML = "";
+        el.innerHTML = "";
       } catch {}
     }
 
@@ -248,7 +269,7 @@ export default function MapShell() {
     const setZoomPos = () => {
       const h = el.getBoundingClientRect().height;
       const pos = (h < 280 || window.innerWidth < 1024) ? "bottomright" : "topright";
-      m.zoomControl.setPosition(pos as any);
+      (m as any).zoomControl?.setPosition(pos as any);
     };
     setZoomPos();
     const onResize = () => setZoomPos();
@@ -269,7 +290,10 @@ export default function MapShell() {
     groupRef.current.addTo(m);
 
     setTimeout(() => m.invalidateSize(), 0);
-    return () => { window.removeEventListener("resize", onResize); try { m.remove(); } finally { mapRef.current = null; } };
+    return () => {
+      window.removeEventListener("resize", onResize);
+      try { m.remove(); } finally { mapRef.current = null; }
+    };
   }, []);
 
   useEffect(() => {
@@ -280,7 +304,9 @@ export default function MapShell() {
 
   /* マーカー描画 */
   useEffect(() => {
-    const m = mapRef.current, g = groupRef.current as any; if (!m || !g) return;
+    const m = mapRef.current, g = groupRef.current as any;
+    if (!m || !g) return;
+
     g.clearLayers?.(); if (g instanceof L.LayerGroup) g.clearLayers();
     const b = L.latLngBounds([]);
 
@@ -310,10 +336,11 @@ export default function MapShell() {
       mk.bindPopup(html, { autoPan: true, keepInView: true, autoClose: false });
       mk.on("click", () => mk.openPopup());
 
-      const popup = mk.getPopup();
+      // TS/実行時とも安全に: イベントの都度 getPopup() → getElement() を取り直し
       mk.on("popupopen", () => {
         requestAnimationFrame(() => {
-          const el = popup.getElement() as HTMLElement | null;
+          const popupNow = (mk as any).getPopup?.();
+          const el = popupNow?.getElement?.() as HTMLElement | null | undefined;
           if (!el) return;
           const btn = el.querySelector<HTMLButtonElement>(`#${btnId}`);
           if (!btn) return;
@@ -329,8 +356,10 @@ export default function MapShell() {
           btn.addEventListener("click", handler);
         });
       });
+
       mk.on("popupclose", () => {
-        const el = popup.getElement() as HTMLElement | null;
+        const popupNow = (mk as any).getPopup?.();
+        const el = popupNow?.getElement?.() as HTMLElement | null | undefined;
         if (!el) return;
         const btn = el.querySelector<HTMLButtonElement>(`#${btnId}`);
         if (btn) {
@@ -345,7 +374,7 @@ export default function MapShell() {
       b.extend([p.lat, p.lng]);
     });
 
-    if (filtered.length) mapRef.current!.fitBounds(b.pad(0.2));
+    if (filtered.length) m.fitBounds(b.pad(0.2));
   }, [places, coin, category, city]);
 
   /* PC用セレクト */
@@ -403,12 +432,7 @@ export default function MapShell() {
         title={selected?.name ?? ""}
         onClose={() => { setSelectedId(null); clearSelectParam(); }}
       >
-        {selected && (
-          <MapDetail
-            place={selected as any}
-            onClose={() => { setSelectedId(null); clearSelectParam(); }}
-          />
-        )}
+        {selected && <MapDetail place={selected as any} />}
       </SideModal>
     </div>
   );
