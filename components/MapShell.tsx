@@ -310,10 +310,11 @@ export default function MapShell() {
       mk.bindPopup(html, { autoPan: true, keepInView: true, autoClose: false });
       mk.on("click", () => mk.openPopup());
 
-      const popup = mk.getPopup();
       mk.on("popupopen", () => {
         requestAnimationFrame(() => {
-          const el = popup.getElement() as HTMLElement | null;
+          const popupNow = mk.getPopup?.();
+          if (!popupNow || typeof (popupNow as any).getElement !== "function") return;
+          const el = (popupNow as any).getElement() as HTMLElement | null;
           if (!el) return;
           const btn = el.querySelector<HTMLButtonElement>(`#${btnId}`);
           if (!btn) return;
@@ -330,7 +331,9 @@ export default function MapShell() {
         });
       });
       mk.on("popupclose", () => {
-        const el = popup.getElement() as HTMLElement | null;
+        const popupNow = mk.getPopup?.();
+        if (!popupNow || typeof (popupNow as any).getElement !== "function") return;
+        const el = (popupNow as any).getElement() as HTMLElement | null;
         if (!el) return;
         const btn = el.querySelector<HTMLButtonElement>(`#${btnId}`);
         if (btn) {
