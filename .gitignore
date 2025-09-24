@@ -9,3 +9,8 @@ out
 components/0_*.tsx
 **/*.bak.*
 __backup__/
+
+# backups
+components/0_*.tsx
+**/*.bak.*
+__backup__/
