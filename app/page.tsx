@@ -1,3 +1,8 @@
 // app/page.tsx
-export { default } from "./map/page";
-export { metadata } from "./map/page"; // map/page.tsx に metadata があればそのまま使う
+import MapPage, { metadata as mapMetadata } from "./map/page";
+import type { Metadata } from "next";
+
+// このモジュール内で値として export する（re-export は避ける）
+export const metadata: Metadata = mapMetadata;
+
+export default MapPage;
