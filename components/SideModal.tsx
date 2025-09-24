@@ -1,7 +1,7 @@
 // components/SideModal.tsx
 "use client";
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 
 type Props = {
@@ -16,19 +16,28 @@ function BodyPortal({ children }: { children: React.ReactNode }) {
   return ReactDOM.createPortal(children as any, document.body);
 }
 
-export default function SideModal({ open, title = "Details", onClose, children }: Props) {
+export default function SideModal({
+  open,
+  title = "Details",
+  onClose,
+  children,
+}: Props) {
+  // ESC で閉じる
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
+  // 背景スクロール固定
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = prev; };
+    return () => {
+      document.body.style.overflow = prev;
+    };
   }, [open]);
 
   if (!open) return null;
@@ -37,10 +46,10 @@ export default function SideModal({ open, title = "Details", onClose, children }
 
   return (
     <BodyPortal>
-      {/* 背景 */}
-      <div className="fixed inset-0 bg-black/30 z-[1999]" onClick={onClose} />
+      {/* 背景オーバーレイ（パネルより下） */}
+      <div className="fixed inset-0 bg-black/30 z-[2000]" onClick={onClose} />
 
-      {/* ドロワー本体（位置はそのまま） */}
+      {/* 右側ドロワー（従来どおり top:0） */}
       <aside
         role="dialog"
         aria-modal="true"
@@ -48,35 +57,36 @@ export default function SideModal({ open, title = "Details", onClose, children }
         onClick={stop}
         className="fixed right-0 top-0 h-[100dvh] w-[min(520px,92vw)]
                    bg-white shadow-2xl border-l border-neutral-200
-                   flex flex-col z-[2000] relative"
+                   flex flex-col z-[2001]"
       >
-        {/* フローティング閉じるボタン（赤丸の位置） */}
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label="Close"
-          className="absolute w-10 h-10 rounded-full bg-white border shadow
-                     flex items-center justify-center text-[18px] hover:bg-neutral-50"
-          style={{
-            // ページヘッダーの高さ + 8px 分だけ下げて、右端から 12px
-            top: "calc(var(--cpm-header-h, 56px) + 8px)",
-            right: 12,
-            zIndex: 5,
-          }}
-        >
-          ✕
-        </button>
+        {/* 画面読み上げ用タイトル（ヘッダーUIは消す） */}
+        <h2 className="sr-only">{title}</h2>
 
-        {/* タイトル行（閉じるボタンはここには置かない） */}
-        <div className="sticky top-0 z-[1] px-4 py-3 border-b bg-white">
-          <h2 className="text-base font-semibold truncate">{title}</h2>
-        </div>
-
-        {/* 内容 */}
-        <div className="min-h-0 flex-1 overflow-y-auto bg-white">
+        {/* ヘッダー高さぶんだけ上に余白を入れて内容を始める */}
+        <div className="min-h-0 flex-1 overflow-y-auto bg-white px-4"
+             style={{ paddingTop: "calc(var(--cpm-header-h,56px) + 16px)" }}>
           {children}
         </div>
       </aside>
+
+      {/* フローティングの“×”（赤丸位置）。ヘッダー下に固定、常に最前面 */}
+      <button
+        type="button"
+        aria-label="Close"
+        onClick={onClose}
+        className="fixed z-[2002] rounded-full border shadow bg-white/95 hover:bg-white"
+        style={{
+          top: "calc(var(--cpm-header-h,56px) + 12px)",
+          right: 16,
+          width: 36,
+          height: 36,
+          lineHeight: "36px",
+          textAlign: "center",
+          fontSize: 18,
+        }}
+      >
+        ✕
+      </button>
     </BodyPortal>
   );
 }
