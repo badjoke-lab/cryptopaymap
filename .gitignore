@@ -4,3 +4,8 @@ out
 .env
 .env.*
 .DS_Store
+
+# backups
+components/0_*.tsx
+**/*.bak.*
+__backup__/
