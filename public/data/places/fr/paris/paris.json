@@ -1,1 +1,831 @@
-[{"id":"osm:node:691614099","name":"Khara Tuki","category":"jewelry","lat":48.8646929,"lng":2.3500426,"country":"FR","city":"Paris","coins":["BTC"],"address":"Khara Tuki, 2, Passage du Grand-Cerf, Quartier de Bonne-Nouvelle, Paris 2e Arrondissement, Paris, Île-de-France, France métropolitaine, 75002, France","website":"https://khara-tuki.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","currency:XBT","name","payment:lightning","payment:lightning_contactless","payment:onchain","phone"],"phone":"+33 6 85 38 13 86","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:815830612","name":"Le Greffulhe","category":"restaurant","lat":48.8731505,"lng":2.3255205,"country":"FR","city":"Paris","coins":["BTC"],"address":"Le Greffulhe, 29, Rue des Mathurins, Quartier de la Madeleine, Paris 8e Arrondissement, Paris, Île-de-France, France métropolitaine, 75008, France","website":"https://legreffulhe.fr/","hours":"Mo-Fr 07:00-02:00; Sa-Su 11:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date","check_date:currency:XBT","cuisine","currency:XBT","indoor_seating","payment:lightning","payment:onchain"],"phone":"+33142658087","cuisine":"french","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:1089313449","name":"L'invitée","category":"restaurant","lat":48.8499899,"lng":2.3459219,"country":"FR","city":"Paris","coins":["BTC"],"address":"L'invitée, 25, Rue Thénard, Quartier de la Sorbonne, Paris 5e Arrondissement, Paris, France métropolitaine, 75005, France","website":"https://www.linvitee.fr/","hours":"Tu-Sa 12:00-15:00, 19:00-23:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","contact:facebook","contact:instagram","cuisine","currency:XBT","currency:XMR","payment:lightning","payment:onchain"],"phone":"+33 1 43 54 59 47","instagram":"l1vitee","cuisine":"french","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:1901202883","name":"Danse Cadix (Rock4You)","category":"dancing_school","lat":48.8344837,"lng":2.2883046,"country":"FR","city":"Paris","coins":["BTC"],"address":"Danse Cadix (Rock4You), 2, Rue de Cadix, Quartier Saint-Lambert, Paris 15e Arrondissement, Paris, France métropolitaine, 75015, France","website":"https://www.danse-cadix.fr/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","contact:city","contact:housenumber","contact:postcode","contact:street","payment:cash","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":true}},{"id":"osm:node:2244578060","name":"N'Importe Quoi","category":"bar","lat":48.8607815,"lng":2.3438855,"country":"FR","city":"Paris","coins":["BTC"],"address":"N'Importe Quoi, 16, Rue du Roule, Quartier Les Halles, Paris 1er Arrondissement, Paris, France métropolitaine, 75001, France","website":"https://www.nimportequoi.fr/","hours":"Mo-Su 18:00-05:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date","contact:email","contact:facebook","contact:instagram","currency:XBT","payment:lightning","payment:onchain"],"phone":"+33 1 40 26 29 71","instagram":"https://www.instagram.com/nimportequoibar/?hl=fr","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:2630584155","name":"Le Sof's Bar","category":"bar","lat":48.866108,"lng":2.3480098,"country":"FR","city":"Paris","coins":["BTC"],"address":"Le Sof's Bar, 43, Rue Saint-Sauveur, Quartier de Bonne-Nouvelle, Paris 2e Arrondissement, Paris, Île-de-France, France métropolitaine, 75002, France","website":"https://sofsbar.fr","hours":"Mo-Su 15:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date","check_date:currency:XBT","contact:city","contact:housenumber","contact:phone","payment:lightning","payment:onchain"],"phone":"+33 6 73 29 15 17","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:2996093212","name":"Rock that Alésia (Rock4You, Vendredis)","category":"other","lat":48.8295775,"lng":2.3245668,"country":"FR","city":"Paris","coins":["BTC"],"address":"Rock that Alésia (Rock4You, Vendredis), 16, Rue du Moulin Vert, Quartier du Petit-Montrouge, Paris 14e Arrondissement, Paris, France métropolitaine, 75014, France","website":"https://www.rock4you.dance/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date:currency:XBT","currency:XBT","dance:style","leisure","name","operator","payment:cash","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true}},{"id":"osm:node:3239628074","name":"Boucherie Moderne","category":"butcher","lat":48.8506104,"lng":2.3925275,"country":"FR","city":"Paris","coins":["BTC"],"address":"Boucherie Moderne, 249, Boulevard Voltaire, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France","website":"https://www.boucherie-gillotjohn.fr/","hours":"Tu-Fr 08:30-13:00,15:30-19:30; Sa 08:30-19:30; Su 08:30-13:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","contact:email","contact:phone","currency:XBT","delivery","name","opening_hours","payment:lightning","payment:onchain"],"phone":"+33 1 43 71 85 38","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:4136415192","name":"Barnacle","category":"optician","lat":48.8456492,"lng":2.2776216,"country":"FR","city":"Paris","coins":["BTC"],"address":"Barnacle, Rue de la Convention, Quartier de Javel, Paris 15e Arrondissement, Paris, France métropolitaine, 75015, France","hours":"Mo 13:00-19:30; Tu 10:00-13:00,14:00-19:30; We-Sa 10:00-19:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date","currency:XBT","name","opening_hours","payment:lightning","payment:lightning_contactless","payment:onchain","phone","shop"],"phone":"+33 7 50 66 89 08","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:5602730924","name":"Le Carlie","category":"bar","lat":48.8626955,"lng":2.3521138,"country":"FR","city":"Paris","coins":["BTC"],"address":"Le Carlie, 177, Rue Saint-Martin, Quartier Sainte-Avoye, Paris 3e Arrondissement, Paris, France métropolitaine, 75003, France","website":"https://www.lecarlie.fr/","hours":"Mo-Fr 16:00-02:00; Sa 15:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","brewery","check_date","check_date:currency:XBT","contact:city","contact:facebook","payment:cash","payment:credit_cards","payment:lightning","payment:onchain"],"phone":"+33 6 21 08 71 24","instagram":"le_carlie","payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true}},{"id":"osm:node:5729212321","name":"Chez Ginette","category":"restaurant","lat":48.8897379,"lng":2.3387128,"country":"FR","city":"Paris","coins":["BTC"],"address":"Chez Ginette, 101, Rue Caulaincourt, Quartier des Grandes-Carrières, Paris 18e Arrondissement, Paris, France métropolitaine, 75018, France","hours":"Mo-Su 08:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date","check_date:currency:XBT","contact:city","contact:housenumber","contact:instagram","payment:lightning","payment:onchain"],"phone":"+33 9 67 36 22 27","instagram":"chezginette18","cuisine":"pizza;burger;french;brasserie;dessert;salad","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:10772576426","name":"Itiopia","category":"grocery","lat":48.8900044,"lng":2.345774,"country":"FR","city":"Paris","coins":["BTC"],"address":"Itiopia, 51, Rue Ramey, Quartier de Clignancourt, Paris 18e Arrondissement, Paris, Île-de-France, France métropolitaine, 75018, France","hours":"Tu-Su 11:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","currency:XBT","name","opening_hours","payment:lightning","payment:lightning_contactless","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12258277242","name":"Danse Volontaire (Rock4You)","category":"dancing_school","lat":48.8416222,"lng":2.3074957,"country":"FR","city":"Paris","coins":["BTC"],"address":"Danse Volontaire (Rock4You), 198, Rue de Vaugirard, Quartier Necker, Paris 15e Arrondissement, Paris, Île-de-France, France métropolitaine, 75015, France","website":"https://www.danse-volontaires.fr/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","currency:XBT","dance:style","name","operator","payment:cash","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":true}},{"id":"osm:node:12258290051","name":"Rock That Boat (Rock4You, Lundis)","category":"bar","lat":48.8621181,"lng":2.3224959,"country":"FR","city":"Paris","coins":["BTC"],"address":"Rock That Boat (Rock4You, Lundis), Promenade Édouard Glissant, Quartier des Invalides, Paris 7e Arrondissement, Paris, France métropolitaine, 75007, France","website":"https://www.rock4you.dance/","hours":"Mo 19:00-00:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:postcode","addr:street","amenity","check_date:currency:XBT","currency:XBT","dance:style","name","opening_hours","operator","payment:cash","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true}},{"id":"osm:node:12336006611","name":"HomeProjectRentals","category":"tool_hire","lat":48.8758003,"lng":2.4037261,"country":"FR","city":"Paris","coins":["BTC"],"address":"HomeProjectRentals, Villa Hortense Dury-Vasselon, Quartier Saint-Fargeau, Paris 20e Arrondissement, Paris, Île-de-France, France métropolitaine, 75020, France","website":"https://www.leboncoin.fr/profile/c1066ddf-5ea8-4245-8382-4a6f4ac37c0d/offers","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:postcode","addr:street","check_date:currency:XBT","currency:XBT","description","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12908609013","name":"Dr SYED Abbas (General practitioner)","category":"doctors","lat":48.872113,"lng":2.3404427,"country":"FR","city":"Paris","coins":["BTC"],"address":"Dr SYED Abbas (General practitioner), 20, Boulevard Montmartre, Quartier du Faubourg-Montmartre, Paris 9e Arrondissement, Paris, Île-de-France, France métropolitaine, 75009, France","website":"https://air-dr.com/webapp/#doctor-profile&id=1025403","hours":"Mo-Su 10:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","currency:XBT","healthcare","healthcare:speciality","name","payment:lightning","payment:onchain"],"phone":"+33 7 56 85 99 00","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12912120793","name":"Fais ci Fais ça","category":"other","lat":48.857873,"lng":2.2852746,"country":"FR","city":"Paris","coins":["BTC"],"address":"Fais ci Fais ça, 5, Rue Marietta Alboni, Quartier de la Muette, Paris 16e Arrondissement, Paris, Île-de-France, France métropolitaine, 75016, France","website":"http://www.fais-ci-fais-ca.com/","hours":"Mo-Su 09:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","check_date:currency:XBT","craft","currency:XBT","email","name","payment:lightning"],"phone":"+33 6 01 99 73 62","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:way:76032165","name":"Bitcoin Bazar","category":"yes","lat":48.8905017,"lng":2.333032,"country":"FR","city":"Paris","coins":["BTC"],"address":"27, Rue Eugène Carrière, Quartier des Grandes-Carrières, Paris 18e Arrondissement, Paris, France métropolitaine, 75018, France","website":"https://bitcoinbazar.fr/","hours":"Mo-Fr 10:00-19:30; Sa 10:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","check_date:currency:XBT","contact:instagram","currency:XBT","name","opening_hours","payment:lightning","payment:onchain"],"instagram":"bitcoinbazar2121","twitter":"https://x.com/bitcoinbazar21","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:way:868175261","name":"Bistrot du Passage","category":"restaurant","lat":48.8542093,"lng":2.3253329,"country":"FR","city":"Paris","coins":["BTC"],"address":"Cantinetta Ventura, Allée de Beaupassage - Antoine Alléno, Quartier Saint-Thomas-d'Aquin, Paris 7e Arrondissement, Paris, France métropolitaine, 75007, France","website":"https://www.bistrot-du-passage.com/","hours":"Mo-Su 08:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","building","check_date","check_date:currency:XBT","cuisine","currency:XBT","payment:lightning","payment:onchain"],"phone":"+33 (0)1 43 21 30 30","cuisine":"french","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}}]
+[
+  {
+    "id": "osm:node:691614099",
+    "name": "⚠︎ Khara Tuki",
+    "category": "jewelry · Unverified",
+    "lat": 48.8646929,
+    "lng": 2.3500426,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Khara Tuki, 2, Passage du Grand-Cerf, Quartier de Bonne-Nouvelle, Paris 2e Arrondissement, Paris, Île-de-France, France métropolitaine, 75002, France",
+    "website": "https://khara-tuki.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "phone"
+    ],
+    "phone": "+33 6 85 38 13 86",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:815830612",
+    "name": "⚠︎ Le Greffulhe",
+    "category": "restaurant · Unverified",
+    "lat": 48.8731505,
+    "lng": 2.3255205,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Le Greffulhe, 29, Rue des Mathurins, Quartier de la Madeleine, Paris 8e Arrondissement, Paris, Île-de-France, France métropolitaine, 75008, France",
+    "website": "https://legreffulhe.fr/",
+    "hours": "Mo-Fr 07:00-02:00; Sa-Su 11:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "indoor_seating",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33142658087",
+    "cuisine": "french",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:1089313449",
+    "name": "⚠︎ L'invitée",
+    "category": "restaurant · Unverified",
+    "lat": 48.8499899,
+    "lng": 2.3459219,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "L'invitée, 25, Rue Thénard, Quartier de la Sorbonne, Paris 5e Arrondissement, Paris, France métropolitaine, 75005, France",
+    "website": "https://www.linvitee.fr/",
+    "hours": "Tu-Sa 12:00-15:00, 19:00-23:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "cuisine",
+      "currency:XBT",
+      "currency:XMR",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 1 43 54 59 47",
+    "instagram": "l1vitee",
+    "cuisine": "french",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:1901202883",
+    "name": "⚠︎ Danse Cadix (Rock4You)",
+    "category": "dancing_school · Unverified",
+    "lat": 48.8344837,
+    "lng": 2.2883046,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Danse Cadix (Rock4You), 2, Rue de Cadix, Quartier Saint-Lambert, Paris 15e Arrondissement, Paris, France métropolitaine, 75015, France",
+    "website": "https://www.danse-cadix.fr/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:housenumber",
+      "contact:postcode",
+      "contact:street",
+      "payment:cash",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:2244578060",
+    "name": "⚠︎ N'Importe Quoi",
+    "category": "bar · Unverified",
+    "lat": 48.8607815,
+    "lng": 2.3438855,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "N'Importe Quoi, 16, Rue du Roule, Quartier Les Halles, Paris 1er Arrondissement, Paris, France métropolitaine, 75001, France",
+    "website": "https://www.nimportequoi.fr/",
+    "hours": "Mo-Su 18:00-05:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 1 40 26 29 71",
+    "instagram": "https://www.instagram.com/nimportequoibar/?hl=fr",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:2630584155",
+    "name": "⚠︎ Le Sof's Bar",
+    "category": "bar · Unverified",
+    "lat": 48.866108,
+    "lng": 2.3480098,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Le Sof's Bar, 43, Rue Saint-Sauveur, Quartier de Bonne-Nouvelle, Paris 2e Arrondissement, Paris, Île-de-France, France métropolitaine, 75002, France",
+    "website": "https://sofsbar.fr",
+    "hours": "Mo-Su 15:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:housenumber",
+      "contact:phone",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 6 73 29 15 17",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:2996093212",
+    "name": "⚠︎ Rock that Alésia (Rock4You, Vendredis)",
+    "category": "other · Unverified",
+    "lat": 48.8295775,
+    "lng": 2.3245668,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rock that Alésia (Rock4You, Vendredis), 16, Rue du Moulin Vert, Quartier du Petit-Montrouge, Paris 14e Arrondissement, Paris, France métropolitaine, 75014, France",
+    "website": "https://www.rock4you.dance/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "dance:style",
+      "leisure",
+      "name",
+      "operator",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:3239628074",
+    "name": "⚠︎ Boucherie Moderne",
+    "category": "butcher · Unverified",
+    "lat": 48.8506104,
+    "lng": 2.3925275,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Boucherie Moderne, 249, Boulevard Voltaire, Quartier Sainte-Marguerite, Paris 11e Arrondissement, Paris, France métropolitaine, 75011, France",
+    "website": "https://www.boucherie-gillotjohn.fr/",
+    "hours": "Tu-Fr 08:30-13:00,15:30-19:30; Sa 08:30-19:30; Su 08:30-13:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "contact:email",
+      "contact:phone",
+      "currency:XBT",
+      "delivery",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 1 43 71 85 38",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:4136415192",
+    "name": "⚠︎ Barnacle",
+    "category": "optician · Unverified",
+    "lat": 48.8456492,
+    "lng": 2.2776216,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Barnacle, Rue de la Convention, Quartier de Javel, Paris 15e Arrondissement, Paris, France métropolitaine, 75015, France",
+    "hours": "Mo 13:00-19:30; Tu 10:00-13:00,14:00-19:30; We-Sa 10:00-19:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "phone",
+      "shop"
+    ],
+    "phone": "+33 7 50 66 89 08",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:5602730924",
+    "name": "⚠︎ Le Carlie",
+    "category": "bar · Unverified",
+    "lat": 48.8626955,
+    "lng": 2.3521138,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Le Carlie, 177, Rue Saint-Martin, Quartier Sainte-Avoye, Paris 3e Arrondissement, Paris, France métropolitaine, 75003, France",
+    "website": "https://www.lecarlie.fr/",
+    "hours": "Mo-Fr 16:00-02:00; Sa 15:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "brewery",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:facebook",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 6 21 08 71 24",
+    "instagram": "le_carlie",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:5729212321",
+    "name": "⚠︎ Chez Ginette",
+    "category": "restaurant · Unverified",
+    "lat": 48.8897379,
+    "lng": 2.3387128,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chez Ginette, 101, Rue Caulaincourt, Quartier des Grandes-Carrières, Paris 18e Arrondissement, Paris, France métropolitaine, 75018, France",
+    "hours": "Mo-Su 08:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:city",
+      "contact:housenumber",
+      "contact:instagram",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 9 67 36 22 27",
+    "instagram": "chezginette18",
+    "cuisine": "pizza;burger;french;brasserie;dessert;salad",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:10772576426",
+    "name": "⚠︎ Itiopia",
+    "category": "grocery · Unverified",
+    "lat": 48.8900044,
+    "lng": 2.345774,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Itiopia, 51, Rue Ramey, Quartier de Clignancourt, Paris 18e Arrondissement, Paris, Île-de-France, France métropolitaine, 75018, France",
+    "hours": "Tu-Su 11:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12258277242",
+    "name": "⚠︎ Danse Volontaire (Rock4You)",
+    "category": "dancing_school · Unverified",
+    "lat": 48.8416222,
+    "lng": 2.3074957,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Danse Volontaire (Rock4You), 198, Rue de Vaugirard, Quartier Necker, Paris 15e Arrondissement, Paris, Île-de-France, France métropolitaine, 75015, France",
+    "website": "https://www.danse-volontaires.fr/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "dance:style",
+      "name",
+      "operator",
+      "payment:cash",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12258290051",
+    "name": "⚠︎ Rock That Boat (Rock4You, Lundis)",
+    "category": "bar · Unverified",
+    "lat": 48.8621181,
+    "lng": 2.3224959,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rock That Boat (Rock4You, Lundis), Promenade Édouard Glissant, Quartier des Invalides, Paris 7e Arrondissement, Paris, France métropolitaine, 75007, France",
+    "website": "https://www.rock4you.dance/",
+    "hours": "Mo 19:00-00:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "dance:style",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12336006611",
+    "name": "⚠︎ HomeProjectRentals",
+    "category": "tool_hire · Unverified",
+    "lat": 48.8758003,
+    "lng": 2.4037261,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "HomeProjectRentals, Villa Hortense Dury-Vasselon, Quartier Saint-Fargeau, Paris 20e Arrondissement, Paris, Île-de-France, France métropolitaine, 75020, France",
+    "website": "https://www.leboncoin.fr/profile/c1066ddf-5ea8-4245-8382-4a6f4ac37c0d/offers",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12908609013",
+    "name": "⚠︎ Dr SYED Abbas (General practitioner)",
+    "category": "doctors · Unverified",
+    "lat": 48.872113,
+    "lng": 2.3404427,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Dr SYED Abbas (General practitioner), 20, Boulevard Montmartre, Quartier du Faubourg-Montmartre, Paris 9e Arrondissement, Paris, Île-de-France, France métropolitaine, 75009, France",
+    "website": "https://air-dr.com/webapp/#doctor-profile&id=1025403",
+    "hours": "Mo-Su 10:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "healthcare",
+      "healthcare:speciality",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 7 56 85 99 00",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12912120793",
+    "name": "⚠︎ Fais ci Fais ça",
+    "category": "other · Unverified",
+    "lat": 48.857873,
+    "lng": 2.2852746,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Fais ci Fais ça, 5, Rue Marietta Alboni, Quartier de la Muette, Paris 16e Arrondissement, Paris, Île-de-France, France métropolitaine, 75016, France",
+    "website": "http://www.fais-ci-fais-ca.com/",
+    "hours": "Mo-Su 09:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "craft",
+      "currency:XBT",
+      "email",
+      "name",
+      "payment:lightning"
+    ],
+    "phone": "+33 6 01 99 73 62",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:way:76032165",
+    "name": "⚠︎ Bitcoin Bazar",
+    "category": "yes · Unverified",
+    "lat": 48.8905017,
+    "lng": 2.333032,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "27, Rue Eugène Carrière, Quartier des Grandes-Carrières, Paris 18e Arrondissement, Paris, France métropolitaine, 75018, France",
+    "website": "https://bitcoinbazar.fr/",
+    "hours": "Mo-Fr 10:00-19:30; Sa 10:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "instagram": "bitcoinbazar2121",
+    "twitter": "https://x.com/bitcoinbazar21",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:way:868175261",
+    "name": "⚠︎ Bistrot du Passage",
+    "category": "restaurant · Unverified",
+    "lat": 48.8542093,
+    "lng": 2.3253329,
+    "country": "FR",
+    "city": "Paris",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Cantinetta Ventura, Allée de Beaupassage - Antoine Alléno, Quartier Saint-Thomas-d'Aquin, Paris 7e Arrondissement, Paris, France métropolitaine, 75007, France",
+    "website": "https://www.bistrot-du-passage.com/",
+    "hours": "Mo-Su 08:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+33 (0)1 43 21 30 30",
+    "cuisine": "french",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  }
+]

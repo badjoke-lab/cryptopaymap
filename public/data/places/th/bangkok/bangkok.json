@@ -1,1 +1,3311 @@
-[{"id":"osm:node:2769486127","name":"Chitbeer","category":"bar","lat":13.909277,"lng":100.490859,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chitbeer, หมู่ 1, ทางรอบเกาะ, บ้านโอ่งอ่าง, ตำบลเกาะเกร็ด, อำเภอปากเกร็ด, จังหวัดนนทบุรี, 11121, ประเทศไทย","website":"https://chitbrewery.com/","hours":"Sa,Su 12:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","payment:lightning"],"phone":"+66 89 799 1123","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:8355290841","name":"sisterhood.cafe","category":"cafe","lat":13.8268083,"lng":100.3751502,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"sisterhood.cafe, 53/75, ซอยบางม่วง-บางคูลัด 23, บ้านบางโสนพัฒนา 2, ตำบลบางม่วง, เทศบาลเมืองบ้านบางม่วง, อำเภอบางใหญ่, จังหวัดนนทบุรี, 11140, ประเทศไทย","hours":"Sa,Su 09:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:cash","payment:lightning"],"phone":"+66 95 895 4367","instagram":"https://www.instagram.com/sisterhoodxcafe/","cuisine":"coffee;bakery","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:8852052849","name":"HATO Chokchai4","category":"hairdresser","lat":13.82059,"lng":100.5965875,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Hato Hairstylist Chokchai 4, 36/88, ถนนสตรีวิทยา 2, แขวงลาดพร้าว, เขตลาดพร้าว, กรุงเทพมหานคร, 10230, ประเทศไทย","hours":"Mo-Su 10:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:postcode","addr:province","addr:street","contact:facebook","contact:phone","currency:XBT","female","male","name","payment:cash","payment:lightning"],"phone":"+66 94 768 8282","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:8945483894","name":"Beluga Coff & Juice","category":"cafe","lat":13.7783283,"lng":100.6475264,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Beluga Coff & Juice, 685/2, ซอยนวมินทร์ 14, แขวงคลองจั่น, เขตบางกะปิ, กรุงเทพมหานคร, 10240, ประเทศไทย","hours":"Mo-Su 07:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 97 248 2126","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:9570047617","name":"Palette Art Space","category":"other","lat":13.7239695,"lng":100.5791683,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Palette Art Space, 1057, ถนนสุขุมวิท, แขวงคลองตัน, เขตคลองเตย, กรุงเทพมหานคร, 10110, ประเทศไทย","website":"https://www.palettebkk.com/","hours":"Mo-Su 07:30-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","contact:facebook","contact:instagram","payment:lightning"],"phone":"+66 64 587 6788","instagram":"https://www.instagram.com/palette.artspace/","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:10067999408","name":"Terracotta Coffee","category":"cafe","lat":13.7366503,"lng":100.5303281,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Terracotta Coffee, 254, ถนนพญาไท, แขวงปทุมวัน, เขตปทุมวัน, กรุงเทพมหานคร, 10330, ประเทศไทย","hours":"Mo-Fr 07:00-17:00; Sa 09:00-16:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:cash","payment:lightning"],"phone":"+66 90 976 6184","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:10844099391","name":"ปาป้า คอฟฟี่","category":"cafe","lat":13.98642,"lng":100.6152516,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ปาป้า คอฟฟี่, 55, ถนนพหลโยธิน, ชุมชนคลองหนึ่งพัฒนา, ตำบลประชาธิปัตย์, เทศบาลนครรังสิต, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12130, ประเทศไทย","hours":"Mo-Su 07:00-19:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","contact:facebook","cuisine","currency:XBT","name","name:en","payment:cash"],"phone":"+66 95 626 2494","cuisine":"coffee_shop;coffee","payment":{"lightning":false,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:10864133709","name":"New York Studio Bangkok","category":"other","lat":13.6796572,"lng":100.5287903,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"New York Studio Bangkok, 649, 651, ถนนพระรามที่ 3, ชุมชนข้างซอยพัฒนาการ 1, แขวงบางโพงพาง, เขตยานนาวา, กรุงเทพมหานคร, 10120, ประเทศไทย","website":"https://newyorkstudiobkk.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:postcode","addr:province","addr:street","check_date","check_date:currency:XBT","craft","currency:XBT","name","payment:lightning","payment:onchain"],"phone":"+66970090999","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:10893965444","name":"Coughing Apes - Weed cafe's","category":"cannabis","lat":13.6762888,"lng":100.6089916,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Coughing Apes - Weed cafe's, 416/9, ซอยสุขุมวิท 103/2, แขวงบางนาเหนือ, เขตบางนา, กรุงเทพมหานคร, 10260, ประเทศไทย","hours":"Mo-Su 11:00-23:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","cuisine","name","opening_hours","payment:cash","payment:lightning","payment:lightning_contactless"],"cuisine":"cannabis","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:10968574636","name":"Talk-Ka-Tree","category":"garden_centre","lat":14.0567271,"lng":100.6849955,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Talk Ka Tree, 21/8, ซอยชมเงิน, หมู่ที่ 5, ตำบลคลองสี่, องค์การบริหารส่วนตำบลคลองสี่, อำเภอคลองหลวง, จังหวัดปทุมธานี, 12120, ประเทศไทย","hours":"Mo-Su 09:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","contact:facebook","payment:cash","payment:lightning"],"phone":"+66 85 112 9097","instagram":"https://www.instagram.com/talk_ka_tree/","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:11282924170","name":"Jok one Table Dumplings","category":"restaurant","lat":13.7434702,"lng":100.5100708,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"จกโต๊ะเดียว, 23, ซอยเจริญกรุง 21, แขวงป้อมปราบ, เขตป้อมปราบศัตรูพ่าย, กรุงเทพมหานคร, 10100, ประเทศไทย","hours":"Mo-Su 08:00-18:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["address","amenity","check_date","check_date:currency:XBT","contact:facebook","currency:XBT","name","opening_hours","payment:lightning","payment:lightning_contactless"],"phone":"+66 81 919 9468","cuisine":"thai;chinese","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11366307403","name":"Sit Here Sleep Home Bar","category":"bar","lat":13.8384047,"lng":100.5847626,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Phahonyotin34-11-6, แขวงเสนานิคม, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","brewery","check_date","contact:email","contact:facebook","contact:line"],"payment":{"lightning":false,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11518287796","name":"ร้านยาบี แคร์ ฟาร์มา","category":"pharmacy","lat":13.7537114,"lng":100.7171276,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ร้านยาบี แคร์ ฟาร์มา, ถนนศรีนครินทร์-ร่มเกล้า, แขวงคลองสองต้นนุ่น, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","currency:XBT","email","healthcare","healthcare:speciality","name","name:en","name:th","operator:type","payment:lightning"],"phone":"+66 98 947 1944","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11676387280","name":"OBO.CASH","category":"bureau_de_change","lat":13.696369,"lng":100.7519097,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Krungsri ATM, ถนนสุวรรณภูมิ 5, ตำบลหนองปรือ, องค์การบริหารส่วนตำบลหนองปรือ, อำเภอบางพลี, จังหวัดสมุทรปราการ, 10520, ประเทศไทย","website":"https://www.obo.cash","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","currency:XBT","name","payment:cryptocurrencies","payment:lightning","payment:lightning_contactless"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:11801445668","name":"do drip coffee","category":"cafe","lat":13.7975831,"lng":100.5727029,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"do drip coffee, 188, ซอยวิภาวดีรังสิต 16, ชุมชนริมคลองบางซื่อ 18, แขวงรัชดาภิเษก, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย","hours":"We-Su 07:30-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date","check_date:currency:XBT","contact:instagram","cuisine","currency:XBT","payment:lightning"],"phone":"0891257299","instagram":"do.drip","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12141608846","name":"The Burgest","category":"fast_food","lat":13.7751196,"lng":100.5623687,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"The Burgest, ซอยประชาสงเคราะห์ 22, แขวงดินแดง, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย","hours":"Mo 10:30-22:00; We-Su 10:30-22:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date","check_date:currency:XBT","contact:facebook","cuisine","currency:XBT","name","opening_hours","payment:cash","payment:cashless","payment:lightning"],"phone":"+66 94 878 0433","cuisine":"burger","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12210708407","name":"BoltRing - BoltKey","category":"marketplace","lat":13.7899076,"lng":100.5622975,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"BoltRing - BoltKey, ซอยวิภาวดีรังสิต 10, แขวงรัชดาภิเษก, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย","website":"https://geyser.fund/project/boltring","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","building","currency:THB","email","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12304722062","name":"Gatta Café - Seacon Square","category":"cafe","lat":13.6949362,"lng":100.6485721,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Gatta Café - Seacon Square, 55, Seacon Square Srinagarindra, แขวงหนองบอน, เขตประเวศ, กรุงเทพมหานคร, 10250, ประเทศไทย","website":"https://www.gattacafe.com/","hours":"Mo-Fr 10:30-19:30; Sa-Su 10:00-19:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:floor","addr:housenumber","addr:place","addr:postcode","addr:province","amenity","bar","branch","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 96 268 5522","instagram":"gattacafe","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12304843378","name":"Gatta Café - Siam Square One","category":"cafe","lat":13.7446219,"lng":100.53396,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Gatta Café - Siam Square One, 388, ถนนพระรามที่ 1, สยาม, แขวงปทุมวัน, เขตปทุมวัน, กรุงเทพมหานคร, 10330, ประเทศไทย","website":"https://www.gattacafe.com/","hours":"Mo-Su 10:00-19:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:floor","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","bar","branch","payment:lightning"],"phone":"+66 96 245 2929","instagram":"gattacafe","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12304859418","name":"Gatta Café - Park Silom","category":"cafe","lat":13.7277114,"lng":100.5337048,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Gatta Café - Park Silom, 1, ถนนคอนแวนต์, ชุมชนซอยพิพัฒน์ 2, แขวงสีลม, เขตบางรัก, กรุงเทพมหานคร, 10500, ประเทศไทย","website":"https://www.gattacafe.com/","hours":"Mo-Fr 07:00-18:00; Sa-Su 07:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:floor","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","bar","payment:lightning"],"phone":"+66 96 079 8822","instagram":"gattacafe","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12430456420","name":"De'rish homemade bakery","category":"bakery","lat":13.8552093,"lng":100.6825913,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"De'rish homemade bakery, 58:69, ซอย 10, แขวงบางชัน, เขตคลองสามวา, กรุงเทพมหานคร, 10510, ประเทศไทย","hours":"Mo-Su 09:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","name","opening_hours","operator","payment:cash","payment:lightning"],"phone":"0891267009","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12446800633","name":"TToy & Game","category":"toys","lat":13.7996961,"lng":100.5502339,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"TToy & Game, ถนนหลัก, แขวงจตุจักร, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย","website":"https://www.facebook.com/profile.php?id=61557272627995","hours":"Mo-Su 10:00-19:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","description","email","name","opening_hours","payment:lightning","phone","shop","website"],"phone":"(+66)7826614","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12466870068","name":"ช้างน้อยพอนชอป","category":"second_hand","lat":13.7989435,"lng":100.5952318,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ช้างน้อยพอนชอป, 171/1, โชคชัย 4 ซอย 7, แขวงสะพานสอง, เขตวังทองหลาง, กรุงเทพมหานคร, 10310, ประเทศไทย","website":"https://www.changnoipawnshop.com/","hours":"Mo-Sa 10:30-19:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","currency:THB","currency:XBT","payment:cash","payment:lightning"],"phone":"+66923979996","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true}},{"id":"osm:node:12484646160","name":"Narita Izakaya นาริตะ อิซากายะ","category":"restaurant","lat":13.7938314,"lng":100.5060739,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"นาริตะ อิซากายะ ซอยจรัญ 78, 140, ถนนจรัญสนิทวงศ์, ชุมชนริมคลองบางพลัด, แขวงบางอ้อ, เขตบางพลัด, กรุงเทพมหานคร, 10700, ประเทศไทย","hours":"Mo-Su 17:00-24:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","cuisine","currency:XBT","name","opening_hours","payment:coinos","payment:lightning","payment:lightning_contactless","payment:onchain","phone"],"phone":"+66 89 181 50002","instagram":"https://www.instagram.com/naritaizakaya","cuisine":"japanese;izakaya","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12485881682","name":"บุษรินทร์เบเกอรี่","category":"bakery","lat":13.8375587,"lng":100.4129209,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Busarin Bakery, 28/12, ถนนกาญจนาภิเษก, บางใหญ่, ตำบลบางม่วง, เทศบาลเมืองบ้านบางม่วง, อำเภอบางใหญ่, จังหวัดนนทบุรี, 11140, ประเทศไทย","hours":"Mo-Su 09:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:country","addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","contact:facebook","payment:cash","payment:lightning"],"phone":"+66 86 982 7781","cuisine":"dessert","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12493053971","name":"ร้านค้า เจซิตี้ ซ.12","category":"convenience","lat":13.5757127,"lng":100.6666969,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ร้านค้า เจซิตี้ ซ.12, ซอยแพรกษา 15/1, ตำบลแพรกษา, เทศบาลเมืองแพรกษา, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10280, ประเทศไทย","hours":"Mo-Su 08:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","email","name","opening_hours","payment:lightning","shop"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12497451991","name":"Pooky & Team Salon","category":"hairdresser","lat":13.6110919,"lng":100.6377345,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Pooky & Team Salon, 99/234, Soi Si Charoen Villa, ศรีเจริญวิลล่า, บ้านบางปิ้ง, ตำบลบางเมือง, เทศบาลเมืองปากน้ำสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย","hours":"Mo-Su 08:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","currency:XBT","name","opening_hours","operator","payment:cash","payment:lightning"],"phone":"+66 87 100 2260","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12531276586","name":"ก๋วยเตี๋ยวเนื้อ หัวน้ำวน","category":"restaurant","lat":13.5966634,"lng":100.6015404,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ก๋วยเตี๋ยวเนื้อ หัวน้ำวน, 85/4, ถนนเทศบาล 12, สมุทรปราการ, ตำบลปากน้ำ, เทศบาลนครสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย","hours":"Mo-Su 06:00-16:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","cuisine","payment:lightning"],"phone":"+66 89 536 7422","cuisine":"noodle","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12548626104","name":"ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5","category":"restaurant","lat":14.0055976,"lng":100.6991756,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5, 10/12, ถนนรังสิต-นครนายก, หมู่ที่ 4, ตำบลบึงยี่โถ, เทศบาลเมืองบึงยี่โถ, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12120, ประเทศไทย","website":"https://maps.app.goo.gl/gMPY2SnUr95pTLwt8?g_st=com.google.maps.preview.copy","hours":"Mo-Fr 08:00-17:00; Sa,Su 08:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 64 517 5544","cuisine":"noodle;thai","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12565849568","name":"เจริญผล Farm & Garden","category":"garden_centre","lat":13.8748051,"lng":100.6484191,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"เจริญผล Farm & Garden, 682, ถนนเทพรักษ์, แขวงท่าแร้ง, เขตบางเขน, กรุงเทพมหานคร, 10220, ประเทศไทย","hours":"Mo-Su 10:00-19:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","name","opening_hours","operator","payment:app","payment:cash","payment:lightning"],"phone":"+66987824635","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12578959348","name":"Lonkong cafe","category":"cafe","lat":13.6209083,"lng":100.6179064,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Lonkong cafe, 19/180, ศรีเพชรการเคหะ ซอย 4, ตำบลบางเมืองใหม่, เทศบาลตำบลบางเมือง, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย","hours":"Sa-Su 09:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date","contact:facebook","currency:XBT","email","name","opening_hours","outdoor_seating","payment:lightning","phone"],"phone":"+66 89 212 7971","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12578966799","name":"Ramita Coffee & Bistro","category":"cafe","lat":13.5926392,"lng":100.5984521,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Ramita Coffee & Bistro, 378, ถนนกายสิทธิ์, สมุทรปราการ, ตำบลปากน้ำ, เทศบาลนครสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย","hours":"Mo-Th 07:00-17:00; Fr-Su 07:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 62 882 9639","instagram":"ramita_coffee_and_bistro","cuisine":"coffee_shop;bistro","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12600858098","name":"Coffee Company - RK Biz Center","category":"cafe","lat":13.7303766,"lng":100.7324716,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Coffee Company - RK Biz Center, 36/54, ถนนกรุงเทพฯ-ชลบุรี, ชุมชนร่มเกล้า 1, แขวงคลองสองต้นนุ่น, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย","website":"https://www.coffeecompany.asia/","hours":"Mo-Fr 07:30-16:00; Sa-Su 08:00-16:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 24 740 153","instagram":"coffeecompanythailand","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12622284690","name":"รุ่งอรุณ คาเฟ่","category":"cafe","lat":13.841005,"lng":100.5727981,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"รุ่งอรุณ คาเฟ่, 21/17, งามวงศ์วาน 56, เกษตร, แขวงลาดยาว, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย","hours":"Mo-Su 07:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:cash","payment:lightning"],"phone":"+66 80 441 2131","instagram":"https://www.instagram.com/rung.arooncoffee","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12624732106","name":"Beyond Softserve","category":"ice_cream","lat":14.0696113,"lng":100.6044915,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Beyond Softserve, ถนนป๋วย อิ้งภากรณ์, ตำบลคลองหนึ่ง, เทศบาลเมืองท่าโขลง, อำเภอคลองหลวง, จังหวัดปทุมธานี, 12120, ประเทศไทย","hours":"Mo-Sa 08:30-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:email","payment:lightning"],"phone":"+66 92 063 6556","instagram":"https://www.instagram.com/beyondsoftserve/","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12640866389","name":"Chit Hole Royal River","category":"bar","lat":13.7836685,"lng":100.5005494,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chit Hole Royal River, 439, ถนนราชวิถี, ชุมชนเจ้าพระยาสยาม, แขวงบางพลัด, เขตบางพลัด, กรุงเทพมหานคร, 10700, ประเทศไทย","website":"https://chitholding.com/","hours":"Mo-Su 17:00-00:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:cash","payment:lightning"],"phone":"+66 64 954 6616","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true}},{"id":"osm:node:12640892188","name":"Chit Hole Muangthong","category":"bar","lat":13.9270987,"lng":100.5340815,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chit Hole Muangthong, 50,84, เมืองทองธานีโครงการ 6 ซอย D1, เมืองทองธานี, ตำบลบ้านใหม่, เทศบาลนครปากเกร็ด, อำเภอปากเกร็ด, จังหวัดนนทบุรี, 11120, ประเทศไทย","website":"https://chitholding.com/","hours":"Fr-Su 17:00-00:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:cash","payment:lightning"],"phone":"+66 89 125 0233","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true}},{"id":"osm:node:12640894703","name":"Chit Hole Surawong","category":"bar","lat":13.7300773,"lng":100.5315367,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chit Hole Surawong, 54, ถนนสุรวงศ์, สันติภาพ, แขวงสี่พระยา, เขตบางรัก, กรุงเทพมหานคร, 10500, ประเทศไทย","website":"https://chitholding.com/","hours":"18:00-01:00; Th,Fr 18:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 64 954 6616","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12645411669","name":"กระเพาะปลาเจ๊เอ็ง ตลาดพลู","category":"restaurant","lat":13.7207245,"lng":100.4768818,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"กระเพาะปลาเจ๊เอ็ง ตลาดพลู, ซอยเทอดไท 27, แขวงตลาดพลู, เขตธนบุรี, กรุงเทพมหานคร, 10600, ประเทศไทย","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:postcode","amenity","check_date","contact:facebook","currency:XBT","email","name","name:en","name:th","payment:cash","payment:lightning","payment:onchain"],"phone":"0819267040","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12645466745","name":"Take a Bowl (FYI Center)","category":"restaurant","lat":13.7202791,"lng":100.560022,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Take a Bowl (FYI Center), 2525, ถนนพระรามที่ 4, ชุมชนริมทางรถไฟสายท่าเรือ, แขวงคลองเตย, เขตคลองเตย, กรุงเทพมหานคร, 10110, ประเทศไทย","website":"https://takeabowl.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","contact:facebook","contact:instagram","payment:lightning"],"phone":"0989319312","instagram":"https://www.instagram.com/takeabowl.salad/","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12645513299","name":"นวลหมูปิ้ง","category":"restaurant","lat":13.7379688,"lng":100.494981,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"นวลหมูปิ้ง, ถนนเทศบาล สาย 1, ชุมชนวัดประยุรวงศ์, แขวงวัดกัลยาณ์, เขตธนบุรี, กรุงเทพมหานคร, 10600, ประเทศไทย","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:postcode","amenity","check_date","contact:facebook","contact:line","currency:XBT","fixme","name","payment:cash","payment:lightning"],"phone":"0826982355","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true},"website":null},{"id":"osm:node:12645532501","name":"ร้านผักบุษบา","category":"greengrocer","lat":13.9022157,"lng":100.3652683,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ร้านผักบุษบา, นบ.1002, บ้านหนองโสน, ตำบลบางแม่นาง, เทศบาลเมืองบางแม่นาง, อำเภอบางใหญ่, จังหวัดนนทบุรี, 11110, ประเทศไทย","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:postcode","currency:XBT","name","payment:lightning","payment:lightning_contactless","phone","shop"],"phone":"0905231315","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12658170647","name":"Chit Hole Rangsit Rooftop","category":"bar","lat":13.9852831,"lng":100.625787,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chit Hole Rangsit Rooftop, ซอยรังสิต-นครนายก 14, ชุมชนคลองหนึ่งพัฒนา, ตำบลประชาธิปัตย์, เทศบาลนครรังสิต, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12130, ประเทศไทย","website":"https://chitholding.com/","hours":"We-Su 17:00-00:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 64 954 6616","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12666638428","name":"O33 Vision","category":"optician","lat":13.6660229,"lng":100.6478173,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"o33 Vision, ถนนเทพรัตน, ชุมชนคลองบางนา, แขวงบางนาใต้, เขตบางนา, กรุงเทพมหานคร, 10260, ประเทศไทย","website":"https://www.o33vision.com/","hours":"Tu-Su 10:00-19:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","currency:XBT","description","name","opening_hours","payment:lightning","payment:onchain"],"phone":"+66 80 084 3033","instagram":"o33_vision","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12675566950","name":"ข้าวหมูแดง สามชัย","category":"restaurant","lat":13.5927293,"lng":100.5987065,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ข้าวหมูแดง สามชัย, ถนนกายสิทธิ์, สมุทรปราการ, ตำบลปากน้ำ, เทศบาลนครสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย","hours":"08:00-15:00; We off","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","cuisine","currency:XBT","payment:lightning"],"phone":"+66 89 490 7414","cuisine":"thai","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12675824868","name":"TigerGyu หมูกระทะ","category":"restaurant","lat":13.6741412,"lng":100.5348541,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ไทเกอร์กิว หมูกระทะ, 762/2, ถนนพระรามที่ 3, แขวงบางโพงพาง, เขตยานนาวา, กรุงเทพมหานคร, 10120, ประเทศไทย","website":"https://www.instagram.com/tigergyu.bkk?igsh=MXdmZHJkcDgwbXBxbw%3D%3D&utm_source=qr","hours":"Mo-Su 17:00-00:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","cuisine","currency:XBT","payment:cash","payment:lightning"],"phone":"+66 64 542 9659","instagram":"https://www.instagram.com/tigergyu.bkk","cuisine":"thai;japanese;barbecue;grill","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":true}},{"id":"osm:node:12711070515","name":"Cocoa House","category":"cafe","lat":13.7219923,"lng":100.4458025,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Cocoa House, 188, ซอย 6, แขวงบางด้วน, เขตภาษีเจริญ, กรุงเทพมหานคร, 10160, ประเทศไทย","hours":"Mo-Fr 20:00-00:00 Sat-Sun 08:00-00:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:subdistrict","amenity","check_date","contact:line","currency:XBT","delivery","payment:lightning"],"phone":"0873555494","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12733065017","name":"ABER Group Law Firm","category":"other","lat":13.7373376,"lng":100.5623274,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ABER Group Law Firm, 11/2 P23 Building, Level 11,, ซอยคาวบอย, Asok, แขวงคลองเตยเหนือ, เขตวัฒนา, กรุงเทพมหานคร, 10110, ประเทศไทย","website":"https://www.aberthailand.com","hours":"Mo-Fr 08:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:subdistrict","check_date","check_date:currency:XBT","currency:XBT","name","office","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12745895479","name":"Gatta Café - Central Eastville","category":"cafe","lat":13.8035407,"lng":100.6146545,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Gatta Café - Central Eastville, 69/3, FL.1, ถนนประดิษฐ์มนูธรรม, แขวงลาดพร้าว, เขตลาดพร้าว, กรุงเทพมหานคร, 10230, ประเทศไทย","website":"https://www.gattacafe.com/","hours":"Mo-Fr 10:30-21:30; Sa-Su 10:00-21:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","bar","branch","payment:lightning"],"phone":"+66 84 252 8922","instagram":"gattacafe","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12760942330","name":"คลังยาอาม่า - ตลาดอาม่า1000สุข","category":"pharmacy","lat":14.0490587,"lng":100.7471647,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"คลังยาอาม่า - ตลาดอาม่า1000สุข, 64/1, ถนนธัญบุรี-วังน้อย, หมู่ที่ 6, ตำบลคลองเจ็ด, องค์การบริหารส่วนตำบลคลองเจ็ด, อำเภอคลองหลวง, จังหวัดปทุมธานี, 12120, ประเทศไทย","hours":"Mo-Su 08:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 84 242 5162","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12763486241","name":"ตลาดนัดพรธิสาร6","category":"marketplace","lat":14.0492334,"lng":100.7559884,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ตลาดนัดพรธิสาร6, ปท.3007, บ้านทวีทรัพย์, ตำบลบึงบอน, องค์การบริหารส่วนตำบลบึงบอน, อำเภอหนองเสือ, จังหวัดปทุมธานี, 12170, ประเทศไทย","hours":"Mo-Su 15:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:postcode","addr:province","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","currency:XBT","name","payment:lightning"],"phone":"+66 96 535 1626","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12765494314","name":"Victory Industrial","category":"other","lat":13.6239743,"lng":100.4020656,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Victory Industrial, 3, ซอยบางกระดี่ 11, แขวงแสมดำ, เขตบางขุนเทียน, กรุงเทพมหานคร, คอกกระบือ, 10150, ประเทศไทย","website":"https://www.victoryindustrial.co.th/cprofile.html","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","currency:XBT","man_made","name","payment:lightning"],"phone":"+66 24 521 287","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12808883030","name":"KA-LA Coffee","category":"cafe","lat":14.0346785,"lng":100.7324022,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"KA-LA Coffee, 130/12, ซอยข้างตลาด, ตำบลรังสิต, เทศบาลตำบลธัญบุรี, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12110, ประเทศไทย","hours":"Mo-Su 08:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","amenity","check_date","check_date:currency:XBT","contact:facebook","contact:instagram","cuisine","payment:lightning","payment:onchain"],"phone":"+66 62 138 0493","instagram":"kala.koff","cuisine":"coffee_shop;cafe","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12818578388","name":"Five Star","category":"restaurant","lat":13.9539438,"lng":100.6848772,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Five Star, อยู่เจริญ 4, ถนนไสวประชาราษฎร์, บ้านคลองสี่, ตำบลลาดสวาย, เทศบาลเมืองลาดสวาย, เทศบาลเมืองบึงยี่โถ, อำเภอลำลูกกา, จังหวัดปทุมธานี, 12150, ประเทศไทย","website":"https://fivestar.in.th/","hours":"Mo-Su 07:30-20:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"phone":"+66 93 723 8284","cuisine":"chicken","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12827530352","name":"Citadel Coffee","category":"cafe","lat":13.9879228,"lng":100.7045035,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Citadel Coffee, ทางบริการด้านในของถนนกาญจนาภิเษก, ตำบลรังสิต, ตำบลบึงคำพร้อย, องค์การบริหารส่วนตำบลบึงคำพร้อย, อำเภอลำลูกกา, จังหวัดปทุมธานี, 12150, ประเทศไทย","hours":"Tu-Su 08:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 65 084 5879","instagram":"citadelcoffee21","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12839299656","name":"Croissant Factory (Thonglor)","category":"restaurant","lat":13.7374984,"lng":100.5837127,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Croissant Factory (Thonglor), 411/3, ซอยสุขุมวิท 55, แขวงคลองตันเหนือ, เขตวัฒนา, กรุงเทพมหานคร, 10110, ประเทศไทย","hours":"Tu-Su 08:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:email","payment:lightning"],"phone":"+66 92 414 9746","instagram":"croissantfactory_th","cuisine":"pizza;pasta;salad;bakery;coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12856750526","name":"Roast Runner","category":"cafe","lat":13.786909,"lng":100.3741688,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Roast Runner, 99/7,99/8, ถนนบรมราชชนนี (ทางขนาน), แขวงศาลาธรรมสพน์, เขตทวีวัฒนา, กรุงเทพมหานคร, กระทุ่มล้ม, 10170, ประเทศไทย","hours":"09:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 9592 54437","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12863636313","name":"Manggon Studio","category":"interior_decoration","lat":13.8007227,"lng":100.5490929,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Manggon Studio, ถนนกำแพงเพชร 2, แขวงจตุจักร, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย","website":"https://www.manggonstudio.com/","hours":"Tu-Su 09:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","currency:XBT","name","opening_hours","payment:lightning"],"phone":"+66 82 325 4556","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12886020278","name":"คลินิคทันตกรรมท่าข้าม","category":"dentist","lat":13.650711,"lng":100.4436418,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"คลินิคทันตกรรมท่าข้าม, 116/34, ถนนท่าข้าม, แขวงแสมดำ, เขตบางขุนเทียน, กรุงเทพมหานคร, 10150, ประเทศไทย","hours":"Mo-Su 10:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","currency:XBT","healthcare","name","payment:lightning"],"phone":"+66 81 279 5001","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12905584949","name":"Moonlight Leather","category":"bag","lat":13.8001988,"lng":100.709362,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Moonlight Leather, ซอยเสรีไทย 60, นิคมอุตสาหกรรมบางชัน, แขวงมีนบุรี, เขตมีนบุรี, กรุงเทพมหานคร, 10510, ประเทศไทย","website":"https://www.moonlightleather.com/","hours":"Sa-Su 08:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","currency:XBT","name","opening_hours","operator","payment:cash","payment:credit_cards","payment:lightning","payment:onchain"],"phone":"+66 85 171 4550","payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true}},{"id":"osm:node:12941914655","name":"Fitting shop","category":"clothes","lat":13.799093,"lng":100.5478495,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"บางซื่อ จังชั่น, ถนนกำแพงเพชร 2, แขวงจตุจักร, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","currency:XBT","name","opening_hours"],"payment":{"lightning":false,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13010769122","name":"Chit Hole Asiatique","category":"bar","lat":13.7048562,"lng":100.5019729,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chit Hole Asiatique, 2194, ถนนเจริญกรุง, บ้านใหม่, แขวงวัดพระยาไกร, เขตบางคอแหลม, กรุงเทพมหานคร, 10120, ประเทศไทย","website":"https://chitholding.com/","hours":"Mo-Su 07:00-00:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning","payment:onchain"],"phone":"+66 64 954 6616","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:13016546680","name":"ค่ายมวยลูกคลองตัน","category":"other","lat":13.7460584,"lng":100.5999818,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"ค่ายมวยลูกคลองตัน, 51, 3, ซอยรามคำแหง 3, แขวงสวนหลวง, เขตสวนหลวง, กรุงเทพมหานคร, 10250, ประเทศไทย","hours":"Mo-Sa 16:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","contact:facebook","currency:XBT","payment:lightning","payment:onchain"],"phone":"+66 89 128 6304","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13016550123","name":"Vacilando Bookshop","category":"books","lat":13.7578787,"lng":100.5096567,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Vacilando Bookshop, 96/2, ถนนจักรพรรดิพงษ์, ชุมชนศุภมิตร 2, แขวงวัดโสมนัส, เขตป้อมปราบศัตรูพ่าย, กรุงเทพมหานคร, 10100, ประเทศไทย","website":"https://www.vacilandobookshop.com/","hours":"Sa-Su 12:30-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","contact:facebook","contact:instagram","payment:lightning"],"phone":"+66 86 775 8977","instagram":"vacilandobookshop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:13016593667","name":"The Barbershop","category":"hairdresser","lat":13.7629694,"lng":100.5636572,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"The Barbershop, ซอยรัชดาภิเษก 3 แยก 9, แขวงดินแดง, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย","hours":"Mo-Su 13:00-23:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","currency:XBT","hairdresser","name","payment:lightning"],"phone":"+66 94 779 1187","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13051531371","name":"Lung Ji Card Shop","category":"supermarket","lat":13.6880845,"lng":100.4506362,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Lung Ji Card Shop, 21/18, ถนนเอกชัย, ชุมชนสุขสันต์พัฒนา, แขวงบางขุนเทียน, เขตจอมทอง, กรุงเทพมหานคร, 10150, ประเทศไทย","hours":"Mo-Fr 09:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","currency:XBT","payment:lightning","payment:onchain"],"phone":"+66 87 017 2173","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13057327865","name":"Chu's Pastry","category":"cafe","lat":13.8542768,"lng":100.5484357,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Chu's Pastry, 55/55  Thung Song Hong,, ถนนงามวงศ์วาน, ชินเขต, แขวงทุ่งสองห้อง, เขตหลักสี่, กรุงเทพมหานคร, 10210, ประเทศไทย","hours":"Mo-Su 08:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 90 969 3018","instagram":"chus.pastry","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13061362037","name":"Daddy Taste Room","category":"ice_cream","lat":13.8264533,"lng":100.4423469,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Daddy Taste Room, 111/11, ถนนนครอินทร์, บ้านบางไกร, ตำบลบางขุนกอง, องค์การบริหารส่วนตำบลบางขุนกอง, อำเภอบางกรวย, จังหวัดนนทบุรี, 11130, ประเทศไทย","hours":"Tu-Su 09:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning"],"instagram":"https://www.instagram.com/daddytasteroom/","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13071813034","name":"Layer House","category":"other","lat":13.7898584,"lng":100.5622319,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Layer House, 9/2-7, ซอยอินทามระ 33, สุพรรณิการ, แขวงรัชดาภิเษก, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย","website":"https://layerhouse.blogspot.com/","hours":"Tu-Fr 09:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","address","check_date","check_date:currency:XBT","payment:lightning","payment:onchain"],"phone":"+66 89 889 4028","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:13077980491","name":"Latte Man","category":"cafe","lat":13.7612626,"lng":100.5635552,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Latte Man, 550/188, ซอยอโศกดินแดง-ดินแดง 21 แยก 6, แขวงดินแดง, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย","hours":"Mo-Su 08:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 85 442 2478","instagram":"latteman.m","cuisine":"coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13081282309","name":"Peixing clinic","category":"other","lat":13.9972327,"lng":100.6703365,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Peixing clinic, 30/1, ถนนรังสิต-นครนายก, หมู่ที่ 2, ตำบลบึงยี่โถ, เทศบาลเมืองบึงยี่โถ, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12130, ประเทศไทย","hours":"Mo-Su 10:00-19:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","contact:facebook","payment:lightning"],"phone":"+66 61 390 7455","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13081317028","name":"Horm Cha @ Ramkhamhaeng 52","category":"cafe","lat":13.7568425,"lng":100.6434134,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Horm Cha @ Ramkhamhaeng 52, 110 74/5, ซอยรามคำแหง 52, แขวงหัวหมาก, เขตบางกะปิ, กรุงเทพมหานคร, 10240, ประเทศไทย","hours":"Mo-Su 07:15-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","contact:email","payment:lightning"],"phone":"+66 81 512 4444","cuisine":"coffee_shop;tea","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13081956521","name":"BOB Space","category":"community_centre","lat":13.7245048,"lng":100.5882289,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"BOB Space, 64/1, เอกมัย ๑๐ แยก 2, แขวงพระโขนงเหนือ, เขตวัฒนา, กรุงเทพมหานคร, 10110, ประเทศไทย","website":"https://www.bobspaces.net/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:place","addr:postcode","addr:province","addr:street","addr:subdistrict","amenity","check_date","check_date:currency:XBT","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:13096107804","name":"Lee's Mark Residence","category":"other","lat":13.6446434,"lng":100.6372215,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Lee's Mark Residence, 438/9, ถนนศรีนครินทร์, ตำบลสำโรงเหนือ, เทศบาลตำบลด่านสำโรง, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย","website":"https://www.leesmark.com/","hours":"24/7","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:housenumber","addr:postcode","addr:province","addr:street","addr:subdistrict","check_date","check_date:currency:XBT","contact:email","contact:facebook","payment:lightning"],"phone":"+66 23 834 787","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:way:1085583221","name":"Laohu Shabu","category":"restaurant","lat":13.726955,"lng":100.7711197,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Laohu Shabu, 73, ซอยฉลองกรุง 1, แขวงลาดกระบัง, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย","website":"https://web.facebook.com/laohushabu","hours":"Mo-Su 16:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:postcode","addr:province","amenity","buffet","building","cuisine","currency:XBT","name","name:th","payment:lightning"],"phone":"+66 65 681 6926","cuisine":"chinese;shabu","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:way:1206068563","name":"Coffzilla Cafe","category":"cafe","lat":13.7269543,"lng":100.7710223,"country":"TH","city":"Bangkok","coins":["BTC"],"address":"Coffzilla Cafe, ซอยฉลองกรุง 1, แขวงลาดกระบัง, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย","website":"https://web.facebook.com/profile.php?id=61569404214355","hours":"Mo-Sa 09:00-21:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:district","addr:place","addr:postcode","addr:province","addr:street","amenity","building","cuisine","currency:XBT","internet_access","payment:lightning"],"phone":"+66 92 827 1601","instagram":"https://www.instagram.com/coffzilla","cuisine":"coffee_shop;cake","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}}]
+[
+  {
+    "id": "osm:node:2769486127",
+    "name": "⚠︎ Chitbeer",
+    "category": "bar · Unverified",
+    "lat": 13.909277,
+    "lng": 100.490859,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chitbeer, หมู่ 1, ทางรอบเกาะ, บ้านโอ่งอ่าง, ตำบลเกาะเกร็ด, อำเภอปากเกร็ด, จังหวัดนนทบุรี, 11121, ประเทศไทย",
+    "website": "https://chitbrewery.com/",
+    "hours": "Sa,Su 12:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "payment:lightning"
+    ],
+    "phone": "+66 89 799 1123",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:8355290841",
+    "name": "⚠︎ sisterhood.cafe",
+    "category": "cafe · Unverified",
+    "lat": 13.8268083,
+    "lng": 100.3751502,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "sisterhood.cafe, 53/75, ซอยบางม่วง-บางคูลัด 23, บ้านบางโสนพัฒนา 2, ตำบลบางม่วง, เทศบาลเมืองบ้านบางม่วง, อำเภอบางใหญ่, จังหวัดนนทบุรี, 11140, ประเทศไทย",
+    "hours": "Sa,Su 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 95 895 4367",
+    "instagram": "https://www.instagram.com/sisterhoodxcafe/",
+    "cuisine": "coffee;bakery",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:8852052849",
+    "name": "⚠︎ HATO Chokchai4",
+    "category": "hairdresser · Unverified",
+    "lat": 13.82059,
+    "lng": 100.5965875,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Hato Hairstylist Chokchai 4, 36/88, ถนนสตรีวิทยา 2, แขวงลาดพร้าว, เขตลาดพร้าว, กรุงเทพมหานคร, 10230, ประเทศไทย",
+    "hours": "Mo-Su 10:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "contact:facebook",
+      "contact:phone",
+      "currency:XBT",
+      "female",
+      "male",
+      "name",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 94 768 8282",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:8945483894",
+    "name": "⚠︎ Beluga Coff & Juice",
+    "category": "cafe · Unverified",
+    "lat": 13.7783283,
+    "lng": 100.6475264,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Beluga Coff & Juice, 685/2, ซอยนวมินทร์ 14, แขวงคลองจั่น, เขตบางกะปิ, กรุงเทพมหานคร, 10240, ประเทศไทย",
+    "hours": "Mo-Su 07:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 97 248 2126",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:9570047617",
+    "name": "⚠︎ Palette Art Space",
+    "category": "other · Unverified",
+    "lat": 13.7239695,
+    "lng": 100.5791683,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Palette Art Space, 1057, ถนนสุขุมวิท, แขวงคลองตัน, เขตคลองเตย, กรุงเทพมหานคร, 10110, ประเทศไทย",
+    "website": "https://www.palettebkk.com/",
+    "hours": "Mo-Su 07:30-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning"
+    ],
+    "phone": "+66 64 587 6788",
+    "instagram": "https://www.instagram.com/palette.artspace/",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:10067999408",
+    "name": "⚠︎ Terracotta Coffee",
+    "category": "cafe · Unverified",
+    "lat": 13.7366503,
+    "lng": 100.5303281,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Terracotta Coffee, 254, ถนนพญาไท, แขวงปทุมวัน, เขตปทุมวัน, กรุงเทพมหานคร, 10330, ประเทศไทย",
+    "hours": "Mo-Fr 07:00-17:00; Sa 09:00-16:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 90 976 6184",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:10844099391",
+    "name": "⚠︎ ปาป้า คอฟฟี่",
+    "category": "cafe · Unverified",
+    "lat": 13.98642,
+    "lng": 100.6152516,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ปาป้า คอฟฟี่, 55, ถนนพหลโยธิน, ชุมชนคลองหนึ่งพัฒนา, ตำบลประชาธิปัตย์, เทศบาลนครรังสิต, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12130, ประเทศไทย",
+    "hours": "Mo-Su 07:00-19:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "contact:facebook",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "name:en",
+      "payment:cash"
+    ],
+    "phone": "+66 95 626 2494",
+    "cuisine": "coffee_shop;coffee",
+    "payment": {
+      "lightning": false,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:10864133709",
+    "name": "⚠︎ New York Studio Bangkok",
+    "category": "other · Unverified",
+    "lat": 13.6796572,
+    "lng": 100.5287903,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "New York Studio Bangkok, 649, 651, ถนนพระรามที่ 3, ชุมชนข้างซอยพัฒนาการ 1, แขวงบางโพงพาง, เขตยานนาวา, กรุงเทพมหานคร, 10120, ประเทศไทย",
+    "website": "https://newyorkstudiobkk.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66970090999",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:10893965444",
+    "name": "⚠︎ Coughing Apes - Weed cafe's",
+    "category": "cannabis · Unverified",
+    "lat": 13.6762888,
+    "lng": 100.6089916,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Coughing Apes - Weed cafe's, 416/9, ซอยสุขุมวิท 103/2, แขวงบางนาเหนือ, เขตบางนา, กรุงเทพมหานคร, 10260, ประเทศไทย",
+    "hours": "Mo-Su 11:00-23:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "cuisine",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "cuisine": "cannabis",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:10968574636",
+    "name": "⚠︎ Talk-Ka-Tree",
+    "category": "garden_centre · Unverified",
+    "lat": 14.0567271,
+    "lng": 100.6849955,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Talk Ka Tree, 21/8, ซอยชมเงิน, หมู่ที่ 5, ตำบลคลองสี่, องค์การบริหารส่วนตำบลคลองสี่, อำเภอคลองหลวง, จังหวัดปทุมธานี, 12120, ประเทศไทย",
+    "hours": "Mo-Su 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "contact:facebook",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 85 112 9097",
+    "instagram": "https://www.instagram.com/talk_ka_tree/",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:11282924170",
+    "name": "⚠︎ Jok one Table Dumplings",
+    "category": "restaurant · Unverified",
+    "lat": 13.7434702,
+    "lng": 100.5100708,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "จกโต๊ะเดียว, 23, ซอยเจริญกรุง 21, แขวงป้อมปราบ, เขตป้อมปราบศัตรูพ่าย, กรุงเทพมหานคร, 10100, ประเทศไทย",
+    "hours": "Mo-Su 08:00-18:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "address",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "phone": "+66 81 919 9468",
+    "cuisine": "thai;chinese",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:11366307403",
+    "name": "⚠︎ Sit Here Sleep Home Bar",
+    "category": "bar · Unverified",
+    "lat": 13.8384047,
+    "lng": 100.5847626,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Phahonyotin34-11-6, แขวงเสนานิคม, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "brewery",
+      "check_date",
+      "contact:email",
+      "contact:facebook",
+      "contact:line"
+    ],
+    "payment": {
+      "lightning": false,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:11518287796",
+    "name": "⚠︎ ร้านยาบี แคร์ ฟาร์มา",
+    "category": "pharmacy · Unverified",
+    "lat": 13.7537114,
+    "lng": 100.7171276,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ร้านยาบี แคร์ ฟาร์มา, ถนนศรีนครินทร์-ร่มเกล้า, แขวงคลองสองต้นนุ่น, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "currency:XBT",
+      "email",
+      "healthcare",
+      "healthcare:speciality",
+      "name",
+      "name:en",
+      "name:th",
+      "operator:type",
+      "payment:lightning"
+    ],
+    "phone": "+66 98 947 1944",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:11676387280",
+    "name": "⚠︎ OBO.CASH",
+    "category": "bureau_de_change · Unverified",
+    "lat": 13.696369,
+    "lng": 100.7519097,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Krungsri ATM, ถนนสุวรรณภูมิ 5, ตำบลหนองปรือ, องค์การบริหารส่วนตำบลหนองปรือ, อำเภอบางพลี, จังหวัดสมุทรปราการ, 10520, ประเทศไทย",
+    "website": "https://www.obo.cash",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "currency:XBT",
+      "name",
+      "payment:cryptocurrencies",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:11801445668",
+    "name": "⚠︎ do drip coffee",
+    "category": "cafe · Unverified",
+    "lat": 13.7975831,
+    "lng": 100.5727029,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "do drip coffee, 188, ซอยวิภาวดีรังสิต 16, ชุมชนริมคลองบางซื่อ 18, แขวงรัชดาภิเษก, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย",
+    "hours": "We-Su 07:30-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "cuisine",
+      "currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "0891257299",
+    "instagram": "do.drip",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12141608846",
+    "name": "⚠︎ The Burgest",
+    "category": "fast_food · Unverified",
+    "lat": 13.7751196,
+    "lng": 100.5623687,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Burgest, ซอยประชาสงเคราะห์ 22, แขวงดินแดง, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย",
+    "hours": "Mo 10:30-22:00; We-Su 10:30-22:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:cashless",
+      "payment:lightning"
+    ],
+    "phone": "+66 94 878 0433",
+    "cuisine": "burger",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12210708407",
+    "name": "⚠︎ BoltRing - BoltKey",
+    "category": "marketplace · Unverified",
+    "lat": 13.7899076,
+    "lng": 100.5622975,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "BoltRing - BoltKey, ซอยวิภาวดีรังสิต 10, แขวงรัชดาภิเษก, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย",
+    "website": "https://geyser.fund/project/boltring",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "building",
+      "currency:THB",
+      "email",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12304722062",
+    "name": "⚠︎ Gatta Café - Seacon Square",
+    "category": "cafe · Unverified",
+    "lat": 13.6949362,
+    "lng": 100.6485721,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gatta Café - Seacon Square, 55, Seacon Square Srinagarindra, แขวงหนองบอน, เขตประเวศ, กรุงเทพมหานคร, 10250, ประเทศไทย",
+    "website": "https://www.gattacafe.com/",
+    "hours": "Mo-Fr 10:30-19:30; Sa-Su 10:00-19:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:floor",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "amenity",
+      "bar",
+      "branch",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 96 268 5522",
+    "instagram": "gattacafe",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12304843378",
+    "name": "⚠︎ Gatta Café - Siam Square One",
+    "category": "cafe · Unverified",
+    "lat": 13.7446219,
+    "lng": 100.53396,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gatta Café - Siam Square One, 388, ถนนพระรามที่ 1, สยาม, แขวงปทุมวัน, เขตปทุมวัน, กรุงเทพมหานคร, 10330, ประเทศไทย",
+    "website": "https://www.gattacafe.com/",
+    "hours": "Mo-Su 10:00-19:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:floor",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "bar",
+      "branch",
+      "payment:lightning"
+    ],
+    "phone": "+66 96 245 2929",
+    "instagram": "gattacafe",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12304859418",
+    "name": "⚠︎ Gatta Café - Park Silom",
+    "category": "cafe · Unverified",
+    "lat": 13.7277114,
+    "lng": 100.5337048,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gatta Café - Park Silom, 1, ถนนคอนแวนต์, ชุมชนซอยพิพัฒน์ 2, แขวงสีลม, เขตบางรัก, กรุงเทพมหานคร, 10500, ประเทศไทย",
+    "website": "https://www.gattacafe.com/",
+    "hours": "Mo-Fr 07:00-18:00; Sa-Su 07:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:floor",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "bar",
+      "payment:lightning"
+    ],
+    "phone": "+66 96 079 8822",
+    "instagram": "gattacafe",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12430456420",
+    "name": "⚠︎ De'rish homemade bakery",
+    "category": "bakery · Unverified",
+    "lat": 13.8552093,
+    "lng": 100.6825913,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "De'rish homemade bakery, 58:69, ซอย 10, แขวงบางชัน, เขตคลองสามวา, กรุงเทพมหานคร, 10510, ประเทศไทย",
+    "hours": "Mo-Su 09:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "0891267009",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12446800633",
+    "name": "⚠︎ TToy & Game",
+    "category": "toys · Unverified",
+    "lat": 13.7996961,
+    "lng": 100.5502339,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "TToy & Game, ถนนหลัก, แขวงจตุจักร, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย",
+    "website": "https://www.facebook.com/profile.php?id=61557272627995",
+    "hours": "Mo-Su 10:00-19:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "description",
+      "email",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "phone",
+      "shop",
+      "website"
+    ],
+    "phone": "(+66)7826614",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12466870068",
+    "name": "⚠︎ ช้างน้อยพอนชอป",
+    "category": "second_hand · Unverified",
+    "lat": 13.7989435,
+    "lng": 100.5952318,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ช้างน้อยพอนชอป, 171/1, โชคชัย 4 ซอย 7, แขวงสะพานสอง, เขตวังทองหลาง, กรุงเทพมหานคร, 10310, ประเทศไทย",
+    "website": "https://www.changnoipawnshop.com/",
+    "hours": "Mo-Sa 10:30-19:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "currency:THB",
+      "currency:XBT",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66923979996",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12484646160",
+    "name": "⚠︎ Narita Izakaya นาริตะ อิซากายะ",
+    "category": "restaurant · Unverified",
+    "lat": 13.7938314,
+    "lng": 100.5060739,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "นาริตะ อิซากายะ ซอยจรัญ 78, 140, ถนนจรัญสนิทวงศ์, ชุมชนริมคลองบางพลัด, แขวงบางอ้อ, เขตบางพลัด, กรุงเทพมหานคร, 10700, ประเทศไทย",
+    "hours": "Mo-Su 17:00-24:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:coinos",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "phone"
+    ],
+    "phone": "+66 89 181 50002",
+    "instagram": "https://www.instagram.com/naritaizakaya",
+    "cuisine": "japanese;izakaya",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12485881682",
+    "name": "⚠︎ บุษรินทร์เบเกอรี่",
+    "category": "bakery · Unverified",
+    "lat": 13.8375587,
+    "lng": 100.4129209,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Busarin Bakery, 28/12, ถนนกาญจนาภิเษก, บางใหญ่, ตำบลบางม่วง, เทศบาลเมืองบ้านบางม่วง, อำเภอบางใหญ่, จังหวัดนนทบุรี, 11140, ประเทศไทย",
+    "hours": "Mo-Su 09:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:country",
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "contact:facebook",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 86 982 7781",
+    "cuisine": "dessert",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12493053971",
+    "name": "⚠︎ ร้านค้า เจซิตี้ ซ.12",
+    "category": "convenience · Unverified",
+    "lat": 13.5757127,
+    "lng": 100.6666969,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ร้านค้า เจซิตี้ ซ.12, ซอยแพรกษา 15/1, ตำบลแพรกษา, เทศบาลเมืองแพรกษา, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10280, ประเทศไทย",
+    "hours": "Mo-Su 08:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "email",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12497451991",
+    "name": "⚠︎ Pooky & Team Salon",
+    "category": "hairdresser · Unverified",
+    "lat": 13.6110919,
+    "lng": 100.6377345,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Pooky & Team Salon, 99/234, Soi Si Charoen Villa, ศรีเจริญวิลล่า, บ้านบางปิ้ง, ตำบลบางเมือง, เทศบาลเมืองปากน้ำสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย",
+    "hours": "Mo-Su 08:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 87 100 2260",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12531276586",
+    "name": "⚠︎ ก๋วยเตี๋ยวเนื้อ หัวน้ำวน",
+    "category": "restaurant · Unverified",
+    "lat": 13.5966634,
+    "lng": 100.6015404,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ก๋วยเตี๋ยวเนื้อ หัวน้ำวน, 85/4, ถนนเทศบาล 12, สมุทรปราการ, ตำบลปากน้ำ, เทศบาลนครสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย",
+    "hours": "Mo-Su 06:00-16:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "payment:lightning"
+    ],
+    "phone": "+66 89 536 7422",
+    "cuisine": "noodle",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12548626104",
+    "name": "⚠︎ ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5",
+    "category": "restaurant · Unverified",
+    "lat": 14.0055976,
+    "lng": 100.6991756,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5, 10/12, ถนนรังสิต-นครนายก, หมู่ที่ 4, ตำบลบึงยี่โถ, เทศบาลเมืองบึงยี่โถ, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12120, ประเทศไทย",
+    "website": "https://maps.app.goo.gl/gMPY2SnUr95pTLwt8?g_st=com.google.maps.preview.copy",
+    "hours": "Mo-Fr 08:00-17:00; Sa,Su 08:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 64 517 5544",
+    "cuisine": "noodle;thai",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12565849568",
+    "name": "⚠︎ เจริญผล Farm & Garden",
+    "category": "garden_centre · Unverified",
+    "lat": 13.8748051,
+    "lng": 100.6484191,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "เจริญผล Farm & Garden, 682, ถนนเทพรักษ์, แขวงท่าแร้ง, เขตบางเขน, กรุงเทพมหานคร, 10220, ประเทศไทย",
+    "hours": "Mo-Su 10:00-19:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:app",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66987824635",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12578959348",
+    "name": "⚠︎ Lonkong cafe",
+    "category": "cafe · Unverified",
+    "lat": 13.6209083,
+    "lng": 100.6179064,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lonkong cafe, 19/180, ศรีเพชรการเคหะ ซอย 4, ตำบลบางเมืองใหม่, เทศบาลตำบลบางเมือง, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย",
+    "hours": "Sa-Su 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date",
+      "contact:facebook",
+      "currency:XBT",
+      "email",
+      "name",
+      "opening_hours",
+      "outdoor_seating",
+      "payment:lightning",
+      "phone"
+    ],
+    "phone": "+66 89 212 7971",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12578966799",
+    "name": "⚠︎ Ramita Coffee & Bistro",
+    "category": "cafe · Unverified",
+    "lat": 13.5926392,
+    "lng": 100.5984521,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Ramita Coffee & Bistro, 378, ถนนกายสิทธิ์, สมุทรปราการ, ตำบลปากน้ำ, เทศบาลนครสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย",
+    "hours": "Mo-Th 07:00-17:00; Fr-Su 07:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 62 882 9639",
+    "instagram": "ramita_coffee_and_bistro",
+    "cuisine": "coffee_shop;bistro",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12600858098",
+    "name": "⚠︎ Coffee Company - RK Biz Center",
+    "category": "cafe · Unverified",
+    "lat": 13.7303766,
+    "lng": 100.7324716,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Coffee Company - RK Biz Center, 36/54, ถนนกรุงเทพฯ-ชลบุรี, ชุมชนร่มเกล้า 1, แขวงคลองสองต้นนุ่น, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย",
+    "website": "https://www.coffeecompany.asia/",
+    "hours": "Mo-Fr 07:30-16:00; Sa-Su 08:00-16:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 24 740 153",
+    "instagram": "coffeecompanythailand",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12622284690",
+    "name": "⚠︎ รุ่งอรุณ คาเฟ่",
+    "category": "cafe · Unverified",
+    "lat": 13.841005,
+    "lng": 100.5727981,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "รุ่งอรุณ คาเฟ่, 21/17, งามวงศ์วาน 56, เกษตร, แขวงลาดยาว, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย",
+    "hours": "Mo-Su 07:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 80 441 2131",
+    "instagram": "https://www.instagram.com/rung.arooncoffee",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12624732106",
+    "name": "⚠︎ Beyond Softserve",
+    "category": "ice_cream · Unverified",
+    "lat": 14.0696113,
+    "lng": 100.6044915,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Beyond Softserve, ถนนป๋วย อิ้งภากรณ์, ตำบลคลองหนึ่ง, เทศบาลเมืองท่าโขลง, อำเภอคลองหลวง, จังหวัดปทุมธานี, 12120, ประเทศไทย",
+    "hours": "Mo-Sa 08:30-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "payment:lightning"
+    ],
+    "phone": "+66 92 063 6556",
+    "instagram": "https://www.instagram.com/beyondsoftserve/",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12640866389",
+    "name": "⚠︎ Chit Hole Royal River",
+    "category": "bar · Unverified",
+    "lat": 13.7836685,
+    "lng": 100.5005494,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chit Hole Royal River, 439, ถนนราชวิถี, ชุมชนเจ้าพระยาสยาม, แขวงบางพลัด, เขตบางพลัด, กรุงเทพมหานคร, 10700, ประเทศไทย",
+    "website": "https://chitholding.com/",
+    "hours": "Mo-Su 17:00-00:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 64 954 6616",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12640892188",
+    "name": "⚠︎ Chit Hole Muangthong",
+    "category": "bar · Unverified",
+    "lat": 13.9270987,
+    "lng": 100.5340815,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chit Hole Muangthong, 50,84, เมืองทองธานีโครงการ 6 ซอย D1, เมืองทองธานี, ตำบลบ้านใหม่, เทศบาลนครปากเกร็ด, อำเภอปากเกร็ด, จังหวัดนนทบุรี, 11120, ประเทศไทย",
+    "website": "https://chitholding.com/",
+    "hours": "Fr-Su 17:00-00:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 89 125 0233",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12640894703",
+    "name": "⚠︎ Chit Hole Surawong",
+    "category": "bar · Unverified",
+    "lat": 13.7300773,
+    "lng": 100.5315367,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chit Hole Surawong, 54, ถนนสุรวงศ์, สันติภาพ, แขวงสี่พระยา, เขตบางรัก, กรุงเทพมหานคร, 10500, ประเทศไทย",
+    "website": "https://chitholding.com/",
+    "hours": "18:00-01:00; Th,Fr 18:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 64 954 6616",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12645411669",
+    "name": "⚠︎ กระเพาะปลาเจ๊เอ็ง ตลาดพลู",
+    "category": "restaurant · Unverified",
+    "lat": 13.7207245,
+    "lng": 100.4768818,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "กระเพาะปลาเจ๊เอ็ง ตลาดพลู, ซอยเทอดไท 27, แขวงตลาดพลู, เขตธนบุรี, กรุงเทพมหานคร, 10600, ประเทศไทย",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:postcode",
+      "amenity",
+      "check_date",
+      "contact:facebook",
+      "currency:XBT",
+      "email",
+      "name",
+      "name:en",
+      "name:th",
+      "payment:cash",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "0819267040",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12645466745",
+    "name": "⚠︎ Take a Bowl (FYI Center)",
+    "category": "restaurant · Unverified",
+    "lat": 13.7202791,
+    "lng": 100.560022,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Take a Bowl (FYI Center), 2525, ถนนพระรามที่ 4, ชุมชนริมทางรถไฟสายท่าเรือ, แขวงคลองเตย, เขตคลองเตย, กรุงเทพมหานคร, 10110, ประเทศไทย",
+    "website": "https://takeabowl.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning"
+    ],
+    "phone": "0989319312",
+    "instagram": "https://www.instagram.com/takeabowl.salad/",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12645513299",
+    "name": "⚠︎ นวลหมูปิ้ง",
+    "category": "restaurant · Unverified",
+    "lat": 13.7379688,
+    "lng": 100.494981,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "นวลหมูปิ้ง, ถนนเทศบาล สาย 1, ชุมชนวัดประยุรวงศ์, แขวงวัดกัลยาณ์, เขตธนบุรี, กรุงเทพมหานคร, 10600, ประเทศไทย",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:postcode",
+      "amenity",
+      "check_date",
+      "contact:facebook",
+      "contact:line",
+      "currency:XBT",
+      "fixme",
+      "name",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "0826982355",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12645532501",
+    "name": "⚠︎ ร้านผักบุษบา",
+    "category": "greengrocer · Unverified",
+    "lat": 13.9022157,
+    "lng": 100.3652683,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ร้านผักบุษบา, นบ.1002, บ้านหนองโสน, ตำบลบางแม่นาง, เทศบาลเมืองบางแม่นาง, อำเภอบางใหญ่, จังหวัดนนทบุรี, 11110, ประเทศไทย",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:postcode",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "phone",
+      "shop"
+    ],
+    "phone": "0905231315",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12658170647",
+    "name": "⚠︎ Chit Hole Rangsit Rooftop",
+    "category": "bar · Unverified",
+    "lat": 13.9852831,
+    "lng": 100.625787,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chit Hole Rangsit Rooftop, ซอยรังสิต-นครนายก 14, ชุมชนคลองหนึ่งพัฒนา, ตำบลประชาธิปัตย์, เทศบาลนครรังสิต, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12130, ประเทศไทย",
+    "website": "https://chitholding.com/",
+    "hours": "We-Su 17:00-00:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 64 954 6616",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12666638428",
+    "name": "⚠︎ O33 Vision",
+    "category": "optician · Unverified",
+    "lat": 13.6660229,
+    "lng": 100.6478173,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "o33 Vision, ถนนเทพรัตน, ชุมชนคลองบางนา, แขวงบางนาใต้, เขตบางนา, กรุงเทพมหานคร, 10260, ประเทศไทย",
+    "website": "https://www.o33vision.com/",
+    "hours": "Tu-Su 10:00-19:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "currency:XBT",
+      "description",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 80 084 3033",
+    "instagram": "o33_vision",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12675566950",
+    "name": "⚠︎ ข้าวหมูแดง สามชัย",
+    "category": "restaurant · Unverified",
+    "lat": 13.5927293,
+    "lng": 100.5987065,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ข้าวหมูแดง สามชัย, ถนนกายสิทธิ์, สมุทรปราการ, ตำบลปากน้ำ, เทศบาลนครสมุทรปราการ, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย",
+    "hours": "08:00-15:00; We off",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 89 490 7414",
+    "cuisine": "thai",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12675824868",
+    "name": "⚠︎ TigerGyu หมูกระทะ",
+    "category": "restaurant · Unverified",
+    "lat": 13.6741412,
+    "lng": 100.5348541,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ไทเกอร์กิว หมูกระทะ, 762/2, ถนนพระรามที่ 3, แขวงบางโพงพาง, เขตยานนาวา, กรุงเทพมหานคร, 10120, ประเทศไทย",
+    "website": "https://www.instagram.com/tigergyu.bkk?igsh=MXdmZHJkcDgwbXBxbw%3D%3D&utm_source=qr",
+    "hours": "Mo-Su 17:00-00:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "cuisine",
+      "currency:XBT",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+66 64 542 9659",
+    "instagram": "https://www.instagram.com/tigergyu.bkk",
+    "cuisine": "thai;japanese;barbecue;grill",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12711070515",
+    "name": "⚠︎ Cocoa House",
+    "category": "cafe · Unverified",
+    "lat": 13.7219923,
+    "lng": 100.4458025,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Cocoa House, 188, ซอย 6, แขวงบางด้วน, เขตภาษีเจริญ, กรุงเทพมหานคร, 10160, ประเทศไทย",
+    "hours": "Mo-Fr 20:00-00:00 Sat-Sun 08:00-00:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "contact:line",
+      "currency:XBT",
+      "delivery",
+      "payment:lightning"
+    ],
+    "phone": "0873555494",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12733065017",
+    "name": "⚠︎ ABER Group Law Firm",
+    "category": "other · Unverified",
+    "lat": 13.7373376,
+    "lng": 100.5623274,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ABER Group Law Firm, 11/2 P23 Building, Level 11,, ซอยคาวบอย, Asok, แขวงคลองเตยเหนือ, เขตวัฒนา, กรุงเทพมหานคร, 10110, ประเทศไทย",
+    "website": "https://www.aberthailand.com",
+    "hours": "Mo-Fr 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12745895479",
+    "name": "⚠︎ Gatta Café - Central Eastville",
+    "category": "cafe · Unverified",
+    "lat": 13.8035407,
+    "lng": 100.6146545,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gatta Café - Central Eastville, 69/3, FL.1, ถนนประดิษฐ์มนูธรรม, แขวงลาดพร้าว, เขตลาดพร้าว, กรุงเทพมหานคร, 10230, ประเทศไทย",
+    "website": "https://www.gattacafe.com/",
+    "hours": "Mo-Fr 10:30-21:30; Sa-Su 10:00-21:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "bar",
+      "branch",
+      "payment:lightning"
+    ],
+    "phone": "+66 84 252 8922",
+    "instagram": "gattacafe",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12760942330",
+    "name": "⚠︎ คลังยาอาม่า - ตลาดอาม่า1000สุข",
+    "category": "pharmacy · Unverified",
+    "lat": 14.0490587,
+    "lng": 100.7471647,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "คลังยาอาม่า - ตลาดอาม่า1000สุข, 64/1, ถนนธัญบุรี-วังน้อย, หมู่ที่ 6, ตำบลคลองเจ็ด, องค์การบริหารส่วนตำบลคลองเจ็ด, อำเภอคลองหลวง, จังหวัดปทุมธานี, 12120, ประเทศไทย",
+    "hours": "Mo-Su 08:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 84 242 5162",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12763486241",
+    "name": "⚠︎ ตลาดนัดพรธิสาร6",
+    "category": "marketplace · Unverified",
+    "lat": 14.0492334,
+    "lng": 100.7559884,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ตลาดนัดพรธิสาร6, ปท.3007, บ้านทวีทรัพย์, ตำบลบึงบอน, องค์การบริหารส่วนตำบลบึงบอน, อำเภอหนองเสือ, จังหวัดปทุมธานี, 12170, ประเทศไทย",
+    "hours": "Mo-Su 15:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:postcode",
+      "addr:province",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "currency:XBT",
+      "name",
+      "payment:lightning"
+    ],
+    "phone": "+66 96 535 1626",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12765494314",
+    "name": "⚠︎ Victory Industrial",
+    "category": "other · Unverified",
+    "lat": 13.6239743,
+    "lng": 100.4020656,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Victory Industrial, 3, ซอยบางกระดี่ 11, แขวงแสมดำ, เขตบางขุนเทียน, กรุงเทพมหานคร, คอกกระบือ, 10150, ประเทศไทย",
+    "website": "https://www.victoryindustrial.co.th/cprofile.html",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "currency:XBT",
+      "man_made",
+      "name",
+      "payment:lightning"
+    ],
+    "phone": "+66 24 521 287",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12808883030",
+    "name": "⚠︎ KA-LA Coffee",
+    "category": "cafe · Unverified",
+    "lat": 14.0346785,
+    "lng": 100.7324022,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "KA-LA Coffee, 130/12, ซอยข้างตลาด, ตำบลรังสิต, เทศบาลตำบลธัญบุรี, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12110, ประเทศไทย",
+    "hours": "Mo-Su 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "cuisine",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 62 138 0493",
+    "instagram": "kala.koff",
+    "cuisine": "coffee_shop;cafe",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12818578388",
+    "name": "⚠︎ Five Star",
+    "category": "restaurant · Unverified",
+    "lat": 13.9539438,
+    "lng": 100.6848772,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Five Star, อยู่เจริญ 4, ถนนไสวประชาราษฎร์, บ้านคลองสี่, ตำบลลาดสวาย, เทศบาลเมืองลาดสวาย, เทศบาลเมืองบึงยี่โถ, อำเภอลำลูกกา, จังหวัดปทุมธานี, 12150, ประเทศไทย",
+    "website": "https://fivestar.in.th/",
+    "hours": "Mo-Su 07:30-20:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+66 93 723 8284",
+    "cuisine": "chicken",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12827530352",
+    "name": "⚠︎ Citadel Coffee",
+    "category": "cafe · Unverified",
+    "lat": 13.9879228,
+    "lng": 100.7045035,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Citadel Coffee, ทางบริการด้านในของถนนกาญจนาภิเษก, ตำบลรังสิต, ตำบลบึงคำพร้อย, องค์การบริหารส่วนตำบลบึงคำพร้อย, อำเภอลำลูกกา, จังหวัดปทุมธานี, 12150, ประเทศไทย",
+    "hours": "Tu-Su 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 65 084 5879",
+    "instagram": "citadelcoffee21",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12839299656",
+    "name": "⚠︎ Croissant Factory (Thonglor)",
+    "category": "restaurant · Unverified",
+    "lat": 13.7374984,
+    "lng": 100.5837127,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Croissant Factory (Thonglor), 411/3, ซอยสุขุมวิท 55, แขวงคลองตันเหนือ, เขตวัฒนา, กรุงเทพมหานคร, 10110, ประเทศไทย",
+    "hours": "Tu-Su 08:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "payment:lightning"
+    ],
+    "phone": "+66 92 414 9746",
+    "instagram": "croissantfactory_th",
+    "cuisine": "pizza;pasta;salad;bakery;coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12856750526",
+    "name": "⚠︎ Roast Runner",
+    "category": "cafe · Unverified",
+    "lat": 13.786909,
+    "lng": 100.3741688,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Roast Runner, 99/7,99/8, ถนนบรมราชชนนี (ทางขนาน), แขวงศาลาธรรมสพน์, เขตทวีวัฒนา, กรุงเทพมหานคร, กระทุ่มล้ม, 10170, ประเทศไทย",
+    "hours": "09:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 9592 54437",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12863636313",
+    "name": "⚠︎ Manggon Studio",
+    "category": "interior_decoration · Unverified",
+    "lat": 13.8007227,
+    "lng": 100.5490929,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Manggon Studio, ถนนกำแพงเพชร 2, แขวงจตุจักร, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย",
+    "website": "https://www.manggonstudio.com/",
+    "hours": "Tu-Su 09:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning"
+    ],
+    "phone": "+66 82 325 4556",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12886020278",
+    "name": "⚠︎ คลินิคทันตกรรมท่าข้าม",
+    "category": "dentist · Unverified",
+    "lat": 13.650711,
+    "lng": 100.4436418,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "คลินิคทันตกรรมท่าข้าม, 116/34, ถนนท่าข้าม, แขวงแสมดำ, เขตบางขุนเทียน, กรุงเทพมหานคร, 10150, ประเทศไทย",
+    "hours": "Mo-Su 10:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "currency:XBT",
+      "healthcare",
+      "name",
+      "payment:lightning"
+    ],
+    "phone": "+66 81 279 5001",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12905584949",
+    "name": "⚠︎ Moonlight Leather",
+    "category": "bag · Unverified",
+    "lat": 13.8001988,
+    "lng": 100.709362,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Moonlight Leather, ซอยเสรีไทย 60, นิคมอุตสาหกรรมบางชัน, แขวงมีนบุรี, เขตมีนบุรี, กรุงเทพมหานคร, 10510, ประเทศไทย",
+    "website": "https://www.moonlightleather.com/",
+    "hours": "Sa-Su 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 85 171 4550",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:12941914655",
+    "name": "⚠︎ Fitting shop",
+    "category": "clothes · Unverified",
+    "lat": 13.799093,
+    "lng": 100.5478495,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "บางซื่อ จังชั่น, ถนนกำแพงเพชร 2, แขวงจตุจักร, เขตจตุจักร, กรุงเทพมหานคร, 10900, ประเทศไทย",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "currency:XBT",
+      "name",
+      "opening_hours"
+    ],
+    "payment": {
+      "lightning": false,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13010769122",
+    "name": "⚠︎ Chit Hole Asiatique",
+    "category": "bar · Unverified",
+    "lat": 13.7048562,
+    "lng": 100.5019729,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chit Hole Asiatique, 2194, ถนนเจริญกรุง, บ้านใหม่, แขวงวัดพระยาไกร, เขตบางคอแหลม, กรุงเทพมหานคร, 10120, ประเทศไทย",
+    "website": "https://chitholding.com/",
+    "hours": "Mo-Su 07:00-00:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 64 954 6616",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13016546680",
+    "name": "⚠︎ ค่ายมวยลูกคลองตัน",
+    "category": "other · Unverified",
+    "lat": 13.7460584,
+    "lng": 100.5999818,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "ค่ายมวยลูกคลองตัน, 51, 3, ซอยรามคำแหง 3, แขวงสวนหลวง, เขตสวนหลวง, กรุงเทพมหานคร, 10250, ประเทศไทย",
+    "hours": "Mo-Sa 16:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 89 128 6304",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13016550123",
+    "name": "⚠︎ Vacilando Bookshop",
+    "category": "books · Unverified",
+    "lat": 13.7578787,
+    "lng": 100.5096567,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Vacilando Bookshop, 96/2, ถนนจักรพรรดิพงษ์, ชุมชนศุภมิตร 2, แขวงวัดโสมนัส, เขตป้อมปราบศัตรูพ่าย, กรุงเทพมหานคร, 10100, ประเทศไทย",
+    "website": "https://www.vacilandobookshop.com/",
+    "hours": "Sa-Su 12:30-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning"
+    ],
+    "phone": "+66 86 775 8977",
+    "instagram": "vacilandobookshop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13016593667",
+    "name": "⚠︎ The Barbershop",
+    "category": "hairdresser · Unverified",
+    "lat": 13.7629694,
+    "lng": 100.5636572,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Barbershop, ซอยรัชดาภิเษก 3 แยก 9, แขวงดินแดง, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย",
+    "hours": "Mo-Su 13:00-23:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "hairdresser",
+      "name",
+      "payment:lightning"
+    ],
+    "phone": "+66 94 779 1187",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13051531371",
+    "name": "⚠︎ Lung Ji Card Shop",
+    "category": "supermarket · Unverified",
+    "lat": 13.6880845,
+    "lng": 100.4506362,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lung Ji Card Shop, 21/18, ถนนเอกชัย, ชุมชนสุขสันต์พัฒนา, แขวงบางขุนเทียน, เขตจอมทอง, กรุงเทพมหานคร, 10150, ประเทศไทย",
+    "hours": "Mo-Fr 09:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 87 017 2173",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13057327865",
+    "name": "⚠︎ Chu's Pastry",
+    "category": "cafe · Unverified",
+    "lat": 13.8542768,
+    "lng": 100.5484357,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chu's Pastry, 55/55  Thung Song Hong,, ถนนงามวงศ์วาน, ชินเขต, แขวงทุ่งสองห้อง, เขตหลักสี่, กรุงเทพมหานคร, 10210, ประเทศไทย",
+    "hours": "Mo-Su 08:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 90 969 3018",
+    "instagram": "chus.pastry",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13061362037",
+    "name": "⚠︎ Daddy Taste Room",
+    "category": "ice_cream · Unverified",
+    "lat": 13.8264533,
+    "lng": 100.4423469,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Daddy Taste Room, 111/11, ถนนนครอินทร์, บ้านบางไกร, ตำบลบางขุนกอง, องค์การบริหารส่วนตำบลบางขุนกอง, อำเภอบางกรวย, จังหวัดนนทบุรี, 11130, ประเทศไทย",
+    "hours": "Tu-Su 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning"
+    ],
+    "instagram": "https://www.instagram.com/daddytasteroom/",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13071813034",
+    "name": "⚠︎ Layer House",
+    "category": "other · Unverified",
+    "lat": 13.7898584,
+    "lng": 100.5622319,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Layer House, 9/2-7, ซอยอินทามระ 33, สุพรรณิการ, แขวงรัชดาภิเษก, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย",
+    "website": "https://layerhouse.blogspot.com/",
+    "hours": "Tu-Fr 09:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "address",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+66 89 889 4028",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13077980491",
+    "name": "⚠︎ Latte Man",
+    "category": "cafe · Unverified",
+    "lat": 13.7612626,
+    "lng": 100.5635552,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Latte Man, 550/188, ซอยอโศกดินแดง-ดินแดง 21 แยก 6, แขวงดินแดง, เขตดินแดง, กรุงเทพมหานคร, 10400, ประเทศไทย",
+    "hours": "Mo-Su 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 85 442 2478",
+    "instagram": "latteman.m",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13081282309",
+    "name": "⚠︎ Peixing clinic",
+    "category": "other · Unverified",
+    "lat": 13.9972327,
+    "lng": 100.6703365,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Peixing clinic, 30/1, ถนนรังสิต-นครนายก, หมู่ที่ 2, ตำบลบึงยี่โถ, เทศบาลเมืองบึงยี่โถ, อำเภอธัญบุรี, จังหวัดปทุมธานี, 12130, ประเทศไทย",
+    "hours": "Mo-Su 10:00-19:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 61 390 7455",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13081317028",
+    "name": "⚠︎ Horm Cha @ Ramkhamhaeng 52",
+    "category": "cafe · Unverified",
+    "lat": 13.7568425,
+    "lng": 100.6434134,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Horm Cha @ Ramkhamhaeng 52, 110 74/5, ซอยรามคำแหง 52, แขวงหัวหมาก, เขตบางกะปิ, กรุงเทพมหานคร, 10240, ประเทศไทย",
+    "hours": "Mo-Su 07:15-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "payment:lightning"
+    ],
+    "phone": "+66 81 512 4444",
+    "cuisine": "coffee_shop;tea",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13081956521",
+    "name": "⚠︎ BOB Space",
+    "category": "community_centre · Unverified",
+    "lat": 13.7245048,
+    "lng": 100.5882289,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "BOB Space, 64/1, เอกมัย ๑๐ แยก 2, แขวงพระโขนงเหนือ, เขตวัฒนา, กรุงเทพมหานคร, 10110, ประเทศไทย",
+    "website": "https://www.bobspaces.net/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:node:13096107804",
+    "name": "⚠︎ Lee's Mark Residence",
+    "category": "other · Unverified",
+    "lat": 13.6446434,
+    "lng": 100.6372215,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lee's Mark Residence, 438/9, ถนนศรีนครินทร์, ตำบลสำโรงเหนือ, เทศบาลตำบลด่านสำโรง, อำเภอเมืองสมุทรปราการ, จังหวัดสมุทรปราการ, 10270, ประเทศไทย",
+    "website": "https://www.leesmark.com/",
+    "hours": "24/7",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "addr:subdistrict",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "payment:lightning"
+    ],
+    "phone": "+66 23 834 787",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:way:1085583221",
+    "name": "⚠︎ Laohu Shabu",
+    "category": "restaurant · Unverified",
+    "lat": 13.726955,
+    "lng": 100.7711197,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Laohu Shabu, 73, ซอยฉลองกรุง 1, แขวงลาดกระบัง, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย",
+    "website": "https://web.facebook.com/laohushabu",
+    "hours": "Mo-Su 16:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:postcode",
+      "addr:province",
+      "amenity",
+      "buffet",
+      "building",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "name:th",
+      "payment:lightning"
+    ],
+    "phone": "+66 65 681 6926",
+    "cuisine": "chinese;shabu",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  },
+  {
+    "id": "osm:way:1206068563",
+    "name": "⚠︎ Coffzilla Cafe",
+    "category": "cafe · Unverified",
+    "lat": 13.7269543,
+    "lng": 100.7710223,
+    "country": "TH",
+    "city": "Bangkok",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Coffzilla Cafe, ซอยฉลองกรุง 1, แขวงลาดกระบัง, เขตลาดกระบัง, กรุงเทพมหานคร, 10520, ประเทศไทย",
+    "website": "https://web.facebook.com/profile.php?id=61569404214355",
+    "hours": "Mo-Sa 09:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:district",
+      "addr:place",
+      "addr:postcode",
+      "addr:province",
+      "addr:street",
+      "amenity",
+      "building",
+      "cuisine",
+      "currency:XBT",
+      "internet_access",
+      "payment:lightning"
+    ],
+    "phone": "+66 92 827 1601",
+    "instagram": "https://www.instagram.com/coffzilla",
+    "cuisine": "coffee_shop;cake",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-28",
+      "sources": []
+    }
+  }
+]
