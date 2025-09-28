@@ -25,7 +25,7 @@ jobs:
           cache: 'npm'
 
       - name: Install deps (no-save)
-        run: npm i --no-save --no-package-lock node-fetch@3 jsdom@24
+        run: npm i --no-save --no-package-lock node-fetch@3
 
       - name: List public JSON targets
         run: |
