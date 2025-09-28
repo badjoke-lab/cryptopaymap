@@ -214,19 +214,18 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:10.197Z",
       "evidence": [
         {
           "url": "https://cryptobarp2p.io",
-          "matched": [
-            "暗号",
-            "cryptobar p2p"
-          ]
+          "type": "text",
+          "match": "暗号"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:38.897Z"
     }
   },
   {
@@ -457,18 +456,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:15.493Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:39.747Z"
     }
   },
   {
@@ -518,18 +517,18 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:16.930Z",
       "evidence": [
         {
           "url": "https://mepica.net",
-          "matched": [
-            "支払い"
-          ]
+          "type": "text",
+          "match": "支払い"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:40.496Z"
     }
   },
   {
@@ -579,20 +578,28 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
-      "hits": 1,
+      "status": "⚠︎",
+      "hits": 3,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:17.601Z",
       "evidence": [
         {
           "url": "https://btcln.shop/marche/",
-          "matched": [
-            "支払い",
-            "ビットコイン",
-            "暗号"
-          ]
+          "type": "text",
+          "match": "支払い"
+        },
+        {
+          "url": "https://btcln.shop/marche/",
+          "type": "text",
+          "match": "ビットコイン"
+        },
+        {
+          "url": "https://btcln.shop/marche/",
+          "type": "text",
+          "match": "暗号"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:39.623Z"
     }
   },
   {
@@ -642,18 +649,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:17.991Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:40.266Z"
     }
   },
   {
@@ -703,19 +710,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:18.128Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン",
-            "ココロータス"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:44.851Z"
     }
   },
   {
@@ -765,18 +771,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:18.264Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:39.894Z"
     }
   },
   {
@@ -826,18 +832,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:18.399Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:40.040Z"
     }
   },
   {
@@ -887,18 +893,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:18.533Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:40.187Z"
     }
   },
   {
@@ -948,18 +954,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:18.680Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:40.335Z"
     }
   },
   {
@@ -1009,18 +1015,18 @@
       "cash": true
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:18.814Z",
       "evidence": [
         {
           "url": "https://cocorotus.com",
-          "matched": [
-            "ビットコイン"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:40.416Z"
     }
   },
   {
@@ -1970,18 +1976,18 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:35.371Z",
       "evidence": [
         {
           "url": "https://mepica.net",
-          "matched": [
-            "支払い"
-          ]
+          "type": "text",
+          "match": "支払い"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:48.717Z"
     }
   },
   {
@@ -2193,19 +2199,18 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:40.392Z",
       "evidence": [
         {
           "url": "https://tokyobitcoin.space/",
-          "matched": [
-            "ビットコイン",
-            "tokyo bitcoin base"
-          ]
+          "type": "text",
+          "match": "ビットコイン"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:27:51.412Z"
     }
   },
   {

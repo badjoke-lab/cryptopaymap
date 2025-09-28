@@ -301,18 +301,18 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:15.418Z",
       "evidence": [
         {
           "url": "https://disconnectberlin.wordpress.com/",
-          "matched": [
-            "we accept bitcoin"
-          ]
+          "type": "text",
+          "match": "we accept bitcoin"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:26:57.062Z"
     }
   },
   {

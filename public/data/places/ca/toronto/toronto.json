@@ -188,18 +188,18 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
+      "status": "⚠︎",
       "hits": 1,
       "threshold": 4,
       "checkedAt": "2025-09-28T15:07:10.321Z",
       "evidence": [
         {
           "url": "https://www.niagaratours.ca/",
-          "matched": [
-            "pay with bitcoin"
-          ]
+          "type": "text",
+          "match": "pay with bitcoin"
         }
-      ]
+      ],
+      "updatedAt": "2025-09-28T15:26:56.174Z"
     }
   },
   {
