@@ -22,9 +22,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: 'npm'
 
-      - name: Install deps
-        run: npm i node-fetch@3 jsdom@24
+      - name: Install deps (no-save)
+        run: npm i --no-save --no-package-lock node-fetch@3 jsdom@24
 
       - name: List public JSON targets
         run: |
@@ -58,15 +59,17 @@ jobs:
 
       - name: Run verifier (verbose)
         run: |
+          set -o pipefail
           echo "::group::Run scan.mjs"
           NODE_OPTIONS="--trace-uncaught" VERBOSE=1 node tools/verify/scan.mjs | tee scan.log
           echo "::endgroup::"
           echo "::group::Changed files"
-          git status --porcelain
-          git diff --name-only
+          git status --porcelain || true
+          git diff --name-only || true
           echo "::endgroup::"
 
       - name: Upload logs
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: verify-logs
@@ -74,6 +77,8 @@ jobs:
             target-files.txt
             shape.txt
             scan.log
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
