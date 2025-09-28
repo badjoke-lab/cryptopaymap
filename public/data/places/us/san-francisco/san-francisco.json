@@ -1,1 +1,162 @@
-[{"id":"osm:node:10687965519","name":"Recotur Cia. Ltda.","category":"travel_agency","lat":0.3520946,"lng":-78.1191785,"country":"US","city":"San Francisco","coins":["BTC"],"address":"Recotur Cia. Ltda., 593, José Joaquin de Olmedo, San Francisco, Ibarra, Imbabura, 100150, Ecuador","hours":"Mo-Fr 09:00-13:00, Mo-Fr 15:00-18:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date:currency:XBT","currency:USD","currency:XBT","last_checked","name","opening_hours","payment:cash","payment:credit_cards","payment:lightning","payment:onchain"],"phone":"+593969098863","payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true},"website":null},{"id":"osm:node:12026421265","name":"Los Pinos","category":"cafe","lat":0.353644,"lng":-78.1176963,"country":"US","city":"San Francisco","coins":["BTC"],"address":"Los Pinos, Eusebio Borrero, San Francisco, Ibarra, Imbabura, 100150, Ecuador","hours":"Mo-Sa 08:00-13:00 , Mo-Sa 17:00-20h30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:postcode","addr:street","amenity","check_date:currency:XBT","currency:XBT","internet_access","name","opening_hours","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12053286920","name":"IFECS (International Fund For Education Charlie Studies)","category":"other","lat":0.3537048,"lng":-78.1219275,"country":"US","city":"San Francisco","coins":["BTC"],"address":"IFECS (International Fund For Education Charlie Studies), 225, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100105, Ecuador","hours":"Mo-Fr 09:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date:currency:XBT","currency:USD","name","office","opening_hours","payment:lightning","payment:onchain"],"phone":"+593 98 339 6885","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13012002745","name":"Oficinas Legales Ariadna Jaramillo y Asociados","category":"other","lat":0.3538701,"lng":-78.1230394,"country":"US","city":"San Francisco","coins":["BTC"],"address":"Oficinas Legales Ariadna Jaramillo y Asociados, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100150, Ecuador","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","office","payment:lightning","payment:lightning_contactless","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null}]
+[
+  {
+    "id": "osm:node:10687965519",
+    "name": "Recotur Cia. Ltda.",
+    "category": "travel_agency",
+    "lat": 0.3520946,
+    "lng": -78.1191785,
+    "country": "US",
+    "city": "San Francisco",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Recotur Cia. Ltda., 593, José Joaquin de Olmedo, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
+    "hours": "Mo-Fr 09:00-13:00, Mo-Fr 15:00-18:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:USD",
+      "currency:XBT",
+      "last_checked",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+593969098863",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12026421265",
+    "name": "Los Pinos",
+    "category": "cafe",
+    "lat": 0.353644,
+    "lng": -78.1176963,
+    "country": "US",
+    "city": "San Francisco",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Los Pinos, Eusebio Borrero, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
+    "hours": "Mo-Sa 08:00-13:00 , Mo-Sa 17:00-20h30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "internet_access",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12053286920",
+    "name": "IFECS (International Fund For Education Charlie Studies)",
+    "category": "other",
+    "lat": 0.3537048,
+    "lng": -78.1219275,
+    "country": "US",
+    "city": "San Francisco",
+    "coins": [
+      "BTC"
+    ],
+    "address": "IFECS (International Fund For Education Charlie Studies), 225, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100105, Ecuador",
+    "hours": "Mo-Fr 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:USD",
+      "name",
+      "office",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+593 98 339 6885",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:13012002745",
+    "name": "Oficinas Legales Ariadna Jaramillo y Asociados",
+    "category": "other",
+    "lat": 0.3538701,
+    "lng": -78.1230394,
+    "country": "US",
+    "city": "San Francisco",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Oficinas Legales Ariadna Jaramillo y Asociados, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  }
+]

@@ -1,1 +1,808 @@
-[{"id":"osm:node:2762442267","name":"Safari","category":"restaurant","lat":40.8005894,"lng":-73.9527099,"country":"US","city":"New York","coins":["BTC"],"address":"Safari, 55, Saint Nicholas Avenue, Harlem, Manhattan Community Board 10, Manhattan, New York County, City of New York, New York, 10026, United States","website":"https://safariharlem.com","hours":"Tu-Su 10:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","check_date","check_date:currency:XBT","contact:email","contact:facebook","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1 646 964 4252","instagram":"safariharlemnyc","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:2768451052","name":"The Expat","category":"bar","lat":40.8154613,"lng":-73.9600115,"country":"US","city":"New York","coins":["BTC"],"address":"The Expat, 64, Tiemann Place, Morningside Heights, Manhattan Community Board 9, Manhattan, New York County, City of New York, New York, 10027, United States","website":"https://www.theexpat.nyc/","hours":"Mo-Th 11:30-23:00; Fr-Sa 11:30-00:00; Su 11:30-23:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","check_date:currency:XBT","currency:XBT","name","opening_hours","payment:lightning","payment:lightning"],"phone":"+1-646-410-2922","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:5415434959","name":"Kavasutra Kava Bar","category":"bar","lat":40.7284736,"lng":-73.9834305,"country":"US","city":"New York","coins":["ETH"],"address":"Kavasutra Kava Bar, 261, East 10th Street, East Village, Manhattan Community Board 3, Manhattan, New York County, City of New York, New York, 10009, United States","website":"https://kavasutra.com/pages/kavasutra-new-york","hours":"Mo-Su 10:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:postcode","addr:street","amenity","check_date","check_date:opening_hours","currency:XBT","delivery","drink:beer","drink:coffee"],"phone":"+1-646-649-4214","payment":{"lightning":false,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:8791945336","name":"Back Of The Closet","category":"clothes","lat":40.8690068,"lng":-73.4257772,"country":"US","city":"New York","coins":["BTC"],"address":"Back Of The Closet, 388, New York Avenue, Huntington Station, Town of Huntington, Suffolk County, New York, 11743, United States","hours":"Mo-Sa 12:00-20:00, Su 12:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","clothes","contact:instagram","currency:XBT","name","nysgissam:nysaddresspointid","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1 631 470 4390","instagram":"backofthecloset__li","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:9964721813","name":"Dandy Farmer","category":"florist","lat":40.697432,"lng":-73.9718971,"country":"US","city":"New York","coins":["BTC"],"address":"Dandy Farmer, 14, Clermont Avenue, Fort Greene, Brooklyn, Kings County, City of New York, New York, 11205, United States","website":"https://www.dandyfarmer.com","hours":"Tu-Fr 12:00-18:00; Sa 12:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","currency:USD","currency:XBT","description","name","opening_hours","payment:cash","payment:credit_cards","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1-646-481-4423","payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true}},{"id":"osm:node:10127620393","name":"Budico Corp","category":"other","lat":40.8368509,"lng":-73.9926883,"country":"US","city":"New York","coins":["BTC"],"address":"Budico Corp, Pembroke Lane, Fort Lee, Bergen County, New Jersey, 07657, United States","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:street","check_date:currency:XBT","craft","currency:XBT","name","payment:lightning","payment:lightning_contactless","payment:onchain","phone","payment:lightning","payment:onchain"],"phone":"646-972-4231","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:10238825155","name":"Loving Hands Family Care","category":"childcare","lat":40.8536048,"lng":-74.0193736,"country":"US","city":"New York","coins":["BTC"],"address":"Loving Hands Family Care, 311B, Teaneck Road, Ridgefield Park, Bergen County, New Jersey, 07660, United States","hours":"Mo-Fr 08:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","check_date","currency:XBT","email","name","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"347-549-6960","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:10245589405","name":"PubKey","category":"bar","lat":40.732185,"lng":-74.0000205,"country":"US","city":"New York","coins":["BTC"],"address":"PubKey, 85, Washington Place, Union Square, Greenwich Village, Manhattan, New York County, City of New York, New York, 10011, United States","website":"https://pubkey.bar/","hours":"Mo-Th 15:00-02:00; Fr 15:00-04:00; Sa 12:00-04:00; Su 12:00-02:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","brewery","check_date","check_date:currency:XBT","cuisine","payment:cash","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1 305 773 4249","cuisine":"hot_dog;sandwich;chicken","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":true}},{"id":"osm:node:10559814687","name":"Melville Deli","category":"fast_food","lat":40.7904667,"lng":-73.4162102,"country":"US","city":"New York","coins":["BTC"],"address":"Melville Deli, 90, Broadhollow Road, Melville, Town of Huntington, Suffolk County, New York, 11747, United States","hours":"Mo-Su 04:00-16:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","check_date","check_date:currency:XBT","contact:facebook","cuisine","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1 631 351 9338","cuisine":"american;sandwich;salad","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:10980987260","name":"Aburas Law, LLC","category":"other","lat":40.8919096,"lng":-74.1401536,"country":"US","city":"New York","coins":["BTC"],"address":"Aburas Law, LLC, 229, Crooks Avenue, Lake View, Clifton, Passaic County, New Jersey, 07011, United States","website":"https://www.aburaslaw.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","addr:unit","currency:XBT","name","office","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11425773528","name":"Society’s SmokeShop","category":"tobacco","lat":40.7585189,"lng":-73.989409,"country":"US","city":"New York","coins":["BTC"],"address":"Society’s SmokeShop, 300, West 44th Street, Hell's Kitchen, Manhattan Community Board 4, Manhattan, New York County, City of New York, New York, 10036, United States","hours":"Mo-Su 11:00-12:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","check_date","currency:XBT","name","opening_hours","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1-941-287-2189","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11497324014","name":"Waterfront Wines & Spirits","category":"alcohol","lat":40.6938294,"lng":-73.9994261,"country":"US","city":"New York","coins":["BTC"],"address":"Waterfront Wines & Spirits, 360, Furman Street, Columbia Street Waterfront District, Brooklyn, Kings County, City of New York, New York, 11201, United States","website":"https://waterfrontwinesnyc.com/","hours":"Mo-Th 12:00-22:00; Fr-Sa 12:00-23:00; Su 12:00-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:postcode","addr:street","alt_name","check_date:currency:XBT","currency:USD","currency:XBT","delivery","email","name","payment:cash","payment:credit_cards","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1-718-246-5101","payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true}},{"id":"osm:node:11949550415","name":"Bitcoin Center NYC","category":"other","lat":40.7868109,"lng":-73.9781144,"country":"US","city":"New York","coins":["BTC"],"address":"Bitcoin Center NYC, 2307, Broadway, Upper West Side, Manhattan Community Board 7, Manhattan, New York County, City of New York, New York, 10024, United States","website":"https://bitcoincenternyc.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","check_date","check_date:currency:XBT","contact:facebook","contact:instagram","currency:XBT","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1 212 777 3322","instagram":"bitcoincenter","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12809106019","name":"Involve Digital","category":"other","lat":40.7130184,"lng":-74.0131518,"country":"US","city":"New York","coins":["BTC"],"address":"Involve Digital, One World Trade Center, West Street, Battery Park City, Manhattan, New York County, City of New York, New York, 10007, United States","website":"https://www.involvedigital.com","hours":"Mo-Fr 09:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","addr:unit","check_date","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","payment:lightning","payment:onchain"],"phone":"+1 929 474 0274","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12835020256","name":"Jericho Mansion","category":"other","lat":40.797047,"lng":-73.5404794,"country":"US","city":"New York","coins":["BTC"],"address":"Jericho Mansion, 112, Old Cedar Swamp Road, Jericho, Town of Oyster Bay, Nassau County, New York, 11753, United States","website":"https://airbtc.online/properties/jericho-mansion-new-york-usa/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date","currency:XBT","internet_access","name","payment:lightning","payment:onchain","tourism","website","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12960242112","name":"Solid State Coffee","category":"cafe","lat":40.776741,"lng":-73.9796743,"country":"US","city":"New York","coins":["BTC"],"address":"Solid State Coffee, 104, West 71st Street, Lincoln Square, Manhattan Community Board 7, Manhattan, New York County, City of New York, New York, 10023, United States","website":"https://solidstatecoffee.com/","hours":"Mo-Fr 07:00-16:00; Sa-Su 07:00-17:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","check_date:currency:XBT","contact:instagram","contact:twitter","currency:XBT","payment:lightning","payment:lightning"],"phone":"+1-646-896-1412","instagram":"https://www.instagram.com/solidstatecoffeenyc/","twitter":"https://x.com/nycsolidstate","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}}]
+[
+  {
+    "id": "osm:node:2762442267",
+    "name": "Safari",
+    "category": "restaurant",
+    "lat": 40.8005894,
+    "lng": -73.9527099,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Safari, 55, Saint Nicholas Avenue, Harlem, Manhattan Community Board 10, Manhattan, New York County, City of New York, New York, 10026, United States",
+    "website": "https://safariharlem.com",
+    "hours": "Tu-Su 10:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 646 964 4252",
+    "instagram": "safariharlemnyc",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:51.735Z",
+      "evidence": [
+        {
+          "url": "https://safariharlem.com",
+          "matched": [
+            "safari"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:2768451052",
+    "name": "The Expat",
+    "category": "bar",
+    "lat": 40.8154613,
+    "lng": -73.9600115,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Expat, 64, Tiemann Place, Morningside Heights, Manhattan Community Board 9, Manhattan, New York County, City of New York, New York, 10027, United States",
+    "website": "https://www.theexpat.nyc/",
+    "hours": "Mo-Th 11:30-23:00; Fr-Sa 11:30-00:00; Su 11:30-23:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning"
+    ],
+    "phone": "+1-646-410-2922",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:52.211Z",
+      "evidence": [
+        {
+          "url": "https://www.theexpat.nyc/",
+          "matched": [
+            "the expat"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:5415434959",
+    "name": "Kavasutra Kava Bar",
+    "category": "bar",
+    "lat": 40.7284736,
+    "lng": -73.9834305,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "ETH"
+    ],
+    "address": "Kavasutra Kava Bar, 261, East 10th Street, East Village, Manhattan Community Board 3, Manhattan, New York County, City of New York, New York, 10009, United States",
+    "website": "https://kavasutra.com/pages/kavasutra-new-york",
+    "hours": "Mo-Su 10:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:opening_hours",
+      "currency:XBT",
+      "delivery",
+      "drink:beer",
+      "drink:coffee"
+    ],
+    "phone": "+1-646-649-4214",
+    "payment": {
+      "lightning": false,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:52.771Z",
+      "evidence": [
+        {
+          "url": "https://kavasutra.com/pages/kavasutra-new-york",
+          "error": "404 Not Found"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:8791945336",
+    "name": "Back Of The Closet",
+    "category": "clothes",
+    "lat": 40.8690068,
+    "lng": -73.4257772,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Back Of The Closet, 388, New York Avenue, Huntington Station, Town of Huntington, Suffolk County, New York, 11743, United States",
+    "hours": "Mo-Sa 12:00-20:00, Su 12:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "clothes",
+      "contact:instagram",
+      "currency:XBT",
+      "name",
+      "nysgissam:nysaddresspointid",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 631 470 4390",
+    "instagram": "backofthecloset__li",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:9964721813",
+    "name": "Dandy Farmer",
+    "category": "florist",
+    "lat": 40.697432,
+    "lng": -73.9718971,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Dandy Farmer, 14, Clermont Avenue, Fort Greene, Brooklyn, Kings County, City of New York, New York, 11205, United States",
+    "website": "https://www.dandyfarmer.com",
+    "hours": "Tu-Fr 12:00-18:00; Sa 12:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "currency:USD",
+      "currency:XBT",
+      "description",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1-646-481-4423",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:53.220Z",
+      "evidence": [
+        {
+          "url": "https://www.dandyfarmer.com",
+          "matched": [
+            "dandy farmer"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:10127620393",
+    "name": "Budico Corp",
+    "category": "other",
+    "lat": 40.8368509,
+    "lng": -73.9926883,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Budico Corp, Pembroke Lane, Fort Lee, Bergen County, New Jersey, 07657, United States",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:street",
+      "check_date:currency:XBT",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "phone",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "646-972-4231",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:10238825155",
+    "name": "Loving Hands Family Care",
+    "category": "childcare",
+    "lat": 40.8536048,
+    "lng": -74.0193736,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Loving Hands Family Care, 311B, Teaneck Road, Ridgefield Park, Bergen County, New Jersey, 07660, United States",
+    "hours": "Mo-Fr 08:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "currency:XBT",
+      "email",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "347-549-6960",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:10245589405",
+    "name": "PubKey",
+    "category": "bar",
+    "lat": 40.732185,
+    "lng": -74.0000205,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "PubKey, 85, Washington Place, Union Square, Greenwich Village, Manhattan, New York County, City of New York, New York, 10011, United States",
+    "website": "https://pubkey.bar/",
+    "hours": "Mo-Th 15:00-02:00; Fr 15:00-04:00; Sa 12:00-04:00; Su 12:00-02:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "brewery",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "payment:cash",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 305 773 4249",
+    "cuisine": "hot_dog;sandwich;chicken",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:53.895Z",
+      "evidence": [
+        {
+          "url": "https://pubkey.bar/",
+          "matched": [
+            "pubkey"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:10559814687",
+    "name": "Melville Deli",
+    "category": "fast_food",
+    "lat": 40.7904667,
+    "lng": -73.4162102,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Melville Deli, 90, Broadhollow Road, Melville, Town of Huntington, Suffolk County, New York, 11747, United States",
+    "hours": "Mo-Su 04:00-16:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "cuisine",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 631 351 9338",
+    "cuisine": "american;sandwich;salad",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:10980987260",
+    "name": "Aburas Law, LLC",
+    "category": "other",
+    "lat": 40.8919096,
+    "lng": -74.1401536,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Aburas Law, LLC, 229, Crooks Avenue, Lake View, Clifton, Passaic County, New Jersey, 07011, United States",
+    "website": "https://www.aburaslaw.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:54.105Z",
+      "evidence": []
+    }
+  },
+  {
+    "id": "osm:node:11425773528",
+    "name": "Society’s SmokeShop",
+    "category": "tobacco",
+    "lat": 40.7585189,
+    "lng": -73.989409,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Society’s SmokeShop, 300, West 44th Street, Hell's Kitchen, Manhattan Community Board 4, Manhattan, New York County, City of New York, New York, 10036, United States",
+    "hours": "Mo-Su 11:00-12:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1-941-287-2189",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11497324014",
+    "name": "Waterfront Wines & Spirits",
+    "category": "alcohol",
+    "lat": 40.6938294,
+    "lng": -73.9994261,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Waterfront Wines & Spirits, 360, Furman Street, Columbia Street Waterfront District, Brooklyn, Kings County, City of New York, New York, 11201, United States",
+    "website": "https://waterfrontwinesnyc.com/",
+    "hours": "Mo-Th 12:00-22:00; Fr-Sa 12:00-23:00; Su 12:00-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "alt_name",
+      "check_date:currency:XBT",
+      "currency:USD",
+      "currency:XBT",
+      "delivery",
+      "email",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1-718-246-5101",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:54.696Z",
+      "evidence": [
+        {
+          "url": "https://waterfrontwinesnyc.com/",
+          "matched": [
+            "waterfront wines & spirits"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11949550415",
+    "name": "Bitcoin Center NYC",
+    "category": "other",
+    "lat": 40.7868109,
+    "lng": -73.9781144,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Bitcoin Center NYC, 2307, Broadway, Upper West Side, Manhattan Community Board 7, Manhattan, New York County, City of New York, New York, 10024, United States",
+    "website": "https://bitcoincenternyc.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 212 777 3322",
+    "instagram": "bitcoincenter",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:55.258Z",
+      "evidence": [
+        {
+          "url": "https://bitcoincenternyc.com/",
+          "matched": [
+            "bitcoin center nyc"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12809106019",
+    "name": "Involve Digital",
+    "category": "other",
+    "lat": 40.7130184,
+    "lng": -74.0131518,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Involve Digital, One World Trade Center, West Street, Battery Park City, Manhattan, New York County, City of New York, New York, 10007, United States",
+    "website": "https://www.involvedigital.com",
+    "hours": "Mo-Fr 09:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 929 474 0274",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:55.473Z",
+      "evidence": [
+        {
+          "url": "https://www.involvedigital.com",
+          "matched": [
+            "involve digital"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12835020256",
+    "name": "Jericho Mansion",
+    "category": "other",
+    "lat": 40.797047,
+    "lng": -73.5404794,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Jericho Mansion, 112, Old Cedar Swamp Road, Jericho, Town of Oyster Bay, Nassau County, New York, 11753, United States",
+    "website": "https://airbtc.online/properties/jericho-mansion-new-york-usa/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date",
+      "currency:XBT",
+      "internet_access",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "tourism",
+      "website",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:58.602Z",
+      "evidence": [
+        {
+          "url": "https://airbtc.online/properties/jericho-mansion-new-york-usa/",
+          "matched": [
+            "jericho mansion"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12960242112",
+    "name": "Solid State Coffee",
+    "category": "cafe",
+    "lat": 40.776741,
+    "lng": -73.9796743,
+    "country": "US",
+    "city": "New York",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Solid State Coffee, 104, West 71st Street, Lincoln Square, Manhattan Community Board 7, Manhattan, New York County, City of New York, New York, 10023, United States",
+    "website": "https://solidstatecoffee.com/",
+    "hours": "Mo-Fr 07:00-16:00; Sa-Su 07:00-17:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "contact:twitter",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:lightning"
+    ],
+    "phone": "+1-646-896-1412",
+    "instagram": "https://www.instagram.com/solidstatecoffeenyc/",
+    "twitter": "https://x.com/nycsolidstate",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:59.558Z",
+      "evidence": [
+        {
+          "url": "https://solidstatecoffee.com/",
+          "matched": [
+            "solid state coffee"
+          ]
+        }
+      ]
+    }
+  }
+]

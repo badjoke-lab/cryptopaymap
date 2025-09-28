@@ -1,1 +1,373 @@
-[{"id":"osm:node:10078071561","name":"Lion Windows","category":"other","lat":34.0431486,"lng":-118.445344,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Lion Windows, 1838, Sawtelle Boulevard, Sawtelle Japantown, Sawtelle, Los Angeles, Los Angeles County, California, 90025, United States","website":"https://www.lionwindowsanddoors.com/","hours":"Mo-Fr 09:00- 17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","check_date","craft","currency:XBT","name","note","payment:lightning","payment:onchain"],"phone":"3108001585","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:10109931124","name":"Tribute Counseling & Psychotherapy Services","category":"other","lat":34.2344685,"lng":-118.536422,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Tribute Counseling & Psychotherapy Services, 9029, Reseda Boulevard, Northridge, Northridge South Neighborhood Council District, Los Angeles, Los Angeles County, California, 91324, United States","website":"https://tributecps.com","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","addr:unit","check_date:currency:XBT","contact:twitter","currency:XBT","description","payment:lightning","payment:onchain"],"phone":"+1 818 927 1284","twitter":"@jason March","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:10126754821","name":"Bedlam Hills Galleria","category":"clothes","lat":34.0856218,"lng":-118.3484915,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Bedlam Hills Galleria, 806, North Poinsettia Place, Fairfax, Los Angeles, Los Angeles County, California, 90046, United States","website":"https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","currency:XBT","name","payment:lightning","payment:lightning_contactless","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:10980910081","name":"PaintOrDip","category":"other","lat":33.739576,"lng":-118.280925,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"PaintOrDip, 550, South Palos Verdes Street, San Pedro Arts and Cultural District, San Pedro, Los Angeles, Los Angeles County, California, 90731, United States","website":"https://paintordip.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","craft","currency:XBT","name","payment:lightning","payment:lightning_contactless","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11577190689","name":"Sasha Mac","category":"hairdresser","lat":34.0449741,"lng":-118.3371725,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Sasha Mac, 4553, Saint Charles Place, Victoria Park, Mid-Wilshire, Los Angeles, Los Angeles County, California, 90019, United States","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","check_date","currency:XBT","name","payment:lightning","payment:lightning_contactless"],"phone":"+1-808-220-4968‬","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11867936647","name":"Grade A Ink","category":"tattoo","lat":34.1825879,"lng":-118.3962949,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Grade A Ink, 6140, Laurel Canyon Boulevard, North Hollywood Neighborhood Council District, Los Angeles, Los Angeles County, California, 91606, United States","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","addr:unit","check_date","currency:XBT","name","payment:coinos","payment:lightning","payment:onchain"],"phone":"(888) 802-4903","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12300477932","name":"Highland Tamalezzz","category":"fast_food","lat":34.0738766,"lng":-118.2092069,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Highland Tamalezzz, 3031, North Broadway, Lincoln Heights, Los Angeles, Los Angeles County, California, 90031, United States","hours":"Su-Sa 07:00-09:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","amenity","cuisine","currency:XBT","name","opening_hours","payment:lightning"],"cuisine":"mexican;tamales","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13057189707","name":"Fuse HVAC Service & Installation","category":"other","lat":33.9809352,"lng":-118.3842823,"country":"US","city":"Los Angeles","coins":["BTC"],"address":"Fuse HVAC Service & Installation, 6170, Canterbury Drive, Culver City, Los Angeles County, California, 90230, United States","website":"https://fuselac.com/","hours":"Mo-Fr 09:00-17:00; Sa-Su 10:00-15:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:state","addr:street","addr:unit","check_date:currency:XBT","contact:email","contact:facebook","contact:instagram","payment:lightning","payment:onchain"],"phone":"+1-213-279-9223","instagram":"https://www.instagram.com/fuseservicela?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}}]
+[
+  {
+    "id": "osm:node:10078071561",
+    "name": "Lion Windows",
+    "category": "other",
+    "lat": 34.0431486,
+    "lng": -118.445344,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lion Windows, 1838, Sawtelle Boulevard, Sawtelle Japantown, Sawtelle, Los Angeles, Los Angeles County, California, 90025, United States",
+    "website": "https://www.lionwindowsanddoors.com/",
+    "hours": "Mo-Fr 09:00- 17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "check_date",
+      "craft",
+      "currency:XBT",
+      "name",
+      "note",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "3108001585",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:31.640Z",
+      "evidence": [
+        {
+          "url": "https://www.lionwindowsanddoors.com/",
+          "matched": [
+            "lion windows"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:10109931124",
+    "name": "Tribute Counseling & Psychotherapy Services",
+    "category": "other",
+    "lat": 34.2344685,
+    "lng": -118.536422,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tribute Counseling & Psychotherapy Services, 9029, Reseda Boulevard, Northridge, Northridge South Neighborhood Council District, Los Angeles, Los Angeles County, California, 91324, United States",
+    "website": "https://tributecps.com",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date:currency:XBT",
+      "contact:twitter",
+      "currency:XBT",
+      "description",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1 818 927 1284",
+    "twitter": "@jason March",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:32.616Z",
+      "evidence": [
+        {
+          "url": "https://tributecps.com",
+          "matched": [
+            "tribute counseling & psychotherapy services"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:10126754821",
+    "name": "Bedlam Hills Galleria",
+    "category": "clothes",
+    "lat": 34.0856218,
+    "lng": -118.3484915,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Bedlam Hills Galleria, 806, North Poinsettia Place, Fairfax, Los Angeles, Los Angeles County, California, 90046, United States",
+    "website": "https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:32.982Z",
+      "evidence": [
+        {
+          "url": "https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb",
+          "matched": [
+            "bedlam hills galleria"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:10980910081",
+    "name": "PaintOrDip",
+    "category": "other",
+    "lat": 33.739576,
+    "lng": -118.280925,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "PaintOrDip, 550, South Palos Verdes Street, San Pedro Arts and Cultural District, San Pedro, Los Angeles, Los Angeles County, California, 90731, United States",
+    "website": "https://paintordip.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:33.024Z",
+      "evidence": [
+        {
+          "url": "https://paintordip.com/",
+          "error": "request to https://paintordip.com/ failed, reason: getaddrinfo ENOTFOUND paintordip.com"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11577190689",
+    "name": "Sasha Mac",
+    "category": "hairdresser",
+    "lat": 34.0449741,
+    "lng": -118.3371725,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Sasha Mac, 4553, Saint Charles Place, Victoria Park, Mid-Wilshire, Los Angeles, Los Angeles County, California, 90019, United States",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "phone": "+1-808-220-4968‬",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11867936647",
+    "name": "Grade A Ink",
+    "category": "tattoo",
+    "lat": 34.1825879,
+    "lng": -118.3962949,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Grade A Ink, 6140, Laurel Canyon Boulevard, North Hollywood Neighborhood Council District, Los Angeles, Los Angeles County, California, 91606, United States",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "payment:coinos",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "(888) 802-4903",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12300477932",
+    "name": "Highland Tamalezzz",
+    "category": "fast_food",
+    "lat": 34.0738766,
+    "lng": -118.2092069,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Highland Tamalezzz, 3031, North Broadway, Lincoln Heights, Los Angeles, Los Angeles County, California, 90031, United States",
+    "hours": "Su-Sa 07:00-09:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "amenity",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning"
+    ],
+    "cuisine": "mexican;tamales",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:13057189707",
+    "name": "Fuse HVAC Service & Installation",
+    "category": "other",
+    "lat": 33.9809352,
+    "lng": -118.3842823,
+    "country": "US",
+    "city": "Los Angeles",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Fuse HVAC Service & Installation, 6170, Canterbury Drive, Culver City, Los Angeles County, California, 90230, United States",
+    "website": "https://fuselac.com/",
+    "hours": "Mo-Fr 09:00-17:00; Sa-Su 10:00-15:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:state",
+      "addr:street",
+      "addr:unit",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+1-213-279-9223",
+    "instagram": "https://www.instagram.com/fuseservicela?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:33.981Z",
+      "evidence": []
+    }
+  }
+]
