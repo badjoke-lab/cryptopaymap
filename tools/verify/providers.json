@@ -1,0 +1,24 @@
+{
+  "script_signatures": [
+    { "name": "btcpay",            "match": "btcpayserver",          "type": "widget" },
+    { "name": "coinbase-commerce", "match": "commerce.coinbase.com", "type": "widget" },
+    { "name": "nowpayments",       "match": "nowpayments.io",        "type": "widget" },
+    { "name": "bitpay",            "match": "bitpay.com",            "type": "widget" },
+    { "name": "coingate",          "match": "coingate.com",          "type": "widget" }
+  ],
+  "text_patterns": [
+    "we accept bitcoin",
+    "accept crypto",
+    "pay with bitcoin",
+    "bitcoin accepted",
+    "支払い", "ビットコイン", "暗号", "仮想通貨"
+  ],
+  "ignore_domains": [
+    "wixsite.com",
+    "square.site",
+    "shopify.com"
+  ],
+  "threshold": 4,
+  "timeout_ms": 15000,
+  "max_parallel": 6
+}
