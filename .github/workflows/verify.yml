@@ -24,7 +24,6 @@ jobs:
           node-version: "20"
           cache: 'npm'
 
-      # lockfileやpackage.jsonを汚さないように --no-save を付与
       - name: Install deps (no-save)
         run: npm i --no-save --no-package-lock node-fetch@3 jsdom@24
 
@@ -60,8 +59,8 @@ jobs:
 
       - name: Run verifier (verbose)
         run: |
-          echo "::group::Run scan.mjs"
           set -o pipefail
+          echo "::group::Run scan.mjs"
           NODE_OPTIONS="--trace-uncaught" VERBOSE=1 node tools/verify/scan.mjs | tee scan.log
           echo "::endgroup::"
           echo "::group::Changed files"
@@ -69,7 +68,6 @@ jobs:
           git diff --name-only || true
           echo "::endgroup::"
 
-      # 失敗しても必ずログを残す
       - name: Upload logs
         if: always()
         uses: actions/upload-artifact@v4
