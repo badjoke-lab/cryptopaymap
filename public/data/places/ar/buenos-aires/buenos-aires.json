@@ -1,1 +1,3344 @@
-[{"id":"osm:node:1625193978","name":"The Kilkenny","category":"pub","lat":-34.5960905,"lng":-58.3729645,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"The Kilkenny, 399, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina","hours":"Mo 00:00-03:00; Tu-Fr 00:30-05:00; Sa 18:00-24:00; Su 00:00-03:00,18:00-24:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","contact:facebook","contact:phone","currency:XBT","payment:lightning","payment:onchain"],"phone":"+54 11 4312-7291","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:3179599572","name":"Rodizio","category":"restaurant","lat":-34.6072399,"lng":-58.3663691,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Rodizio, 838, Avenida Alicia Moreau de Justo, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1107AAV, Argentina","website":"http://rodizio.com.ar/","hours":"Mo-Su 12:00-01:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","currency:XBT","currency:XMR","internet_access","payment:lightning"],"phone":"+541143343638","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:3257422164","name":"Pop Store","category":"kiosk","lat":-34.581824,"lng":-58.4334892,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Pop Store, 1995, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina","hours":"24/7","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","currency:XBT","name","opening_hours","payment:cash","payment:credit_cards","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true},"website":null},{"id":"osm:node:3575666513","name":"Rita Cafe","category":"cafe","lat":-34.590179,"lng":-58.428205,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Rita Cafe, 1595, Armenia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414BMK, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:street","addr:suburb","amenity","currency:XBT","name","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:4289373249","name":"Kiosko Alem","category":"newsagent","lat":-34.6028744,"lng":-58.3704922,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Kiosko Alem, Avenida Leandro N. Alem, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAC, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:4600637865","name":"Librería January","category":"stationery","lat":-34.5767042,"lng":-58.5389433,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Librería January, 2131, 91 - San Lorenzo, Ciudad del Libertador General San Martín, Partido de General San Martín, Buenos Aires, B1650BQA, Argentina","website":"https://januarylibreria.com.ar/","hours":"Mo-Sa 08:00-18:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:postcode","addr:street","check_date","contact:facebook","contact:instagram","contact:mobile","contact:phone","payment:lightning","payment:onchain"],"phone":"+54 11 4724 0027","instagram":"libreriajanuary","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:6132879822","name":"Caracas Bar","category":"nightclub","lat":-34.5855596,"lng":-58.4256336,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Caracas Bar, 4802, Guatemala, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BUN, Argentina","hours":"Mo 18:00-24:00; Tu-Th 00:00-02:00,18:00-24:00; Fr 00:00-03:00,19:00-24:00; Sa 00:00-04:30,20:00-24:00; Su 00:00-04:30","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:street","addr:suburb","amenity","check_date:currency:XBT","contact:phone","currency:XBT","name","payment:lightning","payment:onchain"],"phone":"+54 11 4776-8704","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:6358499689","name":"Marlon","category":"bar","lat":-34.5898191,"lng":-58.4316702,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Marlon, Pasaje Coronel Cabrer, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DKD, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","indoor_seating","name","outdoor_seating","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:7644907185","name":"Oslo","category":"alcohol","lat":-34.559682,"lng":-58.460068,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Oslo, Blanco Encalada, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAS, Argentina","website":"https://oslobebidas.com.ar/","hours":"Mo-Sa 09:30-22:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","opening_hours","payment:lightning","payment:onchain","shop","website","wheelchair"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:9884174757","name":"Negroni Bistro & Sushi Bar","category":"restaurant","lat":-34.5531425,"lng":-58.4367268,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Negroni Bistro & Sushi Bar, Mariscal Antonio José de Sucre, Bajo Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428DUB, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","cuisine","currency:XBT","name","payment:lightning","payment:onchain"],"cuisine":"sushi","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:10274339402","name":"Aleph Citadel","category":"other","lat":-35.082707,"lng":-57.7405181,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Aleph Citadel, Boulevard Bartolomé Mitre, General Mansilla, Partido de Magdalena, Buenos Aires, B1911BRQ, Argentina","website":"https://alephcitadel.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date","contact:twitter","currency:XBT","email","guest_house","name","payment:lightning","payment:onchain","phone","tourism"],"phone":"+5492215642670","twitter":"https://twitter.com/AlephCitadel","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:10966689605","name":"Rodizinho","category":"bar","lat":-34.6073798,"lng":-58.3663089,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Rodizinho, Juana Manuela Gorriti, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1100AAA, Argentina","hours":"Mo-Su 10:00-03:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","currency:XMR","name","opening_hours","payment:cryptocurrencies","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:10980520088","name":"Lucent","category":"dentist","lat":-34.5509998,"lng":-58.4537157,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Lucent, 1534, Congreso, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1428, Argentina","website":"https://www.instagram.com/lucent.clinica/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date","currency:XBT","healthcare","name","payment:lightning","payment:onchain"],"phone":"+5491123926443","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11055542005","name":"Bucarest","category":"bar","lat":-34.5975311,"lng":-58.4348733,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Bucarest, 659, Avenida Raúl Scalabrini Ortiz, Villa Crespo, Buenos Aires, Comuna 15, Ciudad Autónoma de Buenos Aires, C1414DNG, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:street","amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11260032052","name":"Hilade Blanco","category":"interior_decoration","lat":-34.6089052,"lng":-58.3764438,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Hilade Blanco, Chacabuco, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1067ABB, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","phone","shop"],"phone":"+541139129672","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11260033706","name":"Kiosko CityMax","category":"kiosk","lat":-34.6045245,"lng":-58.3794429,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Kiosko CityMax, Suipacha, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1008, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","phone","shop"],"phone":"+5491171036719","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11260033707","name":"Jacaranda Rentals","category":"other","lat":-34.610791,"lng":-58.3802297,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Jacaranda Rentals, Adolfo Alsina, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1091AAQ, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","office","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11260034566","name":"PublicBar","category":"bar","lat":-34.6107338,"lng":-58.3636798,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"PublicBar, Azucena Maizani, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1107, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11270187265","name":"Autoservicio San Cayetano","category":"convenience","lat":-34.8085933,"lng":-58.2433209,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Autoservicio San Cayetano, 558, Montserrat, Don Orione, Zeballos, Partido de Florencio Varela, Buenos Aires, 1888, Argentina","hours":"Mo-Sa 09:00-13:00 17:30-20:30; Su 09:00-13:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","check_date:currency:XBT","currency:XBT","name","opening_hours","payment:cash","payment:credit_cards","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":true,"cash":true},"website":null},{"id":"osm:node:11274086835","name":"GR Relojería-Joyería","category":"other","lat":-34.5980811,"lng":-58.3757225,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"GR Relojería-Joyería, Florida, Microcentro, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","craft","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274086836","name":"Calzados Zarpas","category":"shoes","lat":-34.5979416,"lng":-58.3799066,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Calzados Zarpas, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274086837","name":"Bonche","category":"hairdresser","lat":-34.5978721,"lng":-58.3799532,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Bonche, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina","website":"https://instagram.com/bonchebarber?igshid=YmMyMTA2M2Y=","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","phone","shop","survey:date","website"],"phone":"+5491135666165","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11274086839","name":"El Bar de Mon","category":"fast_food","lat":-34.5965663,"lng":-58.3808859,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"El Bar de Mon, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274086841","name":"Tiempo de Vinos","category":"newsagent","lat":-34.5963412,"lng":-58.3747025,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Tiempo de Vinos, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1058, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101132","name":"Maxy Accesorios","category":"mobile_phone","lat":-34.6024178,"lng":-58.3765896,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Maxy Accesorios, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101134","name":"Sanguland","category":"restaurant","lat":-34.6025546,"lng":-58.3806257,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Sanguland, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101136","name":"El Buda del Este","category":"restaurant","lat":-34.6022479,"lng":-58.3785896,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"El Buda del Este, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101137","name":"Artesanías Argentinas","category":"gift","lat":-34.6024689,"lng":-58.3784292,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Artesanías Argentinas, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101138","name":"Lhobeard","category":"hairdresser","lat":-34.6006901,"lng":-58.3766977,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Lhobeard, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101139","name":"Elif Tour","category":"travel_agency","lat":-34.6001642,"lng":-58.3752666,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Elif Tour, Florida, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274101141","name":"Mister Cuero","category":"clothes","lat":-34.5985948,"lng":-58.3759713,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Mister Cuero, Avenida Córdoba, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1054AAC, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233683","name":"La casa del celular","category":"mobile_phone","lat":-34.6187689,"lng":-58.391867,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"La casa del celular, Avenida Entre Ríos, San Cristóbal, Buenos Aires, Comuna 3, Ciudad Autónoma de Buenos Aires, C1080ABC, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233684","name":"Ticket Band","category":"ticket","lat":-34.6077674,"lng":-58.3895896,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Ticket Band, Bartolomé Mitre, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAG, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233686","name":"La kiosquetica","category":"other","lat":-34.6024959,"lng":-58.3878532,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"La kiosquetica, Paraná, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1017, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","healthcare","healthcare:speciality","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233687","name":"La Verduleria","category":"supermarket","lat":-34.6062678,"lng":-58.3849038,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"La Verduleria, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAC, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233688","name":"Agustín Imperio Joyería Libertad","category":"jewelry","lat":-34.6049991,"lng":-58.3835336,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Agustín Imperio Joyería Libertad, Sarmiento, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAL, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233689","name":"Gondolveo Hombre","category":"hairdresser","lat":-34.6054097,"lng":-58.3822671,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Gondolveo Hombre, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233690","name":"Don Sodio Grow Shop","category":"garden_centre","lat":-34.6053862,"lng":-58.3822256,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Don Sodio Grow Shop, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233691","name":"Watch Doctors","category":"other","lat":-34.6040364,"lng":-58.3836273,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Watch Doctors, Libertad, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAZ, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","craft","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233692","name":"Óptica Occhiali 26","category":"optician","lat":-34.604426,"lng":-58.3842692,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Óptica Occhiali 26, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAZ, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233693","name":"Sempre","category":"restaurant","lat":-34.5994925,"lng":-58.3879895,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Sempre, Avenida Córdoba, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1055AAR, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233695","name":"Plata o plomo","category":"tattoo","lat":-34.5960231,"lng":-58.391388,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Plata o plomo, Avenida Santa Fe, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1060ABP, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233696","name":"Agustín by Recoleta","category":"jewelry","lat":-34.5946543,"lng":-58.3861369,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Agustín by Recoleta, Arenales, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1012AAY, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233698","name":"Rivka Zibelman","category":"beauty","lat":-34.5941285,"lng":-58.4064632,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Rivka Zibelman, Charcas, Barrio Norte, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1425BMG, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11274233699","name":"Tribu Market","category":"butcher","lat":-34.5955316,"lng":-58.4064218,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Tribu Market, General Lucio Norberto Mansilla, Barrio Norte, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1425BMG, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11350739452","name":"Work-Office","category":"books","lat":-34.606126,"lng":-58.3827731,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Work-Office, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAB, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11350739453","name":"Apolo Games","category":"video_games","lat":-34.6042152,"lng":-58.3862407,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Apolo Games, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043ABN, Argentina","website":"http://apologames.com.ar/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop","website"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11374843858","name":"Aura","category":"bar","lat":-34.5864553,"lng":-58.4359136,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Aura, Avenida Juan Bautista Justo, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWS, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374843859","name":"After Office TRENDY Miercoles Palermo","category":"nightclub","lat":-34.5858339,"lng":-58.4357877,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"After Office TRENDY Miercoles Palermo, Gorriti, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWF, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374843860","name":"Famous Loungebar","category":"bar","lat":-34.5845599,"lng":-58.4366418,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Famous Loungebar, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425FWB, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:street","amenity","check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374843861","name":"Ganesha - Arts & Pizza","category":"restaurant","lat":-34.5767859,"lng":-58.4340993,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Ganesha - Arts & Pizza, 5519, Paraguay, Palermo Hollywood, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BTK, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:street","addr:suburb","amenity","check_date","check_date:currency:XBT","clothes","cuisine","payment:lightning","payment:onchain"],"cuisine":"pizza","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374843863","name":"Oslo","category":"wine","lat":-34.5727785,"lng":-58.4301011,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Oslo, Báez, Las Cañitas, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1426BRH, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374843864","name":"Liberia BBM","category":"books","lat":-34.6291719,"lng":-58.461736,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Liberia BBM, Avenida Rivadavia, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GLL, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374843865","name":"Oszadia","category":"books","lat":-34.6309621,"lng":-58.4598489,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Oszadia, Membrillar, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GSB, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374867039","name":"Lapelu Rulitos","category":"hairdresser","lat":-34.6180207,"lng":-58.4363961,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Lapelu Rulitos, Avenida Acoyte, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEF, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","phone","shop"],"phone":"+541149023678","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374867040","name":"Dario Andreoli","category":"jewelry","lat":-34.617914,"lng":-58.4360499,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Dario Andreoli, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CER, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374867041","name":"Tiempo Sol","category":"clothes","lat":-34.6180873,"lng":-58.4363078,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"4995, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEE, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906591","name":"Puerta Uno Bar","category":"bar","lat":-34.5577775,"lng":-58.4497434,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Puerta Uno Bar, 1667, Juramento, Barrio Chino, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AID, Argentina","website":"https://www.puertauno.com","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:street","amenity","check_date","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","website"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11374906592","name":"Forlans Hnas","category":"clothes","lat":-34.5754096,"lng":-58.4854212,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Forlans Hnas, Blanco Encalada, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DOD, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906593","name":"Ykonos Desarrollos","category":"other","lat":-34.5769486,"lng":-58.4837389,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Ykonos Desarrollos, Avenida Mendoza, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, 1431, Argentina","website":"https://www.ykonos.com/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","office","payment:lightning","payment:onchain","website"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11374906594","name":"Juegos Mentales - Lomas de Zamora","category":"other","lat":-34.7463673,"lng":-58.3936089,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Juegos Mentales - Lomas de Zamora, Avenida Alsina, Banfield, Partido de Lomas de Zamora, Buenos Aires, 1828, Argentina","website":"https://juegosmentales.ar/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","leisure","name","payment:lightning","payment:onchain","website"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:11374906595","name":"Talles grandes Sabah Desing Vestidos de Fiesta","category":"clothes","lat":-34.7595533,"lng":-58.4003356,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Talles grandes Sabah Desing Vestidos de Fiesta, Mariano Boedo, Lomitas, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, B1832, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906596","name":"Calan Fava","category":"greengrocer","lat":-34.7073656,"lng":-58.4935119,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Calan Fava, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906597","name":"Nestor1107","category":"farm","lat":-34.707118,"lng":-58.4961368,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Nestor1107, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906598","name":"Carros Ariel y Alan libre 4 puesto 32","category":"car_rental","lat":-34.7080136,"lng":-58.495712,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Carros Ariel y Alan libre 4 puesto 32, Del Riego, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906599","name":"Tienda el tano","category":"clothes","lat":-34.7086397,"lng":-58.4949193,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Tienda el tano, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","clothes","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906600","name":"Agricola il Giardino","category":"farm","lat":-34.7083894,"lng":-58.4974554,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Agricola il Giardino, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906601","name":"La brusquita","category":"farm","lat":-34.7085148,"lng":-58.4975971,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"La brusquita, De la Siembra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906602","name":"Tienda el tano","category":"restaurant","lat":-34.7092375,"lng":-58.4972108,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Tienda el tano, De la Raíz, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","cuisine","currency:XBT","name","payment:lightning","payment:onchain"],"cuisine":"barbecue","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906603","name":"Carros Juan Carlos","category":"car_rental","lat":-34.7098618,"lng":-58.49645,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Carros Juan Carlos, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906604","name":"Carlos Bayon","category":"car_rental","lat":-34.7101485,"lng":-58.4938193,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Carlos Bayon, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906605","name":"Rosa de Saron","category":"restaurant","lat":-34.7098209,"lng":-58.4934796,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Rosa de Saron, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906606","name":"Lo de nico","category":"cafe","lat":-34.7097044,"lng":-58.4916129,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Lo de nico, Del Fruto, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906607","name":"GAYEL 333 SRL","category":"farm","lat":-34.712809,"lng":-58.4971339,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Gayel 333, De la Flor, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906608","name":"GAYEL 333 SRL","category":"farm","lat":-34.7121081,"lng":-58.4970276,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Gayel 333, De la Tierra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11374906609","name":"Fusion 3","category":"furniture","lat":-34.7086596,"lng":-58.5005734,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Fusion 3, Avenida de Circunvalación, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","shop"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11432563187","name":"Espacio Cultural Bitcoin","category":"community_centre","lat":-34.5961284,"lng":-58.373284,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Espacio Cultural Bitcoin, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:11762201964","name":"L´Aperó","category":"restaurant","lat":-34.5502238,"lng":-58.4578748,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"L´Aperó, 1800, Iberá, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1429, Argentina","website":"https://www.instagram.com/lapero.ba/","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:postcode","addr:street","addr:suburb","amenity","cuisine","currency:XBT","name","payment:lightning","payment:onchain"],"cuisine":"sandwich;french;regional","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12092766081","name":"MT Ballroom","category":"other","lat":-34.6008582,"lng":-58.3781021,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"MT Ballroom, 625, Esmeralda, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1007ABH, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","contact:instagram","currency:XBT","leisure","name","payment:lightning","payment:onchain"],"phone":"+54 11 2391 8093","instagram":"https://www.instagram.com/mtballroom","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12434400820","name":"Coffee Bar Rosa","category":"cafe","lat":-34.5735904,"lng":-58.4909031,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Coffee Bar Rosa, Doctor Pedro Ignacio Rivera, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DUB, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["amenity","check_date:currency:XBT","currency:XBT","name","payment:lightning","payment:onchain","phone"],"phone":"+541127396883","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12476401801","name":"Boga. Café & vinos","category":"bar","lat":-34.5881187,"lng":-58.4274029,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Boga. Café & vinos, 1790, Gurruchaga, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DMJ, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:housenumber","addr:street","amenity","cuisine","currency:XBT","internet_access","name","payment:lightning","survey:date"],"cuisine":"cake;coffee_shop","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12544905046","name":"Martinelli","category":"cafe","lat":-34.5896094,"lng":-58.4251856,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Martinelli, 1779, Malabia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina","website":"https://martinellicaffe.com.ar","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","cuisine","currency:XBT","internet_access","internet_access:fee","payment:lightning"],"phone":"+541160451249","cuisine":"coffee_shop;italian","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12616293274","name":"Motohoy","category":"motorcycle_rental","lat":-34.5979535,"lng":-58.4165896,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Motohoy, 3544, Avenida Córdoba, Almagro, Buenos Aires, Comuna 5, Ciudad Autónoma de Buenos Aires, C1188, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","currency:XBT","name","payment:lightning","payment:tether"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12674567056","name":"MC Carnes Premium","category":"supermarket","lat":-34.5260288,"lng":-58.4935405,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"MC Carnes Premium, 1729, Remedios de Escalada de San Martín, Florida, Vicente López, Partido de Vicente López, Buenos Aires, 1602, Argentina","hours":"Mo-Fr 08:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date:currency:XBT","currency:XBT","name","opening_hours","operator","payment:lightning"],"phone":"01170332241","payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:12780193627","name":"Regalos Goya","category":"gift","lat":-34.5642132,"lng":-58.4543458,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Regalos Goya, 1849, Avenida Cabildo, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAA, Argentina","website":"https://regalosgoya.com.ar/","hours":"Mo-Sa 10:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","check_date:currency:XBT","currency:XBT","name","opening_hours","operator","payment:lightning"],"payment":{"lightning":true,"onchain":false,"credit_cards":false,"cash":false}},{"id":"osm:node:12802498535","name":"Tabaquería Amero","category":"tobacco","lat":-34.4881995,"lng":-58.4973484,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Tabaquería Amero, 2015, Doctor Guillermo Rawson, Martínez, Partido de San Isidro, Buenos Aires, 1640, Argentina","website":"https://www.ameroshop.com.ar/","hours":"Mo-Sa 11:00-20:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","check_date","contact:email","currency:XBT","name","opening_hours","payment:lightning","payment:onchain"],"phone":"+54 11 4792 9634","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:node:12994611340","name":"Academia Sports Light","category":"other","lat":-34.7581283,"lng":-58.3819639,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Academia Sports Light, A. Lugano, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, 1832, Argentina","status":"active","source":"osm","last_verified":"2025-08-27","tags":["check_date:currency:XBT","currency:XBT","leisure","name","payment:lightning","payment:lightning_contactless","payment:onchain"],"payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false},"website":null},{"id":"osm:node:13098835276","name":"Jardín Los Bajitos","category":"childcare","lat":-34.7139024,"lng":-58.3994632,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"Jardín Los Bajitos, 3582, Machain, Pescopagano, Lanús Oeste, Partido de Lanús, Buenos Aires, B1823, Argentina","website":"https://linktr.ee/losbajitoslanus","hours":"Mo-Fr 08:00-17:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:housenumber","addr:postcode","addr:street","amenity","check_date:currency:XBT","contact:email","contact:facebook","contact:instagram","currency:XBT","payment:lightning","payment:onchain"],"phone":"+54 9 11 6975 8018","instagram":"https://www.instagram.com/losbajitoslanus/","payment":{"lightning":true,"onchain":true,"credit_cards":false,"cash":false}},{"id":"osm:way:1185766629","name":"Bar 9 de julio","category":"restaurant","lat":-34.6509479,"lng":-58.5024151,"country":"AR","city":"Buenos Aires","coins":["BTC"],"address":"1270, Avenida Larrazábal, Mataderos, Buenos Aires, Comuna 9, Ciudad Autónoma de Buenos Aires, 1440, Argentina","hours":"Mo-Sa 07:00-15:00; We-Fr 07:00-15:00,18:00-03:00","status":"active","source":"osm","last_verified":"2025-08-27","tags":["addr:city","addr:country","addr:housenumber","addr:postcode","addr:street","air_conditioning","amenity","bar","building","capacity","payment:cash","payment:credit_cards","payment:lightning","payment:onchain"],"cuisine":"coffee_shop;pizza;sandwich;burger;pasta;salad;dessert","payment":{"lightning":true,"onchain":true,"credit_cards":true,"cash":true},"website":null}]
+[
+  {
+    "id": "osm:node:1625193978",
+    "name": "The Kilkenny",
+    "category": "pub",
+    "lat": -34.5960905,
+    "lng": -58.3729645,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Kilkenny, 399, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina",
+    "hours": "Mo 00:00-03:00; Tu-Fr 00:30-05:00; Sa 18:00-24:00; Su 00:00-03:00,18:00-24:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:phone",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+54 11 4312-7291",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:3179599572",
+    "name": "Rodizio",
+    "category": "restaurant",
+    "lat": -34.6072399,
+    "lng": -58.3663691,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rodizio, 838, Avenida Alicia Moreau de Justo, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1107AAV, Argentina",
+    "website": "http://rodizio.com.ar/",
+    "hours": "Mo-Su 12:00-01:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "currency:XMR",
+      "internet_access",
+      "payment:lightning"
+    ],
+    "phone": "+541143343638",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:07.545Z",
+      "evidence": [
+        {
+          "url": "http://rodizio.com.ar/",
+          "error": "request to http://rodizio.com.ar/ failed, reason: getaddrinfo ENOTFOUND rodizio.com.ar"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:3257422164",
+    "name": "Pop Store",
+    "category": "kiosk",
+    "lat": -34.581824,
+    "lng": -58.4334892,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Pop Store, 1995, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina",
+    "hours": "24/7",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:3575666513",
+    "name": "Rita Cafe",
+    "category": "cafe",
+    "lat": -34.590179,
+    "lng": -58.428205,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rita Cafe, 1595, Armenia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414BMK, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "currency:XBT",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:4289373249",
+    "name": "Kiosko Alem",
+    "category": "newsagent",
+    "lat": -34.6028744,
+    "lng": -58.3704922,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Kiosko Alem, Avenida Leandro N. Alem, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAC, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:4600637865",
+    "name": "Librería January",
+    "category": "stationery",
+    "lat": -34.5767042,
+    "lng": -58.5389433,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Librería January, 2131, 91 - San Lorenzo, Ciudad del Libertador General San Martín, Partido de General San Martín, Buenos Aires, B1650BQA, Argentina",
+    "website": "https://januarylibreria.com.ar/",
+    "hours": "Mo-Sa 08:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:facebook",
+      "contact:instagram",
+      "contact:mobile",
+      "contact:phone",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+54 11 4724 0027",
+    "instagram": "libreriajanuary",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:08.276Z",
+      "evidence": [
+        {
+          "url": "https://januarylibreria.com.ar/",
+          "error": "request to https://januarylibreria.com.ar/ failed, reason: getaddrinfo ENOTFOUND januarylibreria.com.ar"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:6132879822",
+    "name": "Caracas Bar",
+    "category": "nightclub",
+    "lat": -34.5855596,
+    "lng": -58.4256336,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Caracas Bar, 4802, Guatemala, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BUN, Argentina",
+    "hours": "Mo 18:00-24:00; Tu-Th 00:00-02:00,18:00-24:00; Fr 00:00-03:00,19:00-24:00; Sa 00:00-04:30,20:00-24:00; Su 00:00-04:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:phone",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+54 11 4776-8704",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:6358499689",
+    "name": "Marlon",
+    "category": "bar",
+    "lat": -34.5898191,
+    "lng": -58.4316702,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Marlon, Pasaje Coronel Cabrer, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DKD, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "indoor_seating",
+      "name",
+      "outdoor_seating",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:7644907185",
+    "name": "Oslo",
+    "category": "alcohol",
+    "lat": -34.559682,
+    "lng": -58.460068,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Oslo, Blanco Encalada, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAS, Argentina",
+    "website": "https://oslobebidas.com.ar/",
+    "hours": "Mo-Sa 09:30-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain",
+      "shop",
+      "website",
+      "wheelchair"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:09.989Z",
+      "evidence": [
+        {
+          "url": "https://oslobebidas.com.ar/",
+          "matched": [
+            "oslo"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:9884174757",
+    "name": "Negroni Bistro & Sushi Bar",
+    "category": "restaurant",
+    "lat": -34.5531425,
+    "lng": -58.4367268,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Negroni Bistro & Sushi Bar, Mariscal Antonio José de Sucre, Bajo Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428DUB, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "cuisine": "sushi",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:10274339402",
+    "name": "Aleph Citadel",
+    "category": "other",
+    "lat": -35.082707,
+    "lng": -57.7405181,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Aleph Citadel, Boulevard Bartolomé Mitre, General Mansilla, Partido de Magdalena, Buenos Aires, B1911BRQ, Argentina",
+    "website": "https://alephcitadel.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date",
+      "contact:twitter",
+      "currency:XBT",
+      "email",
+      "guest_house",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "phone",
+      "tourism"
+    ],
+    "phone": "+5492215642670",
+    "twitter": "https://twitter.com/AlephCitadel",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:10.390Z",
+      "evidence": [
+        {
+          "url": "https://alephcitadel.com/",
+          "matched": [
+            "aleph citadel"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:10966689605",
+    "name": "Rodizinho",
+    "category": "bar",
+    "lat": -34.6073798,
+    "lng": -58.3663089,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rodizinho, Juana Manuela Gorriti, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1100AAA, Argentina",
+    "hours": "Mo-Su 10:00-03:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "currency:XMR",
+      "name",
+      "opening_hours",
+      "payment:cryptocurrencies",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:10980520088",
+    "name": "Lucent",
+    "category": "dentist",
+    "lat": -34.5509998,
+    "lng": -58.4537157,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lucent, 1534, Congreso, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1428, Argentina",
+    "website": "https://www.instagram.com/lucent.clinica/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "currency:XBT",
+      "healthcare",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+5491123926443",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:11.474Z",
+      "evidence": [
+        {
+          "url": "https://www.instagram.com/lucent.clinica/",
+          "error": "429 Too Many Requests"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11055542005",
+    "name": "Bucarest",
+    "category": "bar",
+    "lat": -34.5975311,
+    "lng": -58.4348733,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Bucarest, 659, Avenida Raúl Scalabrini Ortiz, Villa Crespo, Buenos Aires, Comuna 15, Ciudad Autónoma de Buenos Aires, C1414DNG, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11260032052",
+    "name": "Hilade Blanco",
+    "category": "interior_decoration",
+    "lat": -34.6089052,
+    "lng": -58.3764438,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Hilade Blanco, Chacabuco, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1067ABB, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "phone",
+      "shop"
+    ],
+    "phone": "+541139129672",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11260033706",
+    "name": "Kiosko CityMax",
+    "category": "kiosk",
+    "lat": -34.6045245,
+    "lng": -58.3794429,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Kiosko CityMax, Suipacha, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1008, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "phone",
+      "shop"
+    ],
+    "phone": "+5491171036719",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11260033707",
+    "name": "Jacaranda Rentals",
+    "category": "other",
+    "lat": -34.610791,
+    "lng": -58.3802297,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Jacaranda Rentals, Adolfo Alsina, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1091AAQ, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11260034566",
+    "name": "PublicBar",
+    "category": "bar",
+    "lat": -34.6107338,
+    "lng": -58.3636798,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "PublicBar, Azucena Maizani, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1107, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11270187265",
+    "name": "Autoservicio San Cayetano",
+    "category": "convenience",
+    "lat": -34.8085933,
+    "lng": -58.2433209,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Autoservicio San Cayetano, 558, Montserrat, Don Orione, Zeballos, Partido de Florencio Varela, Buenos Aires, 1888, Argentina",
+    "hours": "Mo-Sa 09:00-13:00 17:30-20:30; Su 09:00-13:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": true,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274086835",
+    "name": "GR Relojería-Joyería",
+    "category": "other",
+    "lat": -34.5980811,
+    "lng": -58.3757225,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "GR Relojería-Joyería, Florida, Microcentro, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274086836",
+    "name": "Calzados Zarpas",
+    "category": "shoes",
+    "lat": -34.5979416,
+    "lng": -58.3799066,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Calzados Zarpas, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274086837",
+    "name": "Bonche",
+    "category": "hairdresser",
+    "lat": -34.5978721,
+    "lng": -58.3799532,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Bonche, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
+    "website": "https://instagram.com/bonchebarber?igshid=YmMyMTA2M2Y=",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "phone",
+      "shop",
+      "survey:date",
+      "website"
+    ],
+    "phone": "+5491135666165",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:12.221Z",
+      "evidence": [
+        {
+          "url": "https://instagram.com/bonchebarber?igshid=YmMyMTA2M2Y=",
+          "error": "429 Too Many Requests"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11274086839",
+    "name": "El Bar de Mon",
+    "category": "fast_food",
+    "lat": -34.5965663,
+    "lng": -58.3808859,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "El Bar de Mon, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274086841",
+    "name": "Tiempo de Vinos",
+    "category": "newsagent",
+    "lat": -34.5963412,
+    "lng": -58.3747025,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tiempo de Vinos, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1058, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101132",
+    "name": "Maxy Accesorios",
+    "category": "mobile_phone",
+    "lat": -34.6024178,
+    "lng": -58.3765896,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Maxy Accesorios, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101134",
+    "name": "Sanguland",
+    "category": "restaurant",
+    "lat": -34.6025546,
+    "lng": -58.3806257,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Sanguland, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101136",
+    "name": "El Buda del Este",
+    "category": "restaurant",
+    "lat": -34.6022479,
+    "lng": -58.3785896,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "El Buda del Este, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101137",
+    "name": "Artesanías Argentinas",
+    "category": "gift",
+    "lat": -34.6024689,
+    "lng": -58.3784292,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Artesanías Argentinas, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101138",
+    "name": "Lhobeard",
+    "category": "hairdresser",
+    "lat": -34.6006901,
+    "lng": -58.3766977,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lhobeard, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101139",
+    "name": "Elif Tour",
+    "category": "travel_agency",
+    "lat": -34.6001642,
+    "lng": -58.3752666,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Elif Tour, Florida, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274101141",
+    "name": "Mister Cuero",
+    "category": "clothes",
+    "lat": -34.5985948,
+    "lng": -58.3759713,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Mister Cuero, Avenida Córdoba, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1054AAC, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233683",
+    "name": "La casa del celular",
+    "category": "mobile_phone",
+    "lat": -34.6187689,
+    "lng": -58.391867,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "La casa del celular, Avenida Entre Ríos, San Cristóbal, Buenos Aires, Comuna 3, Ciudad Autónoma de Buenos Aires, C1080ABC, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233684",
+    "name": "Ticket Band",
+    "category": "ticket",
+    "lat": -34.6077674,
+    "lng": -58.3895896,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Ticket Band, Bartolomé Mitre, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAG, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233686",
+    "name": "La kiosquetica",
+    "category": "other",
+    "lat": -34.6024959,
+    "lng": -58.3878532,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "La kiosquetica, Paraná, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1017, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "healthcare",
+      "healthcare:speciality",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233687",
+    "name": "La Verduleria",
+    "category": "supermarket",
+    "lat": -34.6062678,
+    "lng": -58.3849038,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "La Verduleria, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAC, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233688",
+    "name": "Agustín Imperio Joyería Libertad",
+    "category": "jewelry",
+    "lat": -34.6049991,
+    "lng": -58.3835336,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Agustín Imperio Joyería Libertad, Sarmiento, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAL, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233689",
+    "name": "Gondolveo Hombre",
+    "category": "hairdresser",
+    "lat": -34.6054097,
+    "lng": -58.3822671,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gondolveo Hombre, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233690",
+    "name": "Don Sodio Grow Shop",
+    "category": "garden_centre",
+    "lat": -34.6053862,
+    "lng": -58.3822256,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Don Sodio Grow Shop, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233691",
+    "name": "Watch Doctors",
+    "category": "other",
+    "lat": -34.6040364,
+    "lng": -58.3836273,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Watch Doctors, Libertad, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAZ, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233692",
+    "name": "Óptica Occhiali 26",
+    "category": "optician",
+    "lat": -34.604426,
+    "lng": -58.3842692,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Óptica Occhiali 26, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAZ, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233693",
+    "name": "Sempre",
+    "category": "restaurant",
+    "lat": -34.5994925,
+    "lng": -58.3879895,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Sempre, Avenida Córdoba, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1055AAR, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233695",
+    "name": "Plata o plomo",
+    "category": "tattoo",
+    "lat": -34.5960231,
+    "lng": -58.391388,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Plata o plomo, Avenida Santa Fe, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1060ABP, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233696",
+    "name": "Agustín by Recoleta",
+    "category": "jewelry",
+    "lat": -34.5946543,
+    "lng": -58.3861369,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Agustín by Recoleta, Arenales, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1012AAY, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233698",
+    "name": "Rivka Zibelman",
+    "category": "beauty",
+    "lat": -34.5941285,
+    "lng": -58.4064632,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rivka Zibelman, Charcas, Barrio Norte, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1425BMG, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11274233699",
+    "name": "Tribu Market",
+    "category": "butcher",
+    "lat": -34.5955316,
+    "lng": -58.4064218,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tribu Market, General Lucio Norberto Mansilla, Barrio Norte, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1425BMG, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11350739452",
+    "name": "Work-Office",
+    "category": "books",
+    "lat": -34.606126,
+    "lng": -58.3827731,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Work-Office, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAB, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11350739453",
+    "name": "Apolo Games",
+    "category": "video_games",
+    "lat": -34.6042152,
+    "lng": -58.3862407,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Apolo Games, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043ABN, Argentina",
+    "website": "http://apologames.com.ar/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop",
+      "website"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:12.654Z",
+      "evidence": [
+        {
+          "url": "http://apologames.com.ar/",
+          "error": "request to http://apologames.com.ar/ failed, reason: getaddrinfo ENOTFOUND apologames.com.ar"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11374843858",
+    "name": "Aura",
+    "category": "bar",
+    "lat": -34.5864553,
+    "lng": -58.4359136,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Aura, Avenida Juan Bautista Justo, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWS, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374843859",
+    "name": "After Office TRENDY Miercoles Palermo",
+    "category": "nightclub",
+    "lat": -34.5858339,
+    "lng": -58.4357877,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "After Office TRENDY Miercoles Palermo, Gorriti, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWF, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374843860",
+    "name": "Famous Loungebar",
+    "category": "bar",
+    "lat": -34.5845599,
+    "lng": -58.4366418,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Famous Loungebar, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425FWB, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374843861",
+    "name": "Ganesha - Arts & Pizza",
+    "category": "restaurant",
+    "lat": -34.5767859,
+    "lng": -58.4340993,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Ganesha - Arts & Pizza, 5519, Paraguay, Palermo Hollywood, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BTK, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "clothes",
+      "cuisine",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "cuisine": "pizza",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374843863",
+    "name": "Oslo",
+    "category": "wine",
+    "lat": -34.5727785,
+    "lng": -58.4301011,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Oslo, Báez, Las Cañitas, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1426BRH, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374843864",
+    "name": "Liberia BBM",
+    "category": "books",
+    "lat": -34.6291719,
+    "lng": -58.461736,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Liberia BBM, Avenida Rivadavia, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GLL, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374843865",
+    "name": "Oszadia",
+    "category": "books",
+    "lat": -34.6309621,
+    "lng": -58.4598489,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Oszadia, Membrillar, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GSB, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374867039",
+    "name": "Lapelu Rulitos",
+    "category": "hairdresser",
+    "lat": -34.6180207,
+    "lng": -58.4363961,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lapelu Rulitos, Avenida Acoyte, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEF, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "phone",
+      "shop"
+    ],
+    "phone": "+541149023678",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374867040",
+    "name": "Dario Andreoli",
+    "category": "jewelry",
+    "lat": -34.617914,
+    "lng": -58.4360499,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Dario Andreoli, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CER, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374867041",
+    "name": "Tiempo Sol",
+    "category": "clothes",
+    "lat": -34.6180873,
+    "lng": -58.4363078,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "4995, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEE, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906591",
+    "name": "Puerta Uno Bar",
+    "category": "bar",
+    "lat": -34.5577775,
+    "lng": -58.4497434,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Puerta Uno Bar, 1667, Juramento, Barrio Chino, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AID, Argentina",
+    "website": "https://www.puertauno.com",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "website"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:14.712Z",
+      "evidence": [
+        {
+          "url": "https://www.puertauno.com",
+          "matched": [
+            "puerta uno bar"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11374906592",
+    "name": "Forlans Hnas",
+    "category": "clothes",
+    "lat": -34.5754096,
+    "lng": -58.4854212,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Forlans Hnas, Blanco Encalada, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DOD, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906593",
+    "name": "Ykonos Desarrollos",
+    "category": "other",
+    "lat": -34.5769486,
+    "lng": -58.4837389,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Ykonos Desarrollos, Avenida Mendoza, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, 1431, Argentina",
+    "website": "https://www.ykonos.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:onchain",
+      "website"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:18.078Z",
+      "evidence": [
+        {
+          "url": "https://www.ykonos.com/",
+          "matched": [
+            "ykonos desarrollos"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:11374906594",
+    "name": "Juegos Mentales - Lomas de Zamora",
+    "category": "other",
+    "lat": -34.7463673,
+    "lng": -58.3936089,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Juegos Mentales - Lomas de Zamora, Avenida Alsina, Banfield, Partido de Lomas de Zamora, Buenos Aires, 1828, Argentina",
+    "website": "https://juegosmentales.ar/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "leisure",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "website"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:19.344Z",
+      "evidence": []
+    }
+  },
+  {
+    "id": "osm:node:11374906595",
+    "name": "Talles grandes Sabah Desing Vestidos de Fiesta",
+    "category": "clothes",
+    "lat": -34.7595533,
+    "lng": -58.4003356,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Talles grandes Sabah Desing Vestidos de Fiesta, Mariano Boedo, Lomitas, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, B1832, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906596",
+    "name": "Calan Fava",
+    "category": "greengrocer",
+    "lat": -34.7073656,
+    "lng": -58.4935119,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Calan Fava, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906597",
+    "name": "Nestor1107",
+    "category": "farm",
+    "lat": -34.707118,
+    "lng": -58.4961368,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Nestor1107, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906598",
+    "name": "Carros Ariel y Alan libre 4 puesto 32",
+    "category": "car_rental",
+    "lat": -34.7080136,
+    "lng": -58.495712,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Carros Ariel y Alan libre 4 puesto 32, Del Riego, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906599",
+    "name": "Tienda el tano",
+    "category": "clothes",
+    "lat": -34.7086397,
+    "lng": -58.4949193,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tienda el tano, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "clothes",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906600",
+    "name": "Agricola il Giardino",
+    "category": "farm",
+    "lat": -34.7083894,
+    "lng": -58.4974554,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Agricola il Giardino, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906601",
+    "name": "La brusquita",
+    "category": "farm",
+    "lat": -34.7085148,
+    "lng": -58.4975971,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "La brusquita, De la Siembra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906602",
+    "name": "Tienda el tano",
+    "category": "restaurant",
+    "lat": -34.7092375,
+    "lng": -58.4972108,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tienda el tano, De la Raíz, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "cuisine": "barbecue",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906603",
+    "name": "Carros Juan Carlos",
+    "category": "car_rental",
+    "lat": -34.7098618,
+    "lng": -58.49645,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Carros Juan Carlos, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906604",
+    "name": "Carlos Bayon",
+    "category": "car_rental",
+    "lat": -34.7101485,
+    "lng": -58.4938193,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Carlos Bayon, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906605",
+    "name": "Rosa de Saron",
+    "category": "restaurant",
+    "lat": -34.7098209,
+    "lng": -58.4934796,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rosa de Saron, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906606",
+    "name": "Lo de nico",
+    "category": "cafe",
+    "lat": -34.7097044,
+    "lng": -58.4916129,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Lo de nico, Del Fruto, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906607",
+    "name": "GAYEL 333 SRL",
+    "category": "farm",
+    "lat": -34.712809,
+    "lng": -58.4971339,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gayel 333, De la Flor, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906608",
+    "name": "GAYEL 333 SRL",
+    "category": "farm",
+    "lat": -34.7121081,
+    "lng": -58.4970276,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Gayel 333, De la Tierra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11374906609",
+    "name": "Fusion 3",
+    "category": "furniture",
+    "lat": -34.7086596,
+    "lng": -58.5005734,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Fusion 3, Avenida de Circunvalación, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "shop"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11432563187",
+    "name": "Espacio Cultural Bitcoin",
+    "category": "community_centre",
+    "lat": -34.5961284,
+    "lng": -58.373284,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Espacio Cultural Bitcoin, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:11762201964",
+    "name": "L´Aperó",
+    "category": "restaurant",
+    "lat": -34.5502238,
+    "lng": -58.4578748,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "L´Aperó, 1800, Iberá, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1429, Argentina",
+    "website": "https://www.instagram.com/lapero.ba/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "cuisine",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "cuisine": "sandwich;french;regional",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:19.737Z",
+      "evidence": [
+        {
+          "url": "https://www.instagram.com/lapero.ba/",
+          "error": "429 Too Many Requests"
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12092766081",
+    "name": "MT Ballroom",
+    "category": "other",
+    "lat": -34.6008582,
+    "lng": -58.3781021,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "MT Ballroom, 625, Esmeralda, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1007ABH, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:instagram",
+      "currency:XBT",
+      "leisure",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+54 11 2391 8093",
+    "instagram": "https://www.instagram.com/mtballroom",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12434400820",
+    "name": "Coffee Bar Rosa",
+    "category": "cafe",
+    "lat": -34.5735904,
+    "lng": -58.4909031,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Coffee Bar Rosa, Doctor Pedro Ignacio Rivera, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DUB, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain",
+      "phone"
+    ],
+    "phone": "+541127396883",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12476401801",
+    "name": "Boga. Café & vinos",
+    "category": "bar",
+    "lat": -34.5881187,
+    "lng": -58.4274029,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Boga. Café & vinos, 1790, Gurruchaga, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DMJ, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:street",
+      "amenity",
+      "cuisine",
+      "currency:XBT",
+      "internet_access",
+      "name",
+      "payment:lightning",
+      "survey:date"
+    ],
+    "cuisine": "cake;coffee_shop",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12544905046",
+    "name": "Martinelli",
+    "category": "cafe",
+    "lat": -34.5896094,
+    "lng": -58.4251856,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Martinelli, 1779, Malabia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina",
+    "website": "https://martinellicaffe.com.ar",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:XBT",
+      "internet_access",
+      "internet_access:fee",
+      "payment:lightning"
+    ],
+    "phone": "+541160451249",
+    "cuisine": "coffee_shop;italian",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:20.197Z",
+      "evidence": [
+        {
+          "url": "https://martinellicaffe.com.ar",
+          "matched": [
+            "martinelli"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12616293274",
+    "name": "Motohoy",
+    "category": "motorcycle_rental",
+    "lat": -34.5979535,
+    "lng": -58.4165896,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Motohoy, 3544, Avenida Córdoba, Almagro, Buenos Aires, Comuna 5, Ciudad Autónoma de Buenos Aires, C1188, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:tether"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12674567056",
+    "name": "MC Carnes Premium",
+    "category": "supermarket",
+    "lat": -34.5260288,
+    "lng": -58.4935405,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "MC Carnes Premium, 1729, Remedios de Escalada de San Martín, Florida, Vicente López, Partido de Vicente López, Buenos Aires, 1602, Argentina",
+    "hours": "Mo-Fr 08:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:lightning"
+    ],
+    "phone": "01170332241",
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:12780193627",
+    "name": "Regalos Goya",
+    "category": "gift",
+    "lat": -34.5642132,
+    "lng": -58.4543458,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Regalos Goya, 1849, Avenida Cabildo, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAA, Argentina",
+    "website": "https://regalosgoya.com.ar/",
+    "hours": "Mo-Sa 10:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:lightning"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": false,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:20.461Z",
+      "evidence": [
+        {
+          "url": "https://regalosgoya.com.ar/",
+          "matched": [
+            "regalos goya"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12802498535",
+    "name": "Tabaquería Amero",
+    "category": "tobacco",
+    "lat": -34.4881995,
+    "lng": -58.4973484,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tabaquería Amero, 2015, Doctor Guillermo Rawson, Martínez, Partido de San Isidro, Buenos Aires, 1640, Argentina",
+    "website": "https://www.ameroshop.com.ar/",
+    "hours": "Mo-Sa 11:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:email",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+54 11 4792 9634",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 1,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:21.178Z",
+      "evidence": [
+        {
+          "url": "https://www.ameroshop.com.ar/",
+          "matched": [
+            "tabaquería amero"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "osm:node:12994611340",
+    "name": "Academia Sports Light",
+    "category": "other",
+    "lat": -34.7581283,
+    "lng": -58.3819639,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Academia Sports Light, A. Lugano, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, 1832, Argentina",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "leisure",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  },
+  {
+    "id": "osm:node:13098835276",
+    "name": "Jardín Los Bajitos",
+    "category": "childcare",
+    "lat": -34.7139024,
+    "lng": -58.3994632,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Jardín Los Bajitos, 3582, Machain, Pescopagano, Lanús Oeste, Partido de Lanús, Buenos Aires, B1823, Argentina",
+    "website": "https://linktr.ee/losbajitoslanus",
+    "hours": "Mo-Fr 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+54 9 11 6975 8018",
+    "instagram": "https://www.instagram.com/losbajitoslanus/",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": false,
+      "cash": false
+    },
+    "verification": {
+      "status": "unverified",
+      "hits": 0,
+      "threshold": 4,
+      "checkedAt": "2025-09-28T15:07:21.967Z",
+      "evidence": []
+    }
+  },
+  {
+    "id": "osm:way:1185766629",
+    "name": "Bar 9 de julio",
+    "category": "restaurant",
+    "lat": -34.6509479,
+    "lng": -58.5024151,
+    "country": "AR",
+    "city": "Buenos Aires",
+    "coins": [
+      "BTC"
+    ],
+    "address": "1270, Avenida Larrazábal, Mataderos, Buenos Aires, Comuna 9, Ciudad Autónoma de Buenos Aires, 1440, Argentina",
+    "hours": "Mo-Sa 07:00-15:00; We-Fr 07:00-15:00,18:00-03:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "air_conditioning",
+      "amenity",
+      "bar",
+      "building",
+      "capacity",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "cuisine": "coffee_shop;pizza;sandwich;burger;pasta;salad;dessert",
+    "payment": {
+      "lightning": true,
+      "onchain": true,
+      "credit_cards": true,
+      "cash": true
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified"
+    }
+  }
+]
