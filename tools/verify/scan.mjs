@@ -1,171 +1,207 @@
-// Minimal verifier: scan public JSON files, label entries, write back.
+// tools/verify/scan.mjs
+// Minimal verifier: scan public JSON files, update labels/evidence.
 // Chat in Japanese, code in English.
 
 import fs from "fs";
 import path from "path";
-import fetch from "node-fetch";
+import fetchOrig from "node-fetch";
 import { JSDOM } from "jsdom";
 
 const VERBOSE = process.env.VERBOSE === "1";
 const ROOT = "public";
-const PROVIDERS_PATH = "tools/verify/providers.json";
-const PROVIDERS = fs.existsSync(PROVIDERS_PATH)
-  ? JSON.parse(fs.readFileSync(PROVIDERS_PATH, "utf8"))
-  : { script_signatures: [], text_patterns: [] };
+const THRESHOLD = 4;          // how many successes to consider "verified" (example)
+const TIMEOUT_MS = 7000;      // per-request timeout 7s
+const MAX_HTML_BYTES = 1_000_000; // 1MB cap
+const CONCURRENCY = 6;
 
-// parameters (conservative defaults)
-const THRESHOLD = 4;
-const TIMEOUT_MS = 15000;
-
-// -------- helpers --------
 function vLog(...args) { if (VERBOSE) console.log("[verify]", ...args); }
 
+// ---------- file collection ----------
 function collectJsonFiles(dir) {
   if (!fs.existsSync(dir)) return [];
   let out = [];
   for (const f of fs.readdirSync(dir)) {
     const p = path.join(dir, f);
-    if (fs.statSync(p).isDirectory()) out = out.concat(collectJsonFiles(p));
+    const s = fs.statSync(p);
+    if (s.isDirectory()) out = out.concat(collectJsonFiles(p));
     else if (p.toLowerCase().endsWith(".json")) out.push(p);
   }
   return out;
 }
 
-// target files = public/data/places/** + public/places.json (if exists)
-const TARGET_FILES = [
-  ...collectJsonFiles(path.join(ROOT, "data", "places")),
-  ...(fs.existsSync(path.join(ROOT, "places.json")) ? [path.join(ROOT, "places.json")] : [])
-].sort();
-
-vLog("target files:", TARGET_FILES.length);
-for (const f of TARGET_FILES.slice(0, 10)) vLog("target:", f);
-
-function stampDate() {
-  return new Date().toISOString().slice(0, 10);
+function listTargets() {
+  const t = [];
+  const placesDir = path.join(ROOT, "data", "places");
+  if (fs.existsSync(placesDir)) t.push(...collectJsonFiles(placesDir));
+  const legacy = path.join(ROOT, "places.json");
+  if (fs.existsSync(legacy)) t.push(legacy);
+  return t.sort();
 }
 
-function labelCat(cat, tag) {
-  if (!cat) return tag;
-  if (/(?: · )?(Verified|Unverified|Disputed|Outdated)\b/.test(cat)) return cat;
-  return `${cat} · ${tag}`;
-}
-
-// Accept multiple URL keys; don't break UI (data only)
-function normalizePlace(p) {
-  const coins =
-    Array.isArray(p?.coins) ? p.coins
-    : (typeof p?.coins === "string" ? [p.coins] : []);
-
-  // URL fallbacks: url -> website -> homepage -> site
-  const url = p?.url || p?.website || p?.homepage || p?.site || "";
-
-  const name = String(p?.name || "Unnamed");
-  return { ...p, name, url, coins };
-}
-
-async function checkUrl(url) {
-  if (!url || !/^https?:\/\//i.test(url)) return { score: 0, hits: [] };
+// ---------- network helpers ----------
+async function fetchWithTimeout(url, opt = {}) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const headers = {
+    "user-agent":
+      "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121 Safari/537.36",
+    accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    ...opt.headers,
+  };
   try {
-    const res = await fetch(url, { redirect: "follow", timeout: TIMEOUT_MS });
-    if (!res.ok) return { score: 0, hits: [] };
+    const res = await fetchOrig(url, {
+      redirect: "follow",
+      signal: controller.signal,
+      headers,
+      // don’t send cookies, etc.
+    });
+    return res;
+  } finally {
+    clearTimeout(id);
+  }
+}
 
-    const html = await res.text();
-    const dom = new JSDOM(html);
-    const text = dom.window.document.body.textContent?.toLowerCase() || "";
-
-    let score = 0;
-    const hits = [];
-
-    // text patterns
-    for (const p of PROVIDERS.text_patterns || []) {
-      const needle = String(p).toLowerCase();
-      if (needle && text.includes(needle)) { score += 2; hits.push({ type: "text", p }); }
-    }
-
-    // script/link signatures
-    const nodes = [...dom.window.document.querySelectorAll("script,link")];
-    for (const el of nodes) {
-      const src = (el.getAttribute("src") || el.getAttribute("href") || "").toLowerCase();
-      for (const sig of PROVIDERS.script_signatures || []) {
-        const m = String(sig.match || "").toLowerCase();
-        if (m && src.includes(m)) { score += 3; hits.push({ type: sig.type || "widget", name: sig.name || m }); }
-      }
-    }
-
-    return { score, hits };
+async function getHtml(url) {
+  try {
+    const res = await fetchWithTimeout(url);
+    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+    // cap body size
+    let buf = Buffer.from(await res.arrayBuffer());
+    if (buf.length > MAX_HTML_BYTES) buf = buf.subarray(0, MAX_HTML_BYTES);
+    let html = buf.toString("utf8");
+    // strip <style> blocks to avoid jsdom CSS parser choking on broken CSS
+    html = html.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
+    return html;
   } catch (e) {
-    vLog("fetch error:", url, (e && e.message) || e);
-    return { score: 0, hits: [] };
+    throw e;
   }
 }
 
-function nextNameWithPrefix(name, prefix) {
-  return (/^(✅|⚠︎|❓|⏳)\s/.test(name) ? name : `${prefix}${name}`);
+// ---------- verify logic (example & conservative) ----------
+function extractCandidateUrls(entry) {
+  // try common fields
+  const urls = new Set();
+  for (const k of ["url", "site", "website", "homepage"]) {
+    if (typeof entry?.[k] === "string") urls.add(entry[k]);
+  }
+  // nested proof fields
+  const proofs = entry?.verification || entry?.proofs || [];
+  if (Array.isArray(proofs)) {
+    for (const p of proofs) {
+      if (typeof p?.url === "string") urls.add(p.url);
+    }
+  }
+  // normalize
+  return [...urls].filter(u => /^https?:\/\//i.test(u));
 }
 
-// -------- main --------
-(async () => {
-  let touched = 0;
+function setVerification(obj, payload) {
+  obj.verification = { ...(obj.verification || {}), ...payload };
+}
 
-  for (const file of TARGET_FILES) {
-    let raw;
+async function verifyEntry(entry) {
+  const urls = extractCandidateUrls(entry);
+  if (!urls.length) {
+    return { ok: false, reason: "no-urls" };
+  }
+
+  let hits = 0;
+  for (const u of urls) {
     try {
-      raw = JSON.parse(fs.readFileSync(file, "utf8"));
+      const html = await getHtml(u);
+      // placeholder: simple heuristic — contains brand words or bitcoin-ish words
+      const text = new JSDOM(html, { runScripts: "outside-only" }).window.document
+        .body?.textContent?.toLowerCase() || "";
+      const needles = [
+        "bitcoin",
+        "btc",
+        entry.name?.toLowerCase?.(),
+        entry.brand?.toLowerCase?.(),
+      ]
+        .filter(Boolean)
+        .map(s => s.trim())
+        .filter(s => s.length > 2);
+
+      const matched = needles.some(w => text.includes(w));
+      if (matched) hits++;
+      vLog("checked", u, matched ? "✓" : "…");
     } catch (e) {
-      console.error(`[verify] skip (invalid JSON): ${file}`);
-      continue;
-    }
-
-    // accept multiple container shapes
-    let arr = Array.isArray(raw)
-      ? raw
-      : (raw.places || raw.items || raw.results || raw.data || raw.entries || []);
-
-    // if still not an array, skip quietly
-    if (!Array.isArray(arr) || arr.length === 0) {
-      vLog("empty or unsupported shape:", file);
-      continue;
-    }
-
-    let changed = false;
-
-    for (let i = 0; i < arr.length; i++) {
-      const p0 = normalizePlace(arr[i]);
-
-      // fetch & score
-      const res = await checkUrl(p0.url);
-      const verified = res.score >= THRESHOLD;
-
-      const tag = verified ? "Verified" : "Unverified";
-      const nameTagPrefix = verified ? "✅ " : "⚠︎ ";
-
-      const name = nextNameWithPrefix(p0.name, nameTagPrefix);
-      const category = labelCat(p0.category || "", tag);
-
-      const verification = {
-        status: verified ? "verified" : "unverified",
-        last_checked: stampDate(),
-        sources: verified ? [{ type: "official_site", url: p0.url, hits: res.hits }] : []
-      };
-
-      const next = { ...arr[i], name, category, verification };
-      if (verified) next.last_verified = stampDate();
-
-      const before = JSON.stringify(arr[i]);
-      const after = JSON.stringify(next);
-      if (before !== after) {
-        arr[i] = next;
-        changed = true;
-        touched++;
-      }
-    }
-
-    if (changed) {
-      const out = Array.isArray(raw) ? arr : { ...raw, places: arr };
-      fs.writeFileSync(file, JSON.stringify(out, null, 2));
-      console.log(`[verify] updated: ${file}`);
+      vLog("fetch error:", u, e.message || String(e));
     }
   }
 
-  console.log(`[verify] total updated entries: ${touched}`);
+  return { ok: hits >= 1, hits, urls: urls.length };
+}
+
+async function processFile(filePath) {
+  const raw = fs.readFileSync(filePath, "utf8");
+  let json;
+  try {
+    json = JSON.parse(raw);
+  } catch {
+    vLog("skip (invalid json):", filePath);
+    return { filePath, updated: false };
+  }
+
+  // accept array or object-with-places
+  let items = Array.isArray(json)
+    ? json
+    : json.places || json.items || json.results || json.data || json.entries;
+
+  if (!Array.isArray(items) || items.length === 0) {
+    vLog("empty or unsupported shape:", filePath);
+    return { filePath, updated: false };
+  }
+
+  let changed = false;
+  for (let i = 0; i < items.length; i++) {
+    const e = items[i];
+    try {
+      const r = await verifyEntry(e);
+      const label = r.ok ? "verified" : "unverified";
+      const prev = e?.verification?.label;
+      if (prev !== label) {
+        setVerification(e, { label, hits: r.hits, checkedAt: new Date().toISOString() });
+        changed = true;
+      }
+    } catch (e) {
+      vLog("entry error:", e.message || String(e));
+    }
+  }
+
+  if (changed) {
+    fs.writeFileSync(filePath, JSON.stringify(json, null, 2) + "\n");
+    console.log("[verify] updated:", filePath);
+  }
+  return { filePath, updated: changed };
+}
+
+// ---------- small async pool ----------
+async function pool(items, n, fn) {
+  const ret = new Array(items.length);
+  let next = 0, active = 0;
+  return new Promise((resolve) => {
+    const kick = () => {
+      if (next === items.length && active === 0) return resolve(ret);
+      while (active < n && next < items.length) {
+        const i = next++, it = items[i];
+        active++;
+        Promise.resolve(fn(it))
+          .then(r => (ret[i] = r))
+          .catch(e => (ret[i] = { error: e }))
+          .finally(() => { active--; kick(); });
+      }
+    };
+    kick();
+  });
+}
+
+// ---------- main ----------
+(async function main() {
+  const targets = listTargets();
+  vLog("targets:", targets.length);
+  const results = await pool(targets, CONCURRENCY, processFile);
+
+  const updated = results.filter(r => r?.updated).length;
+  console.log("[verify] total updated entries:", updated);
 })();
