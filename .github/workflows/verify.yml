@@ -26,7 +26,6 @@ jobs:
       - name: Install deps
         run: npm i node-fetch@3 jsdom@24
 
-      # --- visibility: always show what files will be scanned ---
       - name: List public JSON targets
         run: |
           echo "== JSON files in public (raw) =="
@@ -44,7 +43,6 @@ jobs:
           if(fs.existsSync(p.join(PUB,"places.json")))t.push(p.join(PUB,"places.json"));
           console.log(t.sort().join("\n")||"(no targets)");' | tee target-files.txt
 
-      # --- optional probe to print json shape for quick diagnosis ---
       - name: Probe JSON shape (first 10 files)
         run: |
           node -e 'const fs=require("fs");
@@ -58,7 +56,6 @@ jobs:
             console.log(`[shape] ${f}  keys=${keys.slice(0,8).join(",")}  len=${Array.isArray(arr)?arr.length:"NA"}`);
           }' | tee shape.txt
 
-      # --- actual run ---
       - name: Run verifier (verbose)
         run: |
           echo "::group::Run scan.mjs"
