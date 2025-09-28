@@ -1,0 +1,48 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"></stop>
+      <stop offset="100%" stop-color="#1e293b"></stop>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"></path>
+    </pattern>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="20"></feGaussianBlur>
+    </filter>
+  </defs>
+
+  <!-- background -->
+  <rect width="1200" height="630" fill="url(#g)"></rect>
+  <rect width="1200" height="630" fill="url(#grid)"></rect>
+
+  <!-- soft circles -->
+  <g filter="url(#soft)">
+    <circle cx="220" cy="140" r="140" fill="#22d3ee" fill-opacity="0.25"></circle>
+    <circle cx="980" cy="520" r="170" fill="#a78bfa" fill-opacity="0.22"></circle>
+    <circle cx="780" cy="160" r="110" fill="#34d399" fill-opacity="0.18"></circle>
+  </g>
+
+  <!-- pin -->
+  <g transform="translate(900,220)">
+    <circle cx="0" cy="0" r="36" fill="#ef4444"></circle>
+    <circle cx="0" cy="0" r="14" fill="#fff"></circle>
+  </g>
+
+  <!-- text -->
+  <text x="80" y="270" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial" font-weight="700" font-size="64" fill="#ffffff">
+    CryptoPayMap
+  </text>
+  <text x="80" y="330" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial" font-weight="500" font-size="30" fill="#e2e8f0">
+    Find crypto-friendly places to pay with crypto
+  </text>
+  <text x="80" y="390" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial" font-weight="400" font-size="22" fill="#94a3b8">
+    Filter by coin / city / category · Instant details · Google / Apple / OSM navigation
+  </text>
+
+  <!-- url tag -->
+  <rect x="80" y="430" rx="10" ry="10" width="520" height="56" fill="#0ea5e9" fill-opacity="0.15" stroke="#38bdf8" stroke-opacity="0.5"></rect>
+  <text x="100" y="466" font-family="Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial" font-weight="600" font-size="22" fill="#cfeaff">
+    cryptopaymap.vercel.app — MVP
+  </text>
+</svg>
