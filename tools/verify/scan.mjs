@@ -9,18 +9,28 @@ import fetchOrig from "node-fetch";
 const VERBOSE = process.env.VERBOSE === "1";
 const ROOT = "public";
 
-// tunables (providers.json があればそれを優先)
+// ---- default tunables (will be overridden by providers.json if present)
 let CFG = {
   text_patterns: [
     "we accept bitcoin",
     "accept crypto",
     "pay with bitcoin",
     "bitcoin accepted",
-    "支払い", "ビットコイン", "暗号", "仮想通貨",
-    "btc"
+    "支払い", "ビットコイン", "暗号", "仮想通貨", "btc"
+  ],
+  negative_text_patterns: [
+    "do not accept bitcoin",
+    "don’t accept bitcoin",
+    "no bitcoin",
+    "we no longer accept bitcoin",
+    "not accept crypto",
+    "no crypto",
+    "bitcoin not accepted",
+    "ビットコインは使えません",
+    "仮想通貨は使えません"
   ],
   script_signatures: [
-    // kept for future; we don't parse DOM, but we can text-search HTML for src URLs
+    // DOMは使わないので生HTML文字列中の一致のみ見る
     { name: "btcpay",            match: "btcpayserver",          type: "widget" },
     { name: "coinbase-commerce", match: "commerce.coinbase.com", type: "widget" },
     { name: "nowpayments",       match: "nowpayments.io",        type: "widget" },
@@ -34,6 +44,7 @@ let CFG = {
   max_html_bytes: 1_000_000
 };
 
+// Merge external config if present
 try {
   const p = path.join("tools", "verify", "providers.json");
   if (fs.existsSync(p)) {
@@ -41,7 +52,7 @@ try {
     CFG = { ...CFG, ...loaded };
   }
 } catch (e) {
-  // ignore
+  // ignore config load errors
 }
 
 function vLog(...args) { if (VERBOSE) console.log("[verify]", ...args); }
@@ -97,28 +108,24 @@ async function getHtml(url) {
   if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
   let buf = Buffer.from(await res.arrayBuffer());
   if (buf.length > CFG.max_html_bytes) buf = buf.subarray(0, CFG.max_html_bytes);
-  // always decode as utf8 (best-effort)
-  return buf.toString("utf8");
+  return buf.toString("utf8"); // best-effort UTF-8
 }
 
 // ---------- text utils (no DOM) ----------
 function stripTags(html) {
-  // drop scripts/styles/links quickly to reduce noise and avoid CSS/JS text
+  // drop scripts/styles/links to reduce noise and avoid CSS/JS text
   let s = html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "");
   s = s.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
   s = s.replace(/<link\b[^>]*>/gi, "");
-  // remove comments
+  // comments
   s = s.replace(/<!--[\s\S]*?-->/g, "");
   // collapse tags
   s = s.replace(/<[^>]+>/g, " ");
-  // decode minimal entities
+  // minimal entities
   s = s.replace(/&nbsp;/g, " ").replace(/&amp;/g, "&");
   return s;
 }
-
-function norm(s) {
-  return (s || "").toString().toLowerCase();
-}
+const norm = (s) => (s || "").toString().toLowerCase();
 
 function hostFrom(urlStr) {
   try { return new URL(urlStr).hostname.replace(/^www\./, ""); } catch { return ""; }
@@ -138,60 +145,90 @@ function extractCandidateUrls(entry) {
   return [...urls].filter(u => /^https?:\/\//i.test(u));
 }
 
-function setVerification(obj, payload) {
-  obj.verification = { ...(obj.verification || {}), ...payload };
+function mergeVerification(obj, payload) {
+  // Preserve existing verification; write under verification.auto to avoid clobbering manual decisions
+  obj.verification = obj.verification || {};
+  obj.verification.auto = { ...(obj.verification.auto || {}), ...payload };
 }
 
 // ---------- verify logic (no DOM) ----------
+async function verifyOneUrl(u, seenProviders) {
+  const out = { url: u, hits: 0, evidences: [], negative: false };
+
+  const h = hostFrom(u);
+  if (CFG.ignore_domains?.some(dom => h.endsWith(dom))) {
+    vLog("skip ignored domain:", h);
+    return out;
+  }
+
+  try {
+    const htmlRaw = await getHtml(u);
+    const html = norm(htmlRaw);
+    const text = norm(stripTags(htmlRaw));
+
+    // negative patterns -> immediate negative flag
+    for (const neg of (CFG.negative_text_patterns || [])) {
+      const p = norm(neg);
+      if (p && text.includes(p)) {
+        out.negative = true;
+        out.evidences.push({ url: u, type: "negative", match: neg });
+        return out;
+      }
+    }
+
+    // text patterns
+    for (const pat of (CFG.text_patterns || [])) {
+      const p = norm(pat);
+      if (p && text.includes(p)) {
+        out.hits++;
+        out.evidences.push({ url: u, type: "text", match: pat });
+        if (out.hits >= (CFG.threshold || 4)) break;
+      }
+    }
+
+    // script signatures (string search in raw HTML)
+    for (const sig of (CFG.script_signatures || [])) {
+      const m = norm(sig.match);
+      if (m && html.includes(m) && !seenProviders.has(sig.name)) {
+        out.hits++;
+        seenProviders.add(sig.name);
+        out.evidences.push({ url: u, type: sig.type || "widget", match: sig.name });
+        if (out.hits >= (CFG.threshold || 4)) break;
+      }
+    }
+  } catch (e) {
+    vLog("fetch error:", u, e?.message || String(e));
+    out.error = e?.message || String(e);
+  }
+
+  return out;
+}
+
 async function verifyEntry(entry) {
   const urls = extractCandidateUrls(entry);
   if (!urls.length) return { ok: false, reason: "no-urls" };
 
-  let hits = 0;
   const seenProviders = new Set();
-  const evidences = [];
+  let totalHits = 0;
+  let negatives = [];
+  let evidences = [];
 
   for (const u of urls) {
-    const h = hostFrom(u);
-    if (CFG.ignore_domains.some(dom => h.endsWith(dom))) {
-      vLog("skip ignored domain:", h);
-      continue;
-    }
-    try {
-      const html = await getHtml(u);
-      const text = norm(stripTags(html));
-
-      // text patterns
-      for (const pat of CFG.text_patterns || []) {
-        const p = norm(pat);
-        if (p && text.includes(p)) {
-          hits++;
-          evidences.push({ url: u, type: "text", match: pat });
-          if (hits >= CFG.threshold) break;
-        }
-      }
-
-      // crude “script signatures” by plain string search in HTML source
-      for (const sig of CFG.script_signatures || []) {
-        const m = norm(sig.match);
-        if (m && norm(html).includes(m) && !seenProviders.has(sig.name)) {
-          hits++;
-          seenProviders.add(sig.name);
-          evidences.push({ url: u, type: sig.type || "widget", match: sig.name });
-          if (hits >= CFG.threshold) break;
-        }
-      }
-
-      if (hits >= CFG.threshold) break;
-
-    } catch (e) {
-      vLog("fetch error:", u, e?.message || String(e));
-    }
+    const r = await verifyOneUrl(u, seenProviders);
+    if (r.negative) negatives.push(r);
+    totalHits += r.hits;
+    if (r.evidences?.length) evidences.push(...r.evidences);
+    if (totalHits >= (CFG.threshold || 4)) break;
   }
 
-  if (hits > 0) {
-    return { ok: true, hits, evidences };
+  if (negatives.length) {
+    return { ok: false, reason: "negative-match", evidences: negatives.flatMap(n => n.evidences) };
   }
+
+  if (totalHits > 0) {
+    return { ok: true, hits: totalHits, evidences };
+  }
+
   return { ok: false, reason: "no-hits" };
 }
 
@@ -201,17 +238,24 @@ async function verifyArray(arr) {
   let i = 0;
 
   async function worker() {
-    while (i < arr.length) {
+    while (true) {
       const idx = i++;
+      if (idx >= arr.length) break;
+
       const entry = arr[idx];
       const r = await verifyEntry(entry);
-      if (r.ok) {
-        setVerification(entry, {
-          status: r.hits >= (CFG.threshold || 4) ? "✅" : "⚠︎",
-          hits: r.hits,
-          updatedAt: new Date().toISOString(),
-          evidence: r.evidences?.slice(0, 10) || []
-        });
+
+      const payload = {
+        status: r.ok && r.hits >= (CFG.threshold || 4) ? "verified" : "unverified",
+        hits: r.ok ? r.hits : 0,
+        reason: r.ok ? undefined : r.reason,
+        checkedAt: new Date().toISOString(),
+        evidence: (r.evidences || []).slice(0, 20)
+      };
+
+      // Write under verification.auto only when we have something meaningful (including negative)
+      if (r.ok || r.reason) {
+        mergeVerification(entry, payload);
         updated++;
       }
     }

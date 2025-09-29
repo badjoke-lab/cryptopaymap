@@ -2,15 +2,21 @@ name: verify-places
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # daily at 03:00 UTC
+    - cron: "0 3 * * *"   # daily at 03:00 UTC (※デフォルトブランチのみ発火)
   workflow_dispatch: {}
+
+concurrency:
+  group: verify-places
+  cancel-in-progress: true
 
 permissions:
   contents: write          # needed to push changes / create PR
   pull-requests: write
+  actions: read
 
 jobs:
   run-verify:
+    if: github.ref != 'refs/heads/bot/verify-update'   # self-PRループ抑止
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -22,7 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: "npm"
 
       # jsdom は入れない。fetch だけ使う。
       - name: Install deps (no-save)
@@ -81,9 +86,18 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+      - name: Write step summary
+        if: always()
+        run: |
+          echo "## Verify summary" >> $GITHUB_STEP_SUMMARY
+          echo "- Targets: $(wc -l < target-files.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "- Log artifact: verify-logs" >> $GITHUB_STEP_SUMMARY
+
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
+          # テスト運用を固定ブランチで回すなら base: を明示してもよい
+          # base: chore/fix-workflow
           branch: bot/verify-update
           commit-message: "chore(verify): auto-update verification labels & evidence"
           title: "Auto: verification update"
