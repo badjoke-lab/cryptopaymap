@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:5462455521",
-    "name": "Pokito",
-    "category": "restaurant",
+    "name": "⚠︎ Pokito",
+    "category": "restaurant · Unverified",
     "lat": 43.648529,
     "lng": -79.3979838,
     "country": "CA",
@@ -41,23 +41,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:07.719Z",
-      "evidence": [
-        {
-          "url": "https://www.pokito.ca/",
-          "matched": [
-            "pokito"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11236899433",
-    "name": "Capulus Coffee House",
-    "category": "cafe",
+    "name": "⚠︎ Capulus Coffee House",
+    "category": "cafe · Unverified",
     "lat": 43.6798628,
     "lng": -79.4334871,
     "country": "CA",
@@ -94,16 +85,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:08.834Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12596343661",
-    "name": "Portals",
-    "category": "events_venue",
+    "name": "⚠︎ Portals",
+    "category": "events_venue · Unverified",
     "lat": 43.6443973,
     "lng": -79.387899,
     "country": "CA",
@@ -139,23 +128,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:09.327Z",
-      "evidence": [
-        {
-          "url": "https://portals.love/",
-          "matched": [
-            "portals"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12814776310",
-    "name": "Niagara Tours Company",
-    "category": "travel_agency",
+    "name": "⚠︎ Niagara Tours Company",
+    "category": "travel_agency · Unverified",
     "lat": 43.6428774,
     "lng": -79.3807292,
     "country": "CA",
@@ -188,24 +168,15 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.321Z",
-      "evidence": [
-        {
-          "url": "https://www.niagaratours.ca/",
-          "type": "text",
-          "match": "pay with bitcoin"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:26:56.174Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13017253455",
-    "name": "SHS Home Renovations",
-    "category": "other",
+    "name": "⚠︎ SHS Home Renovations",
+    "category": "other · Unverified",
     "lat": 43.7283533,
     "lng": -79.2714919,
     "country": "CA",
@@ -242,23 +213,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:11.197Z",
-      "evidence": [
-        {
-          "url": "https://www.shshomerenovations.ca",
-          "matched": [
-            "shs home renovations"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13076600110",
-    "name": "Caring for Couples Counselling Center Inc.",
-    "category": "other",
+    "name": "⚠︎ Caring for Couples Counselling Center Inc.",
+    "category": "other · Unverified",
     "lat": 43.6707216,
     "lng": -79.401613,
     "country": "CA",
@@ -290,10 +252,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:11.754Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:691614099",
-    "name": "Khara Tuki",
-    "category": "jewelry",
+    "name": "⚠︎ Khara Tuki",
+    "category": "jewelry · Unverified",
     "lat": 48.8646929,
     "lng": 2.3500426,
     "country": "FR",
@@ -36,16 +36,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:07.777Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:815830612",
-    "name": "Le Greffulhe",
-    "category": "restaurant",
+    "name": "⚠︎ Le Greffulhe",
+    "category": "restaurant · Unverified",
     "lat": 48.8731505,
     "lng": 2.3255205,
     "country": "FR",
@@ -83,23 +81,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:09.963Z",
-      "evidence": [
-        {
-          "url": "https://legreffulhe.fr/",
-          "matched": [
-            "le greffulhe"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1089313449",
-    "name": "L'invitée",
-    "category": "restaurant",
+    "name": "⚠︎ L'invitée",
+    "category": "restaurant · Unverified",
     "lat": 48.8499899,
     "lng": 2.3459219,
     "country": "FR",
@@ -138,23 +127,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.238Z",
-      "evidence": [
-        {
-          "url": "https://www.linvitee.fr/",
-          "matched": [
-            "l'invitée"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1901202883",
-    "name": "Danse Cadix (Rock4You)",
-    "category": "dancing_school",
+    "name": "⚠︎ Danse Cadix (Rock4You)",
+    "category": "dancing_school · Unverified",
     "lat": 48.8344837,
     "lng": 2.2883046,
     "country": "FR",
@@ -190,16 +170,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.677Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2244578060",
-    "name": "N'Importe Quoi",
-    "category": "bar",
+    "name": "⚠︎ N'Importe Quoi",
+    "category": "bar · Unverified",
     "lat": 48.8607815,
     "lng": 2.3438855,
     "country": "FR",
@@ -237,23 +215,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:11.194Z",
-      "evidence": [
-        {
-          "url": "https://www.nimportequoi.fr/",
-          "matched": [
-            "n'importe quoi"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2630584155",
-    "name": "Le Sof's Bar",
-    "category": "bar",
+    "name": "⚠︎ Le Sof's Bar",
+    "category": "bar · Unverified",
     "lat": 48.866108,
     "lng": 2.3480098,
     "country": "FR",
@@ -290,21 +259,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.194Z",
-      "evidence": [
-        {
-          "url": "https://sofsbar.fr",
-          "error": "The operation was aborted."
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2996093212",
-    "name": "Rock that Alésia (Rock4You, Vendredis)",
-    "category": "other",
+    "name": "⚠︎ Rock that Alésia (Rock4You, Vendredis)",
+    "category": "other · Unverified",
     "lat": 48.8295775,
     "lng": 2.3245668,
     "country": "FR",
@@ -339,16 +301,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.575Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3239628074",
-    "name": "Boucherie Moderne",
-    "category": "butcher",
+    "name": "⚠︎ Boucherie Moderne",
+    "category": "butcher · Unverified",
     "lat": 48.8506104,
     "lng": 2.3925275,
     "country": "FR",
@@ -385,23 +345,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.107Z",
-      "evidence": [
-        {
-          "url": "https://www.boucherie-gillotjohn.fr/",
-          "matched": [
-            "boucherie moderne"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4136415192",
-    "name": "Barnacle",
-    "category": "optician",
+    "name": "⚠︎ Barnacle",
+    "category": "optician · Unverified",
     "lat": 48.8456492,
     "lng": 2.2776216,
     "country": "FR",
@@ -434,13 +385,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5602730924",
-    "name": "Le Carlie",
-    "category": "bar",
+    "name": "⚠︎ Le Carlie",
+    "category": "bar · Unverified",
     "lat": 48.8626955,
     "lng": 2.3521138,
     "country": "FR",
@@ -480,23 +433,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.397Z",
-      "evidence": [
-        {
-          "url": "https://www.lecarlie.fr/",
-          "matched": [
-            "le carlie"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5729212321",
-    "name": "Chez Ginette",
-    "category": "restaurant",
+    "name": "⚠︎ Chez Ginette",
+    "category": "restaurant · Unverified",
     "lat": 48.8897379,
     "lng": 2.3387128,
     "country": "FR",
@@ -534,13 +478,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10772576426",
-    "name": "Itiopia",
-    "category": "grocery",
+    "name": "⚠︎ Itiopia",
+    "category": "grocery · Unverified",
     "lat": 48.8900044,
     "lng": 2.345774,
     "country": "FR",
@@ -574,13 +520,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12258277242",
-    "name": "Danse Volontaire (Rock4You)",
-    "category": "dancing_school",
+    "name": "⚠︎ Danse Volontaire (Rock4You)",
+    "category": "dancing_school · Unverified",
     "lat": 48.8416222,
     "lng": 2.3074957,
     "country": "FR",
@@ -616,16 +564,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.663Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12258290051",
-    "name": "Rock That Boat (Rock4You, Lundis)",
-    "category": "bar",
+    "name": "⚠︎ Rock That Boat (Rock4You, Lundis)",
+    "category": "bar · Unverified",
     "lat": 48.8621181,
     "lng": 2.3224959,
     "country": "FR",
@@ -661,16 +607,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.724Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12336006611",
-    "name": "HomeProjectRentals",
-    "category": "tool_hire",
+    "name": "⚠︎ HomeProjectRentals",
+    "category": "tool_hire · Unverified",
     "lat": 48.8758003,
     "lng": 2.4037261,
     "country": "FR",
@@ -703,21 +647,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.060Z",
-      "evidence": [
-        {
-          "url": "https://www.leboncoin.fr/profile/c1066ddf-5ea8-4245-8382-4a6f4ac37c0d/offers",
-          "error": "403 Forbidden"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12908609013",
-    "name": "Dr SYED Abbas (General practitioner)",
-    "category": "doctors",
+    "name": "⚠︎ Dr SYED Abbas (General practitioner)",
+    "category": "doctors · Unverified",
     "lat": 48.872113,
     "lng": 2.3404427,
     "country": "FR",
@@ -754,16 +691,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.189Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12912120793",
-    "name": "Fais ci Fais ça",
-    "category": "other",
+    "name": "⚠︎ Fais ci Fais ça",
+    "category": "other · Unverified",
     "lat": 48.857873,
     "lng": 2.2852746,
     "country": "FR",
@@ -799,23 +734,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.731Z",
-      "evidence": [
-        {
-          "url": "http://www.fais-ci-fais-ca.com/",
-          "matched": [
-            "fais ci fais ça"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:76032165",
-    "name": "Bitcoin Bazar",
-    "category": "yes",
+    "name": "⚠︎ Bitcoin Bazar",
+    "category": "yes · Unverified",
     "lat": 48.8905017,
     "lng": 2.333032,
     "country": "FR",
@@ -853,23 +779,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:31.031Z",
-      "evidence": [
-        {
-          "url": "https://bitcoinbazar.fr/",
-          "matched": [
-            "bitcoin bazar"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:868175261",
-    "name": "Bistrot du Passage",
-    "category": "restaurant",
+    "name": "⚠︎ Bistrot du Passage",
+    "category": "restaurant · Unverified",
     "lat": 48.8542093,
     "lng": 2.3253329,
     "country": "FR",
@@ -907,15 +824,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:31.475Z",
-      "evidence": [
-        {
-          "url": "https://www.bistrot-du-passage.com/",
-          "error": "request to https://www.bistrot-du-passage.com/ failed, reason: write EPROTO 800CCE5B0A7F0000:error:0A000438:SSL routines:ssl3_read_bytes:tlsv1 alert internal error:../deps/openssl/openssl/ssl/record/rec_layer_s3.c:1605:SSL alert number 80\n"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

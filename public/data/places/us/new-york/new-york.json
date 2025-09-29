@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:2762442267",
-    "name": "Safari",
-    "category": "restaurant",
+    "name": "⚠︎ Safari",
+    "category": "restaurant · Unverified",
     "lat": 40.8005894,
     "lng": -73.9527099,
     "country": "US",
@@ -42,23 +42,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:51.735Z",
-      "evidence": [
-        {
-          "url": "https://safariharlem.com",
-          "matched": [
-            "safari"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2768451052",
-    "name": "The Expat",
-    "category": "bar",
+    "name": "⚠︎ The Expat",
+    "category": "bar · Unverified",
     "lat": 40.8154613,
     "lng": -73.9600115,
     "country": "US",
@@ -95,23 +86,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.211Z",
-      "evidence": [
-        {
-          "url": "https://www.theexpat.nyc/",
-          "matched": [
-            "the expat"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5415434959",
-    "name": "Kavasutra Kava Bar",
-    "category": "bar",
+    "name": "⚠︎ Kavasutra Kava Bar",
+    "category": "bar · Unverified",
     "lat": 40.7284736,
     "lng": -73.9834305,
     "country": "US",
@@ -146,21 +128,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.771Z",
-      "evidence": [
-        {
-          "url": "https://kavasutra.com/pages/kavasutra-new-york",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8791945336",
-    "name": "Back Of The Closet",
-    "category": "clothes",
+    "name": "⚠︎ Back Of The Closet",
+    "category": "clothes · Unverified",
     "lat": 40.8690068,
     "lng": -73.4257772,
     "country": "US",
@@ -199,13 +174,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9964721813",
-    "name": "Dandy Farmer",
-    "category": "florist",
+    "name": "⚠︎ Dandy Farmer",
+    "category": "florist · Unverified",
     "lat": 40.697432,
     "lng": -73.9718971,
     "country": "US",
@@ -246,23 +223,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.220Z",
-      "evidence": [
-        {
-          "url": "https://www.dandyfarmer.com",
-          "matched": [
-            "dandy farmer"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10127620393",
-    "name": "Budico Corp",
-    "category": "other",
+    "name": "⚠︎ Budico Corp",
+    "category": "other · Unverified",
     "lat": 40.8368509,
     "lng": -73.9926883,
     "country": "US",
@@ -297,13 +265,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10238825155",
-    "name": "Loving Hands Family Care",
-    "category": "childcare",
+    "name": "⚠︎ Loving Hands Family Care",
+    "category": "childcare · Unverified",
     "lat": 40.8536048,
     "lng": -74.0193736,
     "country": "US",
@@ -341,13 +311,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10245589405",
-    "name": "PubKey",
-    "category": "bar",
+    "name": "⚠︎ PubKey",
+    "category": "bar · Unverified",
     "lat": 40.732185,
     "lng": -74.0000205,
     "country": "US",
@@ -388,23 +360,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.895Z",
-      "evidence": [
-        {
-          "url": "https://pubkey.bar/",
-          "matched": [
-            "pubkey"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10559814687",
-    "name": "Melville Deli",
-    "category": "fast_food",
+    "name": "⚠︎ Melville Deli",
+    "category": "fast_food · Unverified",
     "lat": 40.7904667,
     "lng": -73.4162102,
     "country": "US",
@@ -443,13 +406,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10980987260",
-    "name": "Aburas Law, LLC",
-    "category": "other",
+    "name": "⚠︎ Aburas Law, LLC",
+    "category": "other · Unverified",
     "lat": 40.8919096,
     "lng": -74.1401536,
     "country": "US",
@@ -485,16 +450,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:54.105Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11425773528",
-    "name": "Society’s SmokeShop",
-    "category": "tobacco",
+    "name": "⚠︎ Society’s SmokeShop",
+    "category": "tobacco · Unverified",
     "lat": 40.7585189,
     "lng": -73.989409,
     "country": "US",
@@ -531,13 +494,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11497324014",
-    "name": "Waterfront Wines & Spirits",
-    "category": "alcohol",
+    "name": "⚠︎ Waterfront Wines & Spirits",
+    "category": "alcohol · Unverified",
     "lat": 40.6938294,
     "lng": -73.9994261,
     "country": "US",
@@ -578,23 +543,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:54.696Z",
-      "evidence": [
-        {
-          "url": "https://waterfrontwinesnyc.com/",
-          "matched": [
-            "waterfront wines & spirits"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11949550415",
-    "name": "Bitcoin Center NYC",
-    "category": "other",
+    "name": "⚠︎ Bitcoin Center NYC",
+    "category": "other · Unverified",
     "lat": 40.7868109,
     "lng": -73.9781144,
     "country": "US",
@@ -633,23 +589,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:55.258Z",
-      "evidence": [
-        {
-          "url": "https://bitcoincenternyc.com/",
-          "matched": [
-            "bitcoin center nyc"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12809106019",
-    "name": "Involve Digital",
-    "category": "other",
+    "name": "⚠︎ Involve Digital",
+    "category": "other · Unverified",
     "lat": 40.7130184,
     "lng": -74.0131518,
     "country": "US",
@@ -688,23 +635,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:55.473Z",
-      "evidence": [
-        {
-          "url": "https://www.involvedigital.com",
-          "matched": [
-            "involve digital"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12835020256",
-    "name": "Jericho Mansion",
-    "category": "other",
+    "name": "⚠︎ Jericho Mansion",
+    "category": "other · Unverified",
     "lat": 40.797047,
     "lng": -73.5404794,
     "country": "US",
@@ -737,23 +675,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:58.602Z",
-      "evidence": [
-        {
-          "url": "https://airbtc.online/properties/jericho-mansion-new-york-usa/",
-          "matched": [
-            "jericho mansion"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12960242112",
-    "name": "Solid State Coffee",
-    "category": "cafe",
+    "name": "⚠︎ Solid State Coffee",
+    "category": "cafe · Unverified",
     "lat": 40.776741,
     "lng": -73.9796743,
     "country": "US",
@@ -792,17 +721,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:59.558Z",
-      "evidence": [
-        {
-          "url": "https://solidstatecoffee.com/",
-          "matched": [
-            "solid state coffee"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

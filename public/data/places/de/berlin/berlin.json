@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:303319474",
-    "name": "Vettern Bar",
-    "category": "pub",
+    "name": "⚠︎ Vettern Bar",
+    "category": "pub · Unverified",
     "lat": 52.4905098,
     "lng": 13.4260706,
     "country": "DE",
@@ -39,13 +39,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:318526010",
-    "name": "Viale dei Tigli",
-    "category": "restaurant",
+    "name": "⚠︎ Viale dei Tigli",
+    "category": "restaurant · Unverified",
     "lat": 52.5148686,
     "lng": 13.3811135,
     "country": "DE",
@@ -83,23 +85,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:09.172Z",
-      "evidence": [
-        {
-          "url": "http://www.ristorante-viale.de/",
-          "matched": [
-            "viale dei tigli"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:318704396",
-    "name": "Drittes Ohr",
-    "category": "pub",
+    "name": "⚠︎ Drittes Ohr",
+    "category": "pub · Unverified",
     "lat": 52.5219305,
     "lng": 13.4529113,
     "country": "DE",
@@ -136,21 +129,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.465Z",
-      "evidence": [
-        {
-          "url": "https://www.drittes-ohr.com/",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:415551815",
-    "name": "Trattoria Felice",
-    "category": "restaurant",
+    "name": "⚠︎ Trattoria Felice",
+    "category": "restaurant · Unverified",
     "lat": 52.5439319,
     "lng": 13.4175949,
     "country": "DE",
@@ -192,23 +178,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.235Z",
-      "evidence": [
-        {
-          "url": "http://www.trattoria-felice.de/",
-          "matched": [
-            "trattoria felice"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:941439093",
-    "name": "Horváth",
-    "category": "restaurant",
+    "name": "⚠︎ Horváth",
+    "category": "restaurant · Unverified",
     "lat": 52.4963757,
     "lng": 13.4208114,
     "country": "DE",
@@ -246,23 +223,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:15.110Z",
-      "evidence": [
-        {
-          "url": "http://restaurant-horvath.de/",
-          "matched": [
-            "horváth"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1263799847",
-    "name": "Disconnect Art Gallery and Record Shop",
-    "category": "music",
+    "name": "⚠︎ Disconnect Art Gallery and Record Shop",
+    "category": "music · Unverified",
     "lat": 52.5109844,
     "lng": 13.4671354,
     "country": "DE",
@@ -301,24 +269,15 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:15.418Z",
-      "evidence": [
-        {
-          "url": "https://disconnectberlin.wordpress.com/",
-          "type": "text",
-          "match": "we accept bitcoin"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:26:57.062Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1372898402",
-    "name": "DoYouSpace",
-    "category": "other",
+    "name": "⚠︎ DoYouSpace",
+    "category": "other · Unverified",
     "lat": 52.5177555,
     "lng": 13.4581799,
     "country": "DE",
@@ -355,23 +314,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.261Z",
-      "evidence": [
-        {
-          "url": "https://www.doyouspace.net",
-          "matched": [
-            "doyouspace"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1765786432",
-    "name": "Subway",
-    "category": "fast_food",
+    "name": "⚠︎ Subway",
+    "category": "fast_food · Unverified",
     "lat": 52.5847198,
     "lng": 13.2860195,
     "country": "DE",
@@ -408,23 +358,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.655Z",
-      "evidence": [
-        {
-          "url": "https://restaurants.subway.com/de/deutschland/be/berlin/am-borsigturm-2",
-          "matched": [
-            "subway"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2521156202",
-    "name": "Augenarztpraxis Dipl.-Med. Ricarda Hoffmann",
-    "category": "doctors",
+    "name": "⚠︎ Augenarztpraxis Dipl.-Med. Ricarda Hoffmann",
+    "category": "doctors · Unverified",
     "lat": 52.4921303,
     "lng": 13.4576505,
     "country": "DE",
@@ -458,13 +399,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2537196472",
-    "name": "Musikschule Kling-Klang",
-    "category": "college",
+    "name": "⚠︎ Musikschule Kling-Klang",
+    "category": "college · Unverified",
     "lat": 52.5663684,
     "lng": 13.524798,
     "country": "DE",
@@ -501,16 +444,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:19.708Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2641068367",
-    "name": "Coworking Space Berlin-Friedrichshain Launch/Co",
-    "category": "other",
+    "name": "⚠︎ Coworking Space Berlin-Friedrichshain Launch/Co",
+    "category": "other · Unverified",
     "lat": 52.5036356,
     "lng": 13.454467,
     "country": "DE",
@@ -549,16 +490,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.302Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2935266552",
-    "name": "Barberium",
-    "category": "hairdresser",
+    "name": "⚠︎ Barberium",
+    "category": "hairdresser · Unverified",
     "lat": 52.5064668,
     "lng": 13.4693373,
     "country": "DE",
@@ -596,13 +535,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3036860727",
-    "name": "Fabelhaft Bar",
-    "category": "bar",
+    "name": "⚠︎ Fabelhaft Bar",
+    "category": "bar · Unverified",
     "lat": 52.4922712,
     "lng": 13.4209764,
     "country": "DE",
@@ -642,23 +583,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.773Z",
-      "evidence": [
-        {
-          "url": "http://fabelhaftberlin.de",
-          "matched": [
-            "fabelhaft bar"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3037805664",
-    "name": "ICE Aesthetic - Zentrum Kryolipolyse Berlin",
-    "category": "other",
+    "name": "⚠︎ ICE Aesthetic - Zentrum Kryolipolyse Berlin",
+    "category": "other · Unverified",
     "lat": 52.5038258,
     "lng": 13.3251553,
     "country": "DE",
@@ -697,16 +629,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:23.298Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3039050673",
-    "name": "WAHL Rechtsanwälte",
-    "category": "other",
+    "name": "⚠︎ WAHL Rechtsanwälte",
+    "category": "other · Unverified",
     "lat": 52.5486396,
     "lng": 13.4534484,
     "country": "DE",
@@ -746,23 +676,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:25.777Z",
-      "evidence": [
-        {
-          "url": "https://wahl-kanzlei.de",
-          "matched": [
-            "wahl rechtsanwälte"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3039051050",
-    "name": "dg.digital",
-    "category": "other",
+    "name": "⚠︎ dg.digital",
+    "category": "other · Unverified",
     "lat": 52.5497611,
     "lng": 13.4568566,
     "country": "DE",
@@ -798,23 +719,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.254Z",
-      "evidence": [
-        {
-          "url": "https://www.dg.digital",
-          "matched": [
-            "dg.digital"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3675739247",
-    "name": "C.Translations UG",
-    "category": "other",
+    "name": "⚠︎ C.Translations UG",
+    "category": "other · Unverified",
     "lat": 52.502001,
     "lng": 13.3335705,
     "country": "DE",
@@ -852,16 +764,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.606Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3734954314",
-    "name": "Friedel Richter",
-    "category": "restaurant",
+    "name": "⚠︎ Friedel Richter",
+    "category": "restaurant · Unverified",
     "lat": 52.5281875,
     "lng": 13.3914357,
     "country": "DE",
@@ -900,16 +810,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.241Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3747274058",
-    "name": "Keith",
-    "category": "bar",
+    "name": "⚠︎ Keith",
+    "category": "bar · Unverified",
     "lat": 52.4782382,
     "lng": 13.4213181,
     "country": "DE",
@@ -947,23 +855,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.007Z",
-      "evidence": [
-        {
-          "url": "https://www.keithbarberlin.de/",
-          "matched": [
-            "keith"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3937876098",
-    "name": "Hair Müller",
-    "category": "hairdresser",
+    "name": "⚠︎ Hair Müller",
+    "category": "hairdresser · Unverified",
     "lat": 52.5322911,
     "lng": 13.395606,
     "country": "DE",
@@ -998,23 +897,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.755Z",
-      "evidence": [
-        {
-          "url": "https://www.hairmueller.de/",
-          "matched": [
-            "hair müller"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4211986089",
-    "name": "Subway",
-    "category": "fast_food",
+    "name": "⚠︎ Subway",
+    "category": "fast_food · Unverified",
     "lat": 52.6372706,
     "lng": 13.2051209,
     "country": "DE",
@@ -1052,23 +942,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.881Z",
-      "evidence": [
-        {
-          "url": "https://restaurants.subway.com/de/deutschland/bb/hennigsdorf/postplatz-4-4c",
-          "matched": [
-            "subway"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4294659989",
-    "name": "Onkel Philipp's Spielzeugwerkstatt",
-    "category": "toys",
+    "name": "⚠︎ Onkel Philipp's Spielzeugwerkstatt",
+    "category": "toys · Unverified",
     "lat": 52.536497,
     "lng": 13.410587,
     "country": "DE",
@@ -1107,16 +988,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.921Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4841008105",
-    "name": "Süssmädchen",
-    "category": "jewelry",
+    "name": "⚠︎ Süssmädchen",
+    "category": "jewelry · Unverified",
     "lat": 52.5335929,
     "lng": 13.4036081,
     "country": "DE",
@@ -1152,21 +1031,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:31.563Z",
-      "evidence": [
-        {
-          "url": "http://www.suessmaedchen.com",
-          "error": "403 Forbidden"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4965923057",
-    "name": "Paranoid Internet",
-    "category": "other",
+    "name": "⚠︎ Paranoid Internet",
+    "category": "other · Unverified",
     "lat": 52.5126351,
     "lng": 13.3897599,
     "country": "DE",
@@ -1203,23 +1075,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.211Z",
-      "evidence": [
-        {
-          "url": "https://paranoid-internet.de/",
-          "matched": [
-            "paranoid internet"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4970428921",
-    "name": "Atheist Shoes",
-    "category": "shoes",
+    "name": "⚠︎ Atheist Shoes",
+    "category": "shoes · Unverified",
     "lat": 52.525194,
     "lng": 13.402099,
     "country": "DE",
@@ -1254,23 +1117,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.694Z",
-      "evidence": [
-        {
-          "url": "https://atheist.shoes/",
-          "matched": [
-            "atheist shoes"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:7069855803",
-    "name": "All the Colors",
-    "category": "hairdresser",
+    "name": "⚠︎ All the Colors",
+    "category": "hairdresser · Unverified",
     "lat": 52.531497,
     "lng": 13.4341735,
     "country": "DE",
@@ -1310,23 +1164,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:35.262Z",
-      "evidence": [
-        {
-          "url": "https://www.allthecolorsberlin.de/",
-          "matched": [
-            "all the colors"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:7610691602",
-    "name": "Vater Bar",
-    "category": "bar",
+    "name": "⚠︎ Vater Bar",
+    "category": "bar · Unverified",
     "lat": 52.4877308,
     "lng": 13.4310767,
     "country": "DE",
@@ -1361,13 +1206,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8145412017",
-    "name": "Mein Palo Santo",
-    "category": "incense",
+    "name": "⚠︎ Mein Palo Santo",
+    "category": "incense · Unverified",
     "lat": 52.5367859,
     "lng": 13.4175276,
     "country": "DE",
@@ -1408,23 +1255,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:36.172Z",
-      "evidence": [
-        {
-          "url": "https://www.mein-palo-santo.de",
-          "matched": [
-            "mein palo santo"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8311143284",
-    "name": "Noku Studio",
-    "category": "other",
+    "name": "⚠︎ Noku Studio",
+    "category": "other · Unverified",
     "lat": 52.5111776,
     "lng": 13.3958388,
     "country": "DE",
@@ -1463,16 +1301,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:36.383Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9215009717",
-    "name": "Chipi Chipi Bombón",
-    "category": "ice_cream",
+    "name": "⚠︎ Chipi Chipi Bombón",
+    "category": "ice_cream · Unverified",
     "lat": 52.5131962,
     "lng": 13.4525181,
     "country": "DE",
@@ -1513,23 +1349,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:36.846Z",
-      "evidence": [
-        {
-          "url": "https://www.chipichipibombon.com",
-          "matched": [
-            "chipi chipi bombón"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9346510854",
-    "name": "wallbox",
-    "category": "charging_station",
+    "name": "⚠︎ wallbox",
+    "category": "charging_station · Unverified",
     "lat": 52.3764876,
     "lng": 13.6222673,
     "country": "DE",
@@ -1563,13 +1390,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9911287150",
-    "name": "Legacy",
-    "category": "paint",
+    "name": "⚠︎ Legacy",
+    "category": "paint · Unverified",
     "lat": 52.4926714,
     "lng": 13.3701572,
     "country": "DE",
@@ -1607,23 +1436,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:39.594Z",
-      "evidence": [
-        {
-          "url": "https://legacybln.de/",
-          "matched": [
-            "legacy"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10084805955",
-    "name": "Mood - Café & Spätkauf",
-    "category": "cafe",
+    "name": "⚠︎ Mood - Café & Spätkauf",
+    "category": "cafe · Unverified",
     "lat": 52.5342275,
     "lng": 13.4161615,
     "country": "DE",
@@ -1660,21 +1480,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:39.935Z",
-      "evidence": [
-        {
-          "url": "https://www.instagram.com/mood.spaeti.cafe/?r=nametag",
-          "error": "429 Too Many Requests"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10118305052",
-    "name": "Fulmo GmbH",
-    "category": "other",
+    "name": "⚠︎ Fulmo GmbH",
+    "category": "other · Unverified",
     "lat": 52.5408009,
     "lng": 13.4068129,
     "country": "DE",
@@ -1711,16 +1524,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.904Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10134931577",
-    "name": "KOSAE jewellery & design",
-    "category": "jewelry",
+    "name": "⚠︎ KOSAE jewellery & design",
+    "category": "jewelry · Unverified",
     "lat": 52.533571,
     "lng": 13.4036851,
     "country": "DE",
@@ -1754,13 +1565,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10272682416",
-    "name": "nexondo",
-    "category": "computer",
+    "name": "⚠︎ nexondo",
+    "category": "computer · Unverified",
     "lat": 52.5342249,
     "lng": 13.4020906,
     "country": "DE",
@@ -1800,23 +1613,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.809Z",
-      "evidence": [
-        {
-          "url": "https://nexondo.de/",
-          "matched": [
-            "nexondo"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10277742928",
-    "name": "Fahrzeugpflege Laabs",
-    "category": "car_wash",
+    "name": "⚠︎ Fahrzeugpflege Laabs",
+    "category": "car_wash · Unverified",
     "lat": 52.3960596,
     "lng": 13.5323935,
     "country": "DE",
@@ -1855,23 +1659,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.702Z",
-      "evidence": [
-        {
-          "url": "https://www.fahrzeugpflege-laabs.de",
-          "matched": [
-            "fahrzeugpflege laabs"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10297995578",
-    "name": "Physiotherapie Alexandros Swoch",
-    "category": "other",
+    "name": "⚠︎ Physiotherapie Alexandros Swoch",
+    "category": "other · Unverified",
     "lat": 52.4917336,
     "lng": 13.2906484,
     "country": "DE",
@@ -1908,23 +1703,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:43.505Z",
-      "evidence": [
-        {
-          "url": "https://fuessiotherapie.de",
-          "matched": [
-            "physiotherapie alexandros swoch"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10313585322",
-    "name": "Café Holzmarktperle",
-    "category": "cafe",
+    "name": "⚠︎ Café Holzmarktperle",
+    "category": "cafe · Unverified",
     "lat": 52.511438,
     "lng": 13.4268672,
     "country": "DE",
@@ -1963,13 +1749,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10698030584",
-    "name": "CI Space",
-    "category": "other",
+    "name": "⚠︎ CI Space",
+    "category": "other · Unverified",
     "lat": 52.5280242,
     "lng": 13.3417811,
     "country": "DE",
@@ -2005,21 +1793,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:44.067Z",
-      "evidence": [
-        {
-          "url": "https://cispace.isaci.com",
-          "error": "request to https://cispace.isaci.com/ failed, reason: getaddrinfo ENOTFOUND cispace.isaci.com"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11054531199",
-    "name": "Mein Palo Santo",
-    "category": "other",
+    "name": "⚠︎ Mein Palo Santo",
+    "category": "other · Unverified",
     "lat": 52.5112322,
     "lng": 13.4592291,
     "country": "DE",
@@ -2056,13 +1837,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11183254526",
-    "name": "Liebener Coaching",
-    "category": "other",
+    "name": "⚠︎ Liebener Coaching",
+    "category": "other · Unverified",
     "lat": 52.525895,
     "lng": 13.4489086,
     "country": "DE",
@@ -2099,23 +1882,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:46.892Z",
-      "evidence": [
-        {
-          "url": "https://www.liebener-coaching.de/",
-          "matched": [
-            "liebener coaching"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11377463071",
-    "name": "Karmen Kraft",
-    "category": "art",
+    "name": "⚠︎ Karmen Kraft",
+    "category": "art · Unverified",
     "lat": 52.5259171,
     "lng": 13.4980609,
     "country": "DE",
@@ -2157,23 +1931,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:47.703Z",
-      "evidence": [
-        {
-          "url": "https://www.karmenkraft.com/",
-          "matched": [
-            "karmen kraft"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11861712699",
-    "name": "Martina Lubanski, Grafik Design, Art Direktorin",
-    "category": "other",
+    "name": "⚠︎ Martina Lubanski, Grafik Design, Art Direktorin",
+    "category": "other · Unverified",
     "lat": 52.4907057,
     "lng": 13.3631375,
     "country": "DE",
@@ -2209,21 +1974,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:48.089Z",
-      "evidence": [
-        {
-          "url": "https://martinalubanski.com/",
-          "error": "request to https://martinalubanski.com/ failed, reason: certificate has expired"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11918209446",
-    "name": "Zimt & Pfeffer",
-    "category": "spices",
+    "name": "⚠︎ Zimt & Pfeffer",
+    "category": "spices · Unverified",
     "lat": 52.512325,
     "lng": 13.4176575,
     "country": "DE",
@@ -2262,16 +2020,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:48.888Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11931158041",
-    "name": "Fotostudio Kreuzberg",
-    "category": "other",
+    "name": "⚠︎ Fotostudio Kreuzberg",
+    "category": "other · Unverified",
     "lat": 52.4976631,
     "lng": 13.4252092,
     "country": "DE",
@@ -2308,23 +2064,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.342Z",
-      "evidence": [
-        {
-          "url": "https://fotostudio-kreuzberg.de/",
-          "matched": [
-            "fotostudio kreuzberg"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12009761189",
-    "name": "Tante Tom",
-    "category": "massage",
+    "name": "⚠︎ Tante Tom",
+    "category": "massage · Unverified",
     "lat": 52.6188846,
     "lng": 13.303273,
     "country": "DE",
@@ -2363,23 +2110,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.050Z",
-      "evidence": [
-        {
-          "url": "https://www.tante-tom.de/",
-          "matched": [
-            "tante tom"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12170692127",
-    "name": "Steinberg Imkerei",
-    "category": "other",
+    "name": "⚠︎ Steinberg Imkerei",
+    "category": "other · Unverified",
     "lat": 52.5958764,
     "lng": 13.316332,
     "country": "DE",
@@ -2412,13 +2150,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12219015529",
-    "name": "RML",
-    "category": "other",
+    "name": "⚠︎ RML",
+    "category": "other · Unverified",
     "lat": 52.5294096,
     "lng": 13.6148571,
     "country": "DE",
@@ -2456,23 +2196,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.664Z",
-      "evidence": [
-        {
-          "url": "https://rml-bau.de/",
-          "matched": [
-            "rml"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12277896916",
-    "name": "David Tenorio Tattoo",
-    "category": "tattoo",
+    "name": "⚠︎ David Tenorio Tattoo",
+    "category": "tattoo · Unverified",
     "lat": 52.490285,
     "lng": 13.393468,
     "country": "DE",
@@ -2513,21 +2244,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.698Z",
-      "evidence": [
-        {
-          "url": "https://www.davidtenorioart.com/",
-          "error": "request to https://www.davidtenorioart.com/ failed, reason: getaddrinfo ENOTFOUND www.davidtenorioart.com"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12386806388",
-    "name": "Fabio Pasta (Wochenmarkt Kollwitzplatz)",
-    "category": "fast_food",
+    "name": "⚠︎ Fabio Pasta (Wochenmarkt Kollwitzplatz)",
+    "category": "fast_food · Unverified",
     "lat": 52.5370744,
     "lng": 13.4189075,
     "country": "DE",
@@ -2566,13 +2290,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12400272704",
-    "name": "AndresEDV & Consulting",
-    "category": "other",
+    "name": "⚠︎ AndresEDV & Consulting",
+    "category": "other · Unverified",
     "lat": 52.537711,
     "lng": 13.2647765,
     "country": "DE",
@@ -2609,23 +2335,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:54.672Z",
-      "evidence": [
-        {
-          "url": "https://www.andresedv.de/",
-          "matched": [
-            "andresedv & consulting"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12459074874",
-    "name": "Studio Zitrone",
-    "category": "other",
+    "name": "⚠︎ Studio Zitrone",
+    "category": "other · Unverified",
     "lat": 52.4896111,
     "lng": 13.3835322,
     "country": "DE",
@@ -2660,16 +2377,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:55.693Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12754079336",
-    "name": "Dirty Jobs",
-    "category": "other",
+    "name": "⚠︎ Dirty Jobs",
+    "category": "other · Unverified",
     "lat": 52.5096218,
     "lng": 13.4678152,
     "country": "DE",
@@ -2708,16 +2423,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:56.518Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12850682170",
-    "name": "Massage Miguel",
-    "category": "massage",
+    "name": "⚠︎ Massage Miguel",
+    "category": "massage · Unverified",
     "lat": 52.5654187,
     "lng": 13.3939563,
     "country": "DE",
@@ -2757,21 +2470,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:56.799Z",
-      "evidence": [
-        {
-          "url": "https://www.massagemiguel.de/",
-          "error": "403 Forbidden"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12853222862",
-    "name": "A.C.T. Computer TEAM",
-    "category": "computer",
+    "name": "⚠︎ A.C.T. Computer TEAM",
+    "category": "computer · Unverified",
     "lat": 52.4246474,
     "lng": 13.5856438,
     "country": "DE",
@@ -2811,17 +2517,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:57.875Z",
-      "evidence": [
-        {
-          "url": "https://www.act-computer.de",
-          "matched": [
-            "a.c.t. computer team"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

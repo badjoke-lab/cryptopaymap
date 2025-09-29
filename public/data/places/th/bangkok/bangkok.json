@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:2769486127",
-    "name": "Chitbeer",
-    "category": "bar",
+    "name": "⚠︎ Chitbeer",
+    "category": "bar · Unverified",
     "lat": 13.909277,
     "lng": 100.490859,
     "country": "TH",
@@ -38,23 +38,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:31.154Z",
-      "evidence": [
-        {
-          "url": "https://chitbrewery.com/",
-          "matched": [
-            "chitbeer"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8355290841",
-    "name": "sisterhood.cafe",
-    "category": "cafe",
+    "name": "⚠︎ sisterhood.cafe",
+    "category": "cafe · Unverified",
     "lat": 13.8268083,
     "lng": 100.3751502,
     "country": "TH",
@@ -92,13 +83,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8852052849",
-    "name": "HATO Chokchai4",
-    "category": "hairdresser",
+    "name": "⚠︎ HATO Chokchai4",
+    "category": "hairdresser · Unverified",
     "lat": 13.82059,
     "lng": 100.5965875,
     "country": "TH",
@@ -134,13 +127,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8945483894",
-    "name": "Beluga Coff & Juice",
-    "category": "cafe",
+    "name": "⚠︎ Beluga Coff & Juice",
+    "category": "cafe · Unverified",
     "lat": 13.7783283,
     "lng": 100.6475264,
     "country": "TH",
@@ -176,13 +171,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9570047617",
-    "name": "Palette Art Space",
-    "category": "other",
+    "name": "⚠︎ Palette Art Space",
+    "category": "other · Unverified",
     "lat": 13.7239695,
     "lng": 100.5791683,
     "country": "TH",
@@ -219,16 +216,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.297Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10067999408",
-    "name": "Terracotta Coffee",
-    "category": "cafe",
+    "name": "⚠︎ Terracotta Coffee",
+    "category": "cafe · Unverified",
     "lat": 13.7366503,
     "lng": 100.5303281,
     "country": "TH",
@@ -265,13 +260,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10844099391",
-    "name": "ปาป้า คอฟฟี่",
-    "category": "cafe",
+    "name": "⚠︎ ปาป้า คอฟฟี่",
+    "category": "cafe · Unverified",
     "lat": 13.98642,
     "lng": 100.6152516,
     "country": "TH",
@@ -307,13 +304,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10864133709",
-    "name": "New York Studio Bangkok",
-    "category": "other",
+    "name": "⚠︎ New York Studio Bangkok",
+    "category": "other · Unverified",
     "lat": 13.6796572,
     "lng": 100.5287903,
     "country": "TH",
@@ -348,23 +347,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:37.174Z",
-      "evidence": [
-        {
-          "url": "https://newyorkstudiobkk.com/",
-          "matched": [
-            "new york studio bangkok"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10893965444",
-    "name": "Coughing Apes - Weed cafe's",
-    "category": "cannabis",
+    "name": "⚠︎ Coughing Apes - Weed cafe's",
+    "category": "cannabis · Unverified",
     "lat": 13.6762888,
     "lng": 100.6089916,
     "country": "TH",
@@ -398,13 +388,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10968574636",
-    "name": "Talk-Ka-Tree",
-    "category": "garden_centre",
+    "name": "⚠︎ Talk-Ka-Tree",
+    "category": "garden_centre · Unverified",
     "lat": 14.0567271,
     "lng": 100.6849955,
     "country": "TH",
@@ -441,13 +433,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11282924170",
-    "name": "Jok one Table Dumplings",
-    "category": "restaurant",
+    "name": "⚠︎ Jok one Table Dumplings",
+    "category": "restaurant · Unverified",
     "lat": 13.7434702,
     "lng": 100.5100708,
     "country": "TH",
@@ -482,13 +476,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11366307403",
-    "name": "Sit Here Sleep Home Bar",
-    "category": "bar",
+    "name": "⚠︎ Sit Here Sleep Home Bar",
+    "category": "bar · Unverified",
     "lat": 13.8384047,
     "lng": 100.5847626,
     "country": "TH",
@@ -520,13 +516,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11518287796",
-    "name": "ร้านยาบี แคร์ ฟาร์มา",
-    "category": "pharmacy",
+    "name": "⚠︎ ร้านยาบี แคร์ ฟาร์มา",
+    "category": "pharmacy · Unverified",
     "lat": 13.7537114,
     "lng": 100.7171276,
     "country": "TH",
@@ -559,13 +557,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11676387280",
-    "name": "OBO.CASH",
-    "category": "bureau_de_change",
+    "name": "⚠︎ OBO.CASH",
+    "category": "bureau_de_change · Unverified",
     "lat": 13.696369,
     "lng": 100.7519097,
     "country": "TH",
@@ -598,23 +598,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.218Z",
-      "evidence": [
-        {
-          "url": "https://www.obo.cash",
-          "matched": [
-            "obo.cash"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11801445668",
-    "name": "do drip coffee",
-    "category": "cafe",
+    "name": "⚠︎ do drip coffee",
+    "category": "cafe · Unverified",
     "lat": 13.7975831,
     "lng": 100.5727029,
     "country": "TH",
@@ -651,13 +642,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12141608846",
-    "name": "The Burgest",
-    "category": "fast_food",
+    "name": "⚠︎ The Burgest",
+    "category": "fast_food · Unverified",
     "lat": 13.7751196,
     "lng": 100.5623687,
     "country": "TH",
@@ -693,13 +686,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12210708407",
-    "name": "BoltRing - BoltKey",
-    "category": "marketplace",
+    "name": "⚠︎ BoltRing - BoltKey",
+    "category": "marketplace · Unverified",
     "lat": 13.7899076,
     "lng": 100.5622975,
     "country": "TH",
@@ -734,16 +729,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.391Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12304722062",
-    "name": "Gatta Café - Seacon Square",
-    "category": "cafe",
+    "name": "⚠︎ Gatta Café - Seacon Square",
+    "category": "cafe · Unverified",
     "lat": 13.6949362,
     "lng": 100.6485721,
     "country": "TH",
@@ -781,16 +774,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.453Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12304843378",
-    "name": "Gatta Café - Siam Square One",
-    "category": "cafe",
+    "name": "⚠︎ Gatta Café - Siam Square One",
+    "category": "cafe · Unverified",
     "lat": 13.7446219,
     "lng": 100.53396,
     "country": "TH",
@@ -828,16 +819,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.706Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12304859418",
-    "name": "Gatta Café - Park Silom",
-    "category": "cafe",
+    "name": "⚠︎ Gatta Café - Park Silom",
+    "category": "cafe · Unverified",
     "lat": 13.7277114,
     "lng": 100.5337048,
     "country": "TH",
@@ -875,16 +864,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.960Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12430456420",
-    "name": "De'rish homemade bakery",
-    "category": "bakery",
+    "name": "⚠︎ De'rish homemade bakery",
+    "category": "bakery · Unverified",
     "lat": 13.8552093,
     "lng": 100.6825913,
     "country": "TH",
@@ -920,13 +907,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12446800633",
-    "name": "TToy & Game",
-    "category": "toys",
+    "name": "⚠︎ TToy & Game",
+    "category": "toys · Unverified",
     "lat": 13.7996961,
     "lng": 100.5502339,
     "country": "TH",
@@ -961,21 +950,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:43.126Z",
-      "evidence": [
-        {
-          "url": "https://www.facebook.com/profile.php?id=61557272627995",
-          "error": "400 Bad Request"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12466870068",
-    "name": "ช้างน้อยพอนชอป",
-    "category": "second_hand",
+    "name": "⚠︎ ช้างน้อยพอนชอป",
+    "category": "second_hand · Unverified",
     "lat": 13.7989435,
     "lng": 100.5952318,
     "country": "TH",
@@ -1012,23 +994,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:44.859Z",
-      "evidence": [
-        {
-          "url": "https://www.changnoipawnshop.com/",
-          "matched": [
-            "ช้างน้อยพอนชอป"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12484646160",
-    "name": "Narita Izakaya นาริตะ อิซากายะ",
-    "category": "restaurant",
+    "name": "⚠︎ Narita Izakaya นาริตะ อิซากายะ",
+    "category": "restaurant · Unverified",
     "lat": 13.7938314,
     "lng": 100.5060739,
     "country": "TH",
@@ -1064,13 +1037,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12485881682",
-    "name": "บุษรินทร์เบเกอรี่",
-    "category": "bakery",
+    "name": "⚠︎ บุษรินทร์เบเกอรี่",
+    "category": "bakery · Unverified",
     "lat": 13.8375587,
     "lng": 100.4129209,
     "country": "TH",
@@ -1107,13 +1082,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12493053971",
-    "name": "ร้านค้า เจซิตี้ ซ.12",
-    "category": "convenience",
+    "name": "⚠︎ ร้านค้า เจซิตี้ ซ.12",
+    "category": "convenience · Unverified",
     "lat": 13.5757127,
     "lng": 100.6666969,
     "country": "TH",
@@ -1143,13 +1120,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12497451991",
-    "name": "Pooky & Team Salon",
-    "category": "hairdresser",
+    "name": "⚠︎ Pooky & Team Salon",
+    "category": "hairdresser · Unverified",
     "lat": 13.6110919,
     "lng": 100.6377345,
     "country": "TH",
@@ -1185,13 +1164,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12531276586",
-    "name": "ก๋วยเตี๋ยวเนื้อ หัวน้ำวน",
-    "category": "restaurant",
+    "name": "⚠︎ ก๋วยเตี๋ยวเนื้อ หัวน้ำวน",
+    "category": "restaurant · Unverified",
     "lat": 13.5966634,
     "lng": 100.6015404,
     "country": "TH",
@@ -1227,13 +1208,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12548626104",
-    "name": "ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5",
-    "category": "restaurant",
+    "name": "⚠︎ ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5",
+    "category": "restaurant · Unverified",
     "lat": 14.0055976,
     "lng": 100.6991756,
     "country": "TH",
@@ -1270,16 +1253,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:50.141Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12565849568",
-    "name": "เจริญผล Farm & Garden",
-    "category": "garden_centre",
+    "name": "⚠︎ เจริญผล Farm & Garden",
+    "category": "garden_centre · Unverified",
     "lat": 13.8748051,
     "lng": 100.6484191,
     "country": "TH",
@@ -1315,13 +1296,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12578959348",
-    "name": "Lonkong cafe",
-    "category": "cafe",
+    "name": "⚠︎ Lonkong cafe",
+    "category": "cafe · Unverified",
     "lat": 13.6209083,
     "lng": 100.6179064,
     "country": "TH",
@@ -1356,13 +1339,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12578966799",
-    "name": "Ramita Coffee & Bistro",
-    "category": "cafe",
+    "name": "⚠︎ Ramita Coffee & Bistro",
+    "category": "cafe · Unverified",
     "lat": 13.5926392,
     "lng": 100.5984521,
     "country": "TH",
@@ -1399,13 +1384,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12600858098",
-    "name": "Coffee Company - RK Biz Center",
-    "category": "cafe",
+    "name": "⚠︎ Coffee Company - RK Biz Center",
+    "category": "cafe · Unverified",
     "lat": 13.7303766,
     "lng": 100.7324716,
     "country": "TH",
@@ -1443,16 +1430,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:51.113Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12622284690",
-    "name": "รุ่งอรุณ คาเฟ่",
-    "category": "cafe",
+    "name": "⚠︎ รุ่งอรุณ คาเฟ่",
+    "category": "cafe · Unverified",
     "lat": 13.841005,
     "lng": 100.5727981,
     "country": "TH",
@@ -1490,13 +1475,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12624732106",
-    "name": "Beyond Softserve",
-    "category": "ice_cream",
+    "name": "⚠︎ Beyond Softserve",
+    "category": "ice_cream · Unverified",
     "lat": 14.0696113,
     "lng": 100.6044915,
     "country": "TH",
@@ -1532,13 +1519,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12640866389",
-    "name": "Chit Hole Royal River",
-    "category": "bar",
+    "name": "⚠︎ Chit Hole Royal River",
+    "category": "bar · Unverified",
     "lat": 13.7836685,
     "lng": 100.5005494,
     "country": "TH",
@@ -1575,16 +1564,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.029Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12640892188",
-    "name": "Chit Hole Muangthong",
-    "category": "bar",
+    "name": "⚠︎ Chit Hole Muangthong",
+    "category": "bar · Unverified",
     "lat": 13.9270987,
     "lng": 100.5340815,
     "country": "TH",
@@ -1621,16 +1608,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.225Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12640894703",
-    "name": "Chit Hole Surawong",
-    "category": "bar",
+    "name": "⚠︎ Chit Hole Surawong",
+    "category": "bar · Unverified",
     "lat": 13.7300773,
     "lng": 100.5315367,
     "country": "TH",
@@ -1666,16 +1651,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.420Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12645411669",
-    "name": "กระเพาะปลาเจ๊เอ็ง ตลาดพลู",
-    "category": "restaurant",
+    "name": "⚠︎ กระเพาะปลาเจ๊เอ็ง ตลาดพลู",
+    "category": "restaurant · Unverified",
     "lat": 13.7207245,
     "lng": 100.4768818,
     "country": "TH",
@@ -1710,13 +1693,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12645466745",
-    "name": "Take a Bowl (FYI Center)",
-    "category": "restaurant",
+    "name": "⚠︎ Take a Bowl (FYI Center)",
+    "category": "restaurant · Unverified",
     "lat": 13.7202791,
     "lng": 100.560022,
     "country": "TH",
@@ -1752,16 +1737,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.068Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12645513299",
-    "name": "นวลหมูปิ้ง",
-    "category": "restaurant",
+    "name": "⚠︎ นวลหมูปิ้ง",
+    "category": "restaurant · Unverified",
     "lat": 13.7379688,
     "lng": 100.494981,
     "country": "TH",
@@ -1794,13 +1777,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12645532501",
-    "name": "ร้านผักบุษบา",
-    "category": "greengrocer",
+    "name": "⚠︎ ร้านผักบุษบา",
+    "category": "greengrocer · Unverified",
     "lat": 13.9022157,
     "lng": 100.3652683,
     "country": "TH",
@@ -1830,13 +1815,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12658170647",
-    "name": "Chit Hole Rangsit Rooftop",
-    "category": "bar",
+    "name": "⚠︎ Chit Hole Rangsit Rooftop",
+    "category": "bar · Unverified",
     "lat": 13.9852831,
     "lng": 100.625787,
     "country": "TH",
@@ -1872,16 +1859,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.261Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12666638428",
-    "name": "O33 Vision",
-    "category": "optician",
+    "name": "⚠︎ O33 Vision",
+    "category": "optician · Unverified",
     "lat": 13.6660229,
     "lng": 100.6478173,
     "country": "TH",
@@ -1919,23 +1904,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.420Z",
-      "evidence": [
-        {
-          "url": "https://www.o33vision.com/",
-          "matched": [
-            "o33 vision"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12675566950",
-    "name": "ข้าวหมูแดง สามชัย",
-    "category": "restaurant",
+    "name": "⚠︎ ข้าวหมูแดง สามชัย",
+    "category": "restaurant · Unverified",
     "lat": 13.5927293,
     "lng": 100.5987065,
     "country": "TH",
@@ -1971,13 +1947,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12675824868",
-    "name": "TigerGyu หมูกระทะ",
-    "category": "restaurant",
+    "name": "⚠︎ TigerGyu หมูกระทะ",
+    "category": "restaurant · Unverified",
     "lat": 13.6741412,
     "lng": 100.5348541,
     "country": "TH",
@@ -2016,21 +1994,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:54.065Z",
-      "evidence": [
-        {
-          "url": "https://www.instagram.com/tigergyu.bkk?igsh=MXdmZHJkcDgwbXBxbw%3D%3D&utm_source=qr",
-          "error": "429 Too Many Requests"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12711070515",
-    "name": "Cocoa House",
-    "category": "cafe",
+    "name": "⚠︎ Cocoa House",
+    "category": "cafe · Unverified",
     "lat": 13.7219923,
     "lng": 100.4458025,
     "country": "TH",
@@ -2065,13 +2036,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12733065017",
-    "name": "ABER Group Law Firm",
-    "category": "other",
+    "name": "⚠︎ ABER Group Law Firm",
+    "category": "other · Unverified",
     "lat": 13.7373376,
     "lng": 100.5623274,
     "country": "TH",
@@ -2107,16 +2080,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:55.540Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12745895479",
-    "name": "Gatta Café - Central Eastville",
-    "category": "cafe",
+    "name": "⚠︎ Gatta Café - Central Eastville",
+    "category": "cafe · Unverified",
     "lat": 13.8035407,
     "lng": 100.6146545,
     "country": "TH",
@@ -2154,16 +2125,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:55.830Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12760942330",
-    "name": "คลังยาอาม่า - ตลาดอาม่า1000สุข",
-    "category": "pharmacy",
+    "name": "⚠︎ คลังยาอาม่า - ตลาดอาม่า1000สุข",
+    "category": "pharmacy · Unverified",
     "lat": 14.0490587,
     "lng": 100.7471647,
     "country": "TH",
@@ -2198,13 +2167,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12763486241",
-    "name": "ตลาดนัดพรธิสาร6",
-    "category": "marketplace",
+    "name": "⚠︎ ตลาดนัดพรธิสาร6",
+    "category": "marketplace · Unverified",
     "lat": 14.0492334,
     "lng": 100.7559884,
     "country": "TH",
@@ -2239,13 +2210,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12765494314",
-    "name": "Victory Industrial",
-    "category": "other",
+    "name": "⚠︎ Victory Industrial",
+    "category": "other · Unverified",
     "lat": 13.6239743,
     "lng": 100.4020656,
     "country": "TH",
@@ -2279,23 +2252,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:56.970Z",
-      "evidence": [
-        {
-          "url": "https://www.victoryindustrial.co.th/cprofile.html",
-          "matched": [
-            "victory industrial"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12808883030",
-    "name": "KA-LA Coffee",
-    "category": "cafe",
+    "name": "⚠︎ KA-LA Coffee",
+    "category": "cafe · Unverified",
     "lat": 14.0346785,
     "lng": 100.7324022,
     "country": "TH",
@@ -2333,13 +2297,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12818578388",
-    "name": "Five Star",
-    "category": "restaurant",
+    "name": "⚠︎ Five Star",
+    "category": "restaurant · Unverified",
     "lat": 13.9539438,
     "lng": 100.6848772,
     "country": "TH",
@@ -2376,23 +2342,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:58.591Z",
-      "evidence": [
-        {
-          "url": "https://fivestar.in.th/",
-          "matched": [
-            "five star"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12827530352",
-    "name": "Citadel Coffee",
-    "category": "cafe",
+    "name": "⚠︎ Citadel Coffee",
+    "category": "cafe · Unverified",
     "lat": 13.9879228,
     "lng": 100.7045035,
     "country": "TH",
@@ -2429,13 +2386,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12839299656",
-    "name": "Croissant Factory (Thonglor)",
-    "category": "restaurant",
+    "name": "⚠︎ Croissant Factory (Thonglor)",
+    "category": "restaurant · Unverified",
     "lat": 13.7374984,
     "lng": 100.5837127,
     "country": "TH",
@@ -2472,13 +2431,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12856750526",
-    "name": "Roast Runner",
-    "category": "cafe",
+    "name": "⚠︎ Roast Runner",
+    "category": "cafe · Unverified",
     "lat": 13.786909,
     "lng": 100.3741688,
     "country": "TH",
@@ -2514,13 +2475,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12863636313",
-    "name": "Manggon Studio",
-    "category": "interior_decoration",
+    "name": "⚠︎ Manggon Studio",
+    "category": "interior_decoration · Unverified",
     "lat": 13.8007227,
     "lng": 100.5490929,
     "country": "TH",
@@ -2555,23 +2518,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:00.885Z",
-      "evidence": [
-        {
-          "url": "https://www.manggonstudio.com/",
-          "matched": [
-            "manggon studio"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12886020278",
-    "name": "คลินิคทันตกรรมท่าข้าม",
-    "category": "dentist",
+    "name": "⚠︎ คลินิคทันตกรรมท่าข้าม",
+    "category": "dentist · Unverified",
     "lat": 13.650711,
     "lng": 100.4436418,
     "country": "TH",
@@ -2606,13 +2560,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12905584949",
-    "name": "Moonlight Leather",
-    "category": "bag",
+    "name": "⚠︎ Moonlight Leather",
+    "category": "bag · Unverified",
     "lat": 13.8001988,
     "lng": 100.709362,
     "country": "TH",
@@ -2651,23 +2607,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:07.276Z",
-      "evidence": [
-        {
-          "url": "https://www.moonlightleather.com/",
-          "matched": [
-            "moonlight leather"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12941914655",
-    "name": "Fitting shop",
-    "category": "clothes",
+    "name": "⚠︎ Fitting shop",
+    "category": "clothes · Unverified",
     "lat": 13.799093,
     "lng": 100.5478495,
     "country": "TH",
@@ -2699,13 +2646,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13010769122",
-    "name": "Chit Hole Asiatique",
-    "category": "bar",
+    "name": "⚠︎ Chit Hole Asiatique",
+    "category": "bar · Unverified",
     "lat": 13.7048562,
     "lng": 100.5019729,
     "country": "TH",
@@ -2742,16 +2691,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:07.958Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13016546680",
-    "name": "ค่ายมวยลูกคลองตัน",
-    "category": "other",
+    "name": "⚠︎ ค่ายมวยลูกคลองตัน",
+    "category": "other · Unverified",
     "lat": 13.7460584,
     "lng": 100.5999818,
     "country": "TH",
@@ -2787,13 +2734,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13016550123",
-    "name": "Vacilando Bookshop",
-    "category": "books",
+    "name": "⚠︎ Vacilando Bookshop",
+    "category": "books · Unverified",
     "lat": 13.7578787,
     "lng": 100.5096567,
     "country": "TH",
@@ -2830,23 +2779,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:08.151Z",
-      "evidence": [
-        {
-          "url": "https://www.vacilandobookshop.com/",
-          "matched": [
-            "vacilando bookshop"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13016593667",
-    "name": "The Barbershop",
-    "category": "hairdresser",
+    "name": "⚠︎ The Barbershop",
+    "category": "hairdresser · Unverified",
     "lat": 13.7629694,
     "lng": 100.5636572,
     "country": "TH",
@@ -2881,13 +2821,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13051531371",
-    "name": "Lung Ji Card Shop",
-    "category": "supermarket",
+    "name": "⚠︎ Lung Ji Card Shop",
+    "category": "supermarket · Unverified",
     "lat": 13.6880845,
     "lng": 100.4506362,
     "country": "TH",
@@ -2923,13 +2865,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13057327865",
-    "name": "Chu's Pastry",
-    "category": "cafe",
+    "name": "⚠︎ Chu's Pastry",
+    "category": "cafe · Unverified",
     "lat": 13.8542768,
     "lng": 100.5484357,
     "country": "TH",
@@ -2966,13 +2910,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13061362037",
-    "name": "Daddy Taste Room",
-    "category": "ice_cream",
+    "name": "⚠︎ Daddy Taste Room",
+    "category": "ice_cream · Unverified",
     "lat": 13.8264533,
     "lng": 100.4423469,
     "country": "TH",
@@ -3007,13 +2953,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13071813034",
-    "name": "Layer House",
-    "category": "other",
+    "name": "⚠︎ Layer House",
+    "category": "other · Unverified",
     "lat": 13.7898584,
     "lng": 100.5622319,
     "country": "TH",
@@ -3050,23 +2998,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:08.436Z",
-      "evidence": [
-        {
-          "url": "https://layerhouse.blogspot.com/",
-          "matched": [
-            "layer house"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13077980491",
-    "name": "Latte Man",
-    "category": "cafe",
+    "name": "⚠︎ Latte Man",
+    "category": "cafe · Unverified",
     "lat": 13.7612626,
     "lng": 100.5635552,
     "country": "TH",
@@ -3103,13 +3042,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13081282309",
-    "name": "Peixing clinic",
-    "category": "other",
+    "name": "⚠︎ Peixing clinic",
+    "category": "other · Unverified",
     "lat": 13.9972327,
     "lng": 100.6703365,
     "country": "TH",
@@ -3144,13 +3085,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13081317028",
-    "name": "Horm Cha @ Ramkhamhaeng 52",
-    "category": "cafe",
+    "name": "⚠︎ Horm Cha @ Ramkhamhaeng 52",
+    "category": "cafe · Unverified",
     "lat": 13.7568425,
     "lng": 100.6434134,
     "country": "TH",
@@ -3186,13 +3129,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13081956521",
-    "name": "BOB Space",
-    "category": "community_centre",
+    "name": "⚠︎ BOB Space",
+    "category": "community_centre · Unverified",
     "lat": 13.7245048,
     "lng": 100.5882289,
     "country": "TH",
@@ -3227,23 +3172,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:08.626Z",
-      "evidence": [
-        {
-          "url": "https://www.bobspaces.net/",
-          "matched": [
-            "bob space"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13096107804",
-    "name": "Lee's Mark Residence",
-    "category": "other",
+    "name": "⚠︎ Lee's Mark Residence",
+    "category": "other · Unverified",
     "lat": 13.6446434,
     "lng": 100.6372215,
     "country": "TH",
@@ -3279,16 +3215,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:10.029Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1085583221",
-    "name": "Laohu Shabu",
-    "category": "restaurant",
+    "name": "⚠︎ Laohu Shabu",
+    "category": "restaurant · Unverified",
     "lat": 13.726955,
     "lng": 100.7711197,
     "country": "TH",
@@ -3325,21 +3259,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:10.279Z",
-      "evidence": [
-        {
-          "url": "https://web.facebook.com/laohushabu",
-          "error": "400 Bad Request"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1206068563",
-    "name": "Coffzilla Cafe",
-    "category": "cafe",
+    "name": "⚠︎ Coffzilla Cafe",
+    "category": "cafe · Unverified",
     "lat": 13.7269543,
     "lng": 100.7710223,
     "country": "TH",
@@ -3377,15 +3304,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:08:10.360Z",
-      "evidence": [
-        {
-          "url": "https://web.facebook.com/profile.php?id=61569404214355",
-          "error": "400 Bad Request"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

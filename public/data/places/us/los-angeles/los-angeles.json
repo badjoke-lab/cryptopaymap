@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:10078071561",
-    "name": "Lion Windows",
-    "category": "other",
+    "name": "⚠︎ Lion Windows",
+    "category": "other · Unverified",
     "lat": 34.0431486,
     "lng": -118.445344,
     "country": "US",
@@ -39,23 +39,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:31.640Z",
-      "evidence": [
-        {
-          "url": "https://www.lionwindowsanddoors.com/",
-          "matched": [
-            "lion windows"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10109931124",
-    "name": "Tribute Counseling & Psychotherapy Services",
-    "category": "other",
+    "name": "⚠︎ Tribute Counseling & Psychotherapy Services",
+    "category": "other · Unverified",
     "lat": 34.2344685,
     "lng": -118.536422,
     "country": "US",
@@ -92,23 +83,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:32.616Z",
-      "evidence": [
-        {
-          "url": "https://tributecps.com",
-          "matched": [
-            "tribute counseling & psychotherapy services"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10126754821",
-    "name": "Bedlam Hills Galleria",
-    "category": "clothes",
+    "name": "⚠︎ Bedlam Hills Galleria",
+    "category": "clothes · Unverified",
     "lat": 34.0856218,
     "lng": -118.3484915,
     "country": "US",
@@ -141,23 +123,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:32.982Z",
-      "evidence": [
-        {
-          "url": "https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb",
-          "matched": [
-            "bedlam hills galleria"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10980910081",
-    "name": "PaintOrDip",
-    "category": "other",
+    "name": "⚠︎ PaintOrDip",
+    "category": "other · Unverified",
     "lat": 33.739576,
     "lng": -118.280925,
     "country": "US",
@@ -191,21 +164,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:33.024Z",
-      "evidence": [
-        {
-          "url": "https://paintordip.com/",
-          "error": "request to https://paintordip.com/ failed, reason: getaddrinfo ENOTFOUND paintordip.com"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11577190689",
-    "name": "Sasha Mac",
-    "category": "hairdresser",
+    "name": "⚠︎ Sasha Mac",
+    "category": "hairdresser · Unverified",
     "lat": 34.0449741,
     "lng": -118.3371725,
     "country": "US",
@@ -238,13 +204,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11867936647",
-    "name": "Grade A Ink",
-    "category": "tattoo",
+    "name": "⚠︎ Grade A Ink",
+    "category": "tattoo · Unverified",
     "lat": 34.1825879,
     "lng": -118.3962949,
     "country": "US",
@@ -279,13 +247,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12300477932",
-    "name": "Highland Tamalezzz",
-    "category": "fast_food",
+    "name": "⚠︎ Highland Tamalezzz",
+    "category": "fast_food · Unverified",
     "lat": 34.0738766,
     "lng": -118.2092069,
     "country": "US",
@@ -320,13 +290,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13057189707",
-    "name": "Fuse HVAC Service & Installation",
-    "category": "other",
+    "name": "⚠︎ Fuse HVAC Service & Installation",
+    "category": "other · Unverified",
     "lat": 33.9809352,
     "lng": -118.3842823,
     "country": "US",
@@ -364,10 +336,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:33.981Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

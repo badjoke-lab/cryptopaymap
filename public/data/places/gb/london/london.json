@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:26040005",
-    "name": "The Limping Fox",
-    "category": "pub",
+    "name": "⚠︎ The Limping Fox",
+    "category": "pub · Unverified",
     "lat": 51.3860498,
     "lng": -0.3238196,
     "country": "GB",
@@ -40,23 +40,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:07.831Z",
-      "evidence": [
-        {
-          "url": "https://www.thelimpingfox.co.uk/",
-          "matched": [
-            "the limping fox"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:307828475",
-    "name": "Thomas Exchange UK",
-    "category": "bureau_de_change",
+    "name": "⚠︎ Thomas Exchange UK",
+    "category": "bureau_de_change · Unverified",
     "lat": 51.5298351,
     "lng": -0.1238524,
     "country": "GB",
@@ -83,13 +74,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:441205302",
-    "name": "Hennessy's",
-    "category": "butcher",
+    "name": "⚠︎ Hennessy's",
+    "category": "butcher · Unverified",
     "lat": 51.4579388,
     "lng": -0.1661051,
     "country": "GB",
@@ -122,13 +115,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:554974745",
-    "name": "Costa",
-    "category": "cafe",
+    "name": "⚠︎ Costa",
+    "category": "cafe · Unverified",
     "lat": 51.52996,
     "lng": -0.1244199,
     "country": "GB",
@@ -162,13 +157,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1271588141",
-    "name": "The Bike Shop",
-    "category": "bicycle",
+    "name": "⚠︎ The Bike Shop",
+    "category": "bicycle · Unverified",
     "lat": 51.657308,
     "lng": -0.3929281,
     "country": "GB",
@@ -202,23 +199,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:08.852Z",
-      "evidence": [
-        {
-          "url": "http://www.thebikeshopwatford.com/",
-          "matched": [
-            "the bike shop"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1290610513",
-    "name": "West Harrow Garage",
-    "category": "car_repair",
+    "name": "⚠︎ West Harrow Garage",
+    "category": "car_repair · Unverified",
     "lat": 51.5814946,
     "lng": -0.3545195,
     "country": "GB",
@@ -253,23 +241,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.094Z",
-      "evidence": [
-        {
-          "url": "https://www.westharrowgarage.com/",
-          "matched": [
-            "west harrow garage"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3072882300",
-    "name": "CUT IT OUT Wall Stickers",
-    "category": "other",
+    "name": "⚠︎ CUT IT OUT Wall Stickers",
+    "category": "other · Unverified",
     "lat": 51.5431205,
     "lng": -0.0655637,
     "country": "GB",
@@ -305,23 +284,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.534Z",
-      "evidence": [
-        {
-          "url": "https://www.cutitoutwallstickers.co.uk/",
-          "matched": [
-            "cut it out wall stickers"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3090725390",
-    "name": "Pintus",
-    "category": "cafe",
+    "name": "⚠︎ Pintus",
+    "category": "cafe · Unverified",
     "lat": 51.4558379,
     "lng": -0.1652889,
     "country": "GB",
@@ -358,23 +328,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:11.066Z",
-      "evidence": [
-        {
-          "url": "https://www.pintusdeli.co.uk/",
-          "matched": [
-            "pintus"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:3147324128",
-    "name": "McCann Bespoke",
-    "category": "clothes",
+    "name": "⚠︎ McCann Bespoke",
+    "category": "clothes · Unverified",
     "lat": 51.5121061,
     "lng": -0.08269,
     "country": "GB",
@@ -414,23 +375,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.716Z",
-      "evidence": [
-        {
-          "url": "https://mccannbespoke.co.uk/",
-          "matched": [
-            "mccann bespoke"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4379042414",
-    "name": "Focus Plant",
-    "category": "tool_hire",
+    "name": "⚠︎ Focus Plant",
+    "category": "tool_hire · Unverified",
     "lat": 51.4251073,
     "lng": -0.0834934,
     "country": "GB",
@@ -466,23 +418,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:17.145Z",
-      "evidence": [
-        {
-          "url": "https://www.focusplant.uk/",
-          "matched": [
-            "focus plant"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4601420592",
-    "name": "Blacks Club",
-    "category": "other",
+    "name": "⚠︎ Blacks Club",
+    "category": "other · Unverified",
     "lat": 51.5132863,
     "lng": -0.1323897,
     "country": "GB",
@@ -518,13 +461,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4654216341",
-    "name": "207 Barbers",
-    "category": "hairdresser",
+    "name": "⚠︎ 207 Barbers",
+    "category": "hairdresser · Unverified",
     "lat": 51.6083119,
     "lng": 0.1073806,
     "country": "GB",
@@ -559,13 +504,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8608616078",
-    "name": "Boom Bap Burger",
-    "category": "fast_food",
+    "name": "⚠︎ Boom Bap Burger",
+    "category": "fast_food · Unverified",
     "lat": 51.4288903,
     "lng": -0.165889,
     "country": "GB",
@@ -600,23 +547,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:17.353Z",
-      "evidence": [
-        {
-          "url": "https://boombapburger.com/tooting-mkt/",
-          "matched": [
-            "boom bap burger"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8747613202",
-    "name": "Love Art",
-    "category": "art",
+    "name": "⚠︎ Love Art",
+    "category": "art · Unverified",
     "lat": 51.4288209,
     "lng": -0.16583,
     "country": "GB",
@@ -650,23 +588,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:17.889Z",
-      "evidence": [
-        {
-          "url": "https://www.loveartclasses.com/",
-          "matched": [
-            "love art"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8747645823",
-    "name": "Dr Vinyl",
-    "category": "music",
+    "name": "⚠︎ Dr Vinyl",
+    "category": "music · Unverified",
     "lat": 51.4289394,
     "lng": -0.16638,
     "country": "GB",
@@ -695,13 +624,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8747645827",
-    "name": "The Candy Cane Lounge / Dr Vinyl",
-    "category": "confectionery",
+    "name": "⚠︎ The Candy Cane Lounge / Dr Vinyl",
+    "category": "confectionery · Unverified",
     "lat": 51.4291549,
     "lng": -0.1653873,
     "country": "GB",
@@ -733,13 +664,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8747645828",
-    "name": "Get Juiced!",
-    "category": "fast_food",
+    "name": "⚠︎ Get Juiced!",
+    "category": "fast_food · Unverified",
     "lat": 51.4288307,
     "lng": -0.1659599,
     "country": "GB",
@@ -777,23 +710,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.693Z",
-      "evidence": [
-        {
-          "url": "https://tootingmarket.com/market_traders/get-juiced/",
-          "matched": [
-            "get juiced!"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8805719003",
-    "name": "Forevermore Tattoo",
-    "category": "tattoo",
+    "name": "⚠︎ Forevermore Tattoo",
+    "category": "tattoo · Unverified",
     "lat": 51.5039365,
     "lng": -0.2431078,
     "country": "GB",
@@ -828,23 +752,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.042Z",
-      "evidence": [
-        {
-          "url": "https://www.forevermoretattoo.uk/",
-          "matched": [
-            "forevermore tattoo"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9087933559",
-    "name": "Wolfy's",
-    "category": "cafe",
+    "name": "⚠︎ Wolfy's",
+    "category": "cafe · Unverified",
     "lat": 51.4904329,
     "lng": -0.0388235,
     "country": "GB",
@@ -882,23 +797,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.279Z",
-      "evidence": [
-        {
-          "url": "https://www.wolfysbar.com/",
-          "matched": [
-            "wolfy's"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9087933560",
-    "name": "Blue Mango Salon",
-    "category": "beauty",
+    "name": "⚠︎ Blue Mango Salon",
+    "category": "beauty · Unverified",
     "lat": 51.4903309,
     "lng": -0.038741,
     "country": "GB",
@@ -933,23 +839,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.479Z",
-      "evidence": [
-        {
-          "url": "https://www.bluemangosalon.com/",
-          "matched": [
-            "blue mango salon"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10090592084",
-    "name": "Hair Design Co",
-    "category": "hairdresser",
+    "name": "⚠︎ Hair Design Co",
+    "category": "hairdresser · Unverified",
     "lat": 51.5506106,
     "lng": 0.1978284,
     "country": "GB",
@@ -986,23 +883,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:22.064Z",
-      "evidence": [
-        {
-          "url": "https://www.hairdesignco-hornchurch.co.uk/",
-          "matched": [
-            "hair design co"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10094817176",
-    "name": "Calm Indian Cow",
-    "category": "restaurant",
+    "name": "⚠︎ Calm Indian Cow",
+    "category": "restaurant · Unverified",
     "lat": 51.5248855,
     "lng": -0.0843074,
     "country": "GB",
@@ -1041,13 +929,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10197861918",
-    "name": "Ellie Yoki",
-    "category": "other",
+    "name": "⚠︎ Ellie Yoki",
+    "category": "other · Unverified",
     "lat": 51.2920818,
     "lng": -0.4210544,
     "country": "GB",
@@ -1081,23 +971,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:22.352Z",
-      "evidence": [
-        {
-          "url": "https://ellieyoki.co.uk/",
-          "matched": [
-            "ellie yoki"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10198162251",
-    "name": "Dom's Decorating",
-    "category": "other",
+    "name": "⚠︎ Dom's Decorating",
+    "category": "other · Unverified",
     "lat": 51.2921193,
     "lng": -0.4209898,
     "country": "GB",
@@ -1131,23 +1012,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:22.564Z",
-      "evidence": [
-        {
-          "url": "https://www.domsdecorating.co.uk",
-          "matched": [
-            "dom's decorating"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10216808268",
-    "name": "EC Cycling Coach and Personal Trainer",
-    "category": "other",
+    "name": "⚠︎ EC Cycling Coach and Personal Trainer",
+    "category": "other · Unverified",
     "lat": 51.4663702,
     "lng": -0.2854093,
     "country": "GB",
@@ -1182,13 +1054,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10308608587",
-    "name": "Antonio Delicatessen",
-    "category": "deli",
+    "name": "⚠︎ Antonio Delicatessen",
+    "category": "deli · Unverified",
     "lat": 51.4617264,
     "lng": -0.0095697,
     "country": "GB",
@@ -1225,23 +1099,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:24.039Z",
-      "evidence": [
-        {
-          "url": "https://www.antoniodelicatessen.co.uk",
-          "matched": [
-            "antonio delicatessen"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10433884691",
-    "name": "Rodega Music",
-    "category": "studio",
+    "name": "⚠︎ Rodega Music",
+    "category": "studio · Unverified",
     "lat": 51.4615078,
     "lng": -0.0091505,
     "country": "GB",
@@ -1276,23 +1141,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:25.618Z",
-      "evidence": [
-        {
-          "url": "https://www.rodegamusic.com/",
-          "matched": [
-            "rodega music"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10597216193",
-    "name": "Coirmedia UK | Coir Products in UK",
-    "category": "other",
+    "name": "⚠︎ Coirmedia UK | Coir Products in UK",
+    "category": "other · Unverified",
     "lat": 51.518483,
     "lng": -0.1423784,
     "country": "GB",
@@ -1327,16 +1183,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:25.817Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10787110839",
-    "name": "Blokpoint",
-    "category": "other",
+    "name": "⚠︎ Blokpoint",
+    "category": "other · Unverified",
     "lat": 51.5256046,
     "lng": -0.0836989,
     "country": "GB",
@@ -1372,23 +1226,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.638Z",
-      "evidence": [
-        {
-          "url": "https://blokpoint.com/",
-          "matched": [
-            "blokpoint"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10906045926",
-    "name": "Kelmscott Home Improvement Ltd",
-    "category": "other",
+    "name": "⚠︎ Kelmscott Home Improvement Ltd",
+    "category": "other · Unverified",
     "lat": 51.4451108,
     "lng": -0.1425117,
     "country": "GB",
@@ -1425,23 +1270,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.169Z",
-      "evidence": [
-        {
-          "url": "https://khil.co.uk",
-          "matched": [
-            "kelmscott home improvement ltd"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10907899933",
-    "name": "Calm Indian Cow",
-    "category": "restaurant",
+    "name": "⚠︎ Calm Indian Cow",
+    "category": "restaurant · Unverified",
     "lat": 51.5374147,
     "lng": -0.0611517,
     "country": "GB",
@@ -1480,13 +1316,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11082781227",
-    "name": "The Steam Room",
-    "category": "dry_cleaning",
+    "name": "⚠︎ The Steam Room",
+    "category": "dry_cleaning · Unverified",
     "lat": 51.5356563,
     "lng": -0.0767385,
     "country": "GB",
@@ -1520,23 +1358,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.431Z",
-      "evidence": [
-        {
-          "url": "https://www.thesteamroom.cleaning/our-story",
-          "matched": [
-            "the steam room"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11099356960",
-    "name": "Maida Smiles",
-    "category": "dentist",
+    "name": "⚠︎ Maida Smiles",
+    "category": "dentist · Unverified",
     "lat": 51.527909,
     "lng": -0.1819499,
     "country": "GB",
@@ -1571,23 +1400,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.052Z",
-      "evidence": [
-        {
-          "url": "https://maidasmiles.co.uk/",
-          "matched": [
-            "maida smiles"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11099362144",
-    "name": "Kapucin",
-    "category": "cafe",
+    "name": "⚠︎ Kapucin",
+    "category": "cafe · Unverified",
     "lat": 51.4579128,
     "lng": -0.3048944,
     "country": "GB",
@@ -1624,23 +1444,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.441Z",
-      "evidence": [
-        {
-          "url": "https://www.kapucin.co.uk/",
-          "matched": [
-            "kapucin"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11176568154",
-    "name": "Dockside Vaults",
-    "category": "events_venue",
+    "name": "⚠︎ Dockside Vaults",
+    "category": "events_venue · Unverified",
     "lat": 51.5076484,
     "lng": -0.0712725,
     "country": "GB",
@@ -1673,21 +1484,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.653Z",
-      "evidence": [
-        {
-          "url": "https://www.docksidevaults.com/events",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11551861926",
-    "name": "Beans and Bubbles",
-    "category": "cafe",
+    "name": "⚠︎ Beans and Bubbles",
+    "category": "cafe · Unverified",
     "lat": 51.4360409,
     "lng": -0.1605415,
     "country": "GB",
@@ -1724,23 +1528,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.931Z",
-      "evidence": [
-        {
-          "url": "https://www.beansandbubbles.co.uk/",
-          "matched": [
-            "beans and bubbles"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11682143323",
-    "name": "Broadley Studios",
-    "category": "studio",
+    "name": "⚠︎ Broadley Studios",
+    "category": "studio · Unverified",
     "lat": 51.5239822,
     "lng": -0.1668696,
     "country": "GB",
@@ -1775,23 +1570,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:32.337Z",
-      "evidence": [
-        {
-          "url": "https://www.broadley.tv/",
-          "matched": [
-            "broadley studios"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11699219098",
-    "name": "Rosmarino Restaurant",
-    "category": "restaurant",
+    "name": "⚠︎ Rosmarino Restaurant",
+    "category": "restaurant · Unverified",
     "lat": 51.4361008,
     "lng": -0.1606157,
     "country": "GB",
@@ -1830,16 +1616,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:32.466Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11758170372",
-    "name": "Hadley AV",
-    "category": "computer",
+    "name": "⚠︎ Hadley AV",
+    "category": "computer · Unverified",
     "lat": 51.6522063,
     "lng": -0.2100221,
     "country": "GB",
@@ -1877,23 +1661,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:33.311Z",
-      "evidence": [
-        {
-          "url": "https://www.hadleyav.co.uk/",
-          "matched": [
-            "hadley av"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11868989493",
-    "name": "Cyphermunk House",
-    "category": "other",
+    "name": "⚠︎ Cyphermunk House",
+    "category": "other · Unverified",
     "lat": 51.5220914,
     "lng": -0.1148063,
     "country": "GB",
@@ -1928,13 +1703,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11926974245",
-    "name": "Crafts and Play",
-    "category": "other",
+    "name": "⚠︎ Crafts and Play",
+    "category": "other · Unverified",
     "lat": 51.4640142,
     "lng": -0.2712413,
     "country": "GB",
@@ -1969,23 +1746,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:33.648Z",
-      "evidence": [
-        {
-          "url": "https://www.craftsandplay.co.uk/",
-          "matched": [
-            "crafts and play"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11998499688",
-    "name": "Mezzanine Bar",
-    "category": "bar",
+    "name": "⚠︎ Mezzanine Bar",
+    "category": "bar · Unverified",
     "lat": 51.4291372,
     "lng": -0.1655335,
     "country": "GB",
@@ -2019,16 +1787,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.205Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11998542622",
-    "name": "Olives & Meze",
-    "category": "restaurant",
+    "name": "⚠︎ Olives & Meze",
+    "category": "restaurant · Unverified",
     "lat": 51.4290787,
     "lng": -0.1655871,
     "country": "GB",
@@ -2063,16 +1829,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.499Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12025789274",
-    "name": "Apple Bitcoins",
-    "category": "computer",
+    "name": "⚠︎ Apple Bitcoins",
+    "category": "computer · Unverified",
     "lat": 51.51482,
     "lng": -0.1523279,
     "country": "GB",
@@ -2109,21 +1873,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:35.082Z",
-      "evidence": [
-        {
-          "url": "https://applebitcoins.com/",
-          "error": "403 Forbidden"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12037875593",
-    "name": "pHresh",
-    "category": "cafe",
+    "name": "⚠︎ pHresh",
+    "category": "cafe · Unverified",
     "lat": 51.4655036,
     "lng": -0.1555246,
     "country": "GB",
@@ -2161,23 +1918,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:38.907Z",
-      "evidence": [
-        {
-          "url": "https://phreshjuice.co.uk/",
-          "matched": [
-            "phresh"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12041822206",
-    "name": "North African Food / Yema's House",
-    "category": "fast_food",
+    "name": "⚠︎ North African Food / Yema's House",
+    "category": "fast_food · Unverified",
     "lat": 51.4292322,
     "lng": -0.1654634,
     "country": "GB",
@@ -2211,13 +1959,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12041896932",
-    "name": "Habi Smart Homes",
-    "category": "electronics",
+    "name": "⚠︎ Habi Smart Homes",
+    "category": "electronics · Unverified",
     "lat": 51.4981612,
     "lng": -0.2020837,
     "country": "GB",
@@ -2251,16 +2001,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:39.261Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12045939192",
-    "name": "The Printing Place",
-    "category": "copyshop",
+    "name": "⚠︎ The Printing Place",
+    "category": "copyshop · Unverified",
     "lat": 51.4292743,
     "lng": -0.1671261,
     "country": "GB",
@@ -2294,13 +2042,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12074042171",
-    "name": "Cary Hammond Photography",
-    "category": "other",
+    "name": "⚠︎ Cary Hammond Photography",
+    "category": "other · Unverified",
     "lat": 51.492133,
     "lng": -0.121347,
     "country": "GB",
@@ -2339,21 +2089,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:39.402Z",
-      "evidence": [
-        {
-          "url": "https://www.caryhammond.com/",
-          "error": "request to https://www.caryhammond.com/ failed, reason: getaddrinfo ENOTFOUND www.caryhammond.com"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12103940096",
-    "name": "Nemo Cafe",
-    "category": "cafe",
+    "name": "⚠︎ Nemo Cafe",
+    "category": "cafe · Unverified",
     "lat": 51.4160309,
     "lng": -0.3718241,
     "country": "GB",
@@ -2386,13 +2129,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12133818298",
-    "name": "Tikka Express",
-    "category": "restaurant",
+    "name": "⚠︎ Tikka Express",
+    "category": "restaurant · Unverified",
     "lat": 51.429582,
     "lng": -0.1661159,
     "country": "GB",
@@ -2425,13 +2170,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12196972955",
-    "name": "The Plastic Surgery Group",
-    "category": "doctors",
+    "name": "⚠︎ The Plastic Surgery Group",
+    "category": "doctors · Unverified",
     "lat": 51.5195434,
     "lng": -0.1403604,
     "country": "GB",
@@ -2466,23 +2213,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.122Z",
-      "evidence": [
-        {
-          "url": "https://www.theplasticsurgerygroup.co.uk/",
-          "matched": [
-            "the plastic surgery group"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12197064449",
-    "name": "Bob's Courtyard Bar",
-    "category": "pub",
+    "name": "⚠︎ Bob's Courtyard Bar",
+    "category": "pub · Unverified",
     "lat": 51.4461436,
     "lng": -0.1500124,
     "country": "GB",
@@ -2515,16 +2253,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.321Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12199018632",
-    "name": "Balham House",
-    "category": "pub",
+    "name": "⚠︎ Balham House",
+    "category": "pub · Unverified",
     "lat": 51.4462618,
     "lng": -0.1501313,
     "country": "GB",
@@ -2559,16 +2295,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.349Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12262948205",
-    "name": "Pasta La Dolce Vita",
-    "category": "fast_food",
+    "name": "⚠︎ Pasta La Dolce Vita",
+    "category": "fast_food · Unverified",
     "lat": 51.5204159,
     "lng": -0.0722344,
     "country": "GB",
@@ -2604,13 +2338,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12340014904",
-    "name": "Boom Bap Burger Leadenhall Market",
-    "category": "fast_food",
+    "name": "⚠︎ Boom Bap Burger Leadenhall Market",
+    "category": "fast_food · Unverified",
     "lat": 51.5126485,
     "lng": -0.0832616,
     "country": "GB",
@@ -2649,16 +2385,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.505Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12476624931",
-    "name": "Victrade Property Maintenance",
-    "category": "repair",
+    "name": "⚠︎ Victrade Property Maintenance",
+    "category": "repair · Unverified",
     "lat": 51.4914763,
     "lng": -0.1462557,
     "country": "GB",
@@ -2695,16 +2429,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.822Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12745157680",
-    "name": "The Deli",
-    "category": "cafe",
+    "name": "⚠︎ The Deli",
+    "category": "cafe · Unverified",
     "lat": 51.3894373,
     "lng": -0.3255219,
     "country": "GB",
@@ -2742,23 +2474,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.974Z",
-      "evidence": [
-        {
-          "url": "https://www.ditton-deli.com/",
-          "matched": [
-            "the deli"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12745160707",
-    "name": "The Boss",
-    "category": "hairdresser",
+    "name": "⚠︎ The Boss",
+    "category": "hairdresser · Unverified",
     "lat": 51.3893963,
     "lng": -0.3256453,
     "country": "GB",
@@ -2795,23 +2518,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.641Z",
-      "evidence": [
-        {
-          "url": "https://whaircut.com/barber-shops/boss-hairdressing-thames-ditton/",
-          "matched": [
-            "the boss"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12745169348",
-    "name": "Thames Ditton Gin",
-    "category": "alcohol",
+    "name": "⚠︎ Thames Ditton Gin",
+    "category": "alcohol · Unverified",
     "lat": 51.3905344,
     "lng": -0.3339585,
     "country": "GB",
@@ -2847,23 +2561,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.798Z",
-      "evidence": [
-        {
-          "url": "https://www.thamesdittongin.com/",
-          "matched": [
-            "thames ditton gin"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12775851875",
-    "name": "Han Fu",
-    "category": "restaurant",
+    "name": "⚠︎ Han Fu",
+    "category": "restaurant · Unverified",
     "lat": 51.3915746,
     "lng": -0.3321807,
     "country": "GB",
@@ -2900,23 +2605,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.999Z",
-      "evidence": [
-        {
-          "url": "https://hanfuchinese.co.uk/",
-          "matched": [
-            "han fu"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12809060433",
-    "name": "Involve Digital",
-    "category": "other",
+    "name": "⚠︎ Involve Digital",
+    "category": "other · Unverified",
     "lat": 51.5132052,
     "lng": -0.1412029,
     "country": "GB",
@@ -2953,23 +2649,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.251Z",
-      "evidence": [
-        {
-          "url": "https://www.involvedigital.com",
-          "matched": [
-            "involve digital"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12901886018",
-    "name": "Core TV",
-    "category": "studio",
+    "name": "⚠︎ Core TV",
+    "category": "studio · Unverified",
     "lat": 51.5057039,
     "lng": -0.1007408,
     "country": "GB",
@@ -3005,16 +2692,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.411Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12993375450",
-    "name": "Massaggi",
-    "category": "massage",
+    "name": "⚠︎ Massaggi",
+    "category": "massage · Unverified",
     "lat": 51.5186218,
     "lng": -0.1519065,
     "country": "GB",
@@ -3048,23 +2733,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:44.086Z",
-      "evidence": [
-        {
-          "url": "https://www.massaggi.co.uk/",
-          "matched": [
-            "massaggi"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:28498489",
-    "name": "FOCUS PLANT",
-    "category": "tool_hire",
+    "name": "⚠︎ FOCUS PLANT",
+    "category": "tool_hire · Unverified",
     "lat": 51.3911296,
     "lng": 0.1137324,
     "country": "GB",
@@ -3102,23 +2778,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:45.823Z",
-      "evidence": [
-        {
-          "url": "https://www.focusplant.uk",
-          "matched": [
-            "focus plant"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:40858239",
-    "name": "Century Club",
-    "category": "other",
+    "name": "⚠︎ Century Club",
+    "category": "other · Unverified",
     "lat": 51.5120681,
     "lng": -0.1322138,
     "country": "GB",
@@ -3154,23 +2821,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:49.555Z",
-      "evidence": [
-        {
-          "url": "https://centuryclub.co.uk/",
-          "matched": [
-            "century club"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:190715113",
-    "name": "Troxy",
-    "category": "nightclub",
+    "name": "⚠︎ Troxy",
+    "category": "nightclub · Unverified",
     "lat": 51.5127385,
     "lng": -0.0440028,
     "country": "GB",
@@ -3209,23 +2867,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:50.392Z",
-      "evidence": [
-        {
-          "url": "https://www.troxy.co.uk/",
-          "matched": [
-            "troxy"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:669890683",
-    "name": "Michelle Davies",
-    "category": "other",
+    "name": "⚠︎ Michelle Davies",
+    "category": "other · Unverified",
     "lat": 51.5187969,
     "lng": -0.1466577,
     "country": "GB",
@@ -3261,23 +2910,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:51.329Z",
-      "evidence": [
-        {
-          "url": "https://www.worcester-osteo.com/",
-          "matched": [
-            "michelle davies"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:766719311",
-    "name": "Indigo Wines",
-    "category": "wine",
+    "name": "⚠︎ Indigo Wines",
+    "category": "wine · Unverified",
     "lat": 51.3906184,
     "lng": -0.3333209,
     "country": "GB",
@@ -3314,16 +2954,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:51.761Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:835395162",
-    "name": "Kettle Club",
-    "category": "jewelry",
+    "name": "⚠︎ Kettle Club",
+    "category": "jewelry · Unverified",
     "lat": 51.5171829,
     "lng": -0.0814462,
     "country": "GB",
@@ -3359,23 +2997,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.044Z",
-      "evidence": [
-        {
-          "url": "https://kettleclub.co.uk/",
-          "matched": [
-            "kettle club"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:857939249",
-    "name": "Subhan",
-    "category": "butcher",
+    "name": "⚠︎ Subhan",
+    "category": "butcher · Unverified",
     "lat": 51.5334463,
     "lng": -0.0289449,
     "country": "GB",
@@ -3410,13 +3039,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1008034198",
-    "name": "Danson Garage",
-    "category": "car_repair",
+    "name": "⚠︎ Danson Garage",
+    "category": "car_repair · Unverified",
     "lat": 51.4482256,
     "lng": 0.1175434,
     "country": "GB",
@@ -3451,13 +3082,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1008034199",
-    "name": "KDM MOTORS",
-    "category": "car_repair",
+    "name": "⚠︎ KDM MOTORS",
+    "category": "car_repair · Unverified",
     "lat": 51.4484598,
     "lng": 0.1175183,
     "country": "GB",
@@ -3494,23 +3127,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:52.316Z",
-      "evidence": [
-        {
-          "url": "https://www.kdmmotors.co.uk/",
-          "matched": [
-            "kdm motors"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1032398454",
-    "name": "Strike",
-    "category": "other",
+    "name": "⚠︎ Strike",
+    "category": "other · Unverified",
     "lat": 51.4570906,
     "lng": -0.1931018,
     "country": "GB",
@@ -3545,23 +3169,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:53.917Z",
-      "evidence": [
-        {
-          "url": "https://strike-bowling.com",
-          "matched": [
-            "strike"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1121733290",
-    "name": "Chilli Cha Cha",
-    "category": "fast_food",
+    "name": "⚠︎ Chilli Cha Cha",
+    "category": "fast_food · Unverified",
     "lat": 51.4096718,
     "lng": -0.3063941,
     "country": "GB",
@@ -3599,13 +3214,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1376426747",
-    "name": "Prestige Autos Surrey",
-    "category": "car",
+    "name": "⚠︎ Prestige Autos Surrey",
+    "category": "car · Unverified",
     "lat": 51.3870019,
     "lng": -0.3287376,
     "country": "GB",
@@ -3641,21 +3258,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:56.419Z",
-      "evidence": [
-        {
-          "url": "https://prestigeautossurrey.co.uk/.co.uk",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1394167500",
-    "name": "El Sabor",
-    "category": "fast_food",
+    "name": "⚠︎ El Sabor",
+    "category": "fast_food · Unverified",
     "lat": 51.5039555,
     "lng": -0.0962689,
     "country": "GB",
@@ -3691,13 +3301,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1409749436",
-    "name": "Spizza Napoletana",
-    "category": "fast_food",
+    "name": "⚠︎ Spizza Napoletana",
+    "category": "fast_food · Unverified",
     "lat": 51.5040369,
     "lng": -0.0964274,
     "country": "GB",
@@ -3733,7 +3345,9 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

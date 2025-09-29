@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:4003562489",
-    "name": "Juvia",
-    "category": "restaurant",
+    "name": "⚠︎ Juvia",
+    "category": "restaurant · Unverified",
     "lat": 25.7906686,
     "lng": -80.140142,
     "country": "US",
@@ -36,21 +36,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.429Z",
-      "evidence": [
-        {
-          "url": "http://www.juviamiami.com",
-          "error": "request to https://www.juviamiami.com/ failed, reason: certificate has expired"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4945667521",
-    "name": "Sushi Garage",
-    "category": "restaurant",
+    "name": "⚠︎ Sushi Garage",
+    "category": "restaurant · Unverified",
     "lat": 25.7934212,
     "lng": -80.1428044,
     "country": "US",
@@ -86,23 +79,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.958Z",
-      "evidence": [
-        {
-          "url": "https://www.sushigarage.com/",
-          "matched": [
-            "sushi garage"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6036966576",
-    "name": "Embassy Flex",
-    "category": "car_rental",
+    "name": "⚠︎ Embassy Flex",
+    "category": "car_rental · Unverified",
     "lat": 25.7993795,
     "lng": -80.2602142,
     "country": "US",
@@ -137,13 +121,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6091344251",
-    "name": "Supercar Rooms Miami",
-    "category": "events_venue",
+    "name": "⚠︎ Supercar Rooms Miami",
+    "category": "events_venue · Unverified",
     "lat": 25.7960064,
     "lng": -80.1979564,
     "country": "US",
@@ -177,23 +163,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:35.308Z",
-      "evidence": [
-        {
-          "url": "https://www.supercarrooms.com/",
-          "matched": [
-            "supercar rooms miami"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6107890133",
-    "name": "La Santa Taqueria",
-    "category": "restaurant",
+    "name": "⚠︎ La Santa Taqueria",
+    "category": "restaurant · Unverified",
     "lat": 25.8499938,
     "lng": -80.1926963,
     "country": "US",
@@ -228,23 +205,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:36.437Z",
-      "evidence": [
-        {
-          "url": "https://www.lasantataqueria.com/",
-          "matched": [
-            "la santa taqueria"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6417121785",
-    "name": "Chotto Matte",
-    "category": "restaurant",
+    "name": "⚠︎ Chotto Matte",
+    "category": "restaurant · Unverified",
     "lat": 25.7911078,
     "lng": -80.1408037,
     "country": "US",
@@ -278,23 +246,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:37.156Z",
-      "evidence": [
-        {
-          "url": "https://chotto-matte.com/",
-          "matched": [
-            "chotto matte"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10054832617",
-    "name": "Taquiza",
-    "category": "bar",
+    "name": "⚠︎ Taquiza",
+    "category": "bar · Unverified",
     "lat": 25.7850435,
     "lng": -80.1307447,
     "country": "US",
@@ -325,13 +284,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10111842029",
-    "name": "Iris Tattoo Miami",
-    "category": "tattoo",
+    "name": "⚠︎ Iris Tattoo Miami",
+    "category": "tattoo · Unverified",
     "lat": 25.8027205,
     "lng": -80.1955032,
     "country": "US",
@@ -364,16 +325,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:37.399Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10132245572",
-    "name": "EZ Cleaning Supplies",
-    "category": "other",
+    "name": "⚠︎ EZ Cleaning Supplies",
+    "category": "other · Unverified",
     "lat": 25.8459371,
     "lng": -80.3156555,
     "country": "US",
@@ -401,13 +360,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10138470850",
-    "name": "GROU Coffee + Cowork",
-    "category": "cafe",
+    "name": "⚠︎ GROU Coffee + Cowork",
+    "category": "cafe · Unverified",
     "lat": 25.7333956,
     "lng": -80.2604178,
     "country": "US",
@@ -443,23 +404,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:38.283Z",
-      "evidence": [
-        {
-          "url": "https://groucommunity.com/",
-          "matched": [
-            "grou coffee + cowork"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10138526560",
-    "name": "Minibar",
-    "category": "bar",
+    "name": "⚠︎ Minibar",
+    "category": "bar · Unverified",
     "lat": 25.7741201,
     "lng": -80.1361579,
     "country": "US",
@@ -493,23 +445,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:38.549Z",
-      "evidence": [
-        {
-          "url": "https://www.minibarmiami.com/",
-          "matched": [
-            "minibar"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10567233849",
-    "name": "Thyme Machine",
-    "category": "cafe",
+    "name": "⚠︎ Thyme Machine",
+    "category": "cafe · Unverified",
     "lat": 25.7621379,
     "lng": -80.1929626,
     "country": "US",
@@ -545,16 +488,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:39.300Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10803293425",
-    "name": "Polo Ralph Lauren",
-    "category": "clothes",
+    "name": "⚠︎ Polo Ralph Lauren",
+    "category": "clothes · Unverified",
     "lat": 25.8131574,
     "lng": -80.1920657,
     "country": "US",
@@ -584,13 +525,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10847051464",
-    "name": "Orno Miami",
-    "category": "restaurant",
+    "name": "⚠︎ Orno Miami",
+    "category": "restaurant · Unverified",
     "lat": 25.7126655,
     "lng": -80.2787112,
     "country": "US",
@@ -625,23 +568,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.259Z",
-      "evidence": [
-        {
-          "url": "https://ornomiami.com/",
-          "matched": [
-            "orno miami"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11445230873",
-    "name": "Miami Camera Rental",
-    "category": "photo",
+    "name": "⚠︎ Miami Camera Rental",
+    "category": "photo · Unverified",
     "lat": 25.8436974,
     "lng": -80.1891748,
     "country": "US",
@@ -674,23 +608,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.522Z",
-      "evidence": [
-        {
-          "url": "https://www.miamicamerastore.com/",
-          "matched": [
-            "miami camera rental"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11986492180",
-    "name": "Skyrim Security",
-    "category": "other",
+    "name": "⚠︎ Skyrim Security",
+    "category": "other · Unverified",
     "lat": 25.8004142,
     "lng": -80.1885413,
     "country": "US",
@@ -726,23 +651,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:42.901Z",
-      "evidence": [
-        {
-          "url": "https://skyrimsecurity.com/",
-          "matched": [
-            "skyrim security"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12025637369",
-    "name": "Proof of Work Fitness",
-    "category": "other",
+    "name": "⚠︎ Proof of Work Fitness",
+    "category": "other · Unverified",
     "lat": 25.7749065,
     "lng": -80.1852126,
     "country": "US",
@@ -778,23 +694,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:43.385Z",
-      "evidence": [
-        {
-          "url": "https://www.proofofwork.fit/",
-          "matched": [
-            "proof of work fitness"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12115665900",
-    "name": "DESIGNHOUSE",
-    "category": "other",
+    "name": "⚠︎ DESIGNHOUSE",
+    "category": "other · Unverified",
     "lat": 25.7514608,
     "lng": -80.2588975,
     "country": "US",
@@ -833,23 +740,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:43.632Z",
-      "evidence": [
-        {
-          "url": "https://designhouseagency.com",
-          "matched": [
-            "designhouse"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12144822528",
-    "name": "Jorge Enterprises GC - Construction",
-    "category": "other",
+    "name": "⚠︎ Jorge Enterprises GC - Construction",
+    "category": "other · Unverified",
     "lat": 25.7480898,
     "lng": -80.2603205,
     "country": "US",
@@ -886,10 +784,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:44.203Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

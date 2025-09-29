@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:10687965519",
-    "name": "Recotur Cia. Ltda.",
-    "category": "travel_agency",
+    "name": "⚠︎ Recotur Cia. Ltda.",
+    "category": "travel_agency · Unverified",
     "lat": 0.3520946,
     "lng": -78.1191785,
     "country": "US",
@@ -40,13 +40,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12026421265",
-    "name": "Los Pinos",
-    "category": "cafe",
+    "name": "⚠︎ Los Pinos",
+    "category": "cafe · Unverified",
     "lat": 0.353644,
     "lng": -78.1176963,
     "country": "US",
@@ -80,13 +82,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12053286920",
-    "name": "IFECS (International Fund For Education Charlie Studies)",
-    "category": "other",
+    "name": "⚠︎ IFECS (International Fund For Education Charlie Studies)",
+    "category": "other · Unverified",
     "lat": 0.3537048,
     "lng": -78.1219275,
     "country": "US",
@@ -121,13 +125,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:13012002745",
-    "name": "Oficinas Legales Ariadna Jaramillo y Asociados",
-    "category": "other",
+    "name": "⚠︎ Oficinas Legales Ariadna Jaramillo y Asociados",
+    "category": "other · Unverified",
     "lat": 0.3538701,
     "lng": -78.1230394,
     "country": "US",
@@ -156,7 +162,9 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

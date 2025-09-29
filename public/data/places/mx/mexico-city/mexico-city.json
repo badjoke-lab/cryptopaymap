@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:473037880",
-    "name": "FlowSuites WTC",
-    "category": "other",
+    "name": "⚠︎ FlowSuites WTC",
+    "category": "other · Unverified",
     "lat": 19.3949068,
     "lng": -99.1758289,
     "country": "MX",
@@ -38,21 +38,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:12.150Z",
-      "evidence": [
-        {
-          "url": "https://www.flowsuites.com/wtc",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:1169203014",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.556141,
     "lng": -99.1930683,
     "country": "MX",
@@ -89,23 +82,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:12.653Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2089441541",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3459501,
     "lng": -99.0208,
     "country": "MX",
@@ -139,23 +123,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:13.082Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2132529254",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4284304,
     "lng": -98.9636726,
     "country": "MX",
@@ -189,23 +164,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:13.248Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:2817196466",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.29395,
     "lng": -99.1820113,
     "country": "MX",
@@ -239,23 +205,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:13.412Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4273853515",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3196066,
     "lng": -99.2451963,
     "country": "MX",
@@ -289,23 +246,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:13.567Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4356794990",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4826358,
     "lng": -99.1172122,
     "country": "MX",
@@ -340,23 +288,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:13.737Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4356801589",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4627664,
     "lng": -99.1130005,
     "country": "MX",
@@ -393,23 +332,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:13.898Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4374763400",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.5017742,
     "lng": -99.2712999,
     "country": "MX",
@@ -443,23 +373,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.084Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4430078791",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4701441,
     "lng": -99.2370611,
     "country": "MX",
@@ -493,23 +414,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.255Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4494585627",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4802661,
     "lng": -99.1867336,
     "country": "MX",
@@ -544,23 +456,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.443Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4536287695",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4690931,
     "lng": -99.1403594,
     "country": "MX",
@@ -594,23 +497,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.557Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4771406623",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.36914,
     "lng": -98.947637,
     "country": "MX",
@@ -644,23 +538,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.678Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:4831665049",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4409675,
     "lng": -99.1571261,
     "country": "MX",
@@ -696,23 +581,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.805Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5499505433",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2999353,
     "lng": -99.0432886,
     "country": "MX",
@@ -746,23 +622,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.929Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5522995824",
-    "name": "FlowSuites Polanco",
-    "category": "other",
+    "name": "⚠︎ FlowSuites Polanco",
+    "category": "other · Unverified",
     "lat": 19.4291697,
     "lng": -99.1929463,
     "country": "MX",
@@ -798,21 +665,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.317Z",
-      "evidence": [
-        {
-          "url": "https://www.flowsuites.com/polanco",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5840379486",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4154629,
     "lng": -98.9423181,
     "country": "MX",
@@ -846,23 +706,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.439Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:5844404210",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4593185,
     "lng": -99.1267638,
     "country": "MX",
@@ -896,23 +747,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.553Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6223359397",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.5348324,
     "lng": -99.0647009,
     "country": "MX",
@@ -946,23 +788,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.678Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6294880685",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2179986,
     "lng": -98.9940109,
     "country": "MX",
@@ -998,23 +831,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.792Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6332256179",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.5863799,
     "lng": -99.020862,
     "country": "MX",
@@ -1048,23 +872,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.917Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6584676243",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3265508,
     "lng": -99.0753657,
     "country": "MX",
@@ -1100,23 +915,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:19.036Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:7364479699",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3559757,
     "lng": -99.2999854,
     "country": "MX",
@@ -1150,23 +956,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:19.162Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:7949460179",
-    "name": "Bitcoin Embassy Bar",
-    "category": "bar",
+    "name": "⚠︎ Bitcoin Embassy Bar",
+    "category": "bar · Unverified",
     "lat": 19.4117283,
     "lng": -99.1646611,
     "country": "MX",
@@ -1202,21 +999,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:19.922Z",
-      "evidence": [
-        {
-          "url": "https://bitcoinemb.com/",
-          "error": "request to https://bitcoinemb.com/ failed, reason: read ECONNRESET"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8263105788",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.5679906,
     "lng": -99.0446601,
     "country": "MX",
@@ -1250,23 +1040,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.053Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8504658323",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3558112,
     "lng": -99.2155065,
     "country": "MX",
@@ -1300,23 +1081,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.183Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:8843541717",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3820872,
     "lng": -99.1187374,
     "country": "MX",
@@ -1350,23 +1122,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.315Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9115925995",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.5145264,
     "lng": -99.1349843,
     "country": "MX",
@@ -1403,23 +1166,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.427Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:9955895389",
-    "name": "Elektra motos",
-    "category": "department_store",
+    "name": "⚠︎ Elektra motos",
+    "category": "department_store · Unverified",
     "lat": 19.3563738,
     "lng": -99.1062367,
     "country": "MX",
@@ -1453,16 +1207,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.547Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10300856211",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4074599,
     "lng": -99.1137408,
     "country": "MX",
@@ -1496,23 +1248,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.682Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10554281017",
-    "name": "Fajas Colombianas Kisha",
-    "category": "clothes",
+    "name": "⚠︎ Fajas Colombianas Kisha",
+    "category": "clothes · Unverified",
     "lat": 19.3630776,
     "lng": -99.2872029,
     "country": "MX",
@@ -1547,13 +1290,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10567494881",
-    "name": "HodlBeer - Cerveza artesanal",
-    "category": "alcohol",
+    "name": "⚠︎ HodlBeer - Cerveza artesanal",
+    "category": "alcohol · Unverified",
     "lat": 19.3527009,
     "lng": -99.1866894,
     "country": "MX",
@@ -1586,16 +1331,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.983Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10568824490",
-    "name": "Alberto Mérito",
-    "category": "other",
+    "name": "⚠︎ Alberto Mérito",
+    "category": "other · Unverified",
     "lat": 19.3526942,
     "lng": -99.1866384,
     "country": "MX",
@@ -1630,23 +1373,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.445Z",
-      "evidence": [
-        {
-          "url": "http://merito.me/",
-          "matched": [
-            "alberto mérito"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10938079219",
-    "name": "Inglés Real",
-    "category": "language_school",
+    "name": "⚠︎ Inglés Real",
+    "category": "language_school · Unverified",
     "lat": 19.3981432,
     "lng": -99.1340946,
     "country": "MX",
@@ -1683,23 +1417,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:22.111Z",
-      "evidence": [
-        {
-          "url": "https://www.inglesreales.com",
-          "matched": [
-            "inglés real"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11221576027",
-    "name": "Bitcoin Academy Mexico",
-    "category": "other",
+    "name": "⚠︎ Bitcoin Academy Mexico",
+    "category": "other · Unverified",
     "lat": 19.3720394,
     "lng": -99.2464324,
     "country": "MX",
@@ -1735,16 +1460,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:22.633Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12119642637",
-    "name": "FlowSuites Condesa",
-    "category": "other",
+    "name": "⚠︎ FlowSuites Condesa",
+    "category": "other · Unverified",
     "lat": 19.4109052,
     "lng": -99.1723187,
     "country": "MX",
@@ -1780,21 +1503,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:25.807Z",
-      "evidence": [
-        {
-          "url": "https://www.flowsuites.com/condesa",
-          "error": "404 Not Found"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12324352981",
-    "name": "Neurólogo - Neurologist",
-    "category": "doctors",
+    "name": "⚠︎ Neurólogo - Neurologist",
+    "category": "doctors · Unverified",
     "lat": 19.3998091,
     "lng": -99.1725609,
     "country": "MX",
@@ -1830,16 +1546,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.399Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12563478010",
-    "name": "Cajero ATM Bitcoin Blink",
-    "category": "atm",
+    "name": "⚠︎ Cajero ATM Bitcoin Blink",
+    "category": "atm · Unverified",
     "lat": 19.2544174,
     "lng": -99.1800153,
     "country": "MX",
@@ -1877,21 +1591,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.804Z",
-      "evidence": [
-        {
-          "url": "https://coinatmradar.com/bitcoin_atm/91310/bitcoin-atm-lamassu-mexico-city-elotl-esquites/",
-          "error": "403 Forbidden"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12997981352",
-    "name": "Ferretornillos San Fernando",
-    "category": "hardware",
+    "name": "⚠︎ Ferretornillos San Fernando",
+    "category": "hardware · Unverified",
     "lat": 19.382839,
     "lng": -99.2843303,
     "country": "MX",
@@ -1920,13 +1627,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:242021015",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.318157,
     "lng": -99.1638494,
     "country": "MX",
@@ -1960,23 +1669,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.105Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:270493747",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4302482,
     "lng": -98.959883,
     "country": "MX",
@@ -2010,23 +1710,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.226Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:270656084",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4230015,
     "lng": -98.9824545,
     "country": "MX",
@@ -2060,23 +1751,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.361Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:270928379",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4123244,
     "lng": -98.9795852,
     "country": "MX",
@@ -2110,23 +1792,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.644Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:285940153",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3033754,
     "lng": -99.0554214,
     "country": "MX",
@@ -2160,23 +1833,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.758Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:327297521",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2658894,
     "lng": -99.1715598,
     "country": "MX",
@@ -2211,23 +1875,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.886Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:391817725",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3512334,
     "lng": -99.0738003,
     "country": "MX",
@@ -2263,23 +1918,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.019Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:398642930",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3829847,
     "lng": -99.2350445,
     "country": "MX",
@@ -2313,23 +1959,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.152Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:412812881",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2983103,
     "lng": -99.1521037,
     "country": "MX",
@@ -2365,23 +2002,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.272Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:418392950",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3275423,
     "lng": -98.9464299,
     "country": "MX",
@@ -2420,23 +2048,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.389Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:543831219",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3897272,
     "lng": -99.2110315,
     "country": "MX",
@@ -2473,23 +2092,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.516Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:557202425",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4111155,
     "lng": -99.0798875,
     "country": "MX",
@@ -2526,23 +2136,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.646Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:568311172",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3581487,
     "lng": -99.1222454,
     "country": "MX",
@@ -2576,23 +2177,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.771Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:616994275",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.5331635,
     "lng": -99.167361,
     "country": "MX",
@@ -2626,23 +2218,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.888Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:627193779",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2776518,
     "lng": -98.9424279,
     "country": "MX",
@@ -2677,23 +2260,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.005Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:694776667",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3587257,
     "lng": -99.0890505,
     "country": "MX",
@@ -2727,23 +2301,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.130Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:703163028",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2680492,
     "lng": -99.0059352,
     "country": "MX",
@@ -2777,23 +2342,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.258Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:783772175",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.2892805,
     "lng": -99.2179928,
     "country": "MX",
@@ -2826,13 +2382,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:787652277",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3541081,
     "lng": -99.0752029,
     "country": "MX",
@@ -2866,23 +2424,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.375Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:838437253",
-    "name": "Elektra",
-    "category": "bank",
+    "name": "⚠︎ Elektra",
+    "category": "bank · Unverified",
     "lat": 19.5138314,
     "lng": -99.209226,
     "country": "MX",
@@ -2920,23 +2469,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.498Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:927367056",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3325867,
     "lng": -99.1713819,
     "country": "MX",
@@ -2971,23 +2511,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.622Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:957614752",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3889144,
     "lng": -99.1908231,
     "country": "MX",
@@ -3021,23 +2552,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.739Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1038997637",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.4522847,
     "lng": -99.2473495,
     "country": "MX",
@@ -3074,23 +2596,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.859Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1112169009",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.31581,
     "lng": -99.0718722,
     "country": "MX",
@@ -3124,23 +2637,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.982Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1194900490",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3728672,
     "lng": -99.1896716,
     "country": "MX",
@@ -3176,23 +2680,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.103Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:1366464528",
-    "name": "Elektra",
-    "category": "department_store",
+    "name": "⚠︎ Elektra",
+    "category": "department_store · Unverified",
     "lat": 19.3436313,
     "lng": -99.1906597,
     "country": "MX",
@@ -3229,17 +2724,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.221Z",
-      "evidence": [
-        {
-          "url": "https://www.elektra.mx",
-          "matched": [
-            "elektra"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]

@@ -1,8 +1,8 @@
 [
   {
     "id": "osm:node:3004009626",
-    "name": "Two Dogs Taproom",
-    "category": "pub",
+    "name": "⚠︎ Two Dogs Taproom",
+    "category": "pub · Unverified",
     "lat": 35.6626331,
     "lng": 139.7352113,
     "country": "JP",
@@ -47,23 +47,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:08.099Z",
-      "evidence": [
-        {
-          "url": "https://www.twodogs-tokyo.com/",
-          "matched": [
-            "two dogs taproom"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6968529885",
-    "name": "ヨガ教室 Asakusa Yoga 浅草",
-    "category": "other",
+    "name": "⚠︎ ヨガ教室 Asakusa Yoga 浅草",
+    "category": "other · Unverified",
     "lat": 35.7125546,
     "lng": 139.7948219,
     "country": "JP",
@@ -108,16 +99,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:09.376Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:6968557185",
-    "name": "ヨガ教室 Asakusa Yoga 蔵前",
-    "category": "other",
+    "name": "⚠︎ ヨガ教室 Asakusa Yoga 蔵前",
+    "category": "other · Unverified",
     "lat": 35.7060287,
     "lng": 139.7900495,
     "country": "JP",
@@ -162,16 +151,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:09.563Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10578838487",
-    "name": "CryptoBar P2P",
-    "category": "bar",
+    "name": "⚠︎ CryptoBar P2P",
+    "category": "bar · Unverified",
     "lat": 35.6713528,
     "lng": 139.7640023,
     "country": "JP",
@@ -214,24 +201,15 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.197Z",
-      "evidence": [
-        {
-          "url": "https://cryptobarp2p.io",
-          "type": "text",
-          "match": "暗号"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:38.897Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10578841994",
-    "name": "表参道燻製堂",
-    "category": "restaurant",
+    "name": "⚠︎ 表参道燻製堂",
+    "category": "restaurant · Unverified",
     "lat": 35.7683237,
     "lng": 139.8429103,
     "country": "JP",
@@ -276,21 +254,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:10.927Z",
-      "evidence": [
-        {
-          "url": "https://kunseido.com/",
-          "error": "request to https://kunseido.com/ failed, reason: certificate has expired"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10587102168",
-    "name": "ビドゥイエ広尾",
-    "category": "clothes",
+    "name": "⚠︎ ビドゥイエ広尾",
+    "category": "clothes · Unverified",
     "lat": 35.6500554,
     "lng": 139.7221975,
     "country": "JP",
@@ -336,23 +307,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:12.116Z",
-      "evidence": [
-        {
-          "url": "https://www.bidouillez.jp",
-          "matched": [
-            "ビドゥイエ広尾"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10587756680",
-    "name": "The Pink Cow",
-    "category": "restaurant",
+    "name": "⚠︎ The Pink Cow",
+    "category": "restaurant · Unverified",
     "lat": 35.6721034,
     "lng": 139.7396987,
     "country": "JP",
@@ -396,23 +358,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:14.427Z",
-      "evidence": [
-        {
-          "url": "https://thepinkcow.com",
-          "matched": [
-            "the pink cow"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:10588516242",
-    "name": "COCOROTUS FOODTRUCK【アベマタワーよこ店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【アベマタワーよこ店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6624229,
     "lng": 139.6956991,
     "country": "JP",
@@ -456,24 +409,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:15.493Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:39.747Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11617779907",
-    "name": "メピカバリ（目光針院）恵比寿院",
-    "category": "other",
+    "name": "⚠︎ メピカバリ（目光針院）恵比寿院",
+    "category": "other · Unverified",
     "lat": 35.6492448,
     "lng": 139.7077062,
     "country": "JP",
@@ -517,24 +461,15 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:16.930Z",
-      "evidence": [
-        {
-          "url": "https://mepica.net",
-          "type": "text",
-          "match": "支払い"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:40.496Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:11618074990",
-    "name": "自由が丘ライトニングマルシェ",
-    "category": "marketplace",
+    "name": "✅ 自由が丘ライトニングマルシェ",
+    "category": "marketplace · Verified",
     "lat": 35.6091298,
     "lng": 139.6695891,
     "country": "JP",
@@ -547,7 +482,7 @@
     "hours": "2024-04-28 13:00-17:00",
     "status": "active",
     "source": "osm",
-    "last_verified": "2025-08-27",
+    "last_verified": "2025-09-29",
     "tags": [
       "amenity",
       "building",
@@ -578,34 +513,34 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 3,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:17.601Z",
-      "evidence": [
+      "status": "verified",
+      "last_checked": "2025-09-29",
+      "sources": [
         {
+          "type": "official_site",
           "url": "https://btcln.shop/marche/",
-          "type": "text",
-          "match": "支払い"
-        },
-        {
-          "url": "https://btcln.shop/marche/",
-          "type": "text",
-          "match": "ビットコイン"
-        },
-        {
-          "url": "https://btcln.shop/marche/",
-          "type": "text",
-          "match": "暗号"
+          "hits": [
+            {
+              "type": "text",
+              "p": "支払い"
+            },
+            {
+              "type": "text",
+              "p": "ビットコイン"
+            },
+            {
+              "type": "text",
+              "p": "暗号"
+            }
+          ]
         }
-      ],
-      "updatedAt": "2025-09-28T15:27:39.623Z"
+      ]
     }
   },
   {
     "id": "osm:node:12035292348",
-    "name": "COCOROTUS FOODTRUCK【元赤坂店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【元赤坂店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6776279,
     "lng": 139.7329057,
     "country": "JP",
@@ -649,24 +584,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:17.991Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:40.266Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12035307502",
-    "name": "ココロータス",
-    "category": "fast_food",
+    "name": "⚠︎ ココロータス",
+    "category": "fast_food · Unverified",
     "lat": 35.6608723,
     "lng": 139.713337,
     "country": "JP",
@@ -710,24 +636,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.128Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:44.851Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12035489396",
-    "name": "COCOROTUS FOODTRUCK【青山小学校】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【青山小学校】",
+    "category": "fast_food · Unverified",
     "lat": 35.6701161,
     "lng": 139.7184945,
     "country": "JP",
@@ -771,24 +688,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.264Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:39.894Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12035497705",
-    "name": "COCOROTUS FOODTRUCK【北青山二丁目店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【北青山二丁目店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6714349,
     "lng": 139.7157364,
     "country": "JP",
@@ -832,24 +740,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.399Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:40.040Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12035530325",
-    "name": "COCOROTUS FOODTRUCK【NPC九段南】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【NPC九段南】",
+    "category": "fast_food · Unverified",
     "lat": 35.6920638,
     "lng": 139.740991,
     "country": "JP",
@@ -893,24 +792,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.533Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:40.187Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12035542961",
-    "name": "COCOROTUS FOODTRUCK【キネティックアーツ渋谷】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【キネティックアーツ渋谷】",
+    "category": "fast_food · Unverified",
     "lat": 35.6559524,
     "lng": 139.7049089,
     "country": "JP",
@@ -954,24 +844,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.680Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:40.335Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12035549952",
-    "name": "COCOROTUS FOODTRUCK【六本木】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【六本木】",
+    "category": "fast_food · Unverified",
     "lat": 35.6595639,
     "lng": 139.7322913,
     "country": "JP",
@@ -1015,24 +896,15 @@
       "cash": true
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:18.814Z",
-      "evidence": [
-        {
-          "url": "https://cocorotus.com",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:40.416Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042721366",
-    "name": "COCOROTUS FOODTRUCK【USEN店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【USEN店】",
+    "category": "fast_food · Unverified",
     "lat": 35.654859,
     "lng": 139.6928787,
     "country": "JP",
@@ -1076,16 +948,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.064Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042727109",
-    "name": "COCOROTUS FOODTRUCK",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "category": "fast_food · Unverified",
     "lat": 35.6405596,
     "lng": 139.7412773,
     "country": "JP",
@@ -1129,16 +999,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:20.885Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042728717",
-    "name": "COCOROTUS FOODTRUCK【全共連ビル麹町館店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【全共連ビル麹町館店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6834278,
     "lng": 139.7391817,
     "country": "JP",
@@ -1182,16 +1050,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:21.664Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042759194",
-    "name": "COCOROTUS FOODTRUCK【芝店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【芝店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6517002,
     "lng": 139.746685,
     "country": "JP",
@@ -1235,16 +1101,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:22.568Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042761104",
-    "name": "COCOROTUS FOODTRUCK",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "category": "fast_food · Unverified",
     "lat": 35.6845914,
     "lng": 139.7433332,
     "country": "JP",
@@ -1288,16 +1152,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:23.350Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042778966",
-    "name": "COCOROTUS FOODTRUCK",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "category": "fast_food · Unverified",
     "lat": 35.6660125,
     "lng": 139.7040305,
     "country": "JP",
@@ -1341,16 +1203,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:24.146Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042878655",
-    "name": "COCOROTUS FOODTRUCK【虎ノ門】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【虎ノ門】",
+    "category": "fast_food · Unverified",
     "lat": 35.6658447,
     "lng": 139.7480397,
     "country": "JP",
@@ -1394,16 +1254,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:25.288Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042878656",
-    "name": "COCOROTUS FOODTRUCK【神泉】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【神泉】",
+    "category": "fast_food · Unverified",
     "lat": 35.6569002,
     "lng": 139.6943274,
     "country": "JP",
@@ -1447,16 +1305,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:26.098Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042891967",
-    "name": "COCOROTUS FOODTRUCK【虎ノ門琴平タワー店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【虎ノ門琴平タワー店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6698489,
     "lng": 139.7480655,
     "country": "JP",
@@ -1500,16 +1356,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:27.459Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042922193",
-    "name": "COCOROTUS FOODTRUCK",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "category": "fast_food · Unverified",
     "lat": 35.6737618,
     "lng": 139.7067037,
     "country": "JP",
@@ -1553,16 +1407,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:28.239Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042935482",
-    "name": "COCOROTUS FOODTRUCK【溜池山王店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【溜池山王店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6719997,
     "lng": 139.7393153,
     "country": "JP",
@@ -1606,16 +1458,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.024Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042946250",
-    "name": "COCOROTUS FOODTRUCK【成蹊大学店】※一般不可",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【成蹊大学店】※一般不可",
+    "category": "fast_food · Unverified",
     "lat": 35.7114406,
     "lng": 139.5727023,
     "country": "JP",
@@ -1659,16 +1509,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:29.987Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042959224",
-    "name": "COCOROTUS FOODTRUCK【渋谷ファッション＆専門学校店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【渋谷ファッション＆専門学校店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6638195,
     "lng": 139.7037739,
     "country": "JP",
@@ -1712,16 +1560,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:30.806Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042960401",
-    "name": "COCOROTUS FOODTRUCK【麹町店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【麹町店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6834978,
     "lng": 139.7392786,
     "country": "JP",
@@ -1765,16 +1611,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:32.026Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12042999697",
-    "name": "COCOROTUS FOODTRUCK【日本橋長崎館店】",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【日本橋長崎館店】",
+    "category": "fast_food · Unverified",
     "lat": 35.6827327,
     "lng": 139.772891,
     "country": "JP",
@@ -1818,16 +1662,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:32.828Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12043010287",
-    "name": "COCOROTUS FOODTRUCK【ユーザーベース店】※一般不可",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【ユーザーベース店】※一般不可",
+    "category": "fast_food · Unverified",
     "lat": 35.6798365,
     "lng": 139.7637066,
     "country": "JP",
@@ -1871,16 +1713,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:33.636Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12043012226",
-    "name": "COCOROTUS FOODTRUCK【慶應義塾大学病院店】※一般不可",
-    "category": "fast_food",
+    "name": "⚠︎ COCOROTUS FOODTRUCK【慶應義塾大学病院店】※一般不可",
+    "category": "fast_food · Unverified",
     "lat": 35.6823202,
     "lng": 139.7183932,
     "country": "JP",
@@ -1924,16 +1764,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:34.417Z",
-      "evidence": []
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12149344452",
-    "name": "メピカバリ渋谷院 Acupuncture MEPICA",
-    "category": "other",
+    "name": "⚠︎ メピカバリ渋谷院 Acupuncture MEPICA",
+    "category": "other · Unverified",
     "lat": 35.6625786,
     "lng": 139.7007059,
     "country": "JP",
@@ -1976,24 +1814,15 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:35.371Z",
-      "evidence": [
-        {
-          "url": "https://mepica.net",
-          "type": "text",
-          "match": "支払い"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:48.717Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12199965389",
-    "name": "ギャラリー上田 / Gallery Ueda",
-    "category": "other",
+    "name": "✅ ギャラリー上田 / Gallery Ueda",
+    "category": "other · Verified",
     "lat": 35.6686511,
     "lng": 139.7618558,
     "country": "JP",
@@ -2006,7 +1835,7 @@
     "hours": "Mo-Fr 11:30-18:30",
     "status": "active",
     "source": "osm",
-    "last_verified": "2025-08-27",
+    "last_verified": "2025-09-29",
     "tags": [
       "check_date",
       "contact:instagram",
@@ -2040,17 +1869,30 @@
       "cash": false
     },
     "verification": {
-      "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:37.238Z",
-      "evidence": []
+      "status": "verified",
+      "last_checked": "2025-09-29",
+      "sources": [
+        {
+          "type": "official_site",
+          "url": "https://www.gallery-ueda.com/",
+          "hits": [
+            {
+              "type": "text",
+              "p": "ビットコイン"
+            },
+            {
+              "type": "text",
+              "p": "暗号"
+            }
+          ]
+        }
+      ]
     }
   },
   {
     "id": "osm:node:12259937936",
-    "name": "Umeboshi Sour Speciality Shop Ebisu",
-    "category": "bar",
+    "name": "⚠︎ Umeboshi Sour Speciality Shop Ebisu",
+    "category": "bar · Unverified",
     "lat": 35.6461605,
     "lng": 139.7134956,
     "country": "JP",
@@ -2093,21 +1935,14 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 0,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:38.037Z",
-      "evidence": [
-        {
-          "url": "https://www.instagram.com/ume_sour_ebisu",
-          "error": "429 Too Many Requests"
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12355343683",
-    "name": "Shisha Bar & Cafe Iwashiclub",
-    "category": "cafe",
+    "name": "⚠︎ Shisha Bar & Cafe Iwashiclub",
+    "category": "cafe · Unverified",
     "lat": 35.7013964,
     "lng": 139.7525421,
     "country": "JP",
@@ -2151,13 +1986,15 @@
     },
     "website": null,
     "verification": {
-      "status": "unverified"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:node:12599810937",
-    "name": "Tokyo Bitcoin Base",
-    "category": "other",
+    "name": "⚠︎ Tokyo Bitcoin Base",
+    "category": "other · Unverified",
     "lat": 35.6889533,
     "lng": 139.7286142,
     "country": "JP",
@@ -2199,24 +2036,15 @@
       "cash": false
     },
     "verification": {
-      "status": "⚠︎",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:40.392Z",
-      "evidence": [
-        {
-          "url": "https://tokyobitcoin.space/",
-          "type": "text",
-          "match": "ビットコイン"
-        }
-      ],
-      "updatedAt": "2025-09-28T15:27:51.412Z"
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   },
   {
     "id": "osm:way:143364157",
-    "name": "焼肉 誇味山",
-    "category": "restaurant",
+    "name": "⚠︎ 焼肉 誇味山",
+    "category": "restaurant · Unverified",
     "lat": 35.6616475,
     "lng": 139.7227216,
     "country": "JP",
@@ -2265,17 +2093,8 @@
     },
     "verification": {
       "status": "unverified",
-      "hits": 1,
-      "threshold": 4,
-      "checkedAt": "2025-09-28T15:07:41.403Z",
-      "evidence": [
-        {
-          "url": "https://komiyama-nishiazabu.tokyo/",
-          "matched": [
-            "焼肉 誇味山"
-          ]
-        }
-      ]
+      "last_checked": "2025-09-29",
+      "sources": []
     }
   }
 ]
