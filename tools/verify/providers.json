@@ -1,23 +1,70 @@
 {
   "script_signatures": [
-    { "name": "btcpay",            "match": "btcpayserver",          "type": "widget" },
-    { "name": "coinbase-commerce", "match": "commerce.coinbase.com", "type": "widget" },
-    { "name": "nowpayments",       "match": "nowpayments.io",        "type": "widget" },
-    { "name": "bitpay",            "match": "bitpay.com",            "type": "widget" },
-    { "name": "coingate",          "match": "coingate.com",          "type": "widget" }
+    { "name": "btcpay",              "match": "btcpayserver",              "type": "widget" },
+    { "name": "coinbase-commerce",   "match": "commerce.coinbase.com",     "type": "widget" },
+    { "name": "nowpayments",         "match": "nowpayments.io",            "type": "widget" },
+    { "name": "bitpay",              "match": "bitpay.com",                 "type": "widget" },
+    { "name": "coingate",            "match": "coingate.com",               "type": "widget" }
   ],
+
   "text_patterns": [
     "we accept bitcoin",
+    "we accept btc",
     "accept crypto",
+    "accept cryptocurrency",
     "pay with bitcoin",
+    "pay by bitcoin",
     "bitcoin accepted",
-    "支払い", "ビットコイン", "暗号", "仮想通貨"
+    "btc accepted",
+    "we accept lightning",
+    "lightning payments",
+    "pagá con bitcoin",
+    "paga con bitcoin",
+    "bitcoin accepté",
+    "bitcoin akzeptiert",
+    "bitcoin aceito",
+    "pagamento em bitcoin",
+    "支払い",
+    "ビットコイン",
+    "ビットコイン支払い",
+    "暗号",
+    "暗号資産",
+    "仮想通貨",
+    "仮想通貨決済"
   ],
+
+  "negative_text_patterns": [
+    "do not accept bitcoin",
+    "don’t accept bitcoin",
+    "no bitcoin",
+    "we no longer accept bitcoin",
+    "not accept crypto",
+    "no crypto",
+    "bitcoin not accepted",
+    "bitcoin non accepté",
+    "bitcoin nicht akzeptiert",
+    "ビットコインは使えません",
+    "仮想通貨は使えません"
+  ],
+
   "ignore_domains": [
     "wixsite.com",
+    "wix.com",
+    "static.parastorage.com",
     "square.site",
-    "shopify.com"
+    "squareup.com",
+    "shopify.com",
+    "myshopify.com",
+    "webflow.io",
+    "notion.so",
+    "notion.site",
+    "linktr.ee",
+    "sites.google.com",
+    "godaddysites.com",
+    "carrd.co",
+    "bigcartel.com"
   ],
+
   "threshold": 4,
   "timeout_ms": 15000,
   "max_parallel": 6
