@@ -81,10 +81,23 @@ jobs:
           echo "::group::Run scan.mjs"
           NODE_OPTIONS="--trace-uncaught" VERBOSE=1 node tools/verify/scan.mjs | tee scan.log
           echo "::endgroup::"
+
+      - name: Show changed files
+        run: |
           echo "::group::Changed files"
           git status --porcelain || true
           git diff --name-only || true
           echo "::endgroup::"
+
+      # 差分があるかどうかを判定
+      - name: Detect diff
+        id: diff
+        run: |
+          if git diff --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
 
       - name: Upload logs
         if: always()
@@ -103,9 +116,12 @@ jobs:
         run: |
           echo "## Verify summary" >> $GITHUB_STEP_SUMMARY
           echo "- Targets: $(wc -l < target-files.txt)" >> $GITHUB_STEP_SUMMARY
+          echo "- Changed files: $([[ '${{ steps.diff.outputs.changed }}' == 'true' ]] && echo yes || echo no)" >> $GITHUB_STEP_SUMMARY
           echo "- Log artifact: verify-logs" >> $GITHUB_STEP_SUMMARY
 
+      # 差分があるときだけ PR 作成（空PR防止）
       - name: Create PR
+        if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
         with:
           branch: bot/verify-update
