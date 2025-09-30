@@ -42,7 +42,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:13:51.423Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -86,7 +93,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:13:51.490Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -129,7 +143,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:13:52.234Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -170,7 +191,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:13:51.659Z",
+        "evidence": [
+          {
+            "url": "https://www.niagaratours.ca/",
+            "type": "text",
+            "match": "pay with bitcoin"
+          }
+        ]
+      }
     }
   },
   {
@@ -214,7 +247,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:13:51.557Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -253,7 +293,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:13:51.577Z",
+        "evidence": []
+      }
     }
   }
 ]

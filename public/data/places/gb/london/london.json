@@ -41,7 +41,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:24.858Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -76,7 +83,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:24.778Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -117,7 +131,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:24.778Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -159,7 +180,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:24.779Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -200,7 +228,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:25.269Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -242,7 +277,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.302Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -285,7 +327,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:25.376Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -329,7 +378,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:25.283Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -376,7 +432,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:27.633Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -419,7 +482,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:27.614Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -463,7 +533,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:25.269Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -506,7 +583,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:25.269Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -548,7 +632,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:25.421Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -589,7 +680,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:25.953Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -626,7 +724,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:25.376Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -666,7 +771,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:25.376Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -711,7 +823,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.130Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -753,7 +872,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:27.987Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -798,7 +924,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.171Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -840,7 +973,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.270Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -884,7 +1024,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.573Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -931,7 +1078,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:26.270Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -972,7 +1126,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.396Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1013,7 +1174,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:26.466Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1056,7 +1224,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:26.396Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1100,7 +1275,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:27.443Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1142,7 +1324,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.678Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1184,7 +1373,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:27.218Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1227,7 +1423,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:27.704Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1271,7 +1474,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.070Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1318,7 +1528,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:27.614Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1359,7 +1576,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.034Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1401,7 +1625,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.129Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1445,7 +1676,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.024Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1485,7 +1723,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.404Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1529,7 +1774,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.245Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1571,7 +1823,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.928Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1617,7 +1876,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.172Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1662,7 +1928,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.644Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1705,7 +1978,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:28.172Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1747,7 +2027,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.504Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1788,7 +2075,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.447Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1830,7 +2124,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.636Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1874,7 +2175,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.562Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1919,7 +2227,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:31.854Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1961,7 +2276,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:28.562Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2002,7 +2324,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.703Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2044,7 +2373,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:28.636Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2090,7 +2426,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.675Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2131,7 +2474,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:28.644Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2172,7 +2522,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:28.644Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2214,7 +2571,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.297Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2254,7 +2618,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.818Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2296,7 +2667,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.811Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2340,7 +2718,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:28.811Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2386,7 +2771,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:28.849Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2430,7 +2822,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.069Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2475,7 +2874,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.047Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2519,7 +2925,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.490Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2562,7 +2975,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.159Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2606,7 +3026,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.265Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2650,7 +3077,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.427Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2693,7 +3127,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:29.404Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2734,7 +3175,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:31.918Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2779,7 +3227,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:30.472Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2822,7 +3277,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:32.823Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2868,7 +3330,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:30.895Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2911,7 +3380,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:30.365Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2955,7 +3431,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:30.423Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2998,7 +3481,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:31.233Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3041,7 +3531,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:30.472Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3084,7 +3581,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:30.472Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3128,7 +3632,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:30.886Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3170,7 +3681,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:32.710Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3216,7 +3734,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:30.895Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3259,7 +3784,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:31.531Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3303,7 +3835,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:31.233Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -3347,7 +3886,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:31.233Z",
+        "evidence": []
+      }
     }
   }
 ]

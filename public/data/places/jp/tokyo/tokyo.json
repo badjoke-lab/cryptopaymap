@@ -48,7 +48,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:32.952Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -100,7 +107,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:33.717Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -152,7 +166,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:33.773Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -203,7 +224,24 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 2,
+        "checkedAt": "2025-09-30T16:14:33.716Z",
+        "evidence": [
+          {
+            "url": "https://cryptobarp2p.io",
+            "type": "text",
+            "match": "暗号"
+          },
+          {
+            "url": "https://cryptobarp2p.io",
+            "type": "text",
+            "match": "暗号資産"
+          }
+        ]
+      }
     }
   },
   {
@@ -255,7 +293,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:33.653Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -308,7 +353,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:47.829Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -359,7 +411,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:38.942Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -411,7 +470,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:34.995Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -463,7 +534,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:34.699Z",
+        "evidence": [
+          {
+            "url": "https://mepica.net",
+            "type": "text",
+            "match": "支払い"
+          }
+        ]
+      }
     }
   },
   {
@@ -534,7 +617,34 @@
             }
           ]
         }
-      ]
+      ],
+      "auto": {
+        "status": "verified",
+        "hits": 4,
+        "checkedAt": "2025-09-30T16:14:34.635Z",
+        "evidence": [
+          {
+            "url": "https://btcln.shop/marche/",
+            "type": "text",
+            "match": "支払い"
+          },
+          {
+            "url": "https://btcln.shop/marche/",
+            "type": "text",
+            "match": "ビットコイン"
+          },
+          {
+            "url": "https://btcln.shop/marche/",
+            "type": "text",
+            "match": "暗号"
+          },
+          {
+            "url": "https://btcln.shop/marche/",
+            "type": "text",
+            "match": "暗号資産"
+          }
+        ]
+      }
     }
   },
   {
@@ -586,7 +696,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.290Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -638,7 +760,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.699Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -690,7 +824,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.714Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -742,7 +888,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.167Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -794,7 +952,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.339Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -846,7 +1016,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.462Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -898,7 +1080,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:35.511Z",
+        "evidence": [
+          {
+            "url": "https://cocorotus.com",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -949,7 +1143,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:36.778Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1000,7 +1201,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:36.774Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1051,7 +1259,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:36.990Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1102,7 +1317,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:36.996Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1153,7 +1375,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:37.992Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1204,7 +1433,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:37.995Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1255,7 +1491,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:38.190Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1306,7 +1549,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:38.208Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1357,7 +1607,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:39.020Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1408,7 +1665,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:38.355Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1459,7 +1723,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:39.941Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1510,7 +1781,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:39.243Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1561,7 +1839,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:39.721Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1612,7 +1897,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:44.512Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1663,7 +1955,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:40.205Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1714,7 +2013,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:44.507Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1765,7 +2071,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:44.487Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1816,7 +2129,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:44.307Z",
+        "evidence": [
+          {
+            "url": "https://mepica.net",
+            "type": "text",
+            "match": "支払い"
+          }
+        ]
+      }
     }
   },
   {
@@ -1886,7 +2211,14 @@
             }
           ]
         }
-      ]
+      ],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:48.461Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1936,7 +2268,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:45.112Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -1988,7 +2327,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-09-30T16:14:44.487Z",
+        "evidence": []
+      }
     }
   },
   {
@@ -2038,7 +2384,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-09-30T16:14:47.194Z",
+        "evidence": [
+          {
+            "url": "https://tokyobitcoin.space/",
+            "type": "text",
+            "match": "ビットコイン"
+          }
+        ]
+      }
     }
   },
   {
@@ -2094,7 +2452,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-09-30T16:14:45.661Z",
+        "evidence": []
+      }
     }
   }
 ]
