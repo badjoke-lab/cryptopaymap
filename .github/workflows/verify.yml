@@ -59,7 +59,6 @@ jobs:
           const PUB="public";
           let t=[...collect(p.join(PUB,"data","places"))];
           if(fs.existsSync(p.join(PUB,"places.json")))t.push(p.join(PUB,"places.json"));
-          echo "::group::Targets"; echo "----"; echo; 
           console.log(t.sort().join("\n")||"(no targets)");' | tee target-files.txt
 
       - name: Probe JSON shape (first 10 files)
@@ -89,7 +88,7 @@ jobs:
           git diff --name-only || true
           echo "::endgroup::"
 
-      # 差分があるかどうかを判定
+      # 差分があるかどうかを判定（空PR防止）
       - name: Detect diff
         id: diff
         run: |
@@ -119,7 +118,7 @@ jobs:
           echo "- Changed files: $([[ '${{ steps.diff.outputs.changed }}' == 'true' ]] && echo yes || echo no)" >> $GITHUB_STEP_SUMMARY
           echo "- Log artifact: verify-logs" >> $GITHUB_STEP_SUMMARY
 
-      # 差分があるときだけ PR 作成（空PR防止）
+      # 差分があるときだけ PR 作成
       - name: Create PR
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
@@ -135,4 +134,3 @@ jobs:
           labels: "verification,bot"
           add-paths: |
             public/**/*.json
-            public/data/summary.json
