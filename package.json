@@ -2,10 +2,15 @@
   "name": "cryptopaymap-specfix",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "cpm:migrate": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/migrate_v2.ts",
+    "cpm:validate": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/validate.ts"
   },
   "dependencies": {
     "fast-xml-parser": "^5.2.5",
@@ -18,11 +23,14 @@
     "react-leaflet-cluster": "2.1.0"
   },
   "devDependencies": {
-    "@types/node": "20.14.10",
+    "@types/node": "^20.14.10",
     "@types/react": "18.2.66",
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "autoprefixer": "10.4.19",
     "postcss": "8.4.38",
     "tailwindcss": "3.4.6",
-    "typescript": "5.5.4"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
   }
 }

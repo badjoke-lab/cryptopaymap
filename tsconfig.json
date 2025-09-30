@@ -13,7 +13,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
-
     "baseUrl": ".",
     "paths": {
       "@src/*": ["src/*"],
@@ -34,6 +33,8 @@
     "__backup__",
     "**/0_*",
     "**/*.bak.*",
-    "**/__bak__/**"
+    "**/__bak__/**",
+    "scripts/**",
+    "schema/**"
   ]
 }
