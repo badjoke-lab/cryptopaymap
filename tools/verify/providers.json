@@ -62,14 +62,10 @@
     "sites.google.com",
     "godaddysites.com",
     "carrd.co",
-    "bigcartel.com",
-    "instagram.com",
-    "www.instagram.com",
-    "facebook.com",
-    "web.facebook.com"
+    "bigcartel.com"
   ],
 
   "threshold": 4,
   "timeout_ms": 15000,
-  "max_parallel": 4
+  "max_parallel": 6
 }

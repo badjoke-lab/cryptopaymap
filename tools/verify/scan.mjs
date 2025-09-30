@@ -78,7 +78,7 @@ function listTargets() {
   if (fs.existsSync(legacy)) t.push(legacy);
   vLog("target files:", t.length);
   for (const f of t.slice(0, 50)) vLog("target:", f);
-  return t.filter(f => path.basename(f) !== "index.json").sort();
+  return t.sort();
 }
 
 // ---------- network helpers ----------
