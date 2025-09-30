@@ -2,21 +2,30 @@ name: verify-places
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # daily at 03:00 UTC (※デフォルトブランチのみ発火)
+    - cron: "0 3 * * *"   # daily 03:00 UTC
   workflow_dispatch: {}
-
-concurrency:
-  group: verify-places
-  cancel-in-progress: true
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**/*.md"
+      - "docs/**"
+      - ".github/**"
+      - "!/.github/workflows/verify.yml"  # ← 自分自身の更新は許可
 
 permissions:
-  contents: write          # needed to push changes / create PR
+  contents: write          # push/PR 作成に必要
   pull-requests: write
   actions: read
 
+# 同一ブランチでの多重起動を抑止（手動実行を潰さない設定）
+concurrency:
+  group: verify-places-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   run-verify:
-    if: github.ref != 'refs/heads/bot/verify-update'   # self-PRループ抑止
+    # bot の自己更新ブランチでは実行しない（PRループ防止）
+    if: github.ref != 'refs/heads/bot/verify-update'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -28,8 +37,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
 
       # jsdom は入れない。fetch だけ使う。
+      # プロジェクト依存を汚さないため no-save で node-fetch@3 を追加（ESM 対応）
       - name: Install deps (no-save)
         run: npm i --no-save --no-package-lock node-fetch@3
 
@@ -48,6 +59,7 @@ jobs:
           const PUB="public";
           let t=[...collect(p.join(PUB,"data","places"))];
           if(fs.existsSync(p.join(PUB,"places.json")))t.push(p.join(PUB,"places.json"));
+          echo "::group::Targets"; echo "----"; echo; 
           console.log(t.sort().join("\n")||"(no targets)");' | tee target-files.txt
 
       - name: Probe JSON shape (first 10 files)
@@ -96,8 +108,6 @@ jobs:
       - name: Create PR
         uses: peter-evans/create-pull-request@v6
         with:
-          # テスト運用を固定ブランチで回すなら base: を明示してもよい
-          # base: chore/fix-workflow
           branch: bot/verify-update
           commit-message: "chore(verify): auto-update verification labels & evidence"
           title: "Auto: verification update"
@@ -109,3 +119,4 @@ jobs:
           labels: "verification,bot"
           add-paths: |
             public/**/*.json
+            public/data/summary.json
