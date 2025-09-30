@@ -13,19 +13,17 @@ on:
       - "!/.github/workflows/verify.yml"  # ← 自分自身の更新は許可
 
 permissions:
-  contents: write          # push/PR 作成に必要
+  contents: write
   pull-requests: write
   actions: read
 
-# 同一ブランチでの多重起動を抑止（手動実行を潰さない設定）
 concurrency:
   group: verify-places-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   run-verify:
-    # bot の自己更新ブランチでは実行しない（PRループ防止）
-    if: github.ref != 'refs/heads/bot/verify-update'
+    if: github.ref != 'refs/heads/bot/verify-update'   # PRループ防止
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -39,8 +37,6 @@ jobs:
           node-version: "20"
           cache: "npm"
 
-      # jsdom は入れない。fetch だけ使う。
-      # プロジェクト依存を汚さないため no-save で node-fetch@3 を追加（ESM 対応）
       - name: Install deps (no-save)
         run: npm i --no-save --no-package-lock node-fetch@3
 
@@ -49,7 +45,6 @@ jobs:
           echo "== JSON files in public (raw) =="
           find public -type f -name "*.json" -print | sort || true
           echo
-          echo "== scan.mjs target logic =="
           node -e 'const fs=require("fs"),p=require("path");
           function collect(d){if(!fs.existsSync(d))return[];let r=[];
             for(const f of fs.readdirSync(d)){const q=p.join(d,f);const s=fs.statSync(q);
@@ -88,7 +83,6 @@ jobs:
           git diff --name-only || true
           echo "::endgroup::"
 
-      # 差分があるかどうかを判定
       - name: Detect diff
         id: diff
         run: |
@@ -118,7 +112,6 @@ jobs:
           echo "- Changed files: $([[ '${{ steps.diff.outputs.changed }}' == 'true' ]] && echo yes || echo no)" >> $GITHUB_STEP_SUMMARY
           echo "- Log artifact: verify-logs" >> $GITHUB_STEP_SUMMARY
 
-      # 差分があるときだけ PR 作成（空PR防止）
       - name: Create PR
         if: steps.diff.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v6
@@ -134,4 +127,3 @@ jobs:
           labels: "verification,bot"
           add-paths: |
             public/**/*.json
-            public/data/summary.json
