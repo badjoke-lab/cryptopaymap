@@ -9,18 +9,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-
-    // Phase2 base
     "cpm:migrate": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/migrate_v2.ts",
     "cpm:validate": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/validate.ts",
-
-    // Payments normalization helpers (added)
     "cpm:fix:payments": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_v2_hard.ts",
-    "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts",
-
-    // Compatibility aliases requested
-    "cpm:migrate:payments": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/migrate_payments.ts",
-    "cpm:validate:payments": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/validate.ts"
+    "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts"
   },
   "dependencies": {
     "fast-xml-parser": "^5.2.5",
