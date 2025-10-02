@@ -1,0 +1,134 @@
+name: "Owner Verified: Submission"
+description: Submit your business as the owner/manager to get Owner Verified (Gold).
+title: "[Owner] <Business name> - <City, Country>"
+labels: ["submission", "owner", "verification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide accurate info. One business per issue.
+
+  - type: input
+    id: business_name
+    attributes:
+      label: Business name
+      placeholder: Example Coffee Roasters
+    validations:
+      required: true
+
+  - type: input
+    id: address
+    attributes:
+      label: Address
+      description: "Use full address. Format: Street number + street, City, STATE ZIP, USA"
+      placeholder: "350 5th Ave, New York, NY 10118, USA"
+    validations:
+      required: true
+
+  - type: input
+    id: website
+    attributes:
+      label: Official website URL
+      placeholder: https://example.com
+    validations:
+      required: false
+
+  - type: textarea
+    id: payments
+    attributes:
+      label: Accepted crypto (assets/chains)
+      description: |
+        Example:
+        - BTC (Lightning)
+        - BTC (On-chain, Bitcoin)
+        - ETH (EVM mainnet)
+        - USDT (EVM mainnet)
+      placeholder: "- BTC (Lightning)\n- ETH (EVM mainnet)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: payment_pages
+    attributes:
+      label: Payment page / instructions URLs
+      description: Links that prove crypto acceptance (checkout, provider pages, etc.)
+      placeholder: "https://example.com/pay | https://provider.example/merchant/123"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: already_listed
+    attributes:
+      label: Is this business already listed on CryptoPayMap?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+
+  - type: input
+    id: listed_url_or_id
+    attributes:
+      label: If YES: paste the map URL or place ID
+      description: Example: https://cryptopaymap.vercel.app/... or place ID like "us-nyc-abc123"
+      placeholder: "https://... or us-nyc-abc123"
+    validations:
+      required: false
+
+  - type: input
+    id: city_country
+    attributes:
+      label: If NO (new entry): City, Country
+      placeholder: "New York, United States"
+    validations:
+      required: false
+
+  - type: input
+    id: lat_lng
+    attributes:
+      label: If NO (new entry): Latitude,Longitude (optional)
+      description: Comma-separated decimal degrees.
+      placeholder: "40.7484,-73.9857"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: owner_proof
+    attributes:
+      label: Ownership proof (pick one)
+      options:
+        - Domain verification (meta/.well-known)
+        - Business domain email (OTP)
+        - Dashboard/receipt screenshot (masked)
+    validations:
+      required: true
+
+  - type: textarea
+    id: profile_summary
+    attributes:
+      label: Profile summary (for map card)
+      description: Max ~600 chars. Public text you own the rights to.
+      placeholder: "We accept BTC (Lightning) and ETH. Ask staff at checkout."
+    validations:
+      required: false
+
+  - type: textarea
+    id: gallery_urls
+    attributes:
+      label: Image URLs (up to 8)
+      description: Host on GitHub issue images or your CDN. WebP/png/jpg.
+      placeholder: "https://user-images.githubusercontent.com/....webp"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Rights & consent
+      options:
+        - label: I am the owner/manager or authorized representative.
+          required: true
+        - label: I have the rights to the text/images submitted and grant CryptoPayMap a non-exclusive, free license to display them.
+          required: true
+        - label: I understand the submission may be reviewed and rejected if unverifiable.
+          required: true

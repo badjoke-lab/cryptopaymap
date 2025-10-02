@@ -2,14 +2,12 @@
   {
     "id": "osm:node:10078071561",
     "name": "⚠︎ Lion Windows",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 34.0431486,
     "lng": -118.445344,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Lion Windows, 1838, Sawtelle Boulevard, Sawtelle Japantown, Sawtelle, Los Angeles, Los Angeles County, California, 90025, United States",
     "website": "https://www.lionwindowsanddoors.com/",
     "hours": "Mo-Fr 09:00- 17:00",
@@ -32,28 +30,32 @@
     ],
     "phone": "3108001585",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:10109931124",
     "name": "⚠︎ Tribute Counseling & Psychotherapy Services",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 34.2344685,
     "lng": -118.536422,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Tribute Counseling & Psychotherapy Services, 9029, Reseda Boulevard, Northridge, Northridge South Neighborhood Council District, Los Angeles, Los Angeles County, California, 91324, United States",
     "website": "https://tributecps.com",
     "status": "active",
@@ -76,28 +78,32 @@
     "phone": "+1 818 927 1284",
     "twitter": "@jason March",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:10126754821",
     "name": "⚠︎ Bedlam Hills Galleria",
-    "category": "clothes · Unverified",
+    "category": "clothes",
     "lat": 34.0856218,
     "lng": -118.3484915,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Bedlam Hills Galleria, 806, North Poinsettia Place, Fairfax, Los Angeles, Los Angeles County, California, 90046, United States",
     "website": "https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb",
     "status": "active",
@@ -116,28 +122,32 @@
       "payment:onchain"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:10980910081",
     "name": "⚠︎ PaintOrDip",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 33.739576,
     "lng": -118.280925,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "PaintOrDip, 550, South Palos Verdes Street, San Pedro Arts and Cultural District, San Pedro, Los Angeles, Los Angeles County, California, 90731, United States",
     "website": "https://paintordip.com/",
     "status": "active",
@@ -157,28 +167,32 @@
       "payment:onchain"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:11577190689",
     "name": "⚠︎ Sasha Mac",
-    "category": "hairdresser · Unverified",
+    "category": "hairdresser",
     "lat": 34.0449741,
     "lng": -118.3371725,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Sasha Mac, 4553, Saint Charles Place, Victoria Park, Mid-Wilshire, Los Angeles, Los Angeles County, California, 90019, United States",
     "status": "active",
     "source": "osm",
@@ -197,29 +211,33 @@
     ],
     "phone": "+1-808-220-4968‬",
     "payment": {
-      "lightning": true,
-      "onchain": false,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:11867936647",
     "name": "⚠︎ Grade A Ink",
-    "category": "tattoo · Unverified",
+    "category": "tattoo",
     "lat": 34.1825879,
     "lng": -118.3962949,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Grade A Ink, 6140, Laurel Canyon Boulevard, North Hollywood Neighborhood Council District, Los Angeles, Los Angeles County, California, 91606, United States",
     "status": "active",
     "source": "osm",
@@ -240,29 +258,33 @@
     ],
     "phone": "(888) 802-4903",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:12300477932",
     "name": "⚠︎ Highland Tamalezzz",
-    "category": "fast_food · Unverified",
+    "category": "fast_food",
     "lat": 34.0738766,
     "lng": -118.2092069,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Highland Tamalezzz, 3031, North Broadway, Lincoln Heights, Los Angeles, Los Angeles County, California, 90031, United States",
     "hours": "Su-Sa 07:00-09:00",
     "status": "active",
@@ -283,29 +305,33 @@
     ],
     "cuisine": "mexican;tamales",
     "payment": {
-      "lightning": true,
-      "onchain": false,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:13057189707",
     "name": "⚠︎ Fuse HVAC Service & Installation",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 33.9809352,
     "lng": -118.3842823,
     "country": "US",
     "city": "Los Angeles",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Fuse HVAC Service & Installation, 6170, Canterbury Drive, Culver City, Los Angeles County, California, 90230, United States",
     "website": "https://fuselac.com/",
     "hours": "Mo-Fr 09:00-17:00; Sa-Su 10:00-15:00",
@@ -329,15 +355,21 @@
     "phone": "+1-213-279-9223",
     "instagram": "https://www.instagram.com/fuseservicela?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   }
 ]

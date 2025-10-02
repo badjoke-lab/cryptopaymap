@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CryptoPayMap Place v2",
+  "title": "CryptoPayMap Place v2.1 (compat)",
   "type": "object",
-  "additionalProperties": false,
+  "additionalProperties": true,
   "required": ["id", "name", "lat", "lng", "verification"],
   "properties": {
     "id": { "type": "string", "minLength": 1 },
@@ -13,24 +13,124 @@
     "country": { "type": "string" },
     "address": { "type": "string" },
     "category": { "type": "string" },
+    "category_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
     "coins": {
       "type": "array",
       "items": { "type": "string" },
       "uniqueItems": true
     },
-    "website": { "type": "string" },
-
+    "website": {
+      "anyOf": [{ "type": "string" }, { "type": "null" }]
+    },
+    "payment": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "accepts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["asset", "chain"],
+            "properties": {
+              "asset": { "type": "string", "pattern": "^[A-Z0-9]{2,10}$" },
+              "chain": {
+                "type": "string",
+                "enum": [
+                  "bitcoin",
+                  "lightning",
+                  "evm-mainnet",
+                  "polygon",
+                  "arbitrum",
+                  "base",
+                  "bsc",
+                  "solana",
+                  "tron",
+                  "ton",
+                  "avalanche"
+                ]
+              },
+              "method": {
+                "type": "string",
+                "enum": ["onchain", "lightning", "lnurl", "bolt12", "other"]
+              },
+              "processor": {
+                "type": "string",
+                "enum": [
+                  "btcpay",
+                  "opennode",
+                  "strike",
+                  "coinbase-commerce",
+                  "nowpayments",
+                  "bitpay",
+                  "self-hosted",
+                  "other"
+                ]
+              },
+              "note": { "type": "string", "maxLength": 200 }
+            }
+          }
+        },
+        "preferred": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[A-Z0-9]{2,10}:[a-z0-9\\-]{2,32}$"
+          },
+          "uniqueItems": true
+        }
+      }
+    },
+    "socials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": ["platform"],
+        "properties": {
+          "platform": {
+            "type": "string",
+            "enum": [
+              "instagram",
+              "facebook",
+              "x",
+              "tiktok",
+              "youtube",
+              "telegram",
+              "whatsapp",
+              "wechat",
+              "line",
+              "threads",
+              "pinterest",
+              "other"
+            ]
+          },
+          "url": { "type": "string" },
+          "handle": { "type": "string" }
+        }
+      }
+    },
     "verification": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "required": ["status"],
       "properties": {
         "status": {
           "type": "string",
           "enum": ["owner", "community", "directory", "unverified"]
         },
-        "last_checked": { "type": "string", "format": "date-time" },
-        "last_verified": { "type": "string", "format": "date-time" },
+        "last_checked": {
+          "anyOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "string", "format": "date" }
+          ]
+        },
+        "last_verified": {
+          "anyOf": [
+            { "type": "string", "format": "date-time" },
+            { "type": "string", "format": "date" }
+          ]
+        },
         "submitted_by": {
           "type": "string",
           "enum": ["owner", "self", "third-party", "unknown"]
@@ -39,8 +139,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": false,
-            "required": ["type", "url"],
+            "additionalProperties": true,
             "properties": {
               "type": {
                 "type": "string",
@@ -58,44 +157,64 @@
               "rule": { "type": "string" },
               "url": { "type": "string" },
               "snippet": { "type": "string", "maxLength": 240 },
-              "when": { "type": "string", "format": "date-time" }
+              "when": {
+                "anyOf": [
+                  { "type": "string", "format": "date-time" },
+                  { "type": "string", "format": "date" }
+                ]
+              }
             }
           }
         },
         "submitted": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "required": ["by", "role", "at"],
           "properties": {
             "by": { "type": "string" },
-            "role": { "type": "string", "enum": ["owner", "non_owner", "unknown"] },
-            "at": { "type": "string", "format": "date-time" }
+            "role": {
+              "type": "string",
+              "enum": ["owner", "non_owner", "unknown"]
+            },
+            "at": {
+              "anyOf": [
+                { "type": "string", "format": "date-time" },
+                { "type": "string", "format": "date" }
+              ]
+            }
           }
         },
         "review": {
           "type": "object",
-          "additionalProperties": false,
+          "additionalProperties": true,
           "required": ["status"],
           "properties": {
-            "status": { "type": "string", "enum": ["approved", "rejected", "pending"] },
+            "status": {
+              "type": "string",
+              "enum": ["approved", "rejected", "pending"]
+            },
             "by": { "type": "string" },
-            "at": { "type": "string", "format": "date-time" },
+            "at": {
+              "anyOf": [
+                { "type": "string", "format": "date-time" },
+                { "type": "string", "format": "date" }
+              ]
+            },
             "notes": { "type": "string", "maxLength": 400 }
           }
         }
       }
     },
-
     "profile": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "summary": { "type": "string", "maxLength": 2000 },
         "gallery": {
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": true,
             "required": ["url"],
             "properties": {
               "url": { "type": "string" },
@@ -110,16 +229,15 @@
         }
       }
     },
-
     "media": {
       "type": "object",
-      "additionalProperties": false,
+      "additionalProperties": true,
       "properties": {
         "images": {
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": false,
+            "additionalProperties": true,
             "required": ["url"],
             "properties": {
               "url": { "type": "string" },

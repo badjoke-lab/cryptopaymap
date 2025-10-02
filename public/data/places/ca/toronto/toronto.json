@@ -2,14 +2,12 @@
   {
     "id": "osm:node:5462455521",
     "name": "⚠︎ Pokito",
-    "category": "restaurant · Unverified",
+    "category": "restaurant",
     "lat": 43.648529,
     "lng": -79.3979838,
     "country": "CA",
     "city": "Toronto",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Pokito, 420, Queen Street West, Kensington-Chinatown, Spadina—Fort York, Toronto, Golden Horseshoe, Ontario, M5V 2A8, Canada",
     "website": "https://www.pokito.ca/",
     "hours": "Mo-Fr 11:30-20:30; Sa 12:00-20:30; Su 12:00-19:30",
@@ -34,28 +32,32 @@
     "twitter": "@PokitoCanada",
     "cuisine": "hawaiian;poke",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:11236899433",
     "name": "⚠︎ Capulus Coffee House",
-    "category": "cafe · Unverified",
+    "category": "cafe",
     "lat": 43.6798628,
     "lng": -79.4334871,
     "country": "CA",
     "city": "Toronto",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Capulus Coffee House, 881, St. Clair Avenue West, Wychwood, Davenport, Toronto, Golden Horseshoe, Ontario, M6C 1C4, Canada",
     "website": "http://www.capulus.ca/",
     "status": "active",
@@ -78,28 +80,32 @@
     "phone": "+14166523232",
     "cuisine": "coffee_shop",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:12596343661",
     "name": "⚠︎ Portals",
-    "category": "events_venue · Unverified",
+    "category": "other",
     "lat": 43.6443973,
     "lng": -79.387899,
     "country": "CA",
     "city": "Toronto",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Portals, Front Street West, Wellington Place, Spadina—Fort York, Toronto, Golden Horseshoe, Ontario, M5V 3C7, Canada",
     "website": "https://portals.love/",
     "hours": "Mo-Su 10:00-02:00",
@@ -121,28 +127,32 @@
       "payment:onchain"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:12814776310",
     "name": "⚠︎ Niagara Tours Company",
-    "category": "travel_agency · Unverified",
+    "category": "travel_agency",
     "lat": 43.6428774,
     "lng": -79.3807292,
     "country": "CA",
     "city": "Toronto",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Niagara Tours Company, 65, Bremner Boulevard, St Lawrence-East Bayfront-The Islands, Spadina—Fort York, Toronto, Golden Horseshoe, Ontario, M5J 0A7, Canada",
     "website": "https://www.niagaratours.ca/",
     "status": "active",
@@ -162,28 +172,32 @@
       "payment:onchain"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:13017253455",
     "name": "⚠︎ SHS Home Renovations",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 43.7283533,
     "lng": -79.2714919,
     "country": "CA",
     "city": "Toronto",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "SHS Home Renovations, 161, Woodfern Drive, Ionview, Scarborough Southwest, Scarborough, Toronto, Golden Horseshoe, Ontario, M1K 2L6, Canada",
     "website": "https://www.shshomerenovations.ca",
     "hours": "Mo-Sa 08:00-18:00",
@@ -206,28 +220,32 @@
     ],
     "phone": "4166708598",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:13076600110",
     "name": "⚠︎ Caring for Couples Counselling Center Inc.",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 43.6707216,
     "lng": -79.401613,
     "country": "CA",
     "city": "Toronto",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Caring for Couples Counselling Center Inc., 206, St George Street, Annex, University—Rosedale, Toronto, Golden Horseshoe, Ontario, M5R 2R6, Canada",
     "website": "https://www.caringforcouples.ca/",
     "status": "active",
@@ -245,15 +263,21 @@
       "website"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   }
 ]
