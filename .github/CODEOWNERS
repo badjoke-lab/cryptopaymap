@@ -1,0 +1,2 @@
+/schema/*             @your-org/schema-admins
+/scripts/validate.ts  @your-org/schema-admins

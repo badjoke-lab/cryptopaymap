@@ -14,7 +14,8 @@
     "cpm:fix:payments": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_v2_hard.ts",
     "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts",
     "cpm:fix:categories": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_categories.ts",
-    "cpm:fix:chain-method": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_payment_chain_method.ts"
+    "cpm:fix:chain-method": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_payment_chain_method.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "fast-xml-parser": "^5.2.5",
@@ -32,9 +33,24 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "autoprefixer": "10.4.19",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.3",
     "postcss": "8.4.38",
     "tailwindcss": "3.4.6",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4"
+  },
+  "lint-staged": {
+    "public/data/places/**/*.json": [
+      "npm run cpm:fix:categories --if-present",
+      "npm run cpm:fix:chain-method --if-present",
+      "npm run cpm:validate"
+    ],
+    "schema/**/*.json": [
+      "npm run cpm:validate"
+    ],
+    "scripts/**/*.ts": [
+      "npm run cpm:validate"
+    ]
   }
 }
