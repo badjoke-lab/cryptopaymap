@@ -12,7 +12,9 @@
     "cpm:migrate": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/migrate_v2.ts",
     "cpm:validate": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/validate.ts",
     "cpm:fix:payments": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_v2_hard.ts",
-    "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts"
+    "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts",
+    "cpm:fix:categories": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_categories.ts",
+    "cpm:fix:chain-method": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_payment_chain_method.ts"
   },
   "dependencies": {
     "fast-xml-parser": "^5.2.5",

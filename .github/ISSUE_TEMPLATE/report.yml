@@ -1,0 +1,40 @@
+name: "Report incorrect info / takedown"
+description: Report an incorrect entry or request temporary hide (disputed).
+title: "[Report] <Business name> - <City, Country>"
+labels: ["report", "moderation"]
+body:
+  - type: input
+    id: business_name
+    attributes:
+      label: Business name
+      placeholder: Example Coffee Roasters
+    validations:
+      required: true
+
+  - type: input
+    id: place_id
+    attributes:
+      label: Place ID (if known)
+      placeholder: "e.g., jp-tokyo-abc123"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: action
+    attributes:
+      label: Requested action
+      options:
+        - Hide temporarily (disputed)
+        - Correct information
+        - Remove permanently
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Details and evidence URLs
+      description: Explain what is wrong and provide links/screenshots.
+      placeholder: "Wrong address. Official page: https://... Screenshot: https://..."
+    validations:
+      required: true

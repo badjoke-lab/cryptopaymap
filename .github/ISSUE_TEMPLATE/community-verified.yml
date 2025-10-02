@@ -1,0 +1,74 @@
+name: "Community Verified: Submission"
+description: Submit a place you visited or verified as a community member (Silver).
+title: "[Community] <Business name> - <City, Country>"
+labels: ["submission", "community", "verification"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide independent proof. One business per issue.
+
+  - type: input
+    id: business_name
+    attributes:
+      label: Business name
+      placeholder: Example Coffee Roasters
+    validations:
+      required: true
+
+  - type: input
+    id: address
+    attributes:
+      label: Address
+      placeholder: 1-2-3 Shibuya, Tokyo, JP
+    validations:
+      required: true
+
+  - type: textarea
+    id: payments
+    attributes:
+      label: Accepted crypto (assets/chains)
+      description: |
+        Example:
+        - BTC (Lightning)
+        - ETH (EVM mainnet)
+      placeholder: "- BTC (Lightning)\n- ETH (EVM mainnet)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: evidence_urls
+    attributes:
+      label: Evidence URLs (>= 2 independent sources)
+      description: Official site, provider directory, social posts, receipt photos, etc.
+      placeholder: "https://example.com/pay\nhttps://x.com/official/status/...\nhttps://user-images.githubusercontent.com/....webp"
+    validations:
+      required: true
+
+  - type: textarea
+    id: profile_summary
+    attributes:
+      label: Optional summary (for card)
+      description: Max ~300 chars. Original text only.
+      placeholder: "I paid with BTC Lightning on 2025-09-20."
+    validations:
+      required: false
+
+  - type: textarea
+    id: gallery_urls
+    attributes:
+      label: Image URLs (up to 4)
+      description: Your own photos or permitted images only.
+      placeholder: "https://user-images.githubusercontent.com/....webp"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Rights & consent
+      options:
+        - label: I am submitting original text/images or have permission to share them.
+          required: true
+        - label: I understand at least two independent evidence URLs are required.
+          required: true
