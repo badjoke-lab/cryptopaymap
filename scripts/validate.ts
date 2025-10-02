@@ -1,243 +1,449 @@
-// scripts/validate.ts
-/* eslint-disable no-console */
+// /scripts/validate.ts
 import fs from "fs";
 import path from "path";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
-// -------- Config --------
-const ROOT = process.cwd();
-const SCHEMA_PATH = process.env.CPM_SCHEMA || path.join("schema", "place.schema.json");
+const INPUT = process.env.CPM_INPUT || "public/data/places";
+const SCHEMA = process.env.CPM_SCHEMA || "schema/place.schema.json";
 
-// If you want to restrict to a single file, set CPM_INPUT. Otherwise we discover targets.
-const SINGLE_INPUT = process.env.CPM_INPUT; // e.g. "public/places.json"
+/** =========================
+ *  Category (w/ normalization)
+ *  ========================= */
 
-// -------- AJV --------
+/** 許可カテゴリ（OSM起点で広めに許容） */
+const CATEGORY_SET = new Set([
+  // 飲食
+  "restaurant",
+  "cafe",
+  "bar",
+  "pub",
+  "fast_food",
+  "bakery",
+  "wine",
+  // 小売
+  "supermarket",
+  "convenience",
+  "grocery",
+  "kiosk",
+  "newsagent",
+  "books",
+  "bookshop",
+  "video_games",
+  "clothes",
+  "shoes",
+  "jewelry",
+  "gift",
+  "electronics",
+  "mobile_phone",
+  "toys",
+  "beauty",
+  "tattoo",
+  "optician",
+  "pharmacy",
+  "butcher",
+  "greengrocer",
+  "furniture",
+  "stationery",
+  "interior_decoration",
+  // サービス・施設
+  "hairdresser",
+  "spa",
+  "gym",
+  "college",
+  "doctors",
+  "dentist",
+  "travel_agency",
+  "car_rental",
+  "motorcycle_rental",
+  "ticket",
+  "community_centre",
+  "nightclub",
+  "music",
+  // ガーデン・農
+  "garden_centre",
+  "farm",
+  // 宿泊・その他
+  "hotel",
+  "lodging",
+  "coworking",
+  "other",
+]);
+
+/** カテゴリ別名 → 正式名 */
+const CATEGORY_ALIAS: Record<string, string> = {
+  // 英米綴り・同義
+  bookstore: "books",
+  book_store: "books",
+  book_shop: "books",
+  community_center: "community_centre",
+  jewellery: "jewelry",
+  clothing: "clothes",
+  mobile: "mobile_phone",
+  phone: "mobile_phone",
+  // マイナー/特殊は other に吸収
+  incense: "other",
+  events_venue: "other",
+};
+
+/** カテゴリ正規化（未知は other） */
+function normalizeCategory(raw: any): string | null {
+  if (typeof raw !== "string") return null;
+  const v = raw.trim().toLowerCase();
+  if (!v) return null;
+  const mapped = CATEGORY_ALIAS[v] || v;
+  return CATEGORY_SET.has(mapped) ? mapped : "other";
+}
+
+/** =========================
+ *  Payment / Social constants
+ *  ========================= */
+
+/** 正式チェーン名 */
+const CHAIN_SET = new Set([
+  "bitcoin",
+  "evm-mainnet",
+  "polygon",
+  "arbitrum",
+  "base",
+  "bsc",
+  "solana",
+  "tron",
+  "ton",
+  "avalanche",
+  "other",
+]);
+
+/** チェーンの別名 → 正式名 */
+const CHAIN_ALIAS: Record<string, string> = {
+  evm: "evm-mainnet",
+  ethereum: "evm-mainnet",
+  eth: "evm-mainnet",
+  btc: "bitcoin",
+};
+
+const METHOD_SET = new Set([
+  "onchain",
+  "lightning",
+  "lnurl",
+  "bolt12",
+  "other",
+]);
+
+const PROCESSOR_SET = new Set([
+  "btcpay",
+  "opennode",
+  "strike",
+  "coinbase-commerce",
+  "nowpayments",
+  "bitpay",
+  "self-hosted",
+  "other",
+]);
+
+const SOCIAL_PLATFORM_SET = new Set([
+  "instagram",
+  "facebook",
+  "x",
+  "tiktok",
+  "youtube",
+  "telegram",
+  "whatsapp",
+  "wechat",
+  "line",
+  "threads",
+  "pinterest",
+  "other",
+]);
+
+/** =========================
+ *  AJV / IO helpers
+ *  ========================= */
+
 const ajv = new Ajv({ allErrors: true, strict: false });
 addFormats(ajv);
 
-// -------- Helpers --------
 function readJson(p: string) {
   return JSON.parse(fs.readFileSync(p, "utf8"));
 }
 
-function collectJsonFiles(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
+function listPlaceFiles(root: string): string[] {
   const out: string[] = [];
-  const walk = (d: string) => {
+  function walk(d: string) {
+    if (!fs.existsSync(d)) return;
     for (const f of fs.readdirSync(d)) {
       const q = path.join(d, f);
-      const st = fs.statSync(q);
-      if (st.isDirectory()) walk(q);
-      else if (q.toLowerCase().endsWith(".json")) out.push(q);
-    }
-  };
-  walk(dir);
-  return out;
-}
-
-function discoverTargets(): string[] {
-  if (SINGLE_INPUT) {
-    return [path.resolve(SINGLE_INPUT)];
-  }
-  const set = new Set<string>();
-  collectJsonFiles(path.join(ROOT, "public", "data", "places")).forEach((f) => set.add(f));
-  const topLevel = path.join(ROOT, "public", "places.json");
-  if (fs.existsSync(topLevel)) set.add(topLevel);
-  return Array.from(set).sort();
-}
-
-// Media policy by verification level
-function levelLimits(level: string | undefined) {
-  if (level === "owner") return { maxImages: 8, maxCaption: 600 };
-  if (level === "community") return { maxImages: 4, maxCaption: 300 };
-  return { maxImages: 0, maxCaption: 0 }; // directory / unverified / undefined
-}
-
-type Accept = {
-  asset?: string;
-  chain?: string;
-  method?: "onchain" | "lightning";
-  processor?: string;
-  evidence?: string[];
-  last_verified?: string;
-  last_checked?: string;
-};
-
-// Known chain aliases → strict ids (internal storage ids)
-const CHAIN_ALIASES: Record<string, string> = {
-  bitcoin: "bitcoin",
-  btc: "bitcoin",
-  lightning: "lightning",
-  ln: "lightning",
-  sol: "solana",
-  solana: "solana",
-  tron: "tron",
-  trc20: "tron",
-  doge: "dogecoin",
-  dogecoin: "dogecoin",
-  ltc: "litecoin",
-  litecoin: "litecoin",
-  eth: "eip155:1",
-  ethereum: "eip155:1",
-  polygon: "eip155:137",
-  matic: "eip155:137",
-  arbitrum: "eip155:42161",
-  optimism: "eip155:10"
-};
-
-const isEvmId = (s: string) => /^eip155:\d+$/.test(s);
-
-// Normalize a chain string to the strict id (without mutating original data)
-function normalizedChain(input: unknown): string | null {
-  if (typeof input !== "string" || !input.trim()) return null;
-  const lower = input.trim().toLowerCase();
-  if (CHAIN_ALIASES[lower]) return CHAIN_ALIASES[lower];
-  if (isEvmId(lower)) return lower;
-  return lower; // return as-is; schema may still reject it
-}
-
-// Payment business rules (without mutating source)
-function validatePaymentRules(place: any, filePath: string, idx: number): string[] {
-  const errs: string[] = [];
-
-  const accepts: Accept[] = place?.payment?.accepts || [];
-  if (!Array.isArray(accepts)) return errs;
-
-  for (let i = 0; i < accepts.length; i++) {
-    const a = accepts[i];
-    const idLabel = `${path.basename(filePath)}[${idx}].payment.accepts[${i}]`;
-
-    const asset = typeof a.asset === "string" ? a.asset.toUpperCase() : "";
-    const chainNorm = normalizedChain(a.chain ?? "");
-
-    // Require asset and chain per schema; here we only add semantic checks
-    if (chainNorm === "lightning" && asset !== "BTC") {
-      errs.push(`${idLabel}: lightning is only valid with asset=BTC`);
-    }
-
-    // method implied defaults (validation only; we don't mutate):
-    // - chain=lightning -> method should be lightning (if present)
-    // - otherwise -> method should be onchain (if present)
-    if (a.method) {
-      if (chainNorm === "lightning" && a.method !== "lightning") {
-        errs.push(`${idLabel}: method must be 'lightning' when chain=lightning`);
-      }
-      if (chainNorm !== "lightning" && a.method === "lightning") {
-        errs.push(`${idLabel}: method 'lightning' is invalid for chain='${chainNorm ?? a.chain}'`);
-      }
-    }
-
-    // Optional: evidence URLs must be non-empty strings (AJV already checks format if schema set)
-    if (a.evidence && !Array.isArray(a.evidence)) {
-      errs.push(`${idLabel}: evidence must be an array of URLs`);
+      const s = fs.statSync(q);
+      if (s.isDirectory()) walk(q);
+      else if (q.endsWith(".json")) out.push(q);
     }
   }
-
-  return errs;
+  if (fs.existsSync(root) && fs.statSync(root).isDirectory()) {
+    walk(root);
+  } else if (root.endsWith(".json")) {
+    out.push(root);
+  }
+  return out.sort();
 }
 
-// Core media/profile policy
-function validateBusinessRules(records: any[], filePath: string): string[] {
+function levelLimits(level: string) {
+  if (level === "owner")
+    return { maxImages: 8, maxCaption: 600, requirePayments: true };
+  if (level === "community")
+    return { maxImages: 4, maxCaption: 300, requirePayments: true };
+  return { maxImages: 0, maxCaption: 0, requirePayments: false }; // directory/unverified
+}
+
+/** =========================
+ *  Normalizers
+ *  ========================= */
+
+function normStr(x: any): string | null {
+  if (typeof x !== "string") return null;
+  const v = x.trim();
+  return v.length ? v : null;
+}
+
+function normalizeAsset(raw: any): string | null {
+  const s = normStr(raw);
+  if (!s) return null;
+  const up = s.toUpperCase();
+  return /^[A-Z0-9]{2,10}$/.test(up) ? up : null;
+}
+
+function normalizeChain(raw: any): string | null {
+  const s = normStr(raw);
+  if (!s) return null;
+  const v = s.toLowerCase();
+  const mapped = CHAIN_ALIAS[v] || v;
+  return mapped;
+}
+
+/** =========================
+ *  Business Rules
+ *  ========================= */
+
+function validateBusinessRules(records: any[], fileLabel: string): string[] {
   const errs: string[] = [];
 
-  records.forEach((r, i) => {
-    const placeId = r.id || `#${i}`;
-    const lvl = r?.verification?.status as string | undefined;
+  for (let i = 0; i < records.length; i++) {
+    const r = records[i];
+    const id = r?.id || `${fileLabel}#${i}`;
+    const lvl = r?.verification?.status;
     const limits = levelLimits(lvl);
 
-    // media limits
-    const imgs = r?.media?.images || [];
+    // 1) profile/media constraints by level
+    const imgs = (r?.media?.images ?? []) as any[];
     if (imgs.length > limits.maxImages) {
-      errs.push(`${path.basename(filePath)}[${i} ${placeId}]: media.images length ${imgs.length} exceeds ${limits.maxImages} for level=${lvl}`);
+      errs.push(
+        `${fileLabel}:${id}: media.images length ${imgs.length} > ${limits.maxImages} (level=${lvl})`,
+      );
     }
     if (imgs.length > 0 && limits.maxImages === 0) {
-      errs.push(`${path.basename(filePath)}[${i} ${placeId}]: media.images not allowed for level=${lvl}`);
+      errs.push(
+        `${fileLabel}:${id}: media/images not allowed for level=${lvl}`,
+      );
     }
-    if (imgs.length > 0) {
-      for (const img of imgs) {
-        const cap = (img?.caption || "") as string;
-        if (cap.length > limits.maxCaption) {
-          errs.push(`${path.basename(filePath)}[${i} ${placeId}]: caption length ${cap.length} exceeds ${limits.maxCaption} for level=${lvl}`);
+    for (let j = 0; j < imgs.length; j++) {
+      const img = imgs[j] || {};
+      const cap = String(img.caption || "");
+      if (cap.length > limits.maxCaption) {
+        errs.push(
+          `${fileLabel}:${id}: media.caption length ${cap.length} > ${limits.maxCaption} (level=${lvl})`,
+        );
+      }
+    }
+    if (r.profile && !(lvl === "owner" || lvl === "community")) {
+      errs.push(`${fileLabel}:${id}: profile present but level=${lvl}`);
+    }
+
+    // 2) category constraints（正規化。未知は other。= エラーにしない）
+    if (typeof r.category === "string") {
+      const before = r.category;
+      const after = normalizeCategory(before);
+      if (after && after !== before) {
+        r.category = after; // 正規化を書き戻し
+      }
+    }
+    if (r.category_confidence != null) {
+      const c = Number(r.category_confidence);
+      if (!(c >= 0 && c <= 1)) {
+        errs.push(
+          `${fileLabel}:${id}: category_confidence out of range (0..1): ${r.category_confidence}`,
+        );
+      }
+    }
+
+    // 3) socials constraints
+    if (Array.isArray(r.socials)) {
+      for (let sIdx = 0; sIdx < r.socials.length; sIdx++) {
+        const s = r.socials[sIdx];
+        if (!s) continue;
+        if (!s.platform || !SOCIAL_PLATFORM_SET.has(s.platform)) {
+          errs.push(`${fileLabel}:${id}: socials[${sIdx}].platform invalid`);
+        }
+        if (!s.url && !s.handle) {
+          errs.push(
+            `${fileLabel}:${id}: socials[${sIdx}] must have url or handle`,
+          );
+        }
+        if (
+          s.handle &&
+          typeof s.handle === "string" &&
+          !/^@?[\w.\-]{1,50}$/.test(s.handle)
+        ) {
+          errs.push(
+            `${fileLabel}:${id}: socials[${sIdx}].handle invalid format`,
+          );
         }
       }
     }
 
-    // profile allowed only for owner/community
-    if (r.profile && !(lvl === "owner" || lvl === "community")) {
-      errs.push(`${path.basename(filePath)}[${i} ${placeId}]: profile is not allowed for level=${lvl}`);
+    // 4) payment constraints（正規化してから検査する）
+    const acc = r?.payment?.accepts;
+    if (limits.requirePayments && (!Array.isArray(acc) || acc.length === 0)) {
+      errs.push(
+        `${fileLabel}:${id}: level=${lvl} requires at least one payment.accepts entry`,
+      );
+    }
+    if (Array.isArray(acc)) {
+      for (let k = 0; k < acc.length; k++) {
+        const a = acc[k];
+        if (!a) continue;
+
+        // asset
+        const assetNorm = normalizeAsset(a.asset);
+        if (!assetNorm) {
+          errs.push(`${fileLabel}:${id}: payment.accepts[${k}].asset invalid`);
+        } else {
+          a.asset = assetNorm; // 正規化
+        }
+
+        // chain
+        const chainNorm = normalizeChain(a.chain);
+        if (!chainNorm || !CHAIN_SET.has(chainNorm)) {
+          const raw = typeof a.chain === "string" ? a.chain : String(a.chain);
+          errs.push(
+            `${fileLabel}:${id}: payment.accepts[${k}].chain invalid (raw="${raw}", norm="${chainNorm}")`,
+          );
+        } else {
+          a.chain = chainNorm; // 正規化
+        }
+
+        // method
+        if (a.method != null && !METHOD_SET.has(String(a.method))) {
+          errs.push(`${fileLabel}:${id}: payment.accepts[${k}].method invalid`);
+        }
+
+        // processor
+        if (a.processor != null && !PROCESSOR_SET.has(String(a.processor))) {
+          errs.push(
+            `${fileLabel}:${id}: payment.accepts[${k}].processor invalid`,
+          );
+        }
+      }
     }
 
-    // payment rules
-    errs.push(...validatePaymentRules(r, filePath, i));
-  });
+    // 5) preferred must reference accepts（正規化後で照合）
+    const preferred = r?.payment?.preferred;
+    if (Array.isArray(preferred) && Array.isArray(acc)) {
+      const set = new Set<string>();
+      for (let q = 0; q < acc.length; q++) {
+        const a = acc[q];
+        const ch = normalizeChain(a?.chain);
+        const as = normalizeAsset(a?.asset);
+        if (as && ch) set.add(`${as}:${ch}`);
+      }
+      for (let pIdx = 0; pIdx < preferred.length; pIdx++) {
+        const pr = preferred[pIdx];
+        if (
+          typeof pr !== "string" ||
+          !/^[A-Z0-9]{2,10}:[a-z0-9\-]{2,32}$/.test(pr)
+        ) {
+          errs.push(
+            `${fileLabel}:${id}: payment.preferred[${pIdx}] invalid format`,
+          );
+        } else if (!set.has(pr)) {
+          errs.push(
+            `${fileLabel}:${id}: payment.preferred[${pIdx}] not found in accepts (${pr})`,
+          );
+        }
+      }
+    }
+  }
 
   return errs;
 }
 
+/** =========================
+ *  Main
+ *  ========================= */
+
 function main() {
-  const schema = readJson(path.resolve(SCHEMA_PATH));
+  const schema = readJson(SCHEMA);
   const validate = ajv.compile(schema);
 
-  const targets = discoverTargets();
-  if (targets.length === 0) {
-    console.log("No JSON targets found. Nothing to validate.");
-    process.exit(0);
+  const files = listPlaceFiles(INPUT);
+  if (files.length === 0) {
+    console.log("OK: no JSON targets found (nothing to validate).");
+    return;
   }
 
   let schemaErrs = 0;
-  let policyErrs = 0;
-  let totalPlaces = 0;
+  let ruleErrs = 0;
+  let totalRecords = 0;
 
-  for (const file of targets) {
-    const abs = path.resolve(file);
-    const json = readJson(abs);
+  for (let fi = 0; fi < files.length; fi++) {
+    const f = files[fi];
+    const js = readJson(f);
+    const arr = Array.isArray(js)
+      ? js
+      : js.places || js.items || js.results || js.data || js.entries || [];
+    if (!Array.isArray(arr)) continue;
 
-    // allow either array file or wrapped object with places/items/results/data/entries
-    const records: any[] = Array.isArray(json)
-      ? json
-      : (json.places || json.items || json.results || json.data || json.entries || []);
-
-    if (!Array.isArray(records)) {
-      // If file is not a place list, skip silently (it might be summary or other data)
-      continue;
-    }
-
-    // AJV schema validation (per place object)
-    const thisSchemaErrors: string[] = [];
-    for (const rec of records) {
-      const ok = validate(rec);
+    // JSON Schema
+    const thisSchemaErrs: string[] = [];
+    for (let pi = 0; pi < arr.length; pi++) {
+      const p = arr[pi];
+      const ok = validate(p);
       if (!ok) {
-        const errs = (validate.errors || []).map(
-          (e) => `${path.basename(file)}: ${e.instancePath || "/"} ${e.message}`
-        );
-        thisSchemaErrors.push(...errs);
+        const id = p && p.id ? p.id : "unknown";
+        const errors = validate.errors || [];
+        for (let ei = 0; ei < errors.length; ei++) {
+          const e = errors[ei];
+          thisSchemaErrs.push(
+            `${path.basename(f)}: ${id}: ${e.instancePath || "/"} ${e.message}`,
+          );
+        }
       }
     }
-
-    if (thisSchemaErrors.length > 0) {
-      schemaErrs += thisSchemaErrors.length;
-      console.error("\nSchema errors in", file);
-      console.error(thisSchemaErrors.join("\n"));
+    if (thisSchemaErrs.length) {
+      console.error(`Schema errors in ${f}`);
+      console.error(thisSchemaErrs.join("\n"));
+      schemaErrs += thisSchemaErrs.length;
     }
 
     // Business rules
-    const br = validateBusinessRules(records, file);
-    if (br.length > 0) {
-      policyErrs += br.length;
-      console.error("\nBusiness rule errors in", file);
-      console.error(br.join("\n"));
+    const brErrs = validateBusinessRules(arr, path.basename(f));
+    if (brErrs.length) {
+      console.error(`Business rule errors in ${f}`);
+      console.error(brErrs.join("\n"));
+      ruleErrs += brErrs.length;
     }
 
-    totalPlaces += records.length;
+    totalRecords += arr.length;
   }
 
-  if (schemaErrs + policyErrs > 0) {
-    console.error(`\nValidation failed. Schema errors: ${schemaErrs}, Business rule errors: ${policyErrs}`);
+  if (schemaErrs || ruleErrs) {
+    console.error(
+      `Validation failed. Schema errors: ${schemaErrs}, Business rule errors: ${ruleErrs}`,
+    );
     process.exit(1);
   }
 
-  console.log(`OK: ${totalPlaces} records passed schema + business rules across ${targets.length} file(s).`);
+  console.log(
+    `OK: ${totalRecords} records passed schema + business rules across ${files.length} file(s).`,
+  );
 }
 
 main();

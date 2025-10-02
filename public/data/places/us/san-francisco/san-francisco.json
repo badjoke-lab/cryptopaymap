@@ -2,14 +2,12 @@
   {
     "id": "osm:node:10687965519",
     "name": "⚠︎ Recotur Cia. Ltda.",
-    "category": "travel_agency · Unverified",
+    "category": "travel_agency",
     "lat": 0.3520946,
     "lng": -78.1191785,
     "country": "US",
     "city": "San Francisco",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Recotur Cia. Ltda., 593, José Joaquin de Olmedo, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
     "hours": "Mo-Fr 09:00-13:00, Mo-Fr 15:00-18:30",
     "status": "active",
@@ -33,29 +31,33 @@
     ],
     "phone": "+593969098863",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": true,
-      "cash": true
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:12026421265",
     "name": "⚠︎ Los Pinos",
-    "category": "cafe · Unverified",
+    "category": "cafe",
     "lat": 0.353644,
     "lng": -78.1176963,
     "country": "US",
     "city": "San Francisco",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Los Pinos, Eusebio Borrero, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
     "hours": "Mo-Sa 08:00-13:00 , Mo-Sa 17:00-20h30",
     "status": "active",
@@ -75,29 +77,33 @@
       "payment:onchain"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:12053286920",
     "name": "⚠︎ IFECS (International Fund For Education Charlie Studies)",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 0.3537048,
     "lng": -78.1219275,
     "country": "US",
     "city": "San Francisco",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "IFECS (International Fund For Education Charlie Studies), 225, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100105, Ecuador",
     "hours": "Mo-Fr 09:00-18:00",
     "status": "active",
@@ -118,29 +124,33 @@
     ],
     "phone": "+593 98 339 6885",
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   },
   {
     "id": "osm:node:13012002745",
     "name": "⚠︎ Oficinas Legales Ariadna Jaramillo y Asociados",
-    "category": "other · Unverified",
+    "category": "other",
     "lat": 0.3538701,
     "lng": -78.1230394,
     "country": "US",
     "city": "San Francisco",
-    "coins": [
-      "BTC"
-    ],
+    "coins": ["BTC"],
     "address": "Oficinas Legales Ariadna Jaramillo y Asociados, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
     "status": "active",
     "source": "osm",
@@ -155,16 +165,22 @@
       "payment:onchain"
     ],
     "payment": {
-      "lightning": true,
-      "onchain": true,
-      "credit_cards": false,
-      "cash": false
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "other"
+        }
+      ],
+      "preferred": []
     },
     "website": null,
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
       "sources": []
-    }
+    },
+    "pending_assets": []
   }
 ]
