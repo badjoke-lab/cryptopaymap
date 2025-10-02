@@ -7,7 +7,9 @@
     "lng": -58.3729645,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "The Kilkenny, 399, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina",
     "hours": "Mo 00:00-03:00; Tu-Fr 00:30-05:00; Sa 18:00-24:00; Su 00:00-03:00,18:00-24:00",
     "status": "active",
@@ -43,7 +45,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.803Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -55,7 +64,9 @@
     "lng": -58.3663691,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Rodizio, 838, Avenida Alicia Moreau de Justo, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1107AAV, Argentina",
     "website": "http://rodizio.com.ar/",
     "hours": "Mo-Su 12:00-01:00",
@@ -90,7 +101,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -102,7 +120,9 @@
     "lng": -58.4334892,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Pop Store, 1995, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina",
     "hours": "24/7",
     "status": "active",
@@ -137,7 +157,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.803Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -149,7 +176,9 @@
     "lng": -58.428205,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Rita Cafe, 1595, Armenia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414BMK, Argentina",
     "status": "active",
     "source": "osm",
@@ -180,7 +209,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.803Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -192,7 +228,9 @@
     "lng": -58.3704922,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Kiosko Alem, Avenida Leandro N. Alem, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAC, Argentina",
     "status": "active",
     "source": "osm",
@@ -220,7 +258,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.804Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -232,7 +277,9 @@
     "lng": -58.5389433,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Librería January, 2131, 91 - San Lorenzo, Ciudad del Libertador General San Martín, Partido de General San Martín, Buenos Aires, B1650BQA, Argentina",
     "website": "https://januarylibreria.com.ar/",
     "hours": "Mo-Sa 08:00-18:00",
@@ -269,7 +316,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -281,7 +335,9 @@
     "lng": -58.4256336,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Caracas Bar, 4802, Guatemala, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BUN, Argentina",
     "hours": "Mo 18:00-24:00; Tu-Th 00:00-02:00,18:00-24:00; Fr 00:00-03:00,19:00-24:00; Sa 00:00-04:30,20:00-24:00; Su 00:00-04:30",
     "status": "active",
@@ -317,7 +373,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.804Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -329,7 +392,9 @@
     "lng": -58.4316702,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Marlon, Pasaje Coronel Cabrer, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DKD, Argentina",
     "status": "active",
     "source": "osm",
@@ -358,7 +423,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.805Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -370,7 +442,9 @@
     "lng": -58.460068,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Oslo, Blanco Encalada, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAS, Argentina",
     "website": "https://oslobebidas.com.ar/",
     "hours": "Mo-Sa 09:30-22:00",
@@ -402,7 +476,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -414,7 +495,9 @@
     "lng": -58.4367268,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Negroni Bistro & Sushi Bar, Mariscal Antonio José de Sucre, Bajo Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428DUB, Argentina",
     "status": "active",
     "source": "osm",
@@ -444,7 +527,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.805Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -456,7 +546,9 @@
     "lng": -57.7405181,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Aleph Citadel, Boulevard Bartolomé Mitre, General Mansilla, Partido de Magdalena, Buenos Aires, B1911BRQ, Argentina",
     "website": "https://alephcitadel.com/",
     "status": "active",
@@ -490,7 +582,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:51.255Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -502,7 +601,9 @@
     "lng": -58.3663089,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Rodizinho, Juana Manuela Gorriti, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1100AAA, Argentina",
     "hours": "Mo-Su 10:00-03:00",
     "status": "active",
@@ -534,7 +635,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -546,7 +654,9 @@
     "lng": -58.4537157,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Lucent, 1534, Congreso, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1428, Argentina",
     "website": "https://www.instagram.com/lucent.clinica/",
     "status": "active",
@@ -580,7 +690,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.120Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -592,7 +709,9 @@
     "lng": -58.4348733,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Bucarest, 659, Avenida Raúl Scalabrini Ortiz, Villa Crespo, Buenos Aires, Comuna 15, Ciudad Autónoma de Buenos Aires, C1414DNG, Argentina",
     "status": "active",
     "source": "osm",
@@ -622,7 +741,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -634,7 +760,9 @@
     "lng": -58.3764438,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Hilade Blanco, Chacabuco, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1067ABB, Argentina",
     "status": "active",
     "source": "osm",
@@ -663,7 +791,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -675,7 +810,9 @@
     "lng": -58.3794429,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Kiosko CityMax, Suipacha, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1008, Argentina",
     "status": "active",
     "source": "osm",
@@ -704,7 +841,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -716,7 +860,9 @@
     "lng": -58.3802297,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Jacaranda Rentals, Adolfo Alsina, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1091AAQ, Argentina",
     "status": "active",
     "source": "osm",
@@ -743,7 +889,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -755,7 +908,9 @@
     "lng": -58.3636798,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "PublicBar, Azucena Maizani, Puerto Madero, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1107, Argentina",
     "status": "active",
     "source": "osm",
@@ -783,7 +938,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -795,7 +957,9 @@
     "lng": -58.2433209,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Autoservicio San Cayetano, 558, Montserrat, Don Orione, Zeballos, Partido de Florencio Varela, Buenos Aires, 1888, Argentina",
     "hours": "Mo-Sa 09:00-13:00 17:30-20:30; Su 09:00-13:00",
     "status": "active",
@@ -830,7 +994,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -842,7 +1013,9 @@
     "lng": -58.3757225,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "GR Relojería-Joyería, Florida, Microcentro, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina",
     "status": "active",
     "source": "osm",
@@ -870,7 +1043,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -882,7 +1062,9 @@
     "lng": -58.3799066,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Calzados Zarpas, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
     "status": "active",
     "source": "osm",
@@ -910,7 +1092,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:50.806Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -922,7 +1111,9 @@
     "lng": -58.3799532,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Bonche, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
     "website": "https://instagram.com/bonchebarber?igshid=YmMyMTA2M2Y=",
     "status": "active",
@@ -954,7 +1145,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.448Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -966,7 +1164,9 @@
     "lng": -58.3808859,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "El Bar de Mon, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
     "status": "active",
     "source": "osm",
@@ -994,7 +1194,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1006,7 +1213,9 @@
     "lng": -58.3747025,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tiempo de Vinos, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1058, Argentina",
     "status": "active",
     "source": "osm",
@@ -1034,7 +1243,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1046,7 +1262,9 @@
     "lng": -58.3765896,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Maxy Accesorios, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina",
     "status": "active",
     "source": "osm",
@@ -1074,7 +1292,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1086,7 +1311,9 @@
     "lng": -58.3806257,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Sanguland, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
     "status": "active",
     "source": "osm",
@@ -1114,7 +1341,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1126,7 +1360,9 @@
     "lng": -58.3785896,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "El Buda del Este, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
     "status": "active",
     "source": "osm",
@@ -1154,7 +1390,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1166,7 +1409,9 @@
     "lng": -58.3784292,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Artesanías Argentinas, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
     "status": "active",
     "source": "osm",
@@ -1194,7 +1439,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1206,7 +1458,9 @@
     "lng": -58.3766977,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Lhobeard, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina",
     "status": "active",
     "source": "osm",
@@ -1234,7 +1488,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1246,7 +1507,9 @@
     "lng": -58.3752666,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elif Tour, Florida, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina",
     "status": "active",
     "source": "osm",
@@ -1274,7 +1537,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1286,7 +1556,9 @@
     "lng": -58.3759713,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Mister Cuero, Avenida Córdoba, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1054AAC, Argentina",
     "status": "active",
     "source": "osm",
@@ -1314,7 +1586,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1326,7 +1605,9 @@
     "lng": -58.391867,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "La casa del celular, Avenida Entre Ríos, San Cristóbal, Buenos Aires, Comuna 3, Ciudad Autónoma de Buenos Aires, C1080ABC, Argentina",
     "status": "active",
     "source": "osm",
@@ -1354,7 +1635,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1366,7 +1654,9 @@
     "lng": -58.3895896,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Ticket Band, Bartolomé Mitre, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAG, Argentina",
     "status": "active",
     "source": "osm",
@@ -1394,7 +1684,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1406,7 +1703,9 @@
     "lng": -58.3878532,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "La kiosquetica, Paraná, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1017, Argentina",
     "status": "active",
     "source": "osm",
@@ -1435,7 +1734,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1447,7 +1753,9 @@
     "lng": -58.3849038,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "La Verduleria, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAC, Argentina",
     "status": "active",
     "source": "osm",
@@ -1475,7 +1783,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1487,7 +1802,9 @@
     "lng": -58.3835336,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Agustín Imperio Joyería Libertad, Sarmiento, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAL, Argentina",
     "status": "active",
     "source": "osm",
@@ -1515,7 +1832,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1527,7 +1851,9 @@
     "lng": -58.3822671,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Gondolveo Hombre, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina",
     "status": "active",
     "source": "osm",
@@ -1555,7 +1881,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1567,7 +1900,9 @@
     "lng": -58.3822256,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Don Sodio Grow Shop, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina",
     "status": "active",
     "source": "osm",
@@ -1595,7 +1930,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1607,7 +1949,9 @@
     "lng": -58.3836273,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Watch Doctors, Libertad, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAZ, Argentina",
     "status": "active",
     "source": "osm",
@@ -1635,7 +1979,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1647,7 +1998,9 @@
     "lng": -58.3842692,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Óptica Occhiali 26, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAZ, Argentina",
     "status": "active",
     "source": "osm",
@@ -1675,7 +2028,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1687,7 +2047,9 @@
     "lng": -58.3879895,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Sempre, Avenida Córdoba, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1055AAR, Argentina",
     "status": "active",
     "source": "osm",
@@ -1715,7 +2077,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1727,7 +2096,9 @@
     "lng": -58.391388,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Plata o plomo, Avenida Santa Fe, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1060ABP, Argentina",
     "status": "active",
     "source": "osm",
@@ -1755,7 +2126,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1767,7 +2145,9 @@
     "lng": -58.3861369,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Agustín by Recoleta, Arenales, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1012AAY, Argentina",
     "status": "active",
     "source": "osm",
@@ -1795,7 +2175,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1807,7 +2194,9 @@
     "lng": -58.4064632,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Rivka Zibelman, Charcas, Barrio Norte, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1425BMG, Argentina",
     "status": "active",
     "source": "osm",
@@ -1835,7 +2224,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1847,7 +2243,9 @@
     "lng": -58.4064218,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tribu Market, General Lucio Norberto Mansilla, Barrio Norte, Recoleta, Buenos Aires, Comuna 2, Ciudad Autónoma de Buenos Aires, C1425BMG, Argentina",
     "status": "active",
     "source": "osm",
@@ -1875,7 +2273,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1887,7 +2292,9 @@
     "lng": -58.3827731,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Work-Office, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAB, Argentina",
     "status": "active",
     "source": "osm",
@@ -1915,7 +2322,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.046Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1927,7 +2341,9 @@
     "lng": -58.3862407,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Apolo Games, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043ABN, Argentina",
     "website": "http://apologames.com.ar/",
     "status": "active",
@@ -1956,7 +2372,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:51.413Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1968,7 +2391,9 @@
     "lng": -58.4359136,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Aura, Avenida Juan Bautista Justo, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWS, Argentina",
     "status": "active",
     "source": "osm",
@@ -1997,7 +2422,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2009,7 +2441,9 @@
     "lng": -58.4357877,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "After Office TRENDY Miercoles Palermo, Gorriti, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWF, Argentina",
     "status": "active",
     "source": "osm",
@@ -2038,7 +2472,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2050,7 +2491,9 @@
     "lng": -58.4366418,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Famous Loungebar, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425FWB, Argentina",
     "status": "active",
     "source": "osm",
@@ -2080,7 +2523,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2092,7 +2542,9 @@
     "lng": -58.4340993,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Ganesha - Arts & Pizza, 5519, Paraguay, Palermo Hollywood, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BTK, Argentina",
     "status": "active",
     "source": "osm",
@@ -2127,7 +2579,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2139,7 +2598,9 @@
     "lng": -58.4301011,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Oslo, Báez, Las Cañitas, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1426BRH, Argentina",
     "status": "active",
     "source": "osm",
@@ -2168,7 +2629,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2180,7 +2648,9 @@
     "lng": -58.461736,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Liberia BBM, Avenida Rivadavia, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GLL, Argentina",
     "status": "active",
     "source": "osm",
@@ -2209,7 +2679,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2221,7 +2698,9 @@
     "lng": -58.4598489,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Oszadia, Membrillar, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GSB, Argentina",
     "status": "active",
     "source": "osm",
@@ -2250,7 +2729,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2262,7 +2748,9 @@
     "lng": -58.4363961,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Lapelu Rulitos, Avenida Acoyte, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEF, Argentina",
     "status": "active",
     "source": "osm",
@@ -2292,7 +2780,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2304,7 +2799,9 @@
     "lng": -58.4360499,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Dario Andreoli, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CER, Argentina",
     "status": "active",
     "source": "osm",
@@ -2332,7 +2829,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2344,7 +2848,9 @@
     "lng": -58.4363078,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "4995, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEE, Argentina",
     "status": "active",
     "source": "osm",
@@ -2373,7 +2879,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.069Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2385,7 +2898,9 @@
     "lng": -58.4497434,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Puerta Uno Bar, 1667, Juramento, Barrio Chino, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AID, Argentina",
     "website": "https://www.puertauno.com",
     "status": "active",
@@ -2417,7 +2932,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.906Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2429,7 +2951,9 @@
     "lng": -58.4854212,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Forlans Hnas, Blanco Encalada, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DOD, Argentina",
     "status": "active",
     "source": "osm",
@@ -2458,7 +2982,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.255Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2470,7 +3001,9 @@
     "lng": -58.4837389,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Ykonos Desarrollos, Avenida Mendoza, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, 1431, Argentina",
     "website": "https://www.ykonos.com/",
     "status": "active",
@@ -2499,7 +3032,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:56.276Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2511,7 +3051,9 @@
     "lng": -58.3936089,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Juegos Mentales - Lomas de Zamora, Avenida Alsina, Banfield, Partido de Lomas de Zamora, Buenos Aires, 1828, Argentina",
     "website": "https://juegosmentales.ar/",
     "status": "active",
@@ -2540,7 +3082,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.709Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2552,7 +3101,9 @@
     "lng": -58.4003356,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Talles grandes Sabah Desing Vestidos de Fiesta, Mariano Boedo, Lomitas, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, B1832, Argentina",
     "status": "active",
     "source": "osm",
@@ -2580,7 +3131,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2592,7 +3150,9 @@
     "lng": -58.4935119,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Calan Fava, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2620,7 +3180,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2632,7 +3199,9 @@
     "lng": -58.4961368,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Nestor1107, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2660,7 +3229,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2672,7 +3248,9 @@
     "lng": -58.495712,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Carros Ariel y Alan libre 4 puesto 32, Del Riego, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2700,7 +3278,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2712,7 +3297,9 @@
     "lng": -58.4949193,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tienda el tano, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2741,7 +3328,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2753,7 +3347,9 @@
     "lng": -58.4974554,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Agricola il Giardino, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2781,7 +3377,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2793,7 +3396,9 @@
     "lng": -58.4975971,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "La brusquita, De la Siembra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2821,7 +3426,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2833,7 +3445,9 @@
     "lng": -58.4972108,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tienda el tano, De la Raíz, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2863,7 +3477,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2875,7 +3496,9 @@
     "lng": -58.49645,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Carros Juan Carlos, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2903,7 +3526,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2915,7 +3545,9 @@
     "lng": -58.4938193,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Carlos Bayon, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2943,7 +3575,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2955,7 +3594,9 @@
     "lng": -58.4934796,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Rosa de Saron, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -2983,7 +3624,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2995,7 +3643,9 @@
     "lng": -58.4916129,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Lo de nico, Del Fruto, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -3023,7 +3673,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3035,7 +3692,9 @@
     "lng": -58.4971339,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Gayel 333, De la Flor, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -3063,7 +3722,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3075,7 +3741,9 @@
     "lng": -58.4970276,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Gayel 333, De la Tierra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -3103,7 +3771,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3115,7 +3790,9 @@
     "lng": -58.5005734,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fusion 3, Avenida de Circunvalación, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
     "status": "active",
     "source": "osm",
@@ -3143,7 +3820,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3155,7 +3839,9 @@
     "lng": -58.373284,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Espacio Cultural Bitcoin, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina",
     "status": "active",
     "source": "osm",
@@ -3183,7 +3869,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:51.674Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3195,7 +3888,9 @@
     "lng": -58.4578748,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "L´Aperó, 1800, Iberá, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1429, Argentina",
     "website": "https://www.instagram.com/lapero.ba/",
     "status": "active",
@@ -3230,7 +3925,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.338Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3242,7 +3944,9 @@
     "lng": -58.3781021,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "MT Ballroom, 625, Esmeralda, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1007ABH, Argentina",
     "status": "active",
     "source": "osm",
@@ -3277,7 +3981,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.120Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3289,7 +4000,9 @@
     "lng": -58.4909031,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Coffee Bar Rosa, Doctor Pedro Ignacio Rivera, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DUB, Argentina",
     "status": "active",
     "source": "osm",
@@ -3319,7 +4032,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.120Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3331,7 +4051,9 @@
     "lng": -58.4274029,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Boga. Café & vinos, 1790, Gurruchaga, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DMJ, Argentina",
     "status": "active",
     "source": "osm",
@@ -3363,7 +4085,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.120Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3375,7 +4104,9 @@
     "lng": -58.4251856,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Martinelli, 1779, Malabia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina",
     "website": "https://martinellicaffe.com.ar",
     "status": "active",
@@ -3410,7 +4141,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:53.020Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3422,7 +4160,9 @@
     "lng": -58.4165896,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Motohoy, 3544, Avenida Córdoba, Almagro, Buenos Aires, Comuna 5, Ciudad Autónoma de Buenos Aires, C1188, Argentina",
     "status": "active",
     "source": "osm",
@@ -3453,7 +4193,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.338Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3465,7 +4212,9 @@
     "lng": -58.4935405,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "MC Carnes Premium, 1729, Remedios de Escalada de San Martín, Florida, Vicente López, Partido de Vicente López, Buenos Aires, 1602, Argentina",
     "hours": "Mo-Fr 08:00-20:00",
     "status": "active",
@@ -3499,7 +4248,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.338Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3511,7 +4267,9 @@
     "lng": -58.4543458,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Regalos Goya, 1849, Avenida Cabildo, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAA, Argentina",
     "website": "https://regalosgoya.com.ar/",
     "hours": "Mo-Sa 10:00-20:00",
@@ -3545,7 +4303,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.527Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3557,7 +4322,9 @@
     "lng": -58.4973484,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tabaquería Amero, 2015, Doctor Guillermo Rawson, Martínez, Partido de San Isidro, Buenos Aires, 1640, Argentina",
     "website": "https://www.ameroshop.com.ar/",
     "hours": "Mo-Sa 11:00-20:00",
@@ -3592,7 +4359,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:53.225Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3604,7 +4378,9 @@
     "lng": -58.3819639,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Academia Sports Light, A. Lugano, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, 1832, Argentina",
     "status": "active",
     "source": "osm",
@@ -3633,7 +4409,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.527Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3645,7 +4428,9 @@
     "lng": -58.3994632,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Jardín Los Bajitos, 3582, Machain, Pescopagano, Lanús Oeste, Partido de Lanús, Buenos Aires, B1823, Argentina",
     "website": "https://linktr.ee/losbajitoslanus",
     "hours": "Mo-Fr 08:00-17:00",
@@ -3682,7 +4467,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:52.528Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -3694,7 +4486,9 @@
     "lng": -58.5024151,
     "country": "AR",
     "city": "Buenos Aires",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "1270, Avenida Larrazábal, Mataderos, Buenos Aires, Comuna 9, Ciudad Autónoma de Buenos Aires, 1440, Argentina",
     "hours": "Mo-Sa 07:00-15:00; We-Fr 07:00-15:00,18:00-03:00",
     "status": "active",
@@ -3732,7 +4526,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:01:52.528Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   }
