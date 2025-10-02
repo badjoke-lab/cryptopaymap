@@ -7,7 +7,9 @@
     "lng": -79.3979838,
     "country": "CA",
     "city": "Toronto",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Pokito, 420, Queen Street West, Kensington-Chinatown, Spadina—Fort York, Toronto, Golden Horseshoe, Ontario, M5V 2A8, Canada",
     "website": "https://www.pokito.ca/",
     "hours": "Mo-Fr 11:30-20:30; Sa 12:00-20:30; Su 12:00-19:30",
@@ -45,7 +47,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:56.446Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -57,7 +66,9 @@
     "lng": -79.4334871,
     "country": "CA",
     "city": "Toronto",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Capulus Coffee House, 881, St. Clair Avenue West, Wychwood, Davenport, Toronto, Golden Horseshoe, Ontario, M6C 1C4, Canada",
     "website": "http://www.capulus.ca/",
     "status": "active",
@@ -93,7 +104,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:56.557Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -105,7 +123,9 @@
     "lng": -79.387899,
     "country": "CA",
     "city": "Toronto",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Portals, Front Street West, Wellington Place, Spadina—Fort York, Toronto, Golden Horseshoe, Ontario, M5V 3C7, Canada",
     "website": "https://portals.love/",
     "hours": "Mo-Su 10:00-02:00",
@@ -140,7 +160,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:57.224Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -152,7 +179,9 @@
     "lng": -79.3807292,
     "country": "CA",
     "city": "Toronto",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Niagara Tours Company, 65, Bremner Boulevard, St Lawrence-East Bayfront-The Islands, Spadina—Fort York, Toronto, Golden Horseshoe, Ontario, M5J 0A7, Canada",
     "website": "https://www.niagaratours.ca/",
     "status": "active",
@@ -185,7 +214,19 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 1,
+        "checkedAt": "2025-10-02T16:01:56.599Z",
+        "evidence": [
+          {
+            "url": "https://www.niagaratours.ca/",
+            "type": "text",
+            "match": "pay with bitcoin"
+          }
+        ]
+      }
     },
     "pending_assets": []
   },
@@ -197,7 +238,9 @@
     "lng": -79.2714919,
     "country": "CA",
     "city": "Toronto",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "SHS Home Renovations, 161, Woodfern Drive, Ionview, Scarborough Southwest, Scarborough, Toronto, Golden Horseshoe, Ontario, M1K 2L6, Canada",
     "website": "https://www.shshomerenovations.ca",
     "hours": "Mo-Sa 08:00-18:00",
@@ -233,7 +276,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:56.597Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -245,7 +295,9 @@
     "lng": -79.401613,
     "country": "CA",
     "city": "Toronto",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Caring for Couples Counselling Center Inc., 206, St George Street, Annex, University—Rosedale, Toronto, Golden Horseshoe, Ontario, M5R 2R6, Canada",
     "website": "https://www.caringforcouples.ca/",
     "status": "active",
@@ -276,7 +328,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:01:56.553Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   }

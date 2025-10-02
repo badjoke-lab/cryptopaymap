@@ -7,7 +7,9 @@
     "lng": -78.1191785,
     "country": "US",
     "city": "San Francisco",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Recotur Cia. Ltda., 593, José Joaquin de Olmedo, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
     "hours": "Mo-Fr 09:00-13:00, Mo-Fr 15:00-18:30",
     "status": "active",
@@ -45,7 +47,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:45.260Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -57,7 +66,9 @@
     "lng": -78.1176963,
     "country": "US",
     "city": "San Francisco",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Los Pinos, Eusebio Borrero, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
     "hours": "Mo-Sa 08:00-13:00 , Mo-Sa 17:00-20h30",
     "status": "active",
@@ -91,7 +102,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:45.260Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -103,7 +121,9 @@
     "lng": -78.1219275,
     "country": "US",
     "city": "San Francisco",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "IFECS (International Fund For Education Charlie Studies), 225, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100105, Ecuador",
     "hours": "Mo-Fr 09:00-18:00",
     "status": "active",
@@ -138,7 +158,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:45.260Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -150,7 +177,9 @@
     "lng": -78.1230394,
     "country": "US",
     "city": "San Francisco",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Oficinas Legales Ariadna Jaramillo y Asociados, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
     "status": "active",
     "source": "osm",
@@ -179,7 +208,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:45.260Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   }

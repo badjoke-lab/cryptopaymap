@@ -7,7 +7,9 @@
     "lng": -99.1758289,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "FlowSuites WTC, 24, Avenida de Parque, Colonia Nápoles, Ciudad de México, Benito Juárez, Ciudad de México, 03810, México",
     "website": "https://www.flowsuites.com/wtc",
     "status": "active",
@@ -42,7 +44,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.029Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -54,7 +63,9 @@
     "lng": -99.1930683,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Prolongación Hidalgo, Colonia Industrial San Nicolás Tlaxcolpan, Tlalnepantla, Tlalnepantla de Baz, Estado de México, 54030, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -90,7 +101,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.103Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -102,7 +120,9 @@
     "lng": -99.0208,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Las Palmas, Colonia Citlalli, Ciudad de México, Iztapalapa, Pueblo Santiago Acahualtepec, Ciudad de México, 09500, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -135,7 +155,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.161Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -147,7 +174,9 @@
     "lng": -98.9636726,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida del Peñón, Chimalhuacán, Estado de México, 56356, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -180,7 +209,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.144Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -192,7 +228,9 @@
     "lng": -99.1820113,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Corregidora, Colonia Camiseta Calvario, Colonia Miguel Hidalgo, Ciudad de México, Tlalpan, Ciudad de México, 14267, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -225,7 +263,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.044Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -237,7 +282,9 @@
     "lng": -99.2451963,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Alfonso Corona del Rosal, Colonia Cuauhtémoc, Ciudad de México, La Magdalena Contreras, Ciudad de México, 10340, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -270,7 +317,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.211Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -282,7 +336,9 @@
     "lng": -99.1172122,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Garrido, Colonia Aragón, Ciudad de México, Gustavo A. Madero, Ciudad de México, 07050, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -316,7 +372,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.190Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -328,7 +391,9 @@
     "lng": -99.1130005,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, 5102, Avenida Congreso de la Unión, Colonia Tablas de San Agustín, Ciudad de México, Gustavo A. Madero, Ciudad de México, 07860, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -364,7 +429,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.386Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -376,7 +448,9 @@
     "lng": -99.2712999,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida San Mateo Nopala, Rinconada de San Mateo, Praderas de San Mateo, Naucalpan de Juárez, Estado de México, 53220, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -409,7 +483,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.425Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -421,7 +502,9 @@
     "lng": -99.2370611,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Estacas, San Luis Tlatilco, San Bartolo Naucalpan, Naucalpan de Juárez, Estado de México, 53470, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -454,7 +537,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.550Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -466,7 +556,9 @@
     "lng": -99.1867336,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Azcapotzalco, San Simón Pochtlan, Ciudad de México, Azcapotzalco, Ciudad de México, 02000, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -500,7 +592,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.343Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -512,7 +611,9 @@
     "lng": -99.1403594,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Delibes, Colonia Guadalupe Victoria, Ciudad de México, Gustavo A. Madero, Ciudad de México, 07790, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -545,7 +646,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.626Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -557,7 +665,9 @@
     "lng": -98.947637,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Carretera Los Reyes - Zacatepec, El Pino, Los Reyes Acaquilpan, La Paz, Estado de México, 56500, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -590,7 +700,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.481Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -602,7 +719,9 @@
     "lng": -99.1571261,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, 29, Avenida Ribera de San Cosme, Santa María la Ribera, Ciudad de México, Cuauhtémoc, Ciudad de México, 06400, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -637,7 +756,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.766Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -649,7 +775,9 @@
     "lng": -99.0432886,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Tláhuac, Colonia Santiago Centro, Ciudad de México, Tláhuac, La Ciénega, Ciudad de México, 13300, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -682,7 +810,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.863Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -694,7 +829,9 @@
     "lng": -99.1929463,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "FlowSuites Polanco, 34, Avenida Emilio Castelar, Polanco, Ciudad de México, Miguel Hidalgo, Ciudad de México, 11560, México",
     "website": "https://www.flowsuites.com/polanco",
     "status": "active",
@@ -729,7 +866,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.604Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -741,7 +885,9 @@
     "lng": -98.9423181,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Nezahualcóyotl, Chimalhuacán, Estado de México, 56330, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -774,7 +920,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.784Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -786,7 +939,9 @@
     "lng": -99.1267638,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Radio, Valle Gómez, Ciudad de México, Cuauhtémoc, Ciudad de México, 06240, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -819,7 +974,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:45.848Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -831,7 +993,9 @@
     "lng": -99.0647009,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Plásticos, Colonia Cardonal Xalostoc, Santa Clara Coatitla, Ecatepec de Morelos, Estado de México, 55547, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -864,7 +1028,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.010Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -876,7 +1047,9 @@
     "lng": -98.9940109,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida José María Morelos, San Antonio Tecómitl, Don Diegoco, San Antonio Tecómitl, Milpa Alta, Ciudad de México, 12100, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -911,7 +1084,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.087Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -923,7 +1103,9 @@
     "lng": -99.020862,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Punto Ecatepec, Fraccionamiento Las Américas, Ecatepec de Morelos, Estado de México, 55070, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -956,7 +1138,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.160Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -968,7 +1157,9 @@
     "lng": -99.0753657,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida San Lorenzo, Colonia Cerro de la Estrella, Ciudad de México, Iztapalapa, Ciudad de México, 09860, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -1003,7 +1194,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.066Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1015,7 +1213,9 @@
     "lng": -99.2999854,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Ocampo, Colonia Cuajimalpa, San Pedro Cuajimalpa, Ciudad de México, Cuajimalpa de Morelos, Ciudad de México, 05000, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1048,7 +1248,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.141Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1060,7 +1267,9 @@
     "lng": -99.1646611,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Bitcoin Embassy Bar, 191, Avenida Medellín, Centro Urbano Benito Juárez, Roma Norte, Ciudad de México, Cuauhtémoc, Ciudad de México, 06700, México",
     "website": "https://bitcoinemb.com/",
     "status": "active",
@@ -1095,7 +1304,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.672Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1107,7 +1323,9 @@
     "lng": -99.0446601,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Vía Morelos, Colonia U.H. ISSEMYM, Santa María Tulpetlac, Ecatepec de Morelos, Estado de México, 55404, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1140,7 +1358,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.279Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1152,7 +1377,9 @@
     "lng": -99.2155065,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calzada de las Águilas, Colonia Las Águilas 1a. Sección, Ciudad de México, Álvaro Obregón, Ciudad de México, 01750, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1185,7 +1412,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.255Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1197,7 +1431,9 @@
     "lng": -99.1187374,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Melchor Ocampo, Colonia El Triunfo, Ciudad de México, Iztapalapa, Ciudad de México, 09430, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1230,7 +1466,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.366Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1242,7 +1485,9 @@
     "lng": -99.1349843,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calzada Ticomán, Colonia La Escalera, Ciudad de México, Gustavo A. Madero, Ciudad de México, 07340, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1278,7 +1523,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.381Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1290,7 +1542,9 @@
     "lng": -99.1062367,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra motos, Calzada Ermita Iztapalapa, Colonia Los Cipreses, Ciudad de México, Iztapalapa, Ciudad de México, 09000, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1323,7 +1577,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.560Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1335,7 +1596,9 @@
     "lng": -99.1137408,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Francisco del Paso y Troncoso, Magdalena Mixiuhca, Ciudad de México, Venustiano Carranza, Ciudad de México, 15850, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1368,7 +1631,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.602Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1380,7 +1650,9 @@
     "lng": -99.2872029,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fajas Colombianas Kisha, Avenida José María Castorena, Jesús del Monte, Ciudad de México, Cuajimalpa de Morelos, Ciudad de México, 05200, México",
     "hours": "Mo-Sa 10:00-20:00",
     "status": "active",
@@ -1415,7 +1687,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:02:46.381Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1427,7 +1706,9 @@
     "lng": -99.1866894,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "HodlBeer - Cerveza artesanal, Calle Fernando Villalpando, Guadalupe Inn, Ciudad de México, Álvaro Obregón, Ciudad de México, 01020, México",
     "website": "https://linktr.ee/hodlbeer",
     "status": "active",
@@ -1459,7 +1740,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.381Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1471,7 +1759,9 @@
     "lng": -99.1866384,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Alberto Mérito, 100, Calle Fernando Villalpando, Guadalupe Inn, Ciudad de México, Álvaro Obregón, Ciudad de México, 01020, México",
     "website": "http://merito.me/",
     "hours": "Mo-Su 08:30-18:30",
@@ -1505,7 +1795,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.777Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1517,7 +1814,9 @@
     "lng": -99.1340946,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Inglés Real, 6, Calle Manuel Gutiérrez Nájera, Colonia Moderna, Ciudad de México, Benito Juárez, Ciudad de México, 03510, México",
     "website": "https://www.inglesreales.com",
     "hours": "Mo-Su 09:00-21:00",
@@ -1553,7 +1852,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:46.913Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1565,7 +1871,9 @@
     "lng": -99.2464324,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Bitcoin Academy Mexico, 80, Avenida Bernardo Quintana, Colonia Gral. Antonio Rosales, Santa Fe La Loma, Ciudad de México, Álvaro Obregón, Ciudad de México, 01376, México",
     "website": "https://vienna.earth/plate/bitcoin_academy/Bitcoin%20Academy",
     "hours": "Mo-Fr 08:00-21:00",
@@ -1600,7 +1908,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.441Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1612,7 +1927,9 @@
     "lng": -99.1723187,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "FlowSuites Condesa, 108, Avenida Nuevo León, Condesa, Ciudad de México, Cuauhtémoc, Ciudad de México, 06100, México",
     "website": "https://www.flowsuites.com/condesa",
     "status": "active",
@@ -1647,7 +1964,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:49.791Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1659,7 +1983,9 @@
     "lng": -99.1725609,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Neurólogo - Neurologist, 208, Calle Agrarismo, Escandón 2ª Sección, Ciudad de México, Miguel Hidalgo, Ciudad de México, 11800, México",
     "website": "https://neurologocdmx.com/",
     "hours": "\"By appointment\"",
@@ -1694,7 +2020,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.358Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1706,7 +2039,9 @@
     "lng": -99.1800153,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Cajero ATM Bitcoin Blink, 121, Calle Xitle Jardín, Colonia María Esther Zuno de Echeverría, Tlalpan, Ciudad de México, 14400, México",
     "website": "https://coinatmradar.com/bitcoin_atm/91310/bitcoin-atm-lamassu-mexico-city-elotl-esquites/",
     "hours": "Tu-Sa 17:00-21:00",
@@ -1743,7 +2078,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.076Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1755,7 +2097,9 @@
     "lng": -99.2843303,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Ferretornillos San Fernando, Avenida San Fernando, San Fernando, Interlomas, Huixquilucan, Estado de México, 52765, México",
     "status": "active",
     "source": "osm",
@@ -1784,7 +2128,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:02:47.076Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1796,7 +2147,9 @@
     "lng": -99.1638494,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Aztecas, Colonia Ajusco, Ciudad de México, Coyoacán, Ciudad de México, 04300, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1829,7 +2182,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.259Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1841,7 +2201,9 @@
     "lng": -98.959883,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida del Peñón, Chimalhuacán, Estado de México, 56334, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1874,7 +2236,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.462Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1886,7 +2255,9 @@
     "lng": -98.9824545,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Privada de Tlalnepantla, Chimalhuacán, Estado de México, 56353, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1919,7 +2290,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.574Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1931,7 +2309,9 @@
     "lng": -98.9795852,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Bordo de Xochiaca, Chimalhuacán, Estado de México, 56346, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -1964,7 +2344,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.678Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -1976,7 +2363,9 @@
     "lng": -99.0554214,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Porvenir, Colonia Las Arboledas, Ciudad de México, Tláhuac, Ciudad de México, 132219, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2009,7 +2398,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.695Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2021,7 +2417,9 @@
     "lng": -99.1715598,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Carretera México - Cuernavaca (Libre), San Pedro Mártir, Ciudad de México, Tlalpan, Ciudad de México, 14650, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2055,7 +2453,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.798Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2067,7 +2472,9 @@
     "lng": -99.0738003,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle San Felipe de Jesús, 2a. Ampliación Barrio San Miguel (San Felipe Terremotes), Ciudad de México, Iztapalapa, Ciudad de México, 09360, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -2102,7 +2509,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.815Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2114,7 +2528,9 @@
     "lng": -99.2350445,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Callejón Cebada, Colonia Lomas de Nuevo México, Ciudad de México, Álvaro Obregón, Ciudad de México, 01250, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2147,7 +2563,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.883Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2159,7 +2582,9 @@
     "lng": -99.1521037,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle José Apolinar Nieto, Bosques de Tetlameya, Ciudad de México, Coyoacán, Ciudad de México, 04730, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 08:00-21:00",
@@ -2194,7 +2619,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.995Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2206,7 +2638,9 @@
     "lng": -98.9464299,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Cuauhtémoc, Ixtapaluca, Estado de México, 56576, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -2244,7 +2678,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:47.926Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2256,7 +2697,9 @@
     "lng": -99.2110315,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Camino a Santa Fe, Colonia Mártires de Tacubaya, Ciudad de México, Álvaro Obregón, Ciudad de México, 01130, México",
     "website": "https://www.elektra.mx",
     "hours": "08:00-20:00",
@@ -2292,7 +2735,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.070Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2304,7 +2754,9 @@
     "lng": -99.0798875,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calzada General Ignacio Zaragoza, Aviación Civil, Ciudad de México, Venustiano Carranza, Ciudad de México, 15730, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2340,7 +2792,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.048Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2352,7 +2811,9 @@
     "lng": -99.1222454,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calzada de la Viga, Colonia Mexicaltzingo, Ciudad de México, Iztapalapa, Ciudad de México, 09099, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2385,7 +2846,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.182Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2397,7 +2865,9 @@
     "lng": -99.167361,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Santa Cecilia, Tlalnepantla, Tlalnepantla de Baz, Estado de México, 07620, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2430,7 +2900,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.219Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2442,7 +2919,9 @@
     "lng": -98.9424279,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Alfredo del Mazo, Valle de Chalco Solidaridad, Estado de México, 56617, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2476,7 +2955,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.237Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2488,7 +2974,9 @@
     "lng": -99.0890505,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calzada Ermita Iztapalapa, Barrio San Pablo, Ciudad de México, Iztapalapa, Ciudad de México, 09000, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2521,7 +3009,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.257Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2533,7 +3028,9 @@
     "lng": -99.0059352,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Gabriel Hernández, San Pedro Tláhuac, Ciudad de México, Tláhuac, Ciudad de México, 13060, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2566,7 +3063,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.376Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2578,7 +3082,9 @@
     "lng": -99.2179928,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Banco Azteca, Calle Tizimín, Colonia Jardines del Ajusco, Ciudad de México, Tlalpan, Ciudad de México, 14240, México",
     "status": "active",
     "source": "osm",
@@ -2611,7 +3117,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:02:48.219Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2623,7 +3136,9 @@
     "lng": -99.0752029,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, José de Jesús Villa Padierna, Colonia 8a. Ampliación San Miguel, Ciudad de México, Iztapalapa, Ciudad de México, 09360, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2656,7 +3171,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.414Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2668,7 +3190,9 @@
     "lng": -99.209226,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, 100, Avenida de Armas Norte, Tlalnepantla, Tlalnepantla de Baz, Estado de México, 54090, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -2705,7 +3229,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.469Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2717,7 +3248,9 @@
     "lng": -99.1713819,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Banco Azteca, Avenida Escuinapa, Colonia La Cantera, Ciudad de México, Coyoacán, Ciudad Universitaria, Ciudad de México, 04369, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2751,7 +3284,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.455Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2763,7 +3303,9 @@
     "lng": -99.1908231,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Banco Azteca, Ferrocarril de Cuernavaca, Colonia San Pedro de los Pinos, Ciudad de México, Álvaro Obregón, Ciudad de México, 01180, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2796,7 +3338,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.563Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2808,7 +3357,9 @@
     "lng": -99.2473495,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Altamira, San Antonio Zomeyucan, San Antonio Zomeyucan / Xomeyucan, San Rafael Chamapa, Naucalpan de Juárez, Estado de México, 53570, México",
     "website": "https://www.elektra.mx",
     "hours": "Mo-Su 09:00-21:00",
@@ -2844,7 +3395,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.728Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2856,7 +3414,9 @@
     "lng": -99.0718722,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Avenida Tláhuac, San Lorenzo Tezonco, Iztapalapa, Ciudad de México, 09790, México, Ciudad de México, Iztapalapa, Ciudad de México, 09780, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2889,7 +3449,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.648Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2901,7 +3468,9 @@
     "lng": -99.1896716,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, Calle Miguel Ángel Buonarroti, Colonia Mixcoac, Ciudad de México, Benito Juárez, Ciudad de México, 03910, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2936,7 +3505,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.834Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -2948,7 +3524,9 @@
     "lng": -99.1906597,
     "country": "MX",
     "city": "Mexico City",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Elektra, 1775, Avenida Revolución, Colonia Residencial Antigua San Jacinto, Ciudad de México, Álvaro Obregón, Tlacopac, Ciudad de México, 01000, México",
     "website": "https://www.elektra.mx",
     "status": "active",
@@ -2984,7 +3562,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:02:48.708Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   }

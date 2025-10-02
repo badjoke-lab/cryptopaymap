@@ -7,7 +7,9 @@
     "lng": -80.140142,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Juvia, 1111, Lincoln Road, Miami Beach, Miami-Dade County, Florida, 33139, United States",
     "website": "http://www.juviamiami.com",
     "status": "active",
@@ -40,7 +42,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:25.963Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -52,7 +61,9 @@
     "lng": -80.1428044,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Sushi Garage, 1784, West Avenue, Miami Beach, Miami-Dade County, Florida, 33139, United States",
     "website": "https://www.sushigarage.com/",
     "status": "active",
@@ -87,7 +98,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:25.713Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -99,7 +117,9 @@
     "lng": -80.2602142,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Embassy Flex, 3910, Northwest 26th Street, Miami, Miami-Dade County, Florida, 33142, United States",
     "hours": "24/7",
     "status": "active",
@@ -134,7 +154,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:25.460Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -146,7 +173,9 @@
     "lng": -80.1979564,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Supercar Rooms Miami, 2022, Northwest 1st Court, Overtown, Wynwood, Miami, Miami-Dade County, Florida, 33127, United States",
     "website": "https://www.supercarrooms.com/",
     "status": "active",
@@ -179,7 +208,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:25.955Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -191,7 +227,9 @@
     "lng": -80.1926963,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "La Santa Taqueria, 201, Northeast 82nd Street, Oakland Grove, Little River, Miami, Miami-Dade County, Florida, 33138, United States",
     "website": "https://www.lasantataqueria.com/",
     "status": "active",
@@ -225,7 +263,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:28.966Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -237,7 +282,9 @@
     "lng": -80.1408037,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Chotto Matte, 1664, Lenox Avenue, Miami Beach, Miami-Dade County, Florida, 33139, United States",
     "website": "https://chotto-matte.com/",
     "status": "active",
@@ -270,7 +317,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.423Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -282,7 +336,9 @@
     "lng": -80.1307447,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Taquiza, Collins Avenue, Miami Beach, Miami-Dade County, Florida, 33139, United States",
     "status": "active",
     "source": "osm",
@@ -313,7 +369,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:25.460Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -325,7 +388,9 @@
     "lng": -80.1955032,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Iris Tattoo Miami, Northwest 28th Street, Wynwood, Miami, Miami-Dade County, Florida, 33127, United States",
     "website": "https://iris.tattoo/miami/",
     "status": "active",
@@ -357,7 +422,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.313Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -369,7 +441,9 @@
     "lng": -80.3156555,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "EZ Cleaning Supplies, Northwest 79th Terrace, Medley Mobile Homes, Medley, Miami-Dade County, Florida, 33195, United States",
     "status": "active",
     "source": "osm",
@@ -397,7 +471,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:25.713Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -409,7 +490,9 @@
     "lng": -80.2604178,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "GROU Coffee + Cowork, 4100, Salzedo Street, Coral Gables, Miami-Dade County, Florida, 33146, United States",
     "website": "https://groucommunity.com/",
     "status": "active",
@@ -444,7 +527,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.459Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -456,7 +546,9 @@
     "lng": -80.1361579,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Minibar, 418, Meridian Avenue, South Beach, Miami Beach, Miami-Dade County, Florida, 33139, United States",
     "website": "https://www.minibarmiami.com/",
     "status": "active",
@@ -489,7 +581,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.179Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -501,7 +600,9 @@
     "lng": -80.1929626,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Thyme Machine, Brickell Plaza, Miami, Miami-Dade County, Florida, 33131, United States",
     "website": "https://www.thymemachinecafe.com/",
     "hours": "07:00-00:00",
@@ -536,7 +637,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.809Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -548,7 +656,9 @@
     "lng": -80.1920657,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Polo Ralph Lauren, Paseo Ponti, Buena Vista, Miami, Miami-Dade County, Florida, 33137, United States",
     "status": "active",
     "source": "osm",
@@ -578,7 +688,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-urls",
+        "checkedAt": "2025-10-02T16:03:26.179Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -590,7 +707,9 @@
     "lng": -80.2787112,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Orno Miami, 1350, South Dixie Highway, Coral Gables, Miami-Dade County, Florida, 33146, United States",
     "website": "https://ornomiami.com/",
     "status": "active",
@@ -624,7 +743,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:41.179Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -636,7 +762,9 @@
     "lng": -80.1891748,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Miami Camera Rental, 370, Northeast 75th Street, Little River, Miami, Miami-Dade County, Florida, 33138, United States",
     "website": "https://www.miamicamerastore.com/",
     "status": "active",
@@ -668,7 +796,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:28.809Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -680,7 +815,9 @@
     "lng": -80.1885413,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Skyrim Security, 333, Northeast 24th Street, Wynwood, Miami, Miami-Dade County, Florida, 33137, United States",
     "website": "https://skyrimsecurity.com/",
     "hours": "24/7",
@@ -715,7 +852,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.728Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -727,7 +871,9 @@
     "lng": -80.1852126,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Proof of Work Fitness, Miamarina Parkway Drive, HMS Bounty, Miami, Miami-Dade County, Florida, 33131, United States",
     "website": "https://www.proofofwork.fit/",
     "hours": "Mo-Su 10:00-21:00",
@@ -762,7 +908,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.967Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -774,7 +927,9 @@
     "lng": -80.2588975,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Designhouse, 2222, Ponce de Leon Boulevard, Coral Gables, Miami-Dade County, Florida, 33134, United States",
     "website": "https://designhouseagency.com",
     "hours": "Mo-Su 09:00-21:00",
@@ -812,7 +967,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:26.919Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   },
@@ -824,7 +986,9 @@
     "lng": -80.2603205,
     "country": "US",
     "city": "Miami",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Jorge Enterprises GC - Construction, Valencia Avenue, Coral Gables, Miami-Dade County, Florida, 33234, United States",
     "website": "https://je-gc.com/",
     "hours": "Mo-Su 08:00-21:00",
@@ -860,7 +1024,14 @@
     "verification": {
       "status": "unverified",
       "last_checked": "2025-09-29",
-      "sources": []
+      "sources": [],
+      "auto": {
+        "status": "unverified",
+        "hits": 0,
+        "reason": "no-hits",
+        "checkedAt": "2025-10-02T16:03:27.392Z",
+        "evidence": []
+      }
     },
     "pending_assets": []
   }
