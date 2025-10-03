@@ -15,6 +15,13 @@
     "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts",
     "cpm:fix:categories": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_categories.ts",
     "cpm:fix:chain-method": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_payment_chain_method.ts",
+    "cpm:migrate:v2": "tsx scripts/migrate_payments.ts",
+    "cpm:validate:v2": "tsx scripts/validate.ts",
+    "cpm:migrate:payments": "ts-node --project tsconfig.scripts.json scripts/migrate_payments.ts",
+    "cpm:validate:payments": "ts-node --project tsconfig.scripts.json scripts/validate.ts",
+    "cpm:fix:accepts": "tsx scripts/fix_accepts_shape.ts",
+    "cpm:validate:payments": "tsx scripts/validate.ts",
+    "cpm:fix:evm": "tsx scripts/demote_unsupported_chains.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -38,6 +45,7 @@
     "postcss": "8.4.38",
     "tailwindcss": "3.4.6",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "^5.5.4"
   },
   "lint-staged": {
