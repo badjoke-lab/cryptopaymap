@@ -7,7 +7,9 @@
     "lng": 13.4260706,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Vettern Bar, 61, Hobrechtstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland",
     "status": "active",
     "source": "osm",
@@ -34,8 +36,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -56,7 +58,9 @@
     "lng": 13.3811135,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Viale dei Tigli, 75, Wilhelmstraße, Dorotheenstadt, Mitte, Berlin, 10117, Deutschland",
     "website": "http://www.ristorante-viale.de/",
     "hours": "Mo-Su 12:00-24:00",
@@ -84,8 +88,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -105,7 +109,9 @@
     "lng": 13.4529113,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Drittes Ohr, 14, Matternstraße, Hausburgviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland",
     "website": "https://www.drittes-ohr.com/",
     "hours": "Su-Fr 18:00-03:00+; Sa 20:00-03:00+; PH 20:00-03:00+; Dec 25,easter + 39 days off",
@@ -132,8 +138,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -153,7 +159,9 @@
     "lng": 13.4175949,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Trattoria Felice, 41, Lychener Straße, Helmholtzkiez, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland",
     "website": "http://www.trattoria-felice.de/",
     "hours": "Mo-Th 16:00-00:00; Fr-Su 12:00-00:00",
@@ -185,8 +193,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -206,7 +214,9 @@
     "lng": 13.4208114,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Horváth, 44a, Paul-Lincke-Ufer, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland",
     "website": "http://restaurant-horvath.de/",
     "hours": "We-Su 18:30-21:30",
@@ -234,8 +244,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -255,7 +265,9 @@
     "lng": 13.4671354,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Disconnect Art Gallery and Record Shop, 25, Finowstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland",
     "website": "https://disconnectberlin.wordpress.com/",
     "hours": "Th-Sa 14:00-19:00; PH off",
@@ -285,8 +297,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -306,7 +318,9 @@
     "lng": 13.4581799,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "DoYouSpace, 93, Rigaer Straße, Samariterviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland",
     "website": "https://www.doyouspace.net",
     "status": "active",
@@ -333,8 +347,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -354,7 +368,9 @@
     "lng": 13.2860195,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Subway, 2, Am Borsigturm, Alt-Tegel, Tegel, Reinickendorf, Berlin, 13507, Deutschland",
     "website": "https://restaurants.subway.com/de/deutschland/be/berlin/am-borsigturm-2",
     "status": "active",
@@ -381,8 +397,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -402,7 +418,9 @@
     "lng": 13.4576505,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Augenarztpraxis Dr. Azar Hasanli, 75, Am Treptower Park, Kungerkiez, Alt-Treptow, Treptow-Köpenick, Berlin, 12435, Deutschland",
     "hours": "Mo,Th 08:00-15:00; Tu,We 09:00-15:00, Fr 08:00-12:00",
     "status": "active",
@@ -426,8 +444,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -448,7 +466,9 @@
     "lng": 13.524798,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Musikschule Kling-Klang, 20, Randowstraße, Vincent-van-Gogh-Straße, Neu-Hohenschönhausen, Lichtenberg, Berlin, 13057, Deutschland",
     "website": "https://musikschule-kling-klang.de/",
     "status": "active",
@@ -475,8 +495,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -496,7 +516,9 @@
     "lng": 13.454467,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Coworking Space Berlin-Friedrichshain Launch/Co, 14, Rudolfstraße, Rudolfkiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland",
     "website": "https://launchco.com/coworking",
     "hours": "Mo-Fr 09:00-19:00",
@@ -525,8 +547,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -546,7 +568,9 @@
     "lng": 13.4693373,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Barberium, 59, Boxhagener Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland",
     "hours": "Tu-Fr 10:00-19:00, Sa 10:00-17:00",
     "status": "active",
@@ -574,8 +598,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -596,7 +620,9 @@
     "lng": 13.4209764,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fabelhaft Bar, 6, Schönleinstraße, Graefekiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10967, Deutschland",
     "website": "http://fabelhaftberlin.de",
     "hours": "Tu-Sa 19:00+",
@@ -626,8 +652,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -647,7 +673,9 @@
     "lng": 13.3251553,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "ICE Aesthetic - Zentrum Kryolipolyse Berlin, 20-25, Uhlandstraße, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10623, Deutschland",
     "website": "https://www.ice-aesthetic.de/",
     "hours": "Mo-Fr 10:00-20:00; Sa 10:00-18:00",
@@ -676,8 +704,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -697,7 +725,9 @@
     "lng": 13.4534484,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "WAHL Rechtsanwälte, 54, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland",
     "website": "https://wahl-kanzlei.de",
     "hours": "\"Nur nach Vereinbarung\"",
@@ -727,8 +757,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -748,7 +778,9 @@
     "lng": 13.4568566,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "dg.digital, 89, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland",
     "website": "https://www.dg.digital",
     "status": "active",
@@ -774,8 +806,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -795,7 +827,9 @@
     "lng": 13.3335705,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "C.Translations UG, 26, Rankestraße, City West, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10789, Deutschland",
     "website": "https://www.cengolio.com/",
     "status": "active",
@@ -823,8 +857,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -844,7 +878,9 @@
     "lng": 13.3914357,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Friedel Richter, 199, Torstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland",
     "website": "https://friedelrichter.de",
     "hours": "Mo-Fr 18:00-23:00",
@@ -873,8 +909,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -894,7 +930,9 @@
     "lng": 13.4213181,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Keith, 2, Schillerpromenade, Schillerkiez, Neukölln, Berlin, 12049, Deutschland",
     "website": "https://www.keithbarberlin.de/",
     "hours": "Mo-Su 18:00-03:00",
@@ -922,8 +960,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -943,7 +981,9 @@
     "lng": 13.395606,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Hair Müller, 153, Invalidenstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland",
     "website": "https://www.hairmueller.de/",
     "hours": "Mo-Fr 09:00-20:00",
@@ -968,8 +1008,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -989,7 +1029,9 @@
     "lng": 13.2051209,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Subway, 4c, Postplatz, Hennigsdorf, Oberhavel, Brandenburg, 16761, Deutschland",
     "website": "https://restaurants.subway.com/de/deutschland/bb/hennigsdorf/postplatz-4-4c",
     "hours": "Mo-Fr 09:00-20:00; Sa 10:00-20:00; PH,Su off",
@@ -1017,8 +1059,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1038,7 +1080,9 @@
     "lng": 13.410587,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Onkel Philipp's Spielzeugwerkstatt, 35, Choriner Straße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland",
     "website": "http://onkel-philipp.de",
     "hours": "Tu-Sa 11:00-18:00",
@@ -1067,8 +1111,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1088,7 +1132,9 @@
     "lng": 13.4036081,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Süssmädchen, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland",
     "website": "http://www.suessmaedchen.com",
     "hours": "\"Termin & Abholung nach Absprache\"",
@@ -1114,8 +1160,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1135,7 +1181,9 @@
     "lng": 13.3897599,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Paranoid Internet, 68, Friedrichstraße, Friedrichstadt, Mitte, Berlin, 10117, Deutschland",
     "website": "https://paranoid-internet.de/",
     "status": "active",
@@ -1162,8 +1210,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1183,7 +1231,9 @@
     "lng": 13.402099,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Atheist Shoes, 8, Sophienstraße, Spandauer Vorstadt, Mitte, Berlin, 10178, Deutschland",
     "website": "https://atheist.shoes/",
     "hours": "Mo 11:00-14:30,15:00-18:30; Tu,We-Fr 11:30-14:30,15:00-19:00; Sa 11:30-18:00; Su, PH off",
@@ -1208,8 +1258,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1229,7 +1279,9 @@
     "lng": 13.4341735,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "All the Colors, 28, Bötzowstraße, Bötzowkiez, Prenzlauer Berg, Pankow, Berlin, 10407, Deutschland",
     "website": "https://www.allthecolorsberlin.de/",
     "hours": "Mo-Sa 09:00-19:00",
@@ -1259,8 +1311,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1280,7 +1332,9 @@
     "lng": 13.4310767,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Vater Bar, 202, Weserstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland",
     "status": "active",
     "source": "osm",
@@ -1305,8 +1359,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1327,7 +1381,10 @@
     "lng": 13.4175276,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC", "ETH"],
+    "coins": [
+      "BTC",
+      "ETH"
+    ],
     "address": "Mein Palo Santo, Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland",
     "website": "https://www.mein-palo-santo.de",
     "hours": "Th 12:00-19:00",
@@ -1357,14 +1414,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
-        },
-        {
-          "asset": "ETH",
-          "chain": "evm-mainnet",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1374,7 +1425,15 @@
       "last_checked": "2025-09-29",
       "sources": []
     },
-    "pending_assets": []
+    "pending_assets": [
+      {
+        "asset_raw": "ETH",
+        "chain_raw": "eip155:1",
+        "notes": "demoted from accepts (unsupported chain by schema)",
+        "submitted_by": "system:migrate-penassets",
+        "submitted_at": "2025-09-29"
+      }
+    ]
   },
   {
     "id": "osm:node:8311143284",
@@ -1384,7 +1443,9 @@
     "lng": 13.3958388,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Noku Studio, 60, Leipziger Straße, Friedrichswerder, Mitte, Berlin, 10117, Deutschland",
     "website": "https://www.nokustudio.com/",
     "hours": "Mo-Fr 09:00-18:00",
@@ -1413,8 +1474,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1434,7 +1495,9 @@
     "lng": 13.4525181,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Chipi Chipi Bombón, 12, Warschauer Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland",
     "website": "https://www.chipichipibombon.com",
     "hours": "Su-Th 13:00-23:00, Fr,Sa 13:00-24:00",
@@ -1465,8 +1528,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1486,7 +1549,9 @@
     "lng": 13.6222673,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "wallbox, 22, Stubenrauchstraße, Eichwalde, Dahme-Spreewald, Brandenburg, 15732, Deutschland",
     "status": "active",
     "source": "osm",
@@ -1510,8 +1575,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1532,7 +1597,9 @@
     "lng": 13.3701572,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Legacy, 53, Yorckstraße, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10965, Deutschland",
     "website": "https://legacybln.de/",
     "hours": "Mo-Sa 12:00-20:00; PH off",
@@ -1560,8 +1627,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1581,7 +1648,9 @@
     "lng": 13.4161615,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Mood - Café & Spätkauf, 46, Kollwitzstraße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10405, Deutschland",
     "website": "https://www.instagram.com/mood.spaeti.cafe/?r=nametag",
     "hours": "Mo-Th 8:00-23:00; Fr-Sa 8:00-00:00; Su 09:00-23:00",
@@ -1608,8 +1677,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1629,7 +1698,9 @@
     "lng": 13.4068129,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fulmo GmbH, 6-9, Eberswalder Straße, Gleimviertel, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland",
     "website": "https://shop.fulmo.org/",
     "status": "active",
@@ -1656,8 +1727,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1677,7 +1748,9 @@
     "lng": 13.4036851,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "KOSAE jewellery & design, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland",
     "hours": "Mo-Fr 15:00-19:00",
     "status": "active",
@@ -1701,8 +1774,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1723,7 +1796,9 @@
     "lng": 13.4020906,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "nexondo, 29, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland",
     "website": "https://nexondo.de/",
     "hours": "24/7",
@@ -1753,8 +1828,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1774,7 +1849,9 @@
     "lng": 13.5323935,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fahrzeugpflege Laabs, 9, Schützenstraße, Schönefeld, Dahme-Spreewald, Brandenburg, 12529, Deutschland",
     "website": "https://www.fahrzeugpflege-laabs.de",
     "hours": "Mo-Fr 08:00-16:00",
@@ -1803,8 +1880,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1824,7 +1901,9 @@
     "lng": 13.2906484,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Physiotherapie Alexandros Swoch, 7, Auguste-Viktoria-Straße, Grunewald, Charlottenburg-Wilmersdorf, Berlin, 14193, Deutschland",
     "website": "https://fuessiotherapie.de",
     "hours": "Mo-Fr 08:00-20:00",
@@ -1851,8 +1930,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1872,7 +1951,9 @@
     "lng": 13.4268672,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Café Holzmarktperle, 25, Holzmarktstraße, Andreasviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland",
     "hours": "Su-Th 10:30-18:00; Fr-Sa 10:30-19:00",
     "status": "active",
@@ -1901,8 +1982,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1923,7 +2004,9 @@
     "lng": 13.3417811,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "CI Space, 9, Bugenhagenstraße, Alt-Moabit, Moabit, Mitte, Berlin, 10551, Deutschland",
     "website": "https://cispace.isaci.com",
     "hours": "Mo-Sa 10:00-22:00",
@@ -1949,8 +2032,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -1970,7 +2053,10 @@
     "lng": 13.4592291,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC", "ETH"],
+    "coins": [
+      "BTC",
+      "ETH"
+    ],
     "address": "Mein Palo Santo, 72-74, Grünberger Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland",
     "hours": "Sa: 9:30-16:00",
     "status": "active",
@@ -1996,14 +2082,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
-        },
-        {
-          "asset": "ETH",
-          "chain": "evm-mainnet",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2014,7 +2094,15 @@
       "last_checked": "2025-09-29",
       "sources": []
     },
-    "pending_assets": []
+    "pending_assets": [
+      {
+        "asset_raw": "ETH",
+        "chain_raw": "eip155:1",
+        "notes": "demoted from accepts (unsupported chain by schema)",
+        "submitted_by": "system:migrate-penassets",
+        "submitted_at": "2025-09-29"
+      }
+    ]
   },
   {
     "id": "osm:node:11183254526",
@@ -2024,7 +2112,9 @@
     "lng": 13.4489086,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Liebener Coaching, 3, Petersburger Straße, Richard-Sorge-Viertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland",
     "website": "https://www.liebener-coaching.de/",
     "status": "active",
@@ -2051,8 +2141,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2072,7 +2162,9 @@
     "lng": 13.4980609,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Karmen Kraft, 55, Herzbergstraße, Lichtenberg, Berlin, 10365, Deutschland",
     "website": "https://www.karmenkraft.com/",
     "hours": "\"Atelierbesuch nach Vereinbarung / Studio visit by appointment\"",
@@ -2104,8 +2196,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2125,7 +2217,9 @@
     "lng": 13.3631375,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Martina Lubanski, Grafik Design, Art Direktorin, 10, Willmanndamm, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10827, Deutschland",
     "website": "https://martinalubanski.com/",
     "status": "active",
@@ -2151,8 +2245,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2172,7 +2266,9 @@
     "lng": 13.4176575,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Zimt & Pfeffer, Rungestraße, Luisenstadt, Mitte, Berlin, 10179, Deutschland",
     "website": "https://zimtundpfeffer.com/",
     "hours": "Mo-Fr 10:30-18:30,Sa 11:00-16:30; PH off",
@@ -2201,8 +2297,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2222,7 +2318,9 @@
     "lng": 13.4252092,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fotostudio Kreuzberg, 77, Manteuffelstraße, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland",
     "website": "https://fotostudio-kreuzberg.de/",
     "hours": "Mo-Fr 11:00-19:00",
@@ -2249,8 +2347,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2270,7 +2368,9 @@
     "lng": 13.303273,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tante Tom, 169, Hermsdorfer Damm, Kurviertel, Hermsdorf, Reinickendorf, Berlin, 13467, Deutschland",
     "website": "https://www.tante-tom.de/",
     "hours": "Mo-Su 10:00-19:00",
@@ -2299,8 +2399,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2320,7 +2420,9 @@
     "lng": 13.316332,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Steinberg Imkerei, 21, Rosentreterpromenade, Cité Foch, Wittenau, Reinickendorf, Berlin, 13437, Deutschland",
     "status": "active",
     "source": "osm",
@@ -2343,8 +2445,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2365,7 +2467,9 @@
     "lng": 13.6148571,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Rml, 4, Döbelner Straße, Schleipfuhl, Hellersdorf, Marzahn-Hellersdorf, Berlin, 12627, Deutschland",
     "website": "https://rml-bau.de/",
     "status": "active",
@@ -2393,8 +2497,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2414,7 +2518,9 @@
     "lng": 13.393468,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "David Tenorio Tattoo, 3, Riemannstraße, Bergmannkiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10961, Deutschland",
     "website": "https://www.davidtenorioart.com/",
     "hours": "We 16:00-19:00",
@@ -2445,8 +2551,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2466,7 +2572,9 @@
     "lng": 13.4189075,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fabio Pasta (Wochenmarkt Kollwitzplatz), Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland",
     "hours": "Sa 09:00-17:00",
     "status": "active",
@@ -2495,8 +2603,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2517,7 +2625,9 @@
     "lng": 13.2647765,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "AndresEDV & Consulting, 1, Jugendweg, Alt-Siemensstadt, Siemensstadt, Spandau, Berlin, 13629, Deutschland",
     "website": "https://www.andresedv.de/",
     "status": "active",
@@ -2544,8 +2654,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2565,7 +2675,9 @@
     "lng": 13.3835322,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Studio Zitrone, 72 HH, Kreuzbergstraße, Chamissokiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10965, Deutschland",
     "website": "https://bip39cups.com/",
     "status": "active",
@@ -2590,8 +2702,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2611,7 +2723,9 @@
     "lng": 13.4678152,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Dirty Jobs, 12, Weserstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland",
     "website": "https://www.linkedin.com/in/paolopenna/",
     "hours": "24/7",
@@ -2640,8 +2754,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2661,7 +2775,9 @@
     "lng": 13.3939563,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Massage Miguel, 1, Schulzestraße, Florakiez, Pankow, Berlin, 13187, Deutschland",
     "website": "https://www.massagemiguel.de/",
     "hours": "Mo-Su 09:00-21:00",
@@ -2691,8 +2807,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -2712,7 +2828,9 @@
     "lng": 13.5856438,
     "country": "DE",
     "city": "Berlin",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "A.C.T. Computer TEAM, 366, Wendenschloßstraße, Köpenick, Treptow-Köpenick, Berlin, 12557, Deutschland",
     "website": "https://www.act-computer.de",
     "hours": "Mo-Fr 09:00-17:00",
@@ -2742,8 +2860,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []

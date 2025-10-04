@@ -1,0 +1,85 @@
+# .github/workflows/validate-places.yml
+name: validate-places
+
+on:
+  pull_request:
+    paths:
+      - "public/data/places/**/*.json"
+      - "schema/**"
+      - "scripts/**"
+      - "src/**"
+      - "chains.meta.json"
+      - ".github/ISSUE_TEMPLATE/*.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+  push:
+    branches: [ main ]
+    paths:
+      - "public/data/places/**/*.json"
+      - "schema/**"
+      - "scripts/**"
+      - "src/**"
+      - "chains.meta.json"
+      - ".github/ISSUE_TEMPLATE/*.yml"
+      - "package.json"
+      - "pnpm-lock.yaml"
+
+concurrency:
+  group: validate-places-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate-data:
+    name: Validate existing place data
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate places (schema + business rules)
+        run: pnpm run cpm:validate
+
+  validate-submissions:
+    name: Validate normalized submissions (Owner/Community/Report)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate submission patches
+        run: pnpm run cpm:validate:submissions
+
+  no-ja-in-code:
+    name: No Japanese in code check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan code for Japanese characters
+        run: |
+          bash scripts/check_no_ja_in_code.sh

@@ -1,0 +1,79 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "chains.meta.json",
+  "definitions": {
+    "chainId": {
+      "type": "string",
+      "enum": [
+        "bitcoin",
+        "lightning",
+        "evm-mainnet",
+        "polygon",
+        "arbitrum",
+        "base",
+        "bsc",
+        "solana",
+        "tron",
+        "ton",
+        "avalanche"
+      ]
+    }
+  },
+  "chains": [
+    {
+      "id": "bitcoin",
+      "label": "Bitcoin",
+      "aliases": ["btc", "onchain", "on-chain", "bitcoin mainnet"]
+    },
+    {
+      "id": "lightning",
+      "label": "Lightning (BTC)",
+      "aliases": ["lightning", "ln", "bolt11", "bolt12", "lightning network"]
+    },
+    {
+      "id": "evm-mainnet",
+      "label": "Ethereum Mainnet",
+      "aliases": ["eth", "ethereum", "ethereum mainnet", "eth mainnet", "eip155:1", "evm", "mainnet"]
+    },
+    {
+      "id": "polygon",
+      "label": "Polygon",
+      "aliases": ["matic", "polygon mainnet", "eip155:137"]
+    },
+    {
+      "id": "arbitrum",
+      "label": "Arbitrum One",
+      "aliases": ["arbitrum one", "arb", "eip155:42161"]
+    },
+    {
+      "id": "base",
+      "label": "Base",
+      "aliases": ["coinbase base", "eip155:8453"]
+    },
+    {
+      "id": "bsc",
+      "label": "BNB Smart Chain",
+      "aliases": ["binance smart chain", "bnb chain", "bep20", "eip155:56"]
+    },
+    {
+      "id": "solana",
+      "label": "Solana",
+      "aliases": ["sol", "solana mainnet-beta"]
+    },
+    {
+      "id": "tron",
+      "label": "Tron",
+      "aliases": ["trc20", "trx"]
+    },
+    {
+      "id": "ton",
+      "label": "TON",
+      "aliases": ["the open network"]
+    },
+    {
+      "id": "avalanche",
+      "label": "Avalanche C-Chain",
+      "aliases": ["avax", "c-chain", "eip155:43114"]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "place_id_or_url": "us-nyc-abc123",
+  "details": "Wrong coin list on the card.",
+  "proposed_status": "disputed",
+  "evidence_urls": "https://example.com/notice\nhttps://x.com/user/status/2",
+  "images": "https://user-images.githubusercontent.com/r.webp"
+}

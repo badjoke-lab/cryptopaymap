@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "CryptoPayMap Place v2.1 (compat)",
+  "$id": "place.schema.json",
+  "title": "CryptoPayMap Place v2.2 (spec-complete)",
   "type": "object",
   "additionalProperties": true,
   "required": ["id", "name", "lat", "lng", "verification"],
@@ -13,6 +14,10 @@
     "country": { "type": "string" },
     "address": { "type": "string" },
     "category": { "type": "string" },
+    "category_source": {
+      "type": "string",
+      "enum": ["osm", "submitter", "moderator"]
+    },
     "category_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
     "coins": {
       "type": "array",
@@ -24,7 +29,7 @@
     },
     "payment": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "accepts": {
           "type": "array",
@@ -34,22 +39,7 @@
             "required": ["asset", "chain"],
             "properties": {
               "asset": { "type": "string", "pattern": "^[A-Z0-9]{2,10}$" },
-              "chain": {
-                "type": "string",
-                "enum": [
-                  "bitcoin",
-                  "lightning",
-                  "evm-mainnet",
-                  "polygon",
-                  "arbitrum",
-                  "base",
-                  "bsc",
-                  "solana",
-                  "tron",
-                  "ton",
-                  "avalanche"
-                ]
-              },
+              "chain": { "$ref": "chains.meta.json#/definitions/chainId" },
               "method": {
                 "type": "string",
                 "enum": ["onchain", "lightning", "lnurl", "bolt12", "other"]
@@ -67,6 +57,18 @@
                   "other"
                 ]
               },
+              "evidence": {
+                "type": "array",
+                "items": { "type": "string", "format": "uri" }
+              },
+              "last_verified": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
+              "last_checked": {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              },
               "note": { "type": "string", "maxLength": 200 }
             }
           }
@@ -75,9 +77,33 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^[A-Z0-9]{2,10}:[a-z0-9\\-]{2,32}$"
+            "pattern": "^[A-Z0-9]{2,10}@[a-z0-9:\\-]{2,64}$"
           },
           "uniqueItems": true
+        },
+        "processor": { "type": "string" },
+        "notes": { "type": "string", "maxLength": 500 }
+      }
+    },
+    "pending_assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["asset_raw", "chain_raw", "submitted_by", "submitted_at"],
+        "properties": {
+          "asset_raw": { "type": "string" },
+          "chain_raw": { "type": "string" },
+          "notes": { "type": "string" },
+          "sources": {
+            "type": "array",
+            "items": { "type": "string", "format": "uri" }
+          },
+          "submitted_by": { "type": "string" },
+          "submitted_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          }
         }
       }
     },
@@ -85,7 +111,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "additionalProperties": true,
+        "additionalProperties": false,
         "required": ["platform"],
         "properties": {
           "platform": {
@@ -105,14 +131,14 @@
               "other"
             ]
           },
-          "url": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
           "handle": { "type": "string" }
         }
       }
     },
     "verification": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "required": ["status"],
       "properties": {
         "status": {
@@ -139,7 +165,7 @@
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": true,
+            "additionalProperties": false,
             "properties": {
               "type": {
                 "type": "string",
@@ -155,7 +181,7 @@
               },
               "name": { "type": "string" },
               "rule": { "type": "string" },
-              "url": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
               "snippet": { "type": "string", "maxLength": 240 },
               "when": {
                 "anyOf": [
@@ -168,7 +194,7 @@
         },
         "submitted": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "required": ["by", "role", "at"],
           "properties": {
             "by": { "type": "string" },
@@ -186,7 +212,7 @@
         },
         "review": {
           "type": "object",
-          "additionalProperties": true,
+          "additionalProperties": false,
           "required": ["status"],
           "properties": {
             "status": {
@@ -207,17 +233,17 @@
     },
     "profile": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "summary": { "type": "string", "maxLength": 2000 },
         "gallery": {
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": true,
+            "additionalProperties": false,
             "required": ["url"],
             "properties": {
-              "url": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
               "credit": { "type": "string" }
             }
           }
@@ -231,22 +257,27 @@
     },
     "media": {
       "type": "object",
-      "additionalProperties": true,
+      "additionalProperties": false,
       "properties": {
         "images": {
           "type": "array",
           "items": {
             "type": "object",
-            "additionalProperties": true,
+            "additionalProperties": false,
             "required": ["url"],
             "properties": {
-              "url": { "type": "string" },
+              "url": { "type": "string", "format": "uri" },
               "credit": { "type": "string" },
               "caption": { "type": "string", "maxLength": 600 }
             }
           }
         }
       }
-    }
+    },
+    "status_override": {
+      "type": "string",
+      "enum": ["disputed", "hidden", "none"]
+    },
+    "notes_mod": { "type": "string", "maxLength": 1000 }
   }
 }

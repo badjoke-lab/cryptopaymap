@@ -1,0 +1,152 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CryptoPayMap Place v2 (final, no method field)",
+  "type": "object",
+  "required": ["id", "name", "verification"],
+  "additionalProperties": true,
+  "properties": {
+    "id": { "type": "string", "minLength": 1 },
+    "name": { "type": "string", "minLength": 1 },
+
+    "location": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "lat": { "type": "number" },
+        "lon": { "type": "number" },
+        "address": { "type": "string" },
+        "city": { "type": "string" },
+        "country": { "type": "string" }
+      }
+    },
+
+    "verification": {
+      "type": "object",
+      "required": ["status"],
+      "additionalProperties": true,
+      "properties": {
+        "status": { "type": "string", "enum": ["owner", "community", "directory", "unverified"] },
+        "last_checked": { "type": "string", "format": "date-time" },
+        "last_verified": { "type": "string", "format": "date-time" },
+        "submitted": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "by": { "type": "string" },
+            "role": { "type": "string", "enum": ["owner", "non_owner", "unknown"] },
+            "at": { "type": "string", "format": "date-time" }
+          }
+        },
+        "review": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "status": { "type": "string", "enum": ["approved", "rejected", "pending"] },
+            "by": { "type": "string" },
+            "at": { "type": "string", "format": "date-time" },
+            "notes": { "type": "string", "maxLength": 1000 }
+          }
+        }
+      }
+    },
+
+    "payment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "accepts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["asset", "chain"],
+            "properties": {
+              "asset": { "type": "string", "pattern": "^[A-Z0-9]{2,10}$" },
+              "chain": {
+                "type": "string",
+                "enum": [
+                  "bitcoin",
+                  "lightning",
+                  "evm-mainnet",
+                  "polygon",
+                  "arbitrum",
+                  "base",
+                  "bsc",
+                  "solana",
+                  "tron",
+                  "ton",
+                  "avalanche"
+                ]
+              },
+              "processor": {
+                "type": "string",
+                "enum": ["btcpay", "opennode", "strike", "coinbase-commerce", "nowpayments", "bitpay", "self-hosted", "other"]
+              },
+              "notes": { "type": "string", "maxLength": 300 },
+              "evidence": {
+                "type": "array",
+                "items": { "oneOf": [ { "type": "string", "format": "uri" } ] },
+                "uniqueItems": true
+              },
+              "last_verified": { "type": "string", "format": "date-time" },
+              "last_checked": { "type": "string", "format": "date-time" }
+            }
+          }
+        },
+        "preferred": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z0-9]{2,10}@(bitcoin|lightning|evm-mainnet|polygon|arbitrum|base|bsc|solana|tron|ton|avalanche)$" },
+          "uniqueItems": true
+        }
+      }
+    },
+
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": { "summary": { "type": "string", "maxLength": 1000 } }
+    },
+
+    "media": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "images": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        },
+        "caption": { "type": "string", "maxLength": 600 }
+      }
+    },
+
+    "status_override": { "type": "string", "enum": ["disputed"] },
+    "notes_mod": { "type": "string", "maxLength": 2000 }
+  },
+
+  "allOf": [
+    {
+      "if": { "properties": { "verification": { "properties": { "status": { "const": "owner" } } } } },
+      "then": {
+        "properties": {
+          "profile": { "properties": { "summary": { "maxLength": 600 } } },
+          "media": { "properties": { "images": { "maxItems": 8 } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "verification": { "properties": { "status": { "const": "community" } } } } },
+      "then": {
+        "properties": {
+          "profile": { "properties": { "summary": { "maxLength": 300 } } },
+          "media": { "properties": { "images": { "maxItems": 4 } } }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "verification": { "properties": { "status": { "enum": ["directory", "unverified"] } } } } },
+      "then": {
+        "not": { "anyOf": [ { "required": ["profile"] }, { "required": ["media"] } ] }
+      }
+    }
+  ]
+}

@@ -1,40 +1,61 @@
-name: "Report incorrect info / takedown"
-description: Report an incorrect entry or request temporary hide (disputed).
-title: "[Report] <Business name> - <City, Country>"
+name: "Report: Correction or Takedown"
+description: Report incorrect or fraudulent information about a business.
+title: "[Report] <Business name or Place ID>"
 labels: ["report", "moderation"]
 body:
   - type: input
-    id: business_name
+    id: place_id
     attributes:
-      label: Business name
-      placeholder: Example Coffee Roasters
+      label: Place ID or map URL
+      placeholder: "us-nyc-abc123 or https://cryptopaymap.vercel.app/..."
     validations:
       required: true
 
-  - type: input
-    id: place_id
-    attributes:
-      label: Place ID (if known)
-      placeholder: "e.g., jp-tokyo-abc123"
-    validations:
-      required: false
-
   - type: dropdown
-    id: action
+    id: issue_type
     attributes:
-      label: Requested action
+      label: What is the issue?
       options:
-        - Hide temporarily (disputed)
-        - Correct information
-        - Remove permanently
+        - "Not accepting crypto (listed incorrectly)"
+        - "Wrong details (address, website, etc.)"
+        - "Fraudulent or spam entry"
+        - "Other"
     validations:
       required: true
 
   - type: textarea
     id: details
     attributes:
-      label: Details and evidence URLs
-      description: Explain what is wrong and provide links/screenshots.
-      placeholder: "Wrong address. Official page: https://... Screenshot: https://..."
+      label: Details
+      description: Describe the issue. Provide corrections if possible.
+      placeholder: "Business no longer accepts BTC..."
     validations:
       required: true
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence URLs (1+ required)
+      description: Links or receipts that prove the report.
+      placeholder: |
+        https://example.com/menu
+        https://x.com/.../status/12345
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ### Images
+        If useful, attach photos/screenshots directly to this issue.
+        GitHub will auto-host them (user-images URLs).
+        They will be collected automatically.
+        → No need to paste URLs manually.
+
+  - type: checkboxes
+    id: confirm
+    attributes:
+      label: Confirmation
+      options:
+        - label: I confirm this report is accurate to the best of my knowledge.
+          required: true

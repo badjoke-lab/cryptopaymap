@@ -1,0 +1,24 @@
+btc lightning
+BTC (Lightning)
+BTC / Lightning
+BTC (On-chain, Bitcoin)
+BTC / Bitcoin
+ETH (Ethereum Mainnet)
+eth  ethereum mainnet
+eip155:1  ETH
+USDT / Polygon
+USDT (polygon)
+matic usdt
+USDT / eip155:137
+Bnb Smart Chain  USDT
+USDT / bsc
+TRC20 USDT
+USDT / tron
+SOL / Solana
+avax avalanche
+EIP155:43114 USDC
+base usdc
+arbitrum one usdt
+optimism eth  # should reject (not in schema)
+dogecoin doge # should reject (not in schema)
+BTC (bolt12)

@@ -7,7 +7,9 @@
     "lng": -118.445344,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Lion Windows, 1838, Sawtelle Boulevard, Sawtelle Japantown, Sawtelle, Los Angeles, Los Angeles County, California, 90025, United States",
     "website": "https://www.lionwindowsanddoors.com/",
     "hours": "Mo-Fr 09:00- 17:00",
@@ -34,8 +36,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -55,7 +57,9 @@
     "lng": -118.536422,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Tribute Counseling & Psychotherapy Services, 9029, Reseda Boulevard, Northridge, Northridge South Neighborhood Council District, Los Angeles, Los Angeles County, California, 91324, United States",
     "website": "https://tributecps.com",
     "status": "active",
@@ -82,8 +86,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -103,7 +107,9 @@
     "lng": -118.3484915,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Bedlam Hills Galleria, 806, North Poinsettia Place, Fairfax, Los Angeles, Los Angeles County, California, 90046, United States",
     "website": "https://bedlam-hills-galleria.ueniweb.com/?utm_campaign=gmb",
     "status": "active",
@@ -126,8 +132,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -147,7 +153,9 @@
     "lng": -118.280925,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "PaintOrDip, 550, South Palos Verdes Street, San Pedro Arts and Cultural District, San Pedro, Los Angeles, Los Angeles County, California, 90731, United States",
     "website": "https://paintordip.com/",
     "status": "active",
@@ -171,8 +179,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -192,7 +200,9 @@
     "lng": -118.3371725,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Sasha Mac, 4553, Saint Charles Place, Victoria Park, Mid-Wilshire, Los Angeles, Los Angeles County, California, 90019, United States",
     "status": "active",
     "source": "osm",
@@ -215,8 +225,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -237,7 +247,9 @@
     "lng": -118.3962949,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Grade A Ink, 6140, Laurel Canyon Boulevard, North Hollywood Neighborhood Council District, Los Angeles, Los Angeles County, California, 91606, United States",
     "status": "active",
     "source": "osm",
@@ -262,8 +274,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -284,7 +296,9 @@
     "lng": -118.2092069,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Highland Tamalezzz, 3031, North Broadway, Lincoln Heights, Los Angeles, Los Angeles County, California, 90031, United States",
     "hours": "Su-Sa 07:00-09:00",
     "status": "active",
@@ -309,8 +323,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []
@@ -331,7 +345,9 @@
     "lng": -118.3842823,
     "country": "US",
     "city": "Los Angeles",
-    "coins": ["BTC"],
+    "coins": [
+      "BTC"
+    ],
     "address": "Fuse HVAC Service & Installation, 6170, Canterbury Drive, Culver City, Los Angeles County, California, 90230, United States",
     "website": "https://fuselac.com/",
     "hours": "Mo-Fr 09:00-17:00; Sa-Su 10:00-15:00",
@@ -359,8 +375,8 @@
         {
           "asset": "BTC",
           "chain": "bitcoin",
-          "method": "onchain",
-          "processor": "other"
+          "processor": "other",
+          "method": "onchain"
         }
       ],
       "preferred": []

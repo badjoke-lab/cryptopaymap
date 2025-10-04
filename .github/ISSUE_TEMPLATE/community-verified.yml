@@ -1,12 +1,12 @@
 name: "Community Verified: Submission"
-description: Submit a place you visited or verified as a community member (Silver).
+description: Submit a business you have evidence for (not the owner). Needs 2+ independent sources.
 title: "[Community] <Business name> - <City, Country>"
 labels: ["submission", "community", "verification"]
 body:
   - type: markdown
     attributes:
       value: |
-        Provide independent proof. One business per issue.
+        Provide accurate info. One business per issue.
 
   - type: input
     id: business_name
@@ -20,9 +20,17 @@ body:
     id: address
     attributes:
       label: Address
-      placeholder: 1-2-3 Shibuya, Tokyo, JP
+      placeholder: "350 5th Ave, New York, NY 10118, USA"
     validations:
       required: true
+
+  - type: input
+    id: website
+    attributes:
+      label: Official website URL (if known)
+      placeholder: https://example.com
+    validations:
+      required: false
 
   - type: textarea
     id: payments
@@ -37,38 +45,58 @@ body:
       required: true
 
   - type: textarea
-    id: evidence_urls
+    id: evidence
     attributes:
-      label: Evidence URLs (>= 2 independent sources)
-      description: Official site, provider directory, social posts, receipt photos, etc.
-      placeholder: "https://example.com/pay\nhttps://x.com/official/status/...\nhttps://user-images.githubusercontent.com/....webp"
+      label: Evidence URLs (2+ required)
+      description: Proof that crypto is accepted (checkout page, social post, receipt photo, etc.)
+      placeholder: |
+        https://example.com/payments
+        https://x.com/.../status/12345
     validations:
       required: true
+
+  - type: dropdown
+    id: already_listed
+    attributes:
+      label: Is this business already listed on CryptoPayMap?
+      options:
+        - "Yes"
+        - "No"
+    validations:
+      required: true
+
+  - type: input
+    id: listed_url_or_id
+    attributes:
+      label: If YES: paste the map URL or place ID
+      placeholder: "https://... or us-nyc-abc123"
+    validations:
+      required: false
 
   - type: textarea
     id: profile_summary
     attributes:
-      label: Optional summary (for card)
-      description: Max ~300 chars. Original text only.
-      placeholder: "I paid with BTC Lightning on 2025-09-20."
+      label: Profile summary (for map card)
+      description: Max ~300 chars.
+      placeholder: "This cafe accepts BTC and ETH."
     validations:
       required: false
 
-  - type: textarea
-    id: gallery_urls
+  - type: markdown
     attributes:
-      label: Image URLs (up to 4)
-      description: Your own photos or permitted images only.
-      placeholder: "https://user-images.githubusercontent.com/....webp"
-    validations:
-      required: false
+      value: |
+        ### Images
+        Attach up to **4 images** directly to this issue (drag & drop).
+        GitHub will auto-host them (user-images URLs).
+        They will be collected automatically.
+        → No need to paste URLs manually.
 
   - type: checkboxes
     id: consent
     attributes:
       label: Rights & consent
       options:
-        - label: I am submitting original text/images or have permission to share them.
+        - label: I have the rights to the text/images submitted and grant CryptoPayMap a non-exclusive, free license to display them.
           required: true
-        - label: I understand at least two independent evidence URLs are required.
+        - label: I understand the submission may be reviewed and rejected if unverifiable.
           required: true

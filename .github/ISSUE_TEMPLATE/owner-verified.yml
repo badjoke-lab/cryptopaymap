@@ -20,7 +20,7 @@ body:
     id: address
     attributes:
       label: Address
-      description: "Use full address. Format: Street number + street, City, STATE ZIP, USA"
+      description: "Use full address. Format: Street number + street, City, STATE ZIP, Country"
       placeholder: "350 5th Ave, New York, NY 10118, USA"
     validations:
       required: true
@@ -42,7 +42,7 @@ body:
         - BTC (Lightning)
         - BTC (On-chain, Bitcoin)
         - ETH (EVM mainnet)
-        - USDT (EVM mainnet)
+        - USDT (Polygon)
       placeholder: "- BTC (Lightning)\n- ETH (EVM mainnet)"
     validations:
       required: true
@@ -112,14 +112,14 @@ body:
     validations:
       required: false
 
-  - type: textarea
-    id: gallery_urls
+  - type: markdown
     attributes:
-      label: Image URLs (up to 8)
-      description: Host on GitHub issue images or your CDN. WebP/png/jpg.
-      placeholder: "https://user-images.githubusercontent.com/....webp"
-    validations:
-      required: false
+      value: |
+        ### Images
+        Attach up to **8 images** directly to this issue (drag & drop).
+        GitHub will auto-host them (user-images URLs).
+        They will be collected into your gallery automatically.
+        → No need to paste URLs manually.
 
   - type: checkboxes
     id: consent

@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "patch.report.schema.json",
+  "title": "Report Patch",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "kind": { "type": "string", "const": "report" },
+    "report": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["accepts_missing", "closed", "moved", "scam", "other"]
+        },
+        "evidence": {
+          "type": "array",
+          "items": { "type": "string", "format": "uri" }
+        },
+        "note": { "type": "string", "maxLength": 1000 }
+      }
+    },
+    "status": { "type": "string", "enum": ["accepts_missing", "closed", "moved", "scam", "other"] },
+    "evidence": {
+      "type": "array",
+      "items": { "type": "string", "format": "uri" }
+    },
+    "note": { "type": "string", "maxLength": 1000 }
+  }
+}

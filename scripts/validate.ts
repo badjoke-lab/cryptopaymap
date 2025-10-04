@@ -6,14 +6,14 @@ import addFormats from "ajv-formats";
 
 const INPUT = process.env.CPM_INPUT || "public/data/places";
 const SCHEMA = process.env.CPM_SCHEMA || "schema/place.schema.json";
+const CHAINS_META_PATH = process.env.CPM_CHAINS || "chains.meta.json";
 
 /** =========================
- *  Category (w/ normalization)
+ *  Category (with normalization)
  *  ========================= */
 
-/** 許可カテゴリ（OSM起点で広めに許容） */
 const CATEGORY_SET = new Set([
-  // 飲食
+  // food & drink
   "restaurant",
   "cafe",
   "bar",
@@ -21,7 +21,7 @@ const CATEGORY_SET = new Set([
   "fast_food",
   "bakery",
   "wine",
-  // 小売
+  // retail
   "supermarket",
   "convenience",
   "grocery",
@@ -46,7 +46,7 @@ const CATEGORY_SET = new Set([
   "furniture",
   "stationery",
   "interior_decoration",
-  // サービス・施設
+  // services & venues
   "hairdresser",
   "spa",
   "gym",
@@ -60,19 +60,19 @@ const CATEGORY_SET = new Set([
   "community_centre",
   "nightclub",
   "music",
-  // ガーデン・農
+  // garden & farm
   "garden_centre",
   "farm",
-  // 宿泊・その他
+  // lodging & other
   "hotel",
   "lodging",
   "coworking",
   "other",
 ]);
 
-/** カテゴリ別名 → 正式名 */
+/** category aliases -> canonical */
 const CATEGORY_ALIAS: Record<string, string> = {
-  // 英米綴り・同義
+  // spelling / synonyms
   bookstore: "books",
   book_store: "books",
   book_shop: "books",
@@ -81,12 +81,12 @@ const CATEGORY_ALIAS: Record<string, string> = {
   clothing: "clothes",
   mobile: "mobile_phone",
   phone: "mobile_phone",
-  // マイナー/特殊は other に吸収
+  // niche -> other
   incense: "other",
   events_venue: "other",
 };
 
-/** カテゴリ正規化（未知は other） */
+/** normalize category (unknown -> "other") */
 function normalizeCategory(raw: any): string | null {
   if (typeof raw !== "string") return null;
   const v = raw.trim().toLowerCase();
@@ -94,67 +94,6 @@ function normalizeCategory(raw: any): string | null {
   const mapped = CATEGORY_ALIAS[v] || v;
   return CATEGORY_SET.has(mapped) ? mapped : "other";
 }
-
-/** =========================
- *  Payment / Social constants
- *  ========================= */
-
-/** 正式チェーン名 */
-const CHAIN_SET = new Set([
-  "bitcoin",
-  "evm-mainnet",
-  "polygon",
-  "arbitrum",
-  "base",
-  "bsc",
-  "solana",
-  "tron",
-  "ton",
-  "avalanche",
-  "other",
-]);
-
-/** チェーンの別名 → 正式名 */
-const CHAIN_ALIAS: Record<string, string> = {
-  evm: "evm-mainnet",
-  ethereum: "evm-mainnet",
-  eth: "evm-mainnet",
-  btc: "bitcoin",
-};
-
-const METHOD_SET = new Set([
-  "onchain",
-  "lightning",
-  "lnurl",
-  "bolt12",
-  "other",
-]);
-
-const PROCESSOR_SET = new Set([
-  "btcpay",
-  "opennode",
-  "strike",
-  "coinbase-commerce",
-  "nowpayments",
-  "bitpay",
-  "self-hosted",
-  "other",
-]);
-
-const SOCIAL_PLATFORM_SET = new Set([
-  "instagram",
-  "facebook",
-  "x",
-  "tiktok",
-  "youtube",
-  "telegram",
-  "whatsapp",
-  "wechat",
-  "line",
-  "threads",
-  "pinterest",
-  "other",
-]);
 
 /** =========================
  *  AJV / IO helpers
@@ -186,12 +125,44 @@ function listPlaceFiles(root: string): string[] {
   return out.sort();
 }
 
+/** =========================
+ *  Chains meta (dynamic aliases / allowed ids)
+ *  ========================= */
+
+type ChainMetaEntry = { id: string; label?: string; aliases?: string[] };
+type ChainsMeta = { chains: ChainMetaEntry[] };
+
+const chainsMeta: ChainsMeta = readJson(CHAINS_META_PATH);
+
+// allowed chain ids (must align with schema enum via $ref)
+const CHAIN_SET = new Set<string>(chainsMeta.chains.map((c) => c.id));
+
+// alias map (lower-cased) -> canonical id
+const CHAIN_ALIAS: Record<string, string> = (() => {
+  const map: Record<string, string> = {};
+  const norm = (s?: string) => (s || "").trim().toLowerCase();
+  for (const c of chainsMeta.chains) {
+    const id = c.id;
+    if (!id) continue;
+    map[norm(id)] = id;
+    if (c.label) map[norm(c.label)] = id;
+    for (const al of c.aliases || []) {
+      map[norm(al)] = id;
+    }
+  }
+  // some common shapes
+  map["onchain"] = "bitcoin";
+  map["on-chain"] = "bitcoin";
+  return map;
+})();
+
 function levelLimits(level: string) {
   if (level === "owner")
     return { maxImages: 8, maxCaption: 600, requirePayments: true };
   if (level === "community")
     return { maxImages: 4, maxCaption: 300, requirePayments: true };
-  return { maxImages: 0, maxCaption: 0, requirePayments: false }; // directory/unverified
+  // directory / unverified
+  return { maxImages: 0, maxCaption: 0, requirePayments: false };
 }
 
 /** =========================
@@ -214,9 +185,27 @@ function normalizeAsset(raw: any): string | null {
 function normalizeChain(raw: any): string | null {
   const s = normStr(raw);
   if (!s) return null;
-  const v = s.toLowerCase();
-  const mapped = CHAIN_ALIAS[v] || v;
+  const k = s.toLowerCase();
+  const mapped = CHAIN_ALIAS[k] || k;
   return mapped;
+}
+
+/** =========================
+ *  Extra Business Rule Assertions
+ *  ========================= */
+
+function assertBusinessRules(place: any, file: string) {
+  const v = place?.verification?.status;
+  if (v === "directory" || v === "unverified") {
+    if (place.media?.images?.length) {
+      throw new Error(`${file}: Directory/Unverified must not include media.images`);
+    }
+  }
+  const acc: string[] = (place?.payment?.accepts || []).map((a: any) => `${a.asset}:${a.chain}`);
+  const pref: string[] = place?.payment?.preferred || [];
+  for (const p of pref) {
+    if (!acc.includes(p)) throw new Error(`${file}: payment.preferred contains unknown "${p}"`);
+  }
 }
 
 /** =========================
@@ -232,24 +221,22 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
     const lvl = r?.verification?.status;
     const limits = levelLimits(lvl);
 
-    // 1) profile/media constraints by level
+    // (A) profile/media constraints by verification level
     const imgs = (r?.media?.images ?? []) as any[];
     if (imgs.length > limits.maxImages) {
       errs.push(
-        `${fileLabel}:${id}: media.images length ${imgs.length} > ${limits.maxImages} (level=${lvl})`,
+        `${fileLabel}:${id}: media.images length ${imgs.length} > ${limits.maxImages} (level=${lvl})`
       );
     }
     if (imgs.length > 0 && limits.maxImages === 0) {
-      errs.push(
-        `${fileLabel}:${id}: media/images not allowed for level=${lvl}`,
-      );
+      errs.push(`${fileLabel}:${id}: media.images not allowed for level=${lvl}`);
     }
     for (let j = 0; j < imgs.length; j++) {
       const img = imgs[j] || {};
       const cap = String(img.caption || "");
       if (cap.length > limits.maxCaption) {
         errs.push(
-          `${fileLabel}:${id}: media.caption length ${cap.length} > ${limits.maxCaption} (level=${lvl})`,
+          `${fileLabel}:${id}: media.caption length ${cap.length} > ${limits.maxCaption} (level=${lvl})`
         );
       }
     }
@@ -257,53 +244,51 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
       errs.push(`${fileLabel}:${id}: profile present but level=${lvl}`);
     }
 
-    // 2) category constraints（正規化。未知は other。= エラーにしない）
+    // (B) category normalization (unknown -> "other"), not an error
     if (typeof r.category === "string") {
       const before = r.category;
       const after = normalizeCategory(before);
       if (after && after !== before) {
-        r.category = after; // 正規化を書き戻し
+        r.category = after; // write back normalized
       }
     }
     if (r.category_confidence != null) {
       const c = Number(r.category_confidence);
       if (!(c >= 0 && c <= 1)) {
         errs.push(
-          `${fileLabel}:${id}: category_confidence out of range (0..1): ${r.category_confidence}`,
+          `${fileLabel}:${id}: category_confidence out of range (0..1): ${r.category_confidence}`
         );
       }
     }
 
-    // 3) socials constraints
+    // (C) socials constraints
     if (Array.isArray(r.socials)) {
       for (let sIdx = 0; sIdx < r.socials.length; sIdx++) {
         const s = r.socials[sIdx];
         if (!s) continue;
-        if (!s.platform || !SOCIAL_PLATFORM_SET.has(s.platform)) {
+        if (!s.platform || !new Set([
+          "instagram","facebook","x","tiktok","youtube","telegram","whatsapp","wechat","line","threads","pinterest","other"
+        ]).has(s.platform)) {
           errs.push(`${fileLabel}:${id}: socials[${sIdx}].platform invalid`);
         }
         if (!s.url && !s.handle) {
-          errs.push(
-            `${fileLabel}:${id}: socials[${sIdx}] must have url or handle`,
-          );
+          errs.push(`${fileLabel}:${id}: socials[${sIdx}] must have url or handle`);
         }
         if (
           s.handle &&
           typeof s.handle === "string" &&
           !/^@?[\w.\-]{1,50}$/.test(s.handle)
         ) {
-          errs.push(
-            `${fileLabel}:${id}: socials[${sIdx}].handle invalid format`,
-          );
+          errs.push(`${fileLabel}:${id}: socials[${sIdx}].handle invalid format`);
         }
       }
     }
 
-    // 4) payment constraints（正規化してから検査する）
+    // (D) payment constraints (normalize then validate)
     const acc = r?.payment?.accepts;
     if (limits.requirePayments && (!Array.isArray(acc) || acc.length === 0)) {
       errs.push(
-        `${fileLabel}:${id}: level=${lvl} requires at least one payment.accepts entry`,
+        `${fileLabel}:${id}: level=${lvl} requires at least one payment.accepts entry`
       );
     }
     if (Array.isArray(acc)) {
@@ -316,7 +301,7 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
         if (!assetNorm) {
           errs.push(`${fileLabel}:${id}: payment.accepts[${k}].asset invalid`);
         } else {
-          a.asset = assetNorm; // 正規化
+          a.asset = assetNorm; // write back normalized
         }
 
         // chain
@@ -324,27 +309,29 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
         if (!chainNorm || !CHAIN_SET.has(chainNorm)) {
           const raw = typeof a.chain === "string" ? a.chain : String(a.chain);
           errs.push(
-            `${fileLabel}:${id}: payment.accepts[${k}].chain invalid (raw="${raw}", norm="${chainNorm}")`,
+            `${fileLabel}:${id}: payment.accepts[${k}].chain invalid (raw="${raw}", norm="${chainNorm}")`
           );
         } else {
-          a.chain = chainNorm; // 正規化
+          a.chain = chainNorm; // write back normalized
         }
 
         // method
+        const METHOD_SET = new Set(["onchain","lightning","lnurl","bolt12","other"]);
         if (a.method != null && !METHOD_SET.has(String(a.method))) {
           errs.push(`${fileLabel}:${id}: payment.accepts[${k}].method invalid`);
         }
 
         // processor
+        const PROCESSOR_SET = new Set([
+          "btcpay","opennode","strike","coinbase-commerce","nowpayments","bitpay","self-hosted","other"
+        ]);
         if (a.processor != null && !PROCESSOR_SET.has(String(a.processor))) {
-          errs.push(
-            `${fileLabel}:${id}: payment.accepts[${k}].processor invalid`,
-          );
+          errs.push(`${fileLabel}:${id}: payment.accepts[${k}].processor invalid`);
         }
       }
     }
 
-    // 5) preferred must reference accepts（正規化後で照合）
+    // (E) preferred must be subset of accepts after normalization
     const preferred = r?.payment?.preferred;
     if (Array.isArray(preferred) && Array.isArray(acc)) {
       const set = new Set<string>();
@@ -361,14 +348,33 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
           !/^[A-Z0-9]{2,10}:[a-z0-9\-]{2,32}$/.test(pr)
         ) {
           errs.push(
-            `${fileLabel}:${id}: payment.preferred[${pIdx}] invalid format`,
+            `${fileLabel}:${id}: payment.preferred[${pIdx}] invalid format`
           );
         } else if (!set.has(pr)) {
           errs.push(
-            `${fileLabel}:${id}: payment.preferred[${pIdx}] not found in accepts (${pr})`,
+            `${fileLabel}:${id}: payment.preferred[${pIdx}] not found in accepts (${pr})`
           );
         }
       }
+    }
+
+    // (F) explicit: directory/unverified must not include any media.* object
+    if ((lvl === "directory" || lvl === "unverified") && r.media) {
+      const hasImages =
+        Array.isArray(r.media.images) && r.media.images.length > 0;
+      const hasAnyOther = Object.keys(r.media).length > (hasImages ? 1 : 0);
+      if (hasImages || hasAnyOther) {
+        errs.push(
+          `${fileLabel}:${id}: media.* not allowed for level=${lvl} (remove media entirely)`
+        );
+      }
+    }
+
+    // (G) call extra assertions
+    try {
+      assertBusinessRules(r, fileLabel);
+    } catch (e: any) {
+      errs.push(String(e.message || e));
     }
   }
 
@@ -380,8 +386,13 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
  *  ========================= */
 
 function main() {
-  const schema = readJson(SCHEMA);
-  const validate = ajv.compile(schema);
+  const placeSchema = readJson(SCHEMA);
+  const chainsSchema = readJson(CHAINS_META_PATH);
+
+  // preload chains schema so that $ref: "chains.meta.json#/definitions/chainId" can resolve
+  ajv.addSchema(chainsSchema, "chains.meta.json");
+
+  const validate = ajv.compile(placeSchema);
 
   const files = listPlaceFiles(INPUT);
   if (files.length === 0) {
@@ -401,7 +412,7 @@ function main() {
       : js.places || js.items || js.results || js.data || js.entries || [];
     if (!Array.isArray(arr)) continue;
 
-    // JSON Schema
+    // JSON Schema validation
     const thisSchemaErrs: string[] = [];
     for (let pi = 0; pi < arr.length; pi++) {
       const p = arr[pi];
@@ -412,7 +423,7 @@ function main() {
         for (let ei = 0; ei < errors.length; ei++) {
           const e = errors[ei];
           thisSchemaErrs.push(
-            `${path.basename(f)}: ${id}: ${e.instancePath || "/"} ${e.message}`,
+            `${path.basename(f)}: ${id}: ${e.instancePath || "/"} ${e.message}`
           );
         }
       }
@@ -436,13 +447,13 @@ function main() {
 
   if (schemaErrs || ruleErrs) {
     console.error(
-      `Validation failed. Schema errors: ${schemaErrs}, Business rule errors: ${ruleErrs}`,
+      `Validation failed. Schema errors: ${schemaErrs}, Business rule errors: ${ruleErrs}`
     );
     process.exit(1);
   }
 
   console.log(
-    `OK: ${totalRecords} records passed schema + business rules across ${files.length} file(s).`,
+    `OK: ${totalRecords} records passed schema + business rules across ${files.length} file(s).`
   );
 }
 

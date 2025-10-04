@@ -1,0 +1,64 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "patch.owner.schema.json",
+  "title": "Owner Patch",
+  "type": "object",
+  "additionalProperties": true,
+  "properties": {
+    "kind": { "type": "string", "const": "owner" },
+    "payment": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "accepts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["asset", "chain"],
+            "properties": {
+              "asset": { "type": "string", "pattern": "^[A-Z0-9]{2,10}$" },
+              "chain": { "$ref": "chains.meta.json#/definitions/chainId" },
+              "method": {
+                "type": "string",
+                "enum": ["onchain", "lightning", "lnurl", "bolt12", "other"]
+              },
+              "processor": { "type": "string" },
+              "evidence": {
+                "type": "array",
+                "items": { "type": "string", "format": "uri" }
+              }
+            }
+          }
+        },
+        "preferred": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-Z0-9]{2,10}@[a-z0-9:\\-]{2,64}$" },
+          "uniqueItems": true
+        }
+      }
+    },
+    "socials": {
+      "anyOf": [
+        {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["platform"],
+            "properties": {
+              "platform": {
+                "type": "string",
+                "enum": ["instagram", "facebook", "x", "tiktok", "youtube", "telegram", "whatsapp", "wechat", "line", "threads", "pinterest", "other"]
+              },
+              "url": { "type": "string", "format": "uri" },
+              "handle": { "type": "string" }
+            }
+          }
+        },
+        { "type": "object" },
+        { "type": "string" }
+      ]
+    }
+  }
+}

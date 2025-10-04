@@ -15,13 +15,13 @@
     "cpm:fix:status-sources": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_status_sources.ts",
     "cpm:fix:categories": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_categories.ts",
     "cpm:fix:chain-method": "TS_NODE_PROJECT=tsconfig.scripts.json ts-node scripts/fix_payment_chain_method.ts",
-    "cpm:migrate:v2": "tsx scripts/migrate_payments.ts",
-    "cpm:validate:v2": "tsx scripts/validate.ts",
     "cpm:migrate:payments": "ts-node --project tsconfig.scripts.json scripts/migrate_payments.ts",
-    "cpm:validate:payments": "ts-node --project tsconfig.scripts.json scripts/validate.ts",
-    "cpm:fix:accepts": "tsx scripts/fix_accepts_shape.ts",
     "cpm:validate:payments": "tsx scripts/validate.ts",
+    "cpm:fix:accepts": "tsx scripts/fix_accepts_shape.ts",
     "cpm:fix:evm": "tsx scripts/demote_unsupported_chains.ts",
+    "cpm:validate:submissions": "tsx scripts/validate_submissions.ts",
+    "cpm:fuzz:payments": "tsx scripts/fuzz_payments.ts",
+    "cpm:lint:nocodeja": "bash scripts/check_no_ja_in_code.sh",
     "prepare": "husky"
   },
   "dependencies": {

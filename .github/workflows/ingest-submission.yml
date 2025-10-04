@@ -1,0 +1,29 @@
+name: ingest-submission
+on:
+  issues:
+    types: [opened, edited, labeled]
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+jobs:
+  intake:
+    if: contains(github.event.issue.labels.*.name, 'owner') || contains(github.event.issue.labels.*.name, 'community') || contains(github.event.issue.labels.*.name, 'report')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20, cache: "npm" }
+      - run: npm ci
+      - name: Generate submission patch
+        run: node --loader tsx scripts/issue_intake.ts
+      - name: Create PR
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore(intake): add submission for #${{ github.event.issue.number }}"
+          branch: "bot/intake/issue-${{ github.event.issue.number }}"
+          title: "Intake: issue #${{ github.event.issue.number }}"
+          body: "Auto-generated submission & rejects for issue #${{ github.event.issue.number }}."
+          add-paths: |
+            inbox/submissions/**
+            inbox/rejects/**

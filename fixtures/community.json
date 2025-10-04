@@ -1,0 +1,10 @@
+{
+  "business_name": "Sample Diner",
+  "address": "1 Market St, San Francisco, CA",
+  "website": "https://diner.example",
+  "payments": "BTC / Lightning\nUSDT / eip155:137\nETH (EVM mainnet)",
+  "evidence_urls": "https://x.com/diner/status/1\nhttps://provider.example/merchant/abc",
+  "profile_summary": "Locals welcome.",
+  "gallery_urls": "https://user-images.githubusercontent.com/a.webp\nhttps://user-images.githubusercontent.com/b.webp",
+  "socials": "facebook https://facebook.com/diner"
+}
