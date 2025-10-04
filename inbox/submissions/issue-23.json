@@ -1,0 +1,19 @@
+{
+  "name": "",
+  "address": "",
+  "website": null,
+  "payment": {
+    "accepts": [],
+    "preferred": []
+  },
+  "verification": {
+    "status": "owner",
+    "sources": [],
+    "submitted": {
+      "by": "github:owner",
+      "role": "owner",
+      "at": "2025-10-04T15:34:11.191Z"
+    },
+    "last_checked": "2025-10-04T15:34:11.191Z"
+  }
+}
