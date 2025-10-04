@@ -37,17 +37,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # 先に Node、かつ pnpm キャッシュを有効化
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: 'pnpm'
 
-      # pnpm はローカルに合わせて 10 を明示
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
+      - name: Install pnpm
+        run: npm install -g pnpm@10
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -64,12 +60,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
+          cache: 'pnpm'
 
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-          run_install: false
+      - name: Install pnpm
+        run: npm install -g pnpm@10
 
       - name: Install deps
         run: pnpm install --frozen-lockfile
@@ -83,6 +77,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # bash で直接叩くので Node 不要。必要なら同様に Node/pnpm セットアップを追加してもOK。
       - name: Scan code for Japanese characters
         run: bash scripts/check_no_ja_in_code.sh
