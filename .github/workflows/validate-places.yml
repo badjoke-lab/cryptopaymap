@@ -36,21 +36,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      # Node を用意（※ cache: pnpm は使わない：pnpm 未導入の段階で呼ぶと失敗するため）
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      # pnpm を導入（v10、npm 経由でグローバルに）
       - name: Install pnpm
         run: npm install -g pnpm@10
-
-      # 依存をインストール（pnpm-lock.yaml と同期）
       - name: Install deps
         run: pnpm install --frozen-lockfile
-
-      # 6-2 相当：既存データ検証
       - name: Validate places (schema + business rules)
         run: pnpm run cpm:validate
 
@@ -59,18 +51,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-
       - name: Install pnpm
         run: npm install -g pnpm@10
-
       - name: Install deps
         run: pnpm install --frozen-lockfile
-
-      # 6-2（パッチ検証）
       - name: Validate submission patches
         run: pnpm run cpm:validate:submissions
 
@@ -79,6 +66,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Scan code for Japanese characters
         run: bash scripts/check_no_ja_in_code.sh
