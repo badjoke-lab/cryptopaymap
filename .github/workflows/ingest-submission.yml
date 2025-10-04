@@ -1,19 +1,23 @@
 name: ingest-submission
+
 on:
   issues:
     types: [opened, edited, labeled]
+  workflow_dispatch: {}
+
 permissions:
   contents: write
+  issues: read
   pull-requests: write
-  actions: read
+
 jobs:
-  intake:
-    if: contains(github.event.issue.labels.*.name, 'owner') || contains(github.event.issue.labels.*.name, 'community') || contains(github.event.issue.labels.*.name, 'report')
+  ingest:
+    name: Ingest issue -> build submission JSON -> open PR
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: "npm" }
+
+      # Node → pnpm → install（npm ciは使わない）
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -22,16 +26,36 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
+      # 実体の intake スクリプトを実行（パスはリポジトリに合わせて）
+      - name: Build submissions from issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          ISSUE_ACTION: ${{ github.event.action }}
+          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
+        run: |
+          # 例: ラベルが owner のときだけ処理（必要に応じて条件調整）
+          if echo "${ISSUE_LABELS}" | grep -qi '\bowner\b'; then
+            pnpm tsx scripts/issue_intake.ts --issue $ISSUE_NUMBER
+          else
+            echo "No owner label; skipping intake."
+          fi
 
-      - name: Generate submission patch
-        run: node --loader tsx scripts/issue_intake.ts
-      - name: Create PR
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "chore(intake): add submission for #${{ github.event.issue.number }}"
-          branch: "bot/intake/issue-${{ github.event.issue.number }}"
-          title: "Intake: issue #${{ github.event.issue.number }}"
-          body: "Auto-generated submission & rejects for issue #${{ github.event.issue.number }}."
-          add-paths: |
-            inbox/submissions/**
-            inbox/rejects/**
+      # intake が作ったファイルをブランチにコミットして PR を作る例
+      - name: Create PR with inbox files
+        if: success()
+        run: |
+          set -e
+          BR="intake/issue-${{ github.event.issue.number }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BR"
+          git add inbox/submissions || true
+          git add inbox/rejects || true
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore(intake): issue #${{ github.event.issue.number }}"
+          git push -u origin "$BR"
+          gh pr create --fill || true

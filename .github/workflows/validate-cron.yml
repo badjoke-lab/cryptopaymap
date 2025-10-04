@@ -1,22 +1,35 @@
 name: weekly-validate
+
 on:
   schedule:
-    - cron: "0 3 * * 1"
-  workflow_dispatch:
+    - cron: "0 2 * * 1"   # 毎週月曜 02:00 UTC（任意で変更）
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
 jobs:
-  cron-validate:
+  validate:
+    name: Weekly validate (places + submissions + no-JP)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
+
       - name: Install pnpm
         run: npm install -g pnpm@10
+
       - name: Install deps
         run: pnpm install --frozen-lockfile
-      - run: npm run cpm:validate
+
+      - name: Validate places
+        run: pnpm run cpm:validate
+
+      - name: Validate submissions
+        run: pnpm run cpm:validate:submissions
+
+      - name: Lint no-Japanese
+        run: pnpm run cpm:lint:nocodeja
