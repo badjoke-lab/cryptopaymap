@@ -12,50 +12,110 @@ permissions:
 
 jobs:
   ingest:
-    name: Ingest issue -> build submission JSON -> open PR
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      # Node → pnpm → install（npm ciは使わない）
-      - uses: actions/setup-node@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: 20
+
       - name: Install pnpm
         run: npm install -g pnpm@10
+
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      # 実体の intake スクリプトを実行（パスはリポジトリに合わせて）
-      - name: Build submissions from issue
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
-          ISSUE_ACTION: ${{ github.event.action }}
-          ISSUE_LABELS: ${{ join(github.event.issue.labels.*.name, ',') }}
-        run: |
-          # 例: ラベルが owner のときだけ処理（必要に応じて条件調整）
-          if echo "${ISSUE_LABELS}" | grep -qi '\bowner\b'; then
-            pnpm tsx scripts/issue_intake.ts --issue $ISSUE_NUMBER
-          else
-            echo "No owner label; skipping intake."
-          fi
+      # ラベルが無ければタイトルから推定して付与（owner/community/report）
+      - name: Ensure label
+        id: ensure_label
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const labels = (issue.labels || []).map(l => (typeof l === "string" ? l : l.name));
+            const has = (n) => labels.includes(n);
+            if (has("owner") || has("community") || has("report")) {
+              core.setOutput("label", labels.find(l => ["owner","community","report"].includes(l)));
+              return;
+            }
+            const t = (issue.title || "").toLowerCase();
+            let lab = null;
+            if (t.startsWith("owner") || t.includes("owner:")) lab = "owner";
+            else if (t.startsWith("community") || t.includes("community:")) lab = "community";
+            else if (t.startsWith("report") || t.includes("report:")) lab = "report";
+            if (lab) {
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: [lab],
+              });
+              core.setOutput("label", lab);
+            } else {
+              core.notice("No recognizable label; skip intake.");
+              core.setOutput("skip", "1");
+            }
 
-      # intake が作ったファイルをブランチにコミットして PR を作る例
-      - name: Create PR with inbox files
-        if: success()
+      # intake 実行（owner/community/report を切替）
+      - name: Build submissions from issue
+        if: steps.ensure_label.outputs.skip != '1'
+        env:
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          LABEL: ${{ steps.ensure_label.outputs.label }}
+        run: |
+          set -e
+          case "$LABEL" in
+            owner) pnpm tsx scripts/issue_intake.ts --issue "$ISSUE_NUMBER" ;;
+            community) pnpm tsx scripts/issue_intake.ts --issue "$ISSUE_NUMBER" --community ;;
+            report) pnpm tsx scripts/issue_intake.ts --issue "$ISSUE_NUMBER" --report ;;
+            *) echo "Unsupported label: $LABEL"; exit 0 ;;
+          esac
+
+      # 生成ファイルをブランチにコミット（差分が無ければスキップ）
+      - name: Commit generated files to branch
+        if: steps.ensure_label.outputs.skip != '1'
         run: |
           set -e
           BR="intake/issue-${{ github.event.issue.number }}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # 生成対象（必要に応じて調整）
           git checkout -b "$BR"
           git add inbox/submissions || true
           git add inbox/rejects || true
+
           if git diff --cached --quiet; then
-            echo "No changes to commit."
+            echo "NO_CHANGES=1" >> $GITHUB_ENV
+            echo "No changes to commit. Skipping push/PR."
             exit 0
           fi
+
           git commit -m "chore(intake): issue #${{ github.event.issue.number }}"
           git push -u origin "$BR"
-          gh pr create --fill || true
+
+      # PR 作成（ブランチがプッシュされた場合のみ）
+      - name: Open PR
+        if: env.NO_CHANGES != '1' && steps.ensure_label.outputs.skip != '1'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueNumber = context.payload.issue.number;
+            const head = `intake/issue-${issueNumber}`;
+            const title = `chore(intake): issue #${issueNumber}`;
+            const body = `Auto-generated from issue #${issueNumber}.`;
+            // 既に同名PRがあるならスキップ
+            const prs = await github.paginate(github.rest.pulls.list, {
+              owner: context.repo.owner, repo: context.repo.repo, state: "open", head: `${context.repo.owner}:${head}`
+            });
+            if (prs.length) { core.info("PR already exists. Skipping create."); return; }
+            await github.rest.pulls.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title, head, base: "main", body, draft: false
+            });
