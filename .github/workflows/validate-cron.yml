@@ -12,5 +12,12 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - name: Install pnpm
+        run: npm install -g pnpm@10
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
       - run: npm run cpm:validate
