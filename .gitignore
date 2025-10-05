@@ -14,3 +14,5 @@ __backup__/
 components/0_*.tsx
 **/*.bak.*
 __backup__/
+tools/verify/.last_summary.json
+tools/verify/last_runs.json
