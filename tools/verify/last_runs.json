@@ -1,1 +1,303 @@
-[]
+[
+  {
+    "timestamp": "2025-10-05T14:20:54.418Z",
+    "rulesVersion": "1.0.0",
+    "changedFiles": [],
+    "stats": {
+      "scanned": 0,
+      "hits": 0,
+      "updated": 0,
+      "unchanged": 0,
+      "errors": 0,
+      "byStatus": {
+        "directory": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 0
+        },
+        "unverified": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 0
+        }
+      },
+      "evidenceDist": {},
+      "failures": {},
+      "failuresTop": []
+    }
+  },
+  {
+    "timestamp": "2025-10-05T15:16:57.984Z",
+    "rulesVersion": "1.0.0",
+    "changedFiles": [
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/ar/buenos-aires/buenos-aires.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/ca/toronto/toronto.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/de/berlin/berlin.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/fr/paris/paris.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/gb/london/london.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/jp/tokyo/tokyo.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/mx/mexico-city/mexico-city.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/sv/san-salvador/san-salvador.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/th/bangkok/bangkok.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/us/los-angeles/los-angeles.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/us/miami/miami.json",
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/us/new-york/new-york.json"
+    ],
+    "stats": {
+      "scanned": 974,
+      "hits": 5,
+      "updated": 395,
+      "unchanged": 0,
+      "errors": 0,
+      "byStatus": {
+        "directory": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 0
+        },
+        "unverified": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 0
+        },
+        "active": {
+          "pass": 5,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 969
+        }
+      },
+      "evidenceDist": {
+        "script": 5
+      },
+      "failures": {
+        "rodizio.com.ar": 1,
+        "januarylibreria.com.ar": 1,
+        "apologames.com.ar": 1,
+        "puertauno.com": 1,
+        "ykonos.com": 1,
+        "juegosmentales.ar": 1,
+        "martinellicaffe.com.ar": 1,
+        "portals.love": 1,
+        "drittes-ohr.com": 1,
+        "trattoria-felice.de": 1,
+        "doyouspace.net": 1,
+        "launchco.com": 1,
+        "ice-aesthetic.de": 1,
+        "wahl-kanzlei.de": 1,
+        "cengolio.com": 1,
+        "hairmueller.de": 1,
+        "onkel-philipp.de": 1,
+        "suessmaedchen.com": 1,
+        "paranoid-internet.de": 1,
+        "mein-palo-santo.de": 1,
+        "nokustudio.com": 1,
+        "nexondo.de": 1,
+        "fahrzeugpflege-laabs.de": 1,
+        "fuessiotherapie.de": 1,
+        "cispace.isaci.com": 1,
+        "liebener-coaching.de": 1,
+        "martinalubanski.com": 1,
+        "fotostudio-kreuzberg.de": 1,
+        "tante-tom.de": 1,
+        "rml-bau.de": 1,
+        "davidtenorioart.com": 1,
+        "andresedv.de": 1,
+        "bip39cups.com": 1,
+        "legreffulhe.fr": 1,
+        "sofsbar.fr": 1,
+        "boucherie-gillotjohn.fr": 1,
+        "rock4you.dance": 1,
+        "leboncoin.fr": 1,
+        "air-dr.com": 1,
+        "fais-ci-fais-ca.com": 1,
+        "bistrot-du-passage.com": 1,
+        "westharrowgarage.com": 1,
+        "cutitoutwallstickers.co.uk": 1,
+        "mccannbespoke.co.uk": 1,
+        "focusplant.uk": 2,
+        "tootingmarket.com": 1,
+        "forevermoretattoo.uk": 1,
+        "wolfysbar.com": 1,
+        "bluemangosalon.com": 1,
+        "hairdesignco-hornchurch.co.uk": 1,
+        "ellieyoki.co.uk": 1,
+        "antoniodelicatessen.co.uk": 1,
+        "rodegamusic.com": 1,
+        "blokpoint.com": 1,
+        "khil.co.uk": 1,
+        "docksidevaults.com": 1,
+        "broadley.tv": 1,
+        "applebitcoins.com": 1,
+        "phreshjuice.co.uk": 1,
+        "caryhammond.com": 1,
+        "whaircut.com": 1,
+        "hanfuchinese.co.uk": 1,
+        "massaggi.co.uk": 1,
+        "centuryclub.co.uk": 1,
+        "troxy.co.uk": 1,
+        "worcester-osteo.com": 1,
+        "kettleclub.co.uk": 1,
+        "strike-bowling.com": 1,
+        "prestigeautossurrey.co.uk": 1,
+        "cryptobarp2p.io": 1,
+        "kunseido.com": 1,
+        "thepinkcow.com": 1,
+        "cocorotus.com": 5,
+        "mepica.net": 1,
+        "gallery-ueda.com": 1,
+        "tokyobitcoin.space": 1,
+        "flowsuites.com": 3,
+        "elektra.mx": 2,
+        "bitcoinemb.com": 1,
+        "inglesreales.com": 1,
+        "vienna.earth": 1,
+        "neurologocdmx.com": 1,
+        "coinatmradar.com": 1,
+        "siman.com": 1,
+        "lacuracaonline.com": 10,
+        "hotels.cloudbeds.com": 1,
+        "soyanutribar.com": 1,
+        "domicilio.mcdonalds.com.sv": 1,
+        "cervezacadejo.com": 1,
+        "dollarcity.com": 4,
+        "tacobell.com.sv": 2,
+        "radioshackla.com": 6,
+        "omnisport.com": 1,
+        "pollocampestre.com": 1,
+        "sbsv.premium.sv": 2,
+        "juanvaldezcafe.com": 2,
+        "soho.sv": 1,
+        "superselectos.com": 2,
+        "bitexcapital.net": 1,
+        "abogados.com.sv": 1,
+        "sanmartinbakery.com": 1,
+        "pierrecardin.com.sv": 1,
+        "elixirjuicesv.com": 1,
+        "vivaespressocoffee.com": 1,
+        "elxolomaiz.com": 1,
+        "tierrabendita.net": 1,
+        "dentalkeysv.com": 1,
+        "thebrkco.com": 1,
+        "restauranteacajutla.com": 1,
+        "shaws.com.sv": 3,
+        "allmylinks.com": 1,
+        "bubbassv.com": 1,
+        "alquimiacoffee.com": 1,
+        "oyechicosv.com": 1,
+        "airbtc.online": 2,
+        "dulcekava.com": 1,
+        "pricesmart.com": 1,
+        "yamaha-motor.com.sv": 1,
+        "pizzerialaclasica.com": 1,
+        "campero.com": 1,
+        "sertracen.com.sv": 1,
+        "chitbrewery.com": 1,
+        "palettebkk.com": 1,
+        "newyorkstudiobkk.com": 1,
+        "obo.cash": 1,
+        "maps.app.goo.gl": 1,
+        "tributecps.com": 1,
+        "bedlam-hills-galleria.ueniweb.com": 1,
+        "paintordip.com": 1,
+        "juviamiami.com": 1,
+        "sushigarage.com": 1,
+        "lasantataqueria.com": 1,
+        "chotto-matte.com": 1,
+        "thymemachinecafe.com": 1,
+        "ornomiami.com": 1,
+        "miamicamerastore.com": 1,
+        "designhouseagency.com": 1,
+        "je-gc.com": 1,
+        "safariharlem.com": 1,
+        "kavasutra.com": 1,
+        "waterfrontwinesnyc.com": 1,
+        "solidstatecoffee.com": 1
+      },
+      "failuresTop": [
+        {
+          "host": "lacuracaonline.com",
+          "count": 10
+        },
+        {
+          "host": "radioshackla.com",
+          "count": 6
+        },
+        {
+          "host": "cocorotus.com",
+          "count": 5
+        },
+        {
+          "host": "dollarcity.com",
+          "count": 4
+        },
+        {
+          "host": "flowsuites.com",
+          "count": 3
+        },
+        {
+          "host": "shaws.com.sv",
+          "count": 3
+        },
+        {
+          "host": "focusplant.uk",
+          "count": 2
+        },
+        {
+          "host": "elektra.mx",
+          "count": 2
+        },
+        {
+          "host": "tacobell.com.sv",
+          "count": 2
+        },
+        {
+          "host": "sbsv.premium.sv",
+          "count": 2
+        }
+      ]
+    }
+  },
+  {
+    "timestamp": "2025-10-05T15:34:08.906Z",
+    "rulesVersion": "1.0.0",
+    "changedFiles": [
+      "/Users/lyla/CryptoPayMap_ZIP3_SpecFix/public/data/places/jp/tokyo/tokyo.json"
+    ],
+    "stats": {
+      "scanned": 5,
+      "hits": 0,
+      "updated": 5,
+      "unchanged": 0,
+      "errors": 0,
+      "byStatus": {
+        "directory": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 0
+        },
+        "unverified": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 0
+        },
+        "active": {
+          "pass": 0,
+          "warn": 0,
+          "dateOnly": 0,
+          "none": 5
+        }
+      },
+      "evidenceDist": {},
+      "failures": {
+        "kunseido.com": 1
+      }
+    }
+  }
+]
