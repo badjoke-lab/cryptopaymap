@@ -22,6 +22,8 @@
     "cpm:validate:submissions": "tsx scripts/validate_submissions.ts",
     "cpm:fuzz:payments": "tsx scripts/fuzz_payments.ts",
     "cpm:lint:nocodeja": "bash scripts/check_no_ja_in_code.sh",
+    "cpm:scan": "tsx scripts/scan_verify.ts",
+    "cpm:scan:dry": "DRY_RUN=1 tsx scripts/scan_verify.ts",
     "prepare": "husky"
   },
   "dependencies": {
