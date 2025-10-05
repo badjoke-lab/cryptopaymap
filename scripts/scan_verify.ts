@@ -50,11 +50,25 @@ const SUMMARY_PATH = path.join(ROOT, "tools/verify", ".last_summary.json");
 
 const DRY_RUN = process.env.DRY_RUN === "1";
 
-// 対象とする status をルールから可変に
+// ---- Speed knobs (ENV) ---------------------------------------------------
+// 例:
+//   SCAN_GLOB="public/data/places/jp/tokyo/tokyo.json"
+//   SCAN_LIMIT=5
+//   SCAN_STATUSES="active"   # "directory,unverified" などカンマ区切りもOK
+const ENV_GLOB = process.env.SCAN_GLOB || "";
+const ENV_LIMIT = Number(process.env.SCAN_LIMIT || 0);
+const ENV_STATUSES = (process.env.SCAN_STATUSES || "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+// 対象とする status をルール or ENV から可変に
 const TARGETS: string[] =
-  Array.isArray(RULES.targetStatuses) && RULES.targetStatuses.length
-    ? RULES.targetStatuses
-    : ["directory", "unverified"];
+  ENV_STATUSES.length
+    ? ENV_STATUSES
+    : (Array.isArray(RULES.targetStatuses) && RULES.targetStatuses.length
+        ? RULES.targetStatuses
+        : ["directory", "unverified"]);
 
 // ---- Helpers -------------------------------------------------------------
 
@@ -69,7 +83,7 @@ const isIgnored = (u: string) => {
   }
 };
 
-const takeFirst = <T>(arr: T[], n: number) => arr.slice(0, n);
+const takeFirst = <T>(arr: T[], n: number) => (n > 0 ? arr.slice(0, n) : arr);
 
 const listCityFiles = (): string[] => {
   const out: string[] = [];
@@ -84,6 +98,12 @@ const listCityFiles = (): string[] => {
   };
   walk(DATA_DIR);
   return out;
+};
+
+const filterByGlob = (files: string[]) => {
+  if (!ENV_GLOB) return files;
+  // 超簡易：部分一致 or 完全一致（相対/絶対どちらでもOK）
+  return files.filter((f) => f.includes(ENV_GLOB) || f === ENV_GLOB);
 };
 
 const readJson = (p: string) => JSON.parse(fs.readFileSync(p, "utf-8"));
@@ -110,9 +130,7 @@ const extractUrls = (pl: Place): string[] => {
     if (s?.url) urls.add(s.url);
   });
 
-  return [...urls].filter(
-    (u) => /^https?:\/\//i.test(u) && !isIgnored(u)
-  );
+  return [...urls].filter((u) => /^https?:\/\//i.test(u) && !isIgnored(u));
 };
 
 const fetchWithTimeout = async (url: string) => {
@@ -189,7 +207,12 @@ const prefixMark = (name: string, mark: "✅" | "⚠︎" | null) => {
 // ---- Main ----------------------------------------------------------------
 
 async function run() {
-  const files = listCityFiles();
+  // ファイル集合をENVで絞る
+  const files = filterByGlob(listCityFiles());
+
+  console.log(
+    `TARGETS=${JSON.stringify(TARGETS)} GLOB="${ENV_GLOB}" LIMIT=${ENV_LIMIT || "none"}`
+  );
 
   const stats: ScanStats = {
     scanned: 0,
@@ -216,20 +239,23 @@ async function run() {
       continue;
     }
 
-    // 配列 or { places: [...] } に対応
-    const places: Place[] = Array.isArray(data)
+    // 配列 or { places: [...] } or GeoJSON(features[].properties) に対応
+    const placesAll: Place[] = Array.isArray(data)
       ? data
       : Array.isArray(data?.places)
       ? data.places
       : Array.isArray(data?.features)
-      ? data.features.map((f: any) => f?.properties ?? {}).filter(Boolean) // GeoJSON 拾い上げ（必要最小）
+      ? data.features.map((f: any) => f?.properties ?? {}).filter(Boolean)
       : [];
 
-    if (!Array.isArray(places) || places.length === 0) continue;
+    if (!Array.isArray(placesAll) || placesAll.length === 0) continue;
+
+    // ENV_LIMIT があっても、**走査対象を限定するだけ**。書き戻しは常に全体(placesAll/data)。
+    const toScan = ENV_LIMIT > 0 ? placesAll.slice(0, ENV_LIMIT) : placesAll;
 
     let fileChanged = false;
 
-    for (const pl of places) {
+    for (const pl of toScan) {
       if (!isTargetStatus(pl.status)) continue;
 
       stats.scanned++;
@@ -244,7 +270,6 @@ async function run() {
       }
 
       let maxScore = 0;
-      const hitKinds = new Set<string>();
 
       for (const u of urls) {
         try {
@@ -256,7 +281,6 @@ async function run() {
           }
           const { score, kinds } = scorePage(res.text);
           kinds.forEach((k) => {
-            hitKinds.add(k);
             stats.evidenceDist[k] = (stats.evidenceDist[k] ?? 0) + 1;
           });
           if (score > maxScore) maxScore = score;
@@ -325,9 +349,19 @@ async function run() {
     }
 
     if (fileChanged) {
-      changedFiles.add(file);
-      const out = Array.isArray(data) ? places : Array.isArray(data?.places) ? { ...data, places } : Array.isArray(data?.features) ? data : places;
-      writeJsonIfChanged(file, out);
+      // ★重要：書き戻しは常に**元の全体構造**で行う（ENV_LIMITによる短縮を保存しない）
+      const out =
+        Array.isArray(data)
+          ? data // data自体が配列（=placesAllの実体）。toScanでsliceしても、要素オブジェクトは同一参照なので変更は反映済み。
+          : Array.isArray(data?.places)
+          ? { ...data, places: placesAll } // placesに全件を戻す
+          : Array.isArray(data?.features)
+          ? data // GeoJSONは features[].properties を直接いじっているだけなので data そのまま
+          : data;
+
+      if (writeJsonIfChanged(file, out)) {
+        changedFiles.add(file);
+      }
     }
   }
 
@@ -336,13 +370,7 @@ async function run() {
     timestamp: isoNow(),
     rulesVersion: RULES.version,
     changedFiles: [...changedFiles],
-    stats: {
-      ...stats,
-      failuresTop: Object.entries(stats.failures)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10)
-        .map(([host, count]) => ({ host, count }))
-    }
+    stats
   };
 
   // コンソール出力
@@ -358,7 +386,7 @@ async function run() {
   }
   if (stats.scanned === 0) {
     console.log(
-      "  note: no target records found. If your data uses non-standard statuses, update tools/verify/rules.json `targetStatuses`."
+      "  note: no target records found or SCAN_GLOB/SCAN_STATUSES narrowed to zero. Adjust tools/verify/rules.json `targetStatuses` or ENV."
     );
   }
 
@@ -387,3 +415,4 @@ run().catch((e) => {
   console.error("FATAL:", e);
   process.exit(0);
 });
+
