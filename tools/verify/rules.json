@@ -1,0 +1,40 @@
+{
+  "version": "1.0.0",
+  "timeoutMs": 8000,
+  "concurrency": 6,
+  "thresholds": {
+    "pass": 0.7,
+    "warn": 0.2
+  },
+  "weights": {
+    "text": 0.5,
+    "script": 0.7,
+    "image": 0.3
+  },
+  "keywords": [
+    "bitcoin",
+    "btc",
+    "lightning",
+    "ethereum",
+    "eth",
+    "usdt",
+    "usdc",
+    "crypto",
+    "cryptocurrency",
+    "pay with",
+    "accepts"
+  ],
+  "widgetPatterns": [
+    "btcpayserver",
+    "coingate",
+    "coinbase\\.com\\/commerce",
+    "opennode",
+    "nowpayments",
+    "strike\\.me",
+    "lightning address",
+    "lnurl",
+    "breez"
+  ],
+  "evidenceMaxPerPlace": 5,
+  "targetStatuses": ["directory", "unverified", "active"]
+}

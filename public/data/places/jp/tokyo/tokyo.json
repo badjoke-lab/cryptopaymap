@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:3004009626",
-    "name": "⚠︎ Two Dogs Taproom",
+    "name": "Two Dogs Taproom",
     "category": "pub",
     "lat": 35.6626331,
     "lng": 139.7352113,
@@ -52,14 +52,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:34:07.758Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:6968529885",
-    "name": "⚠︎ ヨガ教室 Asakusa Yoga 浅草",
+    "name": "ヨガ教室 Asakusa Yoga 浅草",
     "category": "other",
     "lat": 35.7125546,
     "lng": 139.7948219,
@@ -110,14 +110,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:34:07.955Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:6968557185",
-    "name": "⚠︎ ヨガ教室 Asakusa Yoga 蔵前",
+    "name": "ヨガ教室 Asakusa Yoga 蔵前",
     "category": "other",
     "lat": 35.7060287,
     "lng": 139.7900495,
@@ -168,14 +168,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:34:08.082Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:10578838487",
-    "name": "⚠︎ CryptoBar P2P",
+    "name": "CryptoBar P2P",
     "category": "bar",
     "lat": 35.6713528,
     "lng": 139.7640023,
@@ -225,14 +225,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:34:08.845Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:10578841994",
-    "name": "⚠︎ 表参道燻製堂",
+    "name": "表参道燻製堂",
     "category": "restaurant",
     "lat": 35.7683237,
     "lng": 139.8429103,
@@ -283,14 +283,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:34:08.895Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:10587102168",
-    "name": "⚠︎ ビドゥイエ広尾",
+    "name": "︎ ビドゥイエ広尾",
     "category": "clothes",
     "lat": 35.6500554,
     "lng": 139.7221975,
@@ -342,14 +342,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:26.231Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:10587756680",
-    "name": "⚠︎ The Pink Cow",
+    "name": "︎ The Pink Cow",
     "category": "restaurant",
     "lat": 35.6721034,
     "lng": 139.7396987,
@@ -399,14 +399,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:27.433Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:10588516242",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【アベマタワーよこ店】",
+    "name": "︎ COCOROTUS FOODTRUCK【アベマタワーよこ店】",
     "category": "fast_food",
     "lat": 35.6624229,
     "lng": 139.6956991,
@@ -457,14 +457,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:28.634Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:11617779907",
-    "name": "⚠︎ メピカバリ（目光針院）恵比寿院",
+    "name": "︎ メピカバリ（目光針院）恵比寿院",
     "category": "other",
     "lat": 35.6492448,
     "lng": 139.7077062,
@@ -515,14 +515,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:29.836Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:11618074990",
-    "name": "✅ 自由が丘ライトニングマルシェ",
+    "name": "自由が丘ライトニングマルシェ",
     "category": "other",
     "lat": 35.6091298,
     "lng": 139.6695891,
@@ -573,11 +573,12 @@
     },
     "verification": {
       "status": "directory",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:30.471Z",
       "sources": [
         {
           "type": "official_site",
-          "url": "https://btcln.shop/marche/"
+          "url": "https://btcln.shop/marche/",
+          "when": "2025-10-05T15:14:30.471Z"
         }
       ]
     },
@@ -585,7 +586,7 @@
   },
   {
     "id": "osm:node:12035292348",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【元赤坂店】",
+    "name": "︎ COCOROTUS FOODTRUCK【元赤坂店】",
     "category": "fast_food",
     "lat": 35.6776279,
     "lng": 139.7329057,
@@ -636,14 +637,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:31.674Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12035307502",
-    "name": "⚠︎ ココロータス",
+    "name": "︎ ココロータス",
     "category": "fast_food",
     "lat": 35.6608723,
     "lng": 139.713337,
@@ -694,14 +695,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:32.877Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12035489396",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【青山小学校】",
+    "name": "︎ COCOROTUS FOODTRUCK【青山小学校】",
     "category": "fast_food",
     "lat": 35.6701161,
     "lng": 139.7184945,
@@ -752,14 +753,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:33.518Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12035497705",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【北青山二丁目店】",
+    "name": "︎ COCOROTUS FOODTRUCK【北青山二丁目店】",
     "category": "fast_food",
     "lat": 35.6714349,
     "lng": 139.7157364,
@@ -810,14 +811,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:34.487Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12035530325",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【NPC九段南】",
+    "name": "︎ COCOROTUS FOODTRUCK【NPC九段南】",
     "category": "fast_food",
     "lat": 35.6920638,
     "lng": 139.740991,
@@ -868,14 +869,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:34.561Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12035542961",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【キネティックアーツ渋谷】",
+    "name": "︎ COCOROTUS FOODTRUCK【キネティックアーツ渋谷】",
     "category": "fast_food",
     "lat": 35.6559524,
     "lng": 139.7049089,
@@ -926,14 +927,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:34.617Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12035549952",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【六本木】",
+    "name": "︎ COCOROTUS FOODTRUCK【六本木】",
     "category": "fast_food",
     "lat": 35.6595639,
     "lng": 139.7322913,
@@ -984,14 +985,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:34.662Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042721366",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【USEN店】",
+    "name": "︎ COCOROTUS FOODTRUCK【USEN店】",
     "category": "fast_food",
     "lat": 35.654859,
     "lng": 139.6928787,
@@ -1041,14 +1042,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:35.019Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042727109",
-    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "name": "︎ COCOROTUS FOODTRUCK",
     "category": "fast_food",
     "lat": 35.6405596,
     "lng": 139.7412773,
@@ -1098,14 +1099,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:35.142Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042728717",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【全共連ビル麹町館店】",
+    "name": "︎ COCOROTUS FOODTRUCK【全共連ビル麹町館店】",
     "category": "fast_food",
     "lat": 35.6834278,
     "lng": 139.7391817,
@@ -1155,14 +1156,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:35.857Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042759194",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【芝店】",
+    "name": "︎ COCOROTUS FOODTRUCK【芝店】",
     "category": "fast_food",
     "lat": 35.6517002,
     "lng": 139.746685,
@@ -1212,14 +1213,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:37.061Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042761104",
-    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "name": "︎ COCOROTUS FOODTRUCK",
     "category": "fast_food",
     "lat": 35.6845914,
     "lng": 139.7433332,
@@ -1269,14 +1270,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:37.275Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042778966",
-    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "name": "︎ COCOROTUS FOODTRUCK",
     "category": "fast_food",
     "lat": 35.6660125,
     "lng": 139.7040305,
@@ -1326,14 +1327,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:37.453Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042878655",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【虎ノ門】",
+    "name": "︎ COCOROTUS FOODTRUCK【虎ノ門】",
     "category": "fast_food",
     "lat": 35.6658447,
     "lng": 139.7480397,
@@ -1383,14 +1384,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:37.560Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042878656",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【神泉】",
+    "name": "︎ COCOROTUS FOODTRUCK【神泉】",
     "category": "fast_food",
     "lat": 35.6569002,
     "lng": 139.6943274,
@@ -1440,14 +1441,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:38.763Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042891967",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【虎ノ門琴平タワー店】",
+    "name": "︎ COCOROTUS FOODTRUCK【虎ノ門琴平タワー店】",
     "category": "fast_food",
     "lat": 35.6698489,
     "lng": 139.7480655,
@@ -1497,14 +1498,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:38.919Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042922193",
-    "name": "⚠︎ COCOROTUS FOODTRUCK",
+    "name": "︎ COCOROTUS FOODTRUCK",
     "category": "fast_food",
     "lat": 35.6737618,
     "lng": 139.7067037,
@@ -1554,14 +1555,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.071Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042935482",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【溜池山王店】",
+    "name": "︎ COCOROTUS FOODTRUCK【溜池山王店】",
     "category": "fast_food",
     "lat": 35.6719997,
     "lng": 139.7393153,
@@ -1611,14 +1612,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.203Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042946250",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【成蹊大学店】※一般不可",
+    "name": "︎ COCOROTUS FOODTRUCK【成蹊大学店】※一般不可",
     "category": "fast_food",
     "lat": 35.7114406,
     "lng": 139.5727023,
@@ -1668,14 +1669,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.307Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042959224",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【渋谷ファッション＆専門学校店】",
+    "name": "︎ COCOROTUS FOODTRUCK【渋谷ファッション＆専門学校店】",
     "category": "fast_food",
     "lat": 35.6638195,
     "lng": 139.7037739,
@@ -1725,14 +1726,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.407Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042960401",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【麹町店】",
+    "name": "︎ COCOROTUS FOODTRUCK【麹町店】",
     "category": "fast_food",
     "lat": 35.6834978,
     "lng": 139.7392786,
@@ -1782,14 +1783,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.542Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12042999697",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【日本橋長崎館店】",
+    "name": "︎ COCOROTUS FOODTRUCK【日本橋長崎館店】",
     "category": "fast_food",
     "lat": 35.6827327,
     "lng": 139.772891,
@@ -1839,14 +1840,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.642Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12043010287",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【ユーザーベース店】※一般不可",
+    "name": "︎ COCOROTUS FOODTRUCK【ユーザーベース店】※一般不可",
     "category": "fast_food",
     "lat": 35.6798365,
     "lng": 139.7637066,
@@ -1896,14 +1897,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.756Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12043012226",
-    "name": "⚠︎ COCOROTUS FOODTRUCK【慶應義塾大学病院店】※一般不可",
+    "name": "︎ COCOROTUS FOODTRUCK【慶應義塾大学病院店】※一般不可",
     "category": "fast_food",
     "lat": 35.6823202,
     "lng": 139.7183932,
@@ -1953,14 +1954,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:39.890Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12149344452",
-    "name": "⚠︎ メピカバリ渋谷院 Acupuncture MEPICA",
+    "name": "︎ メピカバリ渋谷院 Acupuncture MEPICA",
     "category": "other",
     "lat": 35.6625786,
     "lng": 139.7007059,
@@ -2010,14 +2011,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:40.478Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:node:12199965389",
-    "name": "✅ ギャラリー上田 / Gallery Ueda",
+    "name": "ギャラリー上田 / Gallery Ueda",
     "category": "other",
     "lat": 35.6686511,
     "lng": 139.7618558,
@@ -2071,11 +2072,12 @@
     },
     "verification": {
       "status": "directory",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:41.701Z",
       "sources": [
         {
           "type": "official_site",
-          "url": "https://www.gallery-ueda.com/"
+          "url": "https://www.gallery-ueda.com/",
+          "when": "2025-10-05T15:14:41.701Z"
         }
       ]
     },
@@ -2197,7 +2199,7 @@
   },
   {
     "id": "osm:node:12599810937",
-    "name": "⚠︎ Tokyo Bitcoin Base",
+    "name": "︎ Tokyo Bitcoin Base",
     "category": "other",
     "lat": 35.6889533,
     "lng": 139.7286142,
@@ -2246,14 +2248,14 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:42.905Z",
       "sources": []
     },
     "pending_assets": []
   },
   {
     "id": "osm:way:143364157",
-    "name": "⚠︎ 焼肉 誇味山",
+    "name": "︎ 焼肉 誇味山",
     "category": "restaurant",
     "lat": 35.6616475,
     "lng": 139.7227216,
@@ -2308,7 +2310,7 @@
     },
     "verification": {
       "status": "unverified",
-      "last_checked": "2025-09-29",
+      "last_checked": "2025-10-05T15:14:43.666Z",
       "sources": []
     },
     "pending_assets": []
