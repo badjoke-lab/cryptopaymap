@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:473037880",
-    "name": "⚠︎ FlowSuites WTC",
+    "name": "FlowSuites WTC",
     "category": "other",
     "lat": 19.3949068,
     "lng": -99.1758289,
@@ -50,7 +50,7 @@
   },
   {
     "id": "osm:node:1169203014",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.556141,
     "lng": -99.1930683,
@@ -100,7 +100,7 @@
   },
   {
     "id": "osm:node:2089441541",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3459501,
     "lng": -99.0208,
@@ -147,7 +147,7 @@
   },
   {
     "id": "osm:node:2132529254",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4284304,
     "lng": -98.9636726,
@@ -194,7 +194,7 @@
   },
   {
     "id": "osm:node:2817196466",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.29395,
     "lng": -99.1820113,
@@ -241,7 +241,7 @@
   },
   {
     "id": "osm:node:4273853515",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3196066,
     "lng": -99.2451963,
@@ -288,7 +288,7 @@
   },
   {
     "id": "osm:node:4356794990",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4826358,
     "lng": -99.1172122,
@@ -336,7 +336,7 @@
   },
   {
     "id": "osm:node:4356801589",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4627664,
     "lng": -99.1130005,
@@ -386,7 +386,7 @@
   },
   {
     "id": "osm:node:4374763400",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5017742,
     "lng": -99.2712999,
@@ -433,7 +433,7 @@
   },
   {
     "id": "osm:node:4430078791",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4701441,
     "lng": -99.2370611,
@@ -480,7 +480,7 @@
   },
   {
     "id": "osm:node:4494585627",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4802661,
     "lng": -99.1867336,
@@ -528,7 +528,7 @@
   },
   {
     "id": "osm:node:4536287695",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4690931,
     "lng": -99.1403594,
@@ -575,7 +575,7 @@
   },
   {
     "id": "osm:node:4771406623",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.36914,
     "lng": -98.947637,
@@ -622,7 +622,7 @@
   },
   {
     "id": "osm:node:4831665049",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4409675,
     "lng": -99.1571261,
@@ -671,7 +671,7 @@
   },
   {
     "id": "osm:node:5499505433",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2999353,
     "lng": -99.0432886,
@@ -718,7 +718,7 @@
   },
   {
     "id": "osm:node:5522995824",
-    "name": "⚠︎ FlowSuites Polanco",
+    "name": "FlowSuites Polanco",
     "category": "other",
     "lat": 19.4291697,
     "lng": -99.1929463,
@@ -767,7 +767,7 @@
   },
   {
     "id": "osm:node:5840379486",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4154629,
     "lng": -98.9423181,
@@ -814,7 +814,7 @@
   },
   {
     "id": "osm:node:5844404210",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4593185,
     "lng": -99.1267638,
@@ -861,7 +861,7 @@
   },
   {
     "id": "osm:node:6223359397",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5348324,
     "lng": -99.0647009,
@@ -908,7 +908,7 @@
   },
   {
     "id": "osm:node:6294880685",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2179986,
     "lng": -98.9940109,
@@ -957,7 +957,7 @@
   },
   {
     "id": "osm:node:6332256179",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5863799,
     "lng": -99.020862,
@@ -1004,7 +1004,7 @@
   },
   {
     "id": "osm:node:6584676243",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3265508,
     "lng": -99.0753657,
@@ -1053,7 +1053,7 @@
   },
   {
     "id": "osm:node:7364479699",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3559757,
     "lng": -99.2999854,
@@ -1100,7 +1100,7 @@
   },
   {
     "id": "osm:node:7949460179",
-    "name": "⚠︎ Bitcoin Embassy Bar",
+    "name": "Bitcoin Embassy Bar",
     "category": "bar",
     "lat": 19.4117283,
     "lng": -99.1646611,
@@ -1149,7 +1149,7 @@
   },
   {
     "id": "osm:node:8263105788",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5679906,
     "lng": -99.0446601,
@@ -1196,7 +1196,7 @@
   },
   {
     "id": "osm:node:8504658323",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3558112,
     "lng": -99.2155065,
@@ -1243,7 +1243,7 @@
   },
   {
     "id": "osm:node:8843541717",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3820872,
     "lng": -99.1187374,
@@ -1290,7 +1290,7 @@
   },
   {
     "id": "osm:node:9115925995",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5145264,
     "lng": -99.1349843,
@@ -1340,7 +1340,7 @@
   },
   {
     "id": "osm:node:9955895389",
-    "name": "⚠︎ Elektra motos",
+    "name": "Elektra motos",
     "category": "other",
     "lat": 19.3563738,
     "lng": -99.1062367,
@@ -1387,7 +1387,7 @@
   },
   {
     "id": "osm:node:10300856211",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4074599,
     "lng": -99.1137408,
@@ -1434,7 +1434,7 @@
   },
   {
     "id": "osm:node:10554281017",
-    "name": "⚠︎ Fajas Colombianas Kisha",
+    "name": "Fajas Colombianas Kisha",
     "category": "clothes",
     "lat": 19.3630776,
     "lng": -99.2872029,
@@ -1483,7 +1483,7 @@
   },
   {
     "id": "osm:node:10567494881",
-    "name": "⚠︎ HodlBeer - Cerveza artesanal",
+    "name": "HodlBeer - Cerveza artesanal",
     "category": "other",
     "lat": 19.3527009,
     "lng": -99.1866894,
@@ -1529,7 +1529,7 @@
   },
   {
     "id": "osm:node:10568824490",
-    "name": "⚠︎ Alberto Mérito",
+    "name": "Alberto Mérito",
     "category": "other",
     "lat": 19.3526942,
     "lng": -99.1866384,
@@ -1577,7 +1577,7 @@
   },
   {
     "id": "osm:node:10938079219",
-    "name": "⚠︎ Inglés Real",
+    "name": "Inglés Real",
     "category": "other",
     "lat": 19.3981432,
     "lng": -99.1340946,
@@ -1627,7 +1627,7 @@
   },
   {
     "id": "osm:node:11221576027",
-    "name": "⚠︎ Bitcoin Academy Mexico",
+    "name": "Bitcoin Academy Mexico",
     "category": "other",
     "lat": 19.3720394,
     "lng": -99.2464324,
@@ -1676,7 +1676,7 @@
   },
   {
     "id": "osm:node:12119642637",
-    "name": "⚠︎ FlowSuites Condesa",
+    "name": "FlowSuites Condesa",
     "category": "other",
     "lat": 19.4109052,
     "lng": -99.1723187,
@@ -1725,7 +1725,7 @@
   },
   {
     "id": "osm:node:12324352981",
-    "name": "⚠︎ Neurólogo - Neurologist",
+    "name": "Neurólogo - Neurologist",
     "category": "doctors",
     "lat": 19.3998091,
     "lng": -99.1725609,
@@ -1774,7 +1774,7 @@
   },
   {
     "id": "osm:node:12563478010",
-    "name": "⚠︎ Cajero ATM Bitcoin Blink",
+    "name": "Cajero ATM Bitcoin Blink",
     "category": "other",
     "lat": 19.2544174,
     "lng": -99.1800153,
@@ -1825,7 +1825,7 @@
   },
   {
     "id": "osm:node:12997981352",
-    "name": "⚠︎ Ferretornillos San Fernando",
+    "name": "Ferretornillos San Fernando",
     "category": "other",
     "lat": 19.382839,
     "lng": -99.2843303,
@@ -1868,7 +1868,7 @@
   },
   {
     "id": "osm:way:242021015",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.318157,
     "lng": -99.1638494,
@@ -1915,7 +1915,7 @@
   },
   {
     "id": "osm:way:270493747",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4302482,
     "lng": -98.959883,
@@ -1962,7 +1962,7 @@
   },
   {
     "id": "osm:way:270656084",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4230015,
     "lng": -98.9824545,
@@ -2009,7 +2009,7 @@
   },
   {
     "id": "osm:way:270928379",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4123244,
     "lng": -98.9795852,
@@ -2056,7 +2056,7 @@
   },
   {
     "id": "osm:way:285940153",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3033754,
     "lng": -99.0554214,
@@ -2103,7 +2103,7 @@
   },
   {
     "id": "osm:way:327297521",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2658894,
     "lng": -99.1715598,
@@ -2151,7 +2151,7 @@
   },
   {
     "id": "osm:way:391817725",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3512334,
     "lng": -99.0738003,
@@ -2200,7 +2200,7 @@
   },
   {
     "id": "osm:way:398642930",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3829847,
     "lng": -99.2350445,
@@ -2247,7 +2247,7 @@
   },
   {
     "id": "osm:way:412812881",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2983103,
     "lng": -99.1521037,
@@ -2296,7 +2296,7 @@
   },
   {
     "id": "osm:way:418392950",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3275423,
     "lng": -98.9464299,
@@ -2348,7 +2348,7 @@
   },
   {
     "id": "osm:way:543831219",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3897272,
     "lng": -99.2110315,
@@ -2398,7 +2398,7 @@
   },
   {
     "id": "osm:way:557202425",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4111155,
     "lng": -99.0798875,
@@ -2448,7 +2448,7 @@
   },
   {
     "id": "osm:way:568311172",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3581487,
     "lng": -99.1222454,
@@ -2495,7 +2495,7 @@
   },
   {
     "id": "osm:way:616994275",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5331635,
     "lng": -99.167361,
@@ -2542,7 +2542,7 @@
   },
   {
     "id": "osm:way:627193779",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2776518,
     "lng": -98.9424279,
@@ -2590,7 +2590,7 @@
   },
   {
     "id": "osm:way:694776667",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3587257,
     "lng": -99.0890505,
@@ -2637,7 +2637,7 @@
   },
   {
     "id": "osm:way:703163028",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2680492,
     "lng": -99.0059352,
@@ -2684,7 +2684,7 @@
   },
   {
     "id": "osm:way:783772175",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.2892805,
     "lng": -99.2179928,
@@ -2731,7 +2731,7 @@
   },
   {
     "id": "osm:way:787652277",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3541081,
     "lng": -99.0752029,
@@ -2778,7 +2778,7 @@
   },
   {
     "id": "osm:way:838437253",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.5138314,
     "lng": -99.209226,
@@ -2829,7 +2829,7 @@
   },
   {
     "id": "osm:way:927367056",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3325867,
     "lng": -99.1713819,
@@ -2877,7 +2877,7 @@
   },
   {
     "id": "osm:way:957614752",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3889144,
     "lng": -99.1908231,
@@ -2924,7 +2924,7 @@
   },
   {
     "id": "osm:way:1038997637",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.4522847,
     "lng": -99.2473495,
@@ -2974,7 +2974,7 @@
   },
   {
     "id": "osm:way:1112169009",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.31581,
     "lng": -99.0718722,
@@ -3021,7 +3021,7 @@
   },
   {
     "id": "osm:way:1194900490",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3728672,
     "lng": -99.1896716,
@@ -3070,7 +3070,7 @@
   },
   {
     "id": "osm:way:1366464528",
-    "name": "⚠︎ Elektra",
+    "name": "Elektra",
     "category": "other",
     "lat": 19.3436313,
     "lng": -99.1906597,

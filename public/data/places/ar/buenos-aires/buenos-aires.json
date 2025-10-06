@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:1625193978",
-    "name": "⚠︎ The Kilkenny",
+    "name": "The Kilkenny",
     "category": "pub",
     "lat": -34.5960905,
     "lng": -58.3729645,
@@ -51,7 +51,7 @@
   },
   {
     "id": "osm:node:3179599572",
-    "name": "⚠︎ Rodizio",
+    "name": "Rodizio",
     "category": "restaurant",
     "lat": -34.6072399,
     "lng": -58.3663691,
@@ -100,7 +100,7 @@
   },
   {
     "id": "osm:node:3257422164",
-    "name": "⚠︎ Pop Store",
+    "name": "Pop Store",
     "category": "kiosk",
     "lat": -34.581824,
     "lng": -58.4334892,
@@ -149,7 +149,7 @@
   },
   {
     "id": "osm:node:3575666513",
-    "name": "⚠︎ Rita Cafe",
+    "name": "Rita Cafe",
     "category": "cafe",
     "lat": -34.590179,
     "lng": -58.428205,
@@ -194,7 +194,7 @@
   },
   {
     "id": "osm:node:4289373249",
-    "name": "⚠︎ Kiosko Alem",
+    "name": "Kiosko Alem",
     "category": "newsagent",
     "lat": -34.6028744,
     "lng": -58.3704922,
@@ -236,7 +236,7 @@
   },
   {
     "id": "osm:node:4600637865",
-    "name": "⚠︎ Librería January",
+    "name": "Librería January",
     "category": "other",
     "lat": -34.5767042,
     "lng": -58.5389433,
@@ -287,7 +287,7 @@
   },
   {
     "id": "osm:node:6132879822",
-    "name": "⚠︎ Caracas Bar",
+    "name": "Caracas Bar",
     "category": "nightclub",
     "lat": -34.5855596,
     "lng": -58.4256336,
@@ -337,7 +337,7 @@
   },
   {
     "id": "osm:node:6358499689",
-    "name": "⚠︎ Marlon",
+    "name": "Marlon",
     "category": "bar",
     "lat": -34.5898191,
     "lng": -58.4316702,
@@ -380,7 +380,7 @@
   },
   {
     "id": "osm:node:7644907185",
-    "name": "⚠︎ Oslo",
+    "name": "Oslo",
     "category": "other",
     "lat": -34.559682,
     "lng": -58.460068,
@@ -426,7 +426,7 @@
   },
   {
     "id": "osm:node:9884174757",
-    "name": "⚠︎ Negroni Bistro & Sushi Bar",
+    "name": "Negroni Bistro & Sushi Bar",
     "category": "restaurant",
     "lat": -34.5531425,
     "lng": -58.4367268,
@@ -470,7 +470,7 @@
   },
   {
     "id": "osm:node:10274339402",
-    "name": "⚠︎ Aleph Citadel",
+    "name": "Aleph Citadel",
     "category": "other",
     "lat": -35.082707,
     "lng": -57.7405181,
@@ -518,7 +518,7 @@
   },
   {
     "id": "osm:node:10966689605",
-    "name": "⚠︎ Rodizinho",
+    "name": "Rodizinho",
     "category": "bar",
     "lat": -34.6073798,
     "lng": -58.3663089,
@@ -564,7 +564,7 @@
   },
   {
     "id": "osm:node:10980520088",
-    "name": "⚠︎ Lucent",
+    "name": "Lucent",
     "category": "dentist",
     "lat": -34.5509998,
     "lng": -58.4537157,
@@ -612,7 +612,7 @@
   },
   {
     "id": "osm:node:11055542005",
-    "name": "⚠︎ Bucarest",
+    "name": "Bucarest",
     "category": "bar",
     "lat": -34.5975311,
     "lng": -58.4348733,
@@ -656,7 +656,7 @@
   },
   {
     "id": "osm:node:11260032052",
-    "name": "⚠︎ Hilade Blanco",
+    "name": "Hilade Blanco",
     "category": "interior_decoration",
     "lat": -34.6089052,
     "lng": -58.3764438,
@@ -699,7 +699,7 @@
   },
   {
     "id": "osm:node:11260033706",
-    "name": "⚠︎ Kiosko CityMax",
+    "name": "Kiosko CityMax",
     "category": "kiosk",
     "lat": -34.6045245,
     "lng": -58.3794429,
@@ -742,7 +742,7 @@
   },
   {
     "id": "osm:node:11260033707",
-    "name": "⚠︎ Jacaranda Rentals",
+    "name": "Jacaranda Rentals",
     "category": "other",
     "lat": -34.610791,
     "lng": -58.3802297,
@@ -783,7 +783,7 @@
   },
   {
     "id": "osm:node:11260034566",
-    "name": "⚠︎ PublicBar",
+    "name": "PublicBar",
     "category": "bar",
     "lat": -34.6107338,
     "lng": -58.3636798,
@@ -825,7 +825,7 @@
   },
   {
     "id": "osm:node:11270187265",
-    "name": "⚠︎ Autoservicio San Cayetano",
+    "name": "Autoservicio San Cayetano",
     "category": "convenience",
     "lat": -34.8085933,
     "lng": -58.2433209,
@@ -874,7 +874,7 @@
   },
   {
     "id": "osm:node:11274086835",
-    "name": "⚠︎ GR Relojería-Joyería",
+    "name": "GR Relojería-Joyería",
     "category": "other",
     "lat": -34.5980811,
     "lng": -58.3757225,
@@ -916,7 +916,7 @@
   },
   {
     "id": "osm:node:11274086836",
-    "name": "⚠︎ Calzados Zarpas",
+    "name": "Calzados Zarpas",
     "category": "shoes",
     "lat": -34.5979416,
     "lng": -58.3799066,
@@ -958,7 +958,7 @@
   },
   {
     "id": "osm:node:11274086837",
-    "name": "⚠︎ Bonche",
+    "name": "Bonche",
     "category": "hairdresser",
     "lat": -34.5978721,
     "lng": -58.3799532,
@@ -1004,7 +1004,7 @@
   },
   {
     "id": "osm:node:11274086839",
-    "name": "⚠︎ El Bar de Mon",
+    "name": "El Bar de Mon",
     "category": "fast_food",
     "lat": -34.5965663,
     "lng": -58.3808859,
@@ -1046,7 +1046,7 @@
   },
   {
     "id": "osm:node:11274086841",
-    "name": "⚠︎ Tiempo de Vinos",
+    "name": "Tiempo de Vinos",
     "category": "newsagent",
     "lat": -34.5963412,
     "lng": -58.3747025,
@@ -1088,7 +1088,7 @@
   },
   {
     "id": "osm:node:11274101132",
-    "name": "⚠︎ Maxy Accesorios",
+    "name": "Maxy Accesorios",
     "category": "mobile_phone",
     "lat": -34.6024178,
     "lng": -58.3765896,
@@ -1130,7 +1130,7 @@
   },
   {
     "id": "osm:node:11274101134",
-    "name": "⚠︎ Sanguland",
+    "name": "Sanguland",
     "category": "restaurant",
     "lat": -34.6025546,
     "lng": -58.3806257,
@@ -1172,7 +1172,7 @@
   },
   {
     "id": "osm:node:11274101136",
-    "name": "⚠︎ El Buda del Este",
+    "name": "El Buda del Este",
     "category": "restaurant",
     "lat": -34.6022479,
     "lng": -58.3785896,
@@ -1214,7 +1214,7 @@
   },
   {
     "id": "osm:node:11274101137",
-    "name": "⚠︎ Artesanías Argentinas",
+    "name": "Artesanías Argentinas",
     "category": "gift",
     "lat": -34.6024689,
     "lng": -58.3784292,
@@ -1256,7 +1256,7 @@
   },
   {
     "id": "osm:node:11274101138",
-    "name": "⚠︎ Lhobeard",
+    "name": "Lhobeard",
     "category": "hairdresser",
     "lat": -34.6006901,
     "lng": -58.3766977,
@@ -1298,7 +1298,7 @@
   },
   {
     "id": "osm:node:11274101139",
-    "name": "⚠︎ Elif Tour",
+    "name": "Elif Tour",
     "category": "travel_agency",
     "lat": -34.6001642,
     "lng": -58.3752666,
@@ -1340,7 +1340,7 @@
   },
   {
     "id": "osm:node:11274101141",
-    "name": "⚠︎ Mister Cuero",
+    "name": "Mister Cuero",
     "category": "clothes",
     "lat": -34.5985948,
     "lng": -58.3759713,
@@ -1382,7 +1382,7 @@
   },
   {
     "id": "osm:node:11274233683",
-    "name": "⚠︎ La casa del celular",
+    "name": "La casa del celular",
     "category": "mobile_phone",
     "lat": -34.6187689,
     "lng": -58.391867,
@@ -1424,7 +1424,7 @@
   },
   {
     "id": "osm:node:11274233684",
-    "name": "⚠︎ Ticket Band",
+    "name": "Ticket Band",
     "category": "ticket",
     "lat": -34.6077674,
     "lng": -58.3895896,
@@ -1466,7 +1466,7 @@
   },
   {
     "id": "osm:node:11274233686",
-    "name": "⚠︎ La kiosquetica",
+    "name": "La kiosquetica",
     "category": "other",
     "lat": -34.6024959,
     "lng": -58.3878532,
@@ -1509,7 +1509,7 @@
   },
   {
     "id": "osm:node:11274233687",
-    "name": "⚠︎ La Verduleria",
+    "name": "La Verduleria",
     "category": "supermarket",
     "lat": -34.6062678,
     "lng": -58.3849038,
@@ -1551,7 +1551,7 @@
   },
   {
     "id": "osm:node:11274233688",
-    "name": "⚠︎ Agustín Imperio Joyería Libertad",
+    "name": "Agustín Imperio Joyería Libertad",
     "category": "jewelry",
     "lat": -34.6049991,
     "lng": -58.3835336,
@@ -1593,7 +1593,7 @@
   },
   {
     "id": "osm:node:11274233689",
-    "name": "⚠︎ Gondolveo Hombre",
+    "name": "Gondolveo Hombre",
     "category": "hairdresser",
     "lat": -34.6054097,
     "lng": -58.3822671,
@@ -1635,7 +1635,7 @@
   },
   {
     "id": "osm:node:11274233690",
-    "name": "⚠︎ Don Sodio Grow Shop",
+    "name": "Don Sodio Grow Shop",
     "category": "garden_centre",
     "lat": -34.6053862,
     "lng": -58.3822256,
@@ -1677,7 +1677,7 @@
   },
   {
     "id": "osm:node:11274233691",
-    "name": "⚠︎ Watch Doctors",
+    "name": "Watch Doctors",
     "category": "other",
     "lat": -34.6040364,
     "lng": -58.3836273,
@@ -1719,7 +1719,7 @@
   },
   {
     "id": "osm:node:11274233692",
-    "name": "⚠︎ Óptica Occhiali 26",
+    "name": "Óptica Occhiali 26",
     "category": "optician",
     "lat": -34.604426,
     "lng": -58.3842692,
@@ -1761,7 +1761,7 @@
   },
   {
     "id": "osm:node:11274233693",
-    "name": "⚠︎ Sempre",
+    "name": "Sempre",
     "category": "restaurant",
     "lat": -34.5994925,
     "lng": -58.3879895,
@@ -1803,7 +1803,7 @@
   },
   {
     "id": "osm:node:11274233695",
-    "name": "⚠︎ Plata o plomo",
+    "name": "Plata o plomo",
     "category": "tattoo",
     "lat": -34.5960231,
     "lng": -58.391388,
@@ -1845,7 +1845,7 @@
   },
   {
     "id": "osm:node:11274233696",
-    "name": "⚠︎ Agustín by Recoleta",
+    "name": "Agustín by Recoleta",
     "category": "jewelry",
     "lat": -34.5946543,
     "lng": -58.3861369,
@@ -1887,7 +1887,7 @@
   },
   {
     "id": "osm:node:11274233698",
-    "name": "⚠︎ Rivka Zibelman",
+    "name": "Rivka Zibelman",
     "category": "beauty",
     "lat": -34.5941285,
     "lng": -58.4064632,
@@ -1929,7 +1929,7 @@
   },
   {
     "id": "osm:node:11274233699",
-    "name": "⚠︎ Tribu Market",
+    "name": "Tribu Market",
     "category": "butcher",
     "lat": -34.5955316,
     "lng": -58.4064218,
@@ -1971,7 +1971,7 @@
   },
   {
     "id": "osm:node:11350739452",
-    "name": "⚠︎ Work-Office",
+    "name": "Work-Office",
     "category": "books",
     "lat": -34.606126,
     "lng": -58.3827731,
@@ -2013,7 +2013,7 @@
   },
   {
     "id": "osm:node:11350739453",
-    "name": "⚠︎ Apolo Games",
+    "name": "Apolo Games",
     "category": "video_games",
     "lat": -34.6042152,
     "lng": -58.3862407,
@@ -2056,7 +2056,7 @@
   },
   {
     "id": "osm:node:11374843858",
-    "name": "⚠︎ Aura",
+    "name": "Aura",
     "category": "bar",
     "lat": -34.5864553,
     "lng": -58.4359136,
@@ -2099,7 +2099,7 @@
   },
   {
     "id": "osm:node:11374843859",
-    "name": "⚠︎ After Office TRENDY Miercoles Palermo",
+    "name": "After Office TRENDY Miercoles Palermo",
     "category": "nightclub",
     "lat": -34.5858339,
     "lng": -58.4357877,
@@ -2142,7 +2142,7 @@
   },
   {
     "id": "osm:node:11374843860",
-    "name": "⚠︎ Famous Loungebar",
+    "name": "Famous Loungebar",
     "category": "bar",
     "lat": -34.5845599,
     "lng": -58.4366418,
@@ -2186,7 +2186,7 @@
   },
   {
     "id": "osm:node:11374843861",
-    "name": "⚠︎ Ganesha - Arts & Pizza",
+    "name": "Ganesha - Arts & Pizza",
     "category": "restaurant",
     "lat": -34.5767859,
     "lng": -58.4340993,
@@ -2235,7 +2235,7 @@
   },
   {
     "id": "osm:node:11374843863",
-    "name": "⚠︎ Oslo",
+    "name": "Oslo",
     "category": "wine",
     "lat": -34.5727785,
     "lng": -58.4301011,
@@ -2278,7 +2278,7 @@
   },
   {
     "id": "osm:node:11374843864",
-    "name": "⚠︎ Liberia BBM",
+    "name": "Liberia BBM",
     "category": "books",
     "lat": -34.6291719,
     "lng": -58.461736,
@@ -2321,7 +2321,7 @@
   },
   {
     "id": "osm:node:11374843865",
-    "name": "⚠︎ Oszadia",
+    "name": "Oszadia",
     "category": "books",
     "lat": -34.6309621,
     "lng": -58.4598489,
@@ -2364,7 +2364,7 @@
   },
   {
     "id": "osm:node:11374867039",
-    "name": "⚠︎ Lapelu Rulitos",
+    "name": "Lapelu Rulitos",
     "category": "hairdresser",
     "lat": -34.6180207,
     "lng": -58.4363961,
@@ -2408,7 +2408,7 @@
   },
   {
     "id": "osm:node:11374867040",
-    "name": "⚠︎ Dario Andreoli",
+    "name": "Dario Andreoli",
     "category": "jewelry",
     "lat": -34.617914,
     "lng": -58.4360499,
@@ -2450,7 +2450,7 @@
   },
   {
     "id": "osm:node:11374867041",
-    "name": "⚠︎ Tiempo Sol",
+    "name": "Tiempo Sol",
     "category": "clothes",
     "lat": -34.6180873,
     "lng": -58.4363078,
@@ -2493,7 +2493,7 @@
   },
   {
     "id": "osm:node:11374906591",
-    "name": "⚠︎ Puerta Uno Bar",
+    "name": "Puerta Uno Bar",
     "category": "bar",
     "lat": -34.5577775,
     "lng": -58.4497434,
@@ -2539,7 +2539,7 @@
   },
   {
     "id": "osm:node:11374906592",
-    "name": "⚠︎ Forlans Hnas",
+    "name": "Forlans Hnas",
     "category": "clothes",
     "lat": -34.5754096,
     "lng": -58.4854212,
@@ -2582,7 +2582,7 @@
   },
   {
     "id": "osm:node:11374906593",
-    "name": "⚠︎ Ykonos Desarrollos",
+    "name": "Ykonos Desarrollos",
     "category": "other",
     "lat": -34.5769486,
     "lng": -58.4837389,
@@ -2625,7 +2625,7 @@
   },
   {
     "id": "osm:node:11374906594",
-    "name": "⚠︎ Juegos Mentales - Lomas de Zamora",
+    "name": "Juegos Mentales - Lomas de Zamora",
     "category": "other",
     "lat": -34.7463673,
     "lng": -58.3936089,
@@ -2668,7 +2668,7 @@
   },
   {
     "id": "osm:node:11374906595",
-    "name": "⚠︎ Talles grandes Sabah Desing Vestidos de Fiesta",
+    "name": "Talles grandes Sabah Desing Vestidos de Fiesta",
     "category": "clothes",
     "lat": -34.7595533,
     "lng": -58.4003356,
@@ -2710,7 +2710,7 @@
   },
   {
     "id": "osm:node:11374906596",
-    "name": "⚠︎ Calan Fava",
+    "name": "Calan Fava",
     "category": "greengrocer",
     "lat": -34.7073656,
     "lng": -58.4935119,
@@ -2752,7 +2752,7 @@
   },
   {
     "id": "osm:node:11374906597",
-    "name": "⚠︎ Nestor1107",
+    "name": "Nestor1107",
     "category": "farm",
     "lat": -34.707118,
     "lng": -58.4961368,
@@ -2794,7 +2794,7 @@
   },
   {
     "id": "osm:node:11374906598",
-    "name": "⚠︎ Carros Ariel y Alan libre 4 puesto 32",
+    "name": "Carros Ariel y Alan libre 4 puesto 32",
     "category": "car_rental",
     "lat": -34.7080136,
     "lng": -58.495712,
@@ -2836,7 +2836,7 @@
   },
   {
     "id": "osm:node:11374906599",
-    "name": "⚠︎ Tienda el tano",
+    "name": "Tienda el tano",
     "category": "clothes",
     "lat": -34.7086397,
     "lng": -58.4949193,
@@ -2879,7 +2879,7 @@
   },
   {
     "id": "osm:node:11374906600",
-    "name": "⚠︎ Agricola il Giardino",
+    "name": "Agricola il Giardino",
     "category": "farm",
     "lat": -34.7083894,
     "lng": -58.4974554,
@@ -2921,7 +2921,7 @@
   },
   {
     "id": "osm:node:11374906601",
-    "name": "⚠︎ La brusquita",
+    "name": "La brusquita",
     "category": "farm",
     "lat": -34.7085148,
     "lng": -58.4975971,
@@ -2963,7 +2963,7 @@
   },
   {
     "id": "osm:node:11374906602",
-    "name": "⚠︎ Tienda el tano",
+    "name": "Tienda el tano",
     "category": "restaurant",
     "lat": -34.7092375,
     "lng": -58.4972108,
@@ -3007,7 +3007,7 @@
   },
   {
     "id": "osm:node:11374906603",
-    "name": "⚠︎ Carros Juan Carlos",
+    "name": "Carros Juan Carlos",
     "category": "car_rental",
     "lat": -34.7098618,
     "lng": -58.49645,
@@ -3049,7 +3049,7 @@
   },
   {
     "id": "osm:node:11374906604",
-    "name": "⚠︎ Carlos Bayon",
+    "name": "Carlos Bayon",
     "category": "car_rental",
     "lat": -34.7101485,
     "lng": -58.4938193,
@@ -3091,7 +3091,7 @@
   },
   {
     "id": "osm:node:11374906605",
-    "name": "⚠︎ Rosa de Saron",
+    "name": "Rosa de Saron",
     "category": "restaurant",
     "lat": -34.7098209,
     "lng": -58.4934796,
@@ -3133,7 +3133,7 @@
   },
   {
     "id": "osm:node:11374906606",
-    "name": "⚠︎ Lo de nico",
+    "name": "Lo de nico",
     "category": "cafe",
     "lat": -34.7097044,
     "lng": -58.4916129,
@@ -3175,7 +3175,7 @@
   },
   {
     "id": "osm:node:11374906607",
-    "name": "⚠︎ GAYEL 333 SRL",
+    "name": "GAYEL 333 SRL",
     "category": "farm",
     "lat": -34.712809,
     "lng": -58.4971339,
@@ -3217,7 +3217,7 @@
   },
   {
     "id": "osm:node:11374906608",
-    "name": "⚠︎ GAYEL 333 SRL",
+    "name": "GAYEL 333 SRL",
     "category": "farm",
     "lat": -34.7121081,
     "lng": -58.4970276,
@@ -3259,7 +3259,7 @@
   },
   {
     "id": "osm:node:11374906609",
-    "name": "⚠︎ Fusion 3",
+    "name": "Fusion 3",
     "category": "furniture",
     "lat": -34.7086596,
     "lng": -58.5005734,
@@ -3301,7 +3301,7 @@
   },
   {
     "id": "osm:node:11432563187",
-    "name": "⚠︎ Espacio Cultural Bitcoin",
+    "name": "Espacio Cultural Bitcoin",
     "category": "community_centre",
     "lat": -34.5961284,
     "lng": -58.373284,
@@ -3343,7 +3343,7 @@
   },
   {
     "id": "osm:node:11762201964",
-    "name": "⚠︎ L´Aperó",
+    "name": "L´Aperó",
     "category": "restaurant",
     "lat": -34.5502238,
     "lng": -58.4578748,
@@ -3392,7 +3392,7 @@
   },
   {
     "id": "osm:node:12092766081",
-    "name": "⚠︎ MT Ballroom",
+    "name": "MT Ballroom",
     "category": "other",
     "lat": -34.6008582,
     "lng": -58.3781021,
@@ -3441,7 +3441,7 @@
   },
   {
     "id": "osm:node:12434400820",
-    "name": "⚠︎ Coffee Bar Rosa",
+    "name": "Coffee Bar Rosa",
     "category": "cafe",
     "lat": -34.5735904,
     "lng": -58.4909031,
@@ -3485,7 +3485,7 @@
   },
   {
     "id": "osm:node:12476401801",
-    "name": "⚠︎ Boga. Café & vinos",
+    "name": "Boga. Café & vinos",
     "category": "bar",
     "lat": -34.5881187,
     "lng": -58.4274029,
@@ -3531,7 +3531,7 @@
   },
   {
     "id": "osm:node:12544905046",
-    "name": "⚠︎ Martinelli",
+    "name": "Martinelli",
     "category": "cafe",
     "lat": -34.5896094,
     "lng": -58.4251856,
@@ -3580,7 +3580,7 @@
   },
   {
     "id": "osm:node:12616293274",
-    "name": "⚠︎ Motohoy",
+    "name": "Motohoy",
     "category": "motorcycle_rental",
     "lat": -34.5979535,
     "lng": -58.4165896,
@@ -3625,7 +3625,7 @@
   },
   {
     "id": "osm:node:12674567056",
-    "name": "⚠︎ MC Carnes Premium",
+    "name": "MC Carnes Premium",
     "category": "supermarket",
     "lat": -34.5260288,
     "lng": -58.4935405,
@@ -3673,7 +3673,7 @@
   },
   {
     "id": "osm:node:12780193627",
-    "name": "⚠︎ Regalos Goya",
+    "name": "Regalos Goya",
     "category": "gift",
     "lat": -34.5642132,
     "lng": -58.4543458,
@@ -3721,7 +3721,7 @@
   },
   {
     "id": "osm:node:12802498535",
-    "name": "⚠︎ Tabaquería Amero",
+    "name": "Tabaquería Amero",
     "category": "other",
     "lat": -34.4881995,
     "lng": -58.4973484,
@@ -3770,7 +3770,7 @@
   },
   {
     "id": "osm:node:12994611340",
-    "name": "⚠︎ Academia Sports Light",
+    "name": "Academia Sports Light",
     "category": "other",
     "lat": -34.7581283,
     "lng": -58.3819639,
@@ -3813,7 +3813,7 @@
   },
   {
     "id": "osm:node:13098835276",
-    "name": "⚠︎ Jardín Los Bajitos",
+    "name": "Jardín Los Bajitos",
     "category": "other",
     "lat": -34.7139024,
     "lng": -58.3994632,
@@ -3864,7 +3864,7 @@
   },
   {
     "id": "osm:way:1185766629",
-    "name": "⚠︎ Bar 9 de julio",
+    "name": "Bar 9 de julio",
     "category": "restaurant",
     "lat": -34.6509479,
     "lng": -58.5024151,

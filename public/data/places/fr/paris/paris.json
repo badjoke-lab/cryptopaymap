@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:691614099",
-    "name": "⚠︎ Khara Tuki",
+    "name": "Khara Tuki",
     "category": "jewelry",
     "lat": 48.8646929,
     "lng": 2.3500426,
@@ -48,7 +48,7 @@
   },
   {
     "id": "osm:node:815830612",
-    "name": "⚠︎ Le Greffulhe",
+    "name": "Le Greffulhe",
     "category": "restaurant",
     "lat": 48.8731505,
     "lng": 2.3255205,
@@ -99,7 +99,7 @@
   },
   {
     "id": "osm:node:1089313449",
-    "name": "⚠︎ L'invitée",
+    "name": "L'invitée",
     "category": "restaurant",
     "lat": 48.8499899,
     "lng": 2.3459219,
@@ -151,7 +151,7 @@
   },
   {
     "id": "osm:node:1901202883",
-    "name": "⚠︎ Danse Cadix (Rock4You)",
+    "name": "Danse Cadix (Rock4You)",
     "category": "other",
     "lat": 48.8344837,
     "lng": 2.2883046,
@@ -200,7 +200,7 @@
   },
   {
     "id": "osm:node:2244578060",
-    "name": "⚠︎ N'Importe Quoi",
+    "name": "N'Importe Quoi",
     "category": "bar",
     "lat": 48.8607815,
     "lng": 2.3438855,
@@ -251,7 +251,7 @@
   },
   {
     "id": "osm:node:2630584155",
-    "name": "⚠︎ Le Sof's Bar",
+    "name": "Le Sof's Bar",
     "category": "bar",
     "lat": 48.866108,
     "lng": 2.3480098,
@@ -301,7 +301,7 @@
   },
   {
     "id": "osm:node:2996093212",
-    "name": "⚠︎ Rock that Alésia (Rock4You, Vendredis)",
+    "name": "Rock that Alésia (Rock4You, Vendredis)",
     "category": "other",
     "lat": 48.8295775,
     "lng": 2.3245668,
@@ -349,7 +349,7 @@
   },
   {
     "id": "osm:node:3239628074",
-    "name": "⚠︎ Boucherie Moderne",
+    "name": "Boucherie Moderne",
     "category": "butcher",
     "lat": 48.8506104,
     "lng": 2.3925275,
@@ -399,7 +399,7 @@
   },
   {
     "id": "osm:node:4136415192",
-    "name": "⚠︎ Barnacle",
+    "name": "Barnacle",
     "category": "optician",
     "lat": 48.8456492,
     "lng": 2.2776216,
@@ -446,7 +446,7 @@
   },
   {
     "id": "osm:node:5602730924",
-    "name": "⚠︎ Le Carlie",
+    "name": "Le Carlie",
     "category": "bar",
     "lat": 48.8626955,
     "lng": 2.3521138,
@@ -499,7 +499,7 @@
   },
   {
     "id": "osm:node:5729212321",
-    "name": "⚠︎ Chez Ginette",
+    "name": "Chez Ginette",
     "category": "restaurant",
     "lat": 48.8897379,
     "lng": 2.3387128,
@@ -551,7 +551,7 @@
   },
   {
     "id": "osm:node:10772576426",
-    "name": "⚠︎ Itiopia",
+    "name": "Itiopia",
     "category": "convenience",
     "lat": 48.8900044,
     "lng": 2.345774,
@@ -599,7 +599,7 @@
   },
   {
     "id": "osm:node:12258277242",
-    "name": "⚠︎ Danse Volontaire (Rock4You)",
+    "name": "Danse Volontaire (Rock4You)",
     "category": "other",
     "lat": 48.8416222,
     "lng": 2.3074957,
@@ -648,7 +648,7 @@
   },
   {
     "id": "osm:node:12258290051",
-    "name": "⚠︎ Rock That Boat (Rock4You, Lundis)",
+    "name": "Rock That Boat (Rock4You, Lundis)",
     "category": "bar",
     "lat": 48.8621181,
     "lng": 2.3224959,
@@ -697,7 +697,7 @@
   },
   {
     "id": "osm:node:12336006611",
-    "name": "⚠︎ HomeProjectRentals",
+    "name": "HomeProjectRentals",
     "category": "other",
     "lat": 48.8758003,
     "lng": 2.4037261,
@@ -743,7 +743,7 @@
   },
   {
     "id": "osm:node:12908609013",
-    "name": "⚠︎ Dr SYED Abbas (General practitioner)",
+    "name": "Dr SYED Abbas (General practitioner)",
     "category": "doctors",
     "lat": 48.872113,
     "lng": 2.3404427,
@@ -793,7 +793,7 @@
   },
   {
     "id": "osm:node:12912120793",
-    "name": "⚠︎ Fais ci Fais ça",
+    "name": "Fais ci Fais ça",
     "category": "other",
     "lat": 48.857873,
     "lng": 2.2852746,
@@ -842,7 +842,7 @@
   },
   {
     "id": "osm:way:76032165",
-    "name": "⚠︎ Bitcoin Bazar",
+    "name": "Bitcoin Bazar",
     "category": "other",
     "lat": 48.8905017,
     "lng": 2.333032,
@@ -893,7 +893,7 @@
   },
   {
     "id": "osm:way:868175261",
-    "name": "⚠︎ Bistrot du Passage",
+    "name": "Bistrot du Passage",
     "category": "restaurant",
     "lat": 48.8542093,
     "lng": 2.3253329,

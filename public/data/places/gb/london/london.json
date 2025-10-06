@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:26040005",
-    "name": "⚠︎ The Limping Fox",
+    "name": "The Limping Fox",
     "category": "pub",
     "lat": 51.3860498,
     "lng": -0.3238196,
@@ -52,7 +52,7 @@
   },
   {
     "id": "osm:node:307828475",
-    "name": "⚠︎ Thomas Exchange UK",
+    "name": "Thomas Exchange UK",
     "category": "other",
     "lat": 51.5298351,
     "lng": -0.1238524,
@@ -93,7 +93,7 @@
   },
   {
     "id": "osm:node:441205302",
-    "name": "⚠︎ Hennessy's",
+    "name": "Hennessy's",
     "category": "butcher",
     "lat": 51.4579388,
     "lng": -0.1661051,
@@ -140,7 +140,7 @@
   },
   {
     "id": "osm:node:554974745",
-    "name": "⚠︎ Costa",
+    "name": "Costa",
     "category": "cafe",
     "lat": 51.52996,
     "lng": -0.1244199,
@@ -188,7 +188,7 @@
   },
   {
     "id": "osm:node:1271588141",
-    "name": "⚠︎ The Bike Shop",
+    "name": "The Bike Shop",
     "category": "other",
     "lat": 51.657308,
     "lng": -0.3929281,
@@ -235,7 +235,7 @@
   },
   {
     "id": "osm:node:1290610513",
-    "name": "⚠︎ West Harrow Garage",
+    "name": "West Harrow Garage",
     "category": "other",
     "lat": 51.5814946,
     "lng": -0.3545195,
@@ -283,7 +283,7 @@
   },
   {
     "id": "osm:node:3072882300",
-    "name": "⚠︎ CUT IT OUT Wall Stickers",
+    "name": "CUT IT OUT Wall Stickers",
     "category": "other",
     "lat": 51.5431205,
     "lng": -0.0655637,
@@ -332,7 +332,7 @@
   },
   {
     "id": "osm:node:3090725390",
-    "name": "⚠︎ Pintus",
+    "name": "Pintus",
     "category": "cafe",
     "lat": 51.4558379,
     "lng": -0.1652889,
@@ -382,7 +382,7 @@
   },
   {
     "id": "osm:node:3147324128",
-    "name": "⚠︎ McCann Bespoke",
+    "name": "McCann Bespoke",
     "category": "clothes",
     "lat": 51.5121061,
     "lng": -0.08269,
@@ -435,7 +435,7 @@
   },
   {
     "id": "osm:node:4379042414",
-    "name": "⚠︎ Focus Plant",
+    "name": "Focus Plant",
     "category": "other",
     "lat": 51.4251073,
     "lng": -0.0834934,
@@ -484,7 +484,7 @@
   },
   {
     "id": "osm:node:4601420592",
-    "name": "⚠︎ Blacks Club",
+    "name": "Blacks Club",
     "category": "other",
     "lat": 51.5132863,
     "lng": -0.1323897,
@@ -534,7 +534,7 @@
   },
   {
     "id": "osm:node:4654216341",
-    "name": "⚠︎ 207 Barbers",
+    "name": "207 Barbers",
     "category": "hairdresser",
     "lat": 51.6083119,
     "lng": 0.1073806,
@@ -583,7 +583,7 @@
   },
   {
     "id": "osm:node:8608616078",
-    "name": "⚠︎ Boom Bap Burger",
+    "name": "Boom Bap Burger",
     "category": "fast_food",
     "lat": 51.4288903,
     "lng": -0.165889,
@@ -631,7 +631,7 @@
   },
   {
     "id": "osm:node:8747613202",
-    "name": "⚠︎ Love Art",
+    "name": "Love Art",
     "category": "other",
     "lat": 51.4288209,
     "lng": -0.16583,
@@ -678,7 +678,7 @@
   },
   {
     "id": "osm:node:8747645823",
-    "name": "⚠︎ Dr Vinyl",
+    "name": "Dr Vinyl",
     "category": "music",
     "lat": 51.4289394,
     "lng": -0.16638,
@@ -721,7 +721,7 @@
   },
   {
     "id": "osm:node:8747645827",
-    "name": "⚠︎ The Candy Cane Lounge / Dr Vinyl",
+    "name": "The Candy Cane Lounge / Dr Vinyl",
     "category": "other",
     "lat": 51.4291549,
     "lng": -0.1653873,
@@ -767,7 +767,7 @@
   },
   {
     "id": "osm:node:8747645828",
-    "name": "⚠︎ Get Juiced!",
+    "name": "Get Juiced!",
     "category": "fast_food",
     "lat": 51.4288307,
     "lng": -0.1659599,
@@ -818,7 +818,7 @@
   },
   {
     "id": "osm:node:8805719003",
-    "name": "⚠︎ Forevermore Tattoo",
+    "name": "Forevermore Tattoo",
     "category": "tattoo",
     "lat": 51.5039365,
     "lng": -0.2431078,
@@ -866,7 +866,7 @@
   },
   {
     "id": "osm:node:9087933559",
-    "name": "⚠︎ Wolfy's",
+    "name": "Wolfy's",
     "category": "cafe",
     "lat": 51.4904329,
     "lng": -0.0388235,
@@ -917,7 +917,7 @@
   },
   {
     "id": "osm:node:9087933560",
-    "name": "⚠︎ Blue Mango Salon",
+    "name": "Blue Mango Salon",
     "category": "beauty",
     "lat": 51.4903309,
     "lng": -0.038741,
@@ -965,7 +965,7 @@
   },
   {
     "id": "osm:node:10090592084",
-    "name": "⚠︎ Hair Design Co",
+    "name": "Hair Design Co",
     "category": "hairdresser",
     "lat": 51.5506106,
     "lng": 0.1978284,
@@ -1015,7 +1015,7 @@
   },
   {
     "id": "osm:node:10094817176",
-    "name": "⚠︎ Calm Indian Cow",
+    "name": "Calm Indian Cow",
     "category": "restaurant",
     "lat": 51.5248855,
     "lng": -0.0843074,
@@ -1068,7 +1068,7 @@
   },
   {
     "id": "osm:node:10197861918",
-    "name": "⚠︎ Ellie Yoki",
+    "name": "Ellie Yoki",
     "category": "other",
     "lat": 51.2920818,
     "lng": -0.4210544,
@@ -1115,7 +1115,7 @@
   },
   {
     "id": "osm:node:10198162251",
-    "name": "⚠︎ Dom's Decorating",
+    "name": "Dom's Decorating",
     "category": "other",
     "lat": 51.2921193,
     "lng": -0.4209898,
@@ -1162,7 +1162,7 @@
   },
   {
     "id": "osm:node:10216808268",
-    "name": "⚠︎ EC Cycling Coach and Personal Trainer",
+    "name": "EC Cycling Coach and Personal Trainer",
     "category": "other",
     "lat": 51.4663702,
     "lng": -0.2854093,
@@ -1211,7 +1211,7 @@
   },
   {
     "id": "osm:node:10308608587",
-    "name": "⚠︎ Antonio Delicatessen",
+    "name": "Antonio Delicatessen",
     "category": "other",
     "lat": 51.4617264,
     "lng": -0.0095697,
@@ -1261,7 +1261,7 @@
   },
   {
     "id": "osm:node:10433884691",
-    "name": "⚠︎ Rodega Music",
+    "name": "Rodega Music",
     "category": "other",
     "lat": 51.4615078,
     "lng": -0.0091505,
@@ -1309,7 +1309,7 @@
   },
   {
     "id": "osm:node:10597216193",
-    "name": "⚠︎ Coirmedia UK | Coir Products in UK",
+    "name": "Coirmedia UK | Coir Products in UK",
     "category": "other",
     "lat": 51.518483,
     "lng": -0.1423784,
@@ -1357,7 +1357,7 @@
   },
   {
     "id": "osm:node:10787110839",
-    "name": "⚠︎ Blokpoint",
+    "name": "Blokpoint",
     "category": "other",
     "lat": 51.5256046,
     "lng": -0.0836989,
@@ -1406,7 +1406,7 @@
   },
   {
     "id": "osm:node:10906045926",
-    "name": "⚠︎ Kelmscott Home Improvement Ltd",
+    "name": "Kelmscott Home Improvement Ltd",
     "category": "other",
     "lat": 51.4451108,
     "lng": -0.1425117,
@@ -1456,7 +1456,7 @@
   },
   {
     "id": "osm:node:10907899933",
-    "name": "⚠︎ Calm Indian Cow",
+    "name": "Calm Indian Cow",
     "category": "restaurant",
     "lat": 51.5374147,
     "lng": -0.0611517,
@@ -1509,7 +1509,7 @@
   },
   {
     "id": "osm:node:11082781227",
-    "name": "⚠︎ The Steam Room",
+    "name": "The Steam Room",
     "category": "other",
     "lat": 51.5356563,
     "lng": -0.0767385,
@@ -1556,7 +1556,7 @@
   },
   {
     "id": "osm:node:11099356960",
-    "name": "⚠︎ Maida Smiles",
+    "name": "Maida Smiles",
     "category": "dentist",
     "lat": 51.527909,
     "lng": -0.1819499,
@@ -1604,7 +1604,7 @@
   },
   {
     "id": "osm:node:11099362144",
-    "name": "⚠︎ Kapucin",
+    "name": "Kapucin",
     "category": "cafe",
     "lat": 51.4579128,
     "lng": -0.3048944,
@@ -1654,7 +1654,7 @@
   },
   {
     "id": "osm:node:11176568154",
-    "name": "⚠︎ Dockside Vaults",
+    "name": "Dockside Vaults",
     "category": "other",
     "lat": 51.5076484,
     "lng": -0.0712725,
@@ -1700,7 +1700,7 @@
   },
   {
     "id": "osm:node:11551861926",
-    "name": "⚠︎ Beans and Bubbles",
+    "name": "Beans and Bubbles",
     "category": "cafe",
     "lat": 51.4360409,
     "lng": -0.1605415,
@@ -1750,7 +1750,7 @@
   },
   {
     "id": "osm:node:11682143323",
-    "name": "⚠︎ Broadley Studios",
+    "name": "Broadley Studios",
     "category": "other",
     "lat": 51.5239822,
     "lng": -0.1668696,
@@ -1798,7 +1798,7 @@
   },
   {
     "id": "osm:node:11699219098",
-    "name": "⚠︎ Rosmarino Restaurant",
+    "name": "Rosmarino Restaurant",
     "category": "restaurant",
     "lat": 51.4361008,
     "lng": -0.1606157,
@@ -1850,7 +1850,7 @@
   },
   {
     "id": "osm:node:11758170372",
-    "name": "⚠︎ Hadley AV",
+    "name": "Hadley AV",
     "category": "other",
     "lat": 51.6522063,
     "lng": -0.2100221,
@@ -1901,7 +1901,7 @@
   },
   {
     "id": "osm:node:11868989493",
-    "name": "⚠︎ Cyphermunk House",
+    "name": "Cyphermunk House",
     "category": "other",
     "lat": 51.5220914,
     "lng": -0.1148063,
@@ -1950,7 +1950,7 @@
   },
   {
     "id": "osm:node:11926974245",
-    "name": "⚠︎ Crafts and Play",
+    "name": "Crafts and Play",
     "category": "other",
     "lat": 51.4640142,
     "lng": -0.2712413,
@@ -1998,7 +1998,7 @@
   },
   {
     "id": "osm:node:11998499688",
-    "name": "⚠︎ Mezzanine Bar",
+    "name": "Mezzanine Bar",
     "category": "bar",
     "lat": 51.4291372,
     "lng": -0.1655335,
@@ -2045,7 +2045,7 @@
   },
   {
     "id": "osm:node:11998542622",
-    "name": "⚠︎ Olives & Meze",
+    "name": "Olives & Meze",
     "category": "restaurant",
     "lat": 51.4290787,
     "lng": -0.1655871,
@@ -2093,7 +2093,7 @@
   },
   {
     "id": "osm:node:12025789274",
-    "name": "⚠︎ Apple Bitcoins",
+    "name": "Apple Bitcoins",
     "category": "other",
     "lat": 51.51482,
     "lng": -0.1523279,
@@ -2143,7 +2143,7 @@
   },
   {
     "id": "osm:node:12037875593",
-    "name": "⚠︎ pHresh",
+    "name": "pHresh",
     "category": "cafe",
     "lat": 51.4655036,
     "lng": -0.1555246,
@@ -2194,7 +2194,7 @@
   },
   {
     "id": "osm:node:12041822206",
-    "name": "⚠︎ North African Food / Yema's House",
+    "name": "North African Food / Yema's House",
     "category": "fast_food",
     "lat": 51.4292322,
     "lng": -0.1654634,
@@ -2242,7 +2242,7 @@
   },
   {
     "id": "osm:node:12041896932",
-    "name": "⚠︎ Habi Smart Homes",
+    "name": "Habi Smart Homes",
     "category": "other",
     "lat": 51.4981612,
     "lng": -0.2020837,
@@ -2289,7 +2289,7 @@
   },
   {
     "id": "osm:node:12045939192",
-    "name": "⚠︎ The Printing Place",
+    "name": "The Printing Place",
     "category": "other",
     "lat": 51.4292743,
     "lng": -0.1671261,
@@ -2337,7 +2337,7 @@
   },
   {
     "id": "osm:node:12074042171",
-    "name": "⚠︎ Cary Hammond Photography",
+    "name": "Cary Hammond Photography",
     "category": "other",
     "lat": 51.492133,
     "lng": -0.121347,
@@ -2389,7 +2389,7 @@
   },
   {
     "id": "osm:node:12103940096",
-    "name": "⚠︎ Nemo Cafe",
+    "name": "Nemo Cafe",
     "category": "cafe",
     "lat": 51.4160309,
     "lng": -0.3718241,
@@ -2436,7 +2436,7 @@
   },
   {
     "id": "osm:node:12133818298",
-    "name": "⚠︎ Tikka Express",
+    "name": "Tikka Express",
     "category": "restaurant",
     "lat": 51.429582,
     "lng": -0.1661159,
@@ -2483,7 +2483,7 @@
   },
   {
     "id": "osm:node:12196972955",
-    "name": "⚠︎ The Plastic Surgery Group",
+    "name": "The Plastic Surgery Group",
     "category": "doctors",
     "lat": 51.5195434,
     "lng": -0.1403604,
@@ -2531,7 +2531,7 @@
   },
   {
     "id": "osm:node:12197064449",
-    "name": "⚠︎ Bob's Courtyard Bar",
+    "name": "Bob's Courtyard Bar",
     "category": "pub",
     "lat": 51.4461436,
     "lng": -0.1500124,
@@ -2577,7 +2577,7 @@
   },
   {
     "id": "osm:node:12199018632",
-    "name": "⚠︎ Balham House",
+    "name": "Balham House",
     "category": "pub",
     "lat": 51.4462618,
     "lng": -0.1501313,
@@ -2625,7 +2625,7 @@
   },
   {
     "id": "osm:node:12262948205",
-    "name": "⚠︎ Pasta La Dolce Vita",
+    "name": "Pasta La Dolce Vita",
     "category": "fast_food",
     "lat": 51.5204159,
     "lng": -0.0722344,
@@ -2675,7 +2675,7 @@
   },
   {
     "id": "osm:node:12340014904",
-    "name": "⚠︎ Boom Bap Burger Leadenhall Market",
+    "name": "Boom Bap Burger Leadenhall Market",
     "category": "fast_food",
     "lat": 51.5126485,
     "lng": -0.0832616,
@@ -2727,7 +2727,7 @@
   },
   {
     "id": "osm:node:12476624931",
-    "name": "⚠︎ Victrade Property Maintenance",
+    "name": "Victrade Property Maintenance",
     "category": "other",
     "lat": 51.4914763,
     "lng": -0.1462557,
@@ -2777,7 +2777,7 @@
   },
   {
     "id": "osm:node:12745157680",
-    "name": "⚠︎ The Deli",
+    "name": "The Deli",
     "category": "cafe",
     "lat": 51.3894373,
     "lng": -0.3255219,
@@ -2828,7 +2828,7 @@
   },
   {
     "id": "osm:node:12745160707",
-    "name": "⚠︎ The Boss",
+    "name": "The Boss",
     "category": "hairdresser",
     "lat": 51.3893963,
     "lng": -0.3256453,
@@ -2878,7 +2878,7 @@
   },
   {
     "id": "osm:node:12745169348",
-    "name": "⚠︎ Thames Ditton Gin",
+    "name": "Thames Ditton Gin",
     "category": "other",
     "lat": 51.3905344,
     "lng": -0.3339585,
@@ -2927,7 +2927,7 @@
   },
   {
     "id": "osm:node:12775851875",
-    "name": "⚠︎ Han Fu",
+    "name": "Han Fu",
     "category": "restaurant",
     "lat": 51.3915746,
     "lng": -0.3321807,
@@ -2977,7 +2977,7 @@
   },
   {
     "id": "osm:node:12809060433",
-    "name": "⚠︎ Involve Digital",
+    "name": "Involve Digital",
     "category": "other",
     "lat": 51.5132052,
     "lng": -0.1412029,
@@ -3027,7 +3027,7 @@
   },
   {
     "id": "osm:node:12901886018",
-    "name": "⚠︎ Core TV",
+    "name": "Core TV",
     "category": "other",
     "lat": 51.5057039,
     "lng": -0.1007408,
@@ -3076,7 +3076,7 @@
   },
   {
     "id": "osm:node:12993375450",
-    "name": "⚠︎ Massaggi",
+    "name": "Massaggi",
     "category": "other",
     "lat": 51.5186218,
     "lng": -0.1519065,
@@ -3123,7 +3123,7 @@
   },
   {
     "id": "osm:way:28498489",
-    "name": "⚠︎ FOCUS PLANT",
+    "name": "FOCUS PLANT",
     "category": "other",
     "lat": 51.3911296,
     "lng": 0.1137324,
@@ -3174,7 +3174,7 @@
   },
   {
     "id": "osm:way:40858239",
-    "name": "⚠︎ Century Club",
+    "name": "Century Club",
     "category": "other",
     "lat": 51.5120681,
     "lng": -0.1322138,
@@ -3223,7 +3223,7 @@
   },
   {
     "id": "osm:way:190715113",
-    "name": "⚠︎ Troxy",
+    "name": "Troxy",
     "category": "nightclub",
     "lat": 51.5127385,
     "lng": -0.0440028,
@@ -3275,7 +3275,7 @@
   },
   {
     "id": "osm:way:669890683",
-    "name": "⚠︎ Michelle Davies",
+    "name": "Michelle Davies",
     "category": "other",
     "lat": 51.5187969,
     "lng": -0.1466577,
@@ -3324,7 +3324,7 @@
   },
   {
     "id": "osm:way:766719311",
-    "name": "⚠︎ Indigo Wines",
+    "name": "Indigo Wines",
     "category": "wine",
     "lat": 51.3906184,
     "lng": -0.3333209,
@@ -3374,7 +3374,7 @@
   },
   {
     "id": "osm:way:835395162",
-    "name": "⚠︎ Kettle Club",
+    "name": "Kettle Club",
     "category": "jewelry",
     "lat": 51.5171829,
     "lng": -0.0814462,
@@ -3423,7 +3423,7 @@
   },
   {
     "id": "osm:way:857939249",
-    "name": "⚠︎ Subhan",
+    "name": "Subhan",
     "category": "butcher",
     "lat": 51.5334463,
     "lng": -0.0289449,
@@ -3472,7 +3472,7 @@
   },
   {
     "id": "osm:way:1008034198",
-    "name": "⚠︎ Danson Garage",
+    "name": "Danson Garage",
     "category": "other",
     "lat": 51.4482256,
     "lng": 0.1175434,
@@ -3521,7 +3521,7 @@
   },
   {
     "id": "osm:way:1008034199",
-    "name": "⚠︎ KDM MOTORS",
+    "name": "KDM MOTORS",
     "category": "other",
     "lat": 51.4484598,
     "lng": 0.1175183,
@@ -3571,7 +3571,7 @@
   },
   {
     "id": "osm:way:1032398454",
-    "name": "⚠︎ Strike",
+    "name": "Strike",
     "category": "other",
     "lat": 51.4570906,
     "lng": -0.1931018,
@@ -3619,7 +3619,7 @@
   },
   {
     "id": "osm:way:1121733290",
-    "name": "⚠︎ Chilli Cha Cha",
+    "name": "Chilli Cha Cha",
     "category": "fast_food",
     "lat": 51.4096718,
     "lng": -0.3063941,
@@ -3671,7 +3671,7 @@
   },
   {
     "id": "osm:way:1376426747",
-    "name": "⚠︎ Prestige Autos Surrey",
+    "name": "Prestige Autos Surrey",
     "category": "other",
     "lat": 51.3870019,
     "lng": -0.3287376,
@@ -3720,7 +3720,7 @@
   },
   {
     "id": "osm:way:1394167500",
-    "name": "⚠︎ El Sabor",
+    "name": "El Sabor",
     "category": "fast_food",
     "lat": 51.5039555,
     "lng": -0.0962689,
@@ -3770,7 +3770,7 @@
   },
   {
     "id": "osm:way:1409749436",
-    "name": "⚠︎ Spizza Napoletana",
+    "name": "Spizza Napoletana",
     "category": "fast_food",
     "lat": 51.5040369,
     "lng": -0.0964274,
