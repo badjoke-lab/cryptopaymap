@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:4003562489",
-    "name": "⚠︎ Juvia",
+    "name": "Juvia",
     "category": "restaurant",
     "lat": 25.7906686,
     "lng": -80.140142,
@@ -48,7 +48,7 @@
   },
   {
     "id": "osm:node:4945667521",
-    "name": "⚠︎ Sushi Garage",
+    "name": "Sushi Garage",
     "category": "restaurant",
     "lat": 25.7934212,
     "lng": -80.1428044,
@@ -97,7 +97,7 @@
   },
   {
     "id": "osm:node:6036966576",
-    "name": "⚠︎ Embassy Flex",
+    "name": "Embassy Flex",
     "category": "car_rental",
     "lat": 25.7993795,
     "lng": -80.2602142,
@@ -146,7 +146,7 @@
   },
   {
     "id": "osm:node:6091344251",
-    "name": "⚠︎ Supercar Rooms Miami",
+    "name": "Supercar Rooms Miami",
     "category": "other",
     "lat": 25.7960064,
     "lng": -80.1979564,
@@ -193,7 +193,7 @@
   },
   {
     "id": "osm:node:6107890133",
-    "name": "⚠︎ La Santa Taqueria",
+    "name": "La Santa Taqueria",
     "category": "restaurant",
     "lat": 25.8499938,
     "lng": -80.1926963,
@@ -241,7 +241,7 @@
   },
   {
     "id": "osm:node:6417121785",
-    "name": "⚠︎ Chotto Matte",
+    "name": "Chotto Matte",
     "category": "restaurant",
     "lat": 25.7911078,
     "lng": -80.1408037,
@@ -288,7 +288,7 @@
   },
   {
     "id": "osm:node:10054832617",
-    "name": "⚠︎ Taquiza",
+    "name": "Taquiza",
     "category": "bar",
     "lat": 25.7850435,
     "lng": -80.1307447,
@@ -333,7 +333,7 @@
   },
   {
     "id": "osm:node:10111842029",
-    "name": "⚠︎ Iris Tattoo Miami",
+    "name": "Iris Tattoo Miami",
     "category": "tattoo",
     "lat": 25.8027205,
     "lng": -80.1955032,
@@ -379,7 +379,7 @@
   },
   {
     "id": "osm:node:10132245572",
-    "name": "⚠︎ EZ Cleaning Supplies",
+    "name": "EZ Cleaning Supplies",
     "category": "other",
     "lat": 25.8459371,
     "lng": -80.3156555,
@@ -421,7 +421,7 @@
   },
   {
     "id": "osm:node:10138470850",
-    "name": "⚠︎ GROU Coffee + Cowork",
+    "name": "GROU Coffee + Cowork",
     "category": "cafe",
     "lat": 25.7333956,
     "lng": -80.2604178,
@@ -470,7 +470,7 @@
   },
   {
     "id": "osm:node:10138526560",
-    "name": "⚠︎ Minibar",
+    "name": "Minibar",
     "category": "bar",
     "lat": 25.7741201,
     "lng": -80.1361579,
@@ -517,7 +517,7 @@
   },
   {
     "id": "osm:node:10567233849",
-    "name": "⚠︎ Thyme Machine",
+    "name": "Thyme Machine",
     "category": "cafe",
     "lat": 25.7621379,
     "lng": -80.1929626,
@@ -566,7 +566,7 @@
   },
   {
     "id": "osm:node:10803293425",
-    "name": "⚠︎ Polo Ralph Lauren",
+    "name": "Polo Ralph Lauren",
     "category": "clothes",
     "lat": 25.8131574,
     "lng": -80.1920657,
@@ -610,7 +610,7 @@
   },
   {
     "id": "osm:node:10847051464",
-    "name": "⚠︎ Orno Miami",
+    "name": "Orno Miami",
     "category": "restaurant",
     "lat": 25.7126655,
     "lng": -80.2787112,
@@ -658,7 +658,7 @@
   },
   {
     "id": "osm:node:11445230873",
-    "name": "⚠︎ Miami Camera Rental",
+    "name": "Miami Camera Rental",
     "category": "other",
     "lat": 25.8436974,
     "lng": -80.1891748,
@@ -704,7 +704,7 @@
   },
   {
     "id": "osm:node:11986492180",
-    "name": "⚠︎ Skyrim Security",
+    "name": "Skyrim Security",
     "category": "other",
     "lat": 25.8004142,
     "lng": -80.1885413,
@@ -753,7 +753,7 @@
   },
   {
     "id": "osm:node:12025637369",
-    "name": "⚠︎ Proof of Work Fitness",
+    "name": "Proof of Work Fitness",
     "category": "other",
     "lat": 25.7749065,
     "lng": -80.1852126,
@@ -802,7 +802,7 @@
   },
   {
     "id": "osm:node:12115665900",
-    "name": "⚠︎ DESIGNHOUSE",
+    "name": "DESIGNHOUSE",
     "category": "other",
     "lat": 25.7514608,
     "lng": -80.2588975,
@@ -854,7 +854,7 @@
   },
   {
     "id": "osm:node:12144822528",
-    "name": "⚠︎ Jorge Enterprises GC - Construction",
+    "name": "Jorge Enterprises GC - Construction",
     "category": "other",
     "lat": 25.7480898,
     "lng": -80.2603205,

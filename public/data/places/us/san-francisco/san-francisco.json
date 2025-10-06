@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:10687965519",
-    "name": "⚠︎ Recotur Cia. Ltda.",
+    "name": "Recotur Cia. Ltda.",
     "category": "travel_agency",
     "lat": 0.3520946,
     "lng": -78.1191785,
@@ -53,7 +53,7 @@
   },
   {
     "id": "osm:node:12026421265",
-    "name": "⚠︎ Los Pinos",
+    "name": "Los Pinos",
     "category": "cafe",
     "lat": 0.353644,
     "lng": -78.1176963,
@@ -101,7 +101,7 @@
   },
   {
     "id": "osm:node:12053286920",
-    "name": "⚠︎ IFECS (International Fund For Education Charlie Studies)",
+    "name": "IFECS (International Fund For Education Charlie Studies)",
     "category": "other",
     "lat": 0.3537048,
     "lng": -78.1219275,
@@ -150,7 +150,7 @@
   },
   {
     "id": "osm:node:13012002745",
-    "name": "⚠︎ Oficinas Legales Ariadna Jaramillo y Asociados",
+    "name": "Oficinas Legales Ariadna Jaramillo y Asociados",
     "category": "other",
     "lat": 0.3538701,
     "lng": -78.1230394,

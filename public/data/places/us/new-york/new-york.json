@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:2762442267",
-    "name": "⚠︎ Safari",
+    "name": "Safari",
     "category": "restaurant",
     "lat": 40.8005894,
     "lng": -73.9527099,
@@ -54,7 +54,7 @@
   },
   {
     "id": "osm:node:2768451052",
-    "name": "⚠︎ The Expat",
+    "name": "The Expat",
     "category": "bar",
     "lat": 40.8154613,
     "lng": -73.9600115,
@@ -104,7 +104,7 @@
   },
   {
     "id": "osm:node:5415434959",
-    "name": "⚠︎ Kavasutra Kava Bar",
+    "name": "Kavasutra Kava Bar",
     "category": "bar",
     "lat": 40.7284736,
     "lng": -73.9834305,
@@ -153,7 +153,7 @@
   },
   {
     "id": "osm:node:8791945336",
-    "name": "⚠︎ Back Of The Closet",
+    "name": "Back Of The Closet",
     "category": "clothes",
     "lat": 40.8690068,
     "lng": -73.4257772,
@@ -206,7 +206,7 @@
   },
   {
     "id": "osm:node:9964721813",
-    "name": "⚠︎ Dandy Farmer",
+    "name": "Dandy Farmer",
     "category": "other",
     "lat": 40.697432,
     "lng": -73.9718971,
@@ -260,7 +260,7 @@
   },
   {
     "id": "osm:node:10127620393",
-    "name": "⚠︎ Budico Corp",
+    "name": "Budico Corp",
     "category": "other",
     "lat": 40.8368509,
     "lng": -73.9926883,
@@ -309,7 +309,7 @@
   },
   {
     "id": "osm:node:10238825155",
-    "name": "⚠︎ Loving Hands Family Care",
+    "name": "Loving Hands Family Care",
     "category": "other",
     "lat": 40.8536048,
     "lng": -74.0193736,
@@ -361,7 +361,7 @@
   },
   {
     "id": "osm:node:10245589405",
-    "name": "⚠︎ PubKey",
+    "name": "PubKey",
     "category": "bar",
     "lat": 40.732185,
     "lng": -74.0000205,
@@ -415,7 +415,7 @@
   },
   {
     "id": "osm:node:10559814687",
-    "name": "⚠︎ Melville Deli",
+    "name": "Melville Deli",
     "category": "fast_food",
     "lat": 40.7904667,
     "lng": -73.4162102,
@@ -468,7 +468,7 @@
   },
   {
     "id": "osm:node:10980987260",
-    "name": "⚠︎ Aburas Law, LLC",
+    "name": "Aburas Law, LLC",
     "category": "other",
     "lat": 40.8919096,
     "lng": -74.1401536,
@@ -517,7 +517,7 @@
   },
   {
     "id": "osm:node:11425773528",
-    "name": "⚠︎ Society’s SmokeShop",
+    "name": "Society’s SmokeShop",
     "category": "other",
     "lat": 40.7585189,
     "lng": -73.989409,
@@ -568,7 +568,7 @@
   },
   {
     "id": "osm:node:11497324014",
-    "name": "⚠︎ Waterfront Wines & Spirits",
+    "name": "Waterfront Wines & Spirits",
     "category": "other",
     "lat": 40.6938294,
     "lng": -73.9994261,
@@ -622,7 +622,7 @@
   },
   {
     "id": "osm:node:11949550415",
-    "name": "⚠︎ Bitcoin Center NYC",
+    "name": "Bitcoin Center NYC",
     "category": "other",
     "lat": 40.7868109,
     "lng": -73.9781144,
@@ -674,7 +674,7 @@
   },
   {
     "id": "osm:node:12809106019",
-    "name": "⚠︎ Involve Digital",
+    "name": "Involve Digital",
     "category": "other",
     "lat": 40.7130184,
     "lng": -74.0131518,
@@ -726,7 +726,7 @@
   },
   {
     "id": "osm:node:12835020256",
-    "name": "⚠︎ Jericho Mansion",
+    "name": "Jericho Mansion",
     "category": "other",
     "lat": 40.797047,
     "lng": -73.5404794,
@@ -772,7 +772,7 @@
   },
   {
     "id": "osm:node:12960242112",
-    "name": "⚠︎ Solid State Coffee",
+    "name": "Solid State Coffee",
     "category": "cafe",
     "lat": 40.776741,
     "lng": -73.9796743,

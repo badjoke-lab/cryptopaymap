@@ -1,7 +1,7 @@
 [
   {
     "id": "osm:node:2769486127",
-    "name": "⚠︎ Chitbeer",
+    "name": "Chitbeer",
     "category": "bar",
     "lat": 13.909277,
     "lng": 100.490859,
@@ -50,7 +50,7 @@
   },
   {
     "id": "osm:node:8355290841",
-    "name": "⚠︎ sisterhood.cafe",
+    "name": "sisterhood.cafe",
     "category": "cafe",
     "lat": 13.8268083,
     "lng": 100.3751502,
@@ -102,7 +102,7 @@
   },
   {
     "id": "osm:node:8852052849",
-    "name": "⚠︎ HATO Chokchai4",
+    "name": "HATO Chokchai4",
     "category": "hairdresser",
     "lat": 13.82059,
     "lng": 100.5965875,
@@ -152,7 +152,7 @@
   },
   {
     "id": "osm:node:8945483894",
-    "name": "⚠︎ Beluga Coff & Juice",
+    "name": "Beluga Coff & Juice",
     "category": "cafe",
     "lat": 13.7783283,
     "lng": 100.6475264,
@@ -202,7 +202,7 @@
   },
   {
     "id": "osm:node:9570047617",
-    "name": "⚠︎ Palette Art Space",
+    "name": "Palette Art Space",
     "category": "other",
     "lat": 13.7239695,
     "lng": 100.5791683,
@@ -252,7 +252,7 @@
   },
   {
     "id": "osm:node:10067999408",
-    "name": "⚠︎ Terracotta Coffee",
+    "name": "Terracotta Coffee",
     "category": "cafe",
     "lat": 13.7366503,
     "lng": 100.5303281,
@@ -303,7 +303,7 @@
   },
   {
     "id": "osm:node:10844099391",
-    "name": "⚠︎ ปาป้า คอฟฟี่",
+    "name": "ปาป้า คอฟฟี่",
     "category": "cafe",
     "lat": 13.98642,
     "lng": 100.6152516,
@@ -353,7 +353,7 @@
   },
   {
     "id": "osm:node:10864133709",
-    "name": "⚠︎ New York Studio Bangkok",
+    "name": "New York Studio Bangkok",
     "category": "other",
     "lat": 13.6796572,
     "lng": 100.5287903,
@@ -401,7 +401,7 @@
   },
   {
     "id": "osm:node:10893965444",
-    "name": "⚠︎ Coughing Apes - Weed cafe's",
+    "name": "Coughing Apes - Weed cafe's",
     "category": "other",
     "lat": 13.6762888,
     "lng": 100.6089916,
@@ -449,7 +449,7 @@
   },
   {
     "id": "osm:node:10968574636",
-    "name": "⚠︎ Talk-Ka-Tree",
+    "name": "Talk-Ka-Tree",
     "category": "garden_centre",
     "lat": 14.0567271,
     "lng": 100.6849955,
@@ -500,7 +500,7 @@
   },
   {
     "id": "osm:node:11282924170",
-    "name": "⚠︎ Jok one Table Dumplings",
+    "name": "Jok one Table Dumplings",
     "category": "restaurant",
     "lat": 13.7434702,
     "lng": 100.5100708,
@@ -549,7 +549,7 @@
   },
   {
     "id": "osm:node:11366307403",
-    "name": "⚠︎ Sit Here Sleep Home Bar",
+    "name": "Sit Here Sleep Home Bar",
     "category": "bar",
     "lat": 13.8384047,
     "lng": 100.5847626,
@@ -595,7 +595,7 @@
   },
   {
     "id": "osm:node:11518287796",
-    "name": "⚠︎ ร้านยาบี แคร์ ฟาร์มา",
+    "name": "ร้านยาบี แคร์ ฟาร์มา",
     "category": "pharmacy",
     "lat": 13.7537114,
     "lng": 100.7171276,
@@ -642,7 +642,7 @@
   },
   {
     "id": "osm:node:11676387280",
-    "name": "⚠︎ OBO.CASH",
+    "name": "OBO.CASH",
     "category": "other",
     "lat": 13.696369,
     "lng": 100.7519097,
@@ -688,7 +688,7 @@
   },
   {
     "id": "osm:node:11801445668",
-    "name": "⚠︎ do drip coffee",
+    "name": "do drip coffee",
     "category": "cafe",
     "lat": 13.7975831,
     "lng": 100.5727029,
@@ -739,7 +739,7 @@
   },
   {
     "id": "osm:node:12141608846",
-    "name": "⚠︎ The Burgest",
+    "name": "The Burgest",
     "category": "fast_food",
     "lat": 13.7751196,
     "lng": 100.5623687,
@@ -789,7 +789,7 @@
   },
   {
     "id": "osm:node:12210708407",
-    "name": "⚠︎ BoltRing - BoltKey",
+    "name": "BoltRing - BoltKey",
     "category": "other",
     "lat": 13.7899076,
     "lng": 100.5622975,
@@ -837,7 +837,7 @@
   },
   {
     "id": "osm:node:12304722062",
-    "name": "⚠︎ Gatta Café - Seacon Square",
+    "name": "Gatta Café - Seacon Square",
     "category": "cafe",
     "lat": 13.6949362,
     "lng": 100.6485721,
@@ -888,7 +888,7 @@
   },
   {
     "id": "osm:node:12304843378",
-    "name": "⚠︎ Gatta Café - Siam Square One",
+    "name": "Gatta Café - Siam Square One",
     "category": "cafe",
     "lat": 13.7446219,
     "lng": 100.53396,
@@ -939,7 +939,7 @@
   },
   {
     "id": "osm:node:12304859418",
-    "name": "⚠︎ Gatta Café - Park Silom",
+    "name": "Gatta Café - Park Silom",
     "category": "cafe",
     "lat": 13.7277114,
     "lng": 100.5337048,
@@ -990,7 +990,7 @@
   },
   {
     "id": "osm:node:12430456420",
-    "name": "⚠︎ De'rish homemade bakery",
+    "name": "De'rish homemade bakery",
     "category": "bakery",
     "lat": 13.8552093,
     "lng": 100.6825913,
@@ -1040,7 +1040,7 @@
   },
   {
     "id": "osm:node:12446800633",
-    "name": "⚠︎ TToy & Game",
+    "name": "TToy & Game",
     "category": "toys",
     "lat": 13.7996961,
     "lng": 100.5502339,
@@ -1088,7 +1088,7 @@
   },
   {
     "id": "osm:node:12466870068",
-    "name": "⚠︎ ช้างน้อยพอนชอป",
+    "name": "ช้างน้อยพอนชอป",
     "category": "other",
     "lat": 13.7989435,
     "lng": 100.5952318,
@@ -1138,7 +1138,7 @@
   },
   {
     "id": "osm:node:12484646160",
-    "name": "⚠︎ Narita Izakaya นาริตะ อิซากายะ",
+    "name": "Narita Izakaya นาริตะ อิซากายะ",
     "category": "restaurant",
     "lat": 13.7938314,
     "lng": 100.5060739,
@@ -1188,7 +1188,7 @@
   },
   {
     "id": "osm:node:12485881682",
-    "name": "⚠︎ บุษรินทร์เบเกอรี่",
+    "name": "บุษรินทร์เบเกอรี่",
     "category": "bakery",
     "lat": 13.8375587,
     "lng": 100.4129209,
@@ -1239,7 +1239,7 @@
   },
   {
     "id": "osm:node:12493053971",
-    "name": "⚠︎ ร้านค้า เจซิตี้ ซ.12",
+    "name": "ร้านค้า เจซิตี้ ซ.12",
     "category": "convenience",
     "lat": 13.5757127,
     "lng": 100.6666969,
@@ -1283,7 +1283,7 @@
   },
   {
     "id": "osm:node:12497451991",
-    "name": "⚠︎ Pooky & Team Salon",
+    "name": "Pooky & Team Salon",
     "category": "hairdresser",
     "lat": 13.6110919,
     "lng": 100.6377345,
@@ -1333,7 +1333,7 @@
   },
   {
     "id": "osm:node:12531276586",
-    "name": "⚠︎ ก๋วยเตี๋ยวเนื้อ หัวน้ำวน",
+    "name": "ก๋วยเตี๋ยวเนื้อ หัวน้ำวน",
     "category": "restaurant",
     "lat": 13.5966634,
     "lng": 100.6015404,
@@ -1383,7 +1383,7 @@
   },
   {
     "id": "osm:node:12548626104",
-    "name": "⚠︎ ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5",
+    "name": "ก๋วยเตี๋ยว​เรือ​ชามทอง รังสิต คลอง 5",
     "category": "restaurant",
     "lat": 14.0055976,
     "lng": 100.6991756,
@@ -1433,7 +1433,7 @@
   },
   {
     "id": "osm:node:12565849568",
-    "name": "⚠︎ เจริญผล Farm & Garden",
+    "name": "เจริญผล Farm & Garden",
     "category": "garden_centre",
     "lat": 13.8748051,
     "lng": 100.6484191,
@@ -1483,7 +1483,7 @@
   },
   {
     "id": "osm:node:12578959348",
-    "name": "⚠︎ Lonkong cafe",
+    "name": "Lonkong cafe",
     "category": "cafe",
     "lat": 13.6209083,
     "lng": 100.6179064,
@@ -1532,7 +1532,7 @@
   },
   {
     "id": "osm:node:12578966799",
-    "name": "⚠︎ Ramita Coffee & Bistro",
+    "name": "Ramita Coffee & Bistro",
     "category": "cafe",
     "lat": 13.5926392,
     "lng": 100.5984521,
@@ -1583,7 +1583,7 @@
   },
   {
     "id": "osm:node:12600858098",
-    "name": "⚠︎ Coffee Company - RK Biz Center",
+    "name": "Coffee Company - RK Biz Center",
     "category": "cafe",
     "lat": 13.7303766,
     "lng": 100.7324716,
@@ -1634,7 +1634,7 @@
   },
   {
     "id": "osm:node:12622284690",
-    "name": "⚠︎ รุ่งอรุณ คาเฟ่",
+    "name": "รุ่งอรุณ คาเฟ่",
     "category": "cafe",
     "lat": 13.841005,
     "lng": 100.5727981,
@@ -1686,7 +1686,7 @@
   },
   {
     "id": "osm:node:12624732106",
-    "name": "⚠︎ Beyond Softserve",
+    "name": "Beyond Softserve",
     "category": "other",
     "lat": 14.0696113,
     "lng": 100.6044915,
@@ -1736,7 +1736,7 @@
   },
   {
     "id": "osm:node:12640866389",
-    "name": "⚠︎ Chit Hole Royal River",
+    "name": "Chit Hole Royal River",
     "category": "bar",
     "lat": 13.7836685,
     "lng": 100.5005494,
@@ -1786,7 +1786,7 @@
   },
   {
     "id": "osm:node:12640892188",
-    "name": "⚠︎ Chit Hole Muangthong",
+    "name": "Chit Hole Muangthong",
     "category": "bar",
     "lat": 13.9270987,
     "lng": 100.5340815,
@@ -1836,7 +1836,7 @@
   },
   {
     "id": "osm:node:12640894703",
-    "name": "⚠︎ Chit Hole Surawong",
+    "name": "Chit Hole Surawong",
     "category": "bar",
     "lat": 13.7300773,
     "lng": 100.5315367,
@@ -1885,7 +1885,7 @@
   },
   {
     "id": "osm:node:12645411669",
-    "name": "⚠︎ กระเพาะปลาเจ๊เอ็ง ตลาดพลู",
+    "name": "กระเพาะปลาเจ๊เอ็ง ตลาดพลู",
     "category": "restaurant",
     "lat": 13.7207245,
     "lng": 100.4768818,
@@ -1934,7 +1934,7 @@
   },
   {
     "id": "osm:node:12645466745",
-    "name": "⚠︎ Take a Bowl (FYI Center)",
+    "name": "Take a Bowl (FYI Center)",
     "category": "restaurant",
     "lat": 13.7202791,
     "lng": 100.560022,
@@ -1983,7 +1983,7 @@
   },
   {
     "id": "osm:node:12645513299",
-    "name": "⚠︎ นวลหมูปิ้ง",
+    "name": "นวลหมูปิ้ง",
     "category": "restaurant",
     "lat": 13.7379688,
     "lng": 100.494981,
@@ -2030,7 +2030,7 @@
   },
   {
     "id": "osm:node:12645532501",
-    "name": "⚠︎ ร้านผักบุษบา",
+    "name": "ร้านผักบุษบา",
     "category": "greengrocer",
     "lat": 13.9022157,
     "lng": 100.3652683,
@@ -2074,7 +2074,7 @@
   },
   {
     "id": "osm:node:12658170647",
-    "name": "⚠︎ Chit Hole Rangsit Rooftop",
+    "name": "Chit Hole Rangsit Rooftop",
     "category": "bar",
     "lat": 13.9852831,
     "lng": 100.625787,
@@ -2123,7 +2123,7 @@
   },
   {
     "id": "osm:node:12666638428",
-    "name": "⚠︎ O33 Vision",
+    "name": "O33 Vision",
     "category": "optician",
     "lat": 13.6660229,
     "lng": 100.6478173,
@@ -2174,7 +2174,7 @@
   },
   {
     "id": "osm:node:12675566950",
-    "name": "⚠︎ ข้าวหมูแดง สามชัย",
+    "name": "ข้าวหมูแดง สามชัย",
     "category": "restaurant",
     "lat": 13.5927293,
     "lng": 100.5987065,
@@ -2224,7 +2224,7 @@
   },
   {
     "id": "osm:node:12675824868",
-    "name": "⚠︎ TigerGyu หมูกระทะ",
+    "name": "TigerGyu หมูกระทะ",
     "category": "restaurant",
     "lat": 13.6741412,
     "lng": 100.5348541,
@@ -2276,7 +2276,7 @@
   },
   {
     "id": "osm:node:12711070515",
-    "name": "⚠︎ Cocoa House",
+    "name": "Cocoa House",
     "category": "cafe",
     "lat": 13.7219923,
     "lng": 100.4458025,
@@ -2325,7 +2325,7 @@
   },
   {
     "id": "osm:node:12733065017",
-    "name": "⚠︎ ABER Group Law Firm",
+    "name": "ABER Group Law Firm",
     "category": "other",
     "lat": 13.7373376,
     "lng": 100.5623274,
@@ -2374,7 +2374,7 @@
   },
   {
     "id": "osm:node:12745895479",
-    "name": "⚠︎ Gatta Café - Central Eastville",
+    "name": "Gatta Café - Central Eastville",
     "category": "cafe",
     "lat": 13.8035407,
     "lng": 100.6146545,
@@ -2425,7 +2425,7 @@
   },
   {
     "id": "osm:node:12760942330",
-    "name": "⚠︎ คลังยาอาม่า - ตลาดอาม่า1000สุข",
+    "name": "คลังยาอาม่า - ตลาดอาม่า1000สุข",
     "category": "pharmacy",
     "lat": 14.0490587,
     "lng": 100.7471647,
@@ -2474,7 +2474,7 @@
   },
   {
     "id": "osm:node:12763486241",
-    "name": "⚠︎ ตลาดนัดพรธิสาร6",
+    "name": "ตลาดนัดพรธิสาร6",
     "category": "other",
     "lat": 14.0492334,
     "lng": 100.7559884,
@@ -2523,7 +2523,7 @@
   },
   {
     "id": "osm:node:12765494314",
-    "name": "⚠︎ Victory Industrial",
+    "name": "Victory Industrial",
     "category": "other",
     "lat": 13.6239743,
     "lng": 100.4020656,
@@ -2570,7 +2570,7 @@
   },
   {
     "id": "osm:node:12808883030",
-    "name": "⚠︎ KA-LA Coffee",
+    "name": "KA-LA Coffee",
     "category": "cafe",
     "lat": 14.0346785,
     "lng": 100.7324022,
@@ -2622,7 +2622,7 @@
   },
   {
     "id": "osm:node:12818578388",
-    "name": "⚠︎ Five Star",
+    "name": "Five Star",
     "category": "restaurant",
     "lat": 13.9539438,
     "lng": 100.6848772,
@@ -2672,7 +2672,7 @@
   },
   {
     "id": "osm:node:12827530352",
-    "name": "⚠︎ Citadel Coffee",
+    "name": "Citadel Coffee",
     "category": "cafe",
     "lat": 13.9879228,
     "lng": 100.7045035,
@@ -2723,7 +2723,7 @@
   },
   {
     "id": "osm:node:12839299656",
-    "name": "⚠︎ Croissant Factory (Thonglor)",
+    "name": "Croissant Factory (Thonglor)",
     "category": "restaurant",
     "lat": 13.7374984,
     "lng": 100.5837127,
@@ -2774,7 +2774,7 @@
   },
   {
     "id": "osm:node:12856750526",
-    "name": "⚠︎ Roast Runner",
+    "name": "Roast Runner",
     "category": "cafe",
     "lat": 13.786909,
     "lng": 100.3741688,
@@ -2824,7 +2824,7 @@
   },
   {
     "id": "osm:node:12863636313",
-    "name": "⚠︎ Manggon Studio",
+    "name": "Manggon Studio",
     "category": "interior_decoration",
     "lat": 13.8007227,
     "lng": 100.5490929,
@@ -2872,7 +2872,7 @@
   },
   {
     "id": "osm:node:12886020278",
-    "name": "⚠︎ คลินิคทันตกรรมท่าข้าม",
+    "name": "คลินิคทันตกรรมท่าข้าม",
     "category": "dentist",
     "lat": 13.650711,
     "lng": 100.4436418,
@@ -2921,7 +2921,7 @@
   },
   {
     "id": "osm:node:12905584949",
-    "name": "⚠︎ Moonlight Leather",
+    "name": "Moonlight Leather",
     "category": "other",
     "lat": 13.8001988,
     "lng": 100.709362,
@@ -2973,7 +2973,7 @@
   },
   {
     "id": "osm:node:12941914655",
-    "name": "⚠︎ Fitting shop",
+    "name": "Fitting shop",
     "category": "clothes",
     "lat": 13.799093,
     "lng": 100.5478495,
@@ -3019,7 +3019,7 @@
   },
   {
     "id": "osm:node:13010769122",
-    "name": "⚠︎ Chit Hole Asiatique",
+    "name": "Chit Hole Asiatique",
     "category": "bar",
     "lat": 13.7048562,
     "lng": 100.5019729,
@@ -3069,7 +3069,7 @@
   },
   {
     "id": "osm:node:13016546680",
-    "name": "⚠︎ ค่ายมวยลูกคลองตัน",
+    "name": "ค่ายมวยลูกคลองตัน",
     "category": "other",
     "lat": 13.7460584,
     "lng": 100.5999818,
@@ -3119,7 +3119,7 @@
   },
   {
     "id": "osm:node:13016550123",
-    "name": "⚠︎ Vacilando Bookshop",
+    "name": "Vacilando Bookshop",
     "category": "books",
     "lat": 13.7578787,
     "lng": 100.5096567,
@@ -3169,7 +3169,7 @@
   },
   {
     "id": "osm:node:13016593667",
-    "name": "⚠︎ The Barbershop",
+    "name": "The Barbershop",
     "category": "hairdresser",
     "lat": 13.7629694,
     "lng": 100.5636572,
@@ -3218,7 +3218,7 @@
   },
   {
     "id": "osm:node:13051531371",
-    "name": "⚠︎ Lung Ji Card Shop",
+    "name": "Lung Ji Card Shop",
     "category": "supermarket",
     "lat": 13.6880845,
     "lng": 100.4506362,
@@ -3268,7 +3268,7 @@
   },
   {
     "id": "osm:node:13057327865",
-    "name": "⚠︎ Chu's Pastry",
+    "name": "Chu's Pastry",
     "category": "cafe",
     "lat": 13.8542768,
     "lng": 100.5484357,
@@ -3319,7 +3319,7 @@
   },
   {
     "id": "osm:node:13061362037",
-    "name": "⚠︎ Daddy Taste Room",
+    "name": "Daddy Taste Room",
     "category": "other",
     "lat": 13.8264533,
     "lng": 100.4423469,
@@ -3368,7 +3368,7 @@
   },
   {
     "id": "osm:node:13071813034",
-    "name": "⚠︎ Layer House",
+    "name": "Layer House",
     "category": "other",
     "lat": 13.7898584,
     "lng": 100.5622319,
@@ -3418,7 +3418,7 @@
   },
   {
     "id": "osm:node:13077980491",
-    "name": "⚠︎ Latte Man",
+    "name": "Latte Man",
     "category": "cafe",
     "lat": 13.7612626,
     "lng": 100.5635552,
@@ -3469,7 +3469,7 @@
   },
   {
     "id": "osm:node:13081282309",
-    "name": "⚠︎ Peixing clinic",
+    "name": "Peixing clinic",
     "category": "other",
     "lat": 13.9972327,
     "lng": 100.6703365,
@@ -3518,7 +3518,7 @@
   },
   {
     "id": "osm:node:13081317028",
-    "name": "⚠︎ Horm Cha @ Ramkhamhaeng 52",
+    "name": "Horm Cha @ Ramkhamhaeng 52",
     "category": "cafe",
     "lat": 13.7568425,
     "lng": 100.6434134,
@@ -3568,7 +3568,7 @@
   },
   {
     "id": "osm:node:13081956521",
-    "name": "⚠︎ BOB Space",
+    "name": "BOB Space",
     "category": "community_centre",
     "lat": 13.7245048,
     "lng": 100.5882289,
@@ -3616,7 +3616,7 @@
   },
   {
     "id": "osm:node:13096107804",
-    "name": "⚠︎ Lee's Mark Residence",
+    "name": "Lee's Mark Residence",
     "category": "other",
     "lat": 13.6446434,
     "lng": 100.6372215,
@@ -3665,7 +3665,7 @@
   },
   {
     "id": "osm:way:1085583221",
-    "name": "⚠︎ Laohu Shabu",
+    "name": "Laohu Shabu",
     "category": "restaurant",
     "lat": 13.726955,
     "lng": 100.7711197,
@@ -3715,7 +3715,7 @@
   },
   {
     "id": "osm:way:1206068563",
-    "name": "⚠︎ Coffzilla Cafe",
+    "name": "Coffzilla Cafe",
     "category": "cafe",
     "lat": 13.7269543,
     "lng": 100.7710223,
