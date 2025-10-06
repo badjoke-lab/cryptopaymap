@@ -1,5 +1,5 @@
 // src/normalizeSubmission.ts
-// Forms -> place.schema.json-compatible patches. 
+// Forms -> place.schema.json-compatible patches.
 
 export type VerificationStatus = "owner" | "community" | "directory" | "unverified";
 
@@ -21,6 +21,7 @@ export interface OwnerFormInput {
   gallery_urls?: string;       // multiline URLs
   socials?: string;            // optional multiline: "<platform> <url|@handle>"
 }
+
 export interface CommunityFormInput {
   business_name: string;
   address?: string;
@@ -31,6 +32,7 @@ export interface CommunityFormInput {
   gallery_urls?: string;
   socials?: string;
 }
+
 export interface ReportFormInput {
   place_id_or_url: string;
   details: string;
@@ -57,6 +59,25 @@ type SocialPlatform =
   | "telegram" | "whatsapp" | "wechat" | "line" | "threads"
   | "pinterest" | "other";
 
+/** ---- Patch 型（スキーマ準拠） ---- */
+export type SourceType =
+  | "official_site"
+  | "provider_directory"
+  | "text"
+  | "widget"
+  | "receipt"
+  | "screenshot"
+  | "other";
+
+export type Source = {
+  type: SourceType;
+  name?: string;
+  rule?: string;
+  url?: string;
+  snippet?: string;
+  when?: string;
+};
+
 export type PlacePatch = Partial<{
   id: string;
   name: string;
@@ -79,14 +100,7 @@ export type PlacePatch = Partial<{
   };
   verification: {
     status: VerificationStatus;
-    sources?: Array<{
-      type: "official_site" | "provider_directory" | "text" | "widget" | "receipt" | "screenshot" | "other";
-      name?: string;
-      rule?: string;
-      url?: string;
-      snippet?: string;
-      when?: string;
-    }>;
+    sources?: Source[];
     submitted?: { by: string; role: "owner" | "non_owner" | "unknown"; at: string };
     review?: { status: "approved" | "rejected" | "pending"; by?: string; at?: string; notes?: string };
     last_checked?: string;
@@ -103,7 +117,9 @@ export interface NormalizeResult {
   rejects: Array<{ raw: string; reason: string }>;
 }
 
-// Public API
+/* ========================================================================== */
+/* Public API                                                                 */
+/* ========================================================================== */
 
 export function normalizeOwnerForm(
   input: OwnerFormInput,
@@ -185,7 +201,12 @@ export function normalizeReportForm(
   return { patch, rejects: [] };
 }
 
-// Payments parsing
+/* ========================================================================== */
+/* Payments parsing                                                            */
+/* ========================================================================== */
+
+/** このファイル内で実際に生成する accepts の型（狭い定義） */
+type AcceptEntry = { asset: string; chain: SchemaChain; method: "onchain" | "lightning" };
 
 const KNOWN_SCHEMA_CHAINS: SchemaChain[] = [
   "bitcoin","lightning","evm-mainnet","polygon","arbitrum","base","bsc","solana","tron","ton","avalanche"
@@ -205,9 +226,12 @@ const FALLBACK_ALIAS_TABLE: Record<string, SchemaChain> = {
   avalanche: "avalanche", avax: "avalanche", "c-chain": "avalanche", "eip155:43114": "avalanche"
 };
 
-function parsePaymentsBlock(text: string, chainsMeta: ChainsMeta): { accepts: NonNullable<PlacePatch["payment"]["accepts"]>; rejects: Array<{ raw: string; reason: string }>; } {
+function parsePaymentsBlock(
+  text: string,
+  chainsMeta: ChainsMeta
+): { accepts: AcceptEntry[]; rejects: Array<{ raw: string; reason: string }>; } {
   const lines = toLines(text);
-  const accepts: NonNullable<PlacePatch["payment"]["accepts"]> = [];
+  const accepts: AcceptEntry[] = [];
   const rejects: Array<{ raw: string; reason: string }> = [];
 
   for (const raw of lines) {
@@ -223,7 +247,7 @@ function parsePaymentsBlock(text: string, chainsMeta: ChainsMeta): { accepts: No
     const chain = normalizeChain(parsed.chain, chainsMeta);
     if (!chain) { rejects.push({ raw, reason: "unsupported-chain" }); continue; }
 
-    const method = chain === "lightning" ? "lightning" : "onchain";
+    const method: AcceptEntry["method"] = chain === "lightning" ? "lightning" : "onchain";
     if (method === "lightning" && asset !== "BTC") {
       rejects.push({ raw, reason: "lightning-requires-btc" });
       continue;
@@ -233,7 +257,7 @@ function parsePaymentsBlock(text: string, chainsMeta: ChainsMeta): { accepts: No
   }
 
   // dedupe by asset+chain
-  const uniq = new Map<string, { asset: string; chain: SchemaChain; method?: "onchain" | "lightning" }>();
+  const uniq = new Map<string, AcceptEntry>();
   for (const a of accepts) uniq.set(`${a.asset}__${a.chain}`, a);
   return { accepts: Array.from(uniq.values()), rejects };
 }
@@ -260,7 +284,7 @@ function normalizeChain(chainText: string, chainsMeta: ChainsMeta): SchemaChain 
   if (q in FALLBACK_ALIAS_TABLE) return FALLBACK_ALIAS_TABLE[q];
   const cleaned = q.replace(/[()]/g, "").replace(/\s+/g, " ").trim();
   if (cleaned in FALLBACK_ALIAS_TABLE) return FALLBACK_ALIAS_TABLE[cleaned];
-  if (KNOWN_SCHEMA_CHAINS.includes(q as SchemaChain)) return q as SchemaChain;
+  if ((KNOWN_SCHEMA_CHAINS as readonly string[]).includes(q)) return q as SchemaChain;
   return null; // drop unknown
 }
 
@@ -270,14 +294,14 @@ function findInChainsMeta(q: string, meta: ChainsMeta): SchemaChain | null {
     if (!e?.id) continue;
     const id = e.id as SchemaChain;
     if (!KNOWN_SCHEMA_CHAINS.includes(id)) continue;
-    if (norm(e.id) === q) return id;
+    if (norm(String(e.id)) === q) return id;
     if (e.label && norm(e.label) === q) return id;
     for (const al of e.aliases || []) if (norm(al) === q) return id;
   }
   return null;
 }
 
-function derivePreferred(accepts: NonNullable<PlacePatch["payment"]["accepts"]>): string[] {
+function derivePreferred(accepts: AcceptEntry[]): string[] {
   const score = (a: { asset: string; chain: SchemaChain }) =>
     a.asset === "BTC" && a.chain === "lightning" ? 100 :
     a.asset === "BTC" && a.chain === "bitcoin" ? 90 :
@@ -285,28 +309,43 @@ function derivePreferred(accepts: NonNullable<PlacePatch["payment"]["accepts"]>)
   return [...accepts].sort((x, y) => score(y) - score(x)).map((a) => `${a.asset}:${a.chain}`);
 }
 
-// Evidence / Socials
+/* ========================================================================== */
+/* Evidence / Socials                                                          */
+/* ========================================================================== */
 
-function mergeEvidence(block?: string, website?: string, whenISO?: string) {
-  const out = toUrlList(block).map((u) => toSource(u, whenISO));
+function toSourceType(t?: string): SourceType {
+  const k = (t || "").trim().toLowerCase();
+  switch (k) {
+    case "official_site": return "official_site";
+    case "provider_directory": return "provider_directory";
+    case "text": return "text";
+    case "widget": return "widget";
+    case "receipt": return "receipt";
+    case "screenshot": return "screenshot";
+    default: return "other";
+  }
+}
+
+function mergeEvidence(block?: string, website?: string, whenISO?: string): Source[] {
+  const out: Source[] = toUrlList(block).map((u) => toSource(u, whenISO));
   if (website) out.unshift(toSource(website, whenISO, "official_site"));
   const m = new Map(out.map((s) => [s.url || "", s]));
-  return Array.from(m.values()).filter((s) => s.url);
+  return Array.from(m.values()).filter((s) => !!s.url);
 }
 
 function toSource(
   url: string,
   whenISO?: string,
-  forcedType?: PlacePatch["verification"]["sources"][number]["type"]
-) {
+  forcedType?: SourceType
+): Source {
   const u = safeUrl(url);
   const host = u?.hostname || "";
-  const type =
-    forcedType ||
+  const inferred: SourceType =
+    forcedType ??
     (host.includes("btcpay") || host.includes("coinbase")) ? "provider_directory" :
     (host.includes("x.com") || host.includes("twitter.com")) ? "text" :
     "other";
-  return { type, name: host || "source", url: u ? u.toString() : undefined, when: whenISO };
+  return { type: toSourceType(inferred), name: host || "source", url: u ? u.toString() : undefined, when: whenISO };
 }
 
 function parseImages(block?: string, max = 8) {
@@ -349,15 +388,19 @@ function normalizePlatform(p: string): SocialPlatform | null {
   return table[k] || "other";
 }
 
-// Utils
+/* ========================================================================== */
+/* Utils                                                                       */
+/* ========================================================================== */
 
 function toLines(block?: string): string[] {
   if (!block) return [];
   return block.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
 }
+
 function toUrlList(block?: string): string[] {
   return toLines(block).filter((l) => looksLikeUrl(l)).map((l) => l.trim());
 }
+
 function looksLikeUrl(s: string): boolean { return /^https?:\/\//i.test((s || "").trim()); }
 function safeUrl(s?: string): URL | undefined { try { return s ? new URL(s.trim()) : undefined; } catch { return; } }
 function squeeze(s: string, max: number): string { const t = (s || "").trim(); return t.length <= max ? t : t.slice(0, max); }
