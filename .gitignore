@@ -16,3 +16,4 @@ components/0_*.tsx
 __backup__/
 tools/verify/.last_summary.json
 tools/verify/last_runs.json
+package-lock.json
