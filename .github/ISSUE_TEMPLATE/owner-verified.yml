@@ -1,7 +1,8 @@
 name: "Owner Verified: Submission"
-description: Submit your business as the owner/manager to get Owner Verified (Gold).
+description: "Submit your business as the owner/manager to get Owner Verified (Gold)."
 title: "[Owner] <Business name> - <City, Country>"
 labels: ["submission", "owner", "verification"]
+
 body:
   - type: markdown
     attributes:
@@ -11,15 +12,15 @@ body:
   - type: input
     id: business_name
     attributes:
-      label: Business name
-      placeholder: Example Coffee Roasters
+      label: "Business name"
+      placeholder: "Example Coffee Roasters"
     validations:
       required: true
 
   - type: input
     id: address
     attributes:
-      label: Address
+      label: "Address"
       description: "Use full address. Format: Street number + street, City, STATE ZIP, Country"
       placeholder: "350 5th Ave, New York, NY 10118, USA"
     validations:
@@ -28,15 +29,15 @@ body:
   - type: input
     id: website
     attributes:
-      label: Official website URL
-      placeholder: https://example.com
+      label: "Official website URL"
+      placeholder: "https://example.com"
     validations:
       required: false
 
   - type: textarea
     id: payments
     attributes:
-      label: Accepted crypto (assets/chains)
+      label: "Accepted crypto (assets/chains)"
       description: |
         Example:
         - BTC (Lightning)
@@ -50,8 +51,8 @@ body:
   - type: textarea
     id: payment_pages
     attributes:
-      label: Payment page / instructions URLs
-      description: Links that prove crypto acceptance (checkout, provider pages, etc.)
+      label: "Payment page / instructions URLs"
+      description: "Links that prove crypto acceptance (checkout, provider pages, etc.)"
       placeholder: "https://example.com/pay | https://provider.example/merchant/123"
     validations:
       required: true
@@ -59,7 +60,7 @@ body:
   - type: dropdown
     id: already_listed
     attributes:
-      label: Is this business already listed on CryptoPayMap?
+      label: "Is this business already listed on CryptoPayMap?"
       options:
         - "Yes"
         - "No"
@@ -69,8 +70,8 @@ body:
   - type: input
     id: listed_url_or_id
     attributes:
-      label: If YES: paste the map URL or place ID
-      description: Example: https://cryptopaymap.vercel.app/... or place ID like "us-nyc-abc123"
+      label: "If YES: paste the map URL or place ID"
+      description: "Example: https://cryptopaymap.vercel.app/... or place ID like \"us-nyc-abc123\""
       placeholder: "https://... or us-nyc-abc123"
     validations:
       required: false
@@ -78,7 +79,7 @@ body:
   - type: input
     id: city_country
     attributes:
-      label: If NO (new entry): City, Country
+      label: "If NO (new entry): City, Country"
       placeholder: "New York, United States"
     validations:
       required: false
@@ -86,8 +87,8 @@ body:
   - type: input
     id: lat_lng
     attributes:
-      label: If NO (new entry): Latitude,Longitude (optional)
-      description: Comma-separated decimal degrees.
+      label: "If NO (new entry): Latitude,Longitude (optional)"
+      description: "Comma-separated decimal degrees."
       placeholder: "40.7484,-73.9857"
     validations:
       required: false
@@ -95,19 +96,19 @@ body:
   - type: dropdown
     id: owner_proof
     attributes:
-      label: Ownership proof (pick one)
+      label: "Ownership proof (pick one)"
       options:
-        - Domain verification (meta/.well-known)
-        - Business domain email (OTP)
-        - Dashboard/receipt screenshot (masked)
+        - "Domain verification (meta/.well-known)"
+        - "Business domain email (OTP)"
+        - "Dashboard/receipt screenshot (masked)"
     validations:
       required: true
 
   - type: textarea
     id: profile_summary
     attributes:
-      label: Profile summary (for map card)
-      description: Max ~600 chars. Public text you own the rights to.
+      label: "Profile summary (for map card)"
+      description: "Max ~600 chars. Public text you own the rights to."
       placeholder: "We accept BTC (Lightning) and ETH. Ask staff at checkout."
     validations:
       required: false
@@ -124,11 +125,11 @@ body:
   - type: checkboxes
     id: consent
     attributes:
-      label: Rights & consent
+      label: "Rights & consent"
       options:
-        - label: I am the owner/manager or authorized representative.
+        - label: "I am the owner/manager or authorized representative."
           required: true
-        - label: I have the rights to the text/images submitted and grant CryptoPayMap a non-exclusive, free license to display them.
+        - label: "I have the rights to the text/images submitted and grant CryptoPayMap a non-exclusive, free license to display them."
           required: true
-        - label: I understand the submission may be reviewed and rejected if unverifiable.
+        - label: "I understand the submission may be reviewed and rejected if unverifiable."
           required: true
