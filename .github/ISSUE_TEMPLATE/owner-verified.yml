@@ -122,6 +122,19 @@ body:
         They will be collected into your gallery automatically.
         → No need to paste URLs manually.
 
+  - type: markdown
+  attributes:
+    value: |
+      ## Images
+      Attach up to **8 images** directly to this issue (drag & drop).  
+      GitHub will auto-host them (user-images URLs).  
+      They will be collected into your gallery automatically.  
+      → No need to paste URLs manually.
+
+      📸 **Your uploaded images will appear below once the upload finishes.**  
+      *(If you don't see a preview yet, switch to the “Preview” tab.)*
+
+
   - type: checkboxes
     id: consent
     attributes:
