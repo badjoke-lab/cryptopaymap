@@ -1,0 +1,19 @@
+{
+  "id": "cpm:japan-tokyo-unknown-1",
+  "name": "unknown",
+  "lat": 35.6722834390244,
+  "lng": 139.72867486585363,
+  "address": "1-2-3 Jinnan, Shibuya-ku",
+  "city": "Tokyo",
+  "country": "Japan",
+  "website": "https://nakamotobakery.example.com",
+  "external_ids": {},
+  "verification": {
+    "status": "owner"
+  },
+  "location": {
+    "source": "geocode",
+    "confidence": "low"
+  },
+  "history": []
+}

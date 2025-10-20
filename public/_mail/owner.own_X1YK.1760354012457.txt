@@ -1,0 +1,11 @@
+New Owner submission
+Ref: own_X1YK
+When: 2025-10-13T11:13:32.454Z
+Submitter:  <>
+Business: 
+Country/City: United States / New York
+Category: Cafe
+Accepted crypto: 
+Images: 8
+
+(This is a test message saved to file because MAIL_TRANSPORT=file)

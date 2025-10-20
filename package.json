@@ -24,17 +24,40 @@
     "cpm:lint:nocodeja": "bash scripts/check_no_ja_in_code.sh",
     "cpm:scan": "tsx scripts/scan_verify.ts",
     "cpm:scan:dry": "DRY_RUN=1 tsx scripts/scan_verify.ts",
-    "prepare": "husky"
+    "cpm:sanitize:names": "tsx scripts/strip_badge_emojis.ts",
+    "cpm:sanitize:names:write": "tsx scripts/strip_badge_emojis.ts --write",
+    "cpm:import:submissions": "ts-node --project tsconfig.scripts.json scripts/importSubmissions.ts",
+    "cpm:promote": "ts-node --project tsconfig.scripts.json scripts/promote_submissions.ts",
+    "cpm:index:cities": "ts-node --project tsconfig.scripts.json scripts/build_city_indexes.ts",
+    "cpm:gen:countries": "ts-node --project tsconfig.scripts.json scripts/gen_countries_json.ts",
+    "cpm:normalize": "ts-node --project tsconfig.scripts.json scripts/normalize_addresses.ts",
+    "prepare": "husky",
+    "forms:dev": "PORT=4000 BASE_URL=http://localhost:4000 node server.js",
+    "forms:start": "node server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "mail:ping:file": "MAIL_TRANSPORT=file MAIL_OUT_DIR=public/_mail ts-node --project tsconfig.scripts.json scripts/mail_ping.ts",
+    "mail:ping:smtp": "MAIL_TRANSPORT=smtp ts-node --project tsconfig.scripts.json scripts/mail_ping.ts"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.3.1",
     "fast-xml-parser": "^5.2.5",
+    "i18n-iso-countries": "^7.14.0",
     "leaflet": "1.9.4",
+    "mime-types": "^2.1.35",
+    "multer": "^1.4.5-lts.1",
     "next": "14.2.5",
     "node-fetch": "^2.7.0",
+    "nodemailer": "^6.10.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-leaflet": "4.2.1",
-    "react-leaflet-cluster": "2.1.0"
+    "react-leaflet-cluster": "2.1.0",
+    "sanitize-html": "^2.13.0",
+    "sharp": "^0.33.4",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20.14.10",
@@ -42,13 +65,15 @@
     "ajv": "^8.17.1",
     "ajv-formats": "^3.0.1",
     "autoprefixer": "10.4.19",
+    "glob": "^10.3.12",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.3",
     "postcss": "8.4.38",
     "tailwindcss": "3.4.6",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "vitest": "^3.2.4"
   },
   "lint-staged": {
     "public/data/places/**/*.json": [

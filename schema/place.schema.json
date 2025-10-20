@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "place.schema.json",
-  "title": "CryptoPayMap Place v2.2 (spec-complete)",
+  "title": "CryptoPayMap Place v2.2 (spec-complete + location/history)",
   "type": "object",
   "additionalProperties": true,
   "required": ["id", "name", "lat", "lng", "verification"],
@@ -10,23 +10,26 @@
     "name": { "type": "string", "minLength": 1 },
     "lat": { "type": "number", "minimum": -90, "maximum": 90 },
     "lng": { "type": "number", "minimum": -180, "maximum": 180 },
+
     "city": { "type": "string" },
-    "country": { "type": "string" },
+    "country": { "type": "string", "pattern": "^[A-Z]{2}$" },
     "address": { "type": "string" },
+
     "category": { "type": "string" },
     "category_source": {
       "type": "string",
       "enum": ["osm", "submitter", "moderator"]
     },
     "category_confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+
     "coins": {
       "type": "array",
       "items": { "type": "string" },
       "uniqueItems": true
     },
-    "website": {
-      "anyOf": [{ "type": "string" }, { "type": "null" }]
-    },
+
+    "website": { "anyOf": [{ "type": "string" }, { "type": "null" }] },
+
     "payment": {
       "type": "object",
       "additionalProperties": false,
@@ -77,7 +80,7 @@
           "type": "array",
           "items": {
             "type": "string",
-            "pattern": "^[A-Z0-9]{2,10}@[a-z0-9:\\-]{2,64}$"
+            "pattern": "^[A-Z0-9]{2,10}:[a-z0-9\\-]{2,32}$"
           },
           "uniqueItems": true
         },
@@ -85,6 +88,7 @@
         "notes": { "type": "string", "maxLength": 500 }
       }
     },
+
     "pending_assets": {
       "type": "array",
       "items": {
@@ -107,6 +111,7 @@
         }
       }
     },
+
     "socials": {
       "type": "array",
       "items": {
@@ -136,6 +141,7 @@
         }
       }
     },
+
     "verification": {
       "type": "object",
       "additionalProperties": false,
@@ -231,6 +237,7 @@
         }
       }
     },
+
     "profile": {
       "type": "object",
       "additionalProperties": false,
@@ -255,6 +262,7 @@
         }
       }
     },
+
     "media": {
       "type": "object",
       "additionalProperties": false,
@@ -274,10 +282,76 @@
         }
       }
     },
+
     "status_override": {
       "type": "string",
       "enum": ["disputed", "hidden", "none"]
     },
-    "notes_mod": { "type": "string", "maxLength": 1000 }
+
+    "notes_mod": { "type": "string", "maxLength": 1000 },
+
+    "external_ids": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+
+    "location": {
+      "type": "object",
+      "properties": {
+        "source": {
+          "type": "string",
+          "enum": ["owner_gps", "geocode", "osm", "ops_fix"],
+          "default": "geocode"
+        },
+        "confidence": {
+          "type": "string",
+          "enum": ["high", "med", "low"],
+          "default": "med"
+        }
+      },
+      "additionalProperties": true
+    },
+
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "at": { "type": "string" },
+          "by": { "type": "string" },
+          "type": {
+            "type": "string",
+            "enum": ["position_change", "edit", "close"]
+          },
+          "from": {
+            "type": "object",
+            "properties": {
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
+            },
+            "required": ["lat", "lng"]
+          },
+          "to": {
+            "type": "object",
+            "properties": {
+              "lat": { "type": "number" },
+              "lng": { "type": "number" }
+            },
+            "required": ["lat", "lng"]
+          },
+          "reason": { "type": "string" },
+          "evidence": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        },
+        "required": ["at", "type", "to"],
+        "additionalProperties": true
+      },
+      "default": []
+    }
   }
 }

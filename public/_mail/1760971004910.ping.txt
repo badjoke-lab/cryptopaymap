@@ -1,0 +1,4 @@
+Subject: ping
+To: me@example.com
+
+ok

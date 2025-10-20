@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Submission received — CryptoPayMap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root { --max-w: 720px; --border:#e5e7eb; --muted:#6b7280; }
+  body { font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:24px; }
+  .wrap { max-width: var(--max-w); margin: 0 auto; }
+  h1 { font-size:28px; margin:0 0 8px; }
+  .muted { color: var(--muted); }
+  .box { border:1px solid var(--border); border-radius:12px; padding:16px; margin:16px 0; }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .btn { display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:10px; border:1px solid var(--border); background:#111; color:#fff; text-decoration:none; }
+  .btn.secondary { background:#fff; color:#111; }
+  code { background:#f6f6f6; padding:2px 6px; border-radius:6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Submission received</h1>
+  <p class="muted">Thank you! We saved your data and files successfully.</p>
+
+  <div class="box">
+    <p id="summary"></p>
+    <ul style="margin-top:8px;">
+      <li><strong>Kind:</strong> <span id="kind">—</span></li>
+      <li><strong>Reference:</strong> <code id="ref">—</code></li>
+      <li><strong>Name:</strong> <span id="name">—</span></li>
+    </ul>
+  </div>
+
+  <div class="btns">
+    <a id="again" class="btn">Submit another</a>
+    <a class="btn secondary" href="/forms/owner.html">Owner</a>
+    <a class="btn secondary" href="/forms/community.html">Community</a>
+    <a class="btn secondary" href="/forms/report.html">Report</a>
+    <a class="btn secondary" href="/">Go to CryptoPayMap</a>
+  </div>
+
+  <p class="muted" style="margin-top:20px;">If you selected “Business email @domain” as proof, a one-time confirmation link was sent to your email (if email delivery is enabled).</p>
+</div>
+
+<script>
+  const q = new URLSearchParams(location.search);
+  const kind = q.get('kind') || '—';
+  const ref  = q.get('ref') || '—';
+  const name = q.get('name') || '—';
+  document.getElementById('kind').textContent = kind;
+  document.getElementById('ref').textContent = ref;
+  document.getElementById('name').textContent = name;
+
+  const again = document.getElementById('again');
+  const map = { owner:'/forms/owner.html', community:'/forms/community.html', report:'/forms/report.html' };
+  again.href = map[kind] || '/forms/owner.html';
+
+  const summary = document.getElementById('summary');
+  summary.textContent = `We received your ${kind} submission. Keep your reference: ${ref}.`;
+</script>
+</body>
+</html>

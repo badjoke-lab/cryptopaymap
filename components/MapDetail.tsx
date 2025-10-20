@@ -2,6 +2,16 @@
 "use client";
 
 import React from "react";
+import { VerificationBadge } from "./VerificationBadge";
+
+export type SocialItem = {
+  platform:
+    | "instagram" | "facebook" | "x" | "tiktok" | "youtube"
+    | "telegram" | "whatsapp" | "wechat" | "line" | "threads"
+    | "pinterest" | "other";
+  url?: string;
+  handle?: string;
+};
 
 export type Place = {
   id: string;
@@ -9,251 +19,345 @@ export type Place = {
   lat: number;
   lng: number;
   category?: string;
-  country?: string;
+  country?: string;   // ISO alpha-2 を想定
   city?: string;
   address?: string;
-  coins?: string[] | string;
   website?: string | null;
-  url?: string | null;
-  hours?: string | null;
-  phone?: string | null;
-  instagram?: string | null;
-  twitter?: string | null;
-  x?: string | null;
-  last_verified?: string | null;
+  verification?: {
+    status?: "owner" | "community" | "directory" | "unverified";
+    sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
+  };
+  profile?: { summary?: string };
+  media?: { images?: Array<{ url?: string; hash?: string; ext?: string; caption?: string }> };
+  payment?: {
+    accepts?: Array<{ asset?: string; chain?: string; method?: string }>;
+    notes?: string;
+  };
+  socials?: SocialItem[];
 } & Record<string, any>;
 
-type Props = { place: Place; onClose?: () => void };
+/* ---- constants（UIクランプ。検証は CI でも行うが念のため） ---- */
+const SUM_OWNER_MAX = 600;
+const SUM_COMMUNITY_MAX = 300;
+const CAP_OWNER_MAX = 600;
+const CAP_COMMUNITY_MAX = 300;
+const IMG_OWNER_MAX = 8;
+const IMG_COMMUNITY_MAX = 4;
 
 /* ---- helpers ---- */
 function asArray<T>(v: T[] | T | undefined | null): T[] {
   if (v == null) return [];
   return Array.isArray(v) ? v : [v];
 }
-function fmtCoins(v?: string[] | string): string {
-  const arr = asArray(v);
-  return arr.length ? arr.join(", ") : "";
-}
-function firstNonEmpty(obj: any, keys: string[]): string | null {
-  if (!obj || typeof obj !== "object") return null;
-  for (const k of keys) {
-    if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
-    const raw = obj[k];
-    if (raw == null) continue;
-    let s = "";
-    if (typeof raw === "string") s = raw.trim();
-    else if (Array.isArray(raw)) s = raw.filter(Boolean).join(", ").trim();
-    else s = String(raw ?? "").trim();
-    if (s.length > 0) return s;
-  }
-  return null;
-}
-function normInstagram(v?: string | null): { handle: string; url: string } | null {
-  if (!v) return null;
-  let handle = v.trim();
-  const m = handle.match(/^https?:\/\/(?:www\.)?instagram\.com\/([^\/\?\#]+)/i);
-  if (m) handle = m[1];
-  handle = handle.replace(/^@/, "");
-  if (!handle) return null;
-  return { handle, url: `https://instagram.com/${handle}` };
-}
-function normTwitterOrX(v?: string | null): { handle: string; url: string } | null {
-  if (!v) return null;
-  let handle = v.trim();
-  const m = handle.match(/^https?:\/\/(?:www\.)?(?:twitter\.com|x\.com)\/([^\/\?\#]+)/i);
-  if (m) handle = m[1];
-  handle = handle.replace(/^@/, "");
-  if (!handle) return null;
-  return { handle, url: `https://x.com/${handle}` };
+
+/** media hash -> URL（hash 優先、なければ url） */
+function mediaUrl(img: any) {
+  if (img?.hash) return `/api/media/${img.hash}${img?.ext ? `.${img.ext}` : ""}`;
+  if (img?.url) return String(img.url);
+  return "";
 }
 
-/** 値の整形（payment 等のブール系に ✓/✗） */
-const isBoolLike = (v: any) =>
-  typeof v === "boolean" ||
-  (typeof v === "string" && /^(true|false|yes|no|1|0)$/i.test(v.trim())) ||
-  (typeof v === "number" && (v === 0 || v === 1));
-const toBool = (v: any) => {
-  if (typeof v === "boolean") return v;
-  if (typeof v === "number") return v !== 0;
-  if (typeof v === "string") return /^(true|yes|1)$/i.test(v.trim());
-  return false;
+/** ===== 3種ナビ URL ===== */
+function navTarget(place: { lat?: number; lng?: number; address?: string; city?: string; country?: string }) {
+  const hasLL = Number.isFinite(place.lat as any) && Number.isFinite(place.lng as any);
+  if (hasLL) {
+    const ll = `${place.lat},${place.lng}`;
+    return {
+      google: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ll)}`,
+      apple: `https://maps.apple.com/?daddr=${encodeURIComponent(ll)}`,
+      osm: `https://www.openstreetmap.org/directions?to=${encodeURIComponent(ll)}`,
+    };
+  }
+  const q = encodeURIComponent([place.address, place.city, place.country].filter(Boolean).join(", "));
+  return {
+    google: `https://www.google.com/maps/dir/?api=1&destination=${q}`,
+    apple: `https://maps.apple.com/?daddr=${q}`,
+    osm: `https://www.openstreetmap.org/directions?to=${q}`,
+  };
+}
+
+/* ===== Payments ===== */
+function prettyAcceptItem(a: any): string | null {
+  if (!a) return null;
+  const asset = String(a?.asset || "").toUpperCase();
+  const chain = String(a?.chain || "").toLowerCase();
+  const method = String(a?.method || "").toLowerCase();
+  if (!asset) return null;
+
+  if (chain === "lightning" || method === "lightning") return "BTC (Lightning)";
+  if (asset === "BTC" && (chain === "bitcoin" || method === "onchain" || method === "on-chain" || !chain)) {
+    return "BTC (on-chain)";
+  }
+  if (asset === "ETH" && (chain === "evm-mainnet" || chain === "ethereum" || method === "onchain" || !chain)) {
+    return "ETH (on-chain)";
+  }
+
+  const CHAIN_LABEL: Record<string, string> = {
+    polygon: "Polygon",
+    arbitrum: "Arbitrum",
+    base: "Base",
+    bsc: "BNB",
+    solana: "Solana",
+    tron: "Tron",
+    ton: "TON",
+    avalanche: "Avalanche",
+  };
+  const label = CHAIN_LABEL[chain];
+  if (label) return `${asset}@${label}`;
+  return asset;
+}
+
+function buildAcceptedLines(place: any): string[] {
+  const acc = Array.isArray(place?.payment?.accepts) ? place.payment.accepts : [];
+  const out: string[] = [];
+  for (const a of acc) {
+    const row = prettyAcceptItem(a);
+    if (row) out.push(row);
+  }
+  // ここを Array.from に変更（tsconfig の downlevelIteration なしでOK）
+  return Array.from(new Set(out));
+}
+
+/* ===== 国名変換（表示用、最小辞書） ===== */
+const COUNTRY_EN: Record<string, string> = {
+  JP: "Japan", US: "United States", GB: "United Kingdom", FR: "France", DE: "Germany",
+  IT: "Italy", ES: "Spain", KR: "South Korea", CN: "China", TW: "Taiwan",
+  SG: "Singapore", AU: "Australia", CA: "Canada", BR: "Brazil",
 };
-const humanizeKey = (k: string) => k.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-function renderObjectInline(obj: Record<string, any>): React.ReactNode {
-  const entries = Object.entries(obj).filter(([, v]) => v != null && (String(v).trim?.() ?? String(v)) !== "");
-  if (!entries.length) return null;
-  const allBool = entries.every(([, v]) => isBoolLike(v));
-  if (allBool) {
-    return (
-      <span>
-        {entries.map(([k, v], i) => (
-          <span key={k}>
-            {i ? " / " : ""}
-            {humanizeKey(k)} {toBool(v) ? "✓" : "✗"}
-          </span>
-        ))}
-      </span>
-    );
+const countryNameFromAlpha2 = (code?: string) =>
+  (code && COUNTRY_EN[code.toUpperCase()]) || code || "";
+
+/* ===== Socials ===== */
+function prettyPlatformName(p: SocialItem["platform"]) {
+  switch (p) {
+    case "x": return "X";
+    case "youtube": return "YouTube";
+    case "tiktok": return "TikTok";
+    case "wechat": return "WeChat";
+    case "whatsapp": return "WhatsApp";
+    case "telegram": return "Telegram";
+    case "line": return "LINE";
+    default: return p[0].toUpperCase() + p.slice(1);
   }
-  return (
-    <span>
-      {entries.map(([k, v], i) => (
-        <span key={k}>
-          {i ? ", " : ""}
-          {humanizeKey(k)}: {String(v)}
-        </span>
-      ))}
-    </span>
-  );
-}
-function stringifyValuePretty(v: any): React.ReactNode {
-  if (v == null) return "";
-  if (Array.isArray(v)) return v.map((x) => (typeof x === "object" ? JSON.stringify(x) : String(x))).join(", ");
-  if (typeof v === "object") return renderObjectInline(v as Record<string, any>);
-  return String(v);
 }
 
-/** Share: Copy */
-function buildShareUrl(place: { id: string; lat: number; lng: number }): string {
-  if (typeof window === "undefined") return "";
-  const u = new URL(window.location.href);
-  if (place?.id) u.searchParams.set("select", place.id);
-  else u.searchParams.set("ll", `${place.lat},${place.lng}`);
-  u.hash = "";
-  return `${u.origin}${u.pathname}?${u.searchParams.toString()}`;
-}
-function copy(text: string) {
-  try {
-    if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
-  } catch {}
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.opacity = "0";
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand("copy"); } finally { document.body.removeChild(ta); }
-}
+export default function MapDetail({ place, onClose }: { place: Place; onClose?: () => void }) {
+  const website = typeof place.website === "string" && place.website.trim() ? place.website.trim() : undefined;
 
-/* ---- component ---- */
-export default function MapDetail({ place, onClose }: Props) {
-  const website = firstNonEmpty(place, ["website", "url"]);
-  const phone = firstNonEmpty(place, ["phone", "contact:phone", "contact_phone", "tel", "telephone"]);
-  const hours = firstNonEmpty(place, ["hours", "opening_hours"]);
-  const igRaw = firstNonEmpty(place, ["instagram", "contact:instagram", "social_instagram"]);
-  const twRaw = firstNonEmpty(place, ["twitter", "x", "contact:twitter", "contact:x", "social_twitter"]);
-  const ig = normInstagram(igRaw);
-  const tw = normTwitterOrX(twRaw);
-  const coinsText = fmtCoins(place.coins);
-  const shareUrl = buildShareUrl(place);
+  const verification = (place as any)?.verification ?? {};
+  const status: string | undefined = verification?.status;
+  const isOwner = status === "owner";
+  const isCommunity = status === "community";
+  const canShowRich = isOwner || isCommunity;
 
-  const gmap = `https://maps.google.com/?q=${encodeURIComponent(place.name || "")}&ll=${place.lat},${place.lng}&z=18`;
-  const amap = `http://maps.apple.com/?ll=${place.lat},${place.lng}&q=${encodeURIComponent(place.name || "")}`;
-  const osm = `https://www.openstreetmap.org/?mlat=${place.lat}&mlon=${place.lng}#map=18/${place.lat}/${place.lng}`;
+  const profile = (place as any)?.profile ?? {};
+  const media = (place as any)?.media ?? {};
+  const images: any[] = Array.isArray(media?.images) ? media.images : [];
 
-  const copyAddress = () => { if (place.address) navigator.clipboard?.writeText(place.address).catch(() => {}); };
+  const sumLimit = isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX;
+  const capLimit = isOwner ? CAP_OWNER_MAX : CAP_COMMUNITY_MAX;
+  const imgLimit = isOwner ? IMG_OWNER_MAX : IMG_COMMUNITY_MAX;
 
-  // 「tags」を非表示（その他は表示）
-  const consumed = new Set<string>([
-    "id","name","lat","lng",
-    "city","country","address","category","coins",
-    "website","url",
-    "phone","contact:phone","contact_phone","tel","telephone",
-    "hours","opening_hours",
-    "instagram","contact:instagram","social_instagram",
-    "twitter","x","contact:twitter","contact:x","social_twitter",
-    "last_verified",
-    "tags",
-  ]);
-  const otherEntries = Object.entries(place)
-    .filter(([k, v]) => !consumed.has(k) && v != null && (String(v).trim?.() ?? String(v)) !== "");
+  const accepts = buildAcceptedLines(place);
+  const paymentNote: string | undefined =
+    typeof place?.payment?.notes === "string" && place.payment.notes.trim()
+      ? place.payment.notes.trim()
+      : undefined;
+
+  const socials: SocialItem[] = Array.isArray(place?.socials) ? place.socials.filter(s => s && (s.url || s.handle)) : [];
+
+  // Evidence: verification.sources[].url を採用
+  const evidenceLinks: string[] = (() => {
+    const srcs = Array.isArray(verification?.sources) ? verification.sources : [];
+    const urls = srcs.map(s => (typeof s?.url === "string" ? s.url.trim() : "")).filter(Boolean);
+    return Array.from(new Set(urls));
+  })();
 
   return (
     <aside className="h-full overflow-y-auto bg-white">
-      <div className="flex items-start justify-between px-6 pt-6">
-        <h2 className="text-2xl font-semibold leading-tight">{place.name}</h2>
+      {/* Header（1行目=バッジ / 2行目=店名 / 3行目=category · city） */}
+      <div className="flex items-start justify-between gap-3 px-6 pt-6">
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <VerificationBadge status={status} />
+          </div>
+          <h2 className="mt-2 text-2xl font-semibold leading-tight break-words">
+            {place.name}
+          </h2>
+          {(place.category || place.city) && (
+            <div className="text-sm text-neutral-600 mt-1">
+              {place.category}
+              {place.category && place.city ? " · " : ""}
+              {place.city}
+            </div>
+          )}
+        </div>
+
         {onClose && (
-          <button onClick={onClose} aria-label="Close" className="rounded p-2 text-neutral-500 hover:bg-neutral-100">×</button>
+          <button
+            onClick={onClose}
+            aria-label="Close"
+            className="rounded p-2 text-neutral-500 hover:bg-neutral-100 shrink-0"
+          >
+            ×
+          </button>
         )}
       </div>
 
-      <div className="space-y-4 px-6 py-4 text-[15px] leading-relaxed">
-        {(place.city || place.country) && (
-          <div><span className="font-semibold">Location:</span> {[place.city, place.country].filter(Boolean).join(", ")}</div>
+      <div className="space-y-5 px-6 py-5 text-[15px] leading-relaxed">
+        {/* Gallery */}
+        {canShowRich && images.length > 0 && (
+          <section>
+            <h3 className="text-sm font-semibold mb-2 text-neutral-700">Photos</h3>
+            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {images.slice(0, imgLimit).map((img: any, i: number) => {
+                const url = mediaUrl(img);
+                if (!url) return null;
+                const caption = typeof img?.caption === "string" ? img.caption : "";
+                return (
+                  <li key={img?.hash ?? img?.url ?? i}>
+                    <img
+                      src={url}
+                      alt=""
+                      className="aspect-[4/3] w-full object-cover rounded-md ring-1 ring-neutral-200"
+                    />
+                    {caption && (
+                      <p className="text-xs text-neutral-700">
+                        {caption.slice(0, capLimit)}
+                        {caption.length > capLimit ? "…" : ""}
+                      </p>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
         )}
 
-        {place.address && (
-          <div>
-            <span className="font-semibold">Address:</span> <span>{place.address}</span>{" "}
-            <button onClick={copyAddress} className="ml-2 rounded border border-neutral-300 px-2 py-0.5 text-sm hover:bg-neutral-50" title="Copy address">Copy</button>
-          </div>
+        {/* About */}
+        {canShowRich && typeof profile?.summary === "string" && profile.summary.trim() && (
+          <section>
+            <h3 className="text-sm font-semibold text-neutral-700 mb-1">About</h3>
+            <p className="text-sm leading-6">
+              {profile.summary.slice(0, sumLimit)}
+              {profile.summary.length > sumLimit ? "…" : ""}
+            </p>
+          </section>
         )}
 
-        {place.category && <div><span className="font-semibold">Category:</span> {place.category}</div>}
-
-        {coinsText && <div><span className="font-semibold">Coins:</span> {coinsText}</div>}
-
-        {/* Share（中段・Copyのみ） */}
-        <div>
-          <span className="font-semibold">Share:</span>{" "}
-          <button
-            type="button"
-            onClick={() => copy(shareUrl)}
-            className="rounded border border-neutral-300 px-2 py-0.5 text-sm hover:bg-neutral-50"
-            title="Copy link"
-          >
-            Copy
-          </button>
-        </div>
-
-        {website && (
-          <div><span className="font-semibold">Website:</span>{" "}
-            <a href={website} target="_blank" rel="noopener noreferrer" className="underline">Open ↗</a>
-          </div>
+        {/* Payments */}
+        {(accepts.length > 0 || paymentNote) && (
+          <section>
+            <h3 className="text-sm font-semibold text-neutral-700 mb-1">Payments</h3>
+            {accepts.length > 0 && (
+              <>
+                <div className="text-[14px] font-medium">Assets</div>
+                <ul className="mt-1 ml-6 list-disc space-y-1">
+                  {accepts.slice(0, 3).map((line, i) => (
+                    <li key={`${line}-${i}`} className="text-sm">{line}</li>
+                  ))}
+                </ul>
+                {accepts.length > 3 && (
+                  <div className="text-xs text-slate-500 mt-1">+{accepts.length - 3}</div>
+                )}
+              </>
+            )}
+            {paymentNote && (
+              <p className="mt-2 text-xs text-slate-700">
+                <span className="font-medium">Note:</span> {paymentNote}
+              </p>
+            )}
+          </section>
         )}
 
-        {phone && (
-          <div><span className="font-semibold">Phone:</span>{" "}
-            <a href={`tel:${phone.replace(/[^\d\+]/g, "")}`} className="underline">{phone}</a>
-          </div>
+        {/* Contact */}
+        {(website || socials.length > 0) && (
+          <section>
+            <h3 className="text-sm font-semibold text-neutral-700 mb-1">Contact</h3>
+            {website && (
+              <div>
+                <span className="font-semibold">Website:</span>{" "}
+                <a href={website} target="_blank" rel="noopener noreferrer" className="underline">
+                  Open ↗
+                </a>
+              </div>
+            )}
+            {socials.map((s, i) => {
+              const label = prettyPlatformName(s.platform);
+              const text = s.handle?.replace(/^@/, "") || s.url?.replace(/^https?:\/\/(www\.)?/i, "") || "";
+              const href = s.url || undefined;
+              if (!text) return null;
+              return (
+                <div key={`${label}-${text}-${i}`}>
+                  <span className="font-semibold">{label}:</span>{" "}
+                  {href ? (
+                    <a href={href} target="_blank" rel="noopener noreferrer" className="underline">
+                      {s.handle ? `@${text}` : text}
+                    </a>
+                  ) : (
+                    <span>@{text}</span>
+                  )}
+                </div>
+              );
+            })}
+          </section>
         )}
 
-        {hours && <div><span className="font-semibold">Hours:</span> {hours}</div>}
-
-        {ig && (
-          <div><span className="font-semibold">Instagram:</span>{" "}
-            <a href={ig.url} target="_blank" rel="noopener noreferrer" className="underline">@{ig.handle}</a>
-          </div>
-        )}
-
-        {tw && (
-          <div><span className="font-semibold">X:</span>{" "}
-            <a href={tw.url} target="_blank" rel="noopener noreferrer" className="underline">@{tw.handle}</a>
-          </div>
-        )}
-
-        {place.last_verified && <div><span className="font-semibold">Last verified:</span> {place.last_verified}</div>}
-
-        {/* 未知キーはすべて列挙（オブジェクトは上の整形で表示） */}
-        {otherEntries.length > 0 && otherEntries.map(([k, v]) => {
-          const valNode = stringifyValuePretty(v);
-          if (!valNode) return null;
+        {/* Location（2行＋3種ナビ） */}
+        {(place.city || place.country || place.address) && (() => {
+          const nav = navTarget({
+            lat: place.lat, lng: place.lng,
+            address: place.address, city: place.city, country: place.country
+          });
           return (
-            <div key={k}>
-              <span className="font-semibold">{humanizeKey(k)}:</span>{" "}
-              <span className="break-words">{valNode}</span>
-            </div>
+            <section>
+              <h3 className="text-sm font-semibold text-neutral-700 mb-1">Location</h3>
+              {place.city && (
+                <div>
+                  {place.city}
+                  {countryNameFromAlpha2(place.country)
+                    ? `, ${countryNameFromAlpha2(place.country)}`
+                    : ""}
+                </div>
+              )}
+              {place.address && <div>{place.address}</div>}
+              <div className="mt-1 text-sm">
+                <span className="text-neutral-700 font-medium">Navigation:</span>{" "}
+                <a href={nav.google} target="_blank" rel="noopener noreferrer" className="underline">Google Maps</a>{" "}
+                <span className="text-neutral-400">|</span>{" "}
+                <a href={nav.apple} target="_blank" rel="noopener noreferrer" className="underline">Apple Maps</a>{" "}
+                <span className="text-neutral-400">|</span>{" "}
+                <a href={nav.osm} target="_blank" rel="noopener noreferrer" className="underline">OpenStreetMap</a>
+              </div>
+            </section>
           );
-        })}
+        })()}
 
-        <div className="pt-2">
-          <div className="font-semibold">Navigate:</div>
-          <div className="mt-1 space-x-4">
-            <a href={gmap} target="_blank" rel="noopener noreferrer" className="underline">Google</a>
-            <a href={amap} target="_blank" rel="noopener noreferrer" className="underline">Apple</a>
-            <a href={osm} target="_blank" rel="noopener noreferrer" className="underline">OSM</a>
-          </div>
-        </div>
+        {/* Evidence（verification.sources） */}
+        {evidenceLinks.length > 0 && (
+          <section>
+            <h3 className="text-sm font-semibold text-neutral-700 mb-1">Evidence</h3>
+            <ul className="mt-1 ml-6 list-disc space-y-1">
+              {evidenceLinks.map((u, i) => (
+                <li key={`${u}-${i}`} className="text-sm">
+                  <a href={u} target="_blank" rel="noopener noreferrer" className="underline">{u}</a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {/* Footer CTA：Contribute / Report */}
+        {place?.id && (
+          <section className="pt-2">
+            <a
+              href={`/submit.html?placeId=${encodeURIComponent(String(place.id))}`}
+              className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm border hover:bg-neutral-50"
+            >
+              Contribute / Report
+            </a>
+          </section>
+        )}
       </div>
     </aside>
   );

@@ -72,7 +72,6 @@ const CATEGORY_SET = new Set([
 
 /** category aliases -> canonical */
 const CATEGORY_ALIAS: Record<string, string> = {
-  // spelling / synonyms
   bookstore: "books",
   book_store: "books",
   book_shop: "books",
@@ -191,6 +190,32 @@ function normalizeChain(raw: any): string | null {
 }
 
 /** =========================
+ *  Small helpers for address tail check
+ *  ========================= */
+
+function escapeRegExp(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// representative country names to detect trailing leftovers safely
+const COUNTRY_NAME_DICT: Record<string, string> = {
+  japan: "JP", 日本: "JP",
+  italy: "IT", italia: "IT",
+  "united states": "US", usa: "US", america: "US",
+  "united kingdom": "GB", uk: "GB", britain: "GB", "great britain": "GB",
+  germany: "DE", deutschland: "DE",
+  france: "FR",
+  spain: "ES", españa: "ES",
+  korea: "KR", "south korea": "KR", 대한민국: "KR", 韓国: "KR",
+  china: "CN", 中国: "CN",
+  taiwan: "TW", 台灣: "TW",
+  "hong kong": "HK",
+  russia: "RU", "russian federation": "RU",
+  "vatican city": "VA", "holy see": "VA"
+};
+const COUNTRY_NAMES_LOWER = new Set(Object.keys(COUNTRY_NAME_DICT));
+
+/** =========================
  *  Extra Business Rule Assertions
  *  ========================= */
 
@@ -221,6 +246,20 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
     const lvl = r?.verification?.status;
     const limits = levelLimits(lvl);
 
+    // (0) quick types / ranges
+    if (r.lat != null && typeof r.lat !== "number") {
+      errs.push(`${fileLabel}:${id}: lat must be number`);
+    }
+    if (r.lng != null && typeof r.lng !== "number") {
+      errs.push(`${fileLabel}:${id}: lng must be number`);
+    }
+    if (typeof r.lat === "number" && !(r.lat >= -90 && r.lat <= 90)) {
+      errs.push(`${fileLabel}:${id}: lat out of range (-90..90): ${r.lat}`);
+    }
+    if (typeof r.lng === "number" && !(r.lng >= -180 && r.lng <= 180)) {
+      errs.push(`${fileLabel}:${id}: lng out of range (-180..180): ${r.lng}`);
+    }
+
     // (A) profile/media constraints by verification level
     const imgs = (r?.media?.images ?? []) as any[];
     if (imgs.length > limits.maxImages) {
@@ -242,6 +281,24 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
     }
     if (r.profile && !(lvl === "owner" || lvl === "community")) {
       errs.push(`${fileLabel}:${id}: profile present but level=${lvl}`);
+    }
+    if (r.profile?.summary) {
+      const max = lvl === "owner" ? 600 : lvl === "community" ? 300 : 0;
+      if (r.profile.summary.length > max) {
+        errs.push(`${fileLabel}:${id}: profile.summary length ${r.profile.summary.length} > ${max} (level=${lvl})`);
+      }
+    }
+
+    // (A2) directory/unverified must not include any media.* object at all
+    if ((lvl === "directory" || lvl === "unverified") && r.media) {
+      const hasImages =
+        Array.isArray(r.media.images) && r.media.images.length > 0;
+      const hasAnyOther = Object.keys(r.media).length > (hasImages ? 1 : 0);
+      if (hasImages || hasAnyOther) {
+        errs.push(
+          `${fileLabel}:${id}: media.* not allowed for level=${lvl} (remove media entirely)`
+        );
+      }
     }
 
     // (B) category normalization (unknown -> "other"), not an error
@@ -266,9 +323,12 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
       for (let sIdx = 0; sIdx < r.socials.length; sIdx++) {
         const s = r.socials[sIdx];
         if (!s) continue;
-        if (!s.platform || !new Set([
-          "instagram","facebook","x","tiktok","youtube","telegram","whatsapp","wechat","line","threads","pinterest","other"
-        ]).has(s.platform)) {
+        if (
+          !s.platform ||
+          !new Set([
+            "instagram","facebook","x","tiktok","youtube","telegram","whatsapp","wechat","line","threads","pinterest","other"
+          ]).has(s.platform)
+        ) {
           errs.push(`${fileLabel}:${id}: socials[${sIdx}].platform invalid`);
         }
         if (!s.url && !s.handle) {
@@ -280,6 +340,45 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
           !/^@?[\w.\-]{1,50}$/.test(s.handle)
         ) {
           errs.push(`${fileLabel}:${id}: socials[${sIdx}].handle invalid format`);
+        }
+      }
+    }
+
+    // (C2) country format (ISO alpha-2 uppercase) — optional but if present must pass
+    if (r.country != null) {
+      if (typeof r.country !== "string" || !/^[A-Z]{2}$/.test(r.country)) {
+        errs.push(`${fileLabel}:${id}: country must be ISO alpha-2 (e.g., "JP")`);
+      }
+    }
+
+    // (C3) address tail leftover check → FAIL
+    if (typeof r.address === "string" && r.address.trim()) {
+      const addr = r.address.trim();
+
+      // if city present, forbid ", City" or "/ City" at the end
+      if (typeof r.city === "string" && r.city.trim()) {
+        const city = r.city.trim();
+        const reCityComma = new RegExp(`(?:,\\s*|\\s*/\\s*)${escapeRegExp(city)}\\.?$`, "i");
+        if (reCityComma.test(addr)) {
+          errs.push(`${fileLabel}:${id}: address must not end with city name ("${city}")`);
+        }
+      }
+
+      // if country code present, forbid ", JP" or "/ JP" at the end
+      if (typeof r.country === "string" && /^[A-Z]{2}$/.test(r.country)) {
+        const cc = r.country;
+        const reCc = new RegExp(`(?:,\\s*|\\s*/\\s*)${escapeRegExp(cc)}\\.?$`, "i");
+        if (reCc.test(addr)) {
+          errs.push(`${fileLabel}:${id}: address must not end with country code ("${cc}")`);
+        }
+      }
+
+      // representative country names — forbid at tail (case-insensitive)
+      for (const nameLower of COUNTRY_NAMES_LOWER) {
+        const reName = new RegExp(`(?:,\\s*|\\s*/\\s*)${escapeRegExp(nameLower)}\\.?$`, "i");
+        if (reName.test(addr.toLowerCase())) {
+          errs.push(`${fileLabel}:${id}: address must not end with country name ("${nameLower}")`);
+          break;
         }
       }
     }
@@ -328,6 +427,11 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
         if (a.processor != null && !PROCESSOR_SET.has(String(a.processor))) {
           errs.push(`${fileLabel}:${id}: payment.accepts[${k}].processor invalid`);
         }
+
+        // (D2) If chain is lightning, asset must be BTC
+        if (a.chain === "lightning" && a.asset !== "BTC") {
+          errs.push(`${fileLabel}:${id}: payment.accepts[${k}] lightning requires asset "BTC"`);
+        }
       }
     }
 
@@ -355,18 +459,6 @@ function validateBusinessRules(records: any[], fileLabel: string): string[] {
             `${fileLabel}:${id}: payment.preferred[${pIdx}] not found in accepts (${pr})`
           );
         }
-      }
-    }
-
-    // (F) explicit: directory/unverified must not include any media.* object
-    if ((lvl === "directory" || lvl === "unverified") && r.media) {
-      const hasImages =
-        Array.isArray(r.media.images) && r.media.images.length > 0;
-      const hasAnyOther = Object.keys(r.media).length > (hasImages ? 1 : 0);
-      if (hasImages || hasAnyOther) {
-        errs.push(
-          `${fileLabel}:${id}: media.* not allowed for level=${lvl} (remove media entirely)`
-        );
       }
     }
 

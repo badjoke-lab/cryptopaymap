@@ -1,0 +1,686 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Owner Submission — CryptoPayMap</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/forms/forms.css" />
+</head>
+<body>
+<main class="container">
+  <h1>Owner Submission</h1>
+  <p class="form-desc">
+    <strong>For business owners or official representatives.</strong><br>
+    Use this form to <strong>register your own business</strong> that accepts crypto payments.<br>
+    Please provide accurate information — including address, accepted crypto, and proof (POS or payment page).<br>
+    Submitted data will appear on CryptoPayMap after verification.<br>
+    Upload clear, up-to-date photos (storefront, menu, payment screen) to help users identify your store.
+  </p>
+
+  <p class="subtle">Required fields <strong>*</strong>. Images: up to <strong>8</strong>, ≤ <strong>2MB</strong> each. EXIF removed.</p>
+
+  <form id="form-owner" action="/submit/owner" method="post" enctype="multipart/form-data" class="form-col">
+    <!-- Submitter -->
+    <div class="field"><label class="required" for="sn">Submitter name</label><input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text"></div>
+    <div class="field"><label class="required" for="se">Submitter email</label><input id="se" name="SubmitterEmail" required type="email"></div>
+
+    <!-- Business core -->
+    <div class="field"><label class="required" for="bn">Business name</label><input id="bn" name="BusinessName" required maxlength="80" type="text"></div>
+
+    <!-- Optional existing ID (visible). Hidden canonical 'placeId' is injected by the prefill script. -->
+    <div class="field">
+      <label for="existingId">Existing place ID (optional)</label>
+      <input id="existingId" name="ExistingPlaceId" type="text" placeholder="e.g. cpm:jp-tokyo-satoshi-coffee-1 or osm:node:10078071561" />
+      <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new listing.</p>
+    </div>
+
+    <!-- Address -->
+    <div class="field"><label class="required" for="cty">City</label><input id="cty" name="City" required maxlength="64" type="text"></div>
+
+    <!-- Country: input -> select (populated from /data/meta/countries.json). Hidden CountryCode (ISO alpha-2). -->
+    <div class="field">
+      <label class="required" for="ctr">Country</label>
+      <select id="ctr" name="Country" required>
+        <option value="">— Loading countries… —</option>
+      </select>
+      <input type="hidden" id="ctrCode" name="CountryCode" />
+      <p class="help">Type to search. Shows “Name (CC)”. The submitted value is the full country name.</p>
+    </div>
+
+    <div class="field"><label class="required" for="addr">Address</label><input id="addr" name="Address" required maxlength="200" type="text" placeholder="Street, number, building, floor, etc."></div>
+
+    <!-- Website -->
+    <div class="field"><label for="web">Website / Map URL</label><input id="web" name="Website" type="url" placeholder="https://..."></div>
+
+    <!-- About / Summary (Owner ≤ 600 chars) -->
+    <div class="field">
+      <label for="about">About / Summary</label>
+      <textarea id="about" name="About" maxlength="600" placeholder="Describe your business (≤600 chars for Owner)"></textarea>
+      <p class="help">Shown in the “About” section on the detail modal. Owner submissions: up to 600 characters (Community: 300).</p>
+    </div>
+
+    <!-- Optional coordinates (assistive, not required) -->
+    <div class="field">
+      <label for="lat">Latitude (optional)</label>
+      <input id="lat" name="lat" type="number" step="0.0000001" min="-90" max="90" placeholder="e.g. 35.658034" inputmode="decimal">
+      <p class="help">Optional. If unknown, leave blank. Operators will confirm via geocoding/review.</p>
+    </div>
+    <div class="field">
+      <label for="lng">Longitude (optional)</label>
+      <input id="lng" name="lng" type="number" step="0.0000001" min="-180" max="180" placeholder="e.g. 139.701636" inputmode="decimal">
+      <p class="help">Optional. If unknown, leave blank. Operators will confirm via geocoding/review.</p>
+    </div>
+
+    <!-- Category -->
+    <div class="field">
+      <label class="required" for="cat">Category</label>
+      <select id="cat" name="Category" required>
+        <option value="">— Select —</option>
+        <option>Cafe</option><option>Restaurant</option><option>Bar / Pub</option><option>Bakery</option>
+        <option>Grocery / Supermarket</option><option>Butcher</option><option>Pharmacy</option><option>Clinic / Doctors</option>
+        <option>Dentist</option><option>Hairdresser / Barber</option><option>Spa / Beauty</option><option>Electronics</option>
+        <option>Clothing / Apparel</option><option>Jewelry</option><option>Bookshop</option><option>Convenience store</option>
+        <option>Hotel / Lodging</option><option>Gym / Fitness</option><option>Dance school / Studio</option>
+        <option>Tool / Equipment rental</option><option>Coworking / Office</option><option>Other</option>
+      </select>
+    </div>
+    <div class="field"><label for="catO">Category (Other)</label><input id="catO" name="CategoryOther" maxlength="100" placeholder="Describe briefly (≤100 chars)" type="text"></div>
+
+    <!-- Contact -->
+    <div class="field"><label for="hrs">Opening hours</label><textarea id="hrs" name="Hours" placeholder="Mon–Fri 10:00–18:00"></textarea></div>
+    <div class="field"><label for="tel">Contact / Phone</label><input id="tel" name="Phone" type="tel" placeholder="+1 555 123 4567"></div>
+
+    <!-- Socials -->
+    <div class="field">
+      <label for="soc">Social links</label>
+      <textarea id="soc" name="Socials" placeholder="https://instagram.com/..., @handle, https://x.com/..."></textarea>
+      <p class="help">Separate by new lines / commas / “|”. Use URL or @handle.</p>
+    </div>
+
+    <!-- Accepted crypto -->
+    <div class="field">
+      <label class="required" for="acc">Accepted crypto</label>
+      <textarea id="acc" name="Accepted" required placeholder="BTC, ETH, USDT (Polygon)"></textarea>
+      <p class="help">List primary assets and chains. Example: “BTC, ETH, USDT (Polygon)”.</p>
+    </div>
+
+    <!-- Payments: Note -->
+    <div class="field">
+      <label for="paynote">Payments note (optional)</label>
+      <textarea id="paynote" name="PaymentNote" placeholder="Any notes about crypto payment (policy, minimums, tips, etc.)"></textarea>
+      <p class="help">This appears under the Payments section in the detail modal.</p>
+    </div>
+
+    <!-- Proof -->
+    <div class="field">
+      <label class="required" for="prf">Ownership proof (pick one)</label>
+      <select id="prf" name="Proof" required>
+        <option value="">— Select —</option>
+        <option>Domain verification (.well-known or meta tag)</option>
+        <option>Official payment page URL</option>
+        <option>Business email @domain</option>
+        <option>POS/receipt photo (separate field)</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="ppg">Payment page / instructions URLs</label>
+      <textarea id="ppg" name="PaymentPages" placeholder="https://example.com/pay, https://example.com/how-to-pay"></textarea>
+      <p class="help">If you chose “Official payment page URL”, please provide at least one URL.</p>
+    </div>
+
+    <!-- Images -->
+    <div class="field">
+      <label for="proofimg">📄 Proof image — POS / receipt (single)</label>
+      <input id="proofimg" name="ProofImage" type="file" accept="image/*" />
+      <p class="help">Use only for verification evidence. Do not mix with gallery below. ≤2MB.</p>
+    </div>
+
+    <div class="field">
+      <label>🖼️ Gallery images — up to 8</label>
+      <div class="drop" data-max="8" data-input="gallery8">
+        <div class="header">
+          <button type="button" class="btn secondary dz-add">Add images</button>
+          <button type="button" class="btn secondary dz-clear">Clear all</button>
+          <span class="counter dz-counter">0 / 8 selected</span>
+        </div>
+        <div class="area dz-area">Drag & drop images here, or click to select.</div>
+        <input id="gallery8" name="Gallery[]" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
+        <p class="help">Images only. ≤2MB each. Drag thumbnails to reorder. <strong>First image will be used as cover.</strong></p>
+        <div class="thumb-list dz-list"></div>
+      </div>
+    </div>
+
+    <!-- Gallery captions -->
+    <div class="field">
+      <label for="captions">Gallery captions (optional)</label>
+      <textarea id="captions" name="GalleryCaptions" placeholder="One line per image, in the same order as selected"></textarea>
+      <p class="help">Lines map to images by order. Extra lines are ignored; missing lines mean no caption.</p>
+    </div>
+
+    <!-- Consent -->
+    <div class="field inline-check">
+      <input id="consent" name="Consent" type="checkbox" required />
+      <label class="required" for="consent" style="font-weight:400">
+        I confirm the provided info is accurate and I grant a non-exclusive free license to display the content.
+      </label>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" type="submit">Submit</button>
+      <a class="btn secondary" href="/forms/community.html">Switch to Community</a>
+      <a class="btn secondary" href="/forms/report.html">Switch to Report</a>
+    </div>
+  </form>
+</main>
+
+<script>
+  // Category other toggle
+  (function(){
+    const cat=document.getElementById('cat'), other=document.getElementById('catO');
+    function t(){ const on=cat.value==='Other'; other.disabled=!on; if(!on) other.value=''; }
+    cat?.addEventListener('change',t); t();
+  })();
+
+  // Reusable Dropzone
+  function initDrop(el){
+    const max=parseInt(el.dataset.max||'8',10);
+    const input=document.getElementById(el.dataset.input);
+    const add=el.querySelector('.dz-add'), clr=el.querySelector('.dz-clear'),
+          area=el.querySelector('.dz-area'), list=el.querySelector('.dz-list'),
+          counter=el.querySelector('.dz-counter');
+    let files=[];
+    const fmt=n=>n>=1048576?(n/1048576).toFixed(2)+'MB':Math.round(n/1024)+'KB';
+    function sync(){ const dt=new DataTransfer(); files.slice(0,max).forEach(f=>dt.items.add(f)); input.files=dt.files; counter.textContent=`${files.length} / ${max} selected`; }
+    function card(f,i){ const d=document.createElement('div'); d.className='thumb'; d.draggable=true; d.dataset.i=i;
+      const im=document.createElement('img'); im.src=URL.createObjectURL(f);
+      const m=document.createElement('div'); m.className='meta'; m.innerHTML=`<div class="name">${f.name}</div><div class="cap">${i===0?'<span class="good">Cover · </span>':''}${fmt(f.size)}</div>`;
+      const x=document.createElement('button'); x.className='del'; x.type='button'; x.textContent='×'; x.onclick=()=>{files.splice(i,1);render();};
+      d.append(im,m,x);
+      d.addEventListener('dragstart',e=>{d.classList.add('dragging');e.dataTransfer.setData('text/plain',i)});
+      d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+      d.addEventListener('dragover',e=>e.preventDefault());
+      d.addEventListener('drop',e=>{e.preventDefault();const from=+e.dataTransfer.getData('text/plain');const f2=files.splice(from,1)[0];files.splice(i,0,f2);render();});
+      return d;
+    }
+    function render(){ list.innerHTML=''; files.forEach((f,i)=>list.appendChild(card(f,i))); sync(); }
+    function accept(fs){ const add=[]; for(const f of fs){ if(!/image\/(jpeg|png|webp)/.test(f.type)) continue; if(f.size>2*1024*1024) continue; if(files.length+add.length>=max) break; add.push(f);} if(add.length){ files=files.concat(add); render(); } }
+    add.onclick=()=>input.click(); clr.onclick=()=>{files=[];render();}; input.onchange=()=>accept(input.files||[]);
+    area.onclick=()=>input.click(); area.ondragover=e=>{e.preventDefault();area.classList.add('dragover')}; area.ondragleave=()=>area.classList.remove('dragover');
+    area.ondrop=e=>{e.preventDefault();area.classList.remove('dragover');accept(e.dataTransfer.files||[])};
+    render();
+  }
+  document.querySelectorAll('.drop').forEach(initDrop);
+</script>
+
+<!-- Countries loader: populate Country <select> from /data/meta/countries.json -->
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  onReady(async function(){
+    const sel = document.getElementById('ctr');
+    const hidden = document.getElementById('ctrCode');
+    if(!sel) return;
+
+    try {
+      const res = await fetch('/data/meta/countries.json', { cache: 'no-store' });
+      const list = await res.json(); // [{code:'JP', name:'Japan'}, ...]
+      sel.innerHTML = '<option value="">— Select —</option>';
+      for (const {code, name} of list) {
+        const opt = document.createElement('option');
+        opt.value = name;                 // submit the full country name
+        opt.textContent = `${name} (${code})`;
+        opt.dataset.code = code;
+        sel.appendChild(opt);
+      }
+
+      sel.addEventListener('change', () => {
+        const code = sel.selectedOptions[0]?.dataset?.code || '';
+        if (hidden) hidden.value = code;
+      });
+
+      // If Country was prefilled before options loaded, try to select matching name (case-insensitive)
+      const preset = sel.getAttribute('data-preset') || sel.value;
+      if (preset) {
+        const lower = preset.toLowerCase();
+        const match = Array.from(sel.options).find(o => o.value.toLowerCase() === lower);
+        if (match) {
+          sel.value = match.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    } catch (e) {
+      console.error('countries.json load failed', e);
+      // graceful fallback to text input
+      const parent = sel.parentElement;
+      const fallback = document.createElement('input');
+      fallback.type = 'text';
+      fallback.required = true;
+      fallback.name = 'Country';
+      fallback.id = 'ctr';
+      fallback.placeholder = 'Country';
+      parent.replaceChild(fallback, sel);
+      if (hidden) hidden.remove();
+    }
+  });
+})();
+</script>
+
+<!-- Prefill: reads ?placeId & ?placeName, fills BusinessName and visible ExistingPlaceId, and injects hidden 'placeId' -->
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  onReady(function(){
+    try {
+      const sp = new URLSearchParams(location.search);
+      const placeId = sp.get('placeId') || sp.get('place_id') || '';
+      const placeName = sp.get('placeName') || sp.get('place_name') || '';
+      const SHOW_PREFILL_INFO = false; // set true to show a visible debug info box
+
+      function setField(possibleNames, val){
+        if(!val) return false;
+        for(const n of possibleNames){
+          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n);
+          if(!el){
+            el = document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
+          }
+          if(!el) continue;
+          const tag = el.tagName || '';
+          if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'){
+            try { el.value = val; } catch(e) {}
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+          } else {
+            el.textContent = val;
+          }
+          return true;
+        }
+        return false;
+      }
+
+      setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
+
+      if(placeId){
+        setField(['ExistingPlaceId','existingplaceid','existingId','existing_id','placeId','place_id'], placeId);
+        const form = document.getElementById('form-owner');
+        if(form){
+          let hi = form.querySelector('input[name="placeId"]');
+          if(!hi){
+            hi = document.createElement('input');
+            hi.type = 'hidden';
+            hi.name = 'placeId';
+            form.appendChild(hi);
+          }
+          hi.value = placeId;
+        }
+      }
+
+      if(SHOW_PREFILL_INFO && (placeId || placeName)){
+        const infoId = 'form-prefill-info';
+        if(!document.getElementById(infoId)){
+          const info = document.createElement('div');
+          info.id = infoId;
+          info.style.padding = '10px';
+          info.style.margin = '8px 0';
+          info.style.background = '#f8fafc';
+          info.style.border = '1px solid #e6eef6';
+          info.style.color = '#0f172a';
+          info.style.fontSize = '14px';
+          info.textContent = 'Prefilled: ' + (placeName || '') + (placeId ? ' (' + placeId + ')' : '');
+          const container = document.querySelector('main.container') || document.body;
+          container.insertBefore(info, container.firstChild);
+        }
+      }
+    } catch (e) {
+      console.error('owner form prefill error', e);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Owner Submission — CryptoPayMap</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/forms/forms.css" />
+</head>
+<body>
+<main class="container">
+  <h1>Owner Submission</h1>
+  <p class="form-desc">
+    <strong>For business owners or official representatives.</strong><br>
+    Use this form to <strong>register your own business</strong> that accepts crypto payments.<br>
+    Please provide accurate information — including address, accepted crypto, and proof (POS or payment page).<br>
+    Submitted data will appear on CryptoPayMap after verification.<br>
+    Upload clear, up-to-date photos (storefront, menu, payment screen) to help users identify your store.
+  </p>
+
+  <p class="subtle">Required fields <strong>*</strong>. Images: up to <strong>8</strong>, ≤ <strong>2MB</strong> each. EXIF removed.</p>
+
+  <form id="form-owner" action="/submit/owner" method="post" enctype="multipart/form-data" class="form-col">
+    <!-- Submitter -->
+    <div class="field"><label class="required" for="sn">Submitter name</label><input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text"></div>
+    <div class="field"><label class="required" for="se">Submitter email</label><input id="se" name="SubmitterEmail" required type="email"></div>
+
+    <!-- Business core -->
+    <div class="field"><label class="required" for="bn">Business name</label><input id="bn" name="BusinessName" required maxlength="80" type="text"></div>
+
+    <!-- Optional existing ID (visible). Hidden canonical 'placeId' is injected by the prefill script. -->
+    <div class="field">
+      <label for="existingId">Existing place ID (optional)</label>
+      <input id="existingId" name="ExistingPlaceId" type="text" placeholder="e.g. cpm:jp-tokyo-satoshi-coffee-1 or osm:node:10078071561" />
+      <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new listing.</p>
+    </div>
+
+    <!-- Address -->
+    <div class="field"><label class="required" for="cty">City</label><input id="cty" name="City" required maxlength="64" type="text"></div>
+
+    <!-- Country: input -> select (populated from /data/meta/countries.json). Hidden CountryCode (ISO alpha-2). -->
+    <div class="field">
+      <label class="required" for="ctr">Country</label>
+      <select id="ctr" name="Country" required>
+        <option value="">— Loading countries… —</option>
+      </select>
+      <input type="hidden" id="ctrCode" name="CountryCode" />
+      <p class="help">Type to search. Shows “Name (CC)”. The submitted value is the full country name.</p>
+    </div>
+
+    <div class="field"><label class="required" for="addr">Address</label><input id="addr" name="Address" required maxlength="200" type="text" placeholder="Street, number, building, floor, etc."></div>
+
+    <!-- Website -->
+    <div class="field"><label for="web">Website / Map URL</label><input id="web" name="Website" type="url" placeholder="https://..."></div>
+
+    <!-- About / Summary (Owner ≤ 600 chars) -->
+    <div class="field">
+      <label for="about">About / Summary</label>
+      <textarea id="about" name="About" maxlength="600" placeholder="Describe your business (≤600 chars for Owner)"></textarea>
+      <p class="help">Shown in the “About” section on the detail modal. Owner submissions: up to 600 characters (Community: 300).</p>
+    </div>
+
+    <!-- Optional coordinates (assistive, not required) -->
+    <div class="field">
+      <label for="lat">Latitude (optional)</label>
+      <input id="lat" name="lat" type="number" step="0.0000001" min="-90" max="90" placeholder="e.g. 35.658034" inputmode="decimal">
+      <p class="help">Optional. If unknown, leave blank. Operators will confirm via geocoding/review.</p>
+    </div>
+    <div class="field">
+      <label for="lng">Longitude (optional)</label>
+      <input id="lng" name="lng" type="number" step="0.0000001" min="-180" max="180" placeholder="e.g. 139.701636" inputmode="decimal">
+      <p class="help">Optional. If unknown, leave blank. Operators will confirm via geocoding/review.</p>
+    </div>
+
+    <!-- Category -->
+    <div class="field">
+      <label class="required" for="cat">Category</label>
+      <select id="cat" name="Category" required>
+        <option value="">— Select —</option>
+        <option>Cafe</option><option>Restaurant</option><option>Bar / Pub</option><option>Bakery</option>
+        <option>Grocery / Supermarket</option><option>Butcher</option><option>Pharmacy</option><option>Clinic / Doctors</option>
+        <option>Dentist</option><option>Hairdresser / Barber</option><option>Spa / Beauty</option><option>Electronics</option>
+        <option>Clothing / Apparel</option><option>Jewelry</option><option>Bookshop</option><option>Convenience store</option>
+        <option>Hotel / Lodging</option><option>Gym / Fitness</option><option>Dance school / Studio</option>
+        <option>Tool / Equipment rental</option><option>Coworking / Office</option><option>Other</option>
+      </select>
+    </div>
+    <div class="field"><label for="catO">Category (Other)</label><input id="catO" name="CategoryOther" maxlength="100" placeholder="Describe briefly (≤100 chars)" type="text"></div>
+
+    <!-- Contact -->
+    <div class="field"><label for="hrs">Opening hours</label><textarea id="hrs" name="Hours" placeholder="Mon–Fri 10:00–18:00"></textarea></div>
+    <div class="field"><label for="tel">Contact / Phone</label><input id="tel" name="Phone" type="tel" placeholder="+1 555 123 4567"></div>
+
+    <!-- Socials -->
+    <div class="field">
+      <label for="soc">Social links</label>
+      <textarea id="soc" name="Socials" placeholder="https://instagram.com/..., @handle, https://x.com/..."></textarea>
+      <p class="help">Separate by new lines / commas / “|”. Use URL or @handle.</p>
+    </div>
+
+    <!-- Accepted crypto -->
+    <div class="field">
+      <label class="required" for="acc">Accepted crypto</label>
+      <textarea id="acc" name="Accepted" required placeholder="BTC, ETH, USDT (Polygon)"></textarea>
+      <p class="help">List primary assets and chains. Example: “BTC, ETH, USDT (Polygon)”.</p>
+    </div>
+
+    <!-- Payments: Note -->
+    <div class="field">
+      <label for="paynote">Payments note (optional)</label>
+      <textarea id="paynote" name="PaymentNote" placeholder="Any notes about crypto payment (policy, minimums, tips, etc.)"></textarea>
+      <p class="help">This appears under the Payments section in the detail modal.</p>
+    </div>
+
+    <!-- Proof -->
+    <div class="field">
+      <label class="required" for="prf">Ownership proof (pick one)</label>
+      <select id="prf" name="Proof" required>
+        <option value="">— Select —</option>
+        <option>Domain verification (.well-known or meta tag)</option>
+        <option>Official payment page URL</option>
+        <option>Business email @domain</option>
+        <option>POS/receipt photo (separate field)</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="ppg">Payment page / instructions URLs</label>
+      <textarea id="ppg" name="PaymentPages" placeholder="https://example.com/pay, https://example.com/how-to-pay"></textarea>
+      <p class="help">If you chose “Official payment page URL”, please provide at least one URL.</p>
+    </div>
+
+    <!-- Images -->
+    <div class="field">
+      <label for="proofimg">📄 Proof image — POS / receipt (single)</label>
+      <input id="proofimg" name="ProofImage" type="file" accept="image/*" />
+      <p class="help">Use only for verification evidence. Do not mix with gallery below. ≤2MB.</p>
+    </div>
+
+    <div class="field">
+      <label>🖼️ Gallery images — up to 8</label>
+      <div class="drop" data-max="8" data-input="gallery8">
+        <div class="header">
+          <button type="button" class="btn secondary dz-add">Add images</button>
+          <button type="button" class="btn secondary dz-clear">Clear all</button>
+          <span class="counter dz-counter">0 / 8 selected</span>
+        </div>
+        <div class="area dz-area">Drag & drop images here, or click to select.</div>
+        <input id="gallery8" name="Gallery[]" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
+        <p class="help">Images only. ≤2MB each. Drag thumbnails to reorder. <strong>First image will be used as cover.</strong></p>
+        <div class="thumb-list dz-list"></div>
+      </div>
+    </div>
+
+    <!-- Gallery captions -->
+    <div class="field">
+      <label for="captions">Gallery captions (optional)</label>
+      <textarea id="captions" name="GalleryCaptions" placeholder="One line per image, in the same order as selected"></textarea>
+      <p class="help">Lines map to images by order. Extra lines are ignored; missing lines mean no caption.</p>
+    </div>
+
+    <!-- Consent -->
+    <div class="field inline-check">
+      <input id="consent" name="Consent" type="checkbox" required />
+      <label class="required" for="consent" style="font-weight:400">
+        I confirm the provided info is accurate and I grant a non-exclusive free license to display the content.
+      </label>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" type="submit">Submit</button>
+      <a class="btn secondary" href="/forms/community.html">Switch to Community</a>
+      <a class="btn secondary" href="/forms/report.html">Switch to Report</a>
+    </div>
+  </form>
+</main>
+
+<script>
+  // Category other toggle
+  (function(){
+    const cat=document.getElementById('cat'), other=document.getElementById('catO');
+    function t(){ const on=cat.value==='Other'; other.disabled=!on; if(!on) other.value=''; }
+    cat?.addEventListener('change',t); t();
+  })();
+
+  // Reusable Dropzone
+  function initDrop(el){
+    const max=parseInt(el.dataset.max||'8',10);
+    const input=document.getElementById(el.dataset.input);
+    const add=el.querySelector('.dz-add'), clr=el.querySelector('.dz-clear'),
+          area=el.querySelector('.dz-area'), list=el.querySelector('.dz-list'),
+          counter=el.querySelector('.dz-counter');
+    let files=[];
+    const fmt=n=>n>=1048576?(n/1048576).toFixed(2)+'MB':Math.round(n/1024)+'KB';
+    function sync(){ const dt=new DataTransfer(); files.slice(0,max).forEach(f=>dt.items.add(f)); input.files=dt.files; counter.textContent=`${files.length} / ${max} selected`; }
+    function card(f,i){ const d=document.createElement('div'); d.className='thumb'; d.draggable=true; d.dataset.i=i;
+      const im=document.createElement('img'); im.src=URL.createObjectURL(f);
+      const m=document.createElement('div'); m.className='meta'; m.innerHTML=`<div class="name">${f.name}</div><div class="cap">${i===0?'<span class="good">Cover · </span>':''}${fmt(f.size)}</div>`;
+      const x=document.createElement('button'); x.className='del'; x.type='button'; x.textContent='×'; x.onclick=()=>{files.splice(i,1);render();};
+      d.append(im,m,x);
+      d.addEventListener('dragstart',e=>{d.classList.add('dragging');e.dataTransfer.setData('text/plain',i)});
+      d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+      d.addEventListener('dragover',e=>e.preventDefault());
+      d.addEventListener('drop',e=>{e.preventDefault();const from=+e.dataTransfer.getData('text/plain');const f2=files.splice(from,1)[0];files.splice(i,0,f2);render();});
+      return d;
+    }
+    function render(){ list.innerHTML=''; files.forEach((f,i)=>list.appendChild(card(f,i))); sync(); }
+    function accept(fs){ const add=[]; for(const f of fs){ if(!/image\/(jpeg|png|webp)/.test(f.type)) continue; if(f.size>2*1024*1024) continue; if(files.length+add.length>=max) break; add.push(f);} if(add.length){ files=files.concat(add); render(); } }
+    add.onclick=()=>input.click(); clr.onclick=()=>{files=[];render();}; input.onchange=()=>accept(input.files||[]);
+    area.onclick=()=>input.click(); area.ondragover=e=>{e.preventDefault();area.classList.add('dragover')}; area.ondragleave=()=>area.classList.remove('dragover');
+    area.ondrop=e=>{e.preventDefault();area.classList.remove('dragover');accept(e.dataTransfer.files||[])};
+    render();
+  }
+  document.querySelectorAll('.drop').forEach(initDrop);
+</script>
+
+<!-- Countries loader: populate Country <select> from /data/meta/countries.json -->
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  onReady(async function(){
+    const sel = document.getElementById('ctr');
+    const hidden = document.getElementById('ctrCode');
+    if(!sel) return;
+
+    try {
+      const res = await fetch('/data/meta/countries.json', { cache: 'no-store' });
+      const list = await res.json(); // [{code:'JP', name:'Japan'}, ...]
+      sel.innerHTML = '<option value="">— Select —</option>';
+      for (const {code, name} of list) {
+        const opt = document.createElement('option');
+        opt.value = name;                 // submit the full country name
+        opt.textContent = `${name} (${code})`;
+        opt.dataset.code = code;
+        sel.appendChild(opt);
+      }
+
+      sel.addEventListener('change', () => {
+        const code = sel.selectedOptions[0]?.dataset?.code || '';
+        if (hidden) hidden.value = code;
+      });
+
+      // If Country was prefilled before options loaded, try to select matching name (case-insensitive)
+      const preset = sel.getAttribute('data-preset') || sel.value;
+      if (preset) {
+        const lower = preset.toLowerCase();
+        const match = Array.from(sel.options).find(o => o.value.toLowerCase() === lower);
+        if (match) {
+          sel.value = match.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      }
+    } catch (e) {
+      console.error('countries.json load failed', e);
+      // graceful fallback to text input
+      const parent = sel.parentElement;
+      const fallback = document.createElement('input');
+      fallback.type = 'text';
+      fallback.required = true;
+      fallback.name = 'Country';
+      fallback.id = 'ctr';
+      fallback.placeholder = 'Country';
+      parent.replaceChild(fallback, sel);
+      if (hidden) hidden.remove();
+    }
+  });
+})();
+</script>
+
+<!-- Prefill: reads ?placeId & ?placeName, fills BusinessName and visible ExistingPlaceId, and injects hidden 'placeId' -->
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  onReady(function(){
+    try {
+      const sp = new URLSearchParams(location.search);
+      const placeId = sp.get('placeId') || sp.get('place_id') || '';
+      const placeName = sp.get('placeName') || sp.get('place_name') || '';
+      const SHOW_PREFILL_INFO = false; // set true to show a visible debug info box
+
+      function setField(possibleNames, val){
+        if(!val) return false;
+        for(const n of possibleNames){
+          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n);
+          if(!el){
+            el = document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
+          }
+          if(!el) continue;
+          const tag = el.tagName || '';
+          if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'){
+            try { el.value = val; } catch(e) {}
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+          } else {
+            el.textContent = val;
+          }
+          return true;
+        }
+        return false;
+      }
+
+      setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
+
+      if(placeId){
+        setField(['ExistingPlaceId','existingplaceid','existingId','existing_id','placeId','place_id'], placeId);
+        const form = document.getElementById('form-owner');
+        if(form){
+          let hi = form.querySelector('input[name="placeId"]');
+          if(!hi){
+            hi = document.createElement('input');
+            hi.type = 'hidden';
+            hi.name = 'placeId';
+            form.appendChild(hi);
+          }
+          hi.value = placeId;
+        }
+      }
+
+      if(SHOW_PREFILL_INFO && (placeId || placeName)){
+        const infoId = 'form-prefill-info';
+        if(!document.getElementById(infoId)){
+          const info = document.createElement('div');
+          info.id = infoId;
+          info.style.padding = '10px';
+          info.style.margin = '8px 0';
+          info.style.background = '#f8fafc';
+          info.style.border = '1px solid #e6eef6';
+          info.style.color = '#0f172a';
+          info.style.fontSize = '14px';
+          info.textContent = 'Prefilled: ' + (placeName || '') + (placeId ? ' (' + placeId + ')' : '');
+          const container = document.querySelector('main.container') || document.body;
+          container.insertBefore(info, container.firstChild);
+        }
+      }
+    } catch (e) {
+      console.error('owner form prefill error', e);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "country": "JP",
+  "city": "Tokyo",
+  "indexPath": "public/data/places/jp/tokyo/tokyo.json",
+  "counts": {
+    "baseline": 44,
+    "singlesForCity": 4,
+    "missingInIndex": 0,
+    "extraCpmInIndex": 0
+  },
+  "missingInIndex": [],
+  "extraCpmInIndex": [],
+  "singlesPreview": [
+    {
+      "id": "cpm:jp-tokyo-unknown-1",
+      "name": "unknown"
+    },
+    {
+      "id": "cpm:jp-tokyo-nakamoto-bakery-1",
+      "name": "Nakamoto Bakery"
+    },
+    {
+      "id": "cpm:japan-tokyo-unknown-1",
+      "name": "unknown"
+    },
+    {
+      "id": "cpm:japan-tokyo-nakamoto-bakery-1",
+      "name": "Nakamoto Bakery"
+    }
+  ]
+}

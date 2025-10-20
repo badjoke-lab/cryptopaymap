@@ -1,11 +1,14 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "target": "ES2021",
     "module": "CommonJS",
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
     "moduleResolution": "Node",
     "types": ["node"],
-    "resolveJsonModule": true,
-    "noEmit": true
+    "outDir": "dist-scripts",
+    "skipLibCheck": true
   },
-  "include": ["scripts/**/*.ts"]
+  "include": ["scripts/**/*"]
 }

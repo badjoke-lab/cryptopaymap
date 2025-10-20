@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Submit & Report — CryptoPayMap</title>
+<style>
+  :root{--max-w:1100px;--pad:20px}
+  body{font-family:Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+       margin:0;color:#111;background:#fff;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--max-w);margin:40px auto;padding:var(--pad)}
+  h1{font-size:32px;margin:0 0 8px}
+  p.lead{color:#4b5563;margin:0 0 24px;font-size:15px;line-height:1.6}
+  .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:16px}
+  @media(min-width:720px){.grid{grid-template-columns:repeat(3,1fr)}}
+  .card{border:1px solid #e6e6e9;padding:18px;border-radius:10px;text-decoration:none;color:inherit;display:block}
+  .card .title{font-weight:600;margin-bottom:8px;font-size:18px}
+  .card .desc{color:#6b7280;font-size:14px}
+  section{margin-bottom:28px}
+  h2{font-size:18px;margin:0 0 12px}
+  ul{margin:0;padding-left:20px;color:#374151}
+  footer{color:#6b7280;font-size:13px}
+  .note{margin-top:8px;color:#9ca3af;font-size:13px}
+</style>
+</head>
+<body>
+  <div class="wrap" role="main">
+    <header>
+      <h1>Submit & Report</h1>
+      <p class="lead">Use this hub to submit owner registrations, provide community evidence, or report issues about a place. Accurate submissions speed up review. Please read the short guidance below before submitting.</p>
+    </header>
+
+    <section aria-labelledby="cta-heading">
+      <h2 id="cta-heading">Quick Actions</h2>
+      <div class="grid" id="cta-grid">
+        <a id="owner-link" class="card" href="/forms/owner.html">
+          <div class="title">Owner Submission</div>
+          <div class="desc">Register and verify your business (business email option sends a one-time verification link).</div>
+        </a>
+
+        <a id="community-link" class="card" href="/forms/community.html">
+          <div class="title">Submit Community Evidence</div>
+          <div class="desc">Submit photos or evidence that confirm the existence or details of a place.</div>
+        </a>
+
+        <a id="report-link" class="card" href="/forms/report.html">
+          <div class="title">Report an Issue</div>
+          <div class="desc">Report closures, incorrect information, fraud, or other problems to Ops.</div>
+        </a>
+      </div>
+    </section>
+
+    <section aria-labelledby="rules-heading">
+      <h2 id="rules-heading">Before you submit — key rules</h2>
+      <ul>
+        <li><strong>Images:</strong> First image is the cover. Owner ≤8, Community ≤4, Report ≤4. Max 2MB each. Server strips EXIF and resizes long edge to 1600px.</li>
+        <li><strong>Submitter info:</strong> Name & email required.</li>
+        <li><strong>Owner verification:</strong> Choosing a business email sends a one-time verification link to that address.</li>
+        <li><strong>Accepted (crypto):</strong> Free-text; normalized later.</li>
+        <li><strong>Private data:</strong> Don't upload credit cards or IDs.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="flow-heading">
+      <h2 id="flow-heading">How submissions are processed</h2>
+      <ol>
+        <li>Submit → server saves JSON & media and issues a reference ID (Ref).</li>
+        <li>Ops receives summary email and reviews (may request more info).</li>
+        <li>After approval, Ops updates the place and it appears on the map.</li>
+        <li>Ops emails the submitter with approval or follow-up requests.</li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="faq-heading">
+      <h2 id="faq-heading">FAQ</h2>
+      <p><strong>How long?</strong> Manual review → may take hours to several business days.</p>
+      <p><strong>Need help?</strong> Contact <a href="mailto:cryptopaymap.app@gmail.com">cryptopaymap.app@gmail.com</a></p>
+      <p class="note">Note: image examples are pending and will be added later.</p>
+    </section>
+
+    <footer>
+      Ops email: <a href="mailto:cryptopaymap.app@gmail.com">cryptopaymap.app@gmail.com</a>
+    </footer>
+  </div>
+
+<script>
+(function(){
+  // Append current ?placeId & ?placeName to form links if present
+  try {
+    const sp = new URLSearchParams(location.search);
+    const placeId = sp.get('placeId');
+    const placeName = sp.get('placeName');
+    const make = (base) => {
+      if (!placeId && !placeName) return base;
+      const u = new URL(base, window.location.origin);
+      if (placeId) u.searchParams.set('placeId', placeId);
+      if (placeName) u.searchParams.set('placeName', placeName);
+      return u.pathname + u.search;
+    };
+    const owner = document.getElementById('owner-link');
+    const comm = document.getElementById('community-link');
+    const rep = document.getElementById('report-link');
+    if (owner) owner.href = make('/forms/owner.html');
+    if (comm) comm.href = make('/forms/community.html');
+    if (rep) rep.href = make('/forms/report.html');
+  } catch(e){
+    /* ignore */
+  }
+})();
+
+(function(){
+  try {
+    const sp = new URLSearchParams(location.search);
+    const placeId = sp.get('placeId') || sp.get('place_id') || '';
+    const placeName = sp.get('placeName') || sp.get('place_name') || '';
+
+    // show prefill info near the top (create element if not present)
+    let info = document.getElementById('prefill-info');
+    if (!info) {
+      info = document.createElement('div');
+      info.id = 'prefill-info';
+      info.style.marginBottom = '12px';
+      info.style.fontSize = '14px';
+      info.style.color = '#374151';
+      const wrap = document.querySelector('.wrap');
+      if (wrap) wrap.insertBefore(info, wrap.firstChild.nextSibling);
+    }
+    if (placeId || placeName) {
+      info.textContent = 'Prefill: ' + (placeName ? placeName : '') + (placeId ? ' (' + placeId + ')' : '');
+    } else {
+      info.textContent = '';
+    }
+
+    // Update the 3 form links to include params
+    const make = (base) => {
+      if (!placeId && !placeName) return base;
+      const u = new URL(base, window.location.origin);
+      if (placeId) u.searchParams.set('placeId', placeId);
+      if (placeName) u.searchParams.set('placeName', placeName);
+      return u.pathname + u.search;
+    };
+    const owner = document.getElementById('owner-link');
+    const comm = document.getElementById('community-link');
+    const rep = document.getElementById('report-link');
+    if (owner) owner.href = make('/forms/owner.html');
+    if (comm) comm.href = make('/forms/community.html');
+    if (rep) rep.href = make('/forms/report.html');
+  } catch(e) {
+    console.error('submit hub script error', e);
+  }
+})();
+</script>
+
+</body>
+</html>

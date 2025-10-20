@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "source": "self-form",
+    "kind": "owner",
+    "timestamp": "2025-10-18T01:35:16.533Z",
+    "ref": "own_N8Ld"
+  },
+  "id": "cpm:jp-tokyo-nakamoto-bakery-1",
+  "name": "Nakamoto Bakery",
+  "external_ids": {},
+  "website": "https://nakamotobakery.example.com/",
+  "location": {
+    "country": "JP",
+    "city": "Tokyo",
+    "address": "1-2-3 Jinnan, Shibuya-ku"
+  },
+  "verification": {
+    "status": "owner"
+  },
+  "submitted_by": "Review Ops",
+  "submitted_email": "ops@example.com",
+  "fields": {
+    "SubmitterName": "Review Ops",
+    "SubmitterEmail": "ops@example.com",
+    "BusinessName": "Nakamoto Bakery",
+    "ExistingPlaceId": "",
+    "City": "Tokyo",
+    "Country": "Japan",
+    "CountryCode": "JP",
+    "Address": "1-2-3 Jinnan, Shibuya-ku",
+    "Website": "https://nakamotobakery.example.com",
+    "lat": "",
+    "lng": "",
+    "Category": "Bakery",
+    "Hours": "Mon–Sun 09:00–19:00",
+    "Phone": "+81 3 1234 5678",
+    "Socials": "https://instagram.com/nakamotobakery https://x.com/nakamoto_bakery",
+    "Accepted": "BTC, ETH, USDT (Polygon)",
+    "Proof": "Official payment page URL",
+    "PaymentPages": "https://nakamotobakery.example.com/pay",
+    "Consent": "on"
+  },
+  "submission": {
+    "images": [
+      {
+        "url": "/media/416956495dc0b593.png",
+        "fileId": "416956495dc0b593",
+        "bytes": 1028129,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/c33e0b96294f945d.png",
+        "fileId": "c33e0b96294f945d",
+        "bytes": 998231,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/50e8140799848d93.png",
+        "fileId": "50e8140799848d93",
+        "bytes": 299035,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/2c88c1363daf37bb.png",
+        "fileId": "2c88c1363daf37bb",
+        "bytes": 361873,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/825d7dc1738a0303.png",
+        "fileId": "825d7dc1738a0303",
+        "bytes": 508873,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/adc66a34d0d120e3.png",
+        "fileId": "adc66a34d0d120e3",
+        "bytes": 131259,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/ac1039b1cbaf2bb1.png",
+        "fileId": "ac1039b1cbaf2bb1",
+        "bytes": 220856,
+        "type": "image/png"
+      },
+      {
+        "url": "/media/e46ddc4de45c97ec.png",
+        "fileId": "e46ddc4de45c97ec",
+        "bytes": 305301,
+        "type": "image/png"
+      }
+    ]
+  }
+}

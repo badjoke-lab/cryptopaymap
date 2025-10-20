@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Community Submission — CryptoPayMap</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/forms/forms.css" />
+</head>
+<body>
+<main class="container">
+  <h1>Community Submission</h1>
+  <p class="subtle">Required fields <strong>*</strong>. Images: up to <strong>4</strong>, ≤ <strong>2MB</strong> each.</p>
+
+  <form id="form-community" action="/submit/community" method="post" enctype="multipart/form-data" class="form-col">
+    <div class="field"><label class="required" for="sn">Submitter name</label><input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text"></div>
+    <div class="field"><label class="required" for="se">Submitter email</label><input id="se" name="SubmitterEmail" required type="email"></div>
+
+    <div class="field"><label class="required" for="bn">Business name</label><input id="bn" name="BusinessName" required maxlength="80" type="text"></div>
+
+    <!-- ADDED: visible existing place ID (optional) -->
+    <div class="field">
+      <label for="existingId">Existing place ID (optional)</label>
+      <input id="existingId" name="ExistingPlaceId" type="text" placeholder="e.g. osm:node:10078071561" />
+      <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new submission.</p>
+    </div>
+
+    <div class="field"><label class="required" for="cty">City</label><input id="cty" name="City" required type="text"></div>
+    <div class="field"><label class="required" for="ctr">Country</label><input id="ctr" name="Country" required type="text"></div>
+    <div class="field"><label class="required" for="adr">Address</label><input id="adr" name="Address" required maxlength="200" type="text"></div>
+    <div class="field"><label for="web">Website / Map URL</label><input id="web" name="Website" type="url" placeholder="https://..."></div>
+
+    <div class="field">
+      <label class="required" for="cat">Category</label>
+      <select id="cat" name="Category" required>
+        <option value="">— Select —</option>
+        <option>Cafe</option><option>Restaurant</option><option>Bar / Pub</option><option>Bakery</option>
+        <option>Grocery / Supermarket</option><option>Butcher</option><option>Pharmacy</option><option>Clinic / Doctors</option>
+        <option>Dentist</option><option>Hairdresser / Barber</option><option>Spa / Beauty</option><option>Electronics</option>
+        <option>Clothing / Apparel</option><option>Jewelry</option><option>Bookshop</option><option>Convenience store</option>
+        <option>Hotel / Lodging</option><option>Gym / Fitness</option><option>Dance school / Studio</option>
+        <option>Tool / Equipment rental</option><option>Coworking / Office</option><option>Other</option>
+      </select>
+    </div>
+
+    <div class="field"><label class="required" for="acc">Accepted crypto</label><textarea id="acc" name="Accepted" required placeholder="BTC, ETH"></textarea></div>
+
+    <div class="field">
+      <label class="required" for="ev">Evidence link(s) * (≥2)</label>
+      <textarea id="ev" name="Evidence" required placeholder="https://x.com/post/..., https://instagram.com/..."></textarea>
+      <p class="help">Provide at least two URLs. Separate by new lines or commas.</p>
+    </div>
+
+    <div class="field">
+      <label>🖼️ Upload images — gallery (up to 4)</label>
+      <div class="drop" data-max="4" data-input="gallery4">
+        <div class="header">
+          <button type="button" class="btn secondary dz-add">Add images</button>
+          <button type="button" class="btn secondary dz-clear">Clear all</button>
+          <span class="counter dz-counter">0 / 4 selected</span>
+        </div>
+        <div class="area dz-area">Drag & drop images here, or click to select.</div>
+        <input id="gallery4" name="Gallery[]" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
+        <p class="help">Images only. ≤2MB each. Drag to reorder. <strong>First image will be used as cover.</strong></p>
+        <div class="thumb-list dz-list"></div>
+      </div>
+    </div>
+
+    <div class="field inline-check">
+      <input id="consent" name="Consent" type="checkbox" required />
+      <label class="required" for="consent" style="font-weight:400">
+        I confirm I’m not the owner of this place and I grant a non-exclusive free license to display the content.
+      </label>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" type="submit">Submit</button>
+      <a class="btn secondary" href="/forms/owner.html">Switch to Owner</a>
+      <a class="btn secondary" href="/forms/report.html">Switch to Report</a>
+    </div>
+  </form>
+</main>
+
+<script>
+  // Dropzone init (unchanged logic, max set via data-max)
+  function initDrop(el){
+    const max=parseInt(el.dataset.max||'4',10);
+    const input=document.getElementById(el.dataset.input);
+    const add=el.querySelector('.dz-add'), clr=el.querySelector('.dz-clear'),
+          area=el.querySelector('.dz-area'), list=el.querySelector('.dz-list'),
+          counter=el.querySelector('.dz-counter');
+    let files=[];
+    const fmt=n=>n>=1048576?(n/1048576).toFixed(2)+'MB':Math.round(n/1024)+'KB';
+    const sync=()=>{const dt=new DataTransfer();files.slice(0,max).forEach(f=>dt.items.add(f));input.files=dt.files;counter.textContent=`${files.length} / ${max} selected`;}
+    const card=(f,i)=>{const d=document.createElement('div');d.className='thumb';d.draggable=true;d.dataset.i=i;
+      const im=document.createElement('img');im.src=URL.createObjectURL(f);
+      const m=document.createElement('div');m.className='meta';m.innerHTML=`<div class="name">${f.name}</div><div class="cap">${i===0?'<span class="good">Cover · </span>':''}${fmt(f.size)}</div>`;
+      const x=document.createElement('button');x.className='del';x.type='button';x.textContent='×';x.onclick=()=>{files.splice(i,1);render();};
+      d.append(im,m,x);
+      d.addEventListener('dragstart',e=>{d.classList.add('dragging');e.dataTransfer.setData('text/plain',i)});
+      d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+      d.addEventListener('dragover',e=>e.preventDefault());
+      d.addEventListener('drop',e=>{e.preventDefault();const from=+e.dataTransfer.getData('text/plain');const f2=files.splice(from,1)[0];files.splice(i,0,f2);render();});
+      return d;
+    };
+    function render(){ list.innerHTML=''; files.forEach((f,i)=>list.appendChild(card(f,i))); sync(); }
+    function accept(fs){ const add=[]; for(const f of fs){ if(!/image\/(jpeg|png|webp)/.test(f.type)) continue; if(f.size>2*1024*1024) continue; if(files.length+add.length>=max) break; add.push(f);} if(add.length){ files=files.concat(add); render(); } }
+    add.onclick=()=>input.click(); clr.onclick=()=>{files=[];render();}; input.onchange=()=>accept(input.files||[]);
+    area.onclick=()=>input.click(); area.ondragover=e=>{e.preventDefault();area.classList.add('dragover')}; area.ondragleave=()=>area.classList.remove('dragover');
+    area.ondrop=e=>{e.preventDefault();area.classList.remove('dragover');accept(e.dataTransfer.files||[])};
+    render();
+  }
+  document.querySelectorAll('.drop').forEach(initDrop);
+</script>
+
+<!-- Prefill script: reads ?placeId & ?placeName and auto-fills BusinessName + ExistingPlaceId, and ensures hidden placeId is submitted.
+     The visible info box is controlled by SHOW_PREFILL_INFO for easy toggling. -->
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+
+  onReady(function(){
+    try {
+      const sp = new URLSearchParams(location.search);
+      const placeId = sp.get('placeId') || sp.get('place_id') || '';
+      const placeName = sp.get('placeName') || sp.get('place_name') || '';
+
+      // Toggle this to true if you want the visible "Prefilled: ..." box for debugging.
+      const SHOW_PREFILL_INFO = false;
+
+      // utility: try several name/id variants to set a field (by name attr or id)
+      function setField(possibleNames, val){
+        if(!val) return false;
+        for(const n of possibleNames){
+          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n);
+          if(!el){
+            // try lowercase variations
+            el = document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
+          }
+          if(!el) continue;
+          const tag = el.tagName;
+          if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'){
+            el.value = val;
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+          } else {
+            el.textContent = val;
+          }
+          return true;
+        }
+        return false;
+      }
+
+      // Fill business/place name (if present)
+      setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
+
+      // Fill visible ExistingPlaceId if present and ensure canonical hidden placeId is submitted
+      if(placeId){
+        setField(['ExistingPlaceId','existingplaceid','existingId','existing_id','placeId','place_id'], placeId);
+
+        const form = document.getElementById('form-community');
+        if(form){
+          // hidden canonical field so server always receives placeId
+          let hi = form.querySelector('input[name="placeId"]');
+          if(!hi){
+            hi = document.createElement('input');
+            hi.type = 'hidden';
+            hi.name = 'placeId';
+            form.appendChild(hi);
+          }
+          hi.value = placeId;
+        }
+      }
+
+      // visible info box for operator & user reassurance (toggleable)
+      const infoId = 'form-prefill-info';
+      if(!document.getElementById(infoId) && SHOW_PREFILL_INFO && (placeId || placeName)){
+        const info = document.createElement('div');
+        info.id = infoId;
+        info.style.padding = '10px';
+        info.style.margin = '8px 0';
+        info.style.background = '#f8fafc';
+        info.style.border = '1px solid #e6eef6';
+        info.style.color = '#0f172a';
+        info.style.fontSize = '14px';
+        info.textContent = 'Prefilled: ' + (placeName || '') + (placeId ? ' (' + placeId + ')' : '');
+        const container = document.querySelector('main.container') || document.body;
+        container.insertBefore(info, container.firstChild);
+      }
+    } catch (e) {
+      console.error('community form prefill error', e);
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

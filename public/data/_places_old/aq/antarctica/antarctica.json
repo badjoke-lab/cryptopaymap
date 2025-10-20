@@ -1,0 +1,81 @@
+{
+  "places": [
+    {
+      "id": "aq-demo-dir-001",
+      "name": "Demo Station (Directory)",
+      "country": "AQ",
+      "city": "Antarctica",
+      "category": "Cafe",
+      "lat": -75.2509,
+      "lng": 0.0714,
+      "address": "Somewhere in Antarctica",
+      "verification": { "status": "directory" },
+      "payment": {
+        "accepts": [
+          { "asset": "BTC", "chain": "bitcoin",   "method": "onchain"   },
+          { "asset": "BTC", "chain": "lightning", "method": "lightning" }
+        ]
+      },
+      "last_verified": "2025-09-01"
+    },
+    {
+      "id": "aq-demo-unv-001",
+      "name": "Demo Outpost (Unverified)",
+      "country": "AQ",
+      "city": "Antarctica",
+      "category": "Store",
+      "lat": -78.0000,
+      "lng": 12.3456,
+      "address": "Near the ice",
+      "verification": { "status": "unverified" },
+      "payment": {
+        "accepts": [
+          { "asset": "ETH", "chain": "evm-mainnet", "method": "onchain" }
+        ]
+      }
+    },
+	{
+	  "id": "aq-demo-owner-001",
+	  "name": "Polar Base (Owner)",
+	  "country": "AQ",
+	  "city": "Antarctica",
+	  "category": "Cafe",
+	  "lat": -75.30,
+	  "lng": 0.12,
+	  "address": "Ice Ridge 1",
+	  "verification": { "status": "owner" },
+	  "profile": {
+	    "summary": "Owner-submitted example. This summary is intentionally long to verify the owner limit (600 chars max). Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Pellentesque fermentum dolor. Aliquam quam lectus, facilisis auctor, ultrices ut, elementum vulputate, nunc."
+	  },
+	  "payment": {
+	    "accepts": [
+	      { "asset": "BTC", "chain": "bitcoin",   "method": "onchain"   },
+	      { "asset": "BTC", "chain": "lightning", "method": "lightning" }
+	    ]
+	  },
+	  "last_verified": "2025-09-01"
+	},
+
+	{
+	  "id": "aq-demo-community-001",
+	  "name": "Field Camp (Community)",
+	  "country": "AQ",
+	  "city": "Antarctica",
+	  "category": "Store",
+	  "lat": -75.36,
+	  "lng": 0.18,
+	  "address": "Snow Field A",
+	  "verification": { "status": "community" },
+	  "profile": {
+	    "summary": "Community-submitted example. This summary helps verify the community limit (300 chars max). Shorter text should render without truncation when under the threshold."
+	  },
+	  "payment": {
+	    "accepts": [
+	      { "asset": "ETH",  "chain": "evm-mainnet", "method": "onchain" }
+	    ]
+	  }
+	}
+
+
+  ]
+}

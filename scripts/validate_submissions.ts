@@ -5,6 +5,13 @@ import process from "node:process";
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
+// ★ 1) フォーム正規化（必ず通す）
+import {
+  normalizeOwnerForm,
+  normalizeCommunityForm,
+  normalizeReportForm,
+} from "../src/normalizeSubmission";
+
 const ROOT = process.cwd();
 const SUB_DIR = process.env.SUBMISSIONS_DIR || "fixtures";
 const TARGET_DIR = path.join(ROOT, SUB_DIR);
@@ -68,132 +75,98 @@ function inferKind(data: any, filename: string): "owner" | "community" | "report
   return "place";
 }
 
-// 文字列→URL判定の簡易関数
-function looksLikeUrl(s: string): boolean {
-  return /^https?:\/\//i.test(s.trim());
+// ===== FAIL ルール（scripts/validate.ts と整合） =====
+
+type Verification = "owner" | "community" | "directory" | "unverified";
+
+function levelLimits(level: Verification | string | undefined) {
+  if (level === "owner")
+    return { maxImages: 8, maxSummary: 600, requirePayments: true };
+  if (level === "community")
+    return { maxImages: 4, maxSummary: 300, requirePayments: true };
+  // directory / unverified
+  return { maxImages: 0, maxSummary: 0, requirePayments: false };
 }
 
-// プラットフォーム名っぽいキーを標準化（なければ "other"）
-function normalizePlatformKey(k: string): string {
-  const v = k.toLowerCase();
-  const known = [
-    "instagram","facebook","x","tiktok","youtube",
-    "telegram","whatsapp","wechat","line","threads","pinterest","other"
-  ];
-  return known.includes(v) ? v : "other";
+function isISO2Country(v: any): boolean {
+  return typeof v === "string" && /^[A-Z]{2}$/.test(v.trim());
 }
 
-// owner用 socials 標準化：
-// - 文字列: URLなら {url, platform:"other"} / それ以外は {handle, platform:"other"}
-// - オブジェクト: {instagram:"url"} 形式は entries 展開
-// - 既に {platform,url,handle} ならそのまま
-function normalizeOwnerSocials(s: any): any {
-  if (s == null) return s;
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
 
-  // 1) 配列以外なら配列に
-  let arr: any[] = Array.isArray(s) ? s : [s];
+function detectAddressTail(address?: string, city?: string, countryCode?: string): boolean {
+  if (!address) return false;
+  const a = String(address);
+  const tails: string[] = [];
+  if (city) tails.push(city);
+  if (countryCode) tails.push(countryCode);
+  for (const t of tails) {
+    const re = new RegExp(`(?:,\\s*|\\s*/\\s*)${escapeRegExp(t)}\\.?$`, "i");
+    if (re.test(a)) return true;
+  }
+  return false;
+}
 
-  // 2) 各要素を標準化して配列に平坦化
-  const out: any[] = [];
-  for (const item of arr) {
-    if (item == null) continue;
+function validateBusinessRulesForPatch(
+  patch: any,
+  fileLabel: string
+): string[] {
+  const errs: string[] = [];
+  const lvl: Verification | string | undefined = patch?.verification?.status;
+  const limits = levelLimits(lvl);
 
-    if (typeof item === "string") {
-      const str = item.trim();
-      if (!str) continue;
-      if (looksLikeUrl(str)) {
-        out.push({ platform: "other", url: str });
-      } else {
-        out.push({ platform: "other", handle: str });
-      }
-      continue;
+  // 1) country ISO2
+  if (patch?.country != null && !isISO2Country(patch.country)) {
+    errs.push(`${fileLabel}: country must be ISO alpha-2 (AA): "${patch.country}"`);
+  }
+
+  // 2) address 末尾に , City / , CountryCode が残存していないか
+  if (typeof patch?.address === "string") {
+    const city = typeof patch?.city === "string" ? patch.city : undefined;
+    const cc = typeof patch?.country === "string" ? patch.country : undefined;
+    if (detectAddressTail(patch.address, city, cc)) {
+      errs.push(`${fileLabel}: address must not contain trailing ", City / , CountryCode"`);
     }
+  }
 
-    if (typeof item === "object") {
-      // 既に標準形:
-      if ("platform" in item || "url" in item || "handle" in item) {
-        const platform = normalizePlatformKey(String((item as any).platform ?? "other"));
-        const url = (item as any).url;
-        const handle = (item as any).handle;
-        const o: any = { platform };
-        if (typeof url === "string" && url.trim()) o.url = url.trim();
-        if (typeof handle === "string" && handle.trim()) o.handle = handle.trim();
-        if (o.url || o.handle) out.push(o);
-        continue;
-      }
-      // { instagram:"url", x:"@id" } のような辞書型
-      for (const [k, v] of Object.entries(item)) {
-        if (v == null) continue;
-        const platform = normalizePlatformKey(k);
-        if (typeof v === "string") {
-          const vv = v.trim();
-          if (!vv) continue;
-          if (looksLikeUrl(vv)) {
-            out.push({ platform, url: vv });
-          } else {
-            out.push({ platform, handle: vv });
-          }
-        } else if (typeof v === "object" && v) {
-          const url = (v as any).url;
-          const handle = (v as any).handle;
-          const o: any = { platform };
-          if (typeof url === "string" && url.trim()) o.url = url.trim();
-          if (typeof handle === "string" && handle.trim()) o.handle = handle.trim();
-          if (o.url || o.handle) out.push(o);
-        }
-      }
-      continue;
+  // 3) profile.summary の長さ
+  const sum = patch?.profile?.summary;
+  if (typeof sum === "string") {
+    if (limits.maxSummary === 0 && sum.length > 0) {
+      errs.push(`${fileLabel}: profile.summary not allowed for level=${String(lvl)}`);
+    } else if (sum.length > limits.maxSummary) {
+      errs.push(`${fileLabel}: profile.summary length ${sum.length} > ${limits.maxSummary} (level=${String(lvl)})`);
     }
-    // その他の型は無視
   }
 
-  // 重複を簡易除去（url/handle/platの組み合わせ）
-  const seen = new Set<string>();
-  const dedup = out.filter(o => {
-    const key = `${o.platform}|${o.url ?? ""}|${o.handle ?? ""}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
+  // 4) media.images 上限
+  const images: any[] = Array.isArray(patch?.media?.images) ? patch.media.images : [];
+  if (images.length > limits.maxImages) {
+    errs.push(`${fileLabel}: media.images length ${images.length} > ${limits.maxImages} (level=${String(lvl)})`);
+  }
+  if (images.length > 0 && limits.maxImages === 0) {
+    errs.push(`${fileLabel}: media.images not allowed for level=${String(lvl)}`);
+  }
 
-  return dedup;
+  // 5) Owner/Community は payment.accepts 必須
+  if (limits.requirePayments) {
+    const acc: any[] = Array.isArray(patch?.payment?.accepts) ? patch.payment.accepts : [];
+    if (acc.length === 0) {
+      errs.push(`${fileLabel}: level=${String(lvl)} requires payment.accepts >= 1`);
+    }
+  }
+
+  return errs;
 }
 
-// report 用のトップレベル → report ネスト化（前回と同様）
-function normalizeReportTopLevel(out: any) {
-  const hasNested = typeof out.report === "object" && out.report !== null;
-  const hasTopStatus = typeof out.status === "string";
-  const hasTopEvidence = Array.isArray(out.evidence);
-  const hasTopNote = typeof out.note === "string";
-  if (!hasNested && (hasTopStatus || hasTopEvidence || hasTopNote)) {
-    out.report = {
-      ...(hasTopStatus ? { status: out.status } : {}),
-      ...(hasTopEvidence ? { evidence: out.evidence } : {}),
-      ...(hasTopNote ? { note: out.note } : {})
-    };
-  }
-}
+// チェーンメタを（normalize* 用に）読み込み
+type ChainMetaEntry = { id: string; label?: string; aliases?: string[] };
+type ChainsMeta = { chains: ChainMetaEntry[] };
+const chainsMeta: ChainsMeta = JSON.parse(fs.readFileSync(CHAINS_META, "utf-8"));
 
-function normalizeForSchema(kind: "owner" | "community" | "report" | "place", data: any): any {
-  const out = typeof data === "object" && data ? { ...data } : data;
-
-  // kind 補完
-  if (kind !== "place" && (typeof out !== "object" || out === null || !("kind" in out))) {
-    if (typeof out === "object" && out) out.kind = kind;
-  }
-
-  // owner: socials 標準化（ここで配列要素をオブジェクト化）
-  if (kind === "owner" && out && typeof out === "object" && "socials" in out) {
-    out.socials = normalizeOwnerSocials(out.socials);
-  }
-
-  // report: トップレベル項目を report へ寄せる
-  if (kind === "report" && out && typeof out === "object") {
-    normalizeReportTopLevel(out);
-  }
-
-  return out;
-}
+// ====== メイン ======
 
 const files = fs.readdirSync(TARGET_DIR).filter(f => f.endsWith(".json"));
 if (files.length === 0) {
@@ -212,22 +185,27 @@ for (const file of files) {
     const data = JSON.parse(raw);
 
     const kind = inferKind(data, file);
-    const normalized = normalizeForSchema(kind, data);
+    const nowISO = new Date().toISOString();
 
-    let ok: boolean;
-    switch (kind) {
-      case "owner":
-        ok = validateOwner(normalized) as boolean;
-        break;
-      case "community":
-        ok = validateCommunity(normalized) as boolean;
-        break;
-      case "report":
-        ok = validateReport(normalized) as boolean;
-        break;
-      default:
-        ok = validatePlace(normalized) as boolean;
+    // ★ 1) 正規化を必ず通す（Owner/Community/Report）
+    let patch: any;
+    if (kind === "owner") {
+      patch = normalizeOwnerForm(data as any, chainsMeta, nowISO).patch;
+    } else if (kind === "community") {
+      patch = normalizeCommunityForm(data as any, chainsMeta, nowISO).patch;
+    } else if (kind === "report") {
+      patch = normalizeReportForm(data as any, nowISO).patch;
+    } else {
+      // place はそのままスキーマ検証（正規化の適用対象外）
+      patch = data;
     }
+
+    // ★ 2) スキーマ検証（patch.* または place）
+    let ok: boolean;
+    if (kind === "owner") ok = validateOwner(patch) as boolean;
+    else if (kind === "community") ok = validateCommunity(patch) as boolean;
+    else if (kind === "report") ok = validateReport(patch) as boolean;
+    else ok = validatePlace(patch) as boolean;
 
     if (!ok) {
       fail++;
@@ -238,9 +216,21 @@ for (const file of files) {
         (validatePlace.errors || []);
       const detail = ajvErrs.map(e => `${e.instancePath || "/"} ${e.message}`).join("; ");
       errors.push({ file, detail: `[${kind}] ${detail}` });
-    } else {
-      pass++;
+      continue;
     }
+
+    // ★ 3) FAIL ルール適用（normalized patch に対して）
+    // place は対象外（既存データは scripts/validate.ts 側で検証）
+    if (kind === "owner" || kind === "community" || kind === "report") {
+      const brErrs = validateBusinessRulesForPatch(patch, `${file}`);
+      if (brErrs.length) {
+        fail++;
+        errors.push({ file, detail: brErrs.join("; ") });
+        continue;
+      }
+    }
+
+    pass++;
   } catch (e: any) {
     fail++;
     errors.push({ file, detail: e?.message || String(e) });
@@ -248,11 +238,11 @@ for (const file of files) {
 }
 
 if (fail === 0) {
-  console.log(`OK: ${pass} records passed schema under ${SUB_DIR}.`);
+  console.log(`OK: ${pass} records passed normalization + schema + business rules under ${SUB_DIR}.`);
   console.log("OK: owner patch / community patch / report patch");
   process.exit(0);
 } else {
-  console.error(`NG: ${fail} files failed schema under ${SUB_DIR}.`);
+  console.error(`NG: ${fail} files failed under ${SUB_DIR}.`);
   for (const e of errors) console.error(` - ${e.file}: ${e.detail}`);
   process.exit(1);
 }

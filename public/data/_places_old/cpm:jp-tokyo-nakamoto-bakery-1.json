@@ -1,0 +1,65 @@
+{
+  "id": "cpm:jp-tokyo-nakamoto-bakery-1",
+  "name": "Nakamoto Bakery",
+  "lat": 35.678600675350154,
+  "lng": 139.7137968303875,
+  "address": "1-2-3 Jinnan, Shibuya-ku",
+  "city": "Tokyo",
+  "country": "JP",
+  "website": "https://nakamotobakery.example.com",
+  "external_ids": {},
+  "verification": {
+    "status": "owner"
+  },
+  "location": {
+    "source": "geocode",
+    "confidence": "low"
+  },
+  "category": "Bakery",
+  "hours": "Mon–Sun 09:00–19:00",
+  "phone": "+81 3 1234 5678",
+  "socials": {
+    "instagram": "https://instagram.com/nakamotobakery https://x.com/nakamoto_bakery",
+    "twitter": null,
+    "facebook": null,
+    "others": []
+  },
+  "images": [
+    "/media/416956495dc0b593.png",
+    "/media/c33e0b96294f945d.png",
+    "/media/50e8140799848d93.png",
+    "/media/2c88c1363daf37bb.png",
+    "/media/825d7dc1738a0303.png",
+    "/media/adc66a34d0d120e3.png",
+    "/media/ac1039b1cbaf2bb1.png",
+    "/media/e46ddc4de45c97ec.png"
+  ],
+  "cover_image": "/media/416956495dc0b593.png",
+  "payment_pages": [
+    "https://nakamotobakery.example.com/pay"
+  ],
+  "payment": {
+    "accepts": [
+      {
+        "asset": "BTC",
+        "chain": "bitcoin",
+        "processor": "other",
+        "method": "onchain"
+      },
+      {
+        "asset": "ETH",
+        "chain": "ethereum",
+        "processor": "other",
+        "method": "onchain"
+      },
+      {
+        "asset": "USDT",
+        "chain": "polygon",
+        "processor": "other",
+        "method": "onchain"
+      }
+    ],
+    "preferred": []
+  },
+  "history": []
+}

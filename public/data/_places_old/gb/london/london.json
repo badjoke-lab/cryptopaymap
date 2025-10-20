@@ -1,0 +1,3821 @@
+[
+  {
+    "id": "osm:node:26040005",
+    "name": "The Limping Fox",
+    "category": "pub",
+    "lat": 51.3860498,
+    "lng": -0.3238196,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Limping Fox, 15, Rushett Road, Thames Ditton, Elmbridge, Surrey, England, KT7 0UX, United Kingdom",
+    "website": "https://www.thelimpingfox.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8224 2047",
+    "cuisine": "pub",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:307828475",
+    "name": "Thomas Exchange UK",
+    "category": "other",
+    "lat": 51.5298351,
+    "lng": -0.1238524,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Thomas Exchange UK, 25, Euston Road, King's Cross, London Borough of Camden, London, Greater London, England, NW1 2SD, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:street",
+      "amenity",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:441205302",
+    "name": "Hennessy's",
+    "category": "butcher",
+    "lat": 51.4579388,
+    "lng": -0.1661051,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Hennessy's, 80, Northcote Road, Windmill Green Estate, Clapham Junction, London Borough of Wandsworth, London, Greater London, England, SW11 6QN, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "fhrs:id",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:554974745",
+    "name": "Costa",
+    "category": "cafe",
+    "lat": 51.52996,
+    "lng": -0.1244199,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Costa, Euston Road, King's Cross, London Borough of Camden, London, Greater London, England, WC1H 8NP, United Kingdom",
+    "hours": "Mo-Fr 06:00-21:00, Sa,Su 07:00-20:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "amenity",
+      "brand",
+      "brand:wikidata",
+      "brand:wikipedia",
+      "check_date",
+      "cuisine",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "takeaway"
+    ],
+    "cuisine": "coffee_shop",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:1271588141",
+    "name": "The Bike Shop",
+    "category": "other",
+    "lat": 51.657308,
+    "lng": -0.3929281,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Bike Shop, 66, Queens Road, North Watford, Garston, Watford, Hertfordshire, England, WD17 2LA, United Kingdom",
+    "website": "http://www.thebikeshopwatford.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "old_name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:1290610513",
+    "name": "West Harrow Garage",
+    "category": "other",
+    "lat": 51.5814946,
+    "lng": -0.3545195,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "West Harrow Garage, Blenheim Road, Rayners Lane, London Borough of Harrow, London, Greater London, England, HA1 4EL, United Kingdom",
+    "website": "https://www.westharrowgarage.com/",
+    "hours": "Mo-Fr 9:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "email",
+      "level",
+      "name",
+      "opening_hours",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8427 1399",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:3072882300",
+    "name": "CUT IT OUT Wall Stickers",
+    "category": "other",
+    "lat": 51.5431205,
+    "lng": -0.0655637,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "CUT IT OUT Wall Stickers, 89, Richmond Road, Dalston, London Borough of Hackney, London, Greater London, England, E8 3HN, United Kingdom",
+    "website": "https://www.cutitoutwallstickers.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:facebook",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 800 852 7152",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:3090725390",
+    "name": "Pintus",
+    "category": "cafe",
+    "lat": 51.4558379,
+    "lng": -0.1652889,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Pintus, 132, Northcote Road, Windmill Green Estate, Clapham Junction, London Borough of Wandsworth, London, Greater London, England, SW11 6QZ, United Kingdom",
+    "website": "https://www.pintusdeli.co.uk/",
+    "hours": "Mo-Sa 07:30-22:30; Su 08:30-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "currency:XBT",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 3609 7875",
+    "instagram": "https://www.instagram.com/pintus_italian_delicatessen/",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:3147324128",
+    "name": "McCann Bespoke",
+    "category": "clothes",
+    "lat": 51.5121061,
+    "lng": -0.08269,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "McCann Bespoke, 34-26, Lime Street, Leadenhall Market, City of London, Greater London, England, EC3M 7AT, United Kingdom",
+    "website": "https://mccannbespoke.co.uk/",
+    "hours": "Mo-Fr 09:30-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "clothes",
+      "contact:instagram",
+      "currency:GBP",
+      "currency:XBT",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44  20 3904 6506",
+    "instagram": "https://www.instagram.com/mccannbespokelondon/?igsh=cmVsdDV1dXhtczZu",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:4379042414",
+    "name": "Focus Plant",
+    "category": "other",
+    "lat": 51.4251073,
+    "lng": -0.0834934,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Focus Plant, 140, Gipsy Hill, London Borough of Southwark, London, Greater London, England, SE19 1PW, United Kingdom",
+    "website": "https://www.focusplant.uk/",
+    "hours": "Mo-Fr 09:00-16:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:GBP",
+      "currency:XBT",
+      "email",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:4601420592",
+    "name": "Blacks Club",
+    "category": "other",
+    "lat": 51.5132863,
+    "lng": -0.1323897,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Blacks Club, 67, Dean Street, Soho, London, Greater London, England, W1D 4QH, United Kingdom",
+    "hours": "Mo-Fr 10:00-01:00; Sa 17:00-01:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "club",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "email",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 7287 3381",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:4654216341",
+    "name": "207 Barbers",
+    "category": "hairdresser",
+    "lat": 51.6083119,
+    "lng": 0.1073806,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "207 Barbers, 207, Manford Way, Hainault, London Borough of Redbridge, London, Greater London, England, IG7 4DJ, United Kingdom",
+    "hours": "Mo-Su 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "access",
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "currency:XBT",
+      "entrance",
+      "payment:lightning"
+    ],
+    "instagram": "barbersat207_",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:8608616078",
+    "name": "Boom Bap Burger",
+    "category": "fast_food",
+    "lat": 51.4288903,
+    "lng": -0.165889,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Boom Bap Burger, Totterdown Street, Tooting Graveney, Furzedown, Tooting, London, Greater London, England, SW17 8TA, United Kingdom",
+    "website": "https://boombapburger.com/tooting-mkt/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:street",
+      "amenity",
+      "bar",
+      "check_date",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "payment:lightning"
+    ],
+    "cuisine": "burger",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:8747613202",
+    "name": "Love Art",
+    "category": "other",
+    "lat": 51.4288209,
+    "lng": -0.16583,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Love Art, 21-23, Tooting High Street, Tooting Graveney, Furzedown, Tooting, London, Greater London, England, SW17 0SN, United Kingdom",
+    "website": "https://www.loveartclasses.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "addr:unit",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:8747645823",
+    "name": "Dr Vinyl",
+    "category": "music",
+    "lat": 51.4289394,
+    "lng": -0.16638,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Dr Vinyl, Tooting High Street, Tooting Graveney, Furzedown, London Borough of Wandsworth, London, Greater London, England, SW17 0ED, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:unit",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "shop",
+      "survey:date"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:8747645827",
+    "name": "The Candy Cane Lounge / Dr Vinyl",
+    "category": "other",
+    "lat": 51.4291549,
+    "lng": -0.1653873,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Candy Cane Lounge / Dr Vinyl, Totterdown Street, Tooting Graveney, Furzedown, Tooting, London, Greater London, England, SW17 8TA, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:street",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain",
+      "shop",
+      "survey:date"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:8747645828",
+    "name": "Get Juiced!",
+    "category": "fast_food",
+    "lat": 51.4288307,
+    "lng": -0.1659599,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Get Juiced!, Longmead Road, Tooting Graveney, Furzedown, London Borough of Wandsworth, London, Greater London, England, SW17 8PN, United Kingdom",
+    "website": "https://tootingmarket.com/market_traders/get-juiced/",
+    "hours": "Mo-Su 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:unit",
+      "amenity",
+      "check_date",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "level",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "cuisine": "juice",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:8805719003",
+    "name": "Forevermore Tattoo",
+    "category": "tattoo",
+    "lat": 51.5039365,
+    "lng": -0.2431078,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Forevermore Tattoo, 92, Hadyn Park Road, Shepherd's Bush, London Borough of Hammersmith and Fulham, London, Greater London, England, W12 9AG, United Kingdom",
+    "website": "https://www.forevermoretattoo.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 3952 1005",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:9087933559",
+    "name": "Wolfy's",
+    "category": "cafe",
+    "lat": 51.4904329,
+    "lng": -0.0388235,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Wolfy's, Bailey Street, Greenland Place, London Borough of Lewisham, London, Greater London, England, SE8 5EY, United Kingdom",
+    "website": "https://www.wolfysbar.com/",
+    "hours": "Mo-Sa 07:00-22:00, Su 08:00-21:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:postcode",
+      "addr:street",
+      "addr:unit",
+      "amenity",
+      "check_date:currency:XBT",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "cuisine": "coffee_shop",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:9087933560",
+    "name": "Blue Mango Salon",
+    "category": "beauty",
+    "lat": 51.4903309,
+    "lng": -0.038741,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Blue Mango Salon, Bailey Street, Greenland Place, London Borough of Lewisham, London, Greater London, England, SE8 5EY, United Kingdom",
+    "website": "https://www.bluemangosalon.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:postcode",
+      "addr:street",
+      "addr:unit",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 7231 3254",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10090592084",
+    "name": "Hair Design Co",
+    "category": "hairdresser",
+    "lat": 51.5506106,
+    "lng": 0.1978284,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Hair Design Co, 2, Elm Park Avenue, Elm Park, London Borough of Havering, London, Greater London, England, RM12 4RS, United Kingdom",
+    "website": "https://www.hairdesignco-hornchurch.co.uk/",
+    "hours": "Mo-Tu 09:00-17:00; We 09:30-20:00; Th-Fr 09:00-20:00; Sa 09:00-17:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "addr:unit",
+      "check_date",
+      "contact:email",
+      "contact:phone",
+      "contact:website",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 1708 470638",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10094817176",
+    "name": "Calm Indian Cow",
+    "category": "restaurant",
+    "lat": 51.5248855,
+    "lng": -0.0843074,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Calm Indian Cow, 69 Front Yard, Paul Street, Shoreditch, London Borough of Hackney, London, Greater London, England, EC2A 4NG, United Kingdom",
+    "hours": "Mo-Fr 12:00-14:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "contact:twitter",
+      "cuisine",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+447711888810",
+    "instagram": "calmindiancow",
+    "twitter": "calmindiancow",
+    "cuisine": "indian",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10197861918",
+    "name": "Ellie Yoki",
+    "category": "other",
+    "lat": 51.2920818,
+    "lng": -0.4210544,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Ellie Yoki, 2, Forest Road, East Horsley, Guildford, Surrey, England, KT24 5HE, United Kingdom",
+    "website": "https://ellieyoki.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "leisure",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10198162251",
+    "name": "Dom's Decorating",
+    "category": "other",
+    "lat": 51.2921193,
+    "lng": -0.4209898,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Dom's Decorating, 2, Forest Road, East Horsley, Guildford, Surrey, England, KT24 5HE, United Kingdom",
+    "website": "https://www.domsdecorating.co.uk",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "craft",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10216808268",
+    "name": "EC Cycling Coach and Personal Trainer",
+    "category": "other",
+    "lat": 51.4663702,
+    "lng": -0.2854093,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "EC Cycling Coach and Personal Trainer, Orchard Road, North Sheen, London Borough of Richmond upon Thames, London, Greater London, England, TW9 4FG, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "club",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7393598337",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10308608587",
+    "name": "Antonio Delicatessen",
+    "category": "other",
+    "lat": 51.4617264,
+    "lng": -0.0095697,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Antonio Delicatessen, 23, Lewis Grove, Mercator Estate, Ladywell, Lewisham, London, Greater London, England, SE13 6BG, United Kingdom",
+    "website": "https://www.antoniodelicatessen.co.uk",
+    "hours": "Mo off; Tu-Sa 08:00-19:00; Su off",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:website",
+      "currency:XBT",
+      "email",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 8852 1370",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10433884691",
+    "name": "Rodega Music",
+    "category": "other",
+    "lat": 51.4615078,
+    "lng": -0.0091505,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rodega Music, 4, Mercia Grove, Mercator Estate, Hither Green, London Borough of Lewisham, London, Greater London, England, SE13 6BJ, United Kingdom",
+    "website": "https://www.rodegamusic.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "email",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7775 635870",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10597216193",
+    "name": "Coirmedia UK | Coir Products in UK",
+    "category": "other",
+    "lat": 51.518483,
+    "lng": -0.1423784,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Coirmedia UK | Coir Products in UK, 85, Great Portland Street, East Marylebone, Fitzrovia, Camden Town, London, Greater London, England, W1W 7LT, United Kingdom",
+    "website": "https://coirmedia.com/united-kingdom/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:XBT",
+      "email",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7412603954",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10787110839",
+    "name": "Blokpoint",
+    "category": "other",
+    "lat": 51.5256046,
+    "lng": -0.0836989,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Blokpoint, 86-90, Paul Street, Shoreditch, London Borough of Hackney, London, Greater London, England, EC2A 4NE, United Kingdom",
+    "website": "https://blokpoint.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 4515 0001",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10906045926",
+    "name": "Kelmscott Home Improvement Ltd",
+    "category": "other",
+    "lat": 51.4451108,
+    "lng": -0.1425117,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Kelmscott Home Improvement Ltd, 6, Weir Road, Streatham Hill, London Borough of Lambeth, London, Greater London, England, SW12 0NB, United Kingdom",
+    "website": "https://khil.co.uk",
+    "hours": "Mo-Fr 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housename",
+      "addr:housenumber",
+      "addr:street",
+      "check_date",
+      "contact:twitter",
+      "currency:XBT",
+      "email",
+      "name",
+      "office",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "twitter": "https://twitter.com/kelmscotthome",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:10907899933",
+    "name": "Calm Indian Cow",
+    "category": "restaurant",
+    "lat": 51.5374147,
+    "lng": -0.0611517,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Calm Indian Cow, 67B, Broadway Market, Haggerston, London Borough of Hackney, London, Greater London, England, E8 4PH, United Kingdom",
+    "hours": "Sa-Su 10:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "contact:twitter",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+447711888810",
+    "instagram": "calmindiancow",
+    "twitter": "calmindiancow",
+    "cuisine": "indian",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11082781227",
+    "name": "The Steam Room",
+    "category": "other",
+    "lat": 51.5356563,
+    "lng": -0.0767385,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Steam Room, 230, Kingsland Road, De Beauvoir Town, Haggerston, London Borough of Hackney, London, Greater London, England, E2 8AX, United Kingdom",
+    "website": "https://www.thesteamroom.cleaning/our-story",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11099356960",
+    "name": "Maida Smiles",
+    "category": "dentist",
+    "lat": 51.527909,
+    "lng": -0.1819499,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Maida Smiles, 207-209, Sutherland Avenue, St. John's Wood, London, Greater London, England, W9 1RU, United Kingdom",
+    "website": "https://maidasmiles.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:housenumber",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "healthcare",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11099362144",
+    "name": "Kapucin",
+    "category": "cafe",
+    "lat": 51.4579128,
+    "lng": -0.3048944,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Kapucin, 18B, Hill Rise, East Twickenham, St Margarets, London Borough of Richmond upon Thames, London, Greater London, England, TW10 6UA, United Kingdom",
+    "website": "https://www.kapucin.co.uk/",
+    "hours": "Mo-Fr 7:30-17:00, Sa-Su 9:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "building:levels",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:GBP",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7947 430053",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11176568154",
+    "name": "Dockside Vaults",
+    "category": "other",
+    "lat": 51.5076484,
+    "lng": -0.0712725,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Dockside Vaults, East Smithfield, Wapping, London Borough of Tower Hamlets, London, Greater London, England, E1W 1AT, United Kingdom",
+    "website": "https://www.docksidevaults.com/events",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11551861926",
+    "name": "Beans and Bubbles",
+    "category": "cafe",
+    "lat": 51.4360409,
+    "lng": -0.1605415,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Beans and Bubbles, 19, Trinity Road, Upper Tooting, Balham, London Borough of Wandsworth, London, Greater London, England, SW17 7SD, United Kingdom",
+    "website": "https://www.beansandbubbles.co.uk/",
+    "hours": "Mo-Fr 06:30-15:00; Sa,Su 07:00-15:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:instagram",
+      "currency:GBP",
+      "currency:XBT",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "instagram": "beansandbubbleslondon",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11682143323",
+    "name": "Broadley Studios",
+    "category": "other",
+    "lat": 51.5239822,
+    "lng": -0.1668696,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Broadley Studios, 48, Broadley Terrace, Marylebone, London, Greater London, England, NW1 6LG, United Kingdom",
+    "website": "https://www.broadley.tv/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "email",
+      "mobile",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 7725 5858",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11699219098",
+    "name": "Rosmarino Restaurant",
+    "category": "restaurant",
+    "lat": 51.4361008,
+    "lng": -0.1606157,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Rosmarino Restaurant, 23, Trinity Road, Upper Tooting, Balham, London Borough of Wandsworth, London, Greater London, England, SW17 7SD, United Kingdom",
+    "website": "https://www.rosmarinorestaurant.co.uk/",
+    "hours": "Tu-Sa 12:00-15:00,17:30-22:30; Su 12:00-15:30,17:30-22:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 2082 440336",
+    "instagram": "https://www.instagram.com/rosmarinorestaurant/?hl=en",
+    "cuisine": "italian",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11758170372",
+    "name": "Hadley AV",
+    "category": "other",
+    "lat": 51.6522063,
+    "lng": -0.2100221,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Hadley AV, 9, West End Lane, High Barnet, Chipping Barnet, London, Greater London, England, EN5 3DJ, United Kingdom",
+    "website": "https://www.hadleyav.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:email",
+      "contact:instagram",
+      "contact:twitter",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 844 870 4807",
+    "instagram": "https://www.instagram.com/hadley.av/",
+    "twitter": "https://twitter.com/HadleyAVco",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11868989493",
+    "name": "Cyphermunk House",
+    "category": "other",
+    "lat": 51.5220914,
+    "lng": -0.1148063,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Cyphermunk House, 9, John Street, Hatton Garden, Holborn, London Borough of Camden, London, Greater London, England, WC1N 2ES, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:twitter",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "twitter": "https://twitter.com/CyphermunkHouse",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11926974245",
+    "name": "Crafts and Play",
+    "category": "other",
+    "lat": 51.4640142,
+    "lng": -0.2712413,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Crafts and Play, 457, Upper Richmond Road West, East Sheen, London Borough of Richmond upon Thames, London, Greater London, England, SW14 7PR, United Kingdom",
+    "website": "https://www.craftsandplay.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:email",
+      "currency:XBT",
+      "leisure",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7977 888822",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11998499688",
+    "name": "Mezzanine Bar",
+    "category": "bar",
+    "lat": 51.4291372,
+    "lng": -0.1655335,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Mezzanine Bar, 20, Totterdown Street, Tooting Graveney, Furzedown, Tooting, London, Greater London, England, SW17 8TA, United Kingdom",
+    "website": "https://www.mezzanineldn.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:11998542622",
+    "name": "Olives & Meze",
+    "category": "restaurant",
+    "lat": 51.4290787,
+    "lng": -0.1655871,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Olives & Meze, 20, Totterdown Street, Tooting Graveney, Furzedown, Tooting, London, Greater London, England, SW17 8TA, United Kingdom",
+    "website": "https://www.olivesandmeze.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "payment:lightning"
+    ],
+    "cuisine": "mediterranean",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12025789274",
+    "name": "Apple Bitcoins",
+    "category": "other",
+    "lat": 51.51482,
+    "lng": -0.1523279,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Apple Bitcoins, 400, Oxford Street, Mayfair, London, Greater London, England, W1A 1AB, United Kingdom",
+    "website": "https://applebitcoins.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "currency:XBT",
+      "name",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 7318 1361",
+    "instagram": "https://www.instagram.com/applebitcoins/",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12037875593",
+    "name": "pHresh",
+    "category": "cafe",
+    "lat": 51.4655036,
+    "lng": -0.1555246,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "pHresh, 103e, Lavender Hill, Clapham Junction, London Borough of Wandsworth, London, Greater London, England, SW11 5QL, United Kingdom",
+    "website": "https://phreshjuice.co.uk/",
+    "hours": "Mo-Fr 07:30-18:00; Sa 08:00-16:00; Su off",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:email",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning"
+    ],
+    "phone": "+44 7851 067350",
+    "instagram": "https://www.instagram.com/phreshjuice_/",
+    "cuisine": "coffee_shop;juice",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12041822206",
+    "name": "North African Food / Yema's House",
+    "category": "fast_food",
+    "lat": 51.4292322,
+    "lng": -0.1654634,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "North African Food / Yema's House, Totterdown Street, Tooting Graveney, Furzedown, Tooting, London, Greater London, England, SW17 8TA, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "addr:suburb",
+      "amenity",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "delivery",
+      "description",
+      "payment:lightning"
+    ],
+    "cuisine": "north_african",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12041896932",
+    "name": "Habi Smart Homes",
+    "category": "other",
+    "lat": 51.4981612,
+    "lng": -0.2020837,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Habi Smart Homes, 294, Kensington High Street, Kensington, Royal Borough of Kensington and Chelsea, London, Greater London, England, W14 8NZ, United Kingdom",
+    "website": "https://habi.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning",
+      "payment:lightning_contactless",
+      "payment:onchain"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12045939192",
+    "name": "The Printing Place",
+    "category": "other",
+    "lat": 51.4292743,
+    "lng": -0.1671261,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Printing Place, 1, Selkirk Road, Tooting Graveney, Summerstown, London Borough of Wandsworth, London, Greater London, England, SW17 0ER, United Kingdom",
+    "hours": "Mo-Fr 09:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8767 6827",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12074042171",
+    "name": "Cary Hammond Photography",
+    "category": "other",
+    "lat": 51.492133,
+    "lng": -0.121347,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Cary Hammond Photography, Albert Embankment, Vauxhall, London Borough of Lambeth, London, Greater London, England, SE1 7SP, United Kingdom",
+    "website": "https://www.caryhammond.com/",
+    "hours": "\"by appointment\"",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "contact:instagram",
+      "contact:twitter",
+      "craft",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7957 007777",
+    "instagram": "https://www.instagram.com/CaryHammondLondon/",
+    "twitter": "https://x.com/hammondtweets",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12103940096",
+    "name": "Nemo Cafe",
+    "category": "cafe",
+    "lat": 51.4160309,
+    "lng": -0.3718241,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Nemo Cafe, Ashley Road, The Beveree, Hampton, London Borough of Richmond upon Thames, London, Greater London, England, TW12 2HU, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12133818298",
+    "name": "Tikka Express",
+    "category": "restaurant",
+    "lat": 51.429582,
+    "lng": -0.1661159,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Tikka Express, 1, Tooting High Street, Tooting Graveney, Furzedown, London Borough of Wandsworth, London, Greater London, England, SW17 0SN, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "air_conditioning",
+      "amenity",
+      "check_date",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12196972955",
+    "name": "The Plastic Surgery Group",
+    "category": "doctors",
+    "lat": 51.5195434,
+    "lng": -0.1403604,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Plastic Surgery Group, 7, Hanson Street, East Marylebone, Fitzrovia, Camden Town, London, Greater London, England, W1W 6TE, United Kingdom",
+    "website": "https://www.theplasticsurgerygroup.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "healthcare",
+      "healthcare:speciality",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12197064449",
+    "name": "Bob's Courtyard Bar",
+    "category": "pub",
+    "lat": 51.4461436,
+    "lng": -0.1500124,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Bob's Courtyard Bar, 92A, Balham High Road, Balham, London Borough of Wandsworth, London, Greater London, England, SW12 9AG, United Kingdom",
+    "website": "https://www.postmarket.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12199018632",
+    "name": "Balham House",
+    "category": "pub",
+    "lat": 51.4462618,
+    "lng": -0.1501313,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Balham House, 92A, Balham High Road, Balham, London Borough of Wandsworth, London, Greater London, England, SW12 9AG, United Kingdom",
+    "website": "https://www.postmarket.co.uk/",
+    "hours": "Mo-Su 18:00-23:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12262948205",
+    "name": "Pasta La Dolce Vita",
+    "category": "fast_food",
+    "lat": 51.5204159,
+    "lng": -0.0722344,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Pasta La Dolce Vita, 83, Brick Lane, Spitalfields, Whitechapel, London Borough of Tower Hamlets, London, Greater London, England, E1 6QR, United Kingdom",
+    "hours": "Sa-Su 11:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "contact:instagram",
+      "cuisine",
+      "currency:GBP",
+      "payment:lightning"
+    ],
+    "instagram": "https://www.instagram.com/pastaladolcevita",
+    "cuisine": "italian",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12340014904",
+    "name": "Boom Bap Burger Leadenhall Market",
+    "category": "fast_food",
+    "lat": 51.5126485,
+    "lng": -0.0832616,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Boom Bap Burger Leadenhall Market, 29-30, Leadenhall Market, City of London, Greater London, England, EC3V 1LR, United Kingdom",
+    "website": "https://boombapburger.com/",
+    "hours": "Mo 11:30-20:00; Tu-Fr 11:30-22:30; Sa-Su 12:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "bar",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "contact:instagram",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 2076 234494",
+    "instagram": "https://www.instagram.com/boombapburger/",
+    "cuisine": "burger",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12476624931",
+    "name": "Victrade Property Maintenance",
+    "category": "other",
+    "lat": 51.4914763,
+    "lng": -0.1462557,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Victrade Property Maintenance, 13, Cambridge Street, Pimlico, London, Greater London, England, SW1V 4PR, United Kingdom",
+    "website": "https://www.victrade.co.uk",
+    "hours": "Mo-Sa 09:00-18:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:ETH",
+      "currency:XBT",
+      "currency:XMR",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+442080588609",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12745157680",
+    "name": "The Deli",
+    "category": "cafe",
+    "lat": 51.3894373,
+    "lng": -0.3255219,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Deli, 1-B, Portsmouth Road, Thames Ditton, Elmbridge, Surrey, England, KT7 0SS, United Kingdom",
+    "website": "https://www.ditton-deli.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "cuisine",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8398 7850",
+    "cuisine": "coffee_shop",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12745160707",
+    "name": "The Boss",
+    "category": "hairdresser",
+    "lat": 51.3893963,
+    "lng": -0.3256453,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "The Boss, 4, Portsmouth Road, Thames Ditton, Elmbridge, Surrey, England, KT7 0SS, United Kingdom",
+    "website": "https://whaircut.com/barber-shops/boss-hairdressing-thames-ditton/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:GBP",
+      "currency:XBT",
+      "hairdresser",
+      "male",
+      "payment:cash",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 8398 0809",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12745169348",
+    "name": "Thames Ditton Gin",
+    "category": "other",
+    "lat": 51.3905344,
+    "lng": -0.3339585,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Thames Ditton Gin, 31b, High Street, Thames Ditton, Elmbridge, Surrey, England, KT7 0SA, United Kingdom",
+    "website": "https://www.thamesdittongin.com/",
+    "hours": "Su 09:00-21:00, Fr 17:00-19:00, Sa 10:00-12:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "operator",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12775851875",
+    "name": "Han Fu",
+    "category": "restaurant",
+    "lat": 51.3915746,
+    "lng": -0.3321807,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Han Fu, 75, High Street, Thames Ditton, Elmbridge, Surrey, England, KT7 0SF, United Kingdom",
+    "website": "https://hanfuchinese.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8398 7488",
+    "cuisine": "chinese",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12809060433",
+    "name": "Involve Digital",
+    "category": "other",
+    "lat": 51.5132052,
+    "lng": -0.1412029,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Involve Digital, 207, Regent Street, East Marylebone, Mayfair, London, Greater London, England, W1B 3HH, United Kingdom",
+    "website": "https://www.involvedigital.com",
+    "hours": "Mo-Fr 09:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:floor",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "office",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 8156 7575",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12901886018",
+    "name": "Core TV",
+    "category": "other",
+    "lat": 51.5057039,
+    "lng": -0.1007408,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Core TV, 95, Southwark Street, Bankside, Southwark, London Borough of Southwark, London, Greater London, England, SE1 0HX, United Kingdom",
+    "website": "https://www.coreagency.uk",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "currency:GBP",
+      "currency:XBT",
+      "email",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8050 0295",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:node:12993375450",
+    "name": "Massaggi",
+    "category": "other",
+    "lat": 51.5186218,
+    "lng": -0.1519065,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "111-115, Marylebone High Street, Marylebone, London, Greater London, England, W1U 4RN, United Kingdom",
+    "website": "https://www.massaggi.co.uk/",
+    "hours": "\"by appointment\"",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:lightning",
+      "payment:lightning_contactless"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:28498489",
+    "name": "FOCUS PLANT",
+    "category": "other",
+    "lat": 51.3911296,
+    "lng": 0.1137324,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Focus Plant, 6a, Lagoon Road, Poverest, St Mary Cray, Orpington, London, Greater London, England, BR5 3QX, United Kingdom",
+    "website": "https://www.focusplant.uk",
+    "hours": "Mo-Fr 08:00-16:30",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "contact:facebook",
+      "currency:GBP",
+      "currency:XBT",
+      "email",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 1689 660396",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:40858239",
+    "name": "Century Club",
+    "category": "other",
+    "lat": 51.5120681,
+    "lng": -0.1322138,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Century Club, 61-63, Shaftesbury Avenue, St Giles, Bloomsbury, London, Greater London, England, W1D 6LQ, United Kingdom",
+    "website": "https://centuryclub.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "club",
+      "currency:XBT",
+      "description",
+      "fixme",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 207 534 3080",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:190715113",
+    "name": "Troxy",
+    "category": "nightclub",
+    "lat": 51.5127385,
+    "lng": -0.0440028,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Troxy, 490, Commercial Road, Ratcliffe, Stepney, London Borough of Tower Hamlets, London, Greater London, England, E1 0HX, United Kingdom",
+    "website": "https://www.troxy.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "check_date",
+      "contact:facebook",
+      "contact:instagram",
+      "contact:twitter",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 7790 9000",
+    "instagram": "https://www.instagram.com/troxylondon/",
+    "twitter": "https://twitter.com/TroxyLondon",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:669890683",
+    "name": "Michelle Davies",
+    "category": "other",
+    "lat": 51.5187969,
+    "lng": -0.1466577,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Michelle Davies, 44, Harley Street, East Marylebone, Marylebone, Camden Town, London, Greater London, England, W1G 9PS, United Kingdom",
+    "website": "https://www.worcester-osteo.com/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "building:levels",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "healthcare",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7966 493994",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:766719311",
+    "name": "Indigo Wines",
+    "category": "wine",
+    "lat": 51.3906184,
+    "lng": -0.3333209,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "KT7 196, High Street, Thames Ditton, Elmbridge, Surrey, England, KT7 0SA, United Kingdom",
+    "website": "https://indigowines.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:county",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "currency:GBP",
+      "currency:XBT",
+      "fhrs:id",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 7704 421185",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:835395162",
+    "name": "Kettle Club",
+    "category": "jewelry",
+    "lat": 51.5171829,
+    "lng": -0.0814462,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Kettle Club, 53, Liverpool Street, Bishopsgate, City of London, Greater London, England, EC2M 7QN, United Kingdom",
+    "website": "https://kettleclub.co.uk/",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "email",
+      "level",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 20 3786 3017",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:857939249",
+    "name": "Subhan",
+    "category": "butcher",
+    "lat": 51.5334463,
+    "lng": -0.0289449,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Subhan, 583, Roman Road, Old Ford, Bow, London Borough of Tower Hamlets, London, Greater London, England, E3 5EL, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "building:colour",
+      "building:levels",
+      "currency:XBT",
+      "diet:halal",
+      "fhrs:id",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1008034198",
+    "name": "Danson Garage",
+    "category": "other",
+    "lat": 51.4482256,
+    "lng": 0.1175434,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Danson Garage, 485, Blackfen Road, Penhill, Blendon, Sidcup, London, Greater London, England, DA15 9NP, United Kingdom",
+    "hours": "Mo-Fr 08:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "currency:XBT",
+      "name",
+      "opening_hours",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 8303 7566",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1008034199",
+    "name": "KDM MOTORS",
+    "category": "other",
+    "lat": 51.4484598,
+    "lng": 0.1175183,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "KDM Motors, 485B, Blackfen Road, Penhill, Blendon, Sidcup, London, Greater London, England, DA15 9NP, United Kingdom",
+    "website": "https://www.kdmmotors.co.uk/",
+    "hours": "Mo-Fr 09:00-16:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "building",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "currency:GBP",
+      "currency:XBT",
+      "email",
+      "payment:cash",
+      "payment:lightning"
+    ],
+    "phone": "+44 7958 245 991",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1032398454",
+    "name": "Strike",
+    "category": "other",
+    "lat": 51.4570906,
+    "lng": -0.1931018,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Cooper's Lofts, 5, Bubbling Well Square, The Ram Quarter, Wandsworth, London Borough of Wandsworth, London, Greater London, England, SW18 1UR, United Kingdom",
+    "website": "https://strike-bowling.com",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "check_date",
+      "check_date:currency:XBT",
+      "currency:XBT",
+      "email",
+      "fhrs:authority",
+      "fhrs:id",
+      "payment:lightning"
+    ],
+    "phone": "+44 20 3026 1600",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1121733290",
+    "name": "Chilli Cha Cha",
+    "category": "fast_food",
+    "lat": 51.4096718,
+    "lng": -0.3063941,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Chilli Cha Cha, Unit 27, Market Place, Norbiton, Kingston upon Thames, London, Greater London, England, KT1 1JS, United Kingdom",
+    "hours": "Mo-Su 10:00-17:00",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housename",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "check_date",
+      "check_date:currency:XBT",
+      "contact:facebook",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7928 913347",
+    "instagram": "chillichachauk",
+    "cuisine": "indian;rice;curry;lamb;takeaway;delivery",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1376426747",
+    "name": "Prestige Autos Surrey",
+    "category": "other",
+    "lat": 51.3870019,
+    "lng": -0.3287376,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Prestige Autos Surrey, Portsmouth Road, Thames Ditton, Elmbridge, Surrey, England, KT7 0TA, United Kingdom",
+    "website": "https://prestigeautossurrey.co.uk/.co.uk",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:postcode",
+      "addr:street",
+      "contact:email",
+      "currency:GBP",
+      "currency:XBT",
+      "description",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning",
+      "payment:onchain"
+    ],
+    "phone": "+44 7895 955388",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1394167500",
+    "name": "El Sabor",
+    "category": "fast_food",
+    "lat": 51.5039555,
+    "lng": -0.0962689,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "El Sabor, 103, Union Street, Bankside, The Borough, London Borough of Southwark, London, Greater London, England, SE1 0LA, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:country",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "cuisine": "mexican",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  },
+  {
+    "id": "osm:way:1409749436",
+    "name": "Spizza Napoletana",
+    "category": "fast_food",
+    "lat": 51.5040369,
+    "lng": -0.0964274,
+    "country": "GB",
+    "city": "London",
+    "coins": [
+      "BTC"
+    ],
+    "address": "Spizza Napoletana, 80, Union Street, Bankside, The Borough, London Borough of Southwark, London, Greater London, England, SE1 0NW, United Kingdom",
+    "status": "active",
+    "source": "osm",
+    "last_verified": "2025-08-27",
+    "tags": [
+      "addr:city",
+      "addr:housenumber",
+      "addr:postcode",
+      "addr:street",
+      "amenity",
+      "building",
+      "cuisine",
+      "currency:GBP",
+      "currency:XBT",
+      "name",
+      "payment:cash",
+      "payment:credit_cards",
+      "payment:lightning"
+    ],
+    "cuisine": "italian",
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "processor": "other",
+          "method": "onchain"
+        }
+      ],
+      "preferred": []
+    },
+    "website": null,
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-09-29",
+      "sources": []
+    },
+    "pending_assets": []
+  }
+]
