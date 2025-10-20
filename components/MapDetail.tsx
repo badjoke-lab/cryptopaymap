@@ -36,7 +36,7 @@ export type Place = {
   socials?: SocialItem[];
 } & Record<string, any>;
 
-/* ---- constants（UIクランプ。検証は CI でも行うが念のため） ---- */
+/* ---- constants（UIクランプ） ---- */
 const SUM_OWNER_MAX = 600;
 const SUM_COMMUNITY_MAX = 300;
 const CAP_OWNER_MAX = 600;
@@ -45,12 +45,6 @@ const IMG_OWNER_MAX = 8;
 const IMG_COMMUNITY_MAX = 4;
 
 /* ---- helpers ---- */
-function asArray<T>(v: T[] | T | undefined | null): T[] {
-  if (v == null) return [];
-  return Array.isArray(v) ? v : [v];
-}
-
-/** media hash -> URL（hash 優先、なければ url） */
 function mediaUrl(img: any) {
   if (img?.hash) return `/api/media/${img.hash}${img?.ext ? `.${img.ext}` : ""}`;
   if (img?.url) return String(img.url);
@@ -114,7 +108,6 @@ function buildAcceptedLines(place: any): string[] {
     const row = prettyAcceptItem(a);
     if (row) out.push(row);
   }
-  // ここを Array.from に変更（tsconfig の downlevelIteration なしでOK）
   return Array.from(new Set(out));
 }
 
@@ -128,7 +121,8 @@ const countryNameFromAlpha2 = (code?: string) =>
   (code && COUNTRY_EN[code.toUpperCase()]) || code || "";
 
 /* ===== Socials ===== */
-function prettyPlatformName(p: SocialItem["platform"]) {
+type Platform = SocialItem["platform"];
+function prettyPlatformName(p: Platform) {
   switch (p) {
     case "x": return "X";
     case "youtube": return "YouTube";

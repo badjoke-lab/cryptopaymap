@@ -35,6 +35,11 @@ async function fetchJSON<T = any>(url: string) {
   }
 }
 
+/** index.json の型（最小） */
+type CityIndex = {
+  cities: Array<{ country: string; city: string; path: string }>;
+};
+
 /* =========================
    Popup utilities
 ========================= */
@@ -110,23 +115,46 @@ export default function MapShell() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      const raw = await fetchJSON<any[]>(`/data/places/places.json`);
+      // 1) index.json を読む
+      const idx = await fetchJSON<CityIndex>("/data/places/index.json");
       if (!alive) return;
 
-      if (Array.isArray(raw) && raw.length) {
-        const mapped: Place[] = raw.map((p: any) => ({
-          ...p,
-          verification: {
-            ...(p?.verification || {}),
-            status: normalizeStatus(p?.verification?.status),
-          },
-        }));
-        setPlaces(mapped);
-      } else {
+      if (!idx || !Array.isArray(idx.cities) || idx.cities.length === 0) {
         setMessage("No dataset found under /data/places.");
+        return;
+      }
+
+      // 2) 各 city JSON を並列取得してフラット化
+      const cityPaths = idx.cities.map((c) => `/data/places/${c.path}`);
+      const chunks = await Promise.all(cityPaths.map((u) => fetchJSON<any[]>(u)));
+      if (!alive) return;
+
+      const flat: Place[] = [];
+      for (const arr of chunks) {
+        if (!Array.isArray(arr)) continue;
+        for (const p of arr) {
+          if (!Number.isFinite(p?.lat) || !Number.isFinite(p?.lng)) continue;
+          flat.push({
+            ...p,
+            coins: Array.isArray(p?.coins) ? p.coins.map((s: any) => String(s).toUpperCase()) : undefined,
+            verification: {
+              ...(p?.verification || {}),
+              status: normalizeStatus(p?.verification?.status),
+            },
+          });
+        }
+      }
+
+      if (flat.length === 0) {
+        setMessage("No dataset found under /data/places.");
+      } else {
+        setMessage(null);
+        setPlaces(flat);
       }
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
 
   /* --- 地図初期化 --- */
@@ -211,6 +239,7 @@ export default function MapShell() {
 
   return (
     <div className="relative w-full">
+      {/* 高さはグローバルCSSなどで .map-screen { height: calc(100vh - 120px); } 等にしておく */}
       <div ref={containerRef} className="map-screen relative" />
       {message && (
         <div className="absolute left-4 bottom-4 z-[1200] bg-white/90 rounded px-3 py-2 text-xs border">
