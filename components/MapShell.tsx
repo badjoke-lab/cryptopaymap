@@ -102,7 +102,7 @@ export default function MapShell() {
   const [coin, setCoin] = useState("All");
   const [category, setCategory] = useState("All");
   const [city, setCity] = useState("All");
-  const [sort, setSort] = useState("verified");
+  const [sort, setSort] = useState<"verified" | "name">("verified");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = useMemo(() => places.find((p) => p.id === selectedId) || null, [places, selectedId]);
   const [message, setMessage] = useState<string | null>(null);
@@ -180,6 +180,37 @@ export default function MapShell() {
     mapRef.current = m;
   }, []);
 
+  /* --- セレクト用の選択肢を算出 --- */
+  const categoryOptions = useMemo(() => {
+    const s = new Set<string>();
+    places.forEach((p) => p?.category && s.add(p.category));
+    return ["All", ...Array.from(s).sort()];
+  }, [places]);
+
+  const coinOptions = useMemo(() => {
+    const s = new Set<string>();
+    places.forEach((p) => (p.coins ?? []).forEach((c) => s.add(c)));
+    return ["All", ...Array.from(s).sort()];
+  }, [places]);
+
+  const cityOptions = useMemo(() => {
+    const s = new Set<string>();
+    places.forEach((p) => p?.city && s.add(p.city));
+    return ["All", ...Array.from(s).sort()];
+  }, [places]);
+
+  const vfOptions = useMemo(() => {
+    const s = new Set<string>();
+    places.forEach((p) => {
+      const v = p?.verification?.status;
+      if (v) s.add(v);
+    });
+    // 表示順の安定化
+    const order = ["owner", "community", "directory", "unverified"];
+    const list = Array.from(s).sort((a, b) => order.indexOf(a) - order.indexOf(b));
+    return ["all", ...list];
+  }, [places]);
+
   /* --- フィルタ＆ソート --- */
   const filteredSorted = useMemo(() => {
     let acc = places.filter((p) => coin === "All" || (p.coins ?? []).includes(coin));
@@ -196,6 +227,8 @@ export default function MapShell() {
         if (ra !== rb) return ra - rb;
         return (a.name ?? "").localeCompare(b.name ?? "");
       });
+    } else {
+      acc = acc.slice().sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     }
     return acc;
   }, [places, coin, category, city, vf, sort]);
@@ -210,11 +243,21 @@ export default function MapShell() {
     const b = L.latLngBounds([]);
     filteredSorted.forEach((p) => {
       const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
+
+      // バッジ（Owner/Community）をポップアップに表示
+      const st = p?.verification?.status as "owner" | "community" | "directory" | "unverified" | undefined;
+      const badge =
+        st === "owner"
+          ? `<span style="display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:#d1fae5;color:#065f46;font-weight:600;font-size:11px">Owner</span>`
+          : st === "community"
+          ? `<span style="display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:#dbeafe;color:#1e40af;font-weight:600;font-size:11px">Community</span>`
+          : "";
+
       const { line, moreLine } = popupAccepted(p);
       const html = `
         <div style="min-width:240px">
-          <strong>${p.name}</strong><br/>
-          ${p.city ?? ""}, ${p.country ?? ""}<br/>
+          <strong>${p.name ?? ""}</strong>${badge}<br/>
+          ${p.city ?? ""}${p.city && p.country ? ", " : ""}${p.country ?? ""}<br/>
           ${line ?? ""}${moreLine ? `<br/>${moreLine}` : ""}
           <div style="margin-top:8px">
             <button id="btn_${p.id}" style="all:unset;color:#2563eb;cursor:pointer;font-weight:600">View details</button>
@@ -239,6 +282,63 @@ export default function MapShell() {
 
   return (
     <div className="relative w-full">
+      {/* フィルターUI */}
+      <div className="absolute top-3 left-3 z-[1000] bg-white/90 backdrop-blur rounded-md shadow border p-2 space-x-2 flex flex-wrap items-center">
+        <label className="text-xs opacity-70">Verify</label>
+        <select
+          value={vf}
+          onChange={(e) => setVf(e.target.value)}
+          className="rounded border px-2 py-1 text-xs"
+        >
+          {vfOptions.map((v) => (
+            <option key={v} value={v}>{v}</option>
+          ))}
+        </select>
+
+        <label className="text-xs opacity-70 ml-2">Coin</label>
+        <select
+          value={coin}
+          onChange={(e) => setCoin(e.target.value)}
+          className="rounded border px-2 py-1 text-xs max-w-[140px]"
+        >
+          {coinOptions.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+
+        <label className="text-xs opacity-70 ml-2">Category</label>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="rounded border px-2 py-1 text-xs max-w-[160px]"
+        >
+          {categoryOptions.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+
+        <label className="text-xs opacity-70 ml-2">City</label>
+        <select
+          value={city}
+          onChange={(e) => setCity(e.target.value)}
+          className="rounded border px-2 py-1 text-xs max-w-[160px]"
+        >
+          {cityOptions.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+
+        <label className="text-xs opacity-70 ml-2">Sort</label>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value as "verified" | "name")}
+          className="rounded border px-2 py-1 text-xs"
+        >
+          <option value="verified">verified</option>
+          <option value="name">name</option>
+        </select>
+      </div>
+
       {/* 高さはグローバルCSSなどで .map-screen { height: calc(100vh - 120px); } 等にしておく */}
       <div ref={containerRef} className="map-screen relative" />
       {message && (

@@ -1,11 +1,6 @@
 {
-  "business_name": "Example Coffee",
-  "address": "350 5th Ave, New York, NY 10118, USA",
-  "website": "https://example.com",
-  "payments": "- BTC (Lightning)\n- BTC (Bitcoin)\n- ETH (Ethereum Mainnet)\n- USDT / Polygon",
-  "payment_pages": "https://example.com/pay\nhttps://btcpay.example.com/merchant/123",
-  "owner_proof": "Domain verification",
-  "profile_summary": "We accept Bitcoin (Lightning) and Ethereum.",
-  "gallery_urls": "https://user-images.githubusercontent.com/img1.webp\nhttps://user-images.githubusercontent.com/img2.webp",
-  "socials": "x https://x.com/example\ninstagram @coffee"
+  "level": "owner",
+  "payment": {
+    "accepts": ["BTC", "ETH", "USDT"]
+  }
 }
