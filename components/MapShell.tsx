@@ -23,7 +23,6 @@ const blueIcon = new L.Icon({
   shadowUrl: "",
 });
 
-// MapDetail の Place にローカルで coins を足すだけの拡張
 type Place = DetailPlace & { coins?: string[] };
 
 async function fetchJSON<T = any>(url: string) {
@@ -35,14 +34,10 @@ async function fetchJSON<T = any>(url: string) {
   }
 }
 
-/** index.json の型（最小） */
 type CityIndex = {
   cities: Array<{ country: string; city: string; path: string }>;
 };
 
-/* =========================
-   Popup utilities
-========================= */
 const SORT_ORDER: Record<string, number> = {
   owner: 0,
   community: 1,
@@ -50,24 +45,20 @@ const SORT_ORDER: Record<string, number> = {
   unverified: 3,
 };
 
-/** ステータスバッジHTML生成（Popup/Drawerで表記統一） */
+/** Popup/Drawer統一の配色・文言（Popupは別行表示のためのHTMLを返す） */
 const statusBadgeHtml = (status?: string) => {
   const s = (status ?? "").toLowerCase();
   const base =
-    "display:inline-block;padding:2px 8px;border-radius:9999px;font-weight:600;font-size:12px;margin-left:6px;";
-  if (s === "owner")
-    return `<span style="${base}background:#d1fae5;color:#065f46;">Owner</span>`;
-  if (s === "community")
-    return `<span style="${base}background:#e0e7ff;color:#3730a3;">Community</span>`;
-  if (s === "directory")
-    return `<span style="${base}background:#fef3c7;color:#92400e;">Directory</span>`;
+    "display:inline-block;padding:2px 8px;border-radius:9999px;font-weight:600;font-size:12px;";
+  if (s === "owner") return `<span style="${base}background:#d1fae5;color:#065f46;">Owner</span>`;
+  if (s === "community") return `<span style="${base}background:#e0e7ff;color:#3730a3;">Community</span>`;
+  if (s === "directory") return `<span style="${base}background:#fef3c7;color:#92400e;">Directory</span>`;
   return `<span style="${base}background:#f3f4f6;color:#374151;">Unverified</span>`;
 };
 
 function popupAccepted(p: Place): { line?: string; moreLine?: string } {
   const acc = Array.isArray(p.payment?.accepts) ? p.payment.accepts : [];
   const tokens: string[] = [];
-
   const CHAIN_LABEL: Record<string, string> = {
     ethereum: "Ethereum",
     polygon: "Polygon",
@@ -77,7 +68,6 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
     solana: "Solana",
     tron: "Tron",
   };
-
   for (const a of acc) {
     const asset = String(a?.asset || "").toUpperCase();
     const chainRaw = String(a?.chain || "").toLowerCase();
@@ -89,24 +79,17 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
     if (!isBtc && !isEthMain && chain) token += `(${chain})`;
     tokens.push(token);
   }
-
-  if (!tokens.length && Array.isArray(p.coins))
-    tokens.push(...p.coins.map((s) => s.toUpperCase()));
+  if (!tokens.length && Array.isArray(p.coins)) tokens.push(...p.coins.map((s) => s.toUpperCase()));
   if (!tokens.length) return {};
-
   const head = tokens.slice(0, 3).join(" · ");
   const rest = tokens.length > 3 ? `+${tokens.length - 3} more` : "";
   return { line: `Accepted: ${head}`, moreLine: rest || undefined };
 }
 
-// verification.status の正規化（unknown→"unverified"）
 const normalizeStatus = (
   s: any
 ): NonNullable<DetailPlace["verification"]>["status"] => {
-  return s === "owner" ||
-    s === "community" ||
-    s === "directory" ||
-    s === "unverified"
+  return s === "owner" || s === "community" || s === "directory" || s === "unverified"
     ? s
     : "unverified";
 };
@@ -122,13 +105,10 @@ export default function MapShell() {
   const [city, setCity] = useState("All");
   const [sort, setSort] = useState<"verified" | "name">("verified");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = useMemo(
-    () => places.find((p) => p.id === selectedId) || null,
-    [places, selectedId]
-  );
+  const selected = useMemo(() => places.find((p) => p.id === selectedId) || null, [places, selectedId]);
   const [message, setMessage] = useState<string | null>(null);
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const groupRef = useRef<L.LayerGroup | null>(null);
 
@@ -155,9 +135,7 @@ export default function MapShell() {
           if (!Number.isFinite(p?.lat) || !Number.isFinite(p?.lng)) continue;
           flat.push({
             ...p,
-            coins: Array.isArray(p?.coins)
-              ? p.coins.map((s: any) => String(s).toUpperCase())
-              : undefined,
+            coins: Array.isArray(p?.coins) ? p.coins.map((s: any) => String(s).toUpperCase()) : undefined,
             verification: {
               ...(p?.verification || {}),
               status: normalizeStatus(p?.verification?.status),
@@ -181,7 +159,7 @@ export default function MapShell() {
   /* --- 地図初期化 --- */
   useEffect(() => {
     if (mapRef.current) return;
-    const el = containerRef.current;
+    const el = canvasRef.current;
     if (!el) return;
 
     const m = L.map(el, { center: [20, 0], zoom: 2, zoomControl: true });
@@ -201,7 +179,7 @@ export default function MapShell() {
     mapRef.current = m;
   }, []);
 
-  /* --- セレクト用の選択肢を算出 --- */
+  /* --- セレクト用の選択肢 --- */
   const categoryOptions = useMemo(() => {
     const s = new Set<string>();
     places.forEach((p) => p?.category && s.add(p.category));
@@ -226,7 +204,6 @@ export default function MapShell() {
       const v = p?.verification?.status;
       if (v) s.add(v);
     });
-    // 表示順の安定化
     const order = ["owner", "community", "directory", "unverified"];
     const list = Array.from(s).sort((a, b) => order.indexOf(a) - order.indexOf(b));
     return ["all", ...list];
@@ -234,9 +211,7 @@ export default function MapShell() {
 
   /* --- フィルタ＆ソート --- */
   const filteredSorted = useMemo(() => {
-    let acc = places.filter(
-      (p) => coin === "All" || (p.coins ?? []).includes(coin)
-    );
+    let acc = places.filter((p) => coin === "All" || (p.coins ?? []).includes(coin));
     acc = acc.filter((p) => category === "All" || p.category === category);
     acc = acc.filter((p) => city === "All" || p.city === city);
     acc = acc.filter((p) => (vf === "all" ? true : p?.verification?.status === vf));
@@ -251,9 +226,7 @@ export default function MapShell() {
         return (a.name ?? "").localeCompare(b.name ?? "");
       });
     } else {
-      acc = acc.slice().sort((a, b) =>
-        (a.name ?? "").localeCompare(b.name ?? "")
-      );
+      acc = acc.slice().sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
     }
     return acc;
   }, [places, coin, category, city, vf, sort]);
@@ -269,17 +242,16 @@ export default function MapShell() {
     filteredSorted.forEach((p) => {
       const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
 
-      // バッジ表記を統一
+      // ▼ バッジを1行目、店名を2行目（ドロワーと順序合わせ）
       const statusHtml = statusBadgeHtml(p?.verification?.status);
       const { line, moreLine } = popupAccepted(p);
       const html = `
-        <div style="min-width:260px">
-          <div style="display:flex;align-items:center;gap:8px;">
-            <strong style="font-size:16px">${p.name ?? ""}</strong>
-            ${statusHtml}
-          </div>
-          ${p.city ?? ""}${p.city && p.country ? ", " : ""}${p.country ?? ""}<br/>
-          ${line ?? ""}${moreLine ? `<br/>${moreLine}` : ""}
+        <div style="min-width:260px" class="cp-popup">
+          <div style="margin:0 0 4px 0">${statusHtml}</div>
+          <div style="font-weight:700;font-size:16px;line-height:1.3">${p.name ?? ""}</div>
+          <div>${p.city ?? ""}${p.city && p.country ? ", " : ""}${p.country ?? ""}</div>
+          ${line ? `<div>${line}</div>` : ""}
+          ${moreLine ? `<div>${moreLine}</div>` : ""}
           <div style="margin-top:8px">
             <button id="btn_${p.id}" style="all:unset;color:#2563eb;cursor:pointer;font-weight:600">View details</button>
           </div>
@@ -303,75 +275,52 @@ export default function MapShell() {
 
   return (
     <div className="relative w-full">
-      {/* フィルターUI（globals.css の .map-toolbar を使用） */}
-      <div className="map-toolbar">
-        <label className="text-xs opacity-70">Verify</label>
-        <select
-          value={vf}
-          onChange={(e) => setVf(e.target.value)}
-          className="rounded border px-2 py-1 text-xs"
-        >
-          {vfOptions.map((v) => (
-            <option key={v} value={v}>{v}</option>
-          ))}
-        </select>
+      {/* Map固定コンテナ（ツールバーもこの中に重ねる） */}
+      <div className="map-screen">
+        <div ref={canvasRef} className="map-canvas" />
+        <div className="map-toolbar">
+          <label className="text-xs opacity-70">Verify</label>
+          <select value={vf} onChange={(e) => setVf(e.target.value)} className="rounded border px-2 py-1 text-xs">
+            {vfOptions.map((v) => (
+              <option key={v} value={v}>{v}</option>
+            ))}
+          </select>
 
-        <label className="text-xs opacity-70 ml-2">Coin</label>
-        <select
-          value={coin}
-          onChange={(e) => setCoin(e.target.value)}
-          className="rounded border px-2 py-1 text-xs max-w-[140px]"
-        >
-          {coinOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+          <label className="text-xs opacity-70 ml-2">Coin</label>
+          <select value={coin} onChange={(e) => setCoin(e.target.value)} className="rounded border px-2 py-1 text-xs max-w-[140px]">
+            {coinOptions.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
 
-        <label className="text-xs opacity-70 ml-2">Category</label>
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="rounded border px-2 py-1 text-xs max-w-[160px]"
-        >
-          {categoryOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+          <label className="text-xs opacity-70 ml-2">Category</label>
+          <select value={category} onChange={(e) => setCategory(e.target.value)} className="rounded border px-2 py-1 text-xs max-w-[160px]">
+            {categoryOptions.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
 
-        <label className="text-xs opacity-70 ml-2">City</label>
-        <select
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          className="rounded border px-2 py-1 text-xs max-w-[160px]"
-        >
-          {cityOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+          <label className="text-xs opacity-70 ml-2">City</label>
+          <select value={city} onChange={(e) => setCity(e.target.value)} className="rounded border px-2 py-1 text-xs max-w-[160px]">
+            {cityOptions.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
 
-        <label className="text-xs opacity-70 ml-2">Sort</label>
-        <select
-          value={sort}
-          onChange={(e) => setSort(e.target.value as "verified" | "name")}
-          className="rounded border px-2 py-1 text-xs"
-        >
-          <option value="verified">verified</option>
-          <option value="name">name</option>
-        </select>
+          <label className="text-xs opacity-70 ml-2">Sort</label>
+          <select value={sort} onChange={(e) => setSort(e.target.value as "verified" | "name")} className="rounded border px-2 py-1 text-xs">
+            <option value="verified">verified</option>
+            <option value="name">name</option>
+          </select>
+        </div>
       </div>
 
-      {/* Map本体 */}
-      <div ref={containerRef} className="map-screen relative" />
       {message && (
         <div className="absolute left-4 bottom-4 z-[1200] bg-white/90 rounded px-3 py-2 text-xs border">
           {message}
         </div>
       )}
-      <SideModal
-        open={!!selected}
-        title={selected?.name ?? ""}
-        onClose={() => setSelectedId(null)}
-      >
+      <SideModal open={!!selected} title={selected?.name ?? ""} onClose={() => setSelectedId(null)}>
         {selected && <MapDetail place={selected} />}
       </SideModal>
     </div>

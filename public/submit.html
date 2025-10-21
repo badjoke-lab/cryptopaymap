@@ -84,70 +84,32 @@
   </div>
 
 <script>
-(function(){
-  // Append current ?placeId & ?placeName to form links if present
+/**
+ * Carry over ?placeId / ?placeName to each form link silently.
+ * (No on-page "Prefill:" banner is rendered.)
+ */
+(function () {
   try {
     const sp = new URLSearchParams(location.search);
-    const placeId = sp.get('placeId');
-    const placeName = sp.get('placeName');
-    const make = (base) => {
+    const placeId = sp.get("placeId") || sp.get("place_id") || "";
+    const placeName = sp.get("placeName") || sp.get("place_name") || "";
+
+    const build = (base) => {
       if (!placeId && !placeName) return base;
-      const u = new URL(base, window.location.origin);
-      if (placeId) u.searchParams.set('placeId', placeId);
-      if (placeName) u.searchParams.set('placeName', placeName);
+      const u = new URL(base, location.origin);
+      if (placeId) u.searchParams.set("placeId", placeId);
+      if (placeName) u.searchParams.set("placeName", placeName);
       return u.pathname + u.search;
     };
-    const owner = document.getElementById('owner-link');
-    const comm = document.getElementById('community-link');
-    const rep = document.getElementById('report-link');
-    if (owner) owner.href = make('/forms/owner.html');
-    if (comm) comm.href = make('/forms/community.html');
-    if (rep) rep.href = make('/forms/report.html');
-  } catch(e){
-    /* ignore */
-  }
-})();
 
-(function(){
-  try {
-    const sp = new URLSearchParams(location.search);
-    const placeId = sp.get('placeId') || sp.get('place_id') || '';
-    const placeName = sp.get('placeName') || sp.get('place_name') || '';
+    const owner = document.getElementById("owner-link");
+    const comm  = document.getElementById("community-link");
+    const rep   = document.getElementById("report-link");
 
-    // show prefill info near the top (create element if not present)
-    let info = document.getElementById('prefill-info');
-    if (!info) {
-      info = document.createElement('div');
-      info.id = 'prefill-info';
-      info.style.marginBottom = '12px';
-      info.style.fontSize = '14px';
-      info.style.color = '#374151';
-      const wrap = document.querySelector('.wrap');
-      if (wrap) wrap.insertBefore(info, wrap.firstChild.nextSibling);
-    }
-    if (placeId || placeName) {
-      info.textContent = 'Prefill: ' + (placeName ? placeName : '') + (placeId ? ' (' + placeId + ')' : '');
-    } else {
-      info.textContent = '';
-    }
-
-    // Update the 3 form links to include params
-    const make = (base) => {
-      if (!placeId && !placeName) return base;
-      const u = new URL(base, window.location.origin);
-      if (placeId) u.searchParams.set('placeId', placeId);
-      if (placeName) u.searchParams.set('placeName', placeName);
-      return u.pathname + u.search;
-    };
-    const owner = document.getElementById('owner-link');
-    const comm = document.getElementById('community-link');
-    const rep = document.getElementById('report-link');
-    if (owner) owner.href = make('/forms/owner.html');
-    if (comm) comm.href = make('/forms/community.html');
-    if (rep) rep.href = make('/forms/report.html');
-  } catch(e) {
-    console.error('submit hub script error', e);
-  }
+    if (owner) owner.href = build("/forms/owner.html");
+    if (comm)  comm.href  = build("/forms/community.html");
+    if (rep)   rep.href   = build("/forms/report.html");
+  } catch (_) { /* noop */ }
 })();
 </script>
 
