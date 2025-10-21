@@ -1,19 +1,27 @@
+# Node / Next.js
 node_modules
 .next
 out
-.env
-.env.*
 .DS_Store
 
-# backups
-components/0_*.tsx
-**/*.bak.*
-__backup__/
+# Env files
+.env
+.env.*
+!.env.example            # 例: .env.example はコミット許可
+!.env.schema             # 例: スキーマをコミット許可
+!.env.sample             # 例: サンプルをコミット許可
 
-# backups
-components/0_*.tsx
-**/*.bak.*
-__backup__/
+# Build / tool artifacts
+package-lock.json        # npmを使わない場合は無視
+# pnpm-lock.yaml         # pnpmを使うなら通常はコミット推奨（必要に応じて無視を外す）
 tools/verify/.last_summary.json
 tools/verify/last_runs.json
-package-lock.json
+
+# Local generated mail / submissions (任意: fileモード用の出力先)
+public/_mail/
+public/_submissions/
+
+# Backups
+components/0_*.tsx
+**/*.bak.*
+__backup__/

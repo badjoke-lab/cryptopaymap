@@ -63,6 +63,15 @@ export function sanitizeHeaderValue(input: string | null | undefined, opts?: San
   return s;
 }
 
+/** 簡易メールアドレス検証（空なら "" を返す＝未指定扱い） */
+export function sanitizeEmail(input: string | null | undefined, opts?: SanitizeTextOptions): string {
+  const s = sanitizeText(input ?? "", opts);
+  if (!s) return "";
+  // RFC完全準拠までは不要。実運用レベルの簡易検証。
+  const ok = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+  return ok ? s : "";
+}
+
 /** 非 http(s) / 相対URL / 不正URL を null に */
 export function sanitizeUrl(url: string | null | undefined): string | null {
   if (!url) return null;
@@ -194,6 +203,7 @@ function shortHash(input: string): string {
 export default {
   sanitizeText,
   sanitizeHeaderValue,
+  sanitizeEmail,
   sanitizeUrl,
   normalizeUrl,
   safeFilename,
