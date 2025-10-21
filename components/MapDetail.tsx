@@ -26,6 +26,8 @@ export type Place = {
   verification?: {
     status?: "owner" | "community" | "directory" | "unverified";
     sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
+    last_verified?: string;
+    verified_by?: string;
   };
   profile?: { summary?: string };
   media?: { images?: Array<{ url?: string; hash?: string; ext?: string; caption?: string }> };
@@ -139,7 +141,15 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
   const website = typeof place.website === "string" && place.website.trim() ? place.website.trim() : undefined;
 
   const verification = (place as any)?.verification ?? {};
-  const status: string | undefined = verification?.status;
+  // status が未知でも falsy を避けて安全に
+  const status: "owner" | "community" | "directory" | "unverified" | undefined =
+    verification?.status === "owner" ||
+    verification?.status === "community" ||
+    verification?.status === "directory" ||
+    verification?.status === "unverified"
+      ? verification.status
+      : undefined;
+
   const isOwner = status === "owner";
   const isCommunity = status === "community";
   const canShowRich = isOwner || isCommunity;
@@ -152,18 +162,29 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
   const capLimit = isOwner ? CAP_OWNER_MAX : CAP_COMMUNITY_MAX;
   const imgLimit = isOwner ? IMG_OWNER_MAX : IMG_COMMUNITY_MAX;
 
-  const accepts = buildAcceptedLines(place);
+  // 受け取り通貨（accepts → それが無ければ coins フォールバック）
+  let accepts = buildAcceptedLines(place);
+  if (accepts.length === 0 && Array.isArray((place as any)?.coins)) {
+    accepts = (place as any).coins
+      .map((c: any) => String(c || "").toUpperCase())
+      .filter(Boolean)
+      .slice(0, 12); // 無制限列挙を避ける
+  }
+
   const paymentNote: string | undefined =
     typeof place?.payment?.notes === "string" && place.payment.notes.trim()
       ? place.payment.notes.trim()
       : undefined;
 
-  const socials: SocialItem[] = Array.isArray(place?.socials) ? place.socials.filter(s => s && (s.url || s.handle)) : [];
+  const socials: SocialItem[] =
+    Array.isArray(place?.socials) ? place.socials.filter(s => s && (s.url || s.handle)) : [];
 
   // Evidence: verification.sources[].url を採用
   const evidenceLinks: string[] = (() => {
     const srcs = Array.isArray(verification?.sources) ? verification.sources : [];
-    const urls = srcs.map(s => (typeof s?.url === "string" ? s.url.trim() : "")).filter(Boolean);
+    const urls = srcs
+      .map(s => (typeof s?.url === "string" ? s.url.trim() : ""))
+      .filter(Boolean);
     return Array.from(new Set(urls));
   })();
 
@@ -174,6 +195,12 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <VerificationBadge status={status} />
+            {/* 補助情報（最終検証日などがあれば） */}
+            {verification?.last_verified && (
+              <span className="text-xs text-neutral-500">
+                Last verified: {verification.last_verified}
+              </span>
+            )}
           </div>
           <h2 className="mt-2 text-2xl font-semibold leading-tight break-words">
             {place.name}
@@ -216,7 +243,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
                       className="aspect-[4/3] w-full object-cover rounded-md ring-1 ring-neutral-200"
                     />
                     {caption && (
-                      <p className="text-xs text-neutral-700">
+                      <p className="text-xs text-neutral-700 mt-1">
                         {caption.slice(0, capLimit)}
                         {caption.length > capLimit ? "…" : ""}
                       </p>
@@ -247,12 +274,12 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
               <>
                 <div className="text-[14px] font-medium">Assets</div>
                 <ul className="mt-1 ml-6 list-disc space-y-1">
-                  {accepts.slice(0, 3).map((line, i) => (
+                  {accepts.slice(0, 6).map((line, i) => (
                     <li key={`${line}-${i}`} className="text-sm">{line}</li>
                   ))}
                 </ul>
-                {accepts.length > 3 && (
-                  <div className="text-xs text-slate-500 mt-1">+{accepts.length - 3}</div>
+                {accepts.length > 6 && (
+                  <div className="text-xs text-slate-500 mt-1">+{accepts.length - 6}</div>
                 )}
               </>
             )}
@@ -278,7 +305,10 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
             )}
             {socials.map((s, i) => {
               const label = prettyPlatformName(s.platform);
-              const text = s.handle?.replace(/^@/, "") || s.url?.replace(/^https?:\/\/(www\.)?/i, "") || "";
+              const text =
+                s.handle?.replace(/^@/, "") ||
+                s.url?.replace(/^https?:\/\/(www\.)?/i, "") ||
+                "";
               const href = s.url || undefined;
               if (!text) return null;
               return (
