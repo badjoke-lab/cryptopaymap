@@ -226,6 +226,10 @@ export default function MapShell() {
       const v = p?.verification?.status;
       if (v) s.add(v);
     });
+<<<<<<< HEAD
+=======
+    // 表示順の安定化
+>>>>>>> origin/main
     const order = ["owner", "community", "directory", "unverified"];
     const list = Array.from(s).sort((a, b) => order.indexOf(a) - order.indexOf(b));
     return ["all", ...list];
@@ -250,9 +254,13 @@ export default function MapShell() {
         return (a.name ?? "").localeCompare(b.name ?? "");
       });
     } else {
+<<<<<<< HEAD
       acc = acc.slice().sort((a, b) =>
         (a.name ?? "").localeCompare(b.name ?? "")
       );
+=======
+      acc = acc.slice().sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+>>>>>>> origin/main
     }
     return acc;
   }, [places, coin, category, city, vf, sort]);
@@ -268,6 +276,7 @@ export default function MapShell() {
     filteredSorted.forEach((p) => {
       const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
 
+<<<<<<< HEAD
       // ✅ バッジ統一版
       const statusHtml = statusBadgeHtml(p?.verification?.status);
       const { line, moreLine } = popupAccepted(p);
@@ -277,6 +286,21 @@ export default function MapShell() {
             <strong style="font-size:16px">${p.name ?? ""}</strong>
             ${statusHtml}
           </div>
+=======
+      // バッジ（Owner/Community）をポップアップに表示
+      const st = p?.verification?.status as "owner" | "community" | "directory" | "unverified" | undefined;
+      const badge =
+        st === "owner"
+          ? `<span style="display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:#d1fae5;color:#065f46;font-weight:600;font-size:11px">Owner</span>`
+          : st === "community"
+          ? `<span style="display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:#dbeafe;color:#1e40af;font-weight:600;font-size:11px">Community</span>`
+          : "";
+
+      const { line, moreLine } = popupAccepted(p);
+      const html = `
+        <div style="min-width:240px">
+          <strong>${p.name ?? ""}</strong>${badge}<br/>
+>>>>>>> origin/main
           ${p.city ?? ""}${p.city && p.country ? ", " : ""}${p.country ?? ""}<br/>
           ${line ?? ""}${moreLine ? `<br/>${moreLine}` : ""}
           <div style="margin-top:8px">
@@ -303,7 +327,11 @@ export default function MapShell() {
   return (
     <div className="relative w-full">
       {/* フィルターUI */}
+<<<<<<< HEAD
       <div className="map-toolbar">
+=======
+      <div className="absolute top-3 left-3 z-[1000] bg-white/90 backdrop-blur rounded-md shadow border p-2 space-x-2 flex flex-wrap items-center">
+>>>>>>> origin/main
         <label className="text-xs opacity-70">Verify</label>
         <select
           value={vf}
@@ -311,9 +339,13 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs"
         >
           {vfOptions.map((v) => (
+<<<<<<< HEAD
             <option key={v} value={v}>
               {v}
             </option>
+=======
+            <option key={v} value={v}>{v}</option>
+>>>>>>> origin/main
           ))}
         </select>
 
@@ -324,9 +356,13 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs max-w-[140px]"
         >
           {coinOptions.map((c) => (
+<<<<<<< HEAD
             <option key={c} value={c}>
               {c}
             </option>
+=======
+            <option key={c} value={c}>{c}</option>
+>>>>>>> origin/main
           ))}
         </select>
 
@@ -337,9 +373,13 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs max-w-[160px]"
         >
           {categoryOptions.map((c) => (
+<<<<<<< HEAD
             <option key={c} value={c}>
               {c}
             </option>
+=======
+            <option key={c} value={c}>{c}</option>
+>>>>>>> origin/main
           ))}
         </select>
 
@@ -350,9 +390,13 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs max-w-[160px]"
         >
           {cityOptions.map((c) => (
+<<<<<<< HEAD
             <option key={c} value={c}>
               {c}
             </option>
+=======
+            <option key={c} value={c}>{c}</option>
+>>>>>>> origin/main
           ))}
         </select>
 
@@ -367,6 +411,10 @@ export default function MapShell() {
         </select>
       </div>
 
+<<<<<<< HEAD
+=======
+      {/* 高さはグローバルCSSなどで .map-screen { height: calc(100vh - 120px); } 等にしておく */}
+>>>>>>> origin/main
       <div ref={containerRef} className="map-screen relative" />
       {message && (
         <div className="absolute left-4 bottom-4 z-[1200] bg-white/90 rounded px-3 py-2 text-xs border">
