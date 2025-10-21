@@ -54,14 +54,14 @@ const SORT_ORDER: Record<string, number> = {
 const statusBadgeHtml = (status?: string) => {
   const s = (status ?? "").toLowerCase();
   const base =
-    "display:inline-block;padding:2px 8px;border-radius:9999px;font-weight:600;font-size:12px;margin-left:6px;";
+    "display:inline-block;padding:2px 8px;border-radius:9999px;font-weight:700;font-size:12px;line-height:1;margin-left:8px;";
   if (s === "owner")
-    return `<span style="${base}background:#d1fae5;color:#065f46;">Owner</span>`;
+    return `<span style="${base}background:#dcfce7;color:#166534;">👑 Owner Verified</span>`;
   if (s === "community")
-    return `<span style="${base}background:#e0e7ff;color:#3730a3;">Community</span>`;
+    return `<span style="${base}background:#e0e7ff;color:#3730a3;">💬 Community Verified</span>`;
   if (s === "directory")
-    return `<span style="${base}background:#fef3c7;color:#92400e;">Directory</span>`;
-  return `<span style="${base}background:#f3f4f6;color:#374151;">Unverified</span>`;
+    return `<span style="${base}background:#ffe4e6;color:#9f1239;">📂 Directory Source</span>`;
+  return `<span style="${base}background:#fef3c7;color:#92400e;">⚠️ Unverified</span>`;
 };
 
 function popupAccepted(p: Place): { line?: string; moreLine?: string } {
@@ -121,6 +121,7 @@ export default function MapShell() {
   const [category, setCategory] = useState("All");
   const [city, setCity] = useState("All");
   const [sort, setSort] = useState<"verified" | "name">("verified");
+  const [vfOptions, setVfOptions] = useState<string[]>(["all"]); // ← 安定化
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = useMemo(
     () => places.find((p) => p.id === selectedId) || null,
@@ -178,6 +179,19 @@ export default function MapShell() {
     };
   }, []);
 
+  /* --- Verify フィルタ選択肢（places 取得後に確実に構築） --- */
+  useEffect(() => {
+    if (!places.length) return;
+    const s = new Set<string>();
+    for (const p of places) {
+      const v = p?.verification?.status;
+      if (v) s.add(v);
+    }
+    const order = ["owner", "community", "directory", "unverified"];
+    const list = Array.from(s).sort((a, b) => order.indexOf(a) - order.indexOf(b));
+    setVfOptions(["all", ...list]);
+  }, [places]);
+
   /* --- 地図初期化 --- */
   useEffect(() => {
     if (mapRef.current) return;
@@ -220,18 +234,6 @@ export default function MapShell() {
     return ["All", ...Array.from(s).sort()];
   }, [places]);
 
-  const vfOptions = useMemo(() => {
-    const s = new Set<string>();
-    places.forEach((p) => {
-      const v = p?.verification?.status;
-      if (v) s.add(v);
-    });
-    // 表示順の安定化
-    const order = ["owner", "community", "directory", "unverified"];
-    const list = Array.from(s).sort((a, b) => order.indexOf(a) - order.indexOf(b));
-    return ["all", ...list];
-  }, [places]);
-
   /* --- フィルタ＆ソート --- */
   const filteredSorted = useMemo(() => {
     let acc = places.filter(
@@ -269,7 +271,7 @@ export default function MapShell() {
     filteredSorted.forEach((p) => {
       const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
 
-      // バッジ表記を統一
+      // バッジ表記を統一（ドロワーと同ラベル）
       const statusHtml = statusBadgeHtml(p?.verification?.status);
       const { line, moreLine } = popupAccepted(p);
       const html = `
