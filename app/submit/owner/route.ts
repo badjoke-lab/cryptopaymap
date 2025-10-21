@@ -1,11 +1,11 @@
 // app/submit/owner/route.ts
+export const runtime = 'nodejs';
+
 import { NextResponse } from "next/server";
 import { buildMail } from "@/lib/mailerTemplates";
 import { sendMail } from "@/lib/mail";
 import { sanitizeText, sanitizeEmail, sanitizeUrl } from "@/lib/sanitize";
 import { makeRef } from "@/lib/ref";
-import fs from "fs";
-import path from "path";
 
 export async function POST(req: Request) {
   try {
@@ -26,15 +26,20 @@ export async function POST(req: Request) {
     const payload = {
       ref,
       when: new Date().toISOString(),
-      Business, Country, City, Category, AcceptedRaw,
+      Business,
+      Country,
+      City,
+      Category,
+      AcceptedRaw,
       ImagesCount: Number(form.get("ImagesCount") ?? 0) || 0,
-      SubmitterName, SubmitterEmail,
+      SubmitterName,
+      SubmitterEmail,
       owner_verify_url: ownerVerifyUrl,
     } as const;
 
     // user
-    const mailUser = buildMail("user", "owner", "receipt", payload);
     if (SubmitterEmail) {
+      const mailUser = buildMail("user", "owner", "receipt", payload);
       await sendMail({ to: SubmitterEmail, subject: mailUser.subject, text: mailUser.text });
     }
 
@@ -42,11 +47,17 @@ export async function POST(req: Request) {
     const mailOps = buildMail("ops", "owner", "receipt", payload);
     await sendMail({ to: "cryptopaymap.app@gmail.com", subject: mailOps.subject, text: mailOps.text });
 
-    // optional: local-only save
+    // optional: local-only save（Vercel本番では無効想定）— SAVE_FILES=1 の時のみ
     if (process.env.SAVE_FILES === "1") {
+      const { default: fs } = await import("fs");
+      const { default: path } = await import("path");
       const dir = path.join(process.cwd(), "public/_submissions/owner");
       fs.mkdirSync(dir, { recursive: true });
-      fs.writeFileSync(path.join(dir, `${ref}.json`), JSON.stringify(payload, null, 2));
+      // website を保存に含めたい場合は payload を展開して追記
+      fs.writeFileSync(
+        path.join(dir, `${ref}.json`),
+        JSON.stringify({ ...payload, website }, null, 2)
+      );
     }
 
     // 成功 → submitted.html にリダイレクト（クエリで ref と name）

@@ -1,4 +1,6 @@
 // app/ops/notify/report-resolution/route.ts
+export const runtime = 'nodejs';
+
 import { NextResponse } from "next/server";
 import { buildMail } from "@/lib/mailerTemplates";
 import { sendMail } from "@/lib/mail";
@@ -8,10 +10,14 @@ export async function POST(req: Request) {
   try {
     const AUTH = process.env.OPS_NOTIFY_KEY;
     const key = req.headers.get("x-ops-key");
-    if (!AUTH || key !== AUTH) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    if (!AUTH || key !== AUTH) {
+      return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+    }
 
+    // expected body:
+    // { ref, SubmitterName, submitterEmail, resolutionEN, handled_on, resolution_detail, public_url }
     const body = await req.json();
-    // expected: { ref, SubmitterName, submitterEmail, resolutionEN, handled_on, resolution_detail, public_url }
+
     const mail = buildMail("user", "report", "report_resolution", {
       ref: sanitizeText(body.ref),
       SubmitterName: sanitizeText(body.SubmitterName),
@@ -20,6 +26,7 @@ export async function POST(req: Request) {
       resolution_detail: sanitizeText(body.resolution_detail),
       public_url: sanitizeText(body.public_url),
     });
+
     const to = sanitizeEmail(body.submitterEmail);
     if (!to) return NextResponse.json({ error: "submitterEmail required" }, { status: 400 });
 

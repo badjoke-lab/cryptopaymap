@@ -1,11 +1,11 @@
 // app/submit/report/route.ts
+export const runtime = 'nodejs';
+
 import { NextResponse } from "next/server";
 import { buildMail } from "@/lib/mailerTemplates";
 import { sendMail } from "@/lib/mail";
 import { sanitizeText, sanitizeEmail } from "@/lib/sanitize";
 import { makeRef } from "@/lib/ref";
-import fs from "fs";
-import path from "path";
 
 export async function POST(req: Request) {
   try {
@@ -27,7 +27,12 @@ export async function POST(req: Request) {
     const payload = {
       ref,
       when: new Date().toISOString(),
-      SubmitterName, SubmitterEmail, issue_type, place_ref, description, images_count,
+      SubmitterName,
+      SubmitterEmail,
+      issue_type,
+      place_ref,
+      description,
+      images_count,
     } as const;
 
     // user
@@ -40,7 +45,10 @@ export async function POST(req: Request) {
     const mailOps = buildMail("ops", "report", "receipt", payload);
     await sendMail({ to: "cryptopaymap.app@gmail.com", subject: mailOps.subject, text: mailOps.text });
 
+    // optional: local-only save（Vercel本番では無効想定）— SAVE_FILES=1 の時のみ
     if (process.env.SAVE_FILES === "1") {
+      const { default: fs } = await import("fs");
+      const { default: path } = await import("path");
       const dir = path.join(process.cwd(), "public/_submissions/report");
       fs.mkdirSync(dir, { recursive: true });
       fs.writeFileSync(path.join(dir, `${ref}.json`), JSON.stringify(payload, null, 2));
