@@ -50,6 +50,20 @@ const SORT_ORDER: Record<string, number> = {
   unverified: 3,
 };
 
+/** ステータスバッジHTML生成 */
+const statusBadgeHtml = (status?: string) => {
+  const s = (status ?? "").toLowerCase();
+  const base =
+    "display:inline-block;padding:2px 8px;border-radius:9999px;font-weight:600;font-size:12px;margin-left:6px;";
+  if (s === "owner")
+    return `<span style="${base}background:#d1fae5;color:#065f46;">Owner</span>`;
+  if (s === "community")
+    return `<span style="${base}background:#e0e7ff;color:#3730a3;">Community</span>`;
+  if (s === "directory")
+    return `<span style="${base}background:#fef3c7;color:#92400e;">Directory</span>`;
+  return `<span style="${base}background:#f3f4f6;color:#374151;">Unverified</span>`;
+};
+
 function popupAccepted(p: Place): { line?: string; moreLine?: string } {
   const acc = Array.isArray(p.payment?.accepts) ? p.payment.accepts : [];
   const tokens: string[] = [];
@@ -76,7 +90,8 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
     tokens.push(token);
   }
 
-  if (!tokens.length && Array.isArray(p.coins)) tokens.push(...p.coins.map((s) => s.toUpperCase()));
+  if (!tokens.length && Array.isArray(p.coins))
+    tokens.push(...p.coins.map((s) => s.toUpperCase()));
   if (!tokens.length) return {};
 
   const head = tokens.slice(0, 3).join(" · ");
@@ -88,7 +103,10 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
 const normalizeStatus = (
   s: any
 ): NonNullable<DetailPlace["verification"]>["status"] => {
-  return s === "owner" || s === "community" || s === "directory" || s === "unverified"
+  return s === "owner" ||
+    s === "community" ||
+    s === "directory" ||
+    s === "unverified"
     ? s
     : "unverified";
 };
@@ -104,7 +122,10 @@ export default function MapShell() {
   const [city, setCity] = useState("All");
   const [sort, setSort] = useState<"verified" | "name">("verified");
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = useMemo(() => places.find((p) => p.id === selectedId) || null, [places, selectedId]);
+  const selected = useMemo(
+    () => places.find((p) => p.id === selectedId) || null,
+    [places, selectedId]
+  );
   const [message, setMessage] = useState<string | null>(null);
 
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -115,7 +136,6 @@ export default function MapShell() {
   useEffect(() => {
     let alive = true;
     (async () => {
-      // 1) index.json を読む
       const idx = await fetchJSON<CityIndex>("/data/places/index.json");
       if (!alive) return;
 
@@ -124,7 +144,6 @@ export default function MapShell() {
         return;
       }
 
-      // 2) 各 city JSON を並列取得してフラット化
       const cityPaths = idx.cities.map((c) => `/data/places/${c.path}`);
       const chunks = await Promise.all(cityPaths.map((u) => fetchJSON<any[]>(u)));
       if (!alive) return;
@@ -136,7 +155,9 @@ export default function MapShell() {
           if (!Number.isFinite(p?.lat) || !Number.isFinite(p?.lng)) continue;
           flat.push({
             ...p,
-            coins: Array.isArray(p?.coins) ? p.coins.map((s: any) => String(s).toUpperCase()) : undefined,
+            coins: Array.isArray(p?.coins)
+              ? p.coins.map((s: any) => String(s).toUpperCase())
+              : undefined,
             verification: {
               ...(p?.verification || {}),
               status: normalizeStatus(p?.verification?.status),
@@ -205,7 +226,6 @@ export default function MapShell() {
       const v = p?.verification?.status;
       if (v) s.add(v);
     });
-    // 表示順の安定化
     const order = ["owner", "community", "directory", "unverified"];
     const list = Array.from(s).sort((a, b) => order.indexOf(a) - order.indexOf(b));
     return ["all", ...list];
@@ -213,7 +233,9 @@ export default function MapShell() {
 
   /* --- フィルタ＆ソート --- */
   const filteredSorted = useMemo(() => {
-    let acc = places.filter((p) => coin === "All" || (p.coins ?? []).includes(coin));
+    let acc = places.filter(
+      (p) => coin === "All" || (p.coins ?? []).includes(coin)
+    );
     acc = acc.filter((p) => category === "All" || p.category === category);
     acc = acc.filter((p) => city === "All" || p.city === city);
     acc = acc.filter((p) => (vf === "all" ? true : p?.verification?.status === vf));
@@ -228,7 +250,9 @@ export default function MapShell() {
         return (a.name ?? "").localeCompare(b.name ?? "");
       });
     } else {
-      acc = acc.slice().sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
+      acc = acc.slice().sort((a, b) =>
+        (a.name ?? "").localeCompare(b.name ?? "")
+      );
     }
     return acc;
   }, [places, coin, category, city, vf, sort]);
@@ -244,19 +268,15 @@ export default function MapShell() {
     filteredSorted.forEach((p) => {
       const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
 
-      // バッジ（Owner/Community）をポップアップに表示
-      const st = p?.verification?.status as "owner" | "community" | "directory" | "unverified" | undefined;
-      const badge =
-        st === "owner"
-          ? `<span style="display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:#d1fae5;color:#065f46;font-weight:600;font-size:11px">Owner</span>`
-          : st === "community"
-          ? `<span style="display:inline-block;margin-left:6px;padding:2px 6px;border-radius:6px;background:#dbeafe;color:#1e40af;font-weight:600;font-size:11px">Community</span>`
-          : "";
-
+      // ✅ バッジ統一版
+      const statusHtml = statusBadgeHtml(p?.verification?.status);
       const { line, moreLine } = popupAccepted(p);
       const html = `
-        <div style="min-width:240px">
-          <strong>${p.name ?? ""}</strong>${badge}<br/>
+        <div style="min-width:260px">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <strong style="font-size:16px">${p.name ?? ""}</strong>
+            ${statusHtml}
+          </div>
           ${p.city ?? ""}${p.city && p.country ? ", " : ""}${p.country ?? ""}<br/>
           ${line ?? ""}${moreLine ? `<br/>${moreLine}` : ""}
           <div style="margin-top:8px">
@@ -283,7 +303,7 @@ export default function MapShell() {
   return (
     <div className="relative w-full">
       {/* フィルターUI */}
-      <div className="absolute top-3 left-3 z-[1000] bg-white/90 backdrop-blur rounded-md shadow border p-2 space-x-2 flex flex-wrap items-center">
+      <div className="map-toolbar">
         <label className="text-xs opacity-70">Verify</label>
         <select
           value={vf}
@@ -291,7 +311,9 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs"
         >
           {vfOptions.map((v) => (
-            <option key={v} value={v}>{v}</option>
+            <option key={v} value={v}>
+              {v}
+            </option>
           ))}
         </select>
 
@@ -302,7 +324,9 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs max-w-[140px]"
         >
           {coinOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
 
@@ -313,7 +337,9 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs max-w-[160px]"
         >
           {categoryOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
 
@@ -324,7 +350,9 @@ export default function MapShell() {
           className="rounded border px-2 py-1 text-xs max-w-[160px]"
         >
           {cityOptions.map((c) => (
-            <option key={c} value={c}>{c}</option>
+            <option key={c} value={c}>
+              {c}
+            </option>
           ))}
         </select>
 
@@ -339,7 +367,6 @@ export default function MapShell() {
         </select>
       </div>
 
-      {/* 高さはグローバルCSSなどで .map-screen { height: calc(100vh - 120px); } 等にしておく */}
       <div ref={containerRef} className="map-screen relative" />
       {message && (
         <div className="absolute left-4 bottom-4 z-[1200] bg-white/90 rounded px-3 py-2 text-xs border">
