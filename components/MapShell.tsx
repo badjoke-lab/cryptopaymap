@@ -94,7 +94,6 @@ export default function MapShell() {
   const [coin, setCoin] = useState("All");
   const [category, setCategory] = useState("All");
   const [city, setCity] = useState("All");
-  const [sort, setSort] = useState<"verified" | "name">("verified");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = useMemo(() => places.find((p) => p.id === selectedId) || null, [places, selectedId]);
   const [message, setMessage] = useState<string | null>(null);
@@ -203,27 +202,24 @@ export default function MapShell() {
     return ["all", ...list];
   }, [places]);
 
-  /* --- フィルタ＆ソート --- */
+  /* --- フィルタ & 固定ソート（verified優先→name） --- */
   const filteredSorted = useMemo(() => {
     let acc = places.filter((p) => coin === "All" || (p.coins ?? []).includes(coin));
     acc = acc.filter((p) => category === "All" || p.category === category);
     acc = acc.filter((p) => city === "All" || p.city === city);
     acc = acc.filter((p) => (vf === "all" ? true : p?.verification?.status === vf));
 
-    if (sort === "verified") {
-      acc = acc.slice().sort((a, b) => {
-        const sa = a?.verification?.status ?? "zzz";
-        const sb = b?.verification?.status ?? "zzz";
-        const ra = SORT_ORDER[sa] ?? 9;
-        const rb = SORT_ORDER[sb] ?? 9;
-        if (ra !== rb) return ra - rb;
-        return (a.name ?? "").localeCompare(b.name ?? "");
-      });
-    } else {
-      acc = acc.slice().sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""));
-    }
+    acc = acc.slice().sort((a, b) => {
+      const sa = a?.verification?.status ?? "zzz";
+      const sb = b?.verification?.status ?? "zzz";
+      const ra = SORT_ORDER[sa] ?? 9;
+      const rb = SORT_ORDER[sb] ?? 9;
+      if (ra !== rb) return ra - rb;
+      return (a.name ?? "").localeCompare(b.name ?? "");
+    });
+
     return acc;
-  }, [places, coin, category, city, vf, sort]);
+  }, [places, coin, category, city, vf]);
 
   /* --- マーカー描画 --- */
   useEffect(() => {
@@ -294,37 +290,73 @@ export default function MapShell() {
         <div ref={canvasRef} className="map-canvas" />
         <div className="map-toolbar">
           <label className="text-xs opacity-70">Verify</label>
-          <select value={vf} onChange={(e) => setVf(e.target.value)} className="rounded border px-2 py-1 text-xs">
-            {vfOptions.map((v) => (
-              <option key={v} value={v}>{v}</option>
-            ))}
+          <select
+            value={vf}
+            onChange={(e) => setVf(e.target.value)}
+            className="rounded border px-2 py-1 text-xs"
+            aria-label="Verify"
+          >
+            {vfOptions.map((v) => {
+              const label =
+                v === "all"
+                  ? "All"
+                  : v === "owner"
+                  ? "Owner"
+                  : v === "community"
+                  ? "Community"
+                  : v === "directory"
+                  ? "Directory"
+                  : v === "unverified"
+                  ? "Unverified"
+                  : v;
+              return (
+                <option key={v} value={v}>
+                  {label}
+                </option>
+              );
+            })}
           </select>
 
           <label className="text-xs opacity-70 ml-2">Coin</label>
-          <select value={coin} onChange={(e) => setCoin(e.target.value)} className="rounded border px-2 py-1 text-xs max-w-[140px]">
+          <select
+            value={coin}
+            onChange={(e) => setCoin(e.target.value)}
+            className="rounded border px-2 py-1 text-xs max-w-[140px]"
+            aria-label="Coin"
+          >
             {coinOptions.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
 
           <label className="text-xs opacity-70 ml-2">Category</label>
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className="rounded border px-2 py-1 text-xs max-w-[160px]">
+          <select
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="rounded border px-2 py-1 text-xs max-w-[160px]"
+            aria-label="Category"
+          >
             {categoryOptions.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
           </select>
 
           <label className="text-xs opacity-70 ml-2">City</label>
-          <select value={city} onChange={(e) => setCity(e.target.value)} className="rounded border px-2 py-1 text-xs max-w-[160px]">
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="rounded border px-2 py-1 text-xs max-w-[160px]"
+            aria-label="City"
+          >
             {cityOptions.map((c) => (
-              <option key={c} value={c}>{c}</option>
+              <option key={c} value={c}>
+                {c}
+              </option>
             ))}
-          </select>
-
-          <label className="text-xs opacity-70 ml-2">Sort</label>
-          <select value={sort} onChange={(e) => setSort(e.target.value as "verified" | "name")} className="rounded border px-2 py-1 text-xs">
-            <option value="verified">verified</option>
-            <option value="name">name</option>
           </select>
         </div>
       </div>

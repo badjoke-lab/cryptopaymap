@@ -131,9 +131,6 @@ main, [data-page-root]{
 .z-leaflet{ z-index:30; }
 .z-credit{ z-index:20; }
 
-/* ---------- Leaflet controls ---------- */
-/* （ズーム等の強制配置はしない） */
-
 /* ---------- Credit badge ---------- */
 .cpm-credit {
   position:absolute;
@@ -144,11 +141,9 @@ main, [data-page-root]{
   font-size: 12px;
 }
 
-/* === Phase5 minimal additions === */
+/* === Utility for popup text === */
 [data-badge] { letter-spacing: .01em; }
 .cp-gallery img { aspect-ratio: 4/3; object-fit: cover; }
-
-/* Popup text clamp & wrap */
 .cp-popup { word-break: break-word; }
 .cp-popup .line-clamp-2 {
   display: -webkit-box;
@@ -163,8 +158,8 @@ main, [data-page-root]{
   overflow: hidden;
 }
 
-/* ---------- Map toolbar (fixed filters) ---------- */
-/* 左端張り付き → 画面中央に固定 */
+/* ---------- Map toolbar (filters) ---------- */
+/* デスクトップ: 横一列・折返し禁止（必要に応じて横スクロール） */
 .map-toolbar{
   position: absolute;
   top: 8px;
@@ -172,209 +167,61 @@ main, [data-page-root]{
   transform: translateX(-50%);
   z-index: 1200;
   display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 10px;
+  align-items: end;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
   background: rgba(255,255,255,.92);
   backdrop-filter: saturate(140%) blur(6px);
   box-shadow: 0 4px 16px rgba(0,0,0,.12);
-  flex-wrap: wrap;
-}
-.map-toolbar select{
-  font-size: 14px;
-  padding: .25rem .5rem;
-  border: 1px solid #d1d5db;
-  border-radius: .5rem;
-  background: #fff;
-}
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import 'leaflet/dist/leaflet.css';
-
-/* ---------- Leaflet pane ordering ---------- */
-.leaflet-tile-pane      { z-index: 200 !important; }
-.leaflet-overlay-pane   { z-index: 400 !important; }
-.leaflet-marker-pane    { z-index: 600 !important; }
-.leaflet-popup-pane     { z-index: 700 !important; }
-.leaflet-top, .leaflet-bottom { z-index: 800 !important; }
-
-/* ---------- Modal ---------- */
-.cpm-backdrop {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.45);
-  z-index: 2000 !important;
-}
-.cpm-modal {
-  position: fixed; right: 0; top: 0;
-  height: 100vh; width: min(420px,100vw);
-  background:#fff; z-index: 2100 !important;
-  display:flex; flex-direction:column;
-  box-shadow:-14px 0 40px rgba(0,0,0,.25);
-}
-.cpm-modal__header {
-  padding: 14px 16px;
-  border-bottom: 1px solid #eee;
-  display:flex; align-items:center; justify-content:space-between;
-}
-.cpm-modal__body { padding: 12px 16px; overflow:auto; }
-
-/* ---------- Clusters & markers ---------- */
-.cluster-green  { background:#86efac; border:3px solid #22c55e; color:#14532d; }
-.cluster-yellow { background:#fde68a; border:3px solid #f59e0b; color:#713f12; }
-.cluster-orange { background:#fdba74; border:3px solid #f97316; color:#7c2d12; }
-.cluster-red    { background:#fca5a5; border:3px solid #ef4444; color:#7f1d1d; }
-.cluster {
-  border-radius:9999px;
-  width:42px; height:42px;
-  display:grid; place-items:center;
-  font-weight:700;
-  box-shadow:0 2px 6px rgba(0,0,0,.15);
-}
-.marker-dot {
-  width:12px; height:12px;
-  border-radius:9999px;
-  background:#2563eb;
-  border:2px solid #1d4ed8;
-  box-shadow:0 1px 3px rgba(0,0,0,.25);
-}
-
-/* a11y */
-:focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-
-.leaflet-marker-icon,
-.leaflet-marker-shadow {
-  background: transparent !important;
-  border: none !important;
-}
-
-/* ---------- Header / Nav ---------- */
-header,
-[data-site-header] {
-  position: relative;
-  width: 100%;
-  background: #fff;
-  border-bottom: 1px solid #e5e7eb;
-  z-index: 5000;
-}
-
-header nav,
-[data-site-nav] {
-  display: flex; gap: 16px;
-  white-space: nowrap;
-  overflow-x: auto;
+  flex-wrap: nowrap;        /* ★ 折り返し禁止 */
+  white-space: nowrap;      /* ★ ラベル/セレクトの改行を抑止 */
+  overflow-x: auto;         /* ★ 幅が足りない時は横スクロール */
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
-}
-header nav a,
-[data-site-nav] a {
-  padding: 10px 0;
-}
-
-/* ===== FINAL LOCK: header / layout consistency ===== */
-:root { --header-h: 64px; }
-
-header, [data-site-header]{
-  position: fixed !important;
-  top: 0 !important; left: 0 !important; right: 0 !important;
-  height: var(--header-h) !important;
-  background: #fff !important;
-  border-bottom: 1px solid #e5e7eb !important;
-  z-index: 2147483600 !important;
-  -webkit-backface-visibility: hidden; backface-visibility: hidden;
-  transform: translateZ(0);
-}
-
-/* ページ本文の押し下げ */
-main, [data-page-root]{
-  padding-top: calc(var(--cpm-header-h, var(--header-h))) !important;
-}
-
-/* ---------- Map layout ---------- */
-.map-screen{
-  position: fixed !important;
-  top: calc(var(--cpm-header-h, var(--header-h))) !important;
-  left: 0; right: 0; bottom: 0;
-  height: auto !important;
-  overflow: hidden !important;
-  z-index: 1 !important; /* ヘッダーより下 */
-  border-top: 1px solid #e5e7eb;
-}
-
-/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
-.map-canvas{
-  position: absolute !important;
-  inset: 0 !important;
-  height: 100% !important;
-  width: 100% !important;
-}
-
-/* 互換: 直接 .leaflet-container を置いた場合も広げる */
-.map-screen .leaflet-container{ height:100% !important; width:100% !important; }
-
-/* ---------- z-index helpers ---------- */
-.z-header{ z-index:50; }
-.z-fab{ z-index:40; }
-.z-sheet{ z-index:60; }
-.z-backdrop{ z-index:55; }
-.z-leaflet{ z-index:30; }
-.z-credit{ z-index:20; }
-
-/* ---------- Leaflet controls ---------- */
-/* （ズーム等の強制配置はしない） */
-
-/* ---------- Credit badge ---------- */
-.cpm-credit {
-  position:absolute;
-  right: 10px; bottom: 10px;
-  padding: 2px 6px;
-  background: rgba(255,255,255,.85);
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-/* === Phase5 minimal additions === */
-[data-badge] { letter-spacing: .01em; }
-.cp-gallery img { aspect-ratio: 4/3; object-fit: cover; }
-
-/* Popup text clamp & wrap */
-.cp-popup { word-break: break-word; }
-.cp-popup .line-clamp-2 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-.cp-popup .line-clamp-3 {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
-  overflow: hidden;
-}
-
-/* ---------- Map toolbar (fixed filters) ---------- */
-/* 左端張り付き → 画面中央に固定 */
-.map-toolbar{
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 1200;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 10px;
-  background: rgba(255,255,255,.92);
-  backdrop-filter: saturate(140%) blur(6px);
-  box-shadow: 0 4px 16px rgba(0,0,0,.12);
-  flex-wrap: wrap;
 }
 .map-toolbar select{
   font-size: 14px;
-  padding: .25rem .5rem;
+  padding: .35rem .6rem;
   border: 1px solid #d1d5db;
-  border-radius: .5rem;
+  border-radius: .6rem;
   background: #fff;
+  max-width: 180px;         /* ★ 伸びすぎ防止 */
+}
+
+/* ラベルとセレクトの最小整形（現行のHTML構造のまま適用可） */
+.map-toolbar label{
+  font-size: 12px;
+  opacity: .7;
+}
+
+/* ---------- Responsive (mobile sheet対応の下準備) ---------- */
+.desktop-only{ display:block; }
+.mobile-only{ display:none; }
+
+@media (max-width: 768px){
+  .desktop-only{ display:none; }
+  .mobile-only{ display:inline-block; }
+
+  /* 将来的に MapShell 側で FAB/シートを復帰した際に効くスタイル */
+  .map-fab{
+    position:absolute; left:10px; top:10px; z-index:1200;
+    border-radius:9999px; padding:10px 14px;
+    background:#111; color:#fff; font-weight:600; font-size:14px;
+    box-shadow:0 6px 18px rgba(0,0,0,.22);
+  }
+  .map-sheet-backdrop{
+    position:absolute; inset:0; background:rgba(0,0,0,.35); z-index:1500;
+  }
+  .map-sheet{
+    position:absolute; left:0; right:0; bottom:0; z-index:1510;
+    background:#fff; border-top-left-radius:16px; border-top-right-radius:16px;
+    box-shadow:0 -10px 28px rgba(0,0,0,.22);
+    padding-bottom:env(safe-area-inset-bottom,10px);
+  }
+  .sheet-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; border-bottom:1px solid #eee; font-weight:700;
+  }
+  .sheet-close{ all:unset; cursor:pointer; font-size:22px; line-height:1; padding:2px 6px; }
+  .sheet-body{ padding:12px 14px; }
 }
