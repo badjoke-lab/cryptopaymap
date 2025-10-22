@@ -1,11 +1,11 @@
-// components/MapDetail.tsx
 "use client";
 
-import React from "react";
+import React, { useMemo, useState } from "react";
 import { VerificationBadge } from "./VerificationBadge";
 
+/* ===== Types ===== */
 export type SocialItem = {
-  platform:
+  platform?:
     | "instagram" | "facebook" | "x" | "tiktok" | "youtube"
     | "telegram" | "whatsapp" | "wechat" | "line" | "threads"
     | "pinterest" | "other";
@@ -19,87 +19,97 @@ export type Place = {
   lat: number;
   lng: number;
   category?: string;
-  country?: string;   // ISO alpha-2 or full name
+  country?: string;   // ISO alpha-2 or name
   city?: string;
   address?: string;
   website?: string | null;
+  phone?: string | null;
 
-  // 画像は2系統に対応：media.images(オブジェクト配列) / images(文字列配列)
-  media?: { images?: Array<{ url?: string; hash?: string; ext?: string; caption?: string }> };
-  images?: string[];        // e.g. "/media/xxx.png" の配列（owner想定）
+  verification?: {
+    status?: "owner" | "community" | "directory" | "unverified";
+    sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
+    last_verified?: string;
+    last_checked?: string;
+    verified_by?: string;
+  };
 
-  // 文章プロフィール
   profile?: { summary?: string };
 
-  // 支払い
+  /* 画像: owner/community は media.images、OSM等は images(string[]) も許容 */
+  media?: { images?: Array<{ url?: string; hash?: string; ext?: string; caption?: string }> };
+  images?: string[];
+
+  /* 支払い */
   payment?: {
     accepts?: Array<{ asset?: string; chain?: string; method?: string }>;
     notes?: string;
   };
-  payment_pages?: string[]; // e.g. ["https://example.com/pay"]
+  payment_pages?: string[];
 
-  // 営業情報・連絡先・属性
-  hours?: string;           // OSM: opening_hours / hours を統一表示
-  phone?: string;
+  /* 営業/属性 */
+  hours?: string;
   cuisine?: string | null;
-  wifi?: string | null;     // "wlan" | null
-  wifi_fee?: string | null; // "no" など
-  wheelchair?: string | null; // "yes" | "no" | null
-  smoking?: string | null;  // null/値
+  wifi?: string | null;
+  wifi_fee?: string | null;
+  wheelchair?: string | null;
+  smoking?: string | null;
   delivery?: any;
   takeaway?: any;
 
-  // ソーシャルは2系統に対応：配列 / オブジェクト(flat)
+  /* ソーシャル（配列推奨だが混在も許容） */
   socials?: SocialItem[];
   instagram?: string | null;
-  twitter?: string | null;
+  twitter?: string | null;   // X
   facebook?: string | null;
-
-  // 検証情報
-  verification?: {
-    status?: "owner" | "community" | "directory" | "unverified";
-    last_checked?: string; // OSM由来
-    last_verified?: string; // owner/community 由来
-    verified_by?: string;
-    sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
-  };
 } & Record<string, any>;
 
-/* ---- constants（UIクランプ） ---- */
+/* ---- constants ---- */
 const SUM_OWNER_MAX = 600;
 const SUM_COMMUNITY_MAX = 300;
 const CAP_OWNER_MAX = 600;
 const CAP_COMMUNITY_MAX = 300;
-const IMG_OWNER_MAX = 8;
-const IMG_COMMUNITY_MAX = 4;
 
 /* ---- helpers ---- */
 function mediaUrl(img: any) {
   if (img?.hash) return `/api/media/${img.hash}${img?.ext ? `.${img.ext}` : ""}`;
   if (img?.url) return String(img.url);
+  if (typeof img === "string") return img;
   return "";
 }
 
-/** ===== 3種ナビ URL ===== */
-function navTarget(place: { lat?: number; lng?: number; address?: string; city?: string; country?: string }) {
-  const hasLL = Number.isFinite(place.lat as any) && Number.isFinite(place.lng as any);
-  if (hasLL) {
-    const ll = `${place.lat},${place.lng}`;
-    return {
-      google: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ll)}`,
-      apple: `https://maps.apple.com/?daddr=${encodeURIComponent(ll)}`,
-      osm: `https://www.openstreetmap.org/directions?to=${encodeURIComponent(ll)}`,
-    };
-  }
-  const q = encodeURIComponent([place.address, place.city, place.country].filter(Boolean).join(", "));
-  return {
-    google: `https://www.google.com/maps/dir/?api=1&destination=${q}`,
-    apple: `https://maps.apple.com/?daddr=${q}`,
-    osm: `https://www.openstreetmap.org/directions?to=${q}`,
-  };
+/* URL からプラットフォーム推定 */
+function inferPlatformFromUrl(url?: string): SocialItem["platform"] | undefined {
+  if (!url) return;
+  const u = url.toLowerCase();
+  if (/instagram\.com/.test(u)) return "instagram";
+  if (/twitter\.com|x\.com/.test(u)) return "x";
+  if (/facebook\.com/.test(u)) return "facebook";
+  if (/tiktok\.com/.test(u)) return "tiktok";
+  if (/youtube\.com|youtu\.be/.test(u)) return "youtube";
+  if (/t\.me|telegram\.me|telegram\.org/.test(u)) return "telegram";
+  if (/whatsapp\.com/.test(u)) return "whatsapp";
+  if (/wechat\.com|weixin\.qq\.com/.test(u)) return "wechat";
+  if (/line\.me/.test(u)) return "line";
+  if (/threads\.net/.test(u)) return "threads";
+  if (/pinterest\.com/.test(u)) return "pinterest";
+  return "other";
 }
 
-/* ===== Payments ===== */
+type Platform = NonNullable<SocialItem["platform"]>;
+function prettyPlatformName(p: Platform) {
+  switch (p) {
+    case "x": return "X";
+    case "youtube": return "YouTube";
+    case "tiktok": return "TikTok";
+    case "wechat": return "WeChat";
+    case "whatsapp": return "WhatsApp";
+    case "telegram": return "Telegram";
+    case "line": return "LINE";
+    default: return p[0].toUpperCase() + p.slice(1);
+  }
+}
+
+/* Payments */
 function prettyAcceptItem(a: any): string | null {
   if (!a) return null;
   const asset = String(a?.asset || "").toUpperCase();
@@ -129,7 +139,6 @@ function prettyAcceptItem(a: any): string | null {
   if (label) return `${asset}@${label}`;
   return asset;
 }
-
 function buildAcceptedLines(place: any): string[] {
   const acc = Array.isArray(place?.payment?.accepts) ? place.payment.accepts : [];
   const out: string[] = [];
@@ -140,7 +149,7 @@ function buildAcceptedLines(place: any): string[] {
   return Array.from(new Set(out));
 }
 
-/* ===== 国名変換（表示用、最小辞書） ===== */
+/* Country label */
 const COUNTRY_EN: Record<string, string> = {
   JP: "Japan", US: "United States", GB: "United Kingdom", FR: "France", DE: "Germany",
   IT: "Italy", ES: "Spain", KR: "South Korea", CN: "China", TW: "Taiwan",
@@ -152,52 +161,10 @@ const countryNameFrom = (codeOrName?: string) => {
   return COUNTRY_EN[code] || codeOrName;
 };
 
-/* ===== Socials ===== */
-type Platform = SocialItem["platform"];
-function prettyPlatformName(p: Platform) {
-  switch (p) {
-    case "x": return "X";
-    case "youtube": return "YouTube";
-    case "tiktok": return "TikTok";
-    case "wechat": return "WeChat";
-    case "whatsapp": return "WhatsApp";
-    case "telegram": return "Telegram";
-    case "line": return "LINE";
-    default: return p[0].toUpperCase() + p.slice(1);
-  }
-}
-
-// フラットな instagram/twitter/facebook も配列形式に正規化
-function normalizeSocials(place: Place): SocialItem[] {
-  const out: SocialItem[] = [];
-  if (Array.isArray(place.socials)) out.push(...place.socials);
-  const add = (platform: SocialItem["platform"], url?: string | null) => {
-    if (!url || typeof url !== "string" || !url.trim()) return;
-    out.push({ platform, url: url.trim() });
-  };
-  // OSM や owner JSON のフラット項目にも対応
-  add("instagram", (place as any).instagram);
-  add("x", (place as any).twitter);
-  add("facebook", (place as any).facebook);
-  // 一部のownerデータにある"socials": { instagram: "… https://x.com/…" } の様な混在にも粗く対応
-  const socialsObj = (place as any).socials as any;
-  if (socialsObj && !Array.isArray(socialsObj)) {
-    if (typeof socialsObj.instagram === "string") add("instagram", socialsObj.instagram);
-    if (typeof socialsObj.twitter === "string") add("x", socialsObj.twitter);
-    if (typeof socialsObj.facebook === "string") add("facebook", socialsObj.facebook);
-  }
-  // 重複削除
-  const seen = new Set<string>();
-  return out.filter(s => {
-    const key = `${s.platform}:${s.url ?? s.handle ?? ""}`;
-    if (seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
-}
-
+/* ===== Component ===== */
 export default function MapDetail({ place, onClose }: { place: Place; onClose?: () => void }) {
   const website = typeof place.website === "string" && place.website.trim() ? place.website.trim() : undefined;
+  const phone = typeof place.phone === "string" && place.phone.trim() ? place.phone.trim() : undefined;
 
   const verification = (place as any)?.verification ?? {};
   const status: "owner" | "community" | "directory" | "unverified" | undefined =
@@ -216,14 +183,16 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
   const media = (place as any)?.media ?? {};
   const imageObjs: any[] = Array.isArray(media?.images) ? media.images : [];
   const imageStrings: string[] = Array.isArray(place?.images) ? place.images : [];
-  const hasMediaImages = imageObjs.length > 0;
-  const hasStringImages = imageStrings.length > 0;
+  const images: { url: string; caption?: string }[] = (
+    imageObjs.length > 0
+      ? imageObjs.map((img: any) => ({ url: mediaUrl(img), caption: img?.caption })).filter(x => x.url)
+      : imageStrings.map((s) => ({ url: mediaUrl(s) }))
+  );
 
   const sumLimit = isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX;
   const capLimit = isOwner ? CAP_OWNER_MAX : CAP_COMMUNITY_MAX;
-  const imgLimit = isOwner ? IMG_OWNER_MAX : IMG_COMMUNITY_MAX;
 
-  // 支払い（accepts → それが無ければ coins フォールバック）
+  // 支払い（accepts → coins フォールバック）
   let accepts = buildAcceptedLines(place);
   if (accepts.length === 0 && Array.isArray((place as any)?.coins)) {
     accepts = (place as any).coins
@@ -237,32 +206,43 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
       ? place.payment.notes.trim()
       : undefined;
 
-  const socials = normalizeSocials(place);
+  /* Socials：URLからプラットフォーム推定＋ラベル常時表示 */
+  const socials = useMemo(() => {
+    const src: SocialItem[] = Array.isArray(place?.socials) ? place.socials : [];
+    const out = src
+      .map((s) => {
+        const platform = s.platform ?? inferPlatformFromUrl(s.url) ?? "other";
+        const handle = s.handle?.replace(/^@/, "");
+        return { platform, url: s.url, handle };
+      })
+      .filter((s) => s.url || s.handle);
 
-  // Evidence: verification.sources[].url/name を採用
-  const evidenceLinks: Array<{ url: string; name?: string; when?: string }> = (() => {
-    const srcs = Array.isArray(verification?.sources) ? verification.sources : [];
-    const out: Array<{ url: string; name?: string; when?: string }> = [];
-    for (const s of srcs) {
-      const url = typeof s?.url === "string" ? s.url.trim() : "";
-      if (!url) continue;
-      out.push({ url, name: s?.name, when: s?.when });
-    }
-    // 重複URL除去
+    // フラット指定（instagram/twitter/facebook）がある場合も吸収
+    if (typeof (place as any).instagram === "string") out.push({ platform: "instagram", url: (place as any).instagram });
+    if (typeof (place as any).twitter === "string")   out.push({ platform: "x",          url: (place as any).twitter });
+    if (typeof (place as any).facebook === "string")  out.push({ platform: "facebook",   url: (place as any).facebook });
+
     const seen = new Set<string>();
-    return out.filter(x => (seen.has(x.url) ? false : (seen.add(x.url), true)));
-  })();
+    return out.filter(s => {
+      const k = `${s.platform}:${s.url ?? s.handle ?? ""}`;
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
+  }, [place?.socials, (place as any)?.instagram, (place as any)?.twitter, (place as any)?.facebook]);
+
+  /* ライトボックス（拡大表示） */
+  const [lightbox, setLightbox] = useState<string | null>(null);
 
   const countryPretty = countryNameFrom(place.country);
 
   return (
     <aside className="h-full overflow-y-auto bg-white">
-      {/* Header（1行目=バッジ / 2行目=店名 / 3行目=category · city） */}
+      {/* Header */}
       <div className="flex items-start justify-between gap-3 px-6 pt-6">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
             <VerificationBadge status={status} />
-            {/* 検証補足 */}
             {(verification?.last_verified || verification?.last_checked) && (
               <span className="text-xs text-neutral-500">
                 {verification?.last_verified
@@ -274,7 +254,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           <h2 className="mt-2 text-2xl font-semibold leading-tight break-words">
             {place.name}
           </h2>
-          {(place.category || place.city) && (
+          {(place.category || place.city || countryPretty) && (
             <div className="text-sm text-neutral-600 mt-1">
               {place.category}
               {place.category && (place.city || countryPretty) ? " · " : ""}
@@ -282,7 +262,6 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
             </div>
           )}
         </div>
-
         {onClose && (
           <button
             onClick={onClose}
@@ -295,25 +274,41 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
       </div>
 
       <div className="space-y-5 px-6 py-5 text-[15px] leading-relaxed">
-        {/* Photos（owner/community は表示、OSMでも images(string[]) があれば表示） */}
-        {(canShowRich && hasMediaImages) || hasStringImages ? (
+
+        {/* Photos：横スクロールのカルーセル＋クリック拡大 */}
+        {canShowRich && images.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold mb-2 text-neutral-700">Photos</h3>
-            <ul className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {(hasMediaImages ? imageObjs.map((img: any) => mediaUrl(img)).filter(Boolean) : imageStrings)
-                .slice(0, imgLimit)
-                .map((src: string, i: number) => (
-                  <li key={`${src}-${i}`}>
-                    <img
-                      src={src}
-                      alt=""
-                      className="aspect-[4/3] w-full object-cover rounded-md ring-1 ring-neutral-200"
-                    />
-                  </li>
-                ))}
+            <ul className="flex gap-2 overflow-x-auto snap-x snap-mandatory">
+              {images.map((img, i) => (
+                <li key={`${img.url}-${i}`} className="snap-start">
+                  <img
+                    src={img.url}
+                    alt=""
+                    className="h-[180px] w-[240px] sm:h-[200px] sm:w-[280px] object-cover rounded-md ring-1 ring-neutral-200 cursor-zoom-in"
+                    onClick={() => setLightbox(img.url)}
+                  />
+                  {img.caption && (
+                    <p className="w-[240px] sm:w-[280px] text-xs text-neutral-700 mt-1">
+                      {String(img.caption).slice(0, capLimit)}
+                      {String(img.caption).length > capLimit ? "…" : ""}
+                    </p>
+                  )}
+                </li>
+              ))}
             </ul>
+
+            {/* Lightbox */}
+            {lightbox && (
+              <div
+                className="fixed inset-0 z-[5000] bg-black/70 flex items-center justify-center"
+                onClick={() => setLightbox(null)}
+              >
+                <img src={lightbox} alt="" className="max-w-[92vw] max-h-[92vh] rounded-lg shadow-2xl" />
+              </div>
+            )}
           </section>
-        ) : null}
+        )}
 
         {/* About（owner/community のみ） */}
         {canShowRich && typeof (place as any)?.profile?.summary === "string" && (place as any).profile.summary.trim() && (
@@ -326,7 +321,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           </section>
         )}
 
-        {/* Hours（OSM/ownerの hours をそのまま） */}
+        {/* Hours（そのまま表示） */}
         {typeof place.hours === "string" && place.hours.trim() && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Hours</h3>
@@ -376,26 +371,28 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           </section>
         )}
 
-        {/* Contact（Website / Phone / Socials） */}
-        {(website || place.phone || normalizeSocials(place).length > 0) && (
+        {/* Contact：全項目ラベル付きで統一 */}
+        {(website || phone || socials.length > 0) && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Contact</h3>
+
             {website && (
               <div>
                 <span className="font-semibold">Website:</span>{" "}
-                <a href={website} target="_blank" rel="noopener noreferrer" className="underline">
-                  Open ↗
-                </a>
+                <a href={website} target="_blank" rel="noopener noreferrer" className="underline">Open ↗</a>
               </div>
             )}
-            {place.phone && (
+
+            {phone && (
               <div>
                 <span className="font-semibold">Phone:</span>{" "}
-                <a href={`tel:${place.phone}`} className="underline">{place.phone}</a>
+                <a href={`tel:${phone.replace(/\s+/g, "")}`} className="underline">{phone}</a>
               </div>
             )}
+
             {socials.map((s, i) => {
-              const label = prettyPlatformName(s.platform);
+              const platform = (s.platform ?? "other") as Platform;
+              const label = prettyPlatformName(platform);
               const text =
                 s.handle?.replace(/^@/, "") ||
                 s.url?.replace(/^https?:\/\/(www\.)?/i, "") ||
@@ -419,7 +416,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           </section>
         )}
 
-        {/* Amenities / Services / Cuisine */}
+        {/* Amenities（任意） */}
         {(place.cuisine || place.wifi || place.wheelchair || place.smoking || place.delivery != null || place.takeaway != null) && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Amenities</h3>
@@ -436,10 +433,16 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
 
         {/* Location（住所＋3種ナビ） */}
         {(place.city || place.country || place.address) && (() => {
-          const nav = navTarget({
-            lat: place.lat, lng: place.lng,
-            address: place.address, city: place.city, country: place.country
-          });
+          const hasLL = Number.isFinite(place.lat as any) && Number.isFinite(place.lng as any);
+          const ll = `${place.lat},${place.lng}`;
+          const q = encodeURIComponent([place.address, place.city, countryNameFrom(place.country)].filter(Boolean).join(", "));
+          const google = hasLL ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ll)}`
+                               : `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+          const apple  = hasLL ? `https://maps.apple.com/?daddr=${encodeURIComponent(ll)}`
+                               : `https://maps.apple.com/?daddr=${q}`;
+          const osm    = hasLL ? `https://www.openstreetmap.org/directions?to=${encodeURIComponent(ll)}`
+                               : `https://www.openstreetmap.org/directions?to=${q}`;
+
           return (
             <section>
               <h3 className="text-sm font-semibold text-neutral-700 mb-1">Location</h3>
@@ -449,41 +452,36 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
               {place.address && <div>{place.address}</div>}
               <div className="mt-1 text-sm">
                 <span className="text-neutral-700 font-medium">Navigation:</span>{" "}
-                <a href={nav.google} target="_blank" rel="noopener noreferrer" className="underline">Google Maps</a>{" "}
+                <a href={google} target="_blank" rel="noopener noreferrer" className="underline">Google Maps</a>{" "}
                 <span className="text-neutral-400">|</span>{" "}
-                <a href={nav.apple} target="_blank" rel="noopener noreferrer" className="underline">Apple Maps</a>{" "}
+                <a href={apple} target="_blank" rel="noopener noreferrer" className="underline">Apple Maps</a>{" "}
                 <span className="text-neutral-400">|</span>{" "}
-                <a href={nav.osm} target="_blank" rel="noopener noreferrer" className="underline">OpenStreetMap</a>
+                <a href={osm} target="_blank" rel="noopener noreferrer" className="underline">OpenStreetMap</a>
               </div>
             </section>
           );
         })()}
 
-        {/* Evidence（verification.sources）＋ Verified by */}
-        {(evidenceLinks.length > 0 || verification?.verified_by) && (
+        {/* Evidence（verification.sources の URL列挙） */}
+        {Array.isArray(verification?.sources) && verification.sources.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Evidence</h3>
-            {verification?.verified_by && (
-              <div className="text-sm mb-1">
-                <span className="font-medium">Verified by:</span> {verification.verified_by}
-              </div>
-            )}
-            {evidenceLinks.length > 0 && (
-              <ul className="mt-1 ml-6 list-disc space-y-1">
-                {evidenceLinks.map((e, i) => (
-                  <li key={`${e.url}-${i}`} className="text-sm">
-                    <a href={e.url} target="_blank" rel="noopener noreferrer" className="underline">
-                      {e.name ? `${e.name} — ` : ""}{e.url}
+            <ul className="mt-1 ml-6 list-disc space-y-1">
+              {verification.sources.map((s, i) =>
+                s?.url ? (
+                  <li key={`${s.url}-${i}`} className="text-sm">
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline">
+                      {s.name ? `${s.name} — ` : ""}{s.url}
                     </a>
-                    {e.when ? <span className="text-xs text-neutral-500"> ({e.when})</span> : null}
+                    {s.when ? <span className="text-xs text-neutral-500"> ({s.when})</span> : null}
                   </li>
-                ))}
-              </ul>
-            )}
+                ) : null
+              )}
+            </ul>
           </section>
         )}
 
-        {/* Footer CTA：Contribute / Report */}
+        {/* Footer CTA */}
         {place?.id && (
           <section className="pt-2">
             <a
