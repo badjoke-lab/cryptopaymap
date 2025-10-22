@@ -81,6 +81,7 @@ header nav a,
 
 /* ===== FINAL LOCK: header / layout consistency ===== */
 :root { --header-h: 64px; }
+
 header, [data-site-header]{
   position: fixed !important;
   top: 0 !important; left: 0 !important; right: 0 !important;
@@ -91,6 +92,7 @@ header, [data-site-header]{
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
   transform: translateZ(0);
 }
+
 /* ページ本文の押し下げ */
 main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) !important; }
 
@@ -103,11 +105,15 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   z-index: 1 !important;
   border-top: 1px solid #e5e7eb;
 }
+
+/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
 .map-canvas{
   position: absolute !important;
   inset: 0 !important;
   height: 100% !important; width: 100% !important;
 }
+
+/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
@@ -129,10 +135,10 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
 .cp-popup .line-clamp-3 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
 
 /* ---------- Map toolbar (filters) ---------- */
-/* デスクトップ: 横一列・折返し禁止＋中央揃え */
+/* デスクトップ: 横一列・折返し禁止＋縦中央揃え */
 .map-toolbar{
   position:absolute; top:8px; left:50%; transform:translateX(-50%);
-  z-index:1200; display:flex; align-items:center; /* ← 中央揃え */
+  z-index:1200; display:flex; align-items:center;  /* ← 中央揃え */
   gap:12px; padding:10px 12px; border-radius:14px;
   background:rgba(255,255,255,.92); backdrop-filter:saturate(140%) blur(6px);
   box-shadow:0 4px 16px rgba(0,0,0,.12);
@@ -161,8 +167,10 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
     box-shadow:0 -10px 28px rgba(0,0,0,.22);
     padding-bottom:env(safe-area-inset-bottom,10px);
   }
-  .sheet-header{ display:flex; align-items:center; justify-content:space-between;
-    padding:12px 14px; border-bottom:1px solid #eee; font-weight:700; }
+  .sheet-header{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; border-bottom:1px solid #eee; font-weight:700;
+  }
   .sheet-close{ all:unset; cursor:pointer; font-size:22px; line-height:1; padding:2px 6px; }
   .sheet-body{ padding:12px 14px; }
 }
