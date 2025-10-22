@@ -50,7 +50,6 @@ const SORT_ORDER: Record<string, number> = {
 function popupAccepted(p: Place): { line?: string; moreLine?: string } {
   const acc = Array.isArray(p.payment?.accepts) ? p.payment.accepts : [];
   const tokens: string[] = [];
-
   const CHAIN_LABEL: Record<string, string> = {
     ethereum: "Ethereum",
     polygon: "Polygon",
@@ -60,7 +59,6 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
     solana: "Solana",
     tron: "Tron",
   };
-
   for (const a of acc) {
     const asset = String(a?.asset || "").toUpperCase();
     const chainRaw = String(a?.chain || "").toLowerCase();
@@ -72,10 +70,8 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
     if (!isBtc && !isEthMain && chain) token += `(${chain})`;
     tokens.push(token);
   }
-
   if (!tokens.length && Array.isArray(p.coins)) tokens.push(...p.coins.map((s) => s.toUpperCase()));
   if (!tokens.length) return {};
-
   const head = tokens.slice(0, 3).join(" · ");
   const rest = tokens.length > 3 ? `+${tokens.length - 3} more` : "";
   return { line: `Accepted: ${head}`, moreLine: rest || undefined };
