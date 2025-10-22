@@ -83,29 +83,25 @@ header nav a,
 }
 
 /* ===== FINAL LOCK: header / layout consistency ===== */
-/* 既定のヘッダー高（必要に応じて 56/60/64 など） */
 :root { --header-h: 64px; }
 
-/* 常に最前面＆固定 */
 header, [data-site-header]{
   position: fixed !important;
   top: 0 !important; left: 0 !important; right: 0 !important;
   height: var(--header-h) !important;
   background: #fff !important;
   border-bottom: 1px solid #e5e7eb !important;
-  z-index: 2147483600 !important; /* ほぼ何より上 */
+  z-index: 2147483600 !important;
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
   transform: translateZ(0);
 }
 
-/* 通常ページ本文は確実に押し下げ */
+/* ページ本文の押し下げ */
 main, [data-page-root]{
-  /* JS側が --cpm-header-h をセットするので、あればそれを優先 */
   padding-top: calc(var(--cpm-header-h, var(--header-h))) !important;
 }
 
 /* ---------- Map layout ---------- */
-/* Map はヘッダー直下に固定＆はみ出し禁止 */
 .map-screen{
   position: fixed !important;
   top: calc(var(--cpm-header-h, var(--header-h))) !important;
@@ -115,6 +111,16 @@ main, [data-page-root]{
   z-index: 1 !important; /* ヘッダーより下 */
   border-top: 1px solid #e5e7eb;
 }
+
+/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
+.map-canvas{
+  position: absolute !important;
+  inset: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
@@ -126,17 +132,7 @@ main, [data-page-root]{
 .z-credit{ z-index:20; }
 
 /* ---------- Leaflet controls ---------- */
-/* ※ MapShell.tsx がズーム位置を動的に切り替えるため、強制配置はしない
-.leaflet-control-zoom { ... }  ← 削除
-*/
-
-/* Filters ボタン（必要なら） */
-.leaflet-control.custom-filters {
-  position: absolute !important;
-  top: 12px !important;
-  right: 12px !important;
-  z-index: 1000 !important;
-}
+/* （ズーム等の強制配置はしない） */
 
 /* ---------- Credit badge ---------- */
 .cpm-credit {
@@ -168,10 +164,12 @@ main, [data-page-root]{
 }
 
 /* ---------- Map toolbar (fixed filters) ---------- */
+/* 左端張り付き → 画面中央に固定 */
 .map-toolbar{
   position: absolute;
   top: 8px;
-  left: 8px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1200;
   display: flex;
   align-items: center;
@@ -181,6 +179,7 @@ main, [data-page-root]{
   background: rgba(255,255,255,.92);
   backdrop-filter: saturate(140%) blur(6px);
   box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  flex-wrap: wrap;
 }
 .map-toolbar select{
   font-size: 14px;
@@ -274,29 +273,25 @@ header nav a,
 }
 
 /* ===== FINAL LOCK: header / layout consistency ===== */
-/* 既定のヘッダー高（必要に応じて 56/60/64 など） */
 :root { --header-h: 64px; }
 
-/* 常に最前面＆固定 */
 header, [data-site-header]{
   position: fixed !important;
   top: 0 !important; left: 0 !important; right: 0 !important;
   height: var(--header-h) !important;
   background: #fff !important;
   border-bottom: 1px solid #e5e7eb !important;
-  z-index: 2147483600 !important; /* ほぼ何より上 */
+  z-index: 2147483600 !important;
   -webkit-backface-visibility: hidden; backface-visibility: hidden;
   transform: translateZ(0);
 }
 
-/* 通常ページ本文は確実に押し下げ */
+/* ページ本文の押し下げ */
 main, [data-page-root]{
-  /* JS側が --cpm-header-h をセットするので、あればそれを優先 */
   padding-top: calc(var(--cpm-header-h, var(--header-h))) !important;
 }
 
 /* ---------- Map layout ---------- */
-/* Map はヘッダー直下に固定＆はみ出し禁止 */
 .map-screen{
   position: fixed !important;
   top: calc(var(--cpm-header-h, var(--header-h))) !important;
@@ -306,6 +301,16 @@ main, [data-page-root]{
   z-index: 1 !important; /* ヘッダーより下 */
   border-top: 1px solid #e5e7eb;
 }
+
+/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
+.map-canvas{
+  position: absolute !important;
+  inset: 0 !important;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
@@ -317,17 +322,7 @@ main, [data-page-root]{
 .z-credit{ z-index:20; }
 
 /* ---------- Leaflet controls ---------- */
-/* ※ MapShell.tsx がズーム位置を動的に切り替えるため、強制配置はしない
-.leaflet-control-zoom { ... }  ← 削除
-*/
-
-/* Filters ボタン（必要なら） */
-.leaflet-control.custom-filters {
-  position: absolute !important;
-  top: 12px !important;
-  right: 12px !important;
-  z-index: 1000 !important;
-}
+/* （ズーム等の強制配置はしない） */
 
 /* ---------- Credit badge ---------- */
 .cpm-credit {
@@ -359,10 +354,12 @@ main, [data-page-root]{
 }
 
 /* ---------- Map toolbar (fixed filters) ---------- */
+/* 左端張り付き → 画面中央に固定 */
 .map-toolbar{
   position: absolute;
   top: 8px;
-  left: 8px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 1200;
   display: flex;
   align-items: center;
@@ -372,6 +369,7 @@ main, [data-page-root]{
   background: rgba(255,255,255,.92);
   backdrop-filter: saturate(140%) blur(6px);
   box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  flex-wrap: wrap;
 }
 .map-toolbar select{
   font-size: 14px;

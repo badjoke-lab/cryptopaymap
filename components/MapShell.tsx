@@ -10,6 +10,8 @@ import SideModal from "./SideModal";
 import MapDetail, { type Place as DetailPlace } from "./MapDetail";
 import L from "leaflet";
 import "leaflet.markercluster";
+import { VerificationBadge } from "./VerificationBadge";
+import { createRoot, type Root } from "react-dom/client";
 
 /* =========================
    共通定数・ユーティリティ
@@ -43,17 +45,6 @@ const SORT_ORDER: Record<string, number> = {
   community: 1,
   directory: 2,
   unverified: 3,
-};
-
-/** Popup/Drawer統一の配色・文言（Popupは別行表示のためのHTMLを返す） */
-const statusBadgeHtml = (status?: string) => {
-  const s = (status ?? "").toLowerCase();
-  const base =
-    "display:inline-block;padding:2px 8px;border-radius:9999px;font-weight:600;font-size:12px;";
-  if (s === "owner") return `<span style="${base}background:#d1fae5;color:#065f46;">Owner</span>`;
-  if (s === "community") return `<span style="${base}background:#e0e7ff;color:#3730a3;">Community</span>`;
-  if (s === "directory") return `<span style="${base}background:#fef3c7;color:#92400e;">Directory</span>`;
-  return `<span style="${base}background:#f3f4f6;color:#374151;">Unverified</span>`;
 };
 
 function popupAccepted(p: Place): { line?: string; moreLine?: string } {
@@ -111,6 +102,9 @@ export default function MapShell() {
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const groupRef = useRef<L.LayerGroup | null>(null);
+
+  // Popup にマウントした React ルートの管理（リーク防止）
+  const popupRootsRef = useRef<Record<string, Root | undefined>>({});
 
   /* --- データ読込 --- */
   useEffect(() => {
@@ -242,12 +236,11 @@ export default function MapShell() {
     filteredSorted.forEach((p) => {
       const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
 
-      // ▼ バッジを1行目、店名を2行目（ドロワーと順序合わせ）
-      const statusHtml = statusBadgeHtml(p?.verification?.status);
+      // ▼ 1行目：VerificationBadge（Reactでマウント）／2行目：店名
       const { line, moreLine } = popupAccepted(p);
       const html = `
         <div style="min-width:260px" class="cp-popup">
-          <div style="margin:0 0 4px 0">${statusHtml}</div>
+          <div id="badge_${p.id}" style="margin:0 0 4px 0"></div>
           <div style="font-weight:700;font-size:16px;line-height:1.3">${p.name ?? ""}</div>
           <div>${p.city ?? ""}${p.city && p.country ? ", " : ""}${p.country ?? ""}</div>
           ${line ? `<div>${line}</div>` : ""}
@@ -256,17 +249,38 @@ export default function MapShell() {
             <button id="btn_${p.id}" style="all:unset;color:#2563eb;cursor:pointer;font-weight:600">View details</button>
           </div>
         </div>`;
+
       mk.bindPopup(html);
+
       mk.on("popupopen", () => {
+        // View details ボタン
         requestAnimationFrame(() => {
           const el = document.getElementById(`btn_${p.id}`);
-          if (!el) return;
-          el.addEventListener("click", (ev) => {
-            ev.stopPropagation();
-            setSelectedId(p.id);
-          });
+          if (el) {
+            el.addEventListener("click", (ev) => {
+              ev.stopPropagation();
+              setSelectedId(p.id);
+            });
+          }
         });
+        // VerificationBadge をマウント
+        const host = document.getElementById(`badge_${p.id}`);
+        if (host) {
+          const root = createRoot(host);
+          root.render(<VerificationBadge status={p?.verification?.status} />);
+          popupRootsRef.current[p.id] = root;
+        }
       });
+
+      mk.on("popupclose", () => {
+        // React root をクリーンアップ
+        const root = popupRootsRef.current[p.id];
+        if (root) {
+          root.unmount();
+          delete popupRootsRef.current[p.id];
+        }
+      });
+
       mk.addTo(g);
       b.extend([p.lat, p.lng]);
     });
