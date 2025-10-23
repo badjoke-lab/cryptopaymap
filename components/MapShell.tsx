@@ -1,3 +1,4 @@
+// components/MapShell.tsx
 "use client";
 
 import "leaflet/dist/leaflet.css";
@@ -12,7 +13,7 @@ import "leaflet.markercluster";
 import { VerificationBadge } from "./VerificationBadge";
 import { createRoot, type Root } from "react-dom/client";
 
-/* ========================= */
+/* ========================= util ========================= */
 const blueIcon = new L.Icon({
   iconUrl: "/leaflet/marker-blue.png",
   iconSize: [25, 41],
@@ -38,6 +39,7 @@ function mediaUrl(img: any) {
   if (typeof img === "string") return img;
   return "";
 }
+
 function firstThumbUrl(p: any): string | null {
   const imgs: any[] =
     (p?.media?.images && Array.isArray(p.media.images) ? p.media.images :
@@ -76,8 +78,8 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
 
 const normalizeStatus = (s: any): NonNullable<DetailPlace["verification"]>["status"] =>
   s === "owner" || s === "community" || s === "directory" || s === "unverified" ? s : "unverified";
-/* ========================= */
 
+/* ========================= MapShell ========================= */
 export default function MapShell() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [vf, setVf] = useState("all");
@@ -91,9 +93,11 @@ export default function MapShell() {
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<L.Map | null>(null);
   const groupRef = useRef<L.LayerGroup | null>(null);
+
+  // Popup 内にマウントした React ルートの管理（リーク防止）
   const popupRootsRef = useRef<Record<string, Root | undefined>>({});
 
-  /* Drawer（右ドック）制御：超狭幅や手動切替に対応 */
+  // Drawer（右ドック）制御：超狭幅や手動切替に対応
   const [forceDrawer, setForceDrawer] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     const saved = window.localStorage.getItem("cpm:filterMode");
@@ -103,7 +107,7 @@ export default function MapShell() {
   });
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  /* データ読込 */
+  /* --- データ読込 --- */
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -219,10 +223,12 @@ export default function MapShell() {
       mk.bindPopup(html);
 
       mk.on("popupopen", () => {
+        // View details
         requestAnimationFrame(() => {
           const el = document.getElementById(`btn_${p.id}`);
           if (el) el.addEventListener("click", (ev) => { ev.stopPropagation(); setSelectedId(p.id); });
         });
+        // VerificationBadge をマウント
         const host = document.getElementById(`badge_${p.id}`);
         if (host) {
           const root = createRoot(host);
@@ -230,6 +236,7 @@ export default function MapShell() {
           popupRootsRef.current[p.id] = root;
         }
       });
+
       mk.on("popupclose", () => {
         const root = popupRootsRef.current[p.id];
         if (root) { root.unmount(); delete popupRootsRef.current[p.id]; }
@@ -241,13 +248,13 @@ export default function MapShell() {
     if (filteredSorted.length) m.fitBounds(b.pad(0.2));
   }, [filteredSorted]);
 
-  /* Drawer/Inline 手動切替（任意で使える） */
+  /* Drawer/Inline 手動切替（任意） */
   function setMode(mode: "drawer" | "inline") {
     setForceDrawer(mode === "drawer");
     if (typeof window !== "undefined") window.localStorage.setItem("cpm:filterMode", mode);
   }
 
-  /* 件数バッジ用：何か選ばれているかの集計（All 以外） */
+  /* 件数バッジ：All 以外の選択数 */
   const activeCount =
     (vf !== "all" ? 1 : 0) +
     (coin !== "All" ? 1 : 0) +

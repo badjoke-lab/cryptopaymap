@@ -105,11 +105,15 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   z-index: 1 !important;
   border-top: 1px solid #e5e7eb;
 }
+
+/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
 .map-canvas{
   position: absolute !important;
   inset: 0 !important;
   height: 100% !important; width: 100% !important;
 }
+
+/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
