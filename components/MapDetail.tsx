@@ -68,8 +68,6 @@ export type Place = {
 /* ---- constants ---- */
 const SUM_OWNER_MAX = 600;
 const SUM_COMMUNITY_MAX = 300;
-const CAP_OWNER_MAX = 600;
-const CAP_COMMUNITY_MAX = 300;
 
 /* ---- helpers ---- */
 function mediaUrl(img: any) {
@@ -182,7 +180,6 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
   const images: string[] = (imageObjs.length > 0 ? imageObjs.map(mediaUrl) : imageStrings).filter(Boolean);
 
   const sumLimit = isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX;
-  const capLimit = isOwner ? CAP_OWNER_MAX : CAP_COMMUNITY_MAX;
 
   /* 支払い（accepts → coins フォールバック） */
   let accepts = buildAcceptedLines(place);
@@ -212,15 +209,12 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     }
     const add = (platform: SocialItem["platform"], url?: string | null) => {
       if (!url || typeof url !== "string" || !url.trim()) return;
-      // handle は任意。未指定でも OK
       out.push({ platform, url: url.trim() });
     };
-    // フラット指定の吸収
     add("instagram", (place as any).instagram);
     add("x", (place as any).twitter);
     add("facebook", (place as any).facebook);
 
-    // 重複除去
     const seen = new Set<string>();
     return out.filter(s => {
       const key = `${s.platform}:${s.url ?? s.handle ?? ""}`;
@@ -271,20 +265,34 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
         {canShowRich && images.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold mb-2 text-neutral-700">Photos</h3>
-            <ul className="flex gap-2 overflow-x-auto snap-x snap-mandatory">
+            <ul
+              className="flex gap-2 overflow-x-auto snap-x snap-mandatory"
+              aria-label="Photos carousel"
+            >
               {images.map((src, i) => (
-                <li key={`${src}-${i}`} className="snap-start">
+                <li
+                  key={`${src}-${i}`}
+                  className="snap-start shrink-0 w-[240px] sm:w-[280px]"
+                >
                   <img
                     src={src}
                     alt=""
                     className="h-[180px] w-[240px] sm:h-[200px] sm:w-[280px] object-cover rounded-md ring-1 ring-neutral-200 cursor-zoom-in"
                     onClick={() => setLightbox(src)}
+                    loading="lazy"
+                    decoding="async"
                   />
                 </li>
               ))}
             </ul>
             {lightbox && (
-              <div className="fixed inset-0 z-[5000] bg-black/70 flex items-center justify-center" onClick={() => setLightbox(null)}>
+              <div
+                className="fixed inset-0 z-[5000] bg-black/70 flex items-center justify-center"
+                onClick={() => setLightbox(null)}
+                role="dialog"
+                aria-modal="true"
+                aria-label="Image lightbox"
+              >
                 <img src={lightbox} alt="" className="max-w-[92vw] max-h-[92vh] rounded-lg shadow-2xl" />
               </div>
             )}
