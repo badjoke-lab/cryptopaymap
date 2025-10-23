@@ -212,8 +212,8 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     }
     const add = (platform: SocialItem["platform"], url?: string | null) => {
       if (!url || typeof url !== "string" || !url.trim()) return;
-      // handle は任意。型的に未指定でも OK（handle?: string）
-      out.push({ platform, url: url.trim(), handle: "" });
+      // handle は任意。未指定でも OK
+      out.push({ platform, url: url.trim() });
     };
     // フラット指定の吸収
     add("instagram", (place as any).instagram);
@@ -354,12 +354,14 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Contact</h3>
 
             {website && (
-              <div><span className="font-semibold">Website:</span>{" "}
+              <div>
+                <span className="font-semibold">Website:</span>{" "}
                 <a href={website} target="_blank" rel="noopener noreferrer" className="underline">Open ↗</a>
               </div>
             )}
             {phone && (
-              <div><span className="font-semibold">Phone:</span>{" "}
+              <div>
+                <span className="font-semibold">Phone:</span>{" "}
                 <a href={`tel:${phone.replace(/\s+/g,"")}`} className="underline">{phone}</a>
               </div>
             )}
