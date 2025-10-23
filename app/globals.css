@@ -105,15 +105,11 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   z-index: 1 !important;
   border-top: 1px solid #e5e7eb;
 }
-
-/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
 .map-canvas{
   position: absolute !important;
   inset: 0 !important;
   height: 100% !important; width: 100% !important;
 }
-
-/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
@@ -127,50 +123,96 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   border-radius: 6px; font-size: 12px;
 }
 
-/* === Utility for popup text === */
+/* === Popup text helpers === */
 [data-badge] { letter-spacing: .01em; }
 .cp-gallery img { aspect-ratio: 4/3; object-fit: cover; }
 .cp-popup { word-break: break-word; }
 .cp-popup .line-clamp-2 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
 .cp-popup .line-clamp-3 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
 
-/* ---------- Map toolbar (filters) ---------- */
-/* デスクトップ: 横一列・折返し禁止＋縦中央揃え */
+/* ---------- Map toolbar (responsive) ---------- */
+/* 基本: 中央寄せ・縦中央揃え・可変幅・横スクロール許可（折返しなし） */
 .map-toolbar{
   position:absolute; top:8px; left:50%; transform:translateX(-50%);
-  z-index:1200; display:flex; align-items:center;  /* ← 中央揃え */
+  z-index:1200;
+  display:flex; align-items:center;
   gap:12px; padding:10px 12px; border-radius:14px;
-  background:rgba(255,255,255,.92); backdrop-filter:saturate(140%) blur(6px);
-  box-shadow:0 4px 16px rgba(0,0,0,.12);
-  flex-wrap:nowrap; white-space:nowrap; overflow-x:auto; -webkit-overflow-scrolling:touch;
+  background: rgba(255,255,255,.92); backdrop-filter: saturate(140%) blur(6px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
+.map-toolbar label{ font-size:12px; opacity:.7; display:inline-flex; align-items:center; }
 .map-toolbar select{
   font-size:14px; padding:.35rem .6rem;
   border:1px solid #d1d5db; border-radius:.6rem; background:#fff;
-  max-width:180px;
+  min-width: 110px; max-width: 200px;
 }
-.map-toolbar label{ font-size:12px; opacity:.7; }
 
-/* ---------- Responsive (mobile sheet準備) ---------- */
-.desktop-only{ display:block; } .mobile-only{ display:none; }
-@media (max-width: 768px){
-  .desktop-only{ display:none; } .mobile-only{ display:inline-block; }
-  .map-fab{
-    position:absolute; left:10px; top:10px; z-index:1200;
-    border-radius:9999px; padding:10px 14px; background:#111; color:#fff;
-    font-weight:600; font-size:14px; box-shadow:0 6px 18px rgba(0,0,0,.22);
+/* 640–1023px: 2行化（中央配置は維持） */
+@media (max-width: 1023px){
+  .map-toolbar{
+    flex-wrap: wrap;
+    row-gap: 8px;
+    justify-content: center;
+    max-width: calc(100vw - 16px);
   }
-  .map-sheet-backdrop{ position:absolute; inset:0; background:rgba(0,0,0,.35); z-index:1500; }
-  .map-sheet{
-    position:absolute; left:0; right:0; bottom:0; z-index:1510;
-    background:#fff; border-top-left-radius:16px; border-top-right-radius:16px;
-    box-shadow:0 -10px 28px rgba(0,0,0,.22);
-    padding-bottom:env(safe-area-inset-bottom,10px);
-  }
-  .sheet-header{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:12px 14px; border-bottom:1px solid #eee; font-weight:700;
-  }
-  .sheet-close{ all:unset; cursor:pointer; font-size:22px; line-height:1; padding:2px 6px; }
-  .sheet-body{ padding:12px 14px; }
+}
+
+/* 360–639px: 横スクロールのまま（折返ししない） */
+@media (max-width: 639px){
+  .map-toolbar{ flex-wrap: nowrap; }
+  .map-toolbar select{ min-width: 120px; }
+}
+
+/* 右ドック用トリガー（超狭小やレガシー時に使用） */
+.map-filter-fab{
+  position:absolute; right:10px; top:50%;
+  transform: translateY(-50%);
+  z-index: 1200;
+  display: inline-flex; align-items: center; justify-content: center;
+  width:48px; height:48px; border-radius:9999px;
+  background:#111; color:#fff; font-weight:600;
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
+  cursor: pointer;
+}
+
+/* 右ドック本体 */
+.map-filter-drawer{
+  position: fixed; right: 0; top: calc(var(--cpm-header-h, var(--header-h)));
+  height: calc(100vh - var(--cpm-header-h, var(--header-h)));
+  width: min(88vw, 320px); max-width: 420px;
+  background: #fff; z-index: 2000;
+  box-shadow: -14px 0 40px rgba(0,0,0,.25);
+  display:flex; flex-direction:column;
+}
+.map-filter-drawer__header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 14px; border-bottom: 1px solid #eee; font-weight:700;
+}
+.map-filter-drawer__body{
+  padding: 12px 14px; overflow-y:auto;
+  display:flex; flex-direction:column; gap:10px;
+}
+.map-filter-backdrop{
+  position: fixed; inset: 0; z-index: 1990; background: rgba(0,0,0,.35);
+}
+
+/* 右ドックの中のフォーム */
+.map-filter-drawer label{ font-size: 12px; opacity:.7; }
+.map-filter-drawer select{
+  width: 100%;
+  font-size:14px; padding:.5rem .6rem;
+  border:1px solid #d1d5db; border-radius:.6rem; background:#fff;
+}
+
+/* Drawer 強制モード（超狭幅判定時に上書き） */
+@media (max-width: 359px){
+  .map-toolbar{ display:none !important; }
+  .map-filter-fab{ display:inline-flex; }
+}
+@media (min-width: 360px){
+  .map-filter-fab{ display:none; }
 }
