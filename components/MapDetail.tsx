@@ -19,23 +19,36 @@ export type Place = {
   lat: number;
   lng: number;
   category?: string;
-  country?: string;
+  country?: string;   // ISO alpha-2 or name
   city?: string;
   address?: string;
   website?: string | null;
   phone?: string | null;
 
+  /* 検証情報 */
+  verification?: {
+    status?: "owner" | "community" | "directory" | "unverified";
+    sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
+    last_verified?: string;
+    last_checked?: string;
+    verified_by?: string;
+  };
+
+  /* プロフィール（文章） */
+  profile?: { summary?: string };
+
+  /* 画像: owner/community は media.images、OSM 等は images(string[]) も許容 */
   media?: { images?: Array<{ url?: string; hash?: string; ext?: string; caption?: string }> };
   images?: string[];
 
-  profile?: { summary?: string };
-
+  /* 支払い */
   payment?: {
     accepts?: Array<{ asset?: string; chain?: string; method?: string }>;
     notes?: string;
   };
   payment_pages?: string[];
 
+  /* 営業/属性 */
   hours?: string;
   cuisine?: string | null;
   wifi?: string | null;
@@ -45,18 +58,11 @@ export type Place = {
   delivery?: any;
   takeaway?: any;
 
+  /* ソーシャル（配列推奨だが混在も許容） */
   socials?: SocialItem[];
   instagram?: string | null;
-  twitter?: string | null;
+  twitter?: string | null;   // X
   facebook?: string | null;
-
-  verification?: {
-    status?: "owner" | "community" | "directory" | "unverified";
-    last_checked?: string;
-    last_verified?: string;
-    verified_by?: string;
-    sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
-  };
 } & Record<string, any>;
 
 /* ---- constants ---- */
@@ -73,7 +79,7 @@ function mediaUrl(img: any) {
   return "";
 }
 
-/* URL → プラットフォーム推定 */
+/* URL からプラットフォーム推定 */
 function inferPlatformFromUrl(url?: string): SocialItem["platform"] | undefined {
   if (!url) return;
   const u = url.toLowerCase();
@@ -151,6 +157,7 @@ const countryNameFrom = (codeOrName?: string) => {
   return COUNTRY_EN[code] || codeOrName;
 };
 
+/* ===== Component ===== */
 export default function MapDetail({ place, onClose }: { place: Place; onClose?: () => void }) {
   const website = typeof place.website === "string" && place.website.trim() ? place.website.trim() : undefined;
   const phone = typeof place.phone === "string" && place.phone.trim() ? place.phone.trim() : undefined;
@@ -205,8 +212,10 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     }
     const add = (platform: SocialItem["platform"], url?: string | null) => {
       if (!url || typeof url !== "string" || !url.trim()) return;
+      // handle は任意。型的に未指定でも OK（handle?: string）
       out.push({ platform, url: url.trim(), handle: "" });
     };
+    // フラット指定の吸収
     add("instagram", (place as any).instagram);
     add("x", (place as any).twitter);
     add("facebook", (place as any).facebook);
@@ -354,9 +363,10 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
                 <a href={`tel:${phone.replace(/\s+/g,"")}`} className="underline">{phone}</a>
               </div>
             )}
+
             {socials.map((s, i) => {
-              const platform = s.platform ?? "other";
-              const label = prettyPlatformName(platform as Platform);
+              const platform = (s.platform ?? "other") as Platform;
+              const label = prettyPlatformName(platform);
               const text =
                 s.handle?.replace(/^@/, "") ||
                 s.url?.replace(/^https?:\/\/(www\.)?/i, "") ||
@@ -399,7 +409,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
         {(place.city || place.country || place.address) && (() => {
           const hasLL = Number.isFinite(place.lat as any) && Number.isFinite(place.lng as any);
           const ll = `${place.lat},${place.lng}`;
-          const q = encodeURIComponent([place.address, place.city, countryNameFrom(place.country)].filter(Boolean).join(", "));
+          const q = encodeURIComponent([place.address, place.city, countryPretty].filter(Boolean).join(", "));
           const google = hasLL ? `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(ll)}`
                                : `https://www.google.com/maps/dir/?api=1&destination=${q}`;
           const apple  = hasLL ? `https://maps.apple.com/?daddr=${encodeURIComponent(ll)}`
@@ -410,8 +420,8 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           return (
             <section>
               <h3 className="text-sm font-semibold text-neutral-700 mb-1">Location</h3>
-              {(place.city || countryNameFrom(place.country)) && (
-                <div>{[place.city, countryNameFrom(place.country)].filter(Boolean).join(", ")}</div>
+              {(place.city || countryPretty) && (
+                <div>{[place.city, countryPretty].filter(Boolean).join(", ")}</div>
               )}
               {place.address && <div>{place.address}</div>}
               <div className="mt-1 text-sm">
@@ -426,13 +436,21 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           );
         })()}
 
-        {/* Evidence */}
+        {/* Evidence（verification.sources の URL列挙） */}
         {Array.isArray(verification?.sources) && verification.sources.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Evidence</h3>
             <ul className="mt-1 ml-6 list-disc space-y-1">
-              {verification.sources
-                .map((s, i) => (s?.url ? <li key={`${s.url}-${i}`} className="text-sm"><a href={s.url} target="_blank" rel="noopener noreferrer" className="underline">{s.url}</a></li> : null))}
+              {verification.sources.map((s, i) =>
+                s?.url ? (
+                  <li key={`${s.url}-${i}`} className="text-sm">
+                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="underline">
+                      {s.name ? `${s.name} — ` : ""}{s.url}
+                    </a>
+                    {s.when ? <span className="text-xs text-neutral-500"> ({s.when})</span> : null}
+                  </li>
+                ) : null
+              )}
             </ul>
           </section>
         )}
