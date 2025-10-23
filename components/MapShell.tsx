@@ -1,4 +1,3 @@
-// components/MapShell.tsx
 "use client";
 
 import "leaflet/dist/leaflet.css";
@@ -25,13 +24,22 @@ const blueIcon = new L.Icon({
 type Place = DetailPlace & { coins?: string[] };
 
 async function fetchJSON<T = any>(url: string) {
-  try { const r = await fetch(url, { cache: "no-store" }); return r.ok ? ((await r.json()) as T) : null; }
-  catch { return null; }
+  try {
+    const r = await fetch(url, { cache: "no-store" });
+    return r.ok ? ((await r.json()) as T) : null;
+  } catch {
+    return null;
+  }
 }
 
 type CityIndex = { cities: Array<{ country: string; city: string; path: string }> };
 
-const SORT_ORDER: Record<string, number> = { owner:0, community:1, directory:2, unverified:3 };
+const SORT_ORDER: Record<string, number> = {
+  owner: 0,
+  community: 1,
+  directory: 2,
+  unverified: 3,
+};
 
 function mediaUrl(img: any) {
   if (img?.hash) return `/api/media/${img.hash}${img?.ext ? `.${img.ext}` : ""}`;
@@ -55,8 +63,13 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
   const acc = Array.isArray(p.payment?.accepts) ? p.payment.accepts : [];
   const tokens: string[] = [];
   const CHAIN_LABEL: Record<string, string> = {
-    ethereum: "Ethereum", polygon: "Polygon", arbitrum: "Arbitrum", base: "Base",
-    bsc: "BNB", solana: "Solana", tron: "Tron",
+    ethereum: "Ethereum",
+    polygon: "Polygon",
+    arbitrum: "Arbitrum",
+    base: "Base",
+    bsc: "BNB",
+    solana: "Solana",
+    tron: "Tron",
   };
   for (const a of acc) {
     const asset = String(a?.asset || "").toUpperCase();
@@ -143,7 +156,8 @@ export default function MapShell() {
   /* 地図初期化 */
   useEffect(() => {
     if (mapRef.current) return;
-    const el = canvasRef.current; if (!el) return;
+    const el = canvasRef.current;
+    if (!el) return;
 
     const m = L.map(el, { center: [20, 0], zoom: 2, zoomControl: true });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -248,13 +262,13 @@ export default function MapShell() {
     if (filteredSorted.length) m.fitBounds(b.pad(0.2));
   }, [filteredSorted]);
 
-  /* Drawer/Inline 手動切替（任意） */
+  /* Drawer/Inline 手動切替（任意で使える） */
   function setMode(mode: "drawer" | "inline") {
     setForceDrawer(mode === "drawer");
     if (typeof window !== "undefined") window.localStorage.setItem("cpm:filterMode", mode);
   }
 
-  /* 件数バッジ：All 以外の選択数 */
+  /* 件数バッジ用：何か選ばれているかの集計（All 以外） */
   const activeCount =
     (vf !== "all" ? 1 : 0) +
     (coin !== "All" ? 1 : 0) +
