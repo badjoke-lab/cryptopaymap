@@ -63,13 +63,8 @@ function popupAccepted(p: Place): { line?: string; moreLine?: string } {
   const acc = Array.isArray(p.payment?.accepts) ? p.payment.accepts : [];
   const tokens: string[] = [];
   const CHAIN_LABEL: Record<string, string> = {
-    ethereum: "Ethereum",
-    polygon: "Polygon",
-    arbitrum: "Arbitrum",
-    base: "Base",
-    bsc: "BNB",
-    solana: "Solana",
-    tron: "Tron",
+    ethereum: "Ethereum", polygon: "Polygon", arbitrum: "Arbitrum", base: "Base",
+    bsc: "BNB", solana: "Solana", tron: "Tron",
   };
   for (const a of acc) {
     const asset = String(a?.asset || "").toUpperCase();
@@ -107,10 +102,10 @@ export default function MapShell() {
   const mapRef = useRef<L.Map | null>(null);
   const groupRef = useRef<L.LayerGroup | null>(null);
 
-  // Popup 内にマウントした React ルートの管理（リーク防止）
+  // Popup 内の React ルート管理（リーク防止）
   const popupRootsRef = useRef<Record<string, Root | undefined>>({});
 
-  // Drawer（右ドック）制御：超狭幅や手動切替に対応
+  // Drawer（右ドック）制御：超狭幅や手動切替に対応（localStorage 永続）
   const [forceDrawer, setForceDrawer] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     const saved = window.localStorage.getItem("cpm:filterMode");
@@ -156,8 +151,7 @@ export default function MapShell() {
   /* 地図初期化 */
   useEffect(() => {
     if (mapRef.current) return;
-    const el = canvasRef.current;
-    if (!el) return;
+    const el = canvasRef.current; if (!el) return;
 
     const m = L.map(el, { center: [20, 0], zoom: 2, zoomControl: true });
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -177,14 +171,17 @@ export default function MapShell() {
     const s = new Set<string>(); places.forEach((p) => p?.category && s.add(p.category));
     return ["All", ...Array.from(s).sort()];
   }, [places]);
+
   const coinOptions = useMemo(() => {
     const s = new Set<string>(); places.forEach((p) => (p.coins ?? []).forEach((c) => s.add(c)));
     return ["All", ...Array.from(s).sort()];
   }, [places]);
+
   const cityOptions = useMemo(() => {
     const s = new Set<string>(); places.forEach((p) => p?.city && s.add(p.city));
     return ["All", ...Array.from(s).sort()];
   }, [places]);
+
   const vfOptions = useMemo(() => {
     const s = new Set<string>(); places.forEach((p) => { const v = p?.verification?.status; if (v) s.add(v); });
     const order = ["owner", "community", "directory", "unverified"];
@@ -262,13 +259,13 @@ export default function MapShell() {
     if (filteredSorted.length) m.fitBounds(b.pad(0.2));
   }, [filteredSorted]);
 
-  /* Drawer/Inline 手動切替（任意で使える） */
+  /* Drawer/Inline 手動切替（永続） */
   function setMode(mode: "drawer" | "inline") {
     setForceDrawer(mode === "drawer");
     if (typeof window !== "undefined") window.localStorage.setItem("cpm:filterMode", mode);
   }
 
-  /* 件数バッジ用：何か選ばれているかの集計（All 以外） */
+  /* 件数バッジ（All 以外の選択数） */
   const activeCount =
     (vf !== "all" ? 1 : 0) +
     (coin !== "All" ? 1 : 0) +
@@ -283,37 +280,69 @@ export default function MapShell() {
         {/* インラインツールバー（通常/タブレット/スマホ横スクロール） */}
         {!forceDrawer && (
           <div className="map-toolbar">
-            <label className="text-xs opacity-70">Verify</label>
-            <select value={vf} onChange={(e) => setVf(e.target.value)} className="rounded border px-2 py-1 text-xs" aria-label="Verify">
-              {vfOptions.map((v) => {
-                const label = v==="all" ? "All" :
-                  v==="owner" ? "Owner" : v==="community" ? "Community" :
-                  v==="directory" ? "Directory" :
-                  v==="unverified" ? "Unverified" : v;
-                return <option key={v} value={v}>{label}</option>;
-              })}
-            </select>
+            <div className="filter-unit">
+              <label className="text-xs opacity-70">Verify</label>
+              <select
+                value={vf}
+                onChange={(e) => setVf(e.target.value)}
+                className="rounded border px-2 py-1 text-xs"
+                aria-label="Verify"
+              >
+                {vfOptions.map((v) => {
+                  const label = v==="all" ? "All" :
+                    v==="owner" ? "Owner" : v==="community" ? "Community" :
+                    v==="directory" ? "Directory" :
+                    v==="unverified" ? "Unverified" : v;
+                  return <option key={v} value={v}>{label}</option>;
+                })}
+              </select>
+            </div>
 
-            <label className="text-xs opacity-70 ml-2">Coin</label>
-            <select value={coin} onChange={(e) => setCoin(e.target.value)} className="rounded border px-2 py-1 text-xs" aria-label="Coin">
-              {coinOptions.map((c) => (<option key={c} value={c}>{c}</option>))}
-            </select>
+            <div className="filter-unit">
+              <label className="text-xs opacity-70">Coin</label>
+              <select
+                value={coin}
+                onChange={(e) => setCoin(e.target.value)}
+                className="rounded border px-2 py-1 text-xs"
+                aria-label="Coin"
+              >
+                {coinOptions.map((c) => (<option key={c} value={c}>{c}</option>))}
+              </select>
+            </div>
 
-            <label className="text-xs opacity-70 ml-2">Category</label>
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="rounded border px-2 py-1 text-xs" aria-label="Category">
-              {categoryOptions.map((c) => (<option key={c} value={c}>{c}</option>))}
-            </select>
+            <div className="filter-unit">
+              <label className="text-xs opacity-70">Category</label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="rounded border px-2 py-1 text-xs"
+                aria-label="Category"
+              >
+                {categoryOptions.map((c) => (<option key={c} value={c}>{c}</option>))}
+              </select>
+            </div>
 
-            <label className="text-xs opacity-70 ml-2">City</label>
-            <select value={city} onChange={(e) => setCity(e.target.value)} className="rounded border px-2 py-1 text-xs" aria-label="City">
-              {cityOptions.map((c) => (<option key={c} value={c}>{c}</option>))}
-            </select>
+            <div className="filter-unit">
+              <label className="text-xs opacity-70">City</label>
+              <select
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="rounded border px-2 py-1 text-xs"
+                aria-label="City"
+              >
+                {cityOptions.map((c) => (<option key={c} value={c}>{c}</option>))}
+              </select>
+            </div>
           </div>
         )}
 
-        {/* 右ドック用 FAB（auto: <360px で表示） */}
+        {/* 右ドック用 FAB（auto: <360px で表示。CSS側で強制表示） */}
         {forceDrawer && (
-          <button className="map-filter-fab" onClick={() => setDrawerOpen(true)} aria-label="Open filters">
+          <button
+            className="map-filter-fab"
+            onClick={() => setDrawerOpen(true)}
+            aria-label="Open filters"
+          >
             {activeCount > 0 ? activeCount : "≡"}
           </button>
         )}
@@ -322,16 +351,19 @@ export default function MapShell() {
       {/* 右ドック（Drawer モード） */}
       {forceDrawer && drawerOpen && (
         <>
-          <div className="map-filter-drawer">
+          <div className="map-filter-drawer" role="dialog" aria-label="Filters">
             <div className="map-filter-drawer__header">
               <div>Filters</div>
               <div className="flex items-center gap-2">
                 <button
                   className="rounded border px-2 py-1 text-xs"
-                  onClick={() => { setVf("all"); setCoin("All"); setCategory("All"); setCity("All"); }}>
-                  Reset
-                </button>
-                <button className="rounded px-2 py-1 text-xl leading-none" aria-label="Close" onClick={() => setDrawerOpen(false)}>×</button>
+                  onClick={() => { setVf("all"); setCoin("All"); setCategory("All"); setCity("All"); }}
+                >Reset</button>
+                <button
+                  className="rounded px-2 py-1 text-xl leading-none"
+                  aria-label="Close"
+                  onClick={() => setDrawerOpen(false)}
+                >×</button>
               </div>
             </div>
             <div className="map-filter-drawer__body">
@@ -366,7 +398,7 @@ export default function MapShell() {
                 </select>
               </div>
 
-              {/* 任意：モード切替（保存） */}
+              {/* モード切替（保存） */}
               <div className="pt-2 text-xs text-neutral-500">
                 <button className="underline mr-2" onClick={() => setMode("inline")}>Switch to Inline</button>
                 <button className="underline" onClick={() => setMode("drawer")}>Keep Drawer</button>

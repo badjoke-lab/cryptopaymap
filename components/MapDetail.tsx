@@ -209,12 +209,15 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     }
     const add = (platform: SocialItem["platform"], url?: string | null) => {
       if (!url || typeof url !== "string" || !url.trim()) return;
+      // handle は任意。未指定でも OK
       out.push({ platform, url: url.trim() });
     };
+    // フラット指定の吸収
     add("instagram", (place as any).instagram);
     add("x", (place as any).twitter);
     add("facebook", (place as any).facebook);
 
+    // 重複除去
     const seen = new Set<string>();
     return out.filter(s => {
       const key = `${s.platform}:${s.url ?? s.handle ?? ""}`;
@@ -304,8 +307,8 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">About</h3>
             <p className="text-sm leading-6">
-              {(place as any).profile.summary.slice(0, sumLimit)}
-              {(place as any).profile.summary.length > sumLimit ? "…" : ""}
+              {(place as any).profile.summary.slice(0, (isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX))}
+              {(place as any).profile.summary.length > (isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX) ? "…" : ""}
             </p>
           </section>
         )}
