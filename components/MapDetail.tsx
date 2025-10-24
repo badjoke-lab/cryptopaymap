@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { VerificationBadge } from "./VerificationBadge";
 
 /* ===== Types ===== */
@@ -19,13 +19,12 @@ export type Place = {
   lat: number;
   lng: number;
   category?: string;
-  country?: string;   // ISO alpha-2 or name
+  country?: string;
   city?: string;
   address?: string;
   website?: string | null;
   phone?: string | null;
 
-  /* 検証情報 */
   verification?: {
     status?: "owner" | "community" | "directory" | "unverified";
     sources?: Array<{ type?: string; name?: string; url?: string; when?: string }>;
@@ -34,21 +33,18 @@ export type Place = {
     verified_by?: string;
   };
 
-  /* プロフィール（文章） */
   profile?: { summary?: string };
 
   /* 画像: owner/community は media.images、OSM 等は images(string[]) も許容 */
   media?: { images?: Array<{ url?: string; hash?: string; ext?: string; caption?: string }> };
   images?: string[];
 
-  /* 支払い */
   payment?: {
     accepts?: Array<{ asset?: string; chain?: string; method?: string }>;
     notes?: string;
   };
   payment_pages?: string[];
 
-  /* 営業/属性 */
   hours?: string;
   cuisine?: string | null;
   wifi?: string | null;
@@ -58,7 +54,6 @@ export type Place = {
   delivery?: any;
   takeaway?: any;
 
-  /* ソーシャル（配列推奨だが混在も許容） */
   socials?: SocialItem[];
   instagram?: string | null;
   twitter?: string | null;   // X
@@ -68,6 +63,8 @@ export type Place = {
 /* ---- constants ---- */
 const SUM_OWNER_MAX = 600;
 const SUM_COMMUNITY_MAX = 300;
+const CAP_OWNER_MAX = 600;
+const CAP_COMMUNITY_MAX = 300;
 
 /* ---- helpers ---- */
 function mediaUrl(img: any) {
@@ -77,7 +74,7 @@ function mediaUrl(img: any) {
   return "";
 }
 
-/* URL からプラットフォーム推定 */
+/* URL→プラットフォーム推定 */
 function inferPlatformFromUrl(url?: string): SocialItem["platform"] | undefined {
   if (!url) return;
   const u = url.toLowerCase();
@@ -180,6 +177,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
   const images: string[] = (imageObjs.length > 0 ? imageObjs.map(mediaUrl) : imageStrings).filter(Boolean);
 
   const sumLimit = isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX;
+  const capLimit = isOwner ? CAP_OWNER_MAX : CAP_COMMUNITY_MAX;
 
   /* 支払い（accepts → coins フォールバック） */
   let accepts = buildAcceptedLines(place);
@@ -195,7 +193,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
       ? place.payment.notes.trim()
       : undefined;
 
-  /* Socials：URLから推定＋label常時表示（handle任意） */
+  /* Socials */
   const socials = useMemo(() => {
     const out: SocialItem[] = [];
     if (Array.isArray(place?.socials)) {
@@ -209,15 +207,12 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     }
     const add = (platform: SocialItem["platform"], url?: string | null) => {
       if (!url || typeof url !== "string" || !url.trim()) return;
-      // handle は任意。未指定でも OK
       out.push({ platform, url: url.trim() });
     };
-    // フラット指定の吸収
     add("instagram", (place as any).instagram);
     add("x", (place as any).twitter);
     add("facebook", (place as any).facebook);
 
-    // 重複除去
     const seen = new Set<string>();
     return out.filter(s => {
       const key = `${s.platform}:${s.url ?? s.handle ?? ""}`;
@@ -227,8 +222,23 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     });
   }, [place?.socials, (place as any)?.instagram, (place as any)?.twitter, (place as any)?.facebook]);
 
-  /* ライトボックス（拡大表示） */
+  /* ライトボックス */
   const [lightbox, setLightbox] = useState<string | null>(null);
+
+  /* ====== Photos: 2–3枚表示＋＜／＞で1枚ずつ送るカルーセル ====== */
+  const railRef = useRef<HTMLUListElement | null>(null);
+  const CARD_W = 240;   // smで280
+  const GAP = 8;
+
+  const canCarousel = canShowRich && images.length > 0;
+
+  function scrollByCard(dir: -1 | 1) {
+    const rail = railRef.current;
+    if (!rail) return;
+    const w = window.innerWidth >= 640 ? 280 : 240;
+    const delta = dir * (w + GAP);
+    rail.scrollBy({ left: delta, behavior: "smooth" });
+  }
 
   const countryPretty = countryNameFrom(place.country);
 
@@ -264,19 +274,38 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
       </div>
 
       <div className="space-y-5 px-6 py-5 text-[15px] leading-relaxed">
-        {/* Photos：横スクロールのカルーセル＋クリック拡大（2～3枚横並び、以降スワイプ） */}
-        {canShowRich && images.length > 0 && (
+        {/* Photos */}
+        {canCarousel && (
           <section>
-            <h3 className="text-sm font-semibold mb-2 text-neutral-700">Photos</h3>
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="text-sm font-semibold text-neutral-700">Photos</h3>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  className="rounded border px-2 py-1 text-sm hover:bg-neutral-50"
+                  aria-label="Previous photo"
+                  onClick={() => scrollByCard(-1)}
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  className="rounded border px-2 py-1 text-sm hover:bg-neutral-50"
+                  aria-label="Next photo"
+                  onClick={() => scrollByCard(1)}
+                >
+                  ›
+                </button>
+              </div>
+            </div>
+
             <ul
-              className="flex gap-2 overflow-x-auto snap-x snap-mandatory"
+              ref={railRef}
+              className="cp-carousel flex gap-2 overflow-x-auto snap-x snap-mandatory scroll-smooth touch-pan-y"
               aria-label="Photos carousel"
             >
               {images.map((src, i) => (
-                <li
-                  key={`${src}-${i}`}
-                  className="snap-start shrink-0 w-[240px] sm:w-[280px]"
-                >
+                <li key={`${src}-${i}`} className="snap-start shrink-0 w-[240px] sm:w-[280px]">
                   <img
                     src={src}
                     alt=""
@@ -288,6 +317,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
                 </li>
               ))}
             </ul>
+
             {lightbox && (
               <div
                 className="fixed inset-0 z-[5000] bg-black/70 flex items-center justify-center"
@@ -307,8 +337,8 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">About</h3>
             <p className="text-sm leading-6">
-              {(place as any).profile.summary.slice(0, (isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX))}
-              {(place as any).profile.summary.length > (isOwner ? SUM_OWNER_MAX : SUM_COMMUNITY_MAX) ? "…" : ""}
+              {(place as any).profile.summary.slice(0, sumLimit)}
+              {(place as any).profile.summary.length > sumLimit ? "…" : ""}
             </p>
           </section>
         )}
@@ -359,7 +389,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           </section>
         )}
 
-        {/* Contact：Website / Phone / Socials（ラベル必ず表示） */}
+        {/* Contact */}
         {(website || phone || (Array.isArray(socials) && socials.length > 0)) && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Contact</h3>
@@ -418,7 +448,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           </section>
         )}
 
-        {/* Location（住所＋3種ナビ） */}
+        {/* Location */}
         {(place.city || place.country || place.address) && (() => {
           const hasLL = Number.isFinite(place.lat as any) && Number.isFinite(place.lng as any);
           const ll = `${place.lat},${place.lng}`;
@@ -449,7 +479,7 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           );
         })()}
 
-        {/* Evidence（verification.sources の URL列挙） */}
+        {/* Evidence */}
         {Array.isArray(verification?.sources) && verification.sources.length > 0 && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Evidence</h3>

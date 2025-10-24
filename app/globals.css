@@ -52,7 +52,6 @@
 
 /* a11y */
 :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
-
 .leaflet-marker-icon,
 .leaflet-marker-shadow {
   background: transparent !important;
@@ -105,15 +104,11 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   z-index: 1 !important;
   border-top: 1px solid #e5e7eb;
 }
-
-/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
 .map-canvas{
   position: absolute !important;
   inset: 0 !important;
   height: 100% !important; width: 100% !important;
 }
-
-/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
@@ -134,7 +129,7 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
 .cp-popup .line-clamp-2 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
 .cp-popup .line-clamp-3 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
 
-/* === ✅ Filter Toolbar: 完全安定版 === */
+/* === Filter Toolbar === */
 .map-toolbar {
   position: absolute !important;
   top: 8px;
@@ -153,14 +148,7 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   -webkit-overflow-scrolling: touch;
   z-index: 2147483600 !important;
 }
-
-.filter-unit {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
+.filter-unit { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
 .map-toolbar select {
   min-width: 140px;
   font-size: 12px;
@@ -169,14 +157,10 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
 }
 
 /* Drawerとの競合除去 */
-.map-filter-fab {
-  z-index: 2147483590 !important;
-}
-.map-filter-drawer, .map-filter-backdrop {
-  z-index: 2147483580 !important;
-}
+.map-filter-fab { z-index: 2147483590 !important; }
+.map-filter-drawer, .map-filter-backdrop { z-index: 2147483580 !important; }
 
-/* Drawer表示切替 */
+/* Drawer表示切替（CSS 側は 480px） */
 @media (max-width: 480px){
   .map-toolbar{ display: none !important; }
   .map-filter-fab{ display: inline-flex !important; }
@@ -184,3 +168,18 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
 @media (min-width: 481px){
   .map-filter-fab{ display: none !important; }
 }
+
+/* Photos carousel – 見た目を壊さず操作性を上げる */
+.cp-carousel{
+  scrollbar-width: none;           /* Firefox */
+  -ms-overflow-style: none;        /* IE/Edge */
+}
+.cp-carousel::-webkit-scrollbar{   /* WebKit */
+  display: none;
+}
+
+/* 横はスワイプ、縦は通常スクロールに */
+.touch-pan-y{
+  touch-action: pan-y;
+}
+
