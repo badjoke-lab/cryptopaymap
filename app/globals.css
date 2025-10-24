@@ -52,6 +52,7 @@
 
 /* a11y */
 :focus-visible { outline: 2px solid #2563eb; outline-offset: 2px; }
+
 .leaflet-marker-icon,
 .leaflet-marker-shadow {
   background: transparent !important;
@@ -104,11 +105,15 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
   z-index: 1 !important;
   border-top: 1px solid #e5e7eb;
 }
+
+/* Leafletホストを全域に広げる（MapShell の .map-canvas 用） */
 .map-canvas{
   position: absolute !important;
   inset: 0 !important;
   height: 100% !important; width: 100% !important;
 }
+
+/* 互換: 直接 .leaflet-container を置いた場合も広げる */
 .map-screen .leaflet-container{ height:100% !important; width:100% !important; }
 
 /* ---------- z-index helpers ---------- */
@@ -129,57 +134,63 @@ main, [data-page-root]{ padding-top: calc(var(--cpm-header-h, var(--header-h))) 
 .cp-popup .line-clamp-2 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:2; overflow:hidden; }
 .cp-popup .line-clamp-3 { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:3; overflow:hidden; }
 
-/* === Filter Toolbar === */
-.map-toolbar {
-  position: absolute !important;
-  top: 8px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 10px;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.92);
-  backdrop-filter: saturate(140%) blur(6px);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+/* === Filter Toolbar: 表示はReactで制御。CSSは“見た目だけ” === */
+.map-toolbar{
+  position:absolute; top:8px; left:50%; transform:translateX(-50%);
+  z-index:1200;
+  display:flex; align-items:center;
+  gap:12px; padding:10px 12px; border-radius:14px;
+  background: rgba(255,255,255,.92); backdrop-filter: saturate(140%) blur(6px);
+  box-shadow: 0 4px 16px rgba(0,0,0,.12);
   white-space: nowrap;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  z-index: 2147483600 !important;
 }
-.filter-unit { display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
-.map-toolbar select {
-  min-width: 140px;
-  font-size: 12px;
-  padding: 4px 6px;
-  border-radius: 6px;
-}
-
-/* Drawerとの競合除去 */
-.map-filter-fab { z-index: 2147483590 !important; }
-.map-filter-drawer, .map-filter-backdrop { z-index: 2147483580 !important; }
-
-/* Drawer表示切替（CSS 側は 480px） */
-@media (max-width: 480px){
-  .map-toolbar{ display: none !important; }
-  .map-filter-fab{ display: inline-flex !important; }
-}
-@media (min-width: 481px){
-  .map-filter-fab{ display: none !important; }
+.filter-unit{ display:inline-flex; align-items:center; gap:6px; white-space:nowrap; }
+.map-toolbar label{ font-size:12px; opacity:.7; display:inline-flex; align-items:center; }
+.map-toolbar select{
+  font-size:14px; padding:.35rem .6rem;
+  border:1px solid #d1d5db; border-radius:.6rem; background:#fff;
+  min-width: 110px; max-width: 200px;
 }
 
-/* Photos carousel – 見た目を壊さず操作性を上げる */
-.cp-carousel{
-  scrollbar-width: none;           /* Firefox */
-  -ms-overflow-style: none;        /* IE/Edge */
-}
-.cp-carousel::-webkit-scrollbar{   /* WebKit */
-  display: none;
+/* タブレットでは2段化を許容（中央寄せは維持） */
+@media (max-width: 1023px){
+  .map-toolbar{ flex-wrap: wrap; row-gap: 8px; justify-content: center; max-width: calc(100vw - 16px); }
 }
 
-/* 横はスワイプ、縦は通常スクロールに */
-.touch-pan-y{
-  touch-action: pan-y;
+/* Drawerトリガー／本体（見た目のみ） */
+.map-filter-fab{
+  position:absolute; right:10px; top:50%; transform: translateY(-50%);
+  z-index: 1200;
+  display: inline-flex; align-items: center; justify-content: center;
+  width:48px; height:48px; border-radius:9999px;
+  background:#111; color:#fff; font-weight:600;
+  box-shadow:0 6px 18px rgba(0,0,0,.22);
+  cursor: pointer;
 }
-
+.map-filter-drawer{
+  position: fixed; right: 0; top: calc(var(--cpm-header-h, var(--header-h)));
+  height: calc(100vh - var(--cpm-header-h, var(--header-h)));
+  width: min(88vw, 320px); max-width: 420px;
+  background: #fff; z-index: 2000;
+  box-shadow: -14px 0 40px rgba(0,0,0,.25);
+  display:flex; flex-direction:column;
+}
+.map-filter-drawer__header{
+  display:flex; align-items:center; justify-content:space-between;
+  padding: 12px 14px; border-bottom: 1px solid #eee; font-weight:700;
+}
+.map-filter-drawer__body{
+  padding: 12px 14px; overflow-y:auto;
+  display:flex; flex-direction:column; gap:10px;
+}
+.map-filter-backdrop{
+  position: fixed; inset: 0; z-index: 1990; background: rgba(0,0,0,.35);
+}
+.map-filter-drawer label{ font-size: 12px; opacity:.7; }
+.map-filter-drawer select{
+  width: 100%;
+  font-size:14px; padding:.5rem .6rem;
+  border:1px solid #d1d5db; border-radius:.6rem; background:#fff;
+}

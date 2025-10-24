@@ -111,8 +111,24 @@ export default function MapShell() {
     const saved = window.localStorage.getItem("cpm:filterMode");
     if (saved === "drawer") return true;
     if (saved === "inline") return false;
-    return window.innerWidth < 360; // 初期自動判定
+    // 保存がない場合のみ、超狭幅で Drawer
+    return window.innerWidth < 360;
   });
+
+  // 幅変化を監視し、保存がない場合のみ自動追随
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onResize = () => {
+      const saved = window.localStorage.getItem("cpm:filterMode");
+      if (saved === "drawer") { setForceDrawer(true); return; }
+      if (saved === "inline") { setForceDrawer(false); return; }
+      setForceDrawer(window.innerWidth < 360);
+    };
+    onResize();
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   /* --- データ読込 --- */
@@ -277,7 +293,7 @@ export default function MapShell() {
       <div className="map-screen">
         <div ref={canvasRef} className="map-canvas" />
 
-        {/* インラインツールバー（通常/タブレット/スマホ横スクロール） */}
+        {/* インラインツールバー（表示/非表示は状態で制御） */}
         {!forceDrawer && (
           <div className="map-toolbar">
             <div className="filter-unit">
@@ -336,7 +352,7 @@ export default function MapShell() {
           </div>
         )}
 
-        {/* 右ドック用 FAB（auto: <360px で表示。CSS側で強制表示） */}
+        {/* 右ドック用 FAB（forceDrawer のときだけ表示） */}
         {forceDrawer && (
           <button
             className="map-filter-fab"
