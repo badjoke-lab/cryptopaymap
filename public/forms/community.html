@@ -63,44 +63,38 @@
       </select>
     </div>
 
+    <!-- Payments -->
     <div class="field">
       <label class="required" for="acc">Accepted crypto</label>
       <textarea id="acc" name="Accepted" required placeholder="BTC, ETH"></textarea>
     </div>
+    <div class="field">
+      <label for="paynote">Payments note (optional) <span id="pay_left" class="subtle">(0 / 150)</span></label>
+      <textarea id="paynote" name="PaymentNote" maxlength="150" placeholder="Lightning available, fee notes, min. order, etc. (≤150 chars)"></textarea>
+      <p class="help">Shown under the Payments section. <strong>Limited to 150 characters</strong>.</p>
+    </div>
 
+    <!-- Evidence -->
     <div class="field">
       <label class="required" for="ev">Evidence link(s) * (≥2)</label>
       <textarea id="ev" name="Evidence" required placeholder="https://x.com/post/..., https://instagram.com/..."></textarea>
       <p class="help">Provide at least two URLs. Separate by new lines or commas.</p>
     </div>
 
-    <!-- ✅ Amenities (notes max 150 chars) -->
-    <fieldset class="field">
-      <legend style="font-weight:600;margin-bottom:6px">Amenities</legend>
-      <div class="amen-row">
-        <label><input type="checkbox" name="wifi" value="available"> Wi-Fi</label>
-        <label><input type="checkbox" name="wheelchair" value="accessible"> Wheelchair</label>
-        <label><input type="checkbox" name="smoking" value="allowed"> Smoking area</label>
-        <label><input type="checkbox" name="delivery" value="yes"> Delivery</label>
-        <label><input type="checkbox" name="takeaway" value="yes"> Takeaway</label>
-      </div>
-      <div class="field" style="margin-top:8px">
-        <label for="wifi_fee">Wi-Fi fee</label>
-        <input id="wifi_fee" name="wifi_fee" type="text" maxlength="60" placeholder="free / ¥300 / 1 drink order etc.">
-      </div>
-      <div class="field" style="margin-top:8px">
-        <label for="amen_notes">Amenities notes <span id="amen_left" class="subtle">(0 / 150)</span></label>
-        <textarea id="amen_notes" name="amenities_notes" maxlength="150" placeholder="Seating/outlets/stroller/smoking path, etc. (≤150 chars)"></textarea>
-      </div>
-      <p class="help">These fields appear in the “Amenities” section on the detail modal. <strong>Notes are limited to 150 characters</strong> to keep them concise and distinct from the main Summary.</p>
-    </fieldset>
+    <!-- Amenities: notes only -->
+    <div class="field">
+      <label for="amen_notes">Amenities notes (optional) <span id="amen_left" class="subtle">(0 / 150)</span></label>
+      <textarea id="amen_notes" name="amenities_notes" maxlength="150" placeholder="WiFi/Seating/outlets/stroller route/smoking path, etc. (≤150 chars)"></textarea>
+      <p class="help">Appears in the “Amenities” section. <strong>Limited to 150 characters</strong>. Free text only.</p>
+    </div>
 
+    <!-- Images -->
     <div class="field">
       <label>🖼️ Upload images — gallery (up to 4)</label>
       <div class="drop" data-max="4" data-input="gallery4">
         <div class="header">
           <button type="button" class="btn secondary dz-add">Add images</button>
-        <button type="button" class="btn secondary dz-clear">Clear all</button>
+          <button type="button" class="btn secondary dz-clear">Clear all</button>
           <span class="counter dz-counter">0 / 4 selected</span>
         </div>
         <div class="area dz-area">Drag & drop images here, or click to select.</div>
@@ -156,7 +150,7 @@
   document.querySelectorAll('.drop').forEach(initDrop);
 </script>
 
-<!-- Prefill (placeId / placeName) + amenities counter -->
+<!-- Prefill + counters -->
 <script>
 (function(){
   function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
@@ -196,18 +190,17 @@
         }
       }
 
-      // ✅ amenities_notes counter (150 chars)
-      const amen = document.getElementById('amen_notes');
-      const amenLeft = document.getElementById('amen_left');
-      if (amen && amenLeft) {
-        const max = parseInt(amen.getAttribute('maxlength') || '150', 10);
-        const upd = () => {
-          const len = (amen.value || '').length;
-          amenLeft.textContent = `${len} / ${max}`;
-        };
-        amen.addEventListener('input', upd);
-        upd();
+      // counters
+      function bindCounter(textareaId, counterId, maxDefault){
+        const ta=document.getElementById(textareaId);
+        const sp=document.getElementById(counterId);
+        if(!ta || !sp) return;
+        const max=parseInt(ta.getAttribute('maxlength')||String(maxDefault),10);
+        const upd=()=>{ const len=(ta.value||'').length; sp.textContent=`${len} / ${max}`; };
+        ta.addEventListener('input',upd); upd();
       }
+      bindCounter('paynote','pay_left',150);
+      bindCounter('amen_notes','amen_left',150);
 
       if(SHOW_PREFILL_INFO && (placeId || placeName)){
         const info = document.createElement('div');

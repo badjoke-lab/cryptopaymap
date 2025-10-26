@@ -1,4 +1,3 @@
-// app/submit/owner/route.ts
 export const runtime = 'nodejs';
 
 import { NextResponse } from "next/server";
@@ -10,12 +9,11 @@ import { makeRef } from "@/lib/ref";
 function splitList(input: string | null | undefined): string[] {
   const raw = (input ?? "").trim();
   if (!raw) return [];
-  // 改行 / カンマ / 縦棒 を区切りに
   return raw
     .split(/[\n,|]+/g)
     .map(s => s.trim())
     .filter(Boolean)
-    .slice(0, 20); // 念のため暴走防止
+    .slice(0, 20);
 }
 
 export async function POST(req: Request) {
@@ -49,12 +47,15 @@ export async function POST(req: Request) {
 
     /* ===== 支払い ===== */
     const AcceptedRaw      = sanitizeText(form.get("Accepted") as string);
-    const PaymentNote      = sanitizeText(form.get("PaymentNote") as string);
+
+    let PaymentNote        = sanitizeText(form.get("PaymentNote") as string);
+    if (PaymentNote) PaymentNote = PaymentNote.slice(0, 150);
+
     const PaymentPages     = splitList(sanitizeText(form.get("PaymentPages") as string))
-                              .map(u => sanitizeUrl(u) || u) // URLなら正規化
+                              .map(u => sanitizeUrl(u) || u)
                               .filter(Boolean);
 
-    /* ===== Amenities（新規） ===== */
+    /* ===== Amenities（notes 150 文字） ===== */
     const wifi        = form.get("wifi") ? "available" : undefined;
     const wheelchair  = form.get("wheelchair") ? "accessible" : undefined;
     const smoking     = form.get("smoking") ? "allowed" : undefined;
@@ -63,7 +64,7 @@ export async function POST(req: Request) {
     const wifi_fee    = sanitizeText(form.get("wifi_fee") as string);
 
     let amenities_notes = sanitizeText(form.get("amenities_notes") as string);
-    if (amenities_notes) amenities_notes = amenities_notes.slice(0, 150); // 150 で強制トリム
+    if (amenities_notes) amenities_notes = amenities_notes.slice(0, 150);
 
     /* ===== Socials ===== */
     const SocialsRaw       = splitList(sanitizeText(form.get("Socials") as string))
@@ -72,9 +73,8 @@ export async function POST(req: Request) {
 
     /* ===== 証憑 ===== */
     const Proof            = sanitizeText(form.get("Proof") as string);
-    // const ProofImage    = form.get("ProofImage") as File | null; // 保存/転送する場合はここで扱う
 
-    /* ===== 画像枚数（Gallery[]） ===== */
+    /* ===== 画像枚数 ===== */
     const galleryFiles = form.getAll("Gallery[]") as (File | string)[];
     const ImagesCount  = Array.isArray(galleryFiles) ? galleryFiles.length : 0;
 
@@ -86,7 +86,6 @@ export async function POST(req: Request) {
       ref,
       when: new Date().toISOString(),
 
-      // 基本
       Business,
       SubmitterName,
       SubmitterEmail,

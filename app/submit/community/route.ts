@@ -1,4 +1,3 @@
-// app/submit/community/route.ts
 export const runtime = 'nodejs';
 
 import { NextResponse } from "next/server";
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    /* ===== 基本情報（フォームに存在するものを正規化） ===== */
+    /* ===== 基本情報 ===== */
     const Business        = sanitizeText(form.get("BusinessName") as string);
     const SubmitterName   = sanitizeText(form.get("SubmitterName") as string);
     const SubmitterEmail  = sanitizeEmail(form.get("SubmitterEmail") as string);
@@ -36,8 +35,12 @@ export async function POST(req: Request) {
 
     const ExistingPlaceId = sanitizeText(form.get("ExistingPlaceId") as string) || undefined;
 
-    /* ===== 受入通貨（そのままテキスト保持） ===== */
+    /* ===== 受入通貨 ===== */
     const AcceptedRaw     = sanitizeText(form.get("Accepted") as string);
+
+    /* ===== Payments note（150 文字） ===== */
+    let PaymentNote       = sanitizeText(form.get("PaymentNote") as string) || "";
+    if (PaymentNote) PaymentNote = PaymentNote.slice(0, 150);
 
     /* ===== Evidence（URLを最低2件） ===== */
     const EvidenceList    = splitList(sanitizeText(form.get("Evidence") as string))
@@ -49,7 +52,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "need at least 2 evidence links" }, { status: 400 });
     }
 
-    /* ===== Amenities（checkboxの有無で真偽、notes は150文字まで） ===== */
+    /* ===== Amenities（notes 150 文字） ===== */
     const wifi        = form.get("wifi") ? "available" : undefined;
     const wheelchair  = form.get("wheelchair") ? "accessible" : undefined;
     const smoking     = form.get("smoking") ? "allowed" : undefined;
@@ -60,19 +63,18 @@ export async function POST(req: Request) {
     let amenities_notes = sanitizeText(form.get("amenities_notes") as string) || "";
     if (amenities_notes) amenities_notes = amenities_notes.slice(0, 150);
 
-    /* ===== 添付画像枚数（Gallery[] を数える） ===== */
+    /* ===== 添付画像枚数 ===== */
     const galleryFiles = form.getAll("Gallery[]") as (File | string)[];
     const ImagesCount  = Array.isArray(galleryFiles) ? galleryFiles.length : 0;
 
     /* ===== 参照番号 ===== */
     const ref = makeRef("community");
 
-    /* ===== payload（メール/保存用） ===== */
+    /* ===== payload ===== */
     const payload = {
       ref,
       when: new Date().toISOString(),
 
-      // 基本
       Business,
       SubmitterName,
       SubmitterEmail,
@@ -85,14 +87,12 @@ export async function POST(req: Request) {
 
       Category,
 
-      // 受入通貨
       AcceptedRaw,
+      PaymentNote,
 
-      // Evidence
       Evidence: EvidenceList,
       EvidenceCount,
 
-      // Amenities
       amenities: {
         wifi,
         wifi_fee,
@@ -103,7 +103,6 @@ export async function POST(req: Request) {
         notes: amenities_notes,
       },
 
-      // 画像
       ImagesCount,
     } as const;
 

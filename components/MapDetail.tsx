@@ -54,8 +54,16 @@ export type Place = {
   delivery?: any;
   takeaway?: any;
 
-  /* ✅ Add: amenities notes */
-  amenities_notes?: string | null;
+  /* 新旧両対応: amenities.notes / amenities_notes どちらでも拾う */
+  amenities?: {
+    notes?: string;
+    wifi?: string | null;
+    wifi_fee?: string | null;
+    wheelchair?: string | null;
+    smoking?: string | null;
+    delivery?: any;
+    takeaway?: any;
+  };
 
   socials?: SocialItem[];
   instagram?: string | null;
@@ -195,6 +203,16 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
     typeof place?.payment?.notes === "string" && place.payment.notes.trim()
       ? place.payment.notes.trim()
       : undefined;
+
+  /* Amenities notes（新旧両対応: amenities.notes or amenities_notes） */
+  const amenNotes: string | undefined = (() => {
+    const n1 = (place as any)?.amenities?.notes;
+    const n2 = (place as any)?.amenities_notes;
+    const val = typeof n1 === "string" && n1.trim() ? n1.trim()
+              : typeof n2 === "string" && n2.trim() ? n2.trim()
+              : "";
+    return val || undefined;
+  })();
 
   /* Socials */
   const socials = useMemo(() => {
@@ -437,29 +455,23 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
         )}
 
         {/* Amenities */}
-        {(place.cuisine ||
-          place.wifi ||
-          place.wifi_fee ||
-          place.wheelchair ||
-          place.smoking ||
-          place.delivery != null ||
-          place.takeaway != null ||
-          place.amenities_notes) && (
+        {(amenNotes || place.cuisine || place.wifi || place.wheelchair || place.smoking || place.delivery != null || place.takeaway != null) && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Amenities</h3>
+
+            {/* Notes（150 文字で保存されている想定／そのまま表示） */}
+            {amenNotes && (
+              <p className="text-sm mb-1">{amenNotes}</p>
+            )}
+
+            {/* 既存の個別項目（互換表示。削除しない） */}
             <ul className="ml-6 list-disc space-y-1 text-sm">
               {place.cuisine && <li><span className="font-medium">Cuisine:</span> {place.cuisine}</li>}
-              {(place.wifi || place.wifi_fee) && (
-                <li>
-                  <span className="font-medium">Wi-Fi:</span>{" "}
-                  {place.wifi ?? "—"}{place.wifi_fee ? ` (fee: ${place.wifi_fee})` : ""}
-                </li>
-              )}
+              {place.wifi && <li><span className="font-medium">Wi-Fi:</span> {place.wifi}{place.wifi_fee ? ` (fee: ${place.wifi_fee})` : ""}</li>}
               {typeof place.wheelchair === "string" && <li><span className="font-medium">Wheelchair:</span> {place.wheelchair}</li>}
               {typeof place.smoking === "string" && <li><span className="font-medium">Smoking:</span> {place.smoking}</li>}
               {place.delivery != null && <li><span className="font-medium">Delivery:</span> {String(place.delivery)}</li>}
               {place.takeaway != null && <li><span className="font-medium">Takeaway:</span> {String(place.takeaway)}</li>}
-              {place.amenities_notes && <li><span className="font-medium">Notes:</span> {place.amenities_notes}</li>}
             </ul>
           </section>
         )}
