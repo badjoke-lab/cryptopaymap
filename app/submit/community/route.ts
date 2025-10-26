@@ -35,10 +35,15 @@ export async function POST(req: Request) {
 
     const ExistingPlaceId = sanitizeText(form.get("ExistingPlaceId") as string) || undefined;
 
+    /* ===== About / Summary（1項目・≤300） ===== */
+    let About             = sanitizeText(form.get("About") as string) || "";
+    if (About) About = About.slice(0, 300);
+    const profile         = { summary: About.trim() };
+
     /* ===== 受入通貨 ===== */
     const AcceptedRaw     = sanitizeText(form.get("Accepted") as string);
 
-    /* ===== Payments note（150 文字） ===== */
+    /* ===== Payments note（≤150） ===== */
     let PaymentNote       = sanitizeText(form.get("PaymentNote") as string) || "";
     if (PaymentNote) PaymentNote = PaymentNote.slice(0, 150);
 
@@ -47,19 +52,11 @@ export async function POST(req: Request) {
                               .map(u => sanitizeUrl(u) || u)
                               .filter(Boolean);
     const EvidenceCount   = EvidenceList.length;
-
     if (EvidenceCount < 2) {
       return NextResponse.json({ error: "need at least 2 evidence links" }, { status: 400 });
     }
 
-    /* ===== Amenities（notes 150 文字） ===== */
-    const wifi        = form.get("wifi") ? "available" : undefined;
-    const wheelchair  = form.get("wheelchair") ? "accessible" : undefined;
-    const smoking     = form.get("smoking") ? "allowed" : undefined;
-    const delivery    = form.get("delivery") ? "yes" : undefined;
-    const takeaway    = form.get("takeaway") ? "yes" : undefined;
-    const wifi_fee    = sanitizeText(form.get("wifi_fee") as string) || undefined;
-
+    /* ===== Amenities（テキスト1項目・≤150） ===== */
     let amenities_notes = sanitizeText(form.get("amenities_notes") as string) || "";
     if (amenities_notes) amenities_notes = amenities_notes.slice(0, 150);
 
@@ -87,21 +84,18 @@ export async function POST(req: Request) {
 
       Category,
 
+      // About/Summary（1項目）
+      About,
+      profile,
+
       AcceptedRaw,
       PaymentNote,
 
       Evidence: EvidenceList,
       EvidenceCount,
 
-      amenities: {
-        wifi,
-        wifi_fee,
-        wheelchair,
-        smoking,
-        delivery,
-        takeaway,
-        notes: amenities_notes,
-      },
+      // Amenities（テキストのみ）
+      amenities: { notes: amenities_notes },
 
       ImagesCount,
     } as const;

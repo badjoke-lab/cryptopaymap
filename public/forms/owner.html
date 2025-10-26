@@ -70,9 +70,9 @@
       <input id="web" name="Website" type="url" placeholder="https://...">
     </div>
 
-    <!-- About / Summary -->
+    <!-- About / Summary (optional) -->
     <div class="field">
-      <label for="about">About / Summary</label>
+      <label for="about">About / Summary (optional) <span id="about_left" class="subtle">(0 / 600)</span></label>
       <textarea id="about" name="About" maxlength="600" placeholder="Describe your business (≤600 chars for Owner)"></textarea>
       <p class="help">Shown in the “About” section on the detail modal. Owner submissions: up to 600 characters (Community: 300).</p>
     </div>
@@ -144,7 +144,7 @@
     <!-- Amenities: notes only -->
     <div class="field">
       <label for="amen_notes">Amenities notes (optional) <span id="amen_left" class="subtle">(0 / 150)</span></label>
-      <textarea id="amen_notes" name="amenities_notes" maxlength="150" placeholder="WiFiSeating/outlets/stroller route/smoking path, etc. (≤150 chars)"></textarea>
+      <textarea id="amen_notes" name="amenities_notes" maxlength="150" placeholder="WiFi/Seating/outlets/stroller route/smoking path, etc. (≤150 chars)"></textarea>
       <p class="help">Appears in the “Amenities” section. <strong>Limited to 150 characters</strong>. No checkboxes — free text only.</p>
     </div>
 
@@ -222,7 +222,7 @@
     let files=[];
     const fmt=n=>n>=1048576?(n/1048576).toFixed(2)+'MB':Math.round(n/1024)+'KB';
     function sync(){ const dt=new DataTransfer(); files.slice(0,max).forEach(f=>dt.items.add(f)); input.files=dt.files; counter.textContent=`${files.length} / ${max} selected`; }
-    function card(f,i){ const d=document.createElement('div'); d.className='thumb'; d.draggable=true; d.dataset{i}=i;
+    function card(f,i){ const d=document.createElement('div'); d.className='thumb'; d.draggable=true; d.dataset.i = i;
       const im=document.createElement('img'); im.src=URL.createObjectURL(f);
       const m=document.createElement('div'); m.className='meta'; m.innerHTML=`<div class="name">${f.name}</div><div class="cap">${i===0?'<span class="good">Cover · </span>':''}${fmt(f.size)}</div>`;
       const x=document.createElement('button'); x.className='del'; x.type='button'; x.textContent='×'; x.onclick=()=>{files.splice(i,1);render();};
@@ -343,6 +343,7 @@
         const upd=()=>{ const len=(ta.value||'').length; sp.textContent=`${len} / ${max}`; };
         ta.addEventListener('input',upd); upd();
       }
+      bindCounter('about','about_left',600);
       bindCounter('paynote','pay_left',150);
       bindCounter('amen_notes','amen_left',150);
 

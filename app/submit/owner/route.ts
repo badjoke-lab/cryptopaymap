@@ -36,7 +36,11 @@ export async function POST(req: Request) {
     const website          = sanitizeUrl(form.get("Website") as string) || undefined;
     const Phone            = sanitizeText(form.get("Phone") as string);
     const Hours            = sanitizeText(form.get("Hours") as string);
-    const About            = sanitizeText(form.get("About") as string);
+
+    /* ===== About / Summary（1項目・≤600） ===== */
+    let About              = sanitizeText(form.get("About") as string) || "";
+    if (About) About = About.slice(0, 600);
+    const profile          = { summary: About.trim() };
 
     const ExistingPlaceId  = sanitizeText(form.get("ExistingPlaceId") as string);
 
@@ -48,22 +52,15 @@ export async function POST(req: Request) {
     /* ===== 支払い ===== */
     const AcceptedRaw      = sanitizeText(form.get("Accepted") as string);
 
-    let PaymentNote        = sanitizeText(form.get("PaymentNote") as string);
+    let PaymentNote        = sanitizeText(form.get("PaymentNote") as string) || "";
     if (PaymentNote) PaymentNote = PaymentNote.slice(0, 150);
 
     const PaymentPages     = splitList(sanitizeText(form.get("PaymentPages") as string))
                               .map(u => sanitizeUrl(u) || u)
                               .filter(Boolean);
 
-    /* ===== Amenities（notes 150 文字） ===== */
-    const wifi        = form.get("wifi") ? "available" : undefined;
-    const wheelchair  = form.get("wheelchair") ? "accessible" : undefined;
-    const smoking     = form.get("smoking") ? "allowed" : undefined;
-    const delivery    = form.get("delivery") ? "yes" : undefined;
-    const takeaway    = form.get("takeaway") ? "yes" : undefined;
-    const wifi_fee    = sanitizeText(form.get("wifi_fee") as string);
-
-    let amenities_notes = sanitizeText(form.get("amenities_notes") as string);
+    /* ===== Amenities（テキスト1項目・≤150） ===== */
+    let amenities_notes = sanitizeText(form.get("amenities_notes") as string) || "";
     if (amenities_notes) amenities_notes = amenities_notes.slice(0, 150);
 
     /* ===== Socials ===== */
@@ -99,7 +96,10 @@ export async function POST(req: Request) {
       website,
       Phone,
       Hours,
+
+      // About/Summary（1項目）
       About,
+      profile,
 
       ExistingPlaceId,
 
@@ -111,16 +111,8 @@ export async function POST(req: Request) {
       // ソーシャル
       SocialsRaw,
 
-      // Amenities
-      amenities: {
-        wifi,
-        wifi_fee,
-        wheelchair,
-        smoking,
-        delivery,
-        takeaway,
-        notes: amenities_notes,
-      },
+      // Amenities（テキストのみ）
+      amenities: { notes: amenities_notes },
 
       // 証憑
       Proof,

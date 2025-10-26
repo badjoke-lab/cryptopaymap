@@ -12,6 +12,7 @@
   <p class="subtle">Required fields <strong>*</strong>. Images: up to <strong>4</strong>, ≤ <strong>2MB</strong> each.</p>
 
   <form id="form-community" action="/submit/community" method="post" enctype="multipart/form-data" class="form-col">
+    <!-- Submitter -->
     <div class="field">
       <label class="required" for="sn">Submitter name</label>
       <input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text">
@@ -21,6 +22,7 @@
       <input id="se" name="SubmitterEmail" required type="email">
     </div>
 
+    <!-- Place basics -->
     <div class="field">
       <label class="required" for="bn">Business name</label>
       <input id="bn" name="BusinessName" required maxlength="80" type="text">
@@ -61,6 +63,19 @@
         <option>Hotel / Lodging</option><option>Gym / Fitness</option><option>Dance school / Studio</option>
         <option>Tool / Equipment rental</option><option>Coworking / Office</option><option>Other</option>
       </select>
+    </div>
+
+    <!-- About / Summary (community: 300 chars each max) -->
+    <div class="field">
+      <label class="required" for="about">About * <span id="about_left" class="subtle">(0 / 300)</span></label>
+      <textarea id="about" name="About" required maxlength="300" placeholder="Describe the place briefly (≤300 chars). What it is, vibe, anything helpful."></textarea>
+      <p class="help">Short description of the place. Community submissions are limited to <strong>300 characters</strong>.</p>
+    </div>
+
+    <div class="field">
+      <label for="summary">Summary (optional) <span id="summary_left" class="subtle">(0 / 300)</span></label>
+      <textarea id="summary" name="Summary" maxlength="300" placeholder="A concise highlight (≤300 chars), e.g., best for lunch, open late, staff knows crypto, etc."></textarea>
+      <p class="help">Optional quick summary. Also limited to <strong>300 characters</strong>.</p>
     </div>
 
     <!-- Payments -->
@@ -104,6 +119,7 @@
       </div>
     </div>
 
+    <!-- Consent -->
     <div class="field inline-check">
       <input id="consent" name="Consent" type="checkbox" required />
       <label class="required" for="consent" style="font-weight:400">
@@ -199,6 +215,8 @@
         const upd=()=>{ const len=(ta.value||'').length; sp.textContent=`${len} / ${max}`; };
         ta.addEventListener('input',upd); upd();
       }
+      bindCounter('about','about_left',300);
+      bindCounter('summary','summary_left',300);
       bindCounter('paynote','pay_left',150);
       bindCounter('amen_notes','amen_left',150);
 
