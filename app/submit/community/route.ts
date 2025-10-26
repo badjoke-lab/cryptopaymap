@@ -4,48 +4,119 @@ export const runtime = 'nodejs';
 import { NextResponse } from "next/server";
 import { buildMail } from "@/lib/mailerTemplates";
 import { sendMail } from "@/lib/mail";
-import { sanitizeText, sanitizeEmail } from "@/lib/sanitize";
+import { sanitizeText, sanitizeEmail, sanitizeUrl } from "@/lib/sanitize";
 import { makeRef } from "@/lib/ref";
+
+/** 改行 / カンマ / 縦棒 で分割してトリム */
+function splitList(input: string | null | undefined): string[] {
+  const raw = (input ?? "").trim();
+  if (!raw) return [];
+  return raw
+    .split(/[\n,|]+/g)
+    .map(s => s.trim())
+    .filter(Boolean)
+    .slice(0, 50);
+}
 
 export async function POST(req: Request) {
   try {
     const form = await req.formData();
 
-    const Business = sanitizeText(form.get("BusinessName") as string);
-    const SubmitterName = sanitizeText(form.get("SubmitterName") as string);
-    const SubmitterEmail = sanitizeEmail(form.get("SubmitterEmail") as string);
-    const Country = sanitizeText(form.get("Country") as string);
-    const City = sanitizeText(form.get("City") as string);
-    const Category = sanitizeText(form.get("Category") as string);
-    const AcceptedRaw = sanitizeText(form.get("Accepted") as string);
-    const ImagesCount = Number(form.get("ImagesCount") ?? 0) || 0;
-    const EvidenceCount = Number(form.get("EvidenceCount") ?? 0) || 0;
+    /* ===== 基本情報（フォームに存在するものを正規化） ===== */
+    const Business        = sanitizeText(form.get("BusinessName") as string);
+    const SubmitterName   = sanitizeText(form.get("SubmitterName") as string);
+    const SubmitterEmail  = sanitizeEmail(form.get("SubmitterEmail") as string);
 
-    // 仕様：Evidence 2未満なら 400（必要なら有効化）
+    const Country         = sanitizeText(form.get("Country") as string);
+    const City            = sanitizeText(form.get("City") as string);
+    const Address         = sanitizeText(form.get("Address") as string);
+
+    const Category        = sanitizeText(form.get("Category") as string);
+    const website         = sanitizeUrl(form.get("Website") as string) || undefined;
+
+    const ExistingPlaceId = sanitizeText(form.get("ExistingPlaceId") as string) || undefined;
+
+    /* ===== 受入通貨（そのままテキスト保持） ===== */
+    const AcceptedRaw     = sanitizeText(form.get("Accepted") as string);
+
+    /* ===== Evidence（URLを最低2件） ===== */
+    const EvidenceList    = splitList(sanitizeText(form.get("Evidence") as string))
+                              .map(u => sanitizeUrl(u) || u)
+                              .filter(Boolean);
+    const EvidenceCount   = EvidenceList.length;
+
     if (EvidenceCount < 2) {
-      return NextResponse.json({ error: "need at least 2 evidence images" }, { status: 400 });
+      return NextResponse.json({ error: "need at least 2 evidence links" }, { status: 400 });
     }
 
+    /* ===== Amenities（checkboxの有無で真偽、notes は150文字まで） ===== */
+    const wifi        = form.get("wifi") ? "available" : undefined;
+    const wheelchair  = form.get("wheelchair") ? "accessible" : undefined;
+    const smoking     = form.get("smoking") ? "allowed" : undefined;
+    const delivery    = form.get("delivery") ? "yes" : undefined;
+    const takeaway    = form.get("takeaway") ? "yes" : undefined;
+    const wifi_fee    = sanitizeText(form.get("wifi_fee") as string) || undefined;
+
+    let amenities_notes = sanitizeText(form.get("amenities_notes") as string) || "";
+    if (amenities_notes) amenities_notes = amenities_notes.slice(0, 150);
+
+    /* ===== 添付画像枚数（Gallery[] を数える） ===== */
+    const galleryFiles = form.getAll("Gallery[]") as (File | string)[];
+    const ImagesCount  = Array.isArray(galleryFiles) ? galleryFiles.length : 0;
+
+    /* ===== 参照番号 ===== */
     const ref = makeRef("community");
+
+    /* ===== payload（メール/保存用） ===== */
     const payload = {
       ref,
       when: new Date().toISOString(),
-      Business, Country, City, Category, AcceptedRaw,
-      ImagesCount, EvidenceCount,
-      SubmitterName, SubmitterEmail,
+
+      // 基本
+      Business,
+      SubmitterName,
+      SubmitterEmail,
+
+      Country,
+      City,
+      Address,
+      website,
+      ExistingPlaceId,
+
+      Category,
+
+      // 受入通貨
+      AcceptedRaw,
+
+      // Evidence
+      Evidence: EvidenceList,
+      EvidenceCount,
+
+      // Amenities
+      amenities: {
+        wifi,
+        wifi_fee,
+        wheelchair,
+        smoking,
+        delivery,
+        takeaway,
+        notes: amenities_notes,
+      },
+
+      // 画像
+      ImagesCount,
     } as const;
 
-    // user
+    /* ===== メール送信 ===== */
     if (SubmitterEmail) {
       const mailUser = buildMail("user", "community", "receipt", payload);
       await sendMail({ to: SubmitterEmail, subject: mailUser.subject, text: mailUser.text });
     }
 
-    // ops
     const mailOps = buildMail("ops", "community", "receipt", payload);
     await sendMail({ to: "cryptopaymap.app@gmail.com", subject: mailOps.subject, text: mailOps.text });
 
-    // optional: local-only save（Vercel本番では無効想定）— SAVE_FILES=1 の時のみ
+    /* ===== ローカル保存（任意） ===== */
     if (process.env.SAVE_FILES === "1") {
       const { default: fs } = await import("fs");
       const { default: path } = await import("path");
@@ -54,12 +125,14 @@ export async function POST(req: Request) {
       fs.writeFileSync(path.join(dir, `${ref}.json`), JSON.stringify(payload, null, 2));
     }
 
+    /* ===== 成功時リダイレクト ===== */
     const url = new URL(req.url);
     url.pathname = "/submitted.html";
     url.searchParams.set("kind", "community");
     url.searchParams.set("ref", ref);
     url.searchParams.set("name", Business || SubmitterName || "—");
     return NextResponse.redirect(url, 303);
+
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "failed to submit community" }, { status: 500 });

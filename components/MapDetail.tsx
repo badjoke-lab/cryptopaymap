@@ -54,6 +54,9 @@ export type Place = {
   delivery?: any;
   takeaway?: any;
 
+  /* ✅ Add: amenities notes */
+  amenities_notes?: string | null;
+
   socials?: SocialItem[];
   instagram?: string | null;
   twitter?: string | null;   // X
@@ -434,16 +437,29 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
         )}
 
         {/* Amenities */}
-        {(place.cuisine || place.wifi || place.wheelchair || place.smoking || place.delivery != null || place.takeaway != null) && (
+        {(place.cuisine ||
+          place.wifi ||
+          place.wifi_fee ||
+          place.wheelchair ||
+          place.smoking ||
+          place.delivery != null ||
+          place.takeaway != null ||
+          place.amenities_notes) && (
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Amenities</h3>
             <ul className="ml-6 list-disc space-y-1 text-sm">
               {place.cuisine && <li><span className="font-medium">Cuisine:</span> {place.cuisine}</li>}
-              {place.wifi && <li><span className="font-medium">Wi-Fi:</span> {place.wifi}{place.wifi_fee ? ` (fee: ${place.wifi_fee})` : ""}</li>}
+              {(place.wifi || place.wifi_fee) && (
+                <li>
+                  <span className="font-medium">Wi-Fi:</span>{" "}
+                  {place.wifi ?? "—"}{place.wifi_fee ? ` (fee: ${place.wifi_fee})` : ""}
+                </li>
+              )}
               {typeof place.wheelchair === "string" && <li><span className="font-medium">Wheelchair:</span> {place.wheelchair}</li>}
               {typeof place.smoking === "string" && <li><span className="font-medium">Smoking:</span> {place.smoking}</li>}
               {place.delivery != null && <li><span className="font-medium">Delivery:</span> {String(place.delivery)}</li>}
               {place.takeaway != null && <li><span className="font-medium">Takeaway:</span> {String(place.takeaway)}</li>}
+              {place.amenities_notes && <li><span className="font-medium">Notes:</span> {place.amenities_notes}</li>}
             </ul>
           </section>
         )}

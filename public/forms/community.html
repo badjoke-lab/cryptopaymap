@@ -12,22 +12,43 @@
   <p class="subtle">Required fields <strong>*</strong>. Images: up to <strong>4</strong>, ≤ <strong>2MB</strong> each.</p>
 
   <form id="form-community" action="/submit/community" method="post" enctype="multipart/form-data" class="form-col">
-    <div class="field"><label class="required" for="sn">Submitter name</label><input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text"></div>
-    <div class="field"><label class="required" for="se">Submitter email</label><input id="se" name="SubmitterEmail" required type="email"></div>
+    <div class="field">
+      <label class="required" for="sn">Submitter name</label>
+      <input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text">
+    </div>
+    <div class="field">
+      <label class="required" for="se">Submitter email</label>
+      <input id="se" name="SubmitterEmail" required type="email">
+    </div>
 
-    <div class="field"><label class="required" for="bn">Business name</label><input id="bn" name="BusinessName" required maxlength="80" type="text"></div>
+    <div class="field">
+      <label class="required" for="bn">Business name</label>
+      <input id="bn" name="BusinessName" required maxlength="80" type="text">
+    </div>
 
-    <!-- ADDED: visible existing place ID (optional) -->
+    <!-- Existing place ID (visible) -->
     <div class="field">
       <label for="existingId">Existing place ID (optional)</label>
       <input id="existingId" name="ExistingPlaceId" type="text" placeholder="e.g. osm:node:10078071561" />
       <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new submission.</p>
     </div>
 
-    <div class="field"><label class="required" for="cty">City</label><input id="cty" name="City" required type="text"></div>
-    <div class="field"><label class="required" for="ctr">Country</label><input id="ctr" name="Country" required type="text"></div>
-    <div class="field"><label class="required" for="adr">Address</label><input id="adr" name="Address" required maxlength="200" type="text"></div>
-    <div class="field"><label for="web">Website / Map URL</label><input id="web" name="Website" type="url" placeholder="https://..."></div>
+    <div class="field">
+      <label class="required" for="cty">City</label>
+      <input id="cty" name="City" required type="text">
+    </div>
+    <div class="field">
+      <label class="required" for="ctr">Country</label>
+      <input id="ctr" name="Country" required type="text">
+    </div>
+    <div class="field">
+      <label class="required" for="adr">Address</label>
+      <input id="adr" name="Address" required maxlength="200" type="text">
+    </div>
+    <div class="field">
+      <label for="web">Website / Map URL</label>
+      <input id="web" name="Website" type="url" placeholder="https://...">
+    </div>
 
     <div class="field">
       <label class="required" for="cat">Category</label>
@@ -42,7 +63,10 @@
       </select>
     </div>
 
-    <div class="field"><label class="required" for="acc">Accepted crypto</label><textarea id="acc" name="Accepted" required placeholder="BTC, ETH"></textarea></div>
+    <div class="field">
+      <label class="required" for="acc">Accepted crypto</label>
+      <textarea id="acc" name="Accepted" required placeholder="BTC, ETH"></textarea>
+    </div>
 
     <div class="field">
       <label class="required" for="ev">Evidence link(s) * (≥2)</label>
@@ -50,12 +74,33 @@
       <p class="help">Provide at least two URLs. Separate by new lines or commas.</p>
     </div>
 
+    <!-- ✅ Amenities (notes max 150 chars) -->
+    <fieldset class="field">
+      <legend style="font-weight:600;margin-bottom:6px">Amenities</legend>
+      <div class="amen-row">
+        <label><input type="checkbox" name="wifi" value="available"> Wi-Fi</label>
+        <label><input type="checkbox" name="wheelchair" value="accessible"> Wheelchair</label>
+        <label><input type="checkbox" name="smoking" value="allowed"> Smoking area</label>
+        <label><input type="checkbox" name="delivery" value="yes"> Delivery</label>
+        <label><input type="checkbox" name="takeaway" value="yes"> Takeaway</label>
+      </div>
+      <div class="field" style="margin-top:8px">
+        <label for="wifi_fee">Wi-Fi fee</label>
+        <input id="wifi_fee" name="wifi_fee" type="text" maxlength="60" placeholder="free / ¥300 / 1 drink order etc.">
+      </div>
+      <div class="field" style="margin-top:8px">
+        <label for="amen_notes">Amenities notes <span id="amen_left" class="subtle">(0 / 150)</span></label>
+        <textarea id="amen_notes" name="amenities_notes" maxlength="150" placeholder="Seating/outlets/stroller/smoking path, etc. (≤150 chars)"></textarea>
+      </div>
+      <p class="help">These fields appear in the “Amenities” section on the detail modal. <strong>Notes are limited to 150 characters</strong> to keep them concise and distinct from the main Summary.</p>
+    </fieldset>
+
     <div class="field">
       <label>🖼️ Upload images — gallery (up to 4)</label>
       <div class="drop" data-max="4" data-input="gallery4">
         <div class="header">
           <button type="button" class="btn secondary dz-add">Add images</button>
-          <button type="button" class="btn secondary dz-clear">Clear all</button>
+        <button type="button" class="btn secondary dz-clear">Clear all</button>
           <span class="counter dz-counter">0 / 4 selected</span>
         </div>
         <div class="area dz-area">Drag & drop images here, or click to select.</div>
@@ -81,7 +126,6 @@
 </main>
 
 <script>
-  // Dropzone init (unchanged logic, max set via data-max)
   function initDrop(el){
     const max=parseInt(el.dataset.max||'4',10);
     const input=document.getElementById(el.dataset.input);
@@ -112,78 +156,64 @@
   document.querySelectorAll('.drop').forEach(initDrop);
 </script>
 
-<!-- Prefill script: reads ?placeId & ?placeName and auto-fills BusinessName + ExistingPlaceId, and ensures hidden placeId is submitted.
-     The visible info box is controlled by SHOW_PREFILL_INFO for easy toggling. -->
+<!-- Prefill (placeId / placeName) + amenities counter -->
 <script>
 (function(){
   function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
-
   onReady(function(){
     try {
       const sp = new URLSearchParams(location.search);
       const placeId = sp.get('placeId') || sp.get('place_id') || '';
       const placeName = sp.get('placeName') || sp.get('place_name') || '';
-
-      // Toggle this to true if you want the visible "Prefilled: ..." box for debugging.
       const SHOW_PREFILL_INFO = false;
 
-      // utility: try several name/id variants to set a field (by name attr or id)
-      function setField(possibleNames, val){
+      function setField(names, val){
         if(!val) return false;
-        for(const n of possibleNames){
-          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n);
-          if(!el){
-            // try lowercase variations
-            el = document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
-          }
+        for(const n of names){
+          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n) ||
+                   document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
           if(!el) continue;
           const tag = el.tagName;
-          if(tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT'){
+          if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT'){
             el.value = val;
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-          } else {
-            el.textContent = val;
-          }
+            el.dispatchEvent(new Event('input',{bubbles:true}));
+            el.dispatchEvent(new Event('change',{bubbles:true}));
+          } else { el.textContent = val; }
           return true;
         }
         return false;
       }
 
-      // Fill business/place name (if present)
       setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
 
-      // Fill visible ExistingPlaceId if present and ensure canonical hidden placeId is submitted
       if(placeId){
         setField(['ExistingPlaceId','existingplaceid','existingId','existing_id','placeId','place_id'], placeId);
-
         const form = document.getElementById('form-community');
         if(form){
-          // hidden canonical field so server always receives placeId
           let hi = form.querySelector('input[name="placeId"]');
-          if(!hi){
-            hi = document.createElement('input');
-            hi.type = 'hidden';
-            hi.name = 'placeId';
-            form.appendChild(hi);
-          }
+          if(!hi){ hi = document.createElement('input'); hi.type='hidden'; hi.name='placeId'; form.appendChild(hi); }
           hi.value = placeId;
         }
       }
 
-      // visible info box for operator & user reassurance (toggleable)
-      const infoId = 'form-prefill-info';
-      if(!document.getElementById(infoId) && SHOW_PREFILL_INFO && (placeId || placeName)){
+      // ✅ amenities_notes counter (150 chars)
+      const amen = document.getElementById('amen_notes');
+      const amenLeft = document.getElementById('amen_left');
+      if (amen && amenLeft) {
+        const max = parseInt(amen.getAttribute('maxlength') || '150', 10);
+        const upd = () => {
+          const len = (amen.value || '').length;
+          amenLeft.textContent = `${len} / ${max}`;
+        };
+        amen.addEventListener('input', upd);
+        upd();
+      }
+
+      if(SHOW_PREFILL_INFO && (placeId || placeName)){
         const info = document.createElement('div');
-        info.id = infoId;
-        info.style.padding = '10px';
-        info.style.margin = '8px 0';
-        info.style.background = '#f8fafc';
-        info.style.border = '1px solid #e6eef6';
-        info.style.color = '#0f172a';
-        info.style.fontSize = '14px';
-        info.textContent = 'Prefilled: ' + (placeName || '') + (placeId ? ' (' + placeId + ')' : '');
-        const container = document.querySelector('main.container') || document.body;
+        info.style.cssText='padding:10px;margin:8px 0;background:#f8fafc;border:1px solid #e6eef6;color:#0f172a;font-size:14px;';
+        info.textContent='Prefilled: ' + (placeName || '') + (placeId ? ' ('+placeId+')' : '');
+        const container=document.querySelector('main.container')||document.body;
         container.insertBefore(info, container.firstChild);
       }
     } catch (e) {
@@ -192,6 +222,5 @@
   });
 })();
 </script>
-
 </body>
 </html>
