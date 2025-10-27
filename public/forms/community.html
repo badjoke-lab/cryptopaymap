@@ -5,6 +5,14 @@
   <title>Community Submission — CryptoPayMap</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/forms/forms.css" />
+  <style>
+    /* confirm modal */
+    .confirm-modal{position:fixed;inset:0;background:rgba(15,23,42,.48);display:none;place-items:center;z-index:9999}
+    .confirm-card{background:#fff;border-radius:12px;max-width:720px;width:92%;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+    .confirm-card h2{margin:0 0 12px}
+    .confirm-card .grid{display:grid;grid-template-columns:180px 1fr;gap:8px 12px;margin:12px 0}
+    .confirm-card .warnings{background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:10px;border-radius:8px;margin-bottom:10px}
+  </style>
 </head>
 <body>
 <main class="container">
@@ -65,17 +73,11 @@
       </select>
     </div>
 
-    <!-- About / Summary (community: 300 chars each max) -->
+    <!-- About / Summary (optional, ≤300) -->
     <div class="field">
-      <label class="required" for="about">About * <span id="about_left" class="subtle">(0 / 300)</span></label>
-      <textarea id="about" name="About" required maxlength="300" placeholder="Describe the place briefly (≤300 chars). What it is, vibe, anything helpful."></textarea>
+      <label for="about">About / Summary (optional) <span id="about_left" class="subtle">(0 / 300)</span></label>
+      <textarea id="about" name="About" maxlength="300" placeholder="Describe the place briefly (≤300 chars)."></textarea>
       <p class="help">Short description of the place. Community submissions are limited to <strong>300 characters</strong>.</p>
-    </div>
-
-    <div class="field">
-      <label for="summary">Summary (optional) <span id="summary_left" class="subtle">(0 / 300)</span></label>
-      <textarea id="summary" name="Summary" maxlength="300" placeholder="A concise highlight (≤300 chars), e.g., best for lunch, open late, staff knows crypto, etc."></textarea>
-      <p class="help">Optional quick summary. Also limited to <strong>300 characters</strong>.</p>
     </div>
 
     <!-- Payments -->
@@ -128,12 +130,39 @@
     </div>
 
     <div class="btnrow">
-      <button class="btn" type="submit">Submit</button>
+      <!-- changed: review step -->
+      <button class="btn" type="button" id="btn-review">Review & Confirm</button>
       <a class="btn secondary" href="/forms/owner.html">Switch to Owner</a>
       <a class="btn secondary" href="/forms/report.html">Switch to Report</a>
     </div>
   </form>
 </main>
+
+<!-- confirm modal -->
+<div id="confirmModal" class="confirm-modal">
+  <div class="confirm-card">
+    <h2>Confirm your submission</h2>
+    <div id="confirmWarnings" class="warnings" style="display:none;"></div>
+    <div class="grid">
+      <div><strong>Kind</strong></div><div>community</div>
+      <div><strong>Business</strong></div><div id="c_business">—</div>
+      <div><strong>City</strong></div><div id="c_city">—</div>
+      <div><strong>Country</strong></div><div id="c_country">—</div>
+      <div><strong>Address</strong></div><div id="c_address">—</div>
+      <div><strong>Category</strong></div><div id="c_category">—</div>
+      <div><strong>Accepted</strong></div><div id="c_accepted">—</div>
+      <div><strong>About</strong></div><div id="c_about">—</div>
+      <div><strong>Payment note</strong></div><div id="c_paynote">—</div>
+      <div><strong>Amenities notes</strong></div><div id="c_amen">—</div>
+      <div><strong>Evidence (count)</strong></div><div id="c_evcnt">0</div>
+      <div><strong>Images</strong></div><div id="c_imgs">0</div>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn secondary" id="btn-back">Back & Edit</button>
+      <button type="button" class="btn" id="btn-submit-final">Submit</button>
+    </div>
+  </div>
+</div>
 
 <script>
   function initDrop(el){
@@ -166,7 +195,7 @@
   document.querySelectorAll('.drop').forEach(initDrop);
 </script>
 
-<!-- Prefill + counters -->
+<!-- Prefill + counters + confirm -->
 <script>
 (function(){
   function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
@@ -216,17 +245,61 @@
         ta.addEventListener('input',upd); upd();
       }
       bindCounter('about','about_left',300);
-      bindCounter('summary','summary_left',300);
       bindCounter('paynote','pay_left',150);
       bindCounter('amen_notes','amen_left',150);
 
-      if(SHOW_PREFILL_INFO && (placeId || placeName)){
-        const info = document.createElement('div');
-        info.style.cssText='padding:10px;margin:8px 0;background:#f8fafc;border:1px solid #e6eef6;color:#0f172a;font-size:14px;';
-        info.textContent='Prefilled: ' + (placeName || '') + (placeId ? ' ('+placeId+')' : '');
-        const container=document.querySelector('main.container')||document.body;
-        container.insertBefore(info, container.firstChild);
+      // confirm modal
+      const form = document.getElementById('form-community');
+      const btnReview = document.getElementById('btn-review');
+      const modal = document.getElementById('confirmModal');
+      const warnBox = document.getElementById('confirmWarnings');
+      const btnBack = document.getElementById('btn-back');
+      const btnSubmit = document.getElementById('btn-submit-final');
+
+      function txt(n){ const el=form.querySelector(`[name="${n}"]`); return (el&&el.value||'').trim(); }
+      function sel(n){ const el=form.querySelector(`[name="${n}"]`); return el && el.tagName==='SELECT' ? el.value : (el&&el.value||''); }
+      function countImgs(){ const fi=form.querySelector('#gallery4'); return (fi&&fi.files&&fi.files.length)||0; }
+      function countEvidence(raw){ if(!raw) return 0; return raw.split(/[\n,|]+/g).map(s=>s.trim()).filter(Boolean).length; }
+
+      function limitWarn(label,val,max){
+        if(!val) return null;
+        if(val.length>max) return `⚠︎ ${label}: ${val.length}/${max} — server will trim to ${max}`;
+        return null;
       }
+      function buildConfirm(){
+        document.getElementById('c_business').textContent = txt('BusinessName') || '—';
+        document.getElementById('c_city').textContent = txt('City') || '—';
+        document.getElementById('c_country').textContent = txt('Country') || '—';
+        document.getElementById('c_address').textContent = txt('Address') || '—';
+        document.getElementById('c_category').textContent = sel('Category') || '—';
+        document.getElementById('c_accepted').textContent = txt('Accepted') || '—';
+        document.getElementById('c_about').textContent = txt('About') || '—';
+        document.getElementById('c_paynote').textContent = txt('PaymentNote') || '—';
+        document.getElementById('c_amen').textContent = txt('amenities_notes') || '—';
+        document.getElementById('c_imgs').textContent = String(countImgs());
+        document.getElementById('c_evcnt').textContent = String(countEvidence(txt('Evidence')));
+
+        const missing = [];
+        ['SubmitterName','SubmitterEmail','BusinessName','City','Country','Address','Accepted','Category','Evidence'].forEach(n=>{
+          if(n==='Evidence'){ if(countEvidence(txt('Evidence'))<2) missing.push('Evidence (>=2)'); }
+          else if(!txt(n) && !sel(n)) missing.push(n);
+        });
+
+        const warns = [];
+        const w1 = limitWarn('About', txt('About'), 300);
+        const w2 = limitWarn('Payment note', txt('PaymentNote'), 150);
+        const w3 = limitWarn('Amenities notes', txt('amenities_notes'), 150);
+        if(w1) warns.push(w1); if(w2) warns.push(w2); if(w3) warns.push(w3);
+        if(missing.length) warns.push('Missing / invalid: ' + missing.join(', '));
+
+        if(warns.length){ warnBox.style.display='block'; warnBox.innerHTML = warns.map(s=>`<div>${s}</div>`).join(''); }
+        else { warnBox.style.display='none'; warnBox.innerHTML=''; }
+      }
+
+      btnReview?.addEventListener('click', ()=>{ buildConfirm(); modal.style.display='grid'; document.body.style.overflow='hidden'; });
+      btnBack?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; });
+      btnSubmit?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; form.submit(); });
+
     } catch (e) {
       console.error('community form prefill error', e);
     }

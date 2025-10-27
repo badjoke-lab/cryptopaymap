@@ -120,7 +120,7 @@ export async function POST(req: Request) {
 
     /* ===== 成功時リダイレクト ===== */
     const url = new URL(req.url);
-    url.pathname = "/submitted.html";
+    url.pathname = "/forms/submitted.html"; // ← 修正: /submitted.html から /forms/submitted.html へ
     url.searchParams.set("kind", "community");
     url.searchParams.set("ref", ref);
     url.searchParams.set("name", Business || SubmitterName || "—");
