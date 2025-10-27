@@ -43,14 +43,16 @@
       <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new submission.</p>
     </div>
 
-    <div class="field">
-      <label class="required" for="cty">City</label>
-      <input id="cty" name="City" required type="text">
-    </div>
+    <!-- Country then City -->
     <div class="field">
       <label class="required" for="ctr">Country</label>
       <input id="ctr" name="Country" required type="text">
     </div>
+    <div class="field">
+      <label class="required" for="cty">City</label>
+      <input id="cty" name="City" required type="text">
+    </div>
+
     <div class="field">
       <label class="required" for="adr">Address</label>
       <input id="adr" name="Address" required maxlength="200" type="text">
@@ -130,7 +132,6 @@
     </div>
 
     <div class="btnrow">
-      <!-- changed: review step -->
       <button class="btn" type="button" id="btn-review">Review & Confirm</button>
       <a class="btn secondary" href="/forms/owner.html">Switch to Owner</a>
       <a class="btn secondary" href="/forms/report.html">Switch to Report</a>

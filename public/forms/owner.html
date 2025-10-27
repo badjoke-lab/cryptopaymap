@@ -51,12 +51,6 @@
       <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new listing.</p>
     </div>
 
-    <!-- Address -->
-    <div class="field">
-      <label class="required" for="cty">City</label>
-      <input id="cty" name="City" required maxlength="64" type="text">
-    </div>
-
     <!-- Country select (populated) + hidden CountryCode -->
     <div class="field">
       <label class="required" for="ctr">Country</label>
@@ -65,6 +59,12 @@
       </select>
       <input type="hidden" id="ctrCode" name="CountryCode" />
       <p class="help">Type to search. Shows “Name (CC)”. The submitted value is the full country name.</p>
+    </div>
+
+    <!-- City -->
+    <div class="field">
+      <label class="required" for="cty">City</label>
+      <input id="cty" name="City" required maxlength="64" type="text">
     </div>
 
     <div class="field">
@@ -146,7 +146,6 @@
     <div class="field">
       <label for="paynote">Payments note (optional) <span id="pay_left" class="subtle">(0 / 150)</span></label>
       <textarea id="paynote" name="PaymentNote" maxlength="150" placeholder="Min. order for crypto, tipping policy, Lightning preferred, etc. (≤150 chars)"></textarea>
-      <p class="help">Shown under the Payments section. <strong>Limited to 150 characters</strong> to keep it concise.</p>
     </div>
 
     <!-- Amenities: notes only -->
@@ -207,7 +206,6 @@
     </div>
 
     <div class="btnrow">
-      <!-- changed: review step -->
       <button class="btn" type="button" id="btn-review">Review & Confirm</button>
       <a class="btn secondary" href="/forms/community.html">Switch to Community</a>
       <a class="btn secondary" href="/forms/report.html">Switch to Report</a>
