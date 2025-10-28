@@ -1,0 +1,48 @@
+{
+  "ref": "owner-20251028-0096",
+  "when": "2025-10-28T15:53:08.116Z",
+  "Business": "Tokyo Test Café (Owner)",
+  "SubmitterName": "Test Owner Submitter",
+  "SubmitterEmail": "owner@example.com",
+  "Country": "Japan",
+  "CountryCode": "JP",
+  "City": "Tokyo",
+  "Address": "Shibuya 1-1-1",
+  "lat": 0,
+  "lng": 0,
+  "Category": "Cafe",
+  "CategoryOther": "",
+  "website": "https://example.com/",
+  "Phone": "03-1111-2222",
+  "Hours": "10:00-20:00",
+  "About": "テスト用のダミー店舗です。暗号資産決済の導線と、About/Notes/画像の表示確認を目的に登録しています。実在の店舗ではありません。マップ反映・詳細モーダル・カルーセル挙動の検証専用データで、公開デモの整合性を確認したのち削除します。店内はカウンター中心の想定で、レジでQRを提示して決済します。",
+  "ExistingPlaceId": "",
+  "AcceptedRaw": "BTC (Lightning), ETH",
+  "PaymentNote": "Lightning対応。少額OK、チップ歓迎。",
+  "PaymentPages": [
+    "https://example.com/pay/btc"
+  ],
+  "SocialsRaw": [
+    "@tokyo_test_cafe https://instagram.com/tokyo_test_cafe"
+  ],
+  "amenities": {
+    "notes": "無料Wi-Fiとカウンター電源あり。混雑時は立ち席。"
+  },
+  "Proof": "Business email @domain",
+  "ImagesCount": 8,
+  "images": [
+    "public/pending/owner-20251028-0096/gallery-1.png",
+    "public/pending/owner-20251028-0096/gallery-2.png",
+    "public/pending/owner-20251028-0096/gallery-3.png",
+    "public/pending/owner-20251028-0096/gallery-4.png",
+    "public/pending/owner-20251028-0096/gallery-5.png",
+    "public/pending/owner-20251028-0096/gallery-6.png",
+    "public/pending/owner-20251028-0096/gallery-7.png",
+    "public/pending/owner-20251028-0096/gallery-8.png"
+  ],
+  "verification": {
+    "status": "pending",
+    "receivedBy": "form",
+    "receivedAt": "2025-10-28T15:53:08.116Z"
+  }
+}
