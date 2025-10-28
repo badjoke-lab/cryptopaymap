@@ -1,0 +1,25 @@
+name: Promote Submission
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Submission ref (e.g., owner-2025... or community-2025...)"
+        required: true
+      kind:
+        description: "owner or community"
+        required: true
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '20' }
+      - run: npm ci
+      - run: node scripts/promote_submissions.ts --ref ${{ inputs.ref }} --kind ${{ inputs.kind }}
+      - run: |
+          git config user.name "cpm-bot"
+          git config user.email "cpm-bot@example.com"
+          git add -A
+          git commit -m "promote: ${{ inputs.ref }} (${{ inputs.kind }})" || echo "No changes"
+          git push
