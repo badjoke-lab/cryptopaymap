@@ -168,7 +168,7 @@ export async function POST(req: Request) {
     }
 
     const url = new URL(req.url);
-    url.pathname = "/submitted.html";
+    url.pathname = "/forms/submitted.html";
     url.searchParams.set("kind", "community");
     url.searchParams.set("ref", ref);
     url.searchParams.set("name", Business || SubmitterName || "—");

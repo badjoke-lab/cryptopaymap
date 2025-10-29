@@ -203,7 +203,7 @@ After review, run your promote script (or use GH Actions) to publish to \`public
 
     /* ===== リダイレクト ===== */
     const url = new URL(req.url);
-    url.pathname = "/submitted.html";
+    url.pathname = "/forms/submitted.html";
     url.searchParams.set("kind", "owner");
     url.searchParams.set("ref", ref);
     url.searchParams.set("name", Business || SubmitterName || "—");
