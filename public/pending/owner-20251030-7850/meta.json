@@ -1,0 +1,36 @@
+{
+  "ref": "owner-20251030-7850",
+  "when": "2025-10-30T15:51:36.760Z",
+  "Business": "",
+  "SubmitterName": "",
+  "SubmitterEmail": "",
+  "Country": "",
+  "CountryCode": "",
+  "City": "",
+  "Address": "",
+  "lat": 0,
+  "lng": 0,
+  "Category": "",
+  "CategoryOther": "",
+  "Phone": "",
+  "Hours": "",
+  "About": "",
+  "ExistingPlaceId": "",
+  "AcceptedRaw": "",
+  "PaymentNote": "",
+  "PaymentPages": [],
+  "SocialsRaw": [],
+  "amenities": {
+    "notes": ""
+  },
+  "Proof": "",
+  "ImagesCount": 1,
+  "images": [
+    "public/pending/owner-20251030-7850/gallery-1.jpg"
+  ],
+  "verification": {
+    "status": "pending",
+    "receivedBy": "form",
+    "receivedAt": "2025-10-30T15:51:36.761Z"
+  }
+}
