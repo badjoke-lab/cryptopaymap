@@ -6,39 +6,29 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <link rel="stylesheet" href="/forms/forms.css" />
   <style>
-    /* simple debug panel styles (only used when DEBUG=true) */
-    #form-prefill-debug {
-      position: relative;
-      border: 1px solid #e6eef6;
-      background: #f8fafc;
-      color: #0f172a;
-      padding: 10px;
-      font-size: 13px;
-      margin: 8px 0;
-    }
-    #form-prefill-debug . dbg-hidden { display: none; }
-    #form-debug-toggle {
-      display: inline-block;
-      margin-left: 8px;
-      cursor: pointer;
-      font-size: 13px;
-      color: #0366d6;
-      text-decoration: underline;
-    }
-    /* small floating helper when enabled (not shown unless DEBUG true) */
-    #form-debug-float {
-      position: fixed;
-      right: 12px;
-      bottom: 12px;
-      z-index: 9999;
-      background: rgba(0,0,0,0.7);
-      color: #fff;
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
+    /* submit中の簡易インジケータ（インデターミネイト） */
+    .progress {
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 14px 0 6px;
       display: none;
     }
+    .progress .bar {
+      width: 40%;
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #60a5fa);
+      border-radius: 999px;
+      animation: ind 1.2s infinite ease-in-out;
+    }
+    @keyframes ind {
+      0% { transform: translateX(-60%); }
+      50% { transform: translateX(60%); }
+      100% { transform: translateX(160%); }
+    }
+    .is-submitting .progress { display: block; }
+    .is-submitting button[type="submit"] { opacity: .6; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -47,41 +37,76 @@
   <p class="subtle">Images: up to <strong>4</strong>, ≤ <strong>2MB</strong> each. Evidence links are recommended.</p>
 
   <form id="form-report" action="/submit/report" method="post" enctype="multipart/form-data" class="form-col">
-    <div class="field"><label class="required" for="sn">Submitter name</label><input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text"></div>
-    <div class="field"><label class="required" for="se">Submitter email</label><input id="se" name="SubmitterEmail" required type="email"></div>
+    <div class="progress" aria-hidden="true"><div class="bar"></div></div>
 
-    <div class="field"><label class="required" for="pr">Map URL or Place ID</label><input id="pr" name="PlaceRef" required placeholder="https://cryptopaymap.vercel.app/place/xxxx" type="text"></div>
-    <div class="field"><label for="pn">Place name</label><input id="pn" name="PlaceName" maxlength="80" type="text"></div>
+    <div class="field">
+      <label class="required" for="sn">Submitter name</label>
+      <input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text" autocomplete="name">
+    </div>
 
-    <div class="field"><label class="required" for="iss">Issue type</label>
+    <div class="field">
+      <label class="required" for="se">Submitter email</label>
+      <input id="se" name="SubmitterEmail" required type="email" autocomplete="email">
+    </div>
+
+    <div class="field">
+      <label class="required" for="pr">Map URL or Place ID</label>
+      <input id="pr" name="PlaceRef" required placeholder="https://cryptopaymap.vercel.app/place/xxxx" type="text" inputmode="url">
+    </div>
+
+    <div class="field">
+      <label for="pn">Place name</label>
+      <input id="pn" name="PlaceName" maxlength="80" type="text">
+    </div>
+
+    <div class="field">
+      <label class="required" for="iss">Issue type</label>
       <select id="iss" name="Issue" required>
         <option value="">— Select —</option>
-        <option>Closed</option><option>Wrong info</option><option>Duplicate</option><option>Fraud</option><option>Other</option>
+        <option>Closed</option><option>Wrong info</option><option>Duplicate</option>
+        <option>Fraud</option><option>Other</option>
       </select>
     </div>
 
-    <div class="field"><label class="required" for="det">Description / Details</label><textarea id="det" name="Details" required placeholder="Describe the issue..."></textarea></div>
-    <div class="field"><label for="ev">Evidence link(s)</label><textarea id="ev" name="Evidence" placeholder="https://x.com/post/..., https://instagram.com/..."></textarea></div>
+    <div class="field">
+      <label class="required" for="det">Description / Details</label>
+      <textarea id="det" name="Details" required maxlength="1000" placeholder="Describe the issue..."></textarea>
+      <p class="help">Up to 1000 characters.</p>
+    </div>
 
-    <div class="field"><label for="nc">New accepted crypto</label><input id="nc" name="NewCoins" placeholder="USDT (Polygon)" type="text"></div>
-    <div class="field"><label for="op">Other proposal</label><textarea id="op" name="OtherProposal"></textarea></div>
+    <div class="field">
+      <label for="ev">Evidence link(s)</label>
+      <textarea id="ev" name="Evidence" placeholder="https://x.com/post/..., https://instagram.com/..."></textarea>
+      <p class="help">Separate multiple URLs by commas or new lines.</p>
+    </div>
+
+    <div class="field">
+      <label for="nc">New accepted crypto</label>
+      <input id="nc" name="NewCoins" placeholder="USDT (Polygon)" type="text" maxlength="120">
+    </div>
+
+    <div class="field">
+      <label for="op">Other proposal</label>
+      <textarea id="op" name="OtherProposal" maxlength="800"></textarea>
+    </div>
+
+    <!-- ✅ 追加：自由記述（長文） -->
+    <div class="field">
+      <label for="notes">Reporter notes (optional)</label>
+      <textarea id="notes" name="ReporterNotes" maxlength="1000" placeholder="Context / background / anything helpful for reviewers..."></textarea>
+      <p class="help">Optional. Up to 1000 characters.</p>
+    </div>
 
     <div class="field">
       <label>🖼️ Upload evidence images — gallery (up to 4)</label>
-      <div class="drop" data-max="4" data-input="galleryR">
-        <div class="header">
-          <button type="button" class="btn secondary dz-add">Add images</button>
-          <button type="button" class="btn secondary dz-clear">Clear all</button>
-          <span class="counter dz-counter">0 / 4 selected</span>
-        </div>
-        <div class="area dz-area">Drag & drop images here, or click to select.</div>
-        <input id="galleryR" name="Gallery[]" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
-        <p class="help">Images only. ≤2MB each. Drag to reorder. <strong>First image will be used as cover.</strong></p>
-        <div class="thumb-list dz-list"></div>
-      </div>
+      <input id="galleryR" name="Gallery[]" type="file" accept="image/jpeg,image/png,image/webp" multiple />
+      <p class="help">Images only (JPEG/PNG/WEBP). ≤2MB each. First image becomes cover.</p>
     </div>
 
-    <div class="field"><label for="ce">Contact email (optional)</label><input id="ce" type="email" name="Contact"></div>
+    <div class="field">
+      <label for="ce">Contact email (optional)</label>
+      <input id="ce" type="email" name="Contact">
+    </div>
 
     <div class="field inline-check">
       <input id="consent" name="Consent" type="checkbox" required />
@@ -98,160 +123,25 @@
   </form>
 </main>
 
-<!-- floating debug toggle (only shown if DEBUG=true) -->
-<div id="form-debug-float" title="Toggle prefill debug panel">Debug</div>
-
 <script>
-/*
- Prefill + debug script
- - Set DEBUG = true to enable a small UI to toggle a visible debug/info panel.
- - Default: DEBUG = false (no visible debug UI, nothing inserted into DOM).
-*/
 (function(){
   function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
-
-  // Toggle this to true for debugging UI (default false)
-  const DEBUG = false;
-
   onReady(function(){
-    try {
-      const sp = new URLSearchParams(location.search);
-      const placeId = sp.get('placeId') || sp.get('place_id') || '';
-      const placeName = sp.get('placeName') || sp.get('place_name') || '';
+    // prefill placeId / placeName from query (同一ロジックを簡略化して維持)
+    const sp = new URLSearchParams(location.search);
+    const placeId   = sp.get('placeId') || sp.get('place_id') || '';
+    const placeName = sp.get('placeName') || sp.get('place_name') || '';
+    const $ = s => document.querySelector(s);
+    if(placeName) $('#pn') && ($('#pn').value = placeName);
+    if(placeId)   $('#pr') && ($('#pr').value = placeId);
 
-      // utility: try several name/id variants (same logic used in owner form)
-      function setField(possibleNames, val){
-        if(!val) return false;
-        for(const n of possibleNames){
-          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n);
-          if(!el){
-            el = document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
-          }
-          if(!el) continue;
-          if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT'){
-            el.value = val;
-            // fire events for frameworks / listeners
-            el.dispatchEvent(new Event('input', { bubbles: true }));
-            el.dispatchEvent(new Event('change', { bubbles: true }));
-          } else {
-            el.textContent = val;
-          }
-          return true;
-        }
-        return false;
-      }
-
-      // Fill place name into PlaceName field
-      setField(['PlaceName','place_name','placeName','pn','BusinessName','Business','bn','name'], placeName);
-
-      // Fill Map URL / Place ID into PlaceRef field
-      setField(['PlaceRef','Place','placeRef','place_ref','pr','place','place_id','placeId'], placeId || '');
-
-      // If placeId exists, ensure canonical hidden placeId input is present (so server receives it)
-      if(placeId){
-        const form = document.getElementById('form-report');
-        if(form){
-          let hi = form.querySelector('input[name="placeId"]');
-          if(!hi){
-            hi = document.createElement('input');
-            hi.type = 'hidden';
-            hi.name = 'placeId';
-            form.appendChild(hi);
-          }
-          hi.value = placeId;
-        }
-      }
-
-      // Debug UI: create a small panel + floating toggle if DEBUG === true
-      if(DEBUG){
-        const infoId = 'form-prefill-debug';
-        if(!document.getElementById(infoId)){
-          const info = document.createElement('div');
-          info.id = infoId;
-          info.innerHTML = `
-            <div>
-              <strong>Prefill debug</strong>
-              <span id="form-debug-toggle">show</span>
-            </div>
-            <div id="form-prefill-content" style="margin-top:8px; display:none;">
-              <div><strong>placeId</strong>: <span id="dbg-placeId"></span></div>
-              <div><strong>placeName</strong>: <span id="dbg-placeName"></span></div>
-              <div><strong>PlaceRef field value</strong>: <span id="dbg-pr"></span></div>
-              <div><strong>PlaceName field value</strong>: <span id="dbg-pn"></span></div>
-              <div style="margin-top:6px;"><small>Tip: set DEBUG = false in this script to hide this UI.</small></div>
-            </div>
-          `;
-          // Insert before form for visibility
-          const container = document.querySelector('main.container') || document.body;
-          container.insertBefore(info, container.firstChild);
-
-          // populate debug values
-          function refreshDbg(){
-            document.getElementById('dbg-placeId').textContent = placeId || '(none)';
-            document.getElementById('dbg-placeName').textContent = placeName || '(none)';
-            document.getElementById('dbg-pr').textContent = (document.getElementById('pr') || { value: '' }).value;
-            document.getElementById('dbg-pn').textContent = (document.getElementById('pn') || { value: '' }).value;
-          }
-          refreshDbg();
-
-          // toggle
-          const tgl = document.getElementById('form-debug-toggle');
-          const content = document.getElementById('form-prefill-content');
-          tgl.addEventListener('click', function(){
-            if(content.style.display === 'none'){ content.style.display = ''; tgl.textContent = 'hide'; }
-            else { content.style.display = 'none'; tgl.textContent = 'show'; }
-          });
-
-          // floating debug button (also visible)
-          const floatBtn = document.getElementById('form-debug-float');
-          if(floatBtn){
-            floatBtn.style.display = 'inline-block';
-            floatBtn.addEventListener('click', () => {
-              if(content.style.display === 'none'){ content.style.display = ''; tgl.textContent = 'hide'; }
-              else { content.style.display = 'none'; tgl.textContent = 'show'; }
-            });
-          }
-        }
-        // also log to console
-        console.log('report prefill debug:', { placeId, placeName, placeRefValue: (document.getElementById('pr')||{value:''}).value, placeNameValue: (document.getElementById('pn')||{value:''}).value });
-      }
-    } catch (e) {
-      if (typeof console !== 'undefined') console.error('report form prefill error', e);
-    }
+    // submit時の簡易プログレス表示（ページ遷移までの間にバーを動かす）
+    const form = document.getElementById('form-report');
+    form.addEventListener('submit', function(){
+      form.classList.add('is-submitting');
+    }, { passive: true });
   });
 })();
-</script>
-
-<script>
-  // Dropzone / gallery init (same logic as before)
-  function initDrop(el){
-    const max=parseInt(el.dataset.max||'4',10);
-    const input=document.getElementById(el.dataset.input);
-    const add=el.querySelector('.dz-add'), clr=el.querySelector('.dz-clear'),
-          area=el.querySelector('.dz-area'), list=el.querySelector('.dz-list'),
-          counter=el.querySelector('.dz-counter');
-    let files=[];
-    const fmt=n=>n>=1048576?(n/1048576).toFixed(2)+'MB':Math.round(n/1024)+'KB';
-    const sync=()=>{const dt=new DataTransfer();files.slice(0,max).forEach(f=>dt.items.add(f));input.files=dt.files;counter.textContent=`${files.length} / ${max} selected`;}
-    const card=(f,i)=>{const d=document.createElement('div');d.className='thumb';d.draggable=true;d.dataset.i=i;
-      const im=document.createElement('img');im.src=URL.createObjectURL(f);
-      const m=document.createElement('div');m.className='meta';m.innerHTML=`<div class="name">${f.name}</div><div class="cap">${i===0?'<span class="good">Cover · </span>':''}${fmt(f.size)}</div>`;
-      const x=document.createElement('button');x.className='del';x.type='button';x.textContent='×';x.onclick=()=>{files.splice(i,1);render();};
-      d.append(im,m,x);
-      d.addEventListener('dragstart',e=>{d.classList.add('dragging');e.dataTransfer.setData('text/plain',i)});
-      d.addEventListener('dragend',()=>d.classList.remove('dragging'));
-      d.addEventListener('dragover',e=>e.preventDefault());
-      d.addEventListener('drop',e=>{e.preventDefault();const from=+e.dataTransfer.getData('text/plain');const f2=files.splice(from,1)[0];files.splice(i,0,f2);render();});
-      return d;
-    };
-    function render(){ list.innerHTML=''; files.forEach((f,i)=>list.appendChild(card(f,i))); sync(); }
-    function accept(fs){ const add=[]; for(const f of fs){ if(!/image\/(jpeg|png|webp)/.test(f.type)) continue; if(f.size>2*1024*1024) continue; if(files.length+add.length>=max) break; add.push(f);} if(add.length){ files=files.concat(add); render(); } }
-    add.onclick=()=>input.click(); clr.onclick=()=>{files=[];render();}; input.onchange=()=>accept(input.files||[]);
-    area.onclick=()=>input.click(); area.ondragover=e=>{e.preventDefault();area.classList.add('dragover')}; area.ondragleave=()=>area.classList.remove('dragover');
-    area.ondrop=e=>{e.preventDefault();area.classList.remove('dragover');accept(e.dataTransfer.files||[])};
-    render();
-  }
-  document.querySelectorAll('.drop').forEach(initDrop);
 </script>
 </body>
 </html>

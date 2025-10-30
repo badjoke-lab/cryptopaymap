@@ -12,6 +12,14 @@
     .confirm-card h2{margin:0 0 12px}
     .confirm-card .grid{display:grid;grid-template-columns:180px 1fr;gap:8px 12px;margin:12px 0}
     .confirm-card .warnings{background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:10px;border-radius:8px;margin-bottom:10px}
+
+    /* submitting overlay */
+    .cpm-progress{position:fixed;inset:0;display:none;place-items:center;background:rgba(15,23,42,.55);z-index:10000}
+    .cpm-progress .box{width:min(560px,92%);background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 10px 30px rgba(0,0,0,.25);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+    .cpm-progress h3{margin:0 0 8px;font-size:16px}
+    .cpm-bar{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .cpm-bar>span{display:block;height:100%;width:0%;background:#3b82f6;border-radius:999px;transition:width .4s ease}
+    .cpm-msg{margin:10px 0 0;color:#475569;font-size:13px}
   </style>
 </head>
 <body>
@@ -196,7 +204,7 @@
   document.querySelectorAll('.drop').forEach(initDrop);
 </script>
 
-<!-- Prefill + counters + confirm -->
+<!-- Prefill + counters + confirm + progress -->
 <script>
 (function(){
   function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
@@ -223,7 +231,6 @@
         }
         return false;
       }
-
       setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
 
       if(placeId){
@@ -297,12 +304,398 @@
         else { warnBox.style.display='none'; warnBox.innerHTML=''; }
       }
 
+      // ---- Progress overlay
+      const ov = document.createElement('div');
+      ov.id = 'cpmProgress';
+      ov.className = 'cpm-progress';
+      ov.innerHTML = '<div class="box"><h3>Submitting…</h3><div class="cpm-bar"><span id="cpmBar"></span></div><div id="cpmMsg" class="cpm-msg">Uploading files and creating a review PR…</div></div>';
+      document.body.appendChild(ov);
+      const bar = ()=>document.getElementById('cpmBar');
+      let timer=null;
+      function showProgress(msg){
+        document.getElementById('cpmMsg').textContent = msg || 'Submitting…';
+        ov.style.display='grid';
+        let p=8; bar().style.width='8%';
+        timer = setInterval(()=>{ p=Math.min(p+(p<70?Math.random()*10+5:Math.random()*5+1),94); bar().style.width=p+'%'; }, 600);
+        document.body.style.overflow='hidden';
+      }
+      function hideProgress(){
+        if(timer) clearInterval(timer);
+        ov.style.display='none';
+        document.body.style.overflow='';
+      }
+      function lockButtons(lock){
+        btnSubmit.disabled = lock;
+        btnReview.disabled = lock;
+      }
+
       btnReview?.addEventListener('click', ()=>{ buildConfirm(); modal.style.display='grid'; document.body.style.overflow='hidden'; });
       btnBack?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; });
-      btnSubmit?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; form.submit(); });
+      btnSubmit?.addEventListener('click', ()=>{
+        modal.style.display='none';
+        showProgress('Uploading files and creating a review PR…');
+        lockButtons(true);
+        document.getElementById('form-community').submit();
+      });
+      document.getElementById('form-community').addEventListener('submit', ()=>{
+        showProgress('Uploading files and creating a review PR…');
+        lockButtons(true);
+      });
 
     } catch (e) {
-      console.error('community form prefill error', e);
+      console.error('community form init error', e);
+    }
+  });
+})();
+</script>
+</body>
+</html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Community Submission — CryptoPayMap</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="/forms/forms.css" />
+  <style>
+    /* confirm modal */
+    .confirm-modal{position:fixed;inset:0;background:rgba(15,23,42,.48);display:none;place-items:center;z-index:9999}
+    .confirm-card{background:#fff;border-radius:12px;max-width:720px;width:92%;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+    .confirm-card h2{margin:0 0 12px}
+    .confirm-card .grid{display:grid;grid-template-columns:180px 1fr;gap:8px 12px;margin:12px 0}
+    .confirm-card .warnings{background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:10px;border-radius:8px;margin-bottom:10px}
+
+    /* submitting overlay */
+    .cpm-progress{position:fixed;inset:0;display:none;place-items:center;background:rgba(15,23,42,.55);z-index:10000}
+    .cpm-progress .box{width:min(560px,92%);background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 10px 30px rgba(0,0,0,.25);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+    .cpm-progress h3{margin:0 0 8px;font-size:16px}
+    .cpm-bar{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .cpm-bar>span{display:block;height:100%;width:0%;background:#3b82f6;border-radius:999px;transition:width .4s ease}
+    .cpm-msg{margin:10px 0 0;color:#475569;font-size:13px}
+  </style>
+</head>
+<body>
+<main class="container">
+  <h1>Community Submission</h1>
+  <p class="subtle">Required fields <strong>*</strong>. Images: up to <strong>4</strong>, ≤ <strong>2MB</strong> each.</p>
+
+  <form id="form-community" action="/submit/community" method="post" enctype="multipart/form-data" class="form-col">
+    <!-- Submitter -->
+    <div class="field">
+      <label class="required" for="sn">Submitter name</label>
+      <input id="sn" name="SubmitterName" required minlength="2" maxlength="80" type="text">
+    </div>
+    <div class="field">
+      <label class="required" for="se">Submitter email</label>
+      <input id="se" name="SubmitterEmail" required type="email">
+    </div>
+
+    <!-- Place basics -->
+    <div class="field">
+      <label class="required" for="bn">Business name</label>
+      <input id="bn" name="BusinessName" required maxlength="80" type="text">
+    </div>
+
+    <!-- Existing place ID (visible) -->
+    <div class="field">
+      <label for="existingId">Existing place ID (optional)</label>
+      <input id="existingId" name="ExistingPlaceId" type="text" placeholder="e.g. osm:node:10078071561" />
+      <p class="help">If you want to edit an already-listed place, enter its ID here. Leave blank to create a new submission.</p>
+    </div>
+
+    <!-- Country then City -->
+    <div class="field">
+      <label class="required" for="ctr">Country</label>
+      <input id="ctr" name="Country" required type="text">
+    </div>
+    <div class="field">
+      <label class="required" for="cty">City</label>
+      <input id="cty" name="City" required type="text">
+    </div>
+
+    <div class="field">
+      <label class="required" for="adr">Address</label>
+      <input id="adr" name="Address" required maxlength="200" type="text">
+    </div>
+    <div class="field">
+      <label for="web">Website / Map URL</label>
+      <input id="web" name="Website" type="url" placeholder="https://...">
+    </div>
+
+    <div class="field">
+      <label class="required" for="cat">Category</label>
+      <select id="cat" name="Category" required>
+        <option value="">— Select —</option>
+        <option>Cafe</option><option>Restaurant</option><option>Bar / Pub</option><option>Bakery</option>
+        <option>Grocery / Supermarket</option><option>Butcher</option><option>Pharmacy</option><option>Clinic / Doctors</option>
+        <option>Dentist</option><option>Hairdresser / Barber</option><option>Spa / Beauty</option><option>Electronics</option>
+        <option>Clothing / Apparel</option><option>Jewelry</option><option>Bookshop</option><option>Convenience store</option>
+        <option>Hotel / Lodging</option><option>Gym / Fitness</option><option>Dance school / Studio</option>
+        <option>Tool / Equipment rental</option><option>Coworking / Office</option><option>Other</option>
+      </select>
+    </div>
+
+    <!-- About / Summary (optional, ≤300) -->
+    <div class="field">
+      <label for="about">About / Summary (optional) <span id="about_left" class="subtle">(0 / 300)</span></label>
+      <textarea id="about" name="About" maxlength="300" placeholder="Describe the place briefly (≤300 chars)."></textarea>
+      <p class="help">Short description of the place. Community submissions are limited to <strong>300 characters</strong>.</p>
+    </div>
+
+    <!-- Payments -->
+    <div class="field">
+      <label class="required" for="acc">Accepted crypto</label>
+      <textarea id="acc" name="Accepted" required placeholder="BTC, ETH"></textarea>
+    </div>
+    <div class="field">
+      <label for="paynote">Payments note (optional) <span id="pay_left" class="subtle">(0 / 150)</span></label>
+      <textarea id="paynote" name="PaymentNote" maxlength="150" placeholder="Lightning available, fee notes, min. order, etc. (≤150 chars)"></textarea>
+      <p class="help">Shown under the Payments section. <strong>Limited to 150 characters</strong>.</p>
+    </div>
+
+    <!-- Evidence -->
+    <div class="field">
+      <label class="required" for="ev">Evidence link(s) * (≥2)</label>
+      <textarea id="ev" name="Evidence" required placeholder="https://x.com/post/..., https://instagram.com/..."></textarea>
+      <p class="help">Provide at least two URLs. Separate by new lines or commas.</p>
+    </div>
+
+    <!-- Amenities: notes only -->
+    <div class="field">
+      <label for="amen_notes">Amenities notes (optional) <span id="amen_left" class="subtle">(0 / 150)</span></label>
+      <textarea id="amen_notes" name="amenities_notes" maxlength="150" placeholder="WiFi/Seating/outlets/stroller route/smoking path, etc. (≤150 chars)"></textarea>
+      <p class="help">Appears in the “Amenities” section. <strong>Limited to 150 characters</strong>. Free text only.</p>
+    </div>
+
+    <!-- Images -->
+    <div class="field">
+      <label>🖼️ Upload images — gallery (up to 4)</label>
+      <div class="drop" data-max="4" data-input="gallery4">
+        <div class="header">
+          <button type="button" class="btn secondary dz-add">Add images</button>
+          <button type="button" class="btn secondary dz-clear">Clear all</button>
+          <span class="counter dz-counter">0 / 4 selected</span>
+        </div>
+        <div class="area dz-area">Drag & drop images here, or click to select.</div>
+        <input id="gallery4" name="Gallery[]" type="file" accept="image/jpeg,image/png,image/webp" multiple hidden />
+        <p class="help">Images only. ≤2MB each. Drag to reorder. <strong>First image will be used as cover.</strong></p>
+        <div class="thumb-list dz-list"></div>
+      </div>
+    </div>
+
+    <!-- Consent -->
+    <div class="field inline-check">
+      <input id="consent" name="Consent" type="checkbox" required />
+      <label class="required" for="consent" style="font-weight:400">
+        I confirm I’m not the owner of this place and I grant a non-exclusive free license to display the content.
+      </label>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" type="button" id="btn-review">Review & Confirm</button>
+      <a class="btn secondary" href="/forms/owner.html">Switch to Owner</a>
+      <a class="btn secondary" href="/forms/report.html">Switch to Report</a>
+    </div>
+  </form>
+</main>
+
+<!-- confirm modal -->
+<div id="confirmModal" class="confirm-modal">
+  <div class="confirm-card">
+    <h2>Confirm your submission</h2>
+    <div id="confirmWarnings" class="warnings" style="display:none;"></div>
+    <div class="grid">
+      <div><strong>Kind</strong></div><div>community</div>
+      <div><strong>Business</strong></div><div id="c_business">—</div>
+      <div><strong>City</strong></div><div id="c_city">—</div>
+      <div><strong>Country</strong></div><div id="c_country">—</div>
+      <div><strong>Address</strong></div><div id="c_address">—</div>
+      <div><strong>Category</strong></div><div id="c_category">—</div>
+      <div><strong>Accepted</strong></div><div id="c_accepted">—</div>
+      <div><strong>About</strong></div><div id="c_about">—</div>
+      <div><strong>Payment note</strong></div><div id="c_paynote">—</div>
+      <div><strong>Amenities notes</strong></div><div id="c_amen">—</div>
+      <div><strong>Evidence (count)</strong></div><div id="c_evcnt">0</div>
+      <div><strong>Images</strong></div><div id="c_imgs">0</div>
+    </div>
+    <div class="btnrow">
+      <button type="button" class="btn secondary" id="btn-back">Back & Edit</button>
+      <button type="button" class="btn" id="btn-submit-final">Submit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initDrop(el){
+    const max=parseInt(el.dataset.max||'4',10);
+    const input=document.getElementById(el.dataset.input);
+    const add=el.querySelector('.dz-add'), clr=el.querySelector('.dz-clear'),
+          area=el.querySelector('.dz-area'), list=el.querySelector('.dz-list'),
+          counter=el.querySelector('.dz-counter');
+    let files=[];
+    const fmt=n=>n>=1048576?(n/1048576).toFixed(2)+'MB':Math.round(n/1024)+'KB';
+    const sync=()=>{const dt=new DataTransfer();files.slice(0,max).forEach(f=>dt.items.add(f));input.files=dt.files;counter.textContent=`${files.length} / ${max} selected`;}
+    const card=(f,i)=>{const d=document.createElement('div');d.className='thumb';d.draggable=true;d.dataset.i=i;
+      const im=document.createElement('img');im.src=URL.createObjectURL(f);
+      const m=document.createElement('div');m.className='meta';m.innerHTML=`<div class="name">${f.name}</div><div class="cap">${i===0?'<span class="good">Cover · </span>':''}${fmt(f.size)}</div>`;
+      const x=document.createElement('button');x.className='del';x.type='button';x.textContent='×';x.onclick=()=>{files.splice(i,1);render();};
+      d.append(im,m,x);
+      d.addEventListener('dragstart',e=>{d.classList.add('dragging');e.dataTransfer.setData('text/plain',i)});
+      d.addEventListener('dragend',()=>d.classList.remove('dragging'));
+      d.addEventListener('dragover',e=>e.preventDefault());
+      d.addEventListener('drop',e=>{e.preventDefault();const from=+e.dataTransfer.getData('text/plain');const f2=files.splice(from,1)[0];files.splice(i,0,f2);render();});
+      return d;
+    };
+    function render(){ list.innerHTML=''; files.forEach((f,i)=>list.appendChild(card(f,i))); sync(); }
+    function accept(fs){ const add=[]; for(const f of fs){ if(!/image\/(jpeg|png|webp)/.test(f.type)) continue; if(f.size>2*1024*1024) continue; if(files.length+add.length>=max) break; add.push(f);} if(add.length){ files=files.concat(add); render(); } }
+    add.onclick=()=>input.click(); clr.onclick=()=>{files=[];render();}; input.onchange=()=>accept(input.files||[]);
+    area.onclick=()=>input.click(); area.ondragover=e=>{e.preventDefault();area.classList.add('dragover')}; area.ondragleave=()=>area.classList.remove('dragover');
+    area.ondrop=e=>{e.preventDefault();area.classList.remove('dragover');accept(e.dataTransfer.files||[])};
+    render();
+  }
+  document.querySelectorAll('.drop').forEach(initDrop);
+</script>
+
+<!-- Prefill + counters + confirm + progress -->
+<script>
+(function(){
+  function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
+  onReady(function(){
+    try {
+      const sp = new URLSearchParams(location.search);
+      const placeId = sp.get('placeId') || sp.get('place_id') || '';
+      const placeName = sp.get('placeName') || sp.get('place_name') || '';
+      const SHOW_PREFILL_INFO = false;
+
+      function setField(names, val){
+        if(!val) return false;
+        for(const n of names){
+          let el = document.querySelector(`[name="${n}"]`) || document.getElementById(n) ||
+                   document.querySelector(`[name="${n.toLowerCase()}"]`) || document.getElementById(n.toLowerCase());
+          if(!el) continue;
+          const tag = el.tagName;
+          if(tag==='INPUT' || tag==='TEXTAREA' || tag==='SELECT'){
+            el.value = val;
+            el.dispatchEvent(new Event('input',{bubbles:true}));
+            el.dispatchEvent(new Event('change',{bubbles:true}));
+          } else { el.textContent = val; }
+          return true;
+        }
+        return false;
+      }
+      setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
+
+      if(placeId){
+        setField(['ExistingPlaceId','existingplaceid','existingId','existing_id','placeId','place_id'], placeId);
+        const form = document.getElementById('form-community');
+        if(form){
+          let hi = form.querySelector('input[name="placeId"]');
+          if(!hi){ hi = document.createElement('input'); hi.type='hidden'; hi.name='placeId'; form.appendChild(hi); }
+          hi.value = placeId;
+        }
+      }
+
+      // counters
+      function bindCounter(textareaId, counterId, maxDefault){
+        const ta=document.getElementById(textareaId);
+        const sp=document.getElementById(counterId);
+        if(!ta || !sp) return;
+        const max=parseInt(ta.getAttribute('maxlength')||String(maxDefault),10);
+        const upd=()=>{ const len=(ta.value||'').length; sp.textContent=`${len} / ${max}`; };
+        ta.addEventListener('input',upd); upd();
+      }
+      bindCounter('about','about_left',300);
+      bindCounter('paynote','pay_left',150);
+      bindCounter('amen_notes','amen_left',150);
+
+      // confirm modal
+      const form = document.getElementById('form-community');
+      const btnReview = document.getElementById('btn-review');
+      const modal = document.getElementById('confirmModal');
+      const warnBox = document.getElementById('confirmWarnings');
+      const btnBack = document.getElementById('btn-back');
+      const btnSubmit = document.getElementById('btn-submit-final');
+
+      function txt(n){ const el=form.querySelector(`[name="${n}"]`); return (el&&el.value||'').trim(); }
+      function sel(n){ const el=form.querySelector(`[name="${n}"]`); return el && el.tagName==='SELECT' ? el.value : (el&&el.value||''); }
+      function countImgs(){ const fi=form.querySelector('#gallery4'); return (fi&&fi.files&&fi.files.length)||0; }
+      function countEvidence(raw){ if(!raw) return 0; return raw.split(/[\n,|]+/g).map(s=>s.trim()).filter(Boolean).length; }
+
+      function limitWarn(label,val,max){
+        if(!val) return null;
+        if(val.length>max) return `⚠︎ ${label}: ${val.length}/${max} — server will trim to ${max}`;
+        return null;
+      }
+      function buildConfirm(){
+        document.getElementById('c_business').textContent = txt('BusinessName') || '—';
+        document.getElementById('c_city').textContent = txt('City') || '—';
+        document.getElementById('c_country').textContent = txt('Country') || '—';
+        document.getElementById('c_address').textContent = txt('Address') || '—';
+        document.getElementById('c_category').textContent = sel('Category') || '—';
+        document.getElementById('c_accepted').textContent = txt('Accepted') || '—';
+        document.getElementById('c_about').textContent = txt('About') || '—';
+        document.getElementById('c_paynote').textContent = txt('PaymentNote') || '—';
+        document.getElementById('c_amen').textContent = txt('amenities_notes') || '—';
+        document.getElementById('c_imgs').textContent = String(countImgs());
+        document.getElementById('c_evcnt').textContent = String(countEvidence(txt('Evidence')));
+
+        const missing = [];
+        ['SubmitterName','SubmitterEmail','BusinessName','City','Country','Address','Accepted','Category','Evidence'].forEach(n=>{
+          if(n==='Evidence'){ if(countEvidence(txt('Evidence'))<2) missing.push('Evidence (>=2)'); }
+          else if(!txt(n) && !sel(n)) missing.push(n);
+        });
+
+        const warns = [];
+        const w1 = limitWarn('About', txt('About'), 300);
+        const w2 = limitWarn('Payment note', txt('PaymentNote'), 150);
+        const w3 = limitWarn('Amenities notes', txt('amenities_notes'), 150);
+        if(w1) warns.push(w1); if(w2) warns.push(w2); if(w3) warns.push(w3);
+        if(missing.length) warns.push('Missing / invalid: ' + missing.join(', '));
+
+        if(warns.length){ warnBox.style.display='block'; warnBox.innerHTML = warns.map(s=>`<div>${s}</div>`).join(''); }
+        else { warnBox.style.display='none'; warnBox.innerHTML=''; }
+      }
+
+      // ---- Progress overlay
+      const ov = document.createElement('div');
+      ov.id = 'cpmProgress';
+      ov.className = 'cpm-progress';
+      ov.innerHTML = '<div class="box"><h3>Submitting…</h3><div class="cpm-bar"><span id="cpmBar"></span></div><div id="cpmMsg" class="cpm-msg">Uploading files and creating a review PR…</div></div>';
+      document.body.appendChild(ov);
+      const bar = ()=>document.getElementById('cpmBar');
+      let timer=null;
+      function showProgress(msg){
+        document.getElementById('cpmMsg').textContent = msg || 'Submitting…';
+        ov.style.display='grid';
+        let p=8; bar().style.width='8%';
+        timer = setInterval(()=>{ p=Math.min(p+(p<70?Math.random()*10+5:Math.random()*5+1),94); bar().style.width=p+'%'; }, 600);
+        document.body.style.overflow='hidden';
+      }
+      function hideProgress(){
+        if(timer) clearInterval(timer);
+        ov.style.display='none';
+        document.body.style.overflow='';
+      }
+      function lockButtons(lock){
+        btnSubmit.disabled = lock;
+        btnReview.disabled = lock;
+      }
+
+      btnReview?.addEventListener('click', ()=>{ buildConfirm(); modal.style.display='grid'; document.body.style.overflow='hidden'; });
+      btnBack?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; });
+      btnSubmit?.addEventListener('click', ()=>{
+        modal.style.display='none';
+        showProgress('Uploading files and creating a review PR…');
+        lockButtons(true);
+        document.getElementById('form-community').submit();
+      });
+      document.getElementById('form-community').addEventListener('submit', ()=>{
+        showProgress('Uploading files and creating a review PR…');
+        lockButtons(true);
+      });
+
+    } catch (e) {
+      console.error('community form init error', e);
     }
   });
 })();

@@ -12,6 +12,14 @@
     .confirm-card h2{margin:0 0 12px}
     .confirm-card .grid{display:grid;grid-template-columns:180px 1fr;gap:8px 12px;margin:12px 0}
     .confirm-card .warnings{background:#fff7ed;border:1px solid #fdba74;color:#7c2d12;padding:10px;border-radius:8px;margin-bottom:10px}
+
+    /* submitting overlay */
+    .cpm-progress{position:fixed;inset:0;display:none;place-items:center;background:rgba(15,23,42,.55);z-index:10000}
+    .cpm-progress .box{width:min(560px,92%);background:#fff;border-radius:14px;padding:18px 20px;box-shadow:0 10px 30px rgba(0,0,0,.25);font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto}
+    .cpm-progress h3{margin:0 0 8px;font-size:16px}
+    .cpm-bar{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+    .cpm-bar>span{display:block;height:100%;width:0%;background:#3b82f6;border-radius:999px;transition:width .4s ease}
+    .cpm-msg{margin:10px 0 0;color:#475569;font-size:13px}
   </style>
 </head>
 <body>
@@ -238,13 +246,13 @@
   </div>
 </div>
 
+<!-- Dropzone mini -->
 <script>
   (function(){
     const cat=document.getElementById('cat'), other=document.getElementById('catO');
     function t(){ const on=cat.value==='Other'; other.disabled=!on; if(!on) other.value=''; }
     cat?.addEventListener('change',t); t();
   })();
-
   function initDrop(el){
     const max=parseInt(el.dataset.max||'8',10);
     const input=document.getElementById(el.dataset.input);
@@ -286,7 +294,7 @@
 
     try {
       const res = await fetch('/data/meta/countries.json', { cache: 'no-store' });
-      const list = await res.json(); // [{code:'JP', name:'Japan'}, ...]
+      const list = await res.json();
       sel.innerHTML = '<option value="">— Select —</option>';
       for (const {code, name} of list) {
         const opt = document.createElement('option');
@@ -300,7 +308,6 @@
         if (hidden) hidden.value = code;
       });
 
-      // restore prefilled value if any
       const preset = sel.getAttribute('data-preset') || sel.value;
       if (preset) {
         const lower = preset.toLowerCase();
@@ -326,7 +333,7 @@
 })();
 </script>
 
-<!-- Prefill + counters + confirm -->
+<!-- Prefill + counters + confirm + progress -->
 <script>
 (function(){
   function onReady(fn){ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',fn); else fn(); }
@@ -353,7 +360,6 @@
         }
         return false;
       }
-
       setField(['BusinessName','business_name','Business','PlaceName','place_name','name','business','bn'], placeName);
 
       if(placeId){
@@ -422,9 +428,47 @@
         else { warnBox.style.display='none'; warnBox.innerHTML=''; }
       }
 
+      // ---- Progress overlay
+      const ov = document.createElement('div');
+      ov.id = 'cpmProgress';
+      ov.className = 'cpm-progress';
+      ov.innerHTML = '<div class="box"><h3>Submitting…</h3><div class="cpm-bar"><span id="cpmBar"></span></div><div id="cpmMsg" class="cpm-msg">Uploading files and creating a review PR…</div></div>';
+      document.body.appendChild(ov);
+      const bar = ()=>document.getElementById('cpmBar');
+      let timer=null;
+      function showProgress(msg){
+        document.getElementById('cpmMsg').textContent = msg || 'Submitting…';
+        ov.style.display='grid';
+        let p=8; bar().style.width='8%';
+        timer = setInterval(()=>{ p=Math.min(p+(p<70?Math.random()*10+5:Math.random()*5+1),94); bar().style.width=p+'%'; }, 600);
+        document.body.style.overflow='hidden';
+      }
+      function hideProgress(){
+        if(timer) clearInterval(timer);
+        ov.style.display='none';
+        document.body.style.overflow='';
+      }
+
+      function lockButtons(lock){
+        btnSubmit.disabled = lock;
+        btnReview.disabled = lock;
+      }
+
       btnReview?.addEventListener('click', ()=>{ buildConfirm(); modal.style.display='grid'; document.body.style.overflow='hidden'; });
       btnBack?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; });
-      btnSubmit?.addEventListener('click', ()=>{ modal.style.display='none'; document.body.style.overflow=''; form.submit(); });
+
+      btnSubmit?.addEventListener('click', ()=>{
+        modal.style.display='none';
+        showProgress('Uploading files and creating a review PR…');
+        lockButtons(true);
+        form.submit(); // 通常POST。サーバで受理後に /forms/submitted.html へ 302
+      });
+
+      // 通常の直接 submit（確認を飛ばして送った場合）でも必ず表示
+      form.addEventListener('submit', ()=>{
+        showProgress('Uploading files and creating a review PR…');
+        lockButtons(true);
+      });
 
       if(SHOW_PREFILL_INFO && (placeId || placeName)){
         const info = document.createElement('div');
@@ -434,7 +478,7 @@
         container.insertBefore(info, container.firstChild);
       }
     } catch (e) {
-      console.error('owner form prefill error', e);
+      console.error('owner form init error', e);
     }
   });
 })();
