@@ -2491,5 +2491,26 @@
     "accepted": [
       "BTC"
     ]
+  },
+  {
+    "id": "cpm:jp/tokyo/tokyo-test-cafe-1",
+    "name": "Tokyo Test Café",
+    "country": "JP",
+    "city": "Tokyo",
+    "address": "Tokyo, Japan",
+    "lat": 35.6895,
+    "lng": 139.6917,
+    "approximate": true,
+    "category": "cafe",
+    "accepted": [
+      "BTC"
+    ],
+    "images": [
+      "/images/places/tokyo-test-cafe-1/gallery-1.png"
+    ],
+    "verification": {
+      "status": "owner",
+      "source": "owner-20251030-6182"
+    }
   }
 ]
