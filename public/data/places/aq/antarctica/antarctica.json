@@ -1,81 +1,523 @@
-{
-  "places": [
-    {
-      "id": "aq-demo-dir-001",
-      "name": "Demo Station (Directory)",
-      "country": "AQ",
-      "city": "Antarctica",
-      "category": "Cafe",
-      "lat": -75.2509,
-      "lng": 0.0714,
-      "address": "Somewhere in Antarctica",
-      "verification": { "status": "directory" },
-      "payment": {
-        "accepts": [
-          { "asset": "BTC", "chain": "bitcoin",   "method": "onchain"   },
-          { "asset": "BTC", "chain": "lightning", "method": "lightning" }
-        ]
+[
+  {
+    "id": "antarctica-owner-1",
+    "name": "Antarctica Owner Café",
+    "category": "cafe",
+    "city": "McMurdo Station",
+    "country": "AQ",
+    "address": "McMurdo Station Area, Ross Island, Antarctica",
+    "lat": -77.8419,
+    "lng": 166.6863,
+    "category_source": "moderator",
+    "category_confidence": 0.98,
+    "website": "https://example.com/antarctica-owner-cafe",
+    "phone": "+00 0000 000000",
+    "hours": "Mo-Su 07:00-20:00",
+    "contacts": {
+      "email": "owner@antarctica.example"
+    },
+    "socials": [
+      {
+        "platform": "x",
+        "url": "https://x.com/antarctica_owner",
+        "handle": "@antarctica_owner"
       },
-      "last_verified": "2025-09-01"
-    },
-    {
-      "id": "aq-demo-unv-001",
-      "name": "Demo Outpost (Unverified)",
-      "country": "AQ",
-      "city": "Antarctica",
-      "category": "Store",
-      "lat": -78.0000,
-      "lng": 12.3456,
-      "address": "Near the ice",
-      "verification": { "status": "unverified" },
-      "payment": {
-        "accepts": [
-          { "asset": "ETH", "chain": "evm-mainnet", "method": "onchain" }
-        ]
+      {
+        "platform": "instagram",
+        "url": "https://instagram.com/antarctica.owner",
+        "handle": "@antarctica.owner"
+      },
+      {
+        "platform": "facebook",
+        "url": "https://facebook.com/antarctica.owner",
+        "handle": "antarctica.owner"
       }
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "lightning",
+          "method": "lightning",
+          "processor": "btcpay",
+          "address": null,
+          "notes": "Primary: Lightning invoices for small purchases (owner-provided POS).",
+          "evidence": [
+            "https://example.com/antarctica-owner-cafe/payments"
+          ],
+          "last_verified": "2025-10-27",
+          "last_checked": "2025-11-02"
+        },
+        {
+          "asset": "BTC",
+          "chain": "bitcoin",
+          "method": "onchain",
+          "processor": "self-hosted",
+          "address": null,
+          "notes": "Fallback on-chain address displayed at checkout for large orders.",
+          "evidence": [
+            "https://example.com/receipt-onchain.png"
+          ],
+          "last_verified": "2025-10-27",
+          "last_checked": "2025-11-02"
+        },
+        {
+          "asset": "ETH",
+          "chain": "evm-mainnet",
+          "method": "onchain",
+          "processor": "coinbase-commerce",
+          "address": null,
+          "notes": "Optional: ETH via hosted checkout.",
+          "evidence": [
+            "https://example.com/eth-checkout"
+          ],
+          "last_verified": "2025-10-27",
+          "last_checked": "2025-11-02"
+        },
+        {
+          "asset": "USDT",
+          "chain": "polygon",
+          "method": "onchain",
+          "processor": "nowpayments",
+          "address": null,
+          "notes": "USDT (Polygon) supported via payment provider.",
+          "evidence": [
+            "https://example.com/usdt-polygon"
+          ],
+          "last_verified": "2025-10-27",
+          "last_checked": "2025-11-02"
+        }
+      ],
+      "preferred": [
+        "BTC:lightning",
+        "BTC:bitcoin"
+      ],
+      "processor": "btcpay",
+      "notes": "Owner-verified multi-route payment setup; Lightning recommended for speed."
     },
-	{
-	  "id": "aq-demo-owner-001",
-	  "name": "Polar Base (Owner)",
-	  "country": "AQ",
-	  "city": "Antarctica",
-	  "category": "Cafe",
-	  "lat": -75.30,
-	  "lng": 0.12,
-	  "address": "Ice Ridge 1",
-	  "verification": { "status": "owner" },
-	  "profile": {
-	    "summary": "Owner-submitted example. This summary is intentionally long to verify the owner limit (600 chars max). Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed non risus. Suspendisse lectus tortor, dignissim sit amet, adipiscing nec, ultricies sed, dolor. Pellentesque fermentum dolor. Aliquam quam lectus, facilisis auctor, ultrices ut, elementum vulputate, nunc."
-	  },
-	  "payment": {
-	    "accepts": [
-	      { "asset": "BTC", "chain": "bitcoin",   "method": "onchain"   },
-	      { "asset": "BTC", "chain": "lightning", "method": "lightning" }
-	    ]
-	  },
-	  "last_verified": "2025-09-01"
-	},
-
-	{
-	  "id": "aq-demo-community-001",
-	  "name": "Field Camp (Community)",
-	  "country": "AQ",
-	  "city": "Antarctica",
-	  "category": "Store",
-	  "lat": -75.36,
-	  "lng": 0.18,
-	  "address": "Snow Field A",
-	  "verification": { "status": "community" },
-	  "profile": {
-	    "summary": "Community-submitted example. This summary helps verify the community limit (300 chars max). Shorter text should render without truncation when under the threshold."
-	  },
-	  "payment": {
-	    "accepts": [
-	      { "asset": "ETH",  "chain": "evm-mainnet", "method": "onchain" }
-	    ]
-	  }
-	}
-
-
-  ]
-}
+    "payment_pages": [
+      "https://payments.example/antarctica-owner-cafe",
+      "https://coinbase.example/checkout/owner-demo"
+    ],
+    "pending_assets": [],
+    "verification": {
+      "status": "owner",
+      "last_checked": "2025-11-02T08:00:00Z",
+      "last_verified": "2025-11-02T08:00:00Z",
+      "submitted": {
+        "by": "github:demo-owner",
+        "role": "owner",
+        "at": "2025-10-27T12:00:00Z"
+      },
+      "review": {
+        "status": "approved",
+        "by": "github:moderator-1",
+        "at": "2025-11-02T08:00:00Z",
+        "notes": "Demo owner-verified record."
+      },
+      "sources": [
+        {
+          "type": "official_site",
+          "name": "Payments page (owner)",
+          "url": "https://example.com/antarctica-owner-cafe/payments",
+          "snippet": "We accept Bitcoin (Lightning), Ethereum and USDT (Polygon).",
+          "when": "2025-10-27T10:00:00Z"
+        },
+        {
+          "type": "receipt",
+          "name": "POS receipt (photo)",
+          "url": "https://example.com/receipt.png",
+          "snippet": "Receipt shows BTC (Lightning).",
+          "when": "2025-10-27T10:05:00Z"
+        }
+      ]
+    },
+    "profile": {
+      "summary": "OWNER (Gold) — This is a canonical owner-verified record used to demonstrate the full, expected data shape for an Owner-tier listing. The owner provided official evidence (payments page and POS receipts). The record includes full contact info, working website, hours, socials, and an explicit, multi-route payments configuration (Lightning primary, on-chain fallback). For real deployments Owner records should be used to override conflicting community/directory entries.",
+      "badges": [
+        "owner-verified",
+        "heated-seating",
+        "wi-fi"
+      ],
+      "gallery": [
+        {
+          "url": "/images/places/antarctica-owner-1/owner01.png",
+          "credit": "owner",
+          "caption": "Exterior (day)"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner04.png",
+          "credit": "owner",
+          "caption": "Exterior (night)"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner05.png",
+          "credit": "owner",
+          "caption": "Interior overview"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner06.png",
+          "credit": "owner",
+          "caption": "Counter with BTC sticker"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner07.png",
+          "credit": "owner",
+          "caption": "POS showing BTC"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner08.png",
+          "credit": "owner",
+          "caption": "Menu details"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner09.png",
+          "credit": "owner",
+          "caption": "Seating area"
+        },
+        {
+          "url": "/images/places/antarctica-owner-1/owner10.png",
+          "credit": "owner",
+          "caption": "Signboard close-up"
+        }
+      ]
+    },
+    "media": {
+      "images": [
+        "/images/places/antarctica-owner-1/owner01.png",
+        "/images/places/antarctica-owner-1/owner04.png",
+        "/images/places/antarctica-owner-1/owner05.png",
+        "/images/places/antarctica-owner-1/owner06.png",
+        "/images/places/antarctica-owner-1/owner07.png",
+        "/images/places/antarctica-owner-1/owner08.png",
+        "/images/places/antarctica-owner-1/owner09.png",
+        "/images/places/antarctica-owner-1/owner10.png"
+      ]
+    },
+    "amenities": {
+      "notes": "Owner demo: heated seating, stable Wi-Fi, wheelchair-friendly access, smoke-free interior; takeaway available.",
+      "wifi": "yes",
+      "wifi_fee": "free",
+      "wheelchair": "yes",
+      "smoking": "no",
+      "delivery": false,
+      "takeaway": true
+    },
+    "external_ids": {
+      "osm": null,
+      "custom_demo": "antarctica-owner-1"
+    },
+    "status_override": null,
+    "notes_mod": null,
+    "location": {
+      "source": "owner-submission",
+      "confidence": "high"
+    },
+    "history": [
+      {
+        "at": "2025-11-02T08:00:00Z",
+        "by": "github:moderator-1",
+        "type": "created",
+        "notes": "Demo owner record added."
+      }
+    ]
+  },
+  {
+    "id": "antarctica-community-1",
+    "name": "Antarctica Community Café",
+    "category": "cafe",
+    "city": "McMurdo Station",
+    "country": "AQ",
+    "address": "McMurdo Station Area, Ross Island, Antarctica",
+    "lat": -77.8424,
+    "lng": 166.6869,
+    "category_source": "submitter",
+    "category_confidence": 0.80,
+    "website": "https://example.com/antarctica-community-cafe",
+    "phone": "+00 0000 123456",
+    "hours": "Mo-Su 08:00-18:00",
+    "contacts": {
+      "email": "community@antarctica.example"
+    },
+    "socials": [
+      {
+        "platform": "x",
+        "url": "https://x.com/antarctica_comm",
+        "handle": "@antarctica_comm"
+      }
+    ],
+    "payment": {
+      "accepts": [
+        {
+          "asset": "BTC",
+          "chain": "lightning",
+          "method": "lightning",
+          "processor": "other",
+          "address": null,
+          "notes": "Multiple visitor reports indicate Lightning invoices are used for small purchases.",
+          "evidence": [
+            "https://example.com/community-report-a",
+            "https://example.com/photo-sticker"
+          ],
+          "last_verified": "2025-10-26",
+          "last_checked": "2025-11-02"
+        },
+        {
+          "asset": "ETH",
+          "chain": "evm-mainnet",
+          "method": "onchain",
+          "processor": "other",
+          "address": null,
+          "notes": "Reported on social platform by multiple users.",
+          "evidence": [
+            "https://x.com/post/123"
+          ],
+          "last_verified": "2025-10-26",
+          "last_checked": "2025-11-02"
+        }
+      ],
+      "preferred": [
+        "BTC:lightning"
+      ],
+      "processor": "other",
+      "notes": "Community-sourced claims; awaiting owner confirmation for canonicalization."
+    },
+    "payment_pages": [
+      "https://payments.example/antarctica-community-cafe"
+    ],
+    "pending_assets": [
+      {
+        "asset_raw": "USDT",
+        "chain_raw": "polygon",
+        "notes": "Field note suggests USDT (Polygon) acceptance; unconfirmed.",
+        "sources": [
+          "https://example.com/community-report-b"
+        ],
+        "submitted_by": "github:user-a",
+        "submitted_at": "2025-10-27T09:00:00Z"
+      }
+    ],
+    "verification": {
+      "status": "community",
+      "last_checked": "2025-11-02T08:00:00Z",
+      "last_verified": "2025-10-26T14:00:00Z",
+      "submitted": {
+        "by": "github:user-a,github:user-b",
+        "role": "non_owner",
+        "at": "2025-10-27T09:00:00Z"
+      },
+      "review": {
+        "status": "pending",
+        "by": "github:moderator-queue",
+        "at": "2025-11-02T08:00:00Z",
+        "notes": "Awaiting owner contact."
+      },
+      "sources": [
+        {
+          "type": "text",
+          "name": "Field report A",
+          "rule": "Time/place match",
+          "url": "https://example.com/report-a",
+          "snippet": "Paid coffee with BTC (Lightning).",
+          "when": "2025-10-26T13:00:00Z"
+        },
+        {
+          "type": "screenshot",
+          "name": "Sticker photo",
+          "rule": "Photo shows BTC sticker at counter",
+          "url": "https://example.com/photo-sticker",
+          "snippet": "BTC accepted sign at counter.",
+          "when": "2025-10-26T13:05:00Z"
+        }
+      ]
+    },
+    "profile": {
+      "summary": "COMMUNITY (Silver) — Independent visitor reports and photographs indicate crypto acceptance but owner confirmation is not yet present. Community records demonstrate how crowdsourced evidence appears in the UI: summary, multiple media items (max 4), and a 'community' badge. Community items are important to surface likely-but-unconfirmed acceptance but are treated as lower trust than Owner.",
+      "badges": [
+        "community-sourced"
+      ],
+      "gallery": [
+        {
+          "url": "/images/places/antarctica-community-1/community01.png",
+          "credit": "community",
+          "caption": "Exterior (diagonal)"
+        },
+        {
+          "url": "/images/places/antarctica-community-1/community02.png",
+          "credit": "community",
+          "caption": "View from road"
+        },
+        {
+          "url": "/images/places/antarctica-community-1/community03.png",
+          "credit": "community",
+          "caption": "Payment notice"
+        },
+        {
+          "url": "/images/places/antarctica-community-1/community04.png",
+          "credit": "community",
+          "caption": "Counter flow"
+        }
+      ]
+    },
+    "media": {
+      "images": [
+        "/images/places/antarctica-community-1/community01.png",
+        "/images/places/antarctica-community-1/community02.png",
+        "/images/places/antarctica-community-1/community03.png",
+        "/images/places/antarctica-community-1/community04.png"
+      ]
+    },
+    "amenities": {
+      "notes": "Community demo: stable Wi-Fi reported, smoke-free interior; wheelchair access uncertain; takeaway likely available.",
+      "wifi": "yes",
+      "wifi_fee": "free",
+      "wheelchair": "limited",
+      "smoking": "no",
+      "delivery": false,
+      "takeaway": true
+    },
+    "external_ids": {
+      "custom_demo": "antarctica-community-1"
+    },
+    "status_override": null,
+    "notes_mod": null,
+    "location": {
+      "source": "community-submission",
+      "confidence": "medium"
+    },
+    "history": [
+      {
+        "at": "2025-11-02T08:00:00Z",
+        "by": "github:moderator-queue",
+        "type": "created",
+        "notes": "Demo community record added."
+      }
+    ]
+  },
+  {
+    "id": "antarctica-directory-1",
+    "name": "Antarctica Directory Café",
+    "category": "cafe",
+    "city": "McMurdo Station",
+    "country": "AQ",
+    "address": "McMurdo Station Area, Ross Island, Antarctica",
+    "lat": -77.8429,
+    "lng": 166.6875,
+    "category_source": "directory",
+    "category_confidence": 0.6,
+    "website": null,
+    "payment": {
+      "accepts": [],
+      "preferred": [],
+      "notes": "Imported from an external directory; no owner/community evidence available in the directory entry."
+    },
+    "verification": {
+      "status": "directory",
+      "last_checked": "2025-11-02T08:00:00Z",
+      "submitted": {
+        "by": "import:external-directory",
+        "role": "system",
+        "at": "2025-10-15T00:00:00Z"
+      },
+      "review": {
+        "status": "info-only",
+        "by": null,
+        "at": null,
+        "notes": "Directory import — no local verification."
+      },
+      "sources": [
+        {
+          "type": "provider_directory",
+          "name": "Demo Directory",
+          "url": "https://directory.example/antarctica",
+          "snippet": "Directory listing: Antarctica Directory Café",
+          "when": "2025-10-15T00:00:00Z"
+        }
+      ]
+    },
+    "profile": {
+      "summary": "DIRECTORY (Blue) — Minimal listing imported from external sources. Directory entries are surfaced with a short excerpt and a 'directory' badge. They do not display media or extended descriptions in the primary MapDetail UI for demo clarity; they can be used to seed discovery but require follow-up verification to show full Owner/Community fields.",
+      "badges": [
+        "directory-sourced"
+      ]
+    },
+    "media": {
+      "images": []
+    },
+    "external_ids": {
+      "directory_id": "dir-antarctica-1"
+    },
+    "status_override": null,
+    "notes_mod": null,
+    "location": {
+      "source": "directory-import",
+      "confidence": "low"
+    },
+    "history": [
+      {
+        "at": "2025-10-15T00:00:00Z",
+        "by": "system:importer",
+        "type": "import",
+        "notes": "Imported from demo directory."
+      }
+    ]
+  },
+  {
+    "id": "antarctica-unverified-1",
+    "name": "Antarctica Unverified Café",
+    "category": "cafe",
+    "city": "McMurdo Station",
+    "country": "AQ",
+    "address": "McMurdo Station Area, Ross Island, Antarctica",
+    "lat": -77.8434,
+    "lng": 166.6880,
+    "category_source": "submitter",
+    "category_confidence": 0.3,
+    "website": null,
+    "payment": {
+      "accepts": [],
+      "preferred": [],
+      "notes": "No evidence provided."
+    },
+    "verification": {
+      "status": "unverified",
+      "last_checked": "2025-11-02T08:00:00Z",
+      "submitted": {
+        "by": "github:anonymous",
+        "role": "unknown",
+        "at": "2025-10-28T00:00:00Z"
+      },
+      "review": {
+        "status": "pending",
+        "by": null,
+        "at": null,
+        "notes": "No evidence supplied."
+      },
+      "sources": []
+    },
+    "profile": {
+      "summary": "UNVERIFIED (Warning) — Minimal entry with no corroborating evidence. Displayed as a low-trust pin; profile/imagery are intentionally not shown in the primary MapDetail UI to avoid misleading users.",
+      "badges": [
+        "unverified"
+      ]
+    },
+    "media": {
+      "images": []
+    },
+    "external_ids": {},
+    "status_override": null,
+    "notes_mod": null,
+    "location": {
+      "source": "submitter",
+      "confidence": "low"
+    },
+    "history": [
+      {
+        "at": "2025-10-28T00:00:00Z",
+        "by": "github:anonymous",
+        "type": "submitted",
+        "notes": "Minimal unverified submission."
+      }
+    ]
+  }
+]
