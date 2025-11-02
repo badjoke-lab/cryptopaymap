@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { VerificationBadge } from "./VerificationBadge";
 
 /* ===== Types ===== */
@@ -40,7 +40,14 @@ export type Place = {
   images?: string[];
 
   payment?: {
-    accepts?: Array<{ asset?: string; chain?: string; method?: string }>;
+    accepts?: Array<{
+      asset?: string;
+      chain?: string;
+      method?: string;
+      processor?: string;
+      notes?: string;
+      evidence?: string[] | null; // admin時のみ raw 確認に使用
+    }>;
     notes?: string;
   };
   payment_pages?: string[];
@@ -155,7 +162,7 @@ function buildAcceptedLines(place: any): string[] {
 const COUNTRY_EN: Record<string, string> = {
   JP: "Japan", US: "United States", GB: "United Kingdom", FR: "France", DE: "Germany",
   IT: "Italy", ES: "Spain", KR: "South Korea", CN: "China", TW: "Taiwan",
-  SG: "Singapore", AU: "Australia", CA: "Canada", BR: "Brazil",
+  SG: "Singapore", AU: "Australia", CA: "Canada", BR: "Brazil", AQ: "Antarctica",
 };
 const countryNameFrom = (codeOrName?: string) => {
   if (!codeOrName) return "";
@@ -165,6 +172,21 @@ const countryNameFrom = (codeOrName?: string) => {
 
 /* ===== Component ===== */
 export default function MapDetail({ place, onClose }: { place: Place; onClose?: () => void }) {
+  /* --- Admin(開発)モード検出（UIに露出しない） --- */
+  const [admin, setAdmin] = useState(false);
+  useEffect(() => {
+    try {
+      const q = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
+      const qFlag = q?.get("admin");
+      const lsFlag = typeof window !== "undefined" ? window.localStorage.getItem("cpAdmin") : null;
+      const active = qFlag === "1" || lsFlag === "1";
+      setAdmin(active);
+      // クエリで明示された場合のみ保存/解除（UIでは案内しない）
+      if (qFlag === "1") window.localStorage.setItem("cpAdmin", "1");
+      if (qFlag === "0") window.localStorage.removeItem("cpAdmin");
+    } catch {}
+  }, []);
+
   const website = typeof place.website === "string" && place.website.trim() ? place.website.trim() : undefined;
   const phone = typeof place.phone === "string" && place.phone.trim() ? place.phone.trim() : undefined;
 
@@ -275,6 +297,11 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
                 {verification?.last_verified
                   ? `Last verified: ${verification.last_verified}`
                   : `Last checked: ${verification.last_checked}`}
+              </span>
+            )}
+            {admin && (
+              <span className="ml-2 inline-flex items-center rounded bg-black/80 px-2 py-0.5 text-[10px] font-semibold text-white">
+                ADMIN
               </span>
             )}
           </div>
@@ -407,6 +434,16 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
                 <span className="font-medium">Note:</span> {paymentNote}
               </p>
             )}
+
+            {/* Admin only: raw payment.accepts */}
+            {admin && Array.isArray(place?.payment?.accepts) && place.payment!.accepts!.length > 0 && (
+              <div className="mt-3 rounded bg-neutral-50 p-2 text-xs text-neutral-700 ring-1 ring-neutral-200">
+                <div className="font-semibold mb-1">[ADMIN] Raw payment.accepts</div>
+                <pre className="overflow-x-auto whitespace-pre-wrap">
+                  {JSON.stringify(place.payment!.accepts, null, 2)}
+                </pre>
+              </div>
+            )}
           </section>
         )}
 
@@ -459,12 +496,8 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           <section>
             <h3 className="text-sm font-semibold text-neutral-700 mb-1">Amenities</h3>
 
-            {/* Notes（150 文字で保存されている想定／そのまま表示） */}
-            {amenNotes && (
-              <p className="text-sm mb-1">{amenNotes}</p>
-            )}
+            {amenNotes && <p className="text-sm mb-1">{amenNotes}</p>}
 
-            {/* 既存の個別項目（互換表示。削除しない） */}
             <ul className="ml-6 list-disc space-y-1 text-sm">
               {place.cuisine && <li><span className="font-medium">Cuisine:</span> {place.cuisine}</li>}
               {place.wifi && <li><span className="font-medium">Wi-Fi:</span> {place.wifi}{place.wifi_fee ? ` (fee: ${place.wifi_fee})` : ""}</li>}
@@ -507,10 +540,10 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           );
         })()}
 
-        {/* Evidence */}
-        {Array.isArray(verification?.sources) && verification.sources.length > 0 && (
+        {/* Evidence（通常は非表示 / admin のみ表示） */}
+        {admin && Array.isArray(verification?.sources) && verification.sources.length > 0 && (
           <section>
-            <h3 className="text-sm font-semibold text-neutral-700 mb-1">Evidence</h3>
+            <h3 className="text-sm font-semibold text-neutral-700 mb-1">[ADMIN] Evidence</h3>
             <ul className="mt-1 ml-6 list-disc space-y-1">
               {verification.sources.map((s, i) =>
                 s?.url ? (
@@ -526,11 +559,13 @@ export default function MapDetail({ place, onClose }: { place: Place; onClose?: 
           </section>
         )}
 
-        {/* Footer CTA */}
+        {/* Footer CTA（一般ユーザー向け。adminの露出UIは置かない） */}
         {place?.id && (
           <section className="pt-2">
-            <a href={`/submit.html?placeId=${encodeURIComponent(String(place.id))}`}
-               className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm border hover:bg-neutral-50">
+            <a
+              href={`/submit.html?placeId=${encodeURIComponent(String(place.id))}`}
+              className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm border hover:bg-neutral-50"
+            >
               Contribute / Report
             </a>
           </section>

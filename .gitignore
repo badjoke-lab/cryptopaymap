@@ -25,3 +25,5 @@ public/_submissions/
 components/0_*.tsx
 **/*.bak.*
 __backup__/
+.vercel
+!public/data/submissions/
