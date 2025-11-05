@@ -13,13 +13,33 @@ import { VerificationBadge } from "./VerificationBadge";
 import { createRoot, type Root } from "react-dom/client";
 
 /* ========================= util ========================= */
-const blueIcon = new L.Icon({
-  iconUrl: "/leaflet/marker-blue.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowUrl: "",
-});
+// Tailwind基準の4色（バッジと一致）
+const PIN_COLORS = {
+  owner: "#F59E0B",      // amber-500
+  community: "#3B82F6",  // blue-500
+  directory: "#14B8A6",  // teal-500
+  unverified: "#9CA3AF", // gray-400
+} as const;
+
+function svgPin(color: string) {
+  // 25x41 に合わせたシンプルなピン（白い中心点つき）
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 41">
+  <path d="M12.5 0C5.6 0 0 5.6 0 12.5 0 22 12.5 41 12.5 41S25 22 25 12.5C25 5.6 19.4 0 12.5 0z" fill="${color}"/>
+  <circle cx="12.5" cy="12.5" r="5.5" fill="#ffffff"/>
+</svg>`;
+}
+
+function makeIcon(hex: string) {
+  const url = "data:image/svg+xml;utf8," + encodeURIComponent(svgPin(hex));
+  return new L.Icon({
+    iconUrl: url,
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowUrl: "",
+  });
+}
 
 type Place = DetailPlace & { coins?: string[] };
 
@@ -111,11 +131,9 @@ export default function MapShell() {
     const saved = window.localStorage.getItem("cpm:filterMode");
     if (saved === "drawer") return true;
     if (saved === "inline") return false;
-    // 保存がない場合のみ、超狭幅で Drawer
     return window.innerWidth < 360;
   });
 
-  // 幅変化を監視し、保存がない場合のみ自動追随
   useEffect(() => {
     if (typeof window === "undefined") return;
     const onResize = () => {
@@ -220,6 +238,16 @@ export default function MapShell() {
     return acc;
   }, [places, coin, category, city, vf]);
 
+  // ステータス別ピン（再利用のためメモ化）
+  const icons = useMemo(() => {
+    return {
+      owner: makeIcon(PIN_COLORS.owner),
+      community: makeIcon(PIN_COLORS.community),
+      directory: makeIcon(PIN_COLORS.directory),
+      unverified: makeIcon(PIN_COLORS.unverified),
+    } as const;
+  }, []);
+
   /* マーカー描画 */
   useEffect(() => {
     const m = mapRef.current; const g = groupRef.current;
@@ -228,7 +256,14 @@ export default function MapShell() {
 
     const b = L.latLngBounds([]);
     filteredSorted.forEach((p) => {
-      const mk = L.marker([p.lat, p.lng], { title: p.name, icon: blueIcon });
+      const status = p?.verification?.status ?? "unverified";
+      const icon =
+        status === "owner" ? icons.owner :
+        status === "community" ? icons.community :
+        status === "directory" ? icons.directory :
+        icons.unverified;
+
+      const mk = L.marker([p.lat, p.lng], { title: p.name, icon });
 
       const thumb = firstThumbUrl(p);
       const { line, moreLine } = popupAccepted(p);
@@ -273,7 +308,7 @@ export default function MapShell() {
       b.extend([p.lat, p.lng]);
     });
     if (filteredSorted.length) m.fitBounds(b.pad(0.2));
-  }, [filteredSorted]);
+  }, [filteredSorted, icons]);
 
   /* Drawer/Inline 手動切替（永続） */
   function setMode(mode: "drawer" | "inline") {
