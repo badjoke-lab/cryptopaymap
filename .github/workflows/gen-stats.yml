@@ -1,0 +1,28 @@
+name: gen-stats
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 0 * * *" # UTC 00:30 = JST 09:30（etl-syncの後ろ）
+
+jobs:
+  stats:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.ETL_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Generate stats JSON from DB
+        run: pnpm -s cpm:stats

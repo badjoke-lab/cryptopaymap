@@ -1,0 +1,32 @@
+name: etl-sync
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 1" # UTC 00:00 毎週月曜（JST 09:00）
+
+jobs:
+  etl:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: ${{ secrets.ETL_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tools
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Apply schema (idempotent)
+        run: psql "${{ env.DATABASE_URL }}" -f db/schema.sql
+
+      - name: Run ETL (JSON -> DB)
+        run: pnpm -s cpm:etl

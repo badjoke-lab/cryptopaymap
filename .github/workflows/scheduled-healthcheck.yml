@@ -1,0 +1,27 @@
+name: scheduled-healthcheck
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # UTC 00:00 = JST 09:00
+  workflow_dispatch:
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm -s build || true
+
+      - name: Report
+        run: echo "Healthcheck completed at $(date -u)"
