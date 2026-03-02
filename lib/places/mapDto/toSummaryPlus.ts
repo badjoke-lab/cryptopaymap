@@ -1,0 +1,109 @@
+import type { Place } from "@/types/places";
+
+import { type DbContact, type PlaceSummaryPlus, type Verification } from "./types";
+
+const VERIFICATION_LEVELS = new Set(["owner", "community", "directory", "unverified", "report", "verified", "pending"]);
+
+export function sanitizeVerification(v: unknown): Verification {
+  if (typeof v !== "string") return "unverified";
+  const x = v.trim().toLowerCase();
+  return VERIFICATION_LEVELS.has(x as Verification) ? (x as Verification) : "unverified";
+}
+
+export const normalizeText = (value: unknown): string | null => {
+  if (typeof value !== "string") return null;
+  const trimmed = value.trim();
+  return trimmed.length ? trimmed : null;
+};
+
+export const truncateAbout = (value: unknown, maxLength = 400): string | null => {
+  const text = normalizeText(value);
+  if (!text) return null;
+  if (text.length <= maxLength) return text;
+  return text.slice(0, maxLength).trimEnd();
+};
+
+export const normalizeAmenities = (raw: unknown): string[] | null => {
+  if (!raw) return null;
+  if (Array.isArray(raw)) {
+    const items = raw.map((item) => normalizeText(item)).filter((item): item is string => Boolean(item));
+    return items.length ? items : null;
+  }
+
+  if (typeof raw === "string") {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        const items = parsed.map((item) => normalizeText(item)).filter((item): item is string => Boolean(item));
+        return items.length ? items : null;
+      }
+    } catch {
+      const parts = raw
+        .split(/\r?\n|,/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+      return parts.length ? parts : null;
+    }
+  }
+
+  return null;
+};
+
+export const buildAddressFull = (place: {
+  address_full?: string | null;
+  address?: string | null;
+  city?: string | null;
+  country?: string | null;
+}): string | null => {
+  const explicit = normalizeText(place.address_full);
+  if (explicit) return explicit;
+
+  const parts = [place.address, place.city, place.country]
+    .map((value) => normalizeText(value))
+    .filter((value): value is string => Boolean(value));
+  return parts.length ? parts.join(", ") : null;
+};
+
+export const pickCoverImage = (place: {
+  coverImage?: string | null;
+  images?: string[] | null;
+  photos?: string[] | null;
+  media?: string[] | null;
+}): string | null => {
+  const candidates = [
+    normalizeText(place.coverImage),
+    normalizeText(place.images?.[0]),
+    normalizeText(place.photos?.[0]),
+    normalizeText(place.media?.[0]),
+  ];
+  return candidates.find((value): value is string => Boolean(value)) ?? null;
+};
+
+export function toSummaryPlus(
+  place: Place,
+  accepted: string[],
+  contact?: DbContact,
+  media?: { coverImage?: string | null },
+): PlaceSummaryPlus {
+  return {
+    id: place.id,
+    name: place.name,
+    lat: Number(place.lat),
+    lng: Number(place.lng),
+    verification: sanitizeVerification(place.verification),
+    category: place.category ?? "unknown",
+    city: place.city ?? "",
+    country: place.country ?? "",
+    accepted,
+    address_full: buildAddressFull(place),
+    about_short: truncateAbout(place.about),
+    paymentNote: normalizeText(place.paymentNote),
+    amenities: normalizeAmenities(place.amenities),
+    phone: normalizeText(contact?.phone ?? place.phone),
+    website: normalizeText(contact?.website ?? place.website ?? place.social_website),
+    twitter: normalizeText(contact?.twitter ?? place.twitter ?? place.social_twitter),
+    instagram: normalizeText(contact?.instagram ?? place.instagram ?? place.social_instagram),
+    facebook: normalizeText(contact?.facebook ?? place.facebook),
+    coverImage: normalizeText(media?.coverImage) ?? pickCoverImage(place),
+  };
+}
