@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent, type RefObject } from "react";
 import { useRouter } from "next/navigation";
 
 import LimitedModeNotice from "@/components/status/LimitedModeNotice";
@@ -83,10 +83,14 @@ const AttachmentList = ({
   files,
   onRemove,
   onReorder,
+  onMoveUp,
+  onMoveDown,
 }: {
   files: StoredFile[];
   onRemove: (index: number) => void;
   onReorder: (from: number, to: number) => void;
+  onMoveUp: (index: number) => void;
+  onMoveDown: (index: number) => void;
 }) => {
   if (!files.length) return null;
   return (
@@ -115,14 +119,39 @@ const AttachmentList = ({
           <div className="aspect-square overflow-hidden rounded bg-gray-100">
             <img src={file.dataUrl} alt={file.name} className="h-full w-full object-cover" />
           </div>
-          <p className="mt-2 truncate text-xs" title={file.name}>{file.name}</p>
-          <button
-            type="button"
-            className="mt-1 text-xs text-red-600 underline"
-            onClick={() => onRemove(index)}
-          >
-            Remove
-          </button>
+          <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
+            <span className="font-semibold" aria-hidden>≡</span>
+            <span>Drag to reorder</span>
+          </div>
+          <p className="mt-1 truncate text-xs" title={file.name}>{file.name}</p>
+          <div className="mt-2 flex items-center gap-2">
+            <button
+              type="button"
+              className="rounded border border-gray-300 px-2 py-1 text-xs disabled:opacity-40"
+              onClick={() => onMoveUp(index)}
+              disabled={index === 0}
+              aria-label={`Move ${file.name} up`}
+            >
+              ↑
+            </button>
+            <button
+              type="button"
+              className="rounded border border-gray-300 px-2 py-1 text-xs disabled:opacity-40"
+              onClick={() => onMoveDown(index)}
+              disabled={index === files.length - 1}
+              aria-label={`Move ${file.name} down`}
+            >
+              ↓
+            </button>
+            <button
+              type="button"
+              className="ml-auto text-xs text-red-600 underline"
+              onClick={() => onRemove(index)}
+              aria-label={`Remove ${file.name}`}
+            >
+              Remove
+            </button>
+          </div>
         </li>
       ))}
     </ul>
@@ -142,6 +171,10 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
   const [meta, setMeta] = useState<FilterMeta | null>(null);
   const [limitedMode, setLimitedMode] = useState(false);
   const [initialized, setInitialized] = useState(false);
+  const [activeDropField, setActiveDropField] = useState<keyof SubmissionDraftFiles | null>(null);
+  const proofInputRef = useRef<HTMLInputElement | null>(null);
+  const galleryInputRef = useRef<HTMLInputElement | null>(null);
+  const evidenceInputRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     const loadMeta = async () => {
@@ -274,6 +307,54 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
       list.splice(to, 0, moved);
       return { ...prev, [field]: list };
     });
+  };
+
+
+  const handleFileMoveUp = (field: keyof SubmissionDraftFiles, index: number) => {
+    if (index <= 0) return;
+    handleFileReorder(field, index, index - 1);
+  };
+
+  const handleFileMoveDown = (field: keyof SubmissionDraftFiles, index: number) => {
+    if (index >= files[field].length - 1) return;
+    handleFileReorder(field, index, index + 1);
+  };
+
+  const inputRefs: Record<keyof SubmissionDraftFiles, RefObject<HTMLInputElement>> = {
+    proof: proofInputRef,
+    gallery: galleryInputRef,
+    evidence: evidenceInputRef,
+  };
+
+  const openFilePicker = (field: keyof SubmissionDraftFiles) => {
+    inputRefs[field].current?.click();
+  };
+
+  const handleDropzoneDragOver = (field: keyof SubmissionDraftFiles, event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (activeDropField !== field) setActiveDropField(field);
+  };
+
+  const handleDropzoneDragEnter = (field: keyof SubmissionDraftFiles, event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setActiveDropField(field);
+  };
+
+  const handleDropzoneDragLeave = (field: keyof SubmissionDraftFiles, event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    const nextTarget = event.relatedTarget as Node | null;
+    if (nextTarget && event.currentTarget.contains(nextTarget)) return;
+    if (activeDropField === field) setActiveDropField(null);
+  };
+
+  const handleDropzoneDrop = (field: keyof SubmissionDraftFiles, event: DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setActiveDropField(null);
+    void handleFileAdd(field, Array.from(event.dataTransfer.files));
   };
 
   const handleSubmit = () => {
@@ -733,15 +814,31 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             <div className="space-y-2">
               {fieldLabel(`Payment screen screenshot (${files.proof.length}/1)`)}
               <div
-                className="rounded border border-dashed border-gray-300 p-3 bg-gray-50"
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  void handleFileAdd("proof", Array.from(event.dataTransfer.files));
-                }}
+                className={`rounded border border-dashed p-3 transition ${
+                  activeDropField === "proof" ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
+                }`}
+                onDragEnter={(event) => handleDropzoneDragEnter("proof", event)}
+                onDragOver={(event) => handleDropzoneDragOver("proof", event)}
+                onDragLeave={(event) => handleDropzoneDragLeave("proof", event)}
+                onDrop={(event) => handleDropzoneDrop("proof", event)}
               >
-                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleFileAdd("proof", e.target.files)} />
-                <p className="text-xs text-gray-500 mt-1">Click or drop a single proof image.</p>
+                <input
+                  ref={proofInputRef}
+                  type="file"
+                  className="hidden"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => handleFileAdd("proof", e.target.files)}
+                />
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 bg-white px-3 py-1 text-sm"
+                  onClick={() => openFilePicker("proof")}
+                >
+                  Choose file
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  {activeDropField === "proof" ? "Drop to add" : "Click or drop a single proof image anywhere in this box."}
+                </p>
               </div>
               {errors.proof && <p className="text-red-600 text-sm">{errors.proof}</p>}
               {errors.paymentRequirement && (
@@ -756,6 +853,8 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                 files={files.proof}
                 onRemove={(index) => handleFileRemove("proof", index)}
                 onReorder={(from, to) => handleFileReorder("proof", from, to)}
+                onMoveUp={(index) => handleFileMoveUp("proof", index)}
+                onMoveDown={(index) => handleFileMoveDown("proof", index)}
               />
             </div>
           )}
@@ -763,20 +862,32 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             <div className="space-y-2">
               {fieldLabel(`Gallery images (${files.gallery.length}/${FILE_LIMITS[kind].gallery})`)}
               <div
-                className="rounded border border-dashed border-gray-300 p-3 bg-gray-50"
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  void handleFileAdd("gallery", Array.from(event.dataTransfer.files));
-                }}
+                className={`rounded border border-dashed p-3 transition ${
+                  activeDropField === "gallery" ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
+                }`}
+                onDragEnter={(event) => handleDropzoneDragEnter("gallery", event)}
+                onDragOver={(event) => handleDropzoneDragOver("gallery", event)}
+                onDragLeave={(event) => handleDropzoneDragLeave("gallery", event)}
+                onDrop={(event) => handleDropzoneDrop("gallery", event)}
               >
                 <input
+                  ref={galleryInputRef}
                   type="file"
+                  className="hidden"
                   multiple
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => handleFileAdd("gallery", e.target.files)}
                 />
-                <p className="text-xs text-gray-500 mt-1">Click or drop multiple gallery images.</p>
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 bg-white px-3 py-1 text-sm"
+                  onClick={() => openFilePicker("gallery")}
+                >
+                  Choose files
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  {activeDropField === "gallery" ? "Drop to add" : "Click or drop multiple gallery images anywhere in this box."}
+                </p>
               </div>
               {errors.gallery && <p className="text-red-600 text-sm">{errors.gallery}</p>}
               {fileMessages.gallery.length ? (
@@ -788,6 +899,8 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                 files={files.gallery}
                 onRemove={(index) => handleFileRemove("gallery", index)}
                 onReorder={(from, to) => handleFileReorder("gallery", from, to)}
+                onMoveUp={(index) => handleFileMoveUp("gallery", index)}
+                onMoveDown={(index) => handleFileMoveDown("gallery", index)}
               />
             </div>
           )}
@@ -795,20 +908,32 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             <div className="space-y-2">
               {fieldLabel(`Evidence images (${files.evidence.length}/${FILE_LIMITS[kind].evidence})`)}
               <div
-                className="rounded border border-dashed border-gray-300 p-3 bg-gray-50"
-                onDragOver={(event) => event.preventDefault()}
-                onDrop={(event) => {
-                  event.preventDefault();
-                  void handleFileAdd("evidence", Array.from(event.dataTransfer.files));
-                }}
+                className={`rounded border border-dashed p-3 transition ${
+                  activeDropField === "evidence" ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
+                }`}
+                onDragEnter={(event) => handleDropzoneDragEnter("evidence", event)}
+                onDragOver={(event) => handleDropzoneDragOver("evidence", event)}
+                onDragLeave={(event) => handleDropzoneDragLeave("evidence", event)}
+                onDrop={(event) => handleDropzoneDrop("evidence", event)}
               >
                 <input
+                  ref={evidenceInputRef}
                   type="file"
+                  className="hidden"
                   multiple
                   accept="image/jpeg,image/png,image/webp"
                   onChange={(e) => handleFileAdd("evidence", e.target.files)}
                 />
-                <p className="text-xs text-gray-500 mt-1">Click or drop multiple evidence images.</p>
+                <button
+                  type="button"
+                  className="rounded border border-gray-300 bg-white px-3 py-1 text-sm"
+                  onClick={() => openFilePicker("evidence")}
+                >
+                  Choose files
+                </button>
+                <p className="text-xs text-gray-500 mt-2">
+                  {activeDropField === "evidence" ? "Drop to add" : "Click or drop multiple evidence images anywhere in this box."}
+                </p>
               </div>
               {errors.evidence && <p className="text-red-600 text-sm">{errors.evidence}</p>}
               {fileMessages.evidence.length ? (
@@ -820,6 +945,8 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                 files={files.evidence}
                 onRemove={(index) => handleFileRemove("evidence", index)}
                 onReorder={(from, to) => handleFileReorder("evidence", from, to)}
+                onMoveUp={(index) => handleFileMoveUp("evidence", index)}
+                onMoveDown={(index) => handleFileMoveDown("evidence", index)}
               />
             </div>
           )}
