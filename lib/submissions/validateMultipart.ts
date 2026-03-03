@@ -17,8 +17,21 @@ type MultipartValidationError = {
   details: Record<string, unknown>;
 };
 
+export type RejectedMediaItem = {
+  field: MediaField;
+  name: string;
+  code: Exclude<MultipartValidationErrorCode, "REQUIRED_FILE_MISSING" | "UNKNOWN_FORM_FIELD">;
+  message: string;
+  details: Record<string, unknown>;
+};
+
 type MultipartValidationResult =
-  | { ok: true; acceptedMediaSummary: Record<string, number> }
+  | {
+      ok: true;
+      acceptedMediaSummary: Record<string, number>;
+      acceptedFilesByField: MultipartFilesByField;
+      rejectedMedia: RejectedMediaItem[];
+    }
   | { ok: false; error: MultipartValidationError };
 
 const ALLOWED_MIME_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
@@ -31,7 +44,7 @@ type FileCountRequirement = {
 
 const KIND_REQUIREMENTS: Record<SubmissionKind, Record<MediaField, FileCountRequirement>> = {
   owner: {
-    proof: { min: 0, max: 4 },
+    proof: { min: 0, max: 1 },
     gallery: { min: 0, max: 8 },
     evidence: { min: 0, max: 0 },
   },
@@ -46,6 +59,8 @@ const KIND_REQUIREMENTS: Record<SubmissionKind, Record<MediaField, FileCountRequ
     evidence: { min: 0, max: 4 },
   },
 };
+
+const PARTIAL_ACCEPT_FIELDS = new Set<MediaField>(["gallery", "evidence"]);
 
 const KIND_ALLOWED_FIELDS: Record<SubmissionKind, MediaField[]> = {
   owner: ["proof", "gallery"],
@@ -64,51 +79,6 @@ const buildAcceptedMediaSummary = (
   }, {});
 };
 
-const validateCounts = (kind: SubmissionKind, filesByField: MultipartFilesByField, payload?: unknown): MultipartValidationError | null => {
-  const requirements = KIND_REQUIREMENTS[kind];
-  const allowedFields = new Set(KIND_ALLOWED_FIELDS[kind]);
-
-  // owner: proof requirement is conditional (URL or dashboard_ss)
-  let effectiveProofMin = requirements.proof.min;
-  if (kind === "owner") {
-    const paymentUrl = typeof (payload as any)?.paymentUrl === "string" ? (payload as any).paymentUrl.trim() : "";
-    const ownerVerification = (payload as any)?.ownerVerification;
-    const needsProof = ownerVerification === "dashboard_ss" || paymentUrl.length === 0;
-    effectiveProofMin = needsProof ? 1 : 0;
-  }
-
-  for (const field of Object.keys(filesByField) as MediaField[]) {
-    const count = filesByField[field].length;
-    const requirement = requirements[field];
-
-    const minRequired = field === "proof" ? effectiveProofMin : requirement.min;
-    if (!allowedFields.has(field) && count > 0) {
-      return {
-        code: "UNKNOWN_FORM_FIELD",
-        message: `Unexpected file field: ${field}`,
-        details: { field, allowedFields: KIND_ALLOWED_FIELDS[kind] },
-      };
-    }
-
-    if (count < minRequired) {
-      return {
-        code: "REQUIRED_FILE_MISSING",
-        message: `${field} requires at least ${minRequired} file(s)`,
-        details: { field, count, min: minRequired },
-      };
-    }
-
-    if (count > requirement.max) {
-      return {
-        code: "TOO_MANY_FILES",
-        message: `${field} exceeds the allowed file count`,
-        details: { field, count, limit: requirement.max },
-      };
-    }
-  }
-
-  return null;
-};
 
 const validateFile = (field: MediaField, file: File): MultipartValidationError | null => {
   if (!ALLOWED_MIME_TYPES.includes(file.type as (typeof ALLOWED_MIME_TYPES)[number])) {
@@ -130,19 +100,17 @@ const validateFile = (field: MediaField, file: File): MultipartValidationError |
   return null;
 };
 
-const validateFiles = (kind: SubmissionKind, filesByField: MultipartFilesByField): MultipartValidationError | null => {
-  const allowedFields = new Set(KIND_ALLOWED_FIELDS[kind]);
-
-  for (const field of Object.keys(filesByField) as MediaField[]) {
-    if (!allowedFields.has(field)) continue;
-    for (const file of filesByField[field]) {
-      const error = validateFile(field, file);
-      if (error) return error;
-    }
-  }
-
-  return null;
-};
+const toRejectedMedia = (
+  field: MediaField,
+  file: File,
+  error: MultipartValidationError,
+): RejectedMediaItem => ({
+  field,
+  name: file.name,
+  code: error.code as RejectedMediaItem["code"],
+  message: error.message,
+  details: error.details,
+});
 
 export const validateMultipartSubmission = (
   kind: SubmissionKind,
@@ -161,19 +129,96 @@ export const validateMultipartSubmission = (
     };
   }
 
-  const countError = validateCounts(kind, filesByField, payload);
-  if (countError) {
-    return { ok: false, error: countError };
+  const requirements = KIND_REQUIREMENTS[kind];
+  const allowedFields = new Set(KIND_ALLOWED_FIELDS[kind]);
+  const acceptedFilesByField: MultipartFilesByField = { proof: [], gallery: [], evidence: [] };
+  const rejectedMedia: RejectedMediaItem[] = [];
+
+  // owner: proof requirement is conditional (URL or dashboard_ss)
+  let effectiveProofMin = requirements.proof.min;
+  if (kind === "owner") {
+    const paymentUrl = typeof (payload as any)?.paymentUrl === "string" ? (payload as any).paymentUrl.trim() : "";
+    const ownerVerification = (payload as any)?.ownerVerification;
+    const needsProof = ownerVerification === "dashboard_ss" || paymentUrl.length === 0;
+    effectiveProofMin = needsProof ? 1 : 0;
   }
 
-  const fileError = validateFiles(kind, filesByField);
-  if (fileError) {
-    return { ok: false, error: fileError };
+  for (const field of Object.keys(filesByField) as MediaField[]) {
+    const incoming = filesByField[field];
+    const requirement = requirements[field];
+
+    if (!allowedFields.has(field) && incoming.length > 0) {
+      return {
+        ok: false,
+        error: {
+          code: "UNKNOWN_FORM_FIELD",
+          message: `Unexpected file field: ${field}`,
+          details: { field, allowedFields: KIND_ALLOWED_FIELDS[kind] },
+        },
+      };
+    }
+
+    const isPartialAccept = PARTIAL_ACCEPT_FIELDS.has(field);
+    if (!isPartialAccept) {
+      if (incoming.length > requirement.max) {
+        return {
+          ok: false,
+          error: {
+            code: "TOO_MANY_FILES",
+            message: `${field} exceeds the allowed file count`,
+            details: { field, count: incoming.length, limit: requirement.max },
+          },
+        };
+      }
+
+      for (const file of incoming) {
+        const fileError = validateFile(field, file);
+        if (fileError) {
+          return { ok: false, error: fileError };
+        }
+      }
+      acceptedFilesByField[field] = incoming;
+      continue;
+    }
+
+    for (const file of incoming) {
+      if (acceptedFilesByField[field].length >= requirement.max) {
+        rejectedMedia.push({
+          field,
+          name: file.name,
+          code: "TOO_MANY_FILES",
+          message: `${field} exceeds the allowed file count`,
+          details: { field, limit: requirement.max },
+        });
+        continue;
+      }
+
+      const fileError = validateFile(field, file);
+      if (fileError) {
+        rejectedMedia.push(toRejectedMedia(field, file, fileError));
+        continue;
+      }
+
+      acceptedFilesByField[field].push(file);
+    }
+  }
+
+  if (acceptedFilesByField.proof.length < effectiveProofMin) {
+    return {
+      ok: false,
+      error: {
+        code: "REQUIRED_FILE_MISSING",
+        message: `proof requires at least ${effectiveProofMin} file(s)`,
+        details: { field: "proof", count: acceptedFilesByField.proof.length, min: effectiveProofMin },
+      },
+    };
   }
 
   return {
     ok: true,
-    acceptedMediaSummary: buildAcceptedMediaSummary(kind, filesByField),
+    acceptedMediaSummary: buildAcceptedMediaSummary(kind, acceptedFilesByField),
+    acceptedFilesByField,
+    rejectedMedia,
   };
 };
 

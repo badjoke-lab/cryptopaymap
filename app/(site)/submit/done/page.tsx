@@ -63,6 +63,18 @@ export default function SubmitDonePage() {
               ))}
             </ul>
             {response.mediaSaved ? <p className="text-sm text-gray-600">Media saved successfully.</p> : null}
+            {response.rejectedMedia?.length ? (
+              <div className="rounded-md border border-yellow-200 bg-yellow-50 p-3 text-sm text-yellow-900">
+                <p className="font-semibold">Some files were skipped</p>
+                <ul className="mt-1 list-disc pl-5 space-y-1">
+                  {response.rejectedMedia.map((item, index) => (
+                    <li key={`${item.field}-${item.name}-${index}`}>
+                      [{item.field}] {item.name}: {item.code}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </div>
