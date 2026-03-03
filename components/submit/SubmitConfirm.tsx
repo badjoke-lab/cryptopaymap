@@ -291,19 +291,29 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
 
         <div className="rounded-lg bg-white p-4 shadow-sm border border-gray-100 space-y-4">
           <h2 className="text-lg font-semibold text-gray-900">Attachments</h2>
-          <ul className="text-sm text-gray-700 space-y-1">
-            {fileCounts.proof.length ? (
-              <li>Proof: {fileCounts.proof.map((file) => file.name).join(", ")}</li>
-            ) : null}
-            {fileCounts.gallery.length ? (
-              <li>Gallery: {fileCounts.gallery.map((file) => file.name).join(", ")}</li>
-            ) : null}
-            {fileCounts.evidence.length ? (
-              <li>Evidence: {fileCounts.evidence.map((file) => file.name).join(", ")}</li>
-            ) : (
-              !fileCounts.proof.length && !fileCounts.gallery.length && <li>No attachments</li>
-            )}
-          </ul>
+          {!fileCounts.proof.length && !fileCounts.gallery.length && !fileCounts.evidence.length ? (
+            <p className="text-sm text-gray-700">No attachments</p>
+          ) : null}
+
+          {(["proof", "gallery", "evidence"] as const).map((field) => {
+            const entries = fileCounts[field];
+            if (!entries.length) return null;
+            return (
+              <div key={field} className="space-y-2">
+                <p className="text-sm font-medium text-gray-800 capitalize">{field} ({entries.length})</p>
+                <ol className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+                  {entries.map((file, index) => (
+                    <li key={`${field}-${file.name}-${index}`} className="rounded border border-gray-200 bg-white p-2">
+                      <div className="aspect-square overflow-hidden rounded bg-gray-100">
+                        <img src={file.dataUrl} alt={file.name} className="h-full w-full object-cover" />
+                      </div>
+                      <p className="mt-2 text-xs text-gray-700">#{index + 1} {file.name}</p>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            );
+          })}
         </div>
 
         <div className="rounded-lg bg-white p-4 shadow-sm border border-gray-100 space-y-4">

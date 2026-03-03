@@ -1,9 +1,18 @@
+export type RejectedMediaItem = {
+  field: string;
+  name: string;
+  code: string;
+  message: string;
+  details?: Record<string, unknown>;
+};
+
 export type SubmitResponse = {
   submissionId: string;
   acceptedMediaSummary?: Record<string, number> | null;
   mediaSaved?: boolean;
   status?: string;
   accepted?: boolean;
+  rejectedMedia?: RejectedMediaItem[];
 };
 
 export type SubmitError = {

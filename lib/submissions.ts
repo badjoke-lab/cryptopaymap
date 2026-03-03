@@ -1009,7 +1009,7 @@ export const handleUnifiedSubmission = async (request: Request) => {
 
     try {
       const record = await persistSubmission(normalized.payload);
-      await processAndStoreSubmissionMedia(record.submissionId, parsedMultipart.value.filesByField);
+      const mediaSaved = await processAndStoreSubmissionMedia(record.submissionId, multipartValidation.acceptedFilesByField);
       console.info(`[submissions] accept ip=${ip} kind=${record.kind}`);
       return new Response(
         JSON.stringify({
@@ -1018,6 +1018,9 @@ export const handleUnifiedSubmission = async (request: Request) => {
           kind: record.kind,
           status: record.status,
           suggestedPlaceId: record.suggestedPlaceId,
+          acceptedMediaSummary: multipartValidation.acceptedMediaSummary,
+          rejectedMedia: multipartValidation.rejectedMedia,
+          mediaSaved,
         }),
         { status: 201, headers: { "Content-Type": "application/json" } },
       );

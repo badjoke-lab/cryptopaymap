@@ -35,7 +35,7 @@ test("parseMultipartSubmission extracts payload and files", async () => {
   }
 });
 
-test("validateMultipartSubmission enforces count limits", () => {
+test("validateMultipartSubmission partially accepts overflow gallery files", () => {
   const files = {
     proof: [],
     evidence: [],
@@ -45,14 +45,15 @@ test("validateMultipartSubmission enforces count limits", () => {
   };
 
   const result = validateMultipartSubmission("community", files, []);
-  assert.equal(result.ok, false);
-  if (!result.ok) {
-    assert.equal(result.error.code, "TOO_MANY_FILES");
-    assert.equal(result.error.details.limit, 4);
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.acceptedFilesByField.gallery.length, 4);
+    assert.equal(result.rejectedMedia.length, 1);
+    assert.equal(result.rejectedMedia[0]?.code, "TOO_MANY_FILES");
   }
 });
 
-test("validateMultipartSubmission rejects invalid media types", () => {
+test("validateMultipartSubmission partially accepts invalid media types", () => {
   const files = {
     proof: [],
     evidence: [],
@@ -60,13 +61,14 @@ test("validateMultipartSubmission rejects invalid media types", () => {
   };
 
   const result = validateMultipartSubmission("community", files, []);
-  assert.equal(result.ok, false);
-  if (!result.ok) {
-    assert.equal(result.error.code, "INVALID_MEDIA_TYPE");
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.acceptedFilesByField.gallery.length, 0);
+    assert.equal(result.rejectedMedia[0]?.code, "INVALID_MEDIA_TYPE");
   }
 });
 
-test("validateMultipartSubmission rejects oversized files", () => {
+test("validateMultipartSubmission partially accepts oversized files", () => {
   const oversized = new Uint8Array(2 * 1024 * 1024 + 1);
   const files = {
     proof: [],
@@ -75,9 +77,29 @@ test("validateMultipartSubmission rejects oversized files", () => {
   };
 
   const result = validateMultipartSubmission("community", files, []);
+  assert.equal(result.ok, true);
+  if (result.ok) {
+    assert.equal(result.acceptedFilesByField.gallery.length, 0);
+    assert.equal(result.rejectedMedia[0]?.code, "FILE_TOO_LARGE");
+  }
+});
+
+
+
+test("validateMultipartSubmission keeps proof strict at one file", () => {
+  const files = {
+    proof: [
+      new File([new Uint8Array([1])], "proof-a.png", { type: "image/png" }),
+      new File([new Uint8Array([2])], "proof-b.png", { type: "image/png" }),
+    ],
+    evidence: [],
+    gallery: [],
+  };
+
+  const result = validateMultipartSubmission("owner", files, [], { paymentUrl: "", ownerVerification: "dashboard_ss" });
   assert.equal(result.ok, false);
   if (!result.ok) {
-    assert.equal(result.error.code, "FILE_TOO_LARGE");
+    assert.equal(result.error.code, "TOO_MANY_FILES");
   }
 });
 

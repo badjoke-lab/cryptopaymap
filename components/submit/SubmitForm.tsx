@@ -79,22 +79,46 @@ type SubmitFormProps = {
   kind: SubmissionKind;
 };
 
-const FileList = ({
+const AttachmentList = ({
   files,
   onRemove,
+  onReorder,
 }: {
   files: StoredFile[];
   onRemove: (index: number) => void;
+  onReorder: (from: number, to: number) => void;
 }) => {
   if (!files.length) return null;
   return (
-    <ul className="space-y-1 text-sm text-gray-700">
+    <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 text-sm text-gray-700">
       {files.map((file, index) => (
-        <li key={`${file.name}-${index}`} className="flex items-center justify-between gap-2">
-          <span className="truncate">{file.name}</span>
+        <li
+          key={`${file.name}-${index}`}
+          className="rounded border border-gray-200 bg-white p-2"
+          draggable
+          onDragStart={(event) => {
+            event.dataTransfer.setData("text/plain", String(index));
+            event.dataTransfer.effectAllowed = "move";
+          }}
+          onDragOver={(event) => {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = "move";
+          }}
+          onDrop={(event) => {
+            event.preventDefault();
+            const from = Number(event.dataTransfer.getData("text/plain"));
+            if (Number.isInteger(from)) {
+              onReorder(from, index);
+            }
+          }}
+        >
+          <div className="aspect-square overflow-hidden rounded bg-gray-100">
+            <img src={file.dataUrl} alt={file.name} className="h-full w-full object-cover" />
+          </div>
+          <p className="mt-2 truncate text-xs" title={file.name}>{file.name}</p>
           <button
             type="button"
-            className="text-xs text-red-600 underline"
+            className="mt-1 text-xs text-red-600 underline"
             onClick={() => onRemove(index)}
           >
             Remove
@@ -110,6 +134,11 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
   const [draft, setDraft] = useState<SubmissionDraft>(() => buildDefaultDraft(kind));
   const [files, setFiles] = useState<SubmissionDraftFiles>(emptyFiles);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [fileMessages, setFileMessages] = useState<Record<keyof SubmissionDraftFiles, string[]>>({
+    gallery: [],
+    proof: [],
+    evidence: [],
+  });
   const [meta, setMeta] = useState<FilterMeta | null>(null);
   const [limitedMode, setLimitedMode] = useState(false);
   const [initialized, setInitialized] = useState(false);
@@ -178,23 +207,46 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
     setDraft((prev) => ({ ...prev, [field]: value }) as SubmissionDraft);
   };
 
-  const handleFileAdd = async (field: keyof SubmissionDraftFiles, fileList: FileList | null) => {
-    if (!fileList) return;
+  const handleFileAdd = async (field: keyof SubmissionDraftFiles, incoming: File[] | FileList | null) => {
+    if (!incoming) return;
+    const incomingFiles = Array.isArray(incoming) ? incoming : Array.from(incoming);
+    if (!incomingFiles.length) return;
+
+    const strictSingleField = field === "proof";
+    if (strictSingleField && incomingFiles.length > 1) {
+      setErrors((prev) => ({ ...prev, proof: "Payment screenshot / proof supports only one file" }));
+      setFileMessages((prev) => ({
+        ...prev,
+        proof: ["too_many_files: payment screenshot / proof is max 1"],
+      }));
+      return;
+    }
+
     const nextFiles = [...files[field]];
     const limit = FILE_LIMITS[kind][field];
     const newErrors: Record<string, string> = {};
+    const messages: string[] = [];
 
-    for (const file of Array.from(fileList)) {
+    for (const file of incomingFiles) {
       if (nextFiles.length >= limit) {
-        newErrors[field] = `Maximum ${limit} file(s)`;
-        break;
+        if (strictSingleField) {
+          newErrors[field] = `Maximum ${limit} file(s)`;
+          messages.push(`too_many_files: ${file.name} (max ${limit})`);
+          break;
+        }
+        messages.push(`too_many_files: ${file.name} (max ${limit})`);
+        continue;
       }
       if (file.size > 2 * 1024 * 1024) {
+        messages.push(`too_large (>2MB): ${file.name}`);
         newErrors[`${field}:${file.name}`] = "File exceeds 2MB limit";
+        if (strictSingleField) newErrors[field] = "File exceeds 2MB limit";
         continue;
       }
       if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+        messages.push(`unsupported_type: ${file.name} (${file.type || "unknown"})`);
         newErrors[`${field}:${file.name}`] = "Unsupported file type";
+        if (strictSingleField) newErrors[field] = "Unsupported file type";
         continue;
       }
       const [stored] = await serializeFiles([file]);
@@ -202,6 +254,7 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
     }
 
     setErrors((prev) => ({ ...prev, ...newErrors }));
+    setFileMessages((prev) => ({ ...prev, [field]: messages }));
     setFiles((prev) => ({ ...prev, [field]: nextFiles }));
   };
 
@@ -210,6 +263,17 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
       ...prev,
       [field]: prev[field].filter((_, i) => i !== index),
     }));
+  };
+
+  const handleFileReorder = (field: keyof SubmissionDraftFiles, from: number, to: number) => {
+    if (from === to || from < 0 || to < 0) return;
+    setFiles((prev) => {
+      const list = [...prev[field]];
+      const [moved] = list.splice(from, 1);
+      if (!moved) return prev;
+      list.splice(to, 0, moved);
+      return { ...prev, [field]: list };
+    });
   };
 
   const handleSubmit = () => {
@@ -667,39 +731,96 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
           </p>
           {kind === "owner" && (
             <div className="space-y-2">
-              {fieldLabel("Payment screen screenshot (1 max)")}
-              <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleFileAdd("proof", e.target.files)} />
+              {fieldLabel(`Payment screen screenshot (${files.proof.length}/1)`)}
+              <div
+                className="rounded border border-dashed border-gray-300 p-3 bg-gray-50"
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  void handleFileAdd("proof", Array.from(event.dataTransfer.files));
+                }}
+              >
+                <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => handleFileAdd("proof", e.target.files)} />
+                <p className="text-xs text-gray-500 mt-1">Click or drop a single proof image.</p>
+              </div>
               {errors.proof && <p className="text-red-600 text-sm">{errors.proof}</p>}
               {errors.paymentRequirement && (
                 <p className="text-red-600 text-sm">{errors.paymentRequirement}</p>
               )}
-              <FileList files={files.proof} onRemove={(index) => handleFileRemove("proof", index)} />
+              {fileMessages.proof.length ? (
+                <ul className="text-xs text-amber-700 list-disc pl-5">
+                  {fileMessages.proof.map((message, index) => <li key={`${message}-${index}`}>{message}</li>)}
+                </ul>
+              ) : null}
+              <AttachmentList
+                files={files.proof}
+                onRemove={(index) => handleFileRemove("proof", index)}
+                onReorder={(from, to) => handleFileReorder("proof", from, to)}
+              />
             </div>
           )}
           {kind !== "report" && (
             <div className="space-y-2">
-              {fieldLabel(`Gallery images (${FILE_LIMITS[kind].gallery} max)`)}
-              <input
-                type="file"
-                multiple
-                accept="image/jpeg,image/png,image/webp"
-                onChange={(e) => handleFileAdd("gallery", e.target.files)}
-              />
+              {fieldLabel(`Gallery images (${files.gallery.length}/${FILE_LIMITS[kind].gallery})`)}
+              <div
+                className="rounded border border-dashed border-gray-300 p-3 bg-gray-50"
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  void handleFileAdd("gallery", Array.from(event.dataTransfer.files));
+                }}
+              >
+                <input
+                  type="file"
+                  multiple
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => handleFileAdd("gallery", e.target.files)}
+                />
+                <p className="text-xs text-gray-500 mt-1">Click or drop multiple gallery images.</p>
+              </div>
               {errors.gallery && <p className="text-red-600 text-sm">{errors.gallery}</p>}
-              <FileList files={files.gallery} onRemove={(index) => handleFileRemove("gallery", index)} />
+              {fileMessages.gallery.length ? (
+                <ul className="text-xs text-amber-700 list-disc pl-5">
+                  {fileMessages.gallery.map((message, index) => <li key={`${message}-${index}`}>{message}</li>)}
+                </ul>
+              ) : null}
+              <AttachmentList
+                files={files.gallery}
+                onRemove={(index) => handleFileRemove("gallery", index)}
+                onReorder={(from, to) => handleFileReorder("gallery", from, to)}
+              />
             </div>
           )}
           {kind === "report" && (
             <div className="space-y-2">
-              {fieldLabel("Evidence images (up to 4)")}
-              <input
-                type="file"
-                multiple
-                accept="image/jpeg,image/png,image/webp"
-                onChange={(e) => handleFileAdd("evidence", e.target.files)}
-              />
+              {fieldLabel(`Evidence images (${files.evidence.length}/${FILE_LIMITS[kind].evidence})`)}
+              <div
+                className="rounded border border-dashed border-gray-300 p-3 bg-gray-50"
+                onDragOver={(event) => event.preventDefault()}
+                onDrop={(event) => {
+                  event.preventDefault();
+                  void handleFileAdd("evidence", Array.from(event.dataTransfer.files));
+                }}
+              >
+                <input
+                  type="file"
+                  multiple
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={(e) => handleFileAdd("evidence", e.target.files)}
+                />
+                <p className="text-xs text-gray-500 mt-1">Click or drop multiple evidence images.</p>
+              </div>
               {errors.evidence && <p className="text-red-600 text-sm">{errors.evidence}</p>}
-              <FileList files={files.evidence} onRemove={(index) => handleFileRemove("evidence", index)} />
+              {fileMessages.evidence.length ? (
+                <ul className="text-xs text-amber-700 list-disc pl-5">
+                  {fileMessages.evidence.map((message, index) => <li key={`${message}-${index}`}>{message}</li>)}
+                </ul>
+              ) : null}
+              <AttachmentList
+                files={files.evidence}
+                onRemove={(index) => handleFileRemove("evidence", index)}
+                onReorder={(from, to) => handleFileReorder("evidence", from, to)}
+              />
             </div>
           )}
         </div>
