@@ -83,6 +83,17 @@ test("owner payment note over 150 chars returns error", () => {
   assert.equal(errors.paymentNote, "Must be 150 characters or fewer");
 });
 
+test("owner amenities notes over 150 chars returns error", () => {
+  const draft = baseOwnerDraft();
+  draft.amenitiesNotes = "a".repeat(151);
+  const errors = validateDraft("owner", draft, {
+    ...emptyFiles(),
+    proof: [sampleProofFile],
+  });
+
+  assert.equal(errors.amenitiesNotes, "Must be 150 characters or fewer");
+});
+
 test("owner proof screenshot limit stays max 1", () => {
   const errors = validateDraft("owner", baseOwnerDraft(), {
     ...emptyFiles(),
@@ -98,4 +109,12 @@ test("community keeps evidence URL minimum requirement", () => {
 
   assert.equal(errors.communityEvidenceUrls, "Provide at least two URLs");
   assert.equal(errors.paymentRequirement, undefined);
+});
+
+test("community about over 300 chars returns error", () => {
+  const community = baseCommunityDraft();
+  community.about = "a".repeat(301);
+  const errors = validateDraft("community", community, emptyFiles());
+
+  assert.equal(errors.about, "Must be 300 characters or fewer");
 });

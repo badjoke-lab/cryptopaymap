@@ -9,6 +9,7 @@ import type { FilterMeta } from "@/lib/filters";
 import type { SubmissionKind } from "@/lib/submissions";
 
 import PaymentAcceptsEditor from "./PaymentAcceptsEditor";
+import LimitedTextarea from "./LimitedTextarea";
 import { FILE_LIMITS, MAX_LENGTHS } from "./constants";
 import { loadDraftBundle, saveDraftBundle, serializeFiles } from "./draftStorage";
 import type { OwnerCommunityDraft, ReportDraft, SubmissionDraft, SubmissionDraftFiles, StoredFile } from "./types";
@@ -213,6 +214,7 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
 
   const ownerDraft = draft.kind === "report" ? null : (draft as OwnerCommunityDraft);
   const reportDraft = draft.kind === "report" ? (draft as ReportDraft) : null;
+  const aboutMaxLength = kind === "owner" ? MAX_LENGTHS.aboutOwner : MAX_LENGTHS.aboutCommunity;
   const paymentAssetOptions = useMemo(() => {
     if (!ownerDraft) return [];
     const base = [
@@ -597,15 +599,14 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             </div>
 
             <div className="space-y-1">
-              {fieldLabel(`About (optional, ${MAX_LENGTHS.about} chars max)`)}
-              <textarea
-                className="w-full rounded-md border px-3 py-2"
-                rows={3}
+              {fieldLabel(`About (optional, ${aboutMaxLength} chars max)`)}
+              <LimitedTextarea
                 value={ownerDraft.about}
-                onChange={(e) => handleChange("about", e.target.value)}
-                maxLength={MAX_LENGTHS.about}
+                onChange={(value) => handleChange("about", value)}
+                maxLength={aboutMaxLength}
+                rows={3}
+                error={errors.about}
               />
-              {errors.about && <p className="text-red-600 text-sm">{errors.about}</p>}
             </div>
 
             <div className="space-y-1">
@@ -620,15 +621,14 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             </div>
 
             <div className="space-y-1">
-              {fieldLabel("Amenities notes (optional)")}
-              <textarea
-                className="w-full rounded-md border px-3 py-2"
-                rows={2}
+              {fieldLabel(`Amenities notes (optional, ${MAX_LENGTHS.amenitiesNotes} chars max)`)}
+              <LimitedTextarea
                 value={ownerDraft.amenitiesNotes}
-                onChange={(e) => handleChange("amenitiesNotes", e.target.value)}
+                onChange={(value) => handleChange("amenitiesNotes", value)}
                 maxLength={MAX_LENGTHS.amenitiesNotes}
+                rows={2}
+                error={errors.amenitiesNotes}
               />
-              {errors.amenitiesNotes && <p className="text-red-600 text-sm">{errors.amenitiesNotes}</p>}
             </div>
 
             {kind === "owner" ? (
@@ -706,9 +706,9 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
 
                 <div className="space-y-1">
                   {fieldLabel("Payment note (optional, max 150 characters)")}
-                  <input
-                    type="text"
+                  <textarea
                     className="w-full rounded-md border px-3 py-2"
+                    rows={2}
                     value={ownerDraft.paymentNote}
                     onChange={(e) => handleChange("paymentNote", e.target.value)}
                     maxLength={MAX_LENGTHS.paymentNote}
@@ -726,14 +726,18 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
               </div>
             ) : (
               <div className="space-y-1">
-                {fieldLabel("Payment note (optional)")}
-                <input
-                  type="text"
+                {fieldLabel("Payment note (optional, max 150 characters)")}
+                <textarea
                   className="w-full rounded-md border px-3 py-2"
+                  rows={2}
                   value={ownerDraft.paymentNote}
                   onChange={(e) => handleChange("paymentNote", e.target.value)}
                   maxLength={MAX_LENGTHS.paymentNote}
                 />
+                <p className="text-xs text-gray-500">
+                  Short instructions for customers (e.g., &quot;Ask staff for QR&quot;, &quot;Lightning only&quot;).
+                </p>
+                <p className="text-xs text-gray-500">{ownerDraft.paymentNote.length} / {MAX_LENGTHS.paymentNote}</p>
                 {errors.paymentNote && <p className="text-red-600 text-sm">{errors.paymentNote}</p>}
               </div>
             )}

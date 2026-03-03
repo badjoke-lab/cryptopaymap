@@ -70,9 +70,10 @@ export const validateDraft = (
       .map((entry) => entry.assetKey.trim().replace(/\s+/g, "").toUpperCase())
       .filter(Boolean);
     if (!paymentAssets.length) errors.paymentAccepts = "Select at least one asset";
+    const aboutMaxLength = kind === "owner" ? MAX_LENGTHS.aboutOwner : MAX_LENGTHS.aboutCommunity;
     if (payload.about) {
-      if (payload.about.length > MAX_LENGTHS.about) {
-        errors.about = `Must be ${MAX_LENGTHS.about} characters or fewer`;
+      if (payload.about.length > aboutMaxLength) {
+        errors.about = `Must be ${aboutMaxLength} characters or fewer`;
       }
     }
     if (payload.paymentNote && payload.paymentNote.length > MAX_LENGTHS.paymentNote) {
