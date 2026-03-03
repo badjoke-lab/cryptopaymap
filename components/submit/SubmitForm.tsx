@@ -9,6 +9,7 @@ import type { FilterMeta } from "@/lib/filters";
 import type { SubmissionKind } from "@/lib/submissions";
 
 import PaymentAcceptsEditor from "./PaymentAcceptsEditor";
+import LimitedTextarea from "./LimitedTextarea";
 import { FILE_LIMITS, MAX_LENGTHS } from "./constants";
 import { loadDraftBundle, saveDraftBundle, serializeFiles } from "./draftStorage";
 import type { OwnerCommunityDraft, ReportDraft, SubmissionDraft, SubmissionDraftFiles, StoredFile } from "./types";
@@ -213,6 +214,7 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
 
   const ownerDraft = draft.kind === "report" ? null : (draft as OwnerCommunityDraft);
   const reportDraft = draft.kind === "report" ? (draft as ReportDraft) : null;
+  const aboutMaxLength = kind === "owner" ? MAX_LENGTHS.aboutOwner : MAX_LENGTHS.aboutCommunity;
   const paymentAssetOptions = useMemo(() => {
     if (!ownerDraft) return [];
     const base = [
@@ -597,15 +599,14 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             </div>
 
             <div className="space-y-1">
-              {fieldLabel(`About (optional, ${MAX_LENGTHS.about} chars max)`)}
-              <textarea
-                className="w-full rounded-md border px-3 py-2"
-                rows={3}
+              {fieldLabel(`About (optional, ${aboutMaxLength} chars max)`)}
+              <LimitedTextarea
                 value={ownerDraft.about}
-                onChange={(e) => handleChange("about", e.target.value)}
-                maxLength={MAX_LENGTHS.about}
+                onChange={(value) => handleChange("about", value)}
+                maxLength={aboutMaxLength}
+                rows={3}
+                error={errors.about}
               />
-              {errors.about && <p className="text-red-600 text-sm">{errors.about}</p>}
             </div>
 
             <div className="space-y-1">
@@ -620,50 +621,134 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
             </div>
 
             <div className="space-y-1">
-              {fieldLabel("Amenities notes (optional)")}
-              <textarea
-                className="w-full rounded-md border px-3 py-2"
-                rows={2}
+              {fieldLabel(`Amenities notes (optional, ${MAX_LENGTHS.amenitiesNotes} chars max)`)}
+              <LimitedTextarea
                 value={ownerDraft.amenitiesNotes}
-                onChange={(e) => handleChange("amenitiesNotes", e.target.value)}
+                onChange={(value) => handleChange("amenitiesNotes", value)}
                 maxLength={MAX_LENGTHS.amenitiesNotes}
+                rows={2}
+                error={errors.amenitiesNotes}
               />
-              {errors.amenitiesNotes && <p className="text-red-600 text-sm">{errors.amenitiesNotes}</p>}
-            </div>
-
-            <div className="space-y-1">
-              {fieldLabel("Payment note (optional)")}
-              <input
-                type="text"
-                className="w-full rounded-md border px-3 py-2"
-                value={ownerDraft.paymentNote}
-                onChange={(e) => handleChange("paymentNote", e.target.value)}
-                maxLength={MAX_LENGTHS.paymentNote}
-              />
-              {errors.paymentNote && <p className="text-red-600 text-sm">{errors.paymentNote}</p>}
             </div>
 
             {kind === "owner" ? (
-              <div className="space-y-1">
-                {fieldLabel("Payment URL (required: URL or screenshot)")}
-                <input
-                  type="url"
-                  className="w-full rounded-md border px-3 py-2"
-                  value={ownerDraft.paymentUrl}
-                  onChange={(e) => handleChange("paymentUrl", e.target.value)}
-                  placeholder="https://example.com/pay"
-                  maxLength={MAX_LENGTHS.paymentUrl}
-                />
-                {errors.paymentUrl && <p className="text-red-600 text-sm">{errors.paymentUrl}</p>}
+              <div className="space-y-3 rounded-md border border-gray-200 bg-gray-50 p-3">
+                <h3 className="text-sm font-semibold text-gray-900">
+                  Payment proof (required: provide URL or screenshot)
+                </h3>
+                <p className="text-xs text-gray-600">Required: Provide either a payment URL or a screenshot.</p>
+
+                <div className="space-y-1">
+                  {fieldLabel("Payment URL (recommended)")}
+                  <input
+                    type="url"
+                    className="w-full rounded-md border px-3 py-2"
+                    value={ownerDraft.paymentUrl}
+                    onChange={(e) => handleChange("paymentUrl", e.target.value)}
+                    placeholder="https://example.com/pay"
+                    maxLength={MAX_LENGTHS.paymentUrl}
+                  />
+                  <p className="text-xs text-gray-500">
+                    Link to your payment page / QR page / invoice page. If you don’t have a URL, upload a screenshot
+                    instead.
+                  </p>
+                  {errors.paymentUrl && <p className="text-red-600 text-sm">{errors.paymentUrl}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  {fieldLabel(`Payment screenshot (alternative, max 1) (${files.proof.length}/1)`)}
+                  <div
+                    className={`rounded border border-dashed p-3 transition ${
+                      activeDropField === "proof" ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-white"
+                    }`}
+                    onDragEnter={(event) => handleDropzoneDragEnter("proof", event)}
+                    onDragOver={(event) => handleDropzoneDragOver("proof", event)}
+                    onDragLeave={(event) => handleDropzoneDragLeave("proof", event)}
+                    onDrop={(event) => handleDropzoneDrop("proof", event)}
+                  >
+                    <input
+                      ref={proofInputRef}
+                      type="file"
+                      className="hidden"
+                      accept="image/jpeg,image/png,image/webp"
+                      onChange={(e) => handleFileAdd("proof", e.target.files)}
+                    />
+                    <button
+                      type="button"
+                      className="rounded border border-gray-300 bg-white px-3 py-1 text-sm"
+                      onClick={() => openFilePicker("proof")}
+                    >
+                      Choose file
+                    </button>
+                    <p className="text-xs text-gray-500 mt-2">
+                      {activeDropField === "proof"
+                        ? "Drop to add"
+                        : "Click or drop a single payment screenshot anywhere in this box."}
+                    </p>
+                  </div>
+                  <p className="text-xs text-gray-500">
+                    Upload a screenshot showing the payment option or QR. If you provided a URL, screenshot is optional.
+                  </p>
+                  {errors.proof && <p className="text-red-600 text-sm">{errors.proof}</p>}
+                  {fileMessages.proof.length ? (
+                    <ul className="text-xs text-amber-700 list-disc pl-5">
+                      {fileMessages.proof.map((message, index) => <li key={`${message}-${index}`}>{message}</li>)}
+                    </ul>
+                  ) : null}
+                  <AttachmentList
+                    files={files.proof}
+                    onRemove={(index) => handleFileRemove("proof", index)}
+                    onReorder={(from, to) => handleFileReorder("proof", from, to)}
+                    onMoveUp={(index) => handleFileMoveUp("proof", index)}
+                    onMoveDown={(index) => handleFileMoveDown("proof", index)}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  {fieldLabel("Payment note (optional, max 150 characters)")}
+                  <textarea
+                    className="w-full rounded-md border px-3 py-2"
+                    rows={2}
+                    value={ownerDraft.paymentNote}
+                    onChange={(e) => handleChange("paymentNote", e.target.value)}
+                    maxLength={MAX_LENGTHS.paymentNote}
+                  />
+                  <p className="text-xs text-gray-500">
+                    Short instructions for customers (e.g., &quot;Ask staff for QR&quot;, &quot;Lightning only&quot;).
+                  </p>
+                  <p className="text-xs text-gray-500">{ownerDraft.paymentNote.length} / {MAX_LENGTHS.paymentNote}</p>
+                  {errors.paymentNote && <p className="text-red-600 text-sm">{errors.paymentNote}</p>}
+                </div>
+
                 {errors.paymentRequirement && (
                   <p className="text-red-600 text-sm">{errors.paymentRequirement}</p>
                 )}
               </div>
-            ) : null}
+            ) : (
+              <div className="space-y-1">
+                {fieldLabel("Payment note (optional, max 150 characters)")}
+                <textarea
+                  className="w-full rounded-md border px-3 py-2"
+                  rows={2}
+                  value={ownerDraft.paymentNote}
+                  onChange={(e) => handleChange("paymentNote", e.target.value)}
+                  maxLength={MAX_LENGTHS.paymentNote}
+                />
+                <p className="text-xs text-gray-500">
+                  Short instructions for customers (e.g., &quot;Ask staff for QR&quot;, &quot;Lightning only&quot;).
+                </p>
+                <p className="text-xs text-gray-500">{ownerDraft.paymentNote.length} / {MAX_LENGTHS.paymentNote}</p>
+                {errors.paymentNote && <p className="text-red-600 text-sm">{errors.paymentNote}</p>}
+              </div>
+            )}
 
             {kind === "community" ? (
               <div className="space-y-2">
                 {fieldLabel("Community evidence URLs (required, at least 2)")}
+                <p className="text-xs text-gray-500">
+                  Share third-party evidence links that support your suggestion. Payment page URLs are also valid evidence
+                  and should be added here.
+                </p>
                 <div className="space-y-2">
                   {communityEvidenceEntries.map((entry, index) => (
                     <input
@@ -810,54 +895,6 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
           <p className="text-sm text-gray-600">
             JPEG, PNG, or WebP only. Max file size 2MB.
           </p>
-          {kind === "owner" && (
-            <div className="space-y-2">
-              {fieldLabel(`Payment screen screenshot (${files.proof.length}/1)`)}
-              <div
-                className={`rounded border border-dashed p-3 transition ${
-                  activeDropField === "proof" ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-gray-50"
-                }`}
-                onDragEnter={(event) => handleDropzoneDragEnter("proof", event)}
-                onDragOver={(event) => handleDropzoneDragOver("proof", event)}
-                onDragLeave={(event) => handleDropzoneDragLeave("proof", event)}
-                onDrop={(event) => handleDropzoneDrop("proof", event)}
-              >
-                <input
-                  ref={proofInputRef}
-                  type="file"
-                  className="hidden"
-                  accept="image/jpeg,image/png,image/webp"
-                  onChange={(e) => handleFileAdd("proof", e.target.files)}
-                />
-                <button
-                  type="button"
-                  className="rounded border border-gray-300 bg-white px-3 py-1 text-sm"
-                  onClick={() => openFilePicker("proof")}
-                >
-                  Choose file
-                </button>
-                <p className="text-xs text-gray-500 mt-2">
-                  {activeDropField === "proof" ? "Drop to add" : "Click or drop a single proof image anywhere in this box."}
-                </p>
-              </div>
-              {errors.proof && <p className="text-red-600 text-sm">{errors.proof}</p>}
-              {errors.paymentRequirement && (
-                <p className="text-red-600 text-sm">{errors.paymentRequirement}</p>
-              )}
-              {fileMessages.proof.length ? (
-                <ul className="text-xs text-amber-700 list-disc pl-5">
-                  {fileMessages.proof.map((message, index) => <li key={`${message}-${index}`}>{message}</li>)}
-                </ul>
-              ) : null}
-              <AttachmentList
-                files={files.proof}
-                onRemove={(index) => handleFileRemove("proof", index)}
-                onReorder={(from, to) => handleFileReorder("proof", from, to)}
-                onMoveUp={(index) => handleFileMoveUp("proof", index)}
-                onMoveDown={(index) => handleFileMoveDown("proof", index)}
-              />
-            </div>
-          )}
           {kind !== "report" && (
             <div className="space-y-2">
               {fieldLabel(`Gallery images (${files.gallery.length}/${FILE_LIMITS[kind].gallery})`)}
