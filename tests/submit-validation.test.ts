@@ -58,7 +58,7 @@ const sampleProofFile = {
 
 test("owner requires payment URL or screenshot", () => {
   const errors = validateDraft("owner", baseOwnerDraft(), emptyFiles());
-  assert.equal(errors.paymentRequirement, "Provide a payment URL or screenshot");
+  assert.equal(errors.paymentRequirement, "Please provide a payment URL or upload a screenshot.");
 
   const urlDraft = baseOwnerDraft();
   urlDraft.paymentUrl = "https://example.com/pay";
@@ -70,6 +70,17 @@ test("owner requires payment URL or screenshot", () => {
     proof: [sampleProofFile],
   });
   assert.equal(screenshotErrors.paymentRequirement, undefined);
+});
+
+test("owner payment note over 150 chars returns error", () => {
+  const draft = baseOwnerDraft();
+  draft.paymentNote = "a".repeat(151);
+  const errors = validateDraft("owner", draft, {
+    ...emptyFiles(),
+    proof: [sampleProofFile],
+  });
+
+  assert.equal(errors.paymentNote, "Must be 150 characters or fewer");
 });
 
 test("owner proof screenshot limit stays max 1", () => {

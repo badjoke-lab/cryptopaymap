@@ -633,22 +633,13 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
 
             {kind === "owner" ? (
               <div className="space-y-3 rounded-md border border-gray-200 bg-gray-50 p-3">
-                <h3 className="text-sm font-semibold text-gray-900">Payment proof (required: URL or screenshot)</h3>
+                <h3 className="text-sm font-semibold text-gray-900">
+                  Payment proof (required: provide URL or screenshot)
+                </h3>
+                <p className="text-xs text-gray-600">Required: Provide either a payment URL or a screenshot.</p>
 
                 <div className="space-y-1">
-                  {fieldLabel("Payment note (optional)")}
-                  <input
-                    type="text"
-                    className="w-full rounded-md border px-3 py-2"
-                    value={ownerDraft.paymentNote}
-                    onChange={(e) => handleChange("paymentNote", e.target.value)}
-                    maxLength={MAX_LENGTHS.paymentNote}
-                  />
-                  {errors.paymentNote && <p className="text-red-600 text-sm">{errors.paymentNote}</p>}
-                </div>
-
-                <div className="space-y-1">
-                  {fieldLabel("Payment URL (optional)")}
+                  {fieldLabel("Payment URL (recommended)")}
                   <input
                     type="url"
                     className="w-full rounded-md border px-3 py-2"
@@ -657,11 +648,15 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                     placeholder="https://example.com/pay"
                     maxLength={MAX_LENGTHS.paymentUrl}
                   />
+                  <p className="text-xs text-gray-500">
+                    Link to your payment page / QR page / invoice page. If you don’t have a URL, upload a screenshot
+                    instead.
+                  </p>
                   {errors.paymentUrl && <p className="text-red-600 text-sm">{errors.paymentUrl}</p>}
                 </div>
 
                 <div className="space-y-2">
-                  {fieldLabel(`Payment screen screenshot (optional, max 1) (${files.proof.length}/1)`)}
+                  {fieldLabel(`Payment screenshot (alternative, max 1) (${files.proof.length}/1)`)}
                   <div
                     className={`rounded border border-dashed p-3 transition ${
                       activeDropField === "proof" ? "border-blue-500 bg-blue-50" : "border-gray-300 bg-white"
@@ -691,6 +686,9 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                         : "Click or drop a single payment screenshot anywhere in this box."}
                     </p>
                   </div>
+                  <p className="text-xs text-gray-500">
+                    Upload a screenshot showing the payment option or QR. If you provided a URL, screenshot is optional.
+                  </p>
                   {errors.proof && <p className="text-red-600 text-sm">{errors.proof}</p>}
                   {fileMessages.proof.length ? (
                     <ul className="text-xs text-amber-700 list-disc pl-5">
@@ -704,6 +702,22 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                     onMoveUp={(index) => handleFileMoveUp("proof", index)}
                     onMoveDown={(index) => handleFileMoveDown("proof", index)}
                   />
+                </div>
+
+                <div className="space-y-1">
+                  {fieldLabel("Payment note (optional, max 150 characters)")}
+                  <input
+                    type="text"
+                    className="w-full rounded-md border px-3 py-2"
+                    value={ownerDraft.paymentNote}
+                    onChange={(e) => handleChange("paymentNote", e.target.value)}
+                    maxLength={MAX_LENGTHS.paymentNote}
+                  />
+                  <p className="text-xs text-gray-500">
+                    Short instructions for customers (e.g., &quot;Ask staff for QR&quot;, &quot;Lightning only&quot;).
+                  </p>
+                  <p className="text-xs text-gray-500">{ownerDraft.paymentNote.length} / {MAX_LENGTHS.paymentNote}</p>
+                  {errors.paymentNote && <p className="text-red-600 text-sm">{errors.paymentNote}</p>}
                 </div>
 
                 {errors.paymentRequirement && (

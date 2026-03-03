@@ -87,7 +87,7 @@ export const validateDraft = (
       errors.paymentUrl = "Enter a valid URL";
     }
     if (kind === "owner" && !hasPaymentUrl && !hasPaymentProof) {
-      errors.paymentRequirement = "Provide a payment URL or screenshot";
+      errors.paymentRequirement = "Please provide a payment URL or upload a screenshot.";
     }
     if (kind === "owner") {
       if (isEmpty(payload.desiredStatus)) {
