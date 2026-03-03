@@ -121,13 +121,13 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
     const hasUrl = Boolean(bundle.payload.paymentUrl?.trim());
     const hasScreenshot = fileCounts.proof.length > 0;
     const status = hasUrl && hasScreenshot
-      ? "URL・SSで満たした"
+      ? "URL + screenshot"
       : hasUrl
-        ? "URLで満たした"
+        ? "URL only"
         : hasScreenshot
-          ? "SSで満たした"
-          : "未達";
-    return { hasUrl, status };
+          ? "Screenshot only"
+          : "Missing";
+    return { hasUrl, hasScreenshot, status };
   }, [bundle, fileCounts.proof.length]);
 
   const handleSubmit = async () => {
@@ -226,7 +226,10 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
                 <SummaryRow label="Reason" value={bundle.payload.reportReason} />
                 <SummaryRow label="Requested action" value={reportActionLabel(bundle.payload.reportAction)} />
                 <SummaryRow label="What is incorrect?" value={bundle.payload.reportDetails} />
-                <SummaryRow label="Evidence URLs" value={renderEvidenceList(bundle.payload.communityEvidenceUrls)} />
+                <SummaryRow
+                  label="Evidence URLs"
+                  value={renderEvidenceList(bundle.payload.communityEvidenceUrls)}
+                />
               </>
             ) : (
               <>
@@ -253,11 +256,14 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
                 <SummaryRow label="Verification input" value={verificationSummary?.inputValue} />
                 {bundle.payload.kind === "owner" ? (
                   <>
-                    <SummaryRow label="Payment URL" value={bundle.payload.paymentUrl} />
-                    <SummaryRow label="Payment requirement" value={paymentRequirementSummary?.status} />
+                    <SummaryRow label="Payment proof URL" value={bundle.payload.paymentUrl} />
+                    <SummaryRow
+                      label="Payment proof screenshot"
+                      value={paymentRequirementSummary?.hasScreenshot ? "Attached" : "Not attached"}
+                    />
+                    <SummaryRow label="Payment proof status" value={paymentRequirementSummary?.status} />
                   </>
                 ) : null}
-                <SummaryRow label="Proof attached" value={fileCounts.proof.length ? "Yes" : "No"} />
                 <SummaryRow label="Latitude" value={bundle.payload.lat} />
                 <SummaryRow label="Longitude" value={bundle.payload.lng} />
                 <SummaryRow label="About" value={bundle.payload.about} />
@@ -267,7 +273,16 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
                 />
                 <SummaryRow label="Amenities notes" value={bundle.payload.amenitiesNotes} />
                 <SummaryRow label="Payment note" value={bundle.payload.paymentNote} />
-                <SummaryRow label="Evidence URLs" value={renderEvidenceList(bundle.payload.communityEvidenceUrls)} />
+                <SummaryRow
+                  label="Evidence URLs"
+                  value={renderEvidenceList(bundle.payload.communityEvidenceUrls)}
+                />
+                {bundle.payload.kind === "community" ? (
+                  <SummaryRow
+                    label="Evidence guidance"
+                    value="Third-party links only (payment page URLs can be included as evidence)."
+                  />
+                ) : null}
                 <SummaryRow label="Website" value={bundle.payload.website} />
                 <SummaryRow label="Twitter / X" value={bundle.payload.twitter} />
                 <SummaryRow label="Instagram" value={bundle.payload.instagram} />
