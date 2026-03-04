@@ -1,0 +1,21 @@
+<svg width="1400" height="720" viewBox="0 0 1400 720" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map preview with highlighted crypto-friendly places">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1400" y2="720" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#EFF6FF"/>
+      <stop offset="1" stop-color="#F8FAFC"/>
+    </linearGradient>
+  </defs>
+  <rect width="1400" height="720" rx="24" fill="url(#bg)"/>
+  <path d="M142 246C300 126 475 125 596 184C717 243 805 292 948 255C1060 226 1192 240 1258 291" stroke="#CBD5E1" stroke-width="32" stroke-linecap="round"/>
+  <path d="M194 487C310 392 478 365 591 403C735 451 838 522 986 496C1089 478 1187 507 1248 545" stroke="#D1D5DB" stroke-width="28" stroke-linecap="round"/>
+  <g fill="#0F172A" opacity="0.9">
+    <circle cx="310" cy="221" r="13"/><circle cx="403" cy="196" r="10"/><circle cx="500" cy="233" r="11"/>
+    <circle cx="655" cy="268" r="14"/><circle cx="773" cy="312" r="12"/><circle cx="908" cy="272" r="11"/>
+    <circle cx="1041" cy="250" r="13"/><circle cx="1164" cy="278" r="10"/><circle cx="970" cy="500" r="12"/>
+    <circle cx="840" cy="522" r="10"/><circle cx="694" cy="471" r="12"/><circle cx="552" cy="430" r="11"/>
+    <circle cx="434" cy="409" r="10"/><circle cx="324" cy="447" r="12"/><circle cx="1146" cy="534" r="11"/>
+  </g>
+  <rect x="36" y="36" width="250" height="62" rx="31" fill="#111827"/>
+  <text x="161" y="75" text-anchor="middle" fill="white" font-size="28" font-family="Arial, sans-serif" font-weight="700">Open Map</text>
+  <text x="700" y="656" text-anchor="middle" fill="#475569" font-size="28" font-family="Arial, sans-serif">Map preview (click to explore)</text>
+</svg>
