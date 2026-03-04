@@ -3,8 +3,6 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { headers } from 'next/headers';
 import { buildPageMetadata } from '@/lib/seo/metadata';
-import { places } from '@/lib/data/places';
-import { isMapDisplayablePlace } from '@/lib/stats/mapPopulation';
 
 const SUPPORTED_PAYMENTS = [
   {
@@ -64,13 +62,11 @@ type StatsResponse = {
 
 const numberFormatter = new Intl.NumberFormat('en-US');
 
-const fallbackTotalPlaces = places.filter((place) => isMapDisplayablePlace(place)).length;
-
-const getTotalPlaces = async () => {
+const getTotalPlaces = async (): Promise<number | null> => {
   const headerStore = headers();
   const host = headerStore.get('host');
   if (!host) {
-    return fallbackTotalPlaces;
+    return null;
   }
 
   const protocol = headerStore.get('x-forwarded-proto') ?? 'http';
@@ -81,7 +77,7 @@ const getTotalPlaces = async () => {
     });
 
     if (!response.ok) {
-      return fallbackTotalPlaces;
+      return null;
     }
 
     const data = (await response.json()) as StatsResponse;
@@ -89,10 +85,10 @@ const getTotalPlaces = async () => {
       return data.total_places;
     }
   } catch {
-    // keep fallback when stats endpoint is unavailable.
+    // keep placeholder when stats endpoint is unavailable.
   }
 
-  return fallbackTotalPlaces;
+  return null;
 };
 
 export const metadata: Metadata = buildPageMetadata({
@@ -117,7 +113,7 @@ export default async function HomePage() {
         </div>
 
         <p className="mt-6 text-sm font-medium text-gray-700 sm:text-base">
-          {numberFormatter.format(totalPlaces)} crypto-friendly places worldwide
+          {totalPlaces === null ? '—' : numberFormatter.format(totalPlaces)} crypto-friendly places worldwide
         </p>
 
         <div className="mt-6">
