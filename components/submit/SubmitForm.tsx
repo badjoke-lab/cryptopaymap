@@ -11,7 +11,7 @@ import type { SubmissionKind } from "@/lib/submissions";
 import PaymentAcceptsEditor from "./PaymentAcceptsEditor";
 import LimitedTextarea from "./LimitedTextarea";
 import { FILE_LIMITS, MAX_LENGTHS } from "./constants";
-import { loadDraftBundle, saveDraftBundle, serializeFiles } from "./draftStorage";
+import { buildPreviewUrl, loadDraftBundle, removeStoredFile, saveDraftBundle, storeFile } from "./draftStorage";
 import type { OwnerCommunityDraft, ReportDraft, SubmissionDraft, SubmissionDraftFiles, StoredFile } from "./types";
 import { validateDraft } from "./validation";
 
@@ -82,12 +82,14 @@ type SubmitFormProps = {
 
 const AttachmentList = ({
   files,
+  previewUrls,
   onRemove,
   onReorder,
   onMoveUp,
   onMoveDown,
 }: {
   files: StoredFile[];
+  previewUrls: Record<string, string>;
   onRemove: (index: number) => void;
   onReorder: (from: number, to: number) => void;
   onMoveUp: (index: number) => void;
@@ -118,7 +120,11 @@ const AttachmentList = ({
           }}
         >
           <div className="aspect-square overflow-hidden rounded bg-gray-100">
-            <img src={file.dataUrl} alt={file.name} className="h-full w-full object-cover" />
+            {previewUrls[file.id] ? (
+              <img src={previewUrls[file.id]} alt={file.name} className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full items-center justify-center text-xs text-gray-500">Preview unavailable</div>
+            )}
           </div>
           <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
             <span className="font-semibold" aria-hidden>≡</span>
@@ -173,6 +179,8 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
   const [limitedMode, setLimitedMode] = useState(false);
   const [initialized, setInitialized] = useState(false);
   const [activeDropField, setActiveDropField] = useState<keyof SubmissionDraftFiles | null>(null);
+  const [storageError, setStorageError] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
   const proofInputRef = useRef<HTMLInputElement | null>(null);
   const galleryInputRef = useRef<HTMLInputElement | null>(null);
   const evidenceInputRef = useRef<HTMLInputElement | null>(null);
@@ -204,8 +212,45 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
 
   useEffect(() => {
     if (!initialized) return;
-    saveDraftBundle(kind, draft, files);
+    const error = saveDraftBundle(kind, draft, files);
+    setStorageError(error);
   }, [draft, files, initialized, kind]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const nextUrls: Record<string, string> = {};
+
+    const hydratePreviews = async () => {
+      const allFiles = [...files.gallery, ...files.proof, ...files.evidence];
+      for (const file of allFiles) {
+        try {
+          nextUrls[file.id] = await buildPreviewUrl(file);
+        } catch {
+          // no-op
+        }
+      }
+      if (!cancelled) {
+        setPreviewUrls((prev) => {
+          Object.values(prev).forEach((url) => URL.revokeObjectURL(url));
+          return nextUrls;
+        });
+      } else {
+        Object.values(nextUrls).forEach((url) => URL.revokeObjectURL(url));
+      }
+    };
+
+    void hydratePreviews();
+    return () => {
+      cancelled = true;
+    };
+  }, [files]);
+
+  useEffect(
+    () => () => {
+      Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
+    },
+    [previewUrls],
+  );
 
   const citiesForCountry = useMemo(() => {
     if (!meta || draft.kind === "report") return [];
@@ -284,8 +329,15 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
         if (strictSingleField) newErrors[field] = "Unsupported file type";
         continue;
       }
-      const [stored] = await serializeFiles([file]);
-      nextFiles.push(stored);
+      try {
+        const stored = await storeFile(file);
+        nextFiles.push(stored);
+      } catch (error) {
+        const message = (error as Error)?.message || "Failed to store file in browser storage.";
+        messages.push(`storage_error: ${file.name} (${message})`);
+        newErrors[field] = message;
+        setStorageError(message);
+      }
     }
 
     setErrors((prev) => ({ ...prev, ...newErrors }));
@@ -294,10 +346,18 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
   };
 
   const handleFileRemove = (field: keyof SubmissionDraftFiles, index: number) => {
-    setFiles((prev) => ({
-      ...prev,
-      [field]: prev[field].filter((_, i) => i !== index),
-    }));
+    setFiles((prev) => {
+      const removed = prev[field][index];
+      if (removed) {
+        void removeStoredFile(removed).catch(() => {
+          setStorageError("Failed to remove a stored attachment. Please refresh and try again.");
+        });
+      }
+      return {
+        ...prev,
+        [field]: prev[field].filter((_, i) => i !== index),
+      };
+    });
   };
 
   const handleFileReorder = (field: keyof SubmissionDraftFiles, from: number, to: number) => {
@@ -363,7 +423,9 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
     const validationErrors = validateDraft(kind, draft, files);
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length) return;
-    saveDraftBundle(kind, draft, files);
+    const saveError = saveDraftBundle(kind, draft, files);
+    setStorageError(saveError);
+    if (saveError) return;
     router.push(`/submit/${kind}/confirm`);
   };
 
@@ -402,6 +464,9 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
         </div>
 
         {limitedMode ? <LimitedModeNotice className="w-full max-w-sm" /> : null}
+        {storageError ? (
+          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">{storageError}</div>
+        ) : null}
 
         {kind !== "report" && ownerDraft ? (
           <div className="rounded-lg bg-white p-4 shadow-sm border border-gray-100 space-y-4">
@@ -697,6 +762,7 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
                   ) : null}
                   <AttachmentList
                     files={files.proof}
+                    previewUrls={previewUrls}
                     onRemove={(index) => handleFileRemove("proof", index)}
                     onReorder={(from, to) => handleFileReorder("proof", from, to)}
                     onMoveUp={(index) => handleFileMoveUp("proof", index)}
@@ -934,6 +1000,7 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
               ) : null}
               <AttachmentList
                 files={files.gallery}
+                previewUrls={previewUrls}
                 onRemove={(index) => handleFileRemove("gallery", index)}
                 onReorder={(from, to) => handleFileReorder("gallery", from, to)}
                 onMoveUp={(index) => handleFileMoveUp("gallery", index)}
@@ -980,6 +1047,7 @@ export default function SubmitForm({ kind }: SubmitFormProps) {
               ) : null}
               <AttachmentList
                 files={files.evidence}
+                previewUrls={previewUrls}
                 onRemove={(index) => handleFileRemove("evidence", index)}
                 onReorder={(from, to) => handleFileReorder("evidence", from, to)}
                 onMoveUp={(index) => handleFileMoveUp("evidence", index)}

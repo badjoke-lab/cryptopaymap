@@ -49,11 +49,11 @@ const baseCommunityDraft = (): OwnerCommunityDraft => ({
 const emptyFiles = (): SubmissionDraftFiles => ({ gallery: [], proof: [], evidence: [] });
 
 const sampleProofFile = {
+  id: "proof-1",
   name: "proof.png",
   type: "image/png",
   size: 100,
   lastModified: 1,
-  dataUrl: "data:image/png;base64,AAAA",
 };
 
 test("owner requires payment URL or screenshot", () => {

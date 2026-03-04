@@ -55,11 +55,11 @@ export type ReportDraft = {
 export type SubmissionDraft = OwnerCommunityDraft | ReportDraft;
 
 export type StoredFile = {
+  id: string;
   name: string;
   type: string;
   size: number;
   lastModified: number;
-  dataUrl: string;
 };
 
 export type SubmissionDraftFiles = {

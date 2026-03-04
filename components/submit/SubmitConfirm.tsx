@@ -8,7 +8,7 @@ import type { SubmissionKind } from "@/lib/submissions";
 import { submitMultipartSubmission } from "@/lib/submissions/client";
 
 import { buildSubmissionPayload } from "./payload";
-import { clearDraftBundle, hydrateFiles, loadDraftBundle } from "./draftStorage";
+import { buildPreviewUrl, clearDraftBundle, hydrateFiles, loadDraftBundle } from "./draftStorage";
 import type { DraftBundle, SubmissionDraftFiles } from "./types";
 import { validateDraft } from "./validation";
 
@@ -65,6 +65,8 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const [submissionErrorCode, setSubmissionErrorCode] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [storageError, setStorageError] = useState<string | null>(null);
+  const [previewUrls, setPreviewUrls] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const loaded = loadDraftBundle(kind);
@@ -79,6 +81,43 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
     if (!bundle?.files) return emptyFileState;
     return bundle.files;
   }, [bundle]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const nextUrls: Record<string, string> = {};
+
+    const hydratePreviews = async () => {
+      const allFiles = [...fileCounts.gallery, ...fileCounts.proof, ...fileCounts.evidence];
+      for (const file of allFiles) {
+        try {
+          nextUrls[file.id] = await buildPreviewUrl(file);
+        } catch {
+          // no-op
+        }
+      }
+
+      if (!cancelled) {
+        setPreviewUrls((prev) => {
+          Object.values(prev).forEach((url) => URL.revokeObjectURL(url));
+          return nextUrls;
+        });
+      } else {
+        Object.values(nextUrls).forEach((url) => URL.revokeObjectURL(url));
+      }
+    };
+
+    void hydratePreviews();
+    return () => {
+      cancelled = true;
+    };
+  }, [fileCounts]);
+
+  useEffect(
+    () => () => {
+      Object.values(previewUrls).forEach((url) => URL.revokeObjectURL(url));
+    },
+    [previewUrls],
+  );
 
   const submissionPayload = useMemo(() => {
     if (!bundle) return null;
@@ -150,7 +189,7 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
 
       const result = await submitMultipartSubmission(payload, hydratedFiles);
       if (result.ok && result.data?.submissionId) {
-        clearDraftBundle(kind);
+        await clearDraftBundle(kind, bundle.files);
         if (typeof window !== "undefined") {
           window.sessionStorage.setItem("submit-response", JSON.stringify(result.data));
         }
@@ -167,8 +206,10 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
         setSubmissionError("Submission failed.");
       }
     } catch (error) {
-      setSubmissionErrorCode("NETWORK_ERROR");
-      setSubmissionError((error as Error)?.message ?? "Submission failed.");
+      setSubmissionErrorCode("STORAGE_OR_NETWORK_ERROR");
+      const message = (error as Error)?.message ?? "Submission failed.";
+      setSubmissionError(message);
+      setStorageError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -214,6 +255,10 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
             <p className="font-semibold">{submissionErrorCode}</p>
             <p>{submissionError}</p>
           </div>
+        ) : null}
+
+        {storageError ? (
+          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-red-800">{storageError}</div>
         ) : null}
 
         <div className="rounded-lg bg-white p-4 shadow-sm border border-gray-100 space-y-4">
@@ -320,7 +365,13 @@ export default function SubmitConfirm({ kind }: { kind: SubmissionKind }) {
                   {entries.map((file, index) => (
                     <li key={`${field}-${file.name}-${index}`} className="rounded border border-gray-200 bg-white p-2">
                       <div className="aspect-square overflow-hidden rounded bg-gray-100">
-                        <img src={file.dataUrl} alt={file.name} className="h-full w-full object-cover" />
+                        {previewUrls[file.id] ? (
+                          <img src={previewUrls[file.id]} alt={file.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <div className="flex h-full items-center justify-center text-xs text-gray-500">
+                            Preview unavailable
+                          </div>
+                        )}
                       </div>
                       <p className="mt-2 text-xs text-gray-700">#{index + 1} {file.name}</p>
                     </li>
