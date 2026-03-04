@@ -86,10 +86,10 @@ export default function HomePage() {
           </Link>
           <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600 underline-offset-2">
             <Link href="/discover" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
-              Explore listings → Discover
+              Find popular spots fast → Discover
             </Link>
-            <Link href="/submit" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
-              Add a place → Submit
+            <Link href="/stats" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+              Check coverage & trends → Stats
             </Link>
           </div>
         </div>
@@ -107,6 +107,10 @@ export default function HomePage() {
             className="h-auto w-full rounded-xl border border-gray-100 object-cover"
             priority
           />
+          <p className="mt-2 px-2 text-xs font-medium text-gray-500">
+            <span className="hidden sm:inline">Click to open map</span>
+            <span className="sm:hidden">Tap to open map</span>
+          </p>
         </Link>
       </section>
 
@@ -142,6 +146,17 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-gray-900">Help improve the map</h2>
+          <p className="mt-2 text-sm text-gray-700">Submit a new place or update an existing listing.</p>
+          <Link
+            href="/submit"
+            className="mt-3 inline-flex rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-white"
+          >
+            Submit a place
+          </Link>
         </div>
 
         <div className="mt-10">
