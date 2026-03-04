@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
+import { headers } from 'next/headers';
 import { buildPageMetadata } from '@/lib/seo/metadata';
+import { places } from '@/lib/data/places';
+import { isMapDisplayablePlace } from '@/lib/stats/mapPopulation';
 
 const SUPPORTED_PAYMENTS = [
   {
@@ -54,6 +58,43 @@ const FAQS = [
   },
 ] as const;
 
+type StatsResponse = {
+  total_places?: number;
+};
+
+const numberFormatter = new Intl.NumberFormat('en-US');
+
+const fallbackTotalPlaces = places.filter((place) => isMapDisplayablePlace(place)).length;
+
+const getTotalPlaces = async () => {
+  const headerStore = headers();
+  const host = headerStore.get('host');
+  if (!host) {
+    return fallbackTotalPlaces;
+  }
+
+  const protocol = headerStore.get('x-forwarded-proto') ?? 'http';
+
+  try {
+    const response = await fetch(`${protocol}://${host}/api/stats`, {
+      next: { revalidate: 1800 },
+    });
+
+    if (!response.ok) {
+      return fallbackTotalPlaces;
+    }
+
+    const data = (await response.json()) as StatsResponse;
+    if (typeof data.total_places === 'number') {
+      return data.total_places;
+    }
+  } catch {
+    // keep fallback when stats endpoint is unavailable.
+  }
+
+  return fallbackTotalPlaces;
+};
+
 export const metadata: Metadata = buildPageMetadata({
   title: 'Find crypto-friendly places worldwide',
   description:
@@ -61,7 +102,9 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/',
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const totalPlaces = await getTotalPlaces();
+
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6 sm:py-14">
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10">
@@ -72,23 +115,42 @@ export default function HomePage() {
           <p>Check trusted listing signals before visiting and compare options by area.</p>
           <p>Help keep the map fresh by submitting new places and updates.</p>
         </div>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/map" className="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white">
+
+        <p className="mt-6 text-sm font-medium text-gray-700 sm:text-base">
+          {numberFormatter.format(totalPlaces)} crypto-friendly places worldwide
+        </p>
+
+        <div className="mt-6">
+          <Link
+            href="/map"
+            className="inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-5 py-3 text-sm font-semibold text-white sm:w-auto"
+          >
             Open Map
           </Link>
-          <Link
-            href="/discover"
-            className="rounded-full border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700"
-          >
-            Discover
-          </Link>
-          <Link
-            href="/submit"
-            className="rounded-full border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700"
-          >
-            Submit
-          </Link>
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600 underline-offset-2">
+            <Link href="/discover" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+              Explore listings → Discover
+            </Link>
+            <Link href="/submit" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+              Add a place → Submit
+            </Link>
+          </div>
         </div>
+
+        <Link
+          href="/map"
+          className="group mt-8 block overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 transition hover:border-gray-300"
+          aria-label="Open map preview and go to the map"
+        >
+          <Image
+            src="/map-preview.svg"
+            alt="Map preview placeholder for the CryptoPayMap map view"
+            width={1400}
+            height={780}
+            className="h-auto w-full rounded-xl border border-gray-100 object-cover"
+            priority
+          />
+        </Link>
       </section>
 
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10" aria-label="Home SEO content">
