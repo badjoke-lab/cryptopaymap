@@ -84,14 +84,6 @@ export default function HomePage() {
           >
             Open Map
           </Link>
-          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600 underline-offset-2">
-            <Link href="/discover" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
-              Find popular spots fast → Discover
-            </Link>
-            <Link href="/stats" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
-              Check coverage & trends → Stats
-            </Link>
-          </div>
         </div>
 
         <Link
@@ -112,6 +104,15 @@ export default function HomePage() {
             <span className="sm:hidden">Tap to open map</span>
           </p>
         </Link>
+
+        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600 underline-offset-2">
+          <Link href="/discover" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+            Find popular spots fast → Discover
+          </Link>
+          <Link href="/stats" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+            Check coverage & trends → Stats
+          </Link>
+        </div>
       </section>
 
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10" aria-label="Home SEO content">
