@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { buildPageMetadata } from '@/lib/seo/metadata';
+import { HomeTotalPlaces } from '@/components/home/HomeTotalPlaces';
 
 const SUPPORTED_PAYMENTS = [
   {
@@ -72,23 +74,40 @@ export default function HomePage() {
           <p>Check trusted listing signals before visiting and compare options by area.</p>
           <p>Help keep the map fresh by submitting new places and updates.</p>
         </div>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/map" className="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white">
+
+        <HomeTotalPlaces />
+
+        <div className="mt-6">
+          <Link
+            href="/map"
+            className="inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-5 py-3 text-sm font-semibold text-white sm:w-auto"
+          >
             Open Map
           </Link>
-          <Link
-            href="/discover"
-            className="rounded-full border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700"
-          >
-            Discover
-          </Link>
-          <Link
-            href="/submit"
-            className="rounded-full border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700"
-          >
-            Submit
-          </Link>
+          <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600">
+            <Link href="/discover" className="hover:text-gray-900 hover:underline">
+              Explore listings → Discover
+            </Link>
+            <Link href="/submit" className="hover:text-gray-900 hover:underline">
+              Add a place → Submit
+            </Link>
+          </div>
         </div>
+
+        <Link
+          href="/map"
+          className="group mt-6 block overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 transition hover:border-gray-300"
+          aria-label="Open map preview and go to the map"
+        >
+          <Image
+            src="/map-preview.svg"
+            alt="Preview of crypto-friendly places around the world"
+            width={1400}
+            height={720}
+            className="h-auto w-full rounded-xl border border-gray-100 object-cover"
+            priority
+          />
+        </Link>
       </section>
 
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10" aria-label="Home SEO content">
