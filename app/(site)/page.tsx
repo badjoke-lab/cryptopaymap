@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { headers } from 'next/headers';
 import { buildPageMetadata } from '@/lib/seo/metadata';
+import { HomeTotalPlaces } from './HomeTotalPlaces';
 
 const SUPPORTED_PAYMENTS = [
   {
@@ -56,41 +56,6 @@ const FAQS = [
   },
 ] as const;
 
-type StatsResponse = {
-  total_places?: number;
-};
-
-const numberFormatter = new Intl.NumberFormat('en-US');
-
-const getTotalPlaces = async (): Promise<number | null> => {
-  const headerStore = headers();
-  const host = headerStore.get('host');
-  if (!host) {
-    return null;
-  }
-
-  const protocol = headerStore.get('x-forwarded-proto') ?? 'http';
-
-  try {
-    const response = await fetch(`${protocol}://${host}/api/stats`, {
-      next: { revalidate: 1800 },
-    });
-
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = (await response.json()) as StatsResponse;
-    if (typeof data.total_places === 'number') {
-      return data.total_places;
-    }
-  } catch {
-    // keep placeholder when stats endpoint is unavailable.
-  }
-
-  return null;
-};
-
 export const metadata: Metadata = buildPageMetadata({
   title: 'Find crypto-friendly places worldwide',
   description:
@@ -98,9 +63,7 @@ export const metadata: Metadata = buildPageMetadata({
   path: '/',
 });
 
-export default async function HomePage() {
-  const totalPlaces = await getTotalPlaces();
-
+export default function HomePage() {
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6 sm:py-14">
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10">
@@ -112,9 +75,7 @@ export default async function HomePage() {
           <p>Help keep the map fresh by submitting new places and updates.</p>
         </div>
 
-        <p className="mt-6 text-sm font-medium text-gray-700 sm:text-base">
-          {totalPlaces === null ? '—' : numberFormatter.format(totalPlaces)} crypto-friendly places worldwide
-        </p>
+        <HomeTotalPlaces />
 
         <div className="mt-6">
           <Link
