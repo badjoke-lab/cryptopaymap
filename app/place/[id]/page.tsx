@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { places as fallbackPlaces } from '@/lib/data/places';
 import { getPlaceDetail } from '@/lib/places/detail';
 import { buildPlaceMetadata } from '@/lib/seo/metadata';
 import { safeDecode } from '@/lib/utils/safeDecode';
@@ -10,16 +10,148 @@ type PlacePageProps = {
   params: { id: string };
 };
 
+type PlaceSummary = {
+  id: string;
+  name: string;
+  city?: string | null;
+  country?: string | null;
+  category?: string | null;
+  verification?: 'owner' | 'community' | 'directory' | 'unverified';
+};
+
 const formatLocation = (city: string | null | undefined, country: string | null | undefined) => {
   const location = [city, country].map((value) => value?.trim()).filter(Boolean).join(', ');
   return location.length ? location : null;
 };
 
 const siteUrl = 'https://www.cryptopaymap.com';
-const relatedLinksLimit = 6;
+const relatedLinksLimit = 10;
+const supportedAssets = ['BTC', 'ETH', 'USDT', 'USDC'] as const;
 
-const normalizeText = (value: string | null | undefined) => value?.trim().toLowerCase() ?? '';
-const toCitySlug = (city: string) => encodeURIComponent(city.trim().replace(/\s+/g, '-').toLowerCase());
+const verificationPriority: Record<NonNullable<PlaceSummary['verification']>, number> = {
+  owner: 0,
+  community: 1,
+  directory: 2,
+  unverified: 3,
+};
+
+const toCitySlug = (city: string) =>
+  encodeURIComponent(
+    city
+      .trim()
+      .toLowerCase()
+      .normalize('NFKD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, ''),
+  );
+
+const normalizeAssetToken = (value: string) => value.trim().toUpperCase().replace(/[^A-Z0-9]/g, '');
+
+const detectPrimaryAsset = (place: {
+  accepted?: string[] | null;
+  amenities?: string[] | null;
+  paymentNote?: string | null;
+}) => {
+  for (const entry of place.accepted ?? []) {
+    const assetCandidate = entry.split('@')[0] ?? entry;
+    const normalized = normalizeAssetToken(assetCandidate);
+    if (normalized === 'LIGHTNING' || normalized === 'LN') continue;
+    if (supportedAssets.includes(normalized as (typeof supportedAssets)[number])) {
+      return normalized;
+    }
+  }
+
+  const searchable = [...(place.amenities ?? []), place.paymentNote ?? ''].join(' ').toUpperCase();
+  for (const asset of supportedAssets) {
+    const regex = new RegExp(`\\b${asset}\\b`, 'i');
+    if (regex.test(searchable)) {
+      return asset;
+    }
+  }
+
+  return null;
+};
+
+const verificationLabel = (verification?: PlaceSummary['verification']) => {
+  switch (verification) {
+    case 'owner':
+      return 'Owner';
+    case 'community':
+      return 'Community';
+    case 'directory':
+      return 'Directory';
+    default:
+      return 'Unverified';
+  }
+};
+
+const sortRelated = (places: PlaceSummary[]) =>
+  [...places].sort((a, b) => {
+    const byVerification =
+      verificationPriority[a.verification ?? 'unverified'] - verificationPriority[b.verification ?? 'unverified'];
+    if (byVerification !== 0) return byVerification;
+
+    const byName = a.name.localeCompare(b.name);
+    if (byName !== 0) return byName;
+
+    return a.id.localeCompare(b.id);
+  });
+
+const fetchRelatedPlaces = async (place: {
+  id: string;
+  city?: string | null;
+  category?: string | null;
+}): Promise<{ title: string; places: PlaceSummary[] }> => {
+  const headerStore = headers();
+  const host = headerStore.get('x-forwarded-host') ?? headerStore.get('host') ?? 'localhost:3000';
+  const protocol = headerStore.get('x-forwarded-proto') ?? 'http';
+  const baseUrl = `${protocol}://${host}`;
+
+  const candidateMap = new Map<string, PlaceSummary>();
+
+  const addCandidates = (candidates: PlaceSummary[]) => {
+    for (const candidate of candidates) {
+      if (candidate.id === place.id) continue;
+      if (!candidateMap.has(candidate.id)) {
+        candidateMap.set(candidate.id, candidate);
+      }
+    }
+  };
+
+  if (place.city?.trim()) {
+    const cityResponse = await fetch(
+      `${baseUrl}/api/places?mode=all&city=${encodeURIComponent(place.city)}&limit=${relatedLinksLimit}`,
+      { cache: 'no-store' },
+    );
+    if (cityResponse.ok) {
+      const data = (await cityResponse.json()) as unknown;
+      if (Array.isArray(data)) {
+        addCandidates(data as PlaceSummary[]);
+      }
+    }
+  }
+
+  if (candidateMap.size < relatedLinksLimit && place.category?.trim()) {
+    const categoryResponse = await fetch(
+      `${baseUrl}/api/places?category=${encodeURIComponent(place.category)}&limit=${relatedLinksLimit * 3}`,
+      { cache: 'no-store' },
+    );
+    if (categoryResponse.ok) {
+      const data = (await categoryResponse.json()) as unknown;
+      if (Array.isArray(data)) {
+        addCandidates(data as PlaceSummary[]);
+      }
+    }
+  }
+
+  const sorted = sortRelated(Array.from(candidateMap.values())).slice(0, relatedLinksLimit);
+
+  return {
+    title: place.city?.trim() ? 'Related in this city' : 'Related places',
+    places: sorted,
+  };
+};
 
 export async function generateMetadata({ params }: PlacePageProps): Promise<Metadata> {
   const rawId = params.id;
@@ -45,26 +177,9 @@ export default async function PlaceDetailPage({ params }: PlacePageProps) {
   const heading = location ? `${place.name} — ${location}` : place.name;
   const address = place.address_full?.trim() || formatLocation(place.city, place.country);
   const placeUrl = `${siteUrl}/place/${encodeURIComponent(place.id)}`;
-
-  const relatedByCountry = normalizeText(place.country)
-    ? fallbackPlaces
-        .filter(
-          (candidate) =>
-            candidate.id !== place.id &&
-            normalizeText(candidate.country) === normalizeText(place.country),
-        )
-        .slice(0, relatedLinksLimit)
-    : [];
-
-  const relatedByCategory = normalizeText(place.category)
-    ? fallbackPlaces
-        .filter(
-          (candidate) =>
-            candidate.id !== place.id &&
-            normalizeText(candidate.category) === normalizeText(place.category),
-        )
-        .slice(0, relatedLinksLimit)
-    : [];
+  const citySlug = place.city?.trim() ? toCitySlug(place.city) : '';
+  const primaryAsset = detectPrimaryAsset(place);
+  const related = await fetchRelatedPlaces(place);
 
   const localBusinessJsonLd = {
     '@context': 'https://schema.org',
@@ -116,14 +231,25 @@ export default async function PlaceDetailPage({ params }: PlacePageProps) {
 
         <h1 className="text-3xl font-semibold text-gray-900 sm:text-4xl">{heading}</h1>
 
-        {place.city?.trim() ? (
-          <p className="mt-3 text-sm text-gray-600">
-            More places in{' '}
-            <Link href={`/city/${toCitySlug(place.city)}`} className="font-medium text-sky-700 hover:underline">
-              {place.city}
-            </Link>
-          </p>
-        ) : null}
+        <div className="mt-3 flex flex-wrap items-center gap-4 text-sm text-gray-600">
+          {citySlug ? (
+            <p>
+              More in{' '}
+              <Link href={`/city/${citySlug}`} className="font-medium text-sky-700 hover:underline">
+                {place.city}
+              </Link>
+            </p>
+          ) : null}
+
+          {primaryAsset ? (
+            <p>
+              Accepts{' '}
+              <Link href={`/accepts/${primaryAsset}`} className="font-medium text-sky-700 hover:underline">
+                {primaryAsset}
+              </Link>
+            </p>
+          ) : null}
+        </div>
 
         <dl className="mt-8 grid gap-5">
           {place.category?.trim() ? (
@@ -173,45 +299,31 @@ export default async function PlaceDetailPage({ params }: PlacePageProps) {
           </Link>
         </div>
 
-        {relatedByCountry.length > 0 || relatedByCategory.length > 0 ? (
-          <section className="mt-10 border-t border-gray-100 pt-6">
-            <h2 className="text-lg font-semibold text-gray-900">Related places</h2>
+        <section className="mt-10 border-t border-gray-100 pt-6">
+          <h2 className="text-lg font-semibold text-gray-900">{related.title}</h2>
 
-            {relatedByCountry.length > 0 ? (
-              <div className="mt-4">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                  Same country
-                </h3>
-                <ul className="mt-2 list-disc space-y-1 pl-5">
-                  {relatedByCountry.map((candidate) => (
-                    <li key={`country-${candidate.id}`}>
-                      <Link href={`/place/${encodeURIComponent(candidate.id)}`} className="text-sky-700 hover:underline">
-                        {candidate.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
+          {related.places.length > 0 ? (
+            <ul className="mt-4 space-y-3">
+              {related.places.map((candidate) => {
+                const candidateLocation =
+                  formatLocation(candidate.city ?? null, candidate.country ?? null) ?? 'Location unknown';
 
-            {relatedByCategory.length > 0 ? (
-              <div className="mt-5">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-gray-500">
-                  Same category
-                </h3>
-                <ul className="mt-2 list-disc space-y-1 pl-5">
-                  {relatedByCategory.map((candidate) => (
-                    <li key={`category-${candidate.id}`}>
-                      <Link href={`/place/${encodeURIComponent(candidate.id)}`} className="text-sky-700 hover:underline">
-                        {candidate.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </section>
-        ) : null}
+                return (
+                  <li key={candidate.id} className="rounded-lg border border-gray-200 p-4">
+                    <Link href={`/place/${encodeURIComponent(candidate.id)}`} className="font-semibold text-sky-700 hover:underline">
+                      {candidate.name}
+                    </Link>
+                    <p className="mt-1 text-sm text-gray-600">
+                      {candidateLocation} · {verificationLabel(candidate.verification)}
+                    </p>
+                  </li>
+                );
+              })}
+            </ul>
+          ) : (
+            <p className="mt-3 text-sm text-gray-600">No related places found.</p>
+          )}
+        </section>
       </article>
     </main>
   );
