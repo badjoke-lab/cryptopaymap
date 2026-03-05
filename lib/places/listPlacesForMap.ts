@@ -46,6 +46,7 @@ export type ListPlacesForMapOptions = {
 
 export type ListPlacesForMapResult = {
   places: PlaceSummaryPlus[];
+  total: number;
   source: "db" | "json";
   limited: boolean;
   lastUpdatedISO?: string;
@@ -86,7 +87,7 @@ const loadPlacesFromSnapshot = async (): Promise<PublishedSnapshot> => {
   throw new Error("FALLBACK_SNAPSHOT_UNAVAILABLE");
 };
 
-const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[] | null> => {
+const loadPlacesFromDb = async (filters: ListFilters): Promise<{ places: PlaceSummaryPlus[]; total: number } | null> => {
   if (!hasDatabaseUrl()) return null;
   const route = "api_places";
   const fallbackById = new Map(fallbackPlaces.map((place) => [place.id, place]));
@@ -113,25 +114,25 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
   const hasCol = (name: string) => placeColumns.some((r) => r.column_name === name);
 
   const where: string[] = [...getMapDisplayableWhereClauses("p")];
-  const params: unknown[] = [];
+  const paramsWhere: unknown[] = [];
 
   if (filters.category) {
-    params.push(filters.category);
-    where.push(`p.category = $${params.length}`);
+    paramsWhere.push(filters.category);
+    where.push(`p.category = $${paramsWhere.length}`);
   }
   if (filters.country) {
-    params.push(filters.country);
-    where.push(`p.country = $${params.length}`);
+    paramsWhere.push(filters.country);
+    where.push(`p.country = $${paramsWhere.length}`);
   }
   if (filters.city) {
-    params.push(filters.city);
-    where.push(`p.city = $${params.length}`);
+    paramsWhere.push(filters.city);
+    where.push(`p.city = $${paramsWhere.length}`);
   }
   if (hasCol("status")) where.push("COALESCE(p.status, 'published') = 'published'");
   if (hasCol("is_demo")) where.push("COALESCE(p.is_demo, false) = false");
 
-  params.push(Array.from(LEGACY_TEST_IDS));
-  where.push(`NOT (p.id = ANY($${params.length}::text[]))`);
+  paramsWhere.push(Array.from(LEGACY_TEST_IDS));
+  where.push(`NOT (p.id = ANY($${paramsWhere.length}::text[]))`);
 
   const hasVerifications = Boolean(tableChecks[0]?.verifications);
   const hasPayments = Boolean(tableChecks[0]?.payments);
@@ -150,12 +151,12 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
     const useGeom = hasCol("geom");
     const clauses: string[] = [];
     for (const bbox of filters.bbox) {
-      const start = params.length + 1;
+      const start = paramsWhere.length + 1;
       if (useGeom) {
-        params.push(bbox.minLng, bbox.minLat, bbox.maxLng, bbox.maxLat);
+        paramsWhere.push(bbox.minLng, bbox.minLat, bbox.maxLng, bbox.maxLat);
         clauses.push(`ST_Intersects(p.geom::geometry, ST_MakeEnvelope($${start}, $${start + 1}, $${start + 2}, $${start + 3}, 4326))`);
       } else {
-        params.push(bbox.minLng, bbox.maxLng, bbox.minLat, bbox.maxLat);
+        paramsWhere.push(bbox.minLng, bbox.maxLng, bbox.minLat, bbox.maxLat);
         clauses.push(`(p.lng BETWEEN $${start} AND $${start + 1} AND p.lat BETWEEN $${start + 2} AND $${start + 3})`);
       }
     }
@@ -163,29 +164,29 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
   }
 
   if (filters.search) {
-    params.push(`%${filters.search}%`);
-    where.push(`(p.name ILIKE $${params.length} OR COALESCE(p.address, '') ILIKE $${params.length})`);
+    paramsWhere.push(`%${filters.search}%`);
+    where.push(`(p.name ILIKE $${paramsWhere.length} OR COALESCE(p.address, '') ILIKE $${paramsWhere.length})`);
   }
 
   if (filters.verification.length) {
     if (!verificationField) {
-      if (!filters.verification.every((v) => v === "unverified")) return [];
+      if (!filters.verification.every((v) => v === "unverified")) return { places: [], total: 0 };
     } else {
-      params.push(filters.verification);
-      where.push(`COALESCE(${verificationField}, 'unverified') = ANY($${params.length}::text[])`);
+      paramsWhere.push(filters.verification);
+      where.push(`COALESCE(${verificationField}, 'unverified') = ANY($${paramsWhere.length}::text[])`);
     }
   }
 
   if (filters.asset) {
-    if (!hasPayments) return [];
-    params.push(filters.asset);
-    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND UPPER(COALESCE(pa.asset, '')) = $${params.length})`);
+    if (!hasPayments) return { places: [], total: 0 };
+    paramsWhere.push(filters.asset);
+    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND UPPER(COALESCE(pa.asset, '')) = $${paramsWhere.length})`);
   }
 
   if (filters.payment.length) {
-    if (!hasPayments) return [];
-    params.push(filters.payment);
-    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND (LOWER(pa.asset) = ANY($${params.length}::text[]) OR LOWER(pa.chain) = ANY($${params.length}::text[])))`);
+    if (!hasPayments) return { places: [], total: 0 };
+    paramsWhere.push(filters.payment);
+    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND (LOWER(pa.asset) = ANY($${paramsWhere.length}::text[]) OR LOWER(pa.chain) = ANY($${paramsWhere.length}::text[])))`);
   }
 
   const verificationSelect = verificationField
@@ -198,15 +199,27 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
   const amenitiesSelect = hasCol("amenities") ? "p.amenities" : "NULL::text[] AS amenities";
   const paymentNoteSelect = hasCol("payment_note") ? "p.payment_note" : "NULL::text AS payment_note";
 
+  const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+
   const query = `SELECT p.id, p.name, p.category, p.city, p.country, p.lat, p.lng, ${addressSelect}, ${aboutSelect}, ${amenitiesSelect}, ${paymentNoteSelect}${verificationSelect}
     FROM places p${joinVerification}
-    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+    ${whereClause}
     ${orderBy}
-    LIMIT $${params.length + 1}
-    OFFSET $${params.length + 2}`;
-  params.push(filters.limit, filters.offset);
+    LIMIT $${paramsWhere.length + 1}
+    OFFSET $${paramsWhere.length + 2}`;
 
-  const { rows } = await dbQuery<{ id: string; name: string; category: string | null; city: string | null; country: string | null; lat: number; lng: number; address: string | null; about: string | null; amenities: string[] | string | null; payment_note: string | null; verification: string | null }>(query, params, { route });
+  const countQuery = `SELECT COUNT(DISTINCT p.id)::int AS total
+    FROM places p${joinVerification}
+    ${whereClause}`;
+
+  const paramsQuery = [...paramsWhere, filters.limit, filters.offset];
+
+  const [countResult, placesResult] = await Promise.all([
+    dbQuery<{ total: number }>(countQuery, paramsWhere, { route }),
+    dbQuery<{ id: string; name: string; category: string | null; city: string | null; country: string | null; lat: number; lng: number; address: string | null; about: string | null; amenities: string[] | string | null; payment_note: string | null; verification: string | null }>(query, paramsQuery, { route }),
+  ]);
+  const total = Number(countResult.rows[0]?.total ?? 0);
+  const rows = placesResult.rows;
 
   const placeIds = rows.map((row) => row.id);
   const paymentsByPlace = new Map<string, PaymentAccept[]>();
@@ -258,7 +271,7 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
     }
   }
 
-  return rows
+  const places = rows
     .map((row) => {
       const fallback = fallbackById.get(row.id);
       const accepted = hasPayments
@@ -292,6 +305,11 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
       return sanitizeOptionalStrings(summary);
     })
     .filter((place) => !isLegacyOrDemoId(place.id));
+
+  return {
+    places,
+    total,
+  };
 };
 
 export async function listPlacesForMap(options: ListPlacesForMapOptions): Promise<ListPlacesForMapResult> {
@@ -299,7 +317,7 @@ export async function listPlacesForMap(options: ListPlacesForMapOptions): Promis
     try {
       const dbPlaces = await loadPlacesFromDb(options.filters);
       if (dbPlaces) {
-        return { places: dbPlaces, source: "db", limited: false };
+        return { places: dbPlaces.places, total: dbPlaces.total, source: "db", limited: false };
       }
     } catch (error) {
       if (options.dataSource === "db") {
@@ -352,6 +370,7 @@ export async function listPlacesForMap(options: ListPlacesForMapOptions): Promis
 
   return {
     places,
+    total: filtered.length,
     source: "json",
     limited: true,
     lastUpdatedISO: normalizeText(snapshot.meta?.last_updated) ?? undefined,
