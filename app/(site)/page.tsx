@@ -34,6 +34,8 @@ const REGIONS = [
   'Australia',
 ] as const;
 
+const FEATURED_CITIES = ['Berlin', 'Tokyo', 'Singapore'] as const;
+
 const VERIFICATION_STEPS = [
   'Unverified – imported from OpenStreetMap (not yet verified)',
   'Community – updated/confirmed by the community',
@@ -144,6 +146,21 @@ export default function HomePage() {
                 className="rounded-full border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
                 {region}
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-gray-900">Browse by city</h2>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {FEATURED_CITIES.map((city) => (
+              <Link
+                key={city}
+                href={`/city/${encodeURIComponent(city.toLowerCase())}`}
+                className="rounded-full border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                {city}
               </Link>
             ))}
           </div>

@@ -19,6 +19,7 @@ const siteUrl = 'https://www.cryptopaymap.com';
 const relatedLinksLimit = 6;
 
 const normalizeText = (value: string | null | undefined) => value?.trim().toLowerCase() ?? '';
+const toCitySlug = (city: string) => encodeURIComponent(city.trim().replace(/\s+/g, '-').toLowerCase());
 
 export async function generateMetadata({ params }: PlacePageProps): Promise<Metadata> {
   const rawId = params.id;
@@ -114,6 +115,15 @@ export default async function PlaceDetailPage({ params }: PlacePageProps) {
         />
 
         <h1 className="text-3xl font-semibold text-gray-900 sm:text-4xl">{heading}</h1>
+
+        {place.city?.trim() ? (
+          <p className="mt-3 text-sm text-gray-600">
+            More places in{' '}
+            <Link href={`/city/${toCitySlug(place.city)}`} className="font-medium text-sky-700 hover:underline">
+              {place.city}
+            </Link>
+          </p>
+        ) : null}
 
         <dl className="mt-8 grid gap-5">
           {place.category?.trim() ? (
