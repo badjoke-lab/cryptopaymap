@@ -916,7 +916,8 @@ export default function MapClient() {
   const hasActiveFilters = useMemo(
     () =>
       Boolean(
-        filters.category ||
+        filters.asset ||
+          filters.category ||
           filters.chains.length ||
           filters.payments.length ||
           filters.verifications.length ||

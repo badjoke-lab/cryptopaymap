@@ -27,6 +27,7 @@ type PublishedSnapshot = {
 };
 
 type ListFilters = {
+  asset: string | null;
   category: string | null;
   country: string | null;
   city: string | null;
@@ -175,6 +176,12 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
     }
   }
 
+  if (filters.asset) {
+    if (!hasPayments) return [];
+    params.push(filters.asset);
+    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND UPPER(COALESCE(pa.asset, '')) = $${params.length})`);
+  }
+
   if (filters.payment.length) {
     if (!hasPayments) return [];
     params.push(filters.payment);
@@ -316,6 +323,11 @@ export async function listPlacesForMap(options: ListPlacesForMapOptions): Promis
     .filter((place) => (options.filters.country ? place.country === options.filters.country : true))
     .filter((place) => (options.filters.city ? place.city === options.filters.city : true))
     .filter((place) => (options.filters.verification.length ? options.filters.verification.includes(place.verification) : true))
+    .filter((place) => {
+      if (!options.filters.asset) return true;
+      const accepted = normalizeAccepted([], place.supported_crypto?.length ? place.supported_crypto : place.accepted ?? []);
+      return accepted.some((entry) => entry === options.filters.asset || entry.startsWith(`${options.filters.asset}@`));
+    })
     .filter((place) => {
       if (!options.filters.payment.length) return true;
       const chains = (place.supported_crypto?.length ? place.supported_crypto : place.accepted ?? []).map((item) => item.toLowerCase());
