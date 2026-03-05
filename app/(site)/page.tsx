@@ -24,15 +24,17 @@ const SUPPORTED_PAYMENTS = [
 ] as const;
 
 const REGIONS = [
-  'United States',
-  'France',
-  'Japan',
-  'Germany',
-  'Canada',
-  'UK',
-  'Singapore',
-  'Australia',
+  { name: 'United States', iso2: 'US' },
+  { name: 'France', iso2: 'FR' },
+  { name: 'Japan', iso2: 'JP' },
+  { name: 'Germany', iso2: 'DE' },
+  { name: 'Canada', iso2: 'CA' },
+  { name: 'UK', iso2: 'GB' },
+  { name: 'Singapore', iso2: 'SG' },
+  { name: 'Australia', iso2: 'AU' },
 ] as const;
+
+const BROWSE_ASSETS = ['BTC', 'ETH', 'USDT', 'USDC', 'SOL', 'XRP'] as const;
 
 const FEATURED_CITIES = ['Berlin', 'Tokyo', 'Singapore'] as const;
 
@@ -120,6 +122,7 @@ export default function HomePage() {
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10" aria-label="Home SEO content">
         <div>
           <h2 className="text-2xl font-semibold text-gray-900">Supported payments</h2>
+          <p className="mt-2 text-sm text-gray-700">Popular assets and payment rails found across listed places.</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SUPPORTED_PAYMENTS.map((group) => (
               <div key={group.title} className="rounded-xl border border-gray-100 bg-gray-50 p-4">
@@ -136,16 +139,32 @@ export default function HomePage() {
           </div>
         </div>
 
+        <div className="mt-8">
+          <h2 className="text-2xl font-semibold text-gray-900">Browse by asset</h2>
+          <p className="mt-2 text-sm text-gray-700">Jump directly to places that accept a specific crypto asset.</p>
+          <div className="mt-4 flex flex-wrap gap-2">
+            {BROWSE_ASSETS.map((asset) => (
+              <Link
+                key={asset}
+                href={`/accepts/${asset}`}
+                className="rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
+              >
+                {asset}
+              </Link>
+            ))}
+          </div>
+        </div>
+
         <div className="mt-10">
           <h2 className="text-2xl font-semibold text-gray-900">Browse by region</h2>
           <div className="mt-4 flex flex-wrap gap-2">
             {REGIONS.map((region) => (
               <Link
-                key={region}
-                href="/discover"
+                key={region.iso2}
+                href={`/map?country=${region.iso2}`}
                 className="rounded-full border border-gray-200 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                {region}
+                {region.name}
               </Link>
             ))}
           </div>
