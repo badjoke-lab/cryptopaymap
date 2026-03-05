@@ -8,6 +8,7 @@ import {
   getDataSourceSetting,
   withDbTimeout,
 } from "@/lib/dataSource";
+import { normalizeAcceptsAsset } from "@/lib/acceptsAsset";
 import { listPlacesForMap } from "@/lib/places/listPlacesForMap";
 
 const DEFAULT_LIMIT = 1200;
@@ -106,6 +107,8 @@ export async function GET(request: NextRequest) {
   normalizedParams.set("offset", String(offset));
   const search = parseSearchTerm(searchParams.get("q"));
   if (search) normalizedParams.set("q", search);
+  const asset = normalizeAcceptsAsset(searchParams.get("asset"));
+  if (asset) normalizedParams.set("asset", asset);
   if (mode !== "all") normalizedParams.delete("mode");
   const cacheKey = buildCacheKey(normalizedParams);
 
@@ -123,6 +126,7 @@ export async function GET(request: NextRequest) {
   const paymentFilters = searchParams.getAll("payment").flatMap((v) => v.split(",")).map((v) => v.trim()).filter(Boolean);
 
   const filters = {
+    asset,
     category: searchParams.get("category"),
     country: searchParams.get("country"),
     city: searchParams.get("city"),

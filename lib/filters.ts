@@ -1,4 +1,5 @@
 import { normalizeAccepted } from "@/lib/accepted";
+import { normalizeAcceptsAsset } from "@/lib/acceptsAsset";
 import type { Place } from "@/types/places";
 
 export type FilterMeta = {
@@ -52,6 +53,7 @@ export const deriveFilterMeta = (places: Place[]): FilterMeta => {
 };
 
 export type FilterState = {
+  asset: string | null;
   category: string | null;
   chains: string[];
   payments: string[];
@@ -62,6 +64,7 @@ export type FilterState = {
 };
 
 export const defaultFilterState: FilterState = {
+  asset: null,
   category: null,
   chains: [],
   payments: [],
@@ -87,6 +90,9 @@ export const buildQueryFromFilters = (filters: FilterState): string => {
 
   if (filters.category) {
     params.set("category", filters.category);
+  }
+  if (filters.asset) {
+    params.set("asset", filters.asset);
   }
   if (filters.chains.length) {
     appendValues("chain", filters.chains);
@@ -120,6 +126,7 @@ export const parseFiltersFromSearchParams = (
   const availableCountries = new Set(meta?.countries ?? []);
 
   const category = searchParams.get("category");
+  const asset = searchParams.get("asset");
   const country = searchParams.get("country");
   const city = searchParams.get("city");
   const search = searchParams.get("q")?.trim() ?? "";
@@ -140,6 +147,7 @@ export const parseFiltersFromSearchParams = (
       : null;
 
   return {
+    asset: normalizeAcceptsAsset(asset),
     category: filteredCategory,
     chains: filteredChains,
     verifications: filteredVerifications,
