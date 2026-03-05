@@ -29,6 +29,7 @@ async function main() {
   const result = await listPlacesForMap({
     dataSource: "db",
     filters: {
+      asset: null,
       category: null,
       country: null,
       city: null,

@@ -11,7 +11,7 @@ type AcceptsAssetPageProps = {
   params: { asset: string };
 };
 
-const MAX_RESULTS = 200;
+const MAX_RESULTS = 50;
 
 export async function generateMetadata({ params }: AcceptsAssetPageProps): Promise<Metadata> {
   const asset = normalizeAcceptsAsset(params.asset);
@@ -56,10 +56,8 @@ export default async function AcceptsAssetPage({ params }: AcceptsAssetPageProps
 
   return (
     <main className="mx-auto w-full max-w-3xl px-4 py-8 sm:px-6 sm:py-12">
-      <h1 className="text-3xl font-semibold text-gray-900 sm:text-4xl">Places accepting {asset}</h1>
-      <p className="mt-3 text-base text-gray-700">
-        Browse businesses that accept {assetLabel} payments.
-      </p>
+      <h1 className="text-3xl font-semibold text-gray-900 sm:text-4xl">Places accepting {assetLabel} ({asset})</h1>
+      <p className="mt-3 text-base text-gray-700">Browse businesses that accept {assetLabel} payments.</p>
       <div className="mt-5">
         <Link
           href={`/map?asset=${encodeURIComponent(asset)}`}
@@ -70,7 +68,7 @@ export default async function AcceptsAssetPage({ params }: AcceptsAssetPageProps
       </div>
 
       <section className="mt-8 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-gray-900">Found {result.places.length} places</h2>
+        <h2 className="text-lg font-semibold text-gray-900">Showing first {MAX_RESULTS} places</h2>
         {result.places.length === 0 ? (
           <p className="mt-3 text-sm text-gray-600">No places found for this asset yet.</p>
         ) : (
@@ -80,13 +78,20 @@ export default async function AcceptsAssetPage({ params }: AcceptsAssetPageProps
                 <Link href={`/place/${encodeURIComponent(place.id)}`} className="text-sky-700 hover:underline">
                   {place.name}
                 </Link>
-                <span className="ml-2 text-sm text-gray-500">
-                  {[place.city, place.country].filter(Boolean).join(", ")}
-                </span>
+                <span className="ml-2 text-sm text-gray-500">{[place.city, place.country].filter(Boolean).join(", ")}</span>
               </li>
             ))}
           </ul>
         )}
+
+        <div className="mt-6 border-t border-gray-100 pt-4">
+          <Link
+            href={`/map?asset=${encodeURIComponent(asset)}`}
+            className="inline-flex items-center rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
+          >
+            View all on map
+          </Link>
+        </div>
       </section>
     </main>
   );
