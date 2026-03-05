@@ -114,25 +114,25 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<{ places: PlaceSu
   const hasCol = (name: string) => placeColumns.some((r) => r.column_name === name);
 
   const where: string[] = [...getMapDisplayableWhereClauses("p")];
-  const params: unknown[] = [];
+  const paramsWhere: unknown[] = [];
 
   if (filters.category) {
-    params.push(filters.category);
-    where.push(`p.category = $${params.length}`);
+    paramsWhere.push(filters.category);
+    where.push(`p.category = $${paramsWhere.length}`);
   }
   if (filters.country) {
-    params.push(filters.country);
-    where.push(`p.country = $${params.length}`);
+    paramsWhere.push(filters.country);
+    where.push(`p.country = $${paramsWhere.length}`);
   }
   if (filters.city) {
-    params.push(filters.city);
-    where.push(`p.city = $${params.length}`);
+    paramsWhere.push(filters.city);
+    where.push(`p.city = $${paramsWhere.length}`);
   }
   if (hasCol("status")) where.push("COALESCE(p.status, 'published') = 'published'");
   if (hasCol("is_demo")) where.push("COALESCE(p.is_demo, false) = false");
 
-  params.push(Array.from(LEGACY_TEST_IDS));
-  where.push(`NOT (p.id = ANY($${params.length}::text[]))`);
+  paramsWhere.push(Array.from(LEGACY_TEST_IDS));
+  where.push(`NOT (p.id = ANY($${paramsWhere.length}::text[]))`);
 
   const hasVerifications = Boolean(tableChecks[0]?.verifications);
   const hasPayments = Boolean(tableChecks[0]?.payments);
@@ -151,12 +151,12 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<{ places: PlaceSu
     const useGeom = hasCol("geom");
     const clauses: string[] = [];
     for (const bbox of filters.bbox) {
-      const start = params.length + 1;
+      const start = paramsWhere.length + 1;
       if (useGeom) {
-        params.push(bbox.minLng, bbox.minLat, bbox.maxLng, bbox.maxLat);
+        paramsWhere.push(bbox.minLng, bbox.minLat, bbox.maxLng, bbox.maxLat);
         clauses.push(`ST_Intersects(p.geom::geometry, ST_MakeEnvelope($${start}, $${start + 1}, $${start + 2}, $${start + 3}, 4326))`);
       } else {
-        params.push(bbox.minLng, bbox.maxLng, bbox.minLat, bbox.maxLat);
+        paramsWhere.push(bbox.minLng, bbox.maxLng, bbox.minLat, bbox.maxLat);
         clauses.push(`(p.lng BETWEEN $${start} AND $${start + 1} AND p.lat BETWEEN $${start + 2} AND $${start + 3})`);
       }
     }
@@ -164,29 +164,29 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<{ places: PlaceSu
   }
 
   if (filters.search) {
-    params.push(`%${filters.search}%`);
-    where.push(`(p.name ILIKE $${params.length} OR COALESCE(p.address, '') ILIKE $${params.length})`);
+    paramsWhere.push(`%${filters.search}%`);
+    where.push(`(p.name ILIKE $${paramsWhere.length} OR COALESCE(p.address, '') ILIKE $${paramsWhere.length})`);
   }
 
   if (filters.verification.length) {
     if (!verificationField) {
       if (!filters.verification.every((v) => v === "unverified")) return { places: [], total: 0 };
     } else {
-      params.push(filters.verification);
-      where.push(`COALESCE(${verificationField}, 'unverified') = ANY($${params.length}::text[])`);
+      paramsWhere.push(filters.verification);
+      where.push(`COALESCE(${verificationField}, 'unverified') = ANY($${paramsWhere.length}::text[])`);
     }
   }
 
   if (filters.asset) {
     if (!hasPayments) return { places: [], total: 0 };
-    params.push(filters.asset);
-    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND UPPER(COALESCE(pa.asset, '')) = $${params.length})`);
+    paramsWhere.push(filters.asset);
+    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND UPPER(COALESCE(pa.asset, '')) = $${paramsWhere.length})`);
   }
 
   if (filters.payment.length) {
     if (!hasPayments) return { places: [], total: 0 };
-    params.push(filters.payment);
-    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND (LOWER(pa.asset) = ANY($${params.length}::text[]) OR LOWER(pa.chain) = ANY($${params.length}::text[])))`);
+    paramsWhere.push(filters.payment);
+    where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND (LOWER(pa.asset) = ANY($${paramsWhere.length}::text[]) OR LOWER(pa.chain) = ANY($${paramsWhere.length}::text[])))`);
   }
 
   const verificationSelect = verificationField
@@ -205,16 +205,18 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<{ places: PlaceSu
     FROM places p${joinVerification}
     ${whereClause}
     ${orderBy}
-    LIMIT $${params.length + 1}
-    OFFSET $${params.length + 2}`;
+    LIMIT $${paramsWhere.length + 1}
+    OFFSET $${paramsWhere.length + 2}`;
 
   const countQuery = `SELECT COUNT(DISTINCT p.id)::int AS total
     FROM places p${joinVerification}
     ${whereClause}`;
 
+  const paramsQuery = [...paramsWhere, filters.limit, filters.offset];
+
   const [countResult, placesResult] = await Promise.all([
-    dbQuery<{ total: number }>(countQuery, params, { route }),
-    dbQuery<{ id: string; name: string; category: string | null; city: string | null; country: string | null; lat: number; lng: number; address: string | null; about: string | null; amenities: string[] | string | null; payment_note: string | null; verification: string | null }>(query, [...params, filters.limit, filters.offset], { route }),
+    dbQuery<{ total: number }>(countQuery, paramsWhere, { route }),
+    dbQuery<{ id: string; name: string; category: string | null; city: string | null; country: string | null; lat: number; lng: number; address: string | null; about: string | null; amenities: string[] | string | null; payment_note: string | null; verification: string | null }>(query, paramsQuery, { route }),
   ]);
   const total = Number(countResult.rows[0]?.total ?? 0);
   const rows = placesResult.rows;

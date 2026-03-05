@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: AcceptsAssetPageProps): Promi
 const verificationMeta = {
   owner: { label: "Owner", className: "bg-emerald-100 text-emerald-800" },
   community: { label: "Community", className: "bg-sky-100 text-sky-800" },
-  directory: { label: "Community", className: "bg-sky-100 text-sky-800" },
+  directory: { label: "Directory", className: "bg-sky-100 text-sky-800" },
   unverified: { label: "Unverified", className: "bg-gray-100 text-gray-700" },
 } as const;
 
@@ -82,7 +82,7 @@ export default async function AcceptsAssetPage({ params, searchParams }: Accepts
   });
 
   const visiblePlaces = countryFilter
-    ? sortedPlaces.filter((place) => place.country.toUpperCase() === countryFilter)
+    ? sortedPlaces.filter((place) => (place.country ?? "").toUpperCase() === countryFilter)
     : sortedPlaces;
 
   return (
