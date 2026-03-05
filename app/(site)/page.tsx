@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { buildPageMetadata } from '@/lib/seo/metadata';
+import { HomeTotalPlaces } from './HomeTotalPlaces';
 
 const SUPPORTED_PAYMENTS = [
   {
@@ -72,21 +74,43 @@ export default function HomePage() {
           <p>Check trusted listing signals before visiting and compare options by area.</p>
           <p>Help keep the map fresh by submitting new places and updates.</p>
         </div>
-        <div className="mt-7 flex flex-wrap gap-3">
-          <Link href="/map" className="rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white">
+
+        <HomeTotalPlaces />
+
+        <div className="mt-6">
+          <Link
+            href="/map"
+            className="inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-5 py-3 text-sm font-semibold text-white sm:w-auto"
+          >
             Open Map
           </Link>
-          <Link
-            href="/discover"
-            className="rounded-full border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700"
-          >
-            Discover
+        </div>
+
+        <Link
+          href="/map"
+          className="group mt-8 block overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 transition hover:border-gray-300"
+          aria-label="Open map preview and go to the map"
+        >
+          <Image
+            src="/map-preview.svg"
+            alt="Map preview placeholder for the CryptoPayMap map view"
+            width={1400}
+            height={780}
+            className="h-auto w-full rounded-xl border border-gray-100 object-cover"
+            priority
+          />
+          <p className="mt-2 px-2 text-xs font-medium text-gray-500">
+            <span className="hidden sm:inline">Click to open map</span>
+            <span className="sm:hidden">Tap to open map</span>
+          </p>
+        </Link>
+
+        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600 underline-offset-2">
+          <Link href="/discover" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+            Find popular spots fast → Discover
           </Link>
-          <Link
-            href="/submit"
-            className="rounded-full border border-gray-200 px-5 py-2.5 text-sm font-semibold text-gray-700"
-          >
-            Submit
+          <Link href="/stats" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+            Check coverage & trends → Stats
           </Link>
         </div>
       </section>
@@ -123,6 +147,17 @@ export default function HomePage() {
               </Link>
             ))}
           </div>
+        </div>
+
+        <div className="mt-10">
+          <h2 className="text-2xl font-semibold text-gray-900">Help improve the map</h2>
+          <p className="mt-2 text-sm text-gray-700">Submit a new place or update an existing listing.</p>
+          <Link
+            href="/submit"
+            className="mt-3 inline-flex rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-white"
+          >
+            Submit a place
+          </Link>
         </div>
 
         <div className="mt-10">

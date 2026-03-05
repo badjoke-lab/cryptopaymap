@@ -1,0 +1,36 @@
+<svg width="1400" height="780" viewBox="0 0 1400 780" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Map-style preview placeholder for CryptoPayMap">
+  <rect width="1400" height="780" rx="24" fill="#E2E8F0"/>
+  <rect x="0" y="0" width="300" height="780" fill="#F8FAFC"/>
+  <rect x="20" y="28" width="86" height="24" rx="12" fill="#CBD5E1"/>
+  <rect x="20" y="72" width="260" height="46" rx="10" fill="#E2E8F0"/>
+  <rect x="20" y="136" width="260" height="106" rx="12" fill="#E5E7EB"/>
+  <rect x="20" y="258" width="260" height="106" rx="12" fill="#E5E7EB"/>
+  <rect x="20" y="380" width="260" height="106" rx="12" fill="#E5E7EB"/>
+  <rect x="20" y="512" width="260" height="244" rx="12" fill="#E5E7EB"/>
+  <rect x="300" y="0" width="1100" height="780" fill="#A5D8EA"/>
+  <path d="M320 312H1380" stroke="#D1FAE5" stroke-opacity="0.55" stroke-width="3"/>
+  <path d="M320 390H1380" stroke="#D1FAE5" stroke-opacity="0.55" stroke-width="3"/>
+  <path d="M320 468H1380" stroke="#D1FAE5" stroke-opacity="0.55" stroke-width="3"/>
+  <path d="M453 228C488 250 518 266 569 271C634 276 698 242 759 228C845 209 909 216 992 242C1057 262 1139 300 1224 306" stroke="#F8FAFC" stroke-width="18" stroke-linecap="round"/>
+  <path d="M423 554C489 514 551 491 621 486C684 481 756 503 820 515C895 529 961 530 1035 509C1094 493 1162 458 1247 450" stroke="#F8FAFC" stroke-width="22" stroke-linecap="round"/>
+  <g>
+    <circle cx="696" cy="362" r="31" fill="#4F46E5"/>
+    <circle cx="696" cy="362" r="27" fill="#10B981" fill-opacity="0.88"/>
+    <text x="696" y="369" text-anchor="middle" fill="white" font-size="20" font-family="Arial,sans-serif" font-weight="700">151</text>
+  </g>
+  <g>
+    <circle cx="820" cy="410" r="28" fill="#4F46E5"/>
+    <circle cx="820" cy="410" r="24" fill="#10B981" fill-opacity="0.88"/>
+    <text x="820" y="416" text-anchor="middle" fill="white" font-size="18" font-family="Arial,sans-serif" font-weight="700">76</text>
+  </g>
+  <g>
+    <circle cx="960" cy="330" r="30" fill="#4F46E5"/>
+    <circle cx="960" cy="330" r="26" fill="#10B981" fill-opacity="0.88"/>
+    <text x="960" y="337" text-anchor="middle" fill="white" font-size="19" font-family="Arial,sans-serif" font-weight="700">45</text>
+  </g>
+  <g>
+    <circle cx="1104" cy="434" r="27" fill="#4F46E5"/>
+    <circle cx="1104" cy="434" r="23" fill="#10B981" fill-opacity="0.88"/>
+    <text x="1104" y="440" text-anchor="middle" fill="white" font-size="17" font-family="Arial,sans-serif" font-weight="700">19</text>
+  </g>
+</svg>
