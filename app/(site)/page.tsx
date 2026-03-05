@@ -94,7 +94,7 @@ export default function HomePage() {
           aria-label="Open map preview and go to the map"
         >
           <Image
-            src="/map-preview.svg"
+            src="/map-preview.webp"
             alt="Map preview placeholder for the CryptoPayMap map view"
             width={1400}
             height={780}
