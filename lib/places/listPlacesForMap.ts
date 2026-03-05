@@ -46,6 +46,7 @@ export type ListPlacesForMapOptions = {
 
 export type ListPlacesForMapResult = {
   places: PlaceSummaryPlus[];
+  total: number;
   source: "db" | "json";
   limited: boolean;
   lastUpdatedISO?: string;
@@ -86,7 +87,7 @@ const loadPlacesFromSnapshot = async (): Promise<PublishedSnapshot> => {
   throw new Error("FALLBACK_SNAPSHOT_UNAVAILABLE");
 };
 
-const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[] | null> => {
+const loadPlacesFromDb = async (filters: ListFilters): Promise<{ places: PlaceSummaryPlus[]; total: number } | null> => {
   if (!hasDatabaseUrl()) return null;
   const route = "api_places";
   const fallbackById = new Map(fallbackPlaces.map((place) => [place.id, place]));
@@ -169,7 +170,7 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
 
   if (filters.verification.length) {
     if (!verificationField) {
-      if (!filters.verification.every((v) => v === "unverified")) return [];
+      if (!filters.verification.every((v) => v === "unverified")) return { places: [], total: 0 };
     } else {
       params.push(filters.verification);
       where.push(`COALESCE(${verificationField}, 'unverified') = ANY($${params.length}::text[])`);
@@ -177,13 +178,13 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
   }
 
   if (filters.asset) {
-    if (!hasPayments) return [];
+    if (!hasPayments) return { places: [], total: 0 };
     params.push(filters.asset);
     where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND UPPER(COALESCE(pa.asset, '')) = $${params.length})`);
   }
 
   if (filters.payment.length) {
-    if (!hasPayments) return [];
+    if (!hasPayments) return { places: [], total: 0 };
     params.push(filters.payment);
     where.push(`EXISTS (SELECT 1 FROM payment_accepts pa WHERE pa.place_id = p.id AND (LOWER(pa.asset) = ANY($${params.length}::text[]) OR LOWER(pa.chain) = ANY($${params.length}::text[])))`);
   }
@@ -198,15 +199,25 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
   const amenitiesSelect = hasCol("amenities") ? "p.amenities" : "NULL::text[] AS amenities";
   const paymentNoteSelect = hasCol("payment_note") ? "p.payment_note" : "NULL::text AS payment_note";
 
+  const whereClause = where.length ? `WHERE ${where.join(" AND ")}` : "";
+
   const query = `SELECT p.id, p.name, p.category, p.city, p.country, p.lat, p.lng, ${addressSelect}, ${aboutSelect}, ${amenitiesSelect}, ${paymentNoteSelect}${verificationSelect}
     FROM places p${joinVerification}
-    ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+    ${whereClause}
     ${orderBy}
     LIMIT $${params.length + 1}
     OFFSET $${params.length + 2}`;
-  params.push(filters.limit, filters.offset);
 
-  const { rows } = await dbQuery<{ id: string; name: string; category: string | null; city: string | null; country: string | null; lat: number; lng: number; address: string | null; about: string | null; amenities: string[] | string | null; payment_note: string | null; verification: string | null }>(query, params, { route });
+  const countQuery = `SELECT COUNT(DISTINCT p.id)::int AS total
+    FROM places p${joinVerification}
+    ${whereClause}`;
+
+  const [countResult, placesResult] = await Promise.all([
+    dbQuery<{ total: number }>(countQuery, params, { route }),
+    dbQuery<{ id: string; name: string; category: string | null; city: string | null; country: string | null; lat: number; lng: number; address: string | null; about: string | null; amenities: string[] | string | null; payment_note: string | null; verification: string | null }>(query, [...params, filters.limit, filters.offset], { route }),
+  ]);
+  const total = Number(countResult.rows[0]?.total ?? 0);
+  const rows = placesResult.rows;
 
   const placeIds = rows.map((row) => row.id);
   const paymentsByPlace = new Map<string, PaymentAccept[]>();
@@ -258,7 +269,7 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
     }
   }
 
-  return rows
+  const places = rows
     .map((row) => {
       const fallback = fallbackById.get(row.id);
       const accepted = hasPayments
@@ -292,6 +303,11 @@ const loadPlacesFromDb = async (filters: ListFilters): Promise<PlaceSummaryPlus[
       return sanitizeOptionalStrings(summary);
     })
     .filter((place) => !isLegacyOrDemoId(place.id));
+
+  return {
+    places,
+    total,
+  };
 };
 
 export async function listPlacesForMap(options: ListPlacesForMapOptions): Promise<ListPlacesForMapResult> {
@@ -299,7 +315,7 @@ export async function listPlacesForMap(options: ListPlacesForMapOptions): Promis
     try {
       const dbPlaces = await loadPlacesFromDb(options.filters);
       if (dbPlaces) {
-        return { places: dbPlaces, source: "db", limited: false };
+        return { places: dbPlaces.places, total: dbPlaces.total, source: "db", limited: false };
       }
     } catch (error) {
       if (options.dataSource === "db") {
@@ -352,6 +368,7 @@ export async function listPlacesForMap(options: ListPlacesForMapOptions): Promis
 
   return {
     places,
+    total: filtered.length,
     source: "json",
     limited: true,
     lastUpdatedISO: normalizeText(snapshot.meta?.last_updated) ?? undefined,
