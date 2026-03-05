@@ -343,7 +343,7 @@ export default function SubmissionDetailCard({ submissionId }: { submissionId: s
               <p>{toast.text}</p>
               {toast.placeId && (
                 <p className="mt-1">
-                  Place: <Link className="font-semibold text-emerald-700" href={`/places/${toast.placeId}`}>
+                  Place: <Link className="font-semibold text-emerald-700" href={`/place/${toast.placeId}`}>
                     {toast.placeId}
                   </Link>
                 </p>
