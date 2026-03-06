@@ -16,6 +16,8 @@ const MAX_LIMIT = 5000;
 const ALL_MODE_LIMIT = 1200;
 const CACHE_TTL_MS = 20_000;
 const DB_ERROR_LOG_WINDOW_MS = 60_000;
+const CACHE_CONTROL = "public, max-age=0, s-maxage=30, stale-while-revalidate=300";
+const NO_STORE = "no-store";
 
 type CacheEntry = {
   expiresAt: number;
@@ -81,13 +83,16 @@ export async function GET(request: NextRequest) {
     const stubName = parseSearchTerm(searchParams.get("q")) ?? "[DRY RUN]";
     return NextResponse.json(
       [{ id: dryRunId, name: stubName, lat: 0, lng: 0, verification: "unverified", category: "dry-run", city: "", country: "", accepted: [], address_full: null, about_short: null, paymentNote: null, amenities: null, phone: null, website: null, twitter: null, instagram: null, facebook: null, coverImage: null }],
-      { headers: buildDataSourceHeaders("json", true) },
+      { headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("json", true) } },
     );
   }
 
   const bboxResult = parseBbox(searchParams.get("bbox"));
   if (bboxResult.error) {
-    return NextResponse.json({ ok: false, error: "INVALID_BBOX", message: bboxResult.error }, { status: 400, headers: defaultHeaders });
+    return NextResponse.json(
+      { ok: false, error: "INVALID_BBOX", message: bboxResult.error },
+      { status: 400, headers: { "Cache-Control": NO_STORE, ...defaultHeaders } },
+    );
   }
 
   const requestedLimit = parsePositiveInt(searchParams.get("limit"));
@@ -97,7 +102,12 @@ export async function GET(request: NextRequest) {
   if (mode === "all") {
     const country = searchParams.get("country");
     const city = searchParams.get("city");
-    if (!country && !city) return NextResponse.json({ ok: false, error: "MODE_ALL_REQUIRES_SCOPE" }, { status: 400 });
+    if (!country && !city) {
+      return NextResponse.json(
+        { ok: false, error: "MODE_ALL_REQUIRES_SCOPE" },
+        { status: 400, headers: { "Cache-Control": NO_STORE, ...defaultHeaders } },
+      );
+    }
     limit = Math.min(requestedLimit ?? ALL_MODE_LIMIT, ALL_MODE_LIMIT);
     offset = 0;
   }
@@ -116,6 +126,7 @@ export async function GET(request: NextRequest) {
   if (cached && cached.expiresAt > Date.now()) {
     return NextResponse.json(cached.data, {
       headers: {
+        "Cache-Control": CACHE_CONTROL,
         ...buildDataSourceHeaders(cached.source, cached.limited),
         ...(cached.lastUpdatedISO ? { "x-cpm-last-updated": cached.lastUpdatedISO } : {}),
       },
@@ -157,6 +168,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(result.places, {
       headers: {
+        "Cache-Control": CACHE_CONTROL,
         ...buildDataSourceHeaders(result.source, result.limited),
         ...(result.lastUpdatedISO ? { "x-cpm-last-updated": result.lastUpdatedISO } : {}),
       },
@@ -164,11 +176,20 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     logDbFailure("database query failed", error);
     if (!shouldAllowJson || dataSource === "db") {
-      return NextResponse.json({ ok: false, error: "DB_UNAVAILABLE" }, { status: 503, headers: buildDataSourceHeaders("db", true) });
+      return NextResponse.json(
+        { ok: false, error: "DB_UNAVAILABLE" },
+        { status: 503, headers: { "Cache-Control": NO_STORE, ...buildDataSourceHeaders("db", true) } },
+      );
     }
     if (error instanceof DbUnavailableError) {
-      return NextResponse.json({ ok: false, error: "DB_UNAVAILABLE" }, { status: 503, headers: buildDataSourceHeaders("db", true) });
+      return NextResponse.json(
+        { ok: false, error: "DB_UNAVAILABLE" },
+        { status: 503, headers: { "Cache-Control": NO_STORE, ...buildDataSourceHeaders("db", true) } },
+      );
     }
-    return NextResponse.json({ ok: false, error: "FALLBACK_SNAPSHOT_UNAVAILABLE" }, { status: 503, headers: buildDataSourceHeaders("json", true) });
+    return NextResponse.json(
+      { ok: false, error: "FALLBACK_SNAPSHOT_UNAVAILABLE" },
+      { status: 503, headers: { "Cache-Control": NO_STORE, ...buildDataSourceHeaders("json", true) } },
+    );
   }
 }
