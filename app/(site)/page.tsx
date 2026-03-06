@@ -68,6 +68,15 @@ export const metadata: Metadata = buildPageMetadata({
 });
 
 export default function HomePage() {
+  const primaryCtaClass =
+    'inline-flex w-full cursor-pointer items-center justify-center rounded-full border border-transparent bg-gray-900 px-5 py-3 text-sm font-semibold text-white transition duration-150 hover:-translate-y-0.5 hover:bg-gray-800 hover:shadow-sm active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white sm:w-auto';
+  const previewLinkClass =
+    'group mt-8 block cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 transition duration-150 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-sm active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
+  const secondaryCtaClass =
+    'mt-3 inline-flex cursor-pointer rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition duration-150 hover:-translate-y-0.5 hover:border-gray-400 hover:bg-white hover:shadow-sm active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
+  const inlineLinkClass =
+    'text-gray-600 underline decoration-gray-300 underline-offset-2 transition duration-150 hover:-translate-y-0.5 hover:text-gray-900 active:translate-y-0 active:scale-[0.99] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
+
   return (
     <main className="mx-auto flex w-full max-w-4xl flex-col gap-6 px-4 py-10 sm:px-6 sm:py-14">
       <section className="w-full rounded-2xl border border-gray-200 bg-white p-6 shadow-sm sm:p-10">
@@ -82,25 +91,18 @@ export default function HomePage() {
         <HomeTotalPlaces />
 
         <div className="mt-6">
-          <Link
-            href="/map"
-            className="inline-flex w-full items-center justify-center rounded-full bg-gray-900 px-5 py-3 text-sm font-semibold text-white sm:w-auto"
-          >
+          <Link href="/map" className={primaryCtaClass}>
             Open Map
           </Link>
         </div>
 
-        <Link
-          href="/map"
-          className="group mt-8 block overflow-hidden rounded-2xl border border-gray-200 bg-gray-50 p-2 transition hover:border-gray-300"
-          aria-label="Open map preview and go to the map"
-        >
+        <Link href="/map" className={previewLinkClass} aria-label="Open map preview and go to the map">
           <Image
             src="/map-preview.webp"
             alt="Map preview placeholder for the CryptoPayMap map view"
             width={1400}
             height={780}
-            className="h-auto w-full rounded-xl border border-gray-100 object-cover"
+            className="h-auto w-full rounded-xl border border-gray-100 object-cover transition duration-150 group-hover:scale-[1.01]"
             priority
           />
           <p className="mt-2 px-2 text-xs font-medium text-gray-500">
@@ -110,10 +112,10 @@ export default function HomePage() {
         </Link>
 
         <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm font-medium text-gray-600 underline-offset-2">
-          <Link href="/discover" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+          <Link href="/discover" className={inlineLinkClass}>
             Find popular spots fast → Discover
           </Link>
-          <Link href="/stats" className="text-gray-600 underline decoration-gray-300 transition hover:text-gray-900">
+          <Link href="/stats" className={inlineLinkClass}>
             Check coverage & trends → Stats
           </Link>
         </div>
@@ -188,10 +190,7 @@ export default function HomePage() {
         <div className="mt-10">
           <h2 className="text-2xl font-semibold text-gray-900">Help improve the map</h2>
           <p className="mt-2 text-sm text-gray-700">Submit a new place or update an existing listing.</p>
-          <Link
-            href="/submit"
-            className="mt-3 inline-flex rounded-full border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 hover:bg-white"
-          >
+          <Link href="/submit" className={secondaryCtaClass}>
             Submit a place
           </Link>
         </div>
