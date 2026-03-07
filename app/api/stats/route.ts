@@ -10,6 +10,7 @@ import {
   getDataSourceSetting,
   withDbTimeout,
 } from "@/lib/dataSource";
+import { loadUnfilteredStatsSnapshotFastPath } from "@/lib/stats/snapshotFastPath";
 import { getMapDisplayableWhereClauses, isMapDisplayablePlace } from "@/lib/stats/mapPopulation";
 import { normalizeAcceptanceChainKey } from "@/lib/stats/acceptance";
 
@@ -25,6 +26,11 @@ type StatsFilters = {
   verification: string;
   promoted: string;
   source: string;
+};
+
+type StatsRouteOptions = {
+  route: string;
+  allowUnfilteredFastPath?: boolean;
 };
 
 // Response shape for GET /api/stats.
@@ -122,6 +128,9 @@ const EMPTY_FILTERS: StatsFilters = {
 };
 
 const normalizeFilterValue = (value: string | null) => (value ?? "").trim();
+
+const isUnfilteredRequest = (filters: StatsFilters) =>
+  FILTER_KEYS.every((key) => filters[key].length === 0);
 
 const parseFilters = (request: Request): StatsFilters => {
   const url = new URL(request.url);
@@ -829,15 +838,50 @@ const loadStatsFromDb = async (route: string, filters: StatsFilters): Promise<St
   return fetchDbSnapshotV4(route, filters);
 };
 
-export async function GET(request: Request) {
+const withOkMeta = (statsResponse: StatsApiResponse): StatsApiResponse => ({
+  ...statsResponse,
+  ok: true,
+  meta: statsResponse.meta ?? {
+    source: "db_live",
+    population_id: MAP_POPULATION_ID,
+    as_of: new Date().toISOString(),
+    acceptance_chain_missing_places: 0,
+    acceptance_unknown_chain_included: false,
+    accepts_with_chain_count: 0,
+    accepts_missing_chain_count: 0,
+    network_coverage: 0,
+  },
+});
+
+export const getStatsResponse = async (request: Request, options: StatsRouteOptions): Promise<Response> => {
   const filters = parseFilters(request);
-  const route = "api_stats";
+  const route = options.route;
   const requestId = resolveRequestId(request);
   const dataSource = getDataSourceSetting();
   const { shouldAttemptDb, shouldAllowJson, hasDb } = getDataSourceContext(dataSource);
 
   if (!hasDb && dataSource === "db") {
     return failureResponse(503, requestId, "db_connect_failed", "database unavailable");
+  }
+
+  const isUnfiltered = isUnfilteredRequest(filters);
+
+  if (options.allowUnfilteredFastPath && isUnfiltered && shouldAttemptDb) {
+    try {
+      const cachedResponse = await withDbTimeout(loadUnfilteredStatsSnapshotFastPath(route), {
+        message: "DB_TIMEOUT",
+      });
+      if (cachedResponse) {
+        return NextResponse.json<StatsApiResponse>(withOkMeta(cachedResponse), {
+          headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
+        });
+      }
+    } catch (error) {
+      console.warn("[stats] fast path unavailable; falling back to live aggregation", {
+        requestId,
+        error: toErrorSummary(error),
+      });
+    }
   }
 
   if (!shouldAttemptDb) {
@@ -848,20 +892,7 @@ export async function GET(request: Request) {
 
     try {
       const jsonPlaces = await loadPlacesFromJsonFallback();
-      return NextResponse.json<StatsApiResponse>({
-        ...responseFromPlaces(filters, jsonPlaces),
-        ok: true,
-        meta: {
-          source: "db_live",
-          population_id: MAP_POPULATION_ID,
-          as_of: new Date().toISOString(),
-          acceptance_chain_missing_places: 0,
-          acceptance_unknown_chain_included: false,
-          accepts_with_chain_count: 0,
-          accepts_missing_chain_count: 0,
-          network_coverage: 0,
-        },
-      }, {
+      return NextResponse.json<StatsApiResponse>(withOkMeta(responseFromPlaces(filters, jsonPlaces)), {
         headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("json", true) },
       });
     } catch (error) {
@@ -874,20 +905,7 @@ export async function GET(request: Request) {
     const statsResponse = await withDbTimeout(loadStatsFromDb(route, filters), {
       message: "DB_TIMEOUT",
     });
-    return NextResponse.json<StatsApiResponse>({
-      ...statsResponse,
-      ok: true,
-      meta: statsResponse.meta ?? {
-        source: "db_live",
-        population_id: MAP_POPULATION_ID,
-        as_of: new Date().toISOString(),
-        acceptance_chain_missing_places: 0,
-        acceptance_unknown_chain_included: false,
-        accepts_with_chain_count: 0,
-        accepts_missing_chain_count: 0,
-        network_coverage: 0,
-      },
-    }, {
+    return NextResponse.json<StatsApiResponse>(withOkMeta(statsResponse), {
       headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
     });
   } catch (error) {
@@ -904,20 +922,7 @@ export async function GET(request: Request) {
     // Production must never use JSON fallback for stats.
     try {
       const jsonPlaces = await loadPlacesFromJsonFallback();
-      return NextResponse.json<StatsApiResponse>({
-        ...responseFromPlaces(filters, jsonPlaces),
-        ok: true,
-        meta: {
-          source: "db_live",
-          population_id: MAP_POPULATION_ID,
-          as_of: new Date().toISOString(),
-          acceptance_chain_missing_places: 0,
-          acceptance_unknown_chain_included: false,
-          accepts_with_chain_count: 0,
-          accepts_missing_chain_count: 0,
-          network_coverage: 0,
-        },
-      }, {
+      return NextResponse.json<StatsApiResponse>(withOkMeta(responseFromPlaces(filters, jsonPlaces)), {
         headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("json", true) },
       });
     } catch (jsonError) {
@@ -925,4 +930,8 @@ export async function GET(request: Request) {
       return failureResponse(503, requestId, "unknown", "stats unavailable");
     }
   }
+};
+
+export async function GET(request: Request) {
+  return getStatsResponse(request, { route: "api_stats", allowUnfilteredFastPath: true });
 }
