@@ -10,6 +10,8 @@ import {
 } from "@/lib/dataSource";
 import { normalizeAcceptsAsset } from "@/lib/acceptsAsset";
 import { listPlacesForMap } from "@/lib/places/listPlacesForMap";
+import { toPlaceMapItem } from "@/lib/places/mapDto/toSummaryPlus";
+import type { PlaceMapItem } from "@/lib/places/mapDto/types";
 
 const DEFAULT_LIMIT = 1200;
 const MAX_LIMIT = 5000;
@@ -21,7 +23,7 @@ const NO_STORE = "no-store";
 
 type CacheEntry = {
   expiresAt: number;
-  data: unknown[];
+  data: PlaceMapItem[];
   source: "db" | "json";
   limited: boolean;
   lastUpdatedISO?: string;
@@ -82,7 +84,7 @@ export async function GET(request: NextRequest) {
     const dryRunId = searchParams.get("placeId") ?? "cpm:dryrun-placeholder";
     const stubName = parseSearchTerm(searchParams.get("q")) ?? "[DRY RUN]";
     return NextResponse.json(
-      [{ id: dryRunId, name: stubName, lat: 0, lng: 0, verification: "unverified", category: "dry-run", city: "", country: "", accepted: [], address_full: null, about_short: null, paymentNote: null, amenities: null, phone: null, website: null, twitter: null, instagram: null, facebook: null, coverImage: null }],
+      [{ id: dryRunId, name: stubName, lat: 0, lng: 0, verification: "unverified", category: "dry-run", city: "", country: "", accepted: [] } satisfies PlaceMapItem],
       { headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("json", true) } },
     );
   }
@@ -158,15 +160,17 @@ export async function GET(request: NextRequest) {
       { message: "DB_TIMEOUT" },
     );
 
+    const body = result.places.map(toPlaceMapItem);
+
     placesCache.set(cacheKey, {
-      data: result.places,
+      data: body,
       expiresAt: Date.now() + CACHE_TTL_MS,
       source: result.source,
       limited: result.limited,
       lastUpdatedISO: result.lastUpdatedISO,
     });
 
-    return NextResponse.json(result.places, {
+    return NextResponse.json(body, {
       headers: {
         "Cache-Control": CACHE_CONTROL,
         ...buildDataSourceHeaders(result.source, result.limited),
