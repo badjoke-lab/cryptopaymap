@@ -3,6 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { DbUnavailableError } from "@/lib/db";
 import { getPlaceDetail } from "@/lib/places/detail";
 
+const CACHE_CONTROL = "public, max-age=0, s-maxage=30, stale-while-revalidate=300";
+const NO_STORE = "no-store";
+
 const decodePlaceId = (rawId: string) => {
   try {
     return { ok: true, id: decodeURIComponent(rawId) };
@@ -14,7 +17,10 @@ const decodePlaceId = (rawId: string) => {
 export async function GET(_request: NextRequest, { params }: { params: { id: string } }) {
   const decoded = decodePlaceId(params.id);
   if (!decoded.ok) {
-    return NextResponse.json({ error: "Invalid place id" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Invalid place id" },
+      { status: 400, headers: { "Cache-Control": NO_STORE } },
+    );
   }
 
   if (decoded.id.startsWith("cpm:dryrun-")) {
@@ -28,14 +34,20 @@ export async function GET(_request: NextRequest, { params }: { params: { id: str
   try {
     const result = await getPlaceDetail(decoded.id);
     if (result.place) {
-      return NextResponse.json(result.place);
+      return NextResponse.json(result.place, { headers: { "Cache-Control": CACHE_CONTROL } });
     }
   } catch (error) {
     if (error instanceof DbUnavailableError) {
-      return NextResponse.json({ ok: false, error: "DB_UNAVAILABLE" }, { status: 503 });
+      return NextResponse.json(
+        { ok: false, error: "DB_UNAVAILABLE" },
+        { status: 503, headers: { "Cache-Control": NO_STORE } },
+      );
     }
     throw error;
   }
 
-  return NextResponse.json({ error: "not_found" }, { status: 404 });
+  return NextResponse.json(
+    { error: "not_found" },
+    { status: 404, headers: { "Cache-Control": NO_STORE } },
+  );
 }
