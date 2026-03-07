@@ -1,6 +1,6 @@
 import type { Place } from "@/types/places";
 
-import { type DbContact, type PlaceSummaryPlus, type Verification } from "./types";
+import { type DbContact, type PlaceMapItem, type PlaceSummaryPlus, type Verification } from "./types";
 
 const VERIFICATION_LEVELS = new Set(["owner", "community", "directory", "unverified", "report", "verified", "pending"]);
 
@@ -79,6 +79,20 @@ export const pickCoverImage = (place: {
   return candidates.find((value): value is string => Boolean(value)) ?? null;
 };
 
+
+export function toPlaceMapItem(place: PlaceSummaryPlus): PlaceMapItem {
+  return {
+    id: place.id,
+    name: place.name,
+    lat: place.lat,
+    lng: place.lng,
+    verification: place.verification,
+    category: place.category,
+    city: place.city,
+    country: place.country,
+    accepted: place.accepted,
+  };
+}
 export function toSummaryPlus(
   place: Place,
   accepted: string[],
