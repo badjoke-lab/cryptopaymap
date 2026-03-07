@@ -56,14 +56,14 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body className="min-h-screen bg-white text-gray-900">
         <Script
           async
-          src="https://www.googletagmanager.com/gtag/js?id=G-0D84H0D66W"
+          src="https://www.googletagmanager.com/gtag/js?id=G-ZGGG7W94RW"
           strategy="afterInteractive"
         />
         <Script id="ga4-init" strategy="afterInteractive">
           {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', 'G-0D84H0D66W');`}
+gtag('config', 'G-ZGGG7W94RW');`}
         </Script>
         <Script id="cpm-ld-json" type="application/ld+json" strategy="beforeInteractive">
           {JSON.stringify({
