@@ -39,6 +39,51 @@
     },
     {
       "type": "node",
+      "id": 5005,
+      "lat": 34.6937,
+      "lon": 135.5023,
+      "tags": {
+        "name": "Osaka BCH Market",
+        "shop": "supermarket",
+        "currency:BCH": "yes",
+        "addr:city": "Osaka",
+        "addr:country": "JP"
+      }
+    },
+    {
+      "type": "way",
+      "id": 6006,
+      "center": { "lat": 48.1374, "lon": 11.5755 },
+      "tags": {
+        "name": "Munich LTC Bakery",
+        "amenity": "bakery",
+        "currency:LTC": "yes",
+        "contact:website": "https://munich-ltc.example"
+      }
+    },
+    {
+      "type": "node",
+      "id": 7007,
+      "lat": 37.7749,
+      "lon": -122.4194,
+      "tags": {
+        "name": "ETH Hardware Store",
+        "shop": "hardware",
+        "currency:ETH": "yes"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 8008,
+      "center": { "lat": 51.5072, "lon": -0.1276 },
+      "tags": {
+        "name": "USDT Friendly Bookstore",
+        "shop": "books",
+        "currency:USDT": "yes"
+      }
+    },
+    {
+      "type": "node",
       "id": 3003,
       "lat": 48.8566,
       "lon": 2.3522,

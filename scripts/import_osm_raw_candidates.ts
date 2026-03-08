@@ -66,6 +66,9 @@ const REGION_PRESETS: Record<string, RegionPreset> = {
   },
 };
 
+const CRYPTO_CURRENCY_ALLOWLIST = ['XBT', 'BTC', 'BCH', 'LTC', 'ETH', 'DOGE', 'USDT', 'USDC'];
+const PAYMENT_ACCEPTED_VALUES_PATTERN = '^(yes|limited|only)$';
+
 const DEFAULT_FIXTURE = 'scripts/fixtures/osm_candidates_sample.json';
 const DEFAULT_OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
 
@@ -125,15 +128,21 @@ function selectRegionPreset(region: string): RegionPreset {
 
 function buildOverpassQuery(region: string, limit: number): string {
   const preset = selectRegionPreset(region);
+  const paymentClauses = ['node', 'way', 'relation']
+    .map((osmType) => `${osmType}[~"^payment:.*"~"${PAYMENT_ACCEPTED_VALUES_PATTERN}"](area.searchArea);`)
+    .join('\n  ');
+
+  const currencyClauses = CRYPTO_CURRENCY_ALLOWLIST.flatMap((symbol) =>
+    ['node', 'way', 'relation'].map(
+      (osmType) => `${osmType}["currency:${symbol}"~"${PAYMENT_ACCEPTED_VALUES_PATTERN}"](area.searchArea);`,
+    ),
+  ).join('\n  ');
+
   return `[out:json][timeout:120];
 ${preset.overpassAreaExpression}
 (
-  node[~"^payment:.*"~"yes|limited|only"](area.searchArea);
-  way[~"^payment:.*"~"yes|limited|only"](area.searchArea);
-  relation[~"^payment:.*"~"yes|limited|only"](area.searchArea);
-  node["currency:XBT"="yes"](area.searchArea);
-  way["currency:XBT"="yes"](area.searchArea);
-  relation["currency:XBT"="yes"](area.searchArea);
+  ${paymentClauses}
+  ${currencyClauses}
 );
 out tags center ${limit};`;
 }
@@ -280,7 +289,8 @@ async function main(): Promise<void> {
   const logs: string[] = [];
   logs.push(`[start] region=${args.region} dry_run=${String(args.dryRun)} limit=${String(args.limit)}`);
   logs.push(`[query] ${query.replace(/\s+/g, ' ').trim()}`);
-  logs.push(`[guard] live fetch is disabled in this phase; fixture source only`);
+  logs.push(`[query] currency_allowlist=${CRYPTO_CURRENCY_ALLOWLIST.join(',')}`);
+  logs.push('[guard] live fetch is disabled in this phase; fixture source only');
 
   const sourceElements = await loadFixtureElements(args.fixture);
   let skippedInvalid = 0;

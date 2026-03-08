@@ -8,6 +8,14 @@
 - Raw JSONL: `data/import/raw/raw_osm_candidates.<region>.jsonl`
 - Log: `data/import/logs/raw_osm_candidates.<region>.log`
 
+## 候補抽出ポリシー（BTC限定ではない）
+
+- raw 段階は「仮想通貨受け入れらしきものを広く拾う」目的。
+- Overpass クエリは以下を候補対象にする:
+  - `payment:* = yes|limited|only`
+  - `currency:*` 系のうち allowlist (`XBT/BTC/BCH/LTC/ETH/DOGE/USDT/USDC`) が `yes|limited|only`
+- つまり raw は **BTC 限定でない**。最終的な絞り込みは後続の正規化・重複排除段階で行う。
+
 ## 小試走（fixture / dry-run のみ）
 
 ```bash
@@ -44,7 +52,7 @@ node --import tsx scripts/import_osm_raw_candidates.ts \
 
 - `payment:lightning=yes|only` → `raw_chain_candidate=Lightning`, `raw_chain_confidence=high`
 - `payment:onchain=yes|only` かつ `currency:XBT=yes` (または `currency:BTC=yes`) → `raw_chain_candidate=Bitcoin`, `raw_chain_confidence=medium`
-- payment/currency タグはあるが上記に合致しない → `raw_chain_candidate=null`, `raw_chain_confidence=low`
+- payment/currency タグはあるが上記に合致しない（例: `currency:BCH=yes`, `currency:ETH=yes`, `currency:USDT=yes`） → `raw_chain_candidate=null`, `raw_chain_confidence=low`
 - payment/currency タグが存在しない → `raw_chain_candidate=null`, `raw_chain_confidence=none`
 
 ## 注意
@@ -58,14 +66,14 @@ node --import tsx scripts/import_osm_raw_candidates.ts \
 標準出力（例）:
 
 ```text
-dry-run complete: wrote 2 records to data/import/raw/raw_osm_candidates.japan.jsonl
+dry-run complete: wrote 6 records to data/import/raw/raw_osm_candidates.japan.jsonl
 log file: data/import/logs/raw_osm_candidates.japan.log
 ```
 
 ログ要約（例）:
 
-- loaded=5
-- written=2
+- loaded=9
+- written=6
 - skipped_missing_name=1
 - skipped_missing_coords=1
 - skipped_duplicate=1
@@ -74,5 +82,5 @@ log file: data/import/logs/raw_osm_candidates.japan.log
 ## JSONL 1レコード例
 
 ```json
-{"candidate_source":"osm_overpass","source_id":"osm:node:1001","source_url":"https://www.openstreetmap.org/node/1001","ingested_at":"2026-01-01T00:00:00.000Z","raw_hash":"<sha256>","raw_name":"Tokyo Crypto Cafe","raw_category":"cafe","raw_payment_tags":{"payment:lightning":"yes","payment:onchain":"yes","currency:XBT":"yes"},"raw_chain_candidate":"Lightning","raw_chain_confidence":"high","lat":35.6804,"lng":139.769,"address_raw":"Marunouchi 1-1","city_raw":"Tokyo","country_raw":"JP","website_raw":"https://tokyo-crypto.example","socials_raw":["https://t.me/tokyocrypto"],"phone_raw":"+81-00-1111-2222","osm_type":"node","osm_id":"1001","raw_json":{"type":"node","id":1001,"lat":35.6804,"lon":139.769,"tags":{"name":"Tokyo Crypto Cafe","amenity":"cafe","payment:lightning":"yes","payment:onchain":"yes","currency:XBT":"yes","addr:street":"Marunouchi","addr:housenumber":"1-1","addr:city":"Tokyo","addr:country":"JP","website":"https://tokyo-crypto.example","contact:telegram":"https://t.me/tokyocrypto","phone":"+81-00-1111-2222"}}}
+{"candidate_source":"osm_overpass","source_id":"osm:node:5005","source_url":"https://www.openstreetmap.org/node/5005","ingested_at":"2026-01-01T00:00:00.000Z","raw_hash":"<sha256>","raw_name":"Osaka BCH Market","raw_category":"supermarket","raw_payment_tags":{"currency:BCH":"yes"},"raw_chain_candidate":null,"raw_chain_confidence":"low","lat":34.6937,"lng":135.5023,"address_raw":null,"city_raw":"Osaka","country_raw":"JP","website_raw":null,"socials_raw":[],"phone_raw":null,"osm_type":"node","osm_id":"5005","raw_json":{"type":"node","id":5005,"lat":34.6937,"lon":135.5023,"tags":{"name":"Osaka BCH Market","shop":"supermarket","currency:BCH":"yes","addr:city":"Osaka","addr:country":"JP"}}}
 ```
