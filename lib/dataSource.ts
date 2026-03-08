@@ -6,6 +6,7 @@ export type DataSourceResult = "db" | "json";
 type TimeoutOptions = {
   timeoutMs?: number;
   message?: string;
+  onTimeout?: (context: { timeoutMs: number; message: string }) => void;
 };
 
 // DATA_SOURCE=auto rules:
@@ -48,10 +49,12 @@ export const buildDataSourceHeaders = (source: DataSourceResult, limited: boolea
 export const withDbTimeout = async <T>(promise: Promise<T>, options: TimeoutOptions = {}) => {
   const timeoutMs = options.timeoutMs ?? DEFAULT_DB_TIMEOUT_MS;
   const message = options.message ?? "DB_TIMEOUT";
+  const onTimeout = options.onTimeout;
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
   const timeoutPromise = new Promise<never>((_, reject) => {
     timeoutId = setTimeout(() => {
+      onTimeout?.({ timeoutMs, message });
       reject(new DbUnavailableError(message));
     }, timeoutMs);
   });
