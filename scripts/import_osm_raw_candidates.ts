@@ -8,6 +8,7 @@ type Args = {
   out: string;
   log: string;
   dryRun: boolean;
+  live: boolean;
   fixture: string;
   overpassUrl: string;
 };
@@ -80,6 +81,7 @@ const PAYMENT_ACCEPTED_VALUES = new Set(['yes', 'limited', 'only']);
 
 const DEFAULT_FIXTURE = 'scripts/fixtures/osm_candidates_sample.json';
 const DEFAULT_OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
+const DEFAULT_FETCH_TIMEOUT_MS = 120_000;
 
 function parseArgs(argv: string[]): Args {
   const pairs = new Map<string, string | boolean>();
@@ -104,8 +106,9 @@ function parseArgs(argv: string[]): Args {
   }
 
   const dryRun = pairs.get('dry-run') === true;
-  if (!dryRun) {
-    throw new Error('This implementation is guarded: --dry-run is mandatory in this phase.');
+  const live = pairs.get('live') === true;
+  if (dryRun && live) {
+    throw new Error('--dry-run and --live cannot be used together');
   }
 
   const limitRaw = String(pairs.get('limit') || '1000');
@@ -123,7 +126,7 @@ function parseArgs(argv: string[]): Args {
   const fixture = String(pairs.get('fixture') || DEFAULT_FIXTURE);
   const overpassUrl = String(pairs.get('overpass-url') || DEFAULT_OVERPASS_URL);
 
-  return { region, limit, out, log, dryRun, fixture, overpassUrl };
+  return { region, limit, out, log, dryRun, live, fixture, overpassUrl };
 }
 
 function selectRegionPreset(region: string): RegionPreset {
@@ -313,22 +316,81 @@ async function loadFixtureElements(filePath: string): Promise<OsmElement[]> {
   return Array.isArray(parsed.elements) ? parsed.elements : [];
 }
 
+async function fetchOverpassElements(args: Args, query: string): Promise<OsmElement[]> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), DEFAULT_FETCH_TIMEOUT_MS);
+  try {
+    const response = await fetch(args.overpassUrl, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/x-www-form-urlencoded; charset=UTF-8',
+      },
+      body: `data=${encodeURIComponent(query)}`,
+      signal: controller.signal,
+    });
+
+    if (!response.ok) {
+      const responseText = await response.text();
+      throw new Error(`HTTP ${response.status}: ${responseText.slice(0, 500)}`);
+    }
+
+    const parsed = (await response.json()) as { elements?: OsmElement[] };
+    return Array.isArray(parsed.elements) ? parsed.elements : [];
+  } catch (error) {
+    if ((error as Error).name === 'AbortError') {
+      throw new Error(`overpass fetch timeout after ${String(DEFAULT_FETCH_TIMEOUT_MS)}ms`);
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const query = buildOverpassQuery(args.region, args.limit);
   const ingestedAt = new Date().toISOString();
+  const startedAt = new Date().toISOString();
 
   await mkdir(path.dirname(args.out), { recursive: true });
   await mkdir(path.dirname(args.log), { recursive: true });
 
   const logs: string[] = [];
-  logs.push(`[start] region=${args.region} dry_run=${String(args.dryRun)} limit=${String(args.limit)}`);
+  const mode = args.live ? 'live' : 'fixture';
+  logs.push(`[mode] ${mode}`);
+  logs.push(
+    `[start] timestamp=${startedAt} region=${args.region} dry_run=${String(args.dryRun)} live=${String(args.live)} limit=${String(args.limit)}`,
+  );
+  logs.push(`[overpass_url] ${args.overpassUrl}`);
   logs.push(`[query] ${query.replace(/\s+/g, ' ').trim()}`);
   logs.push(`[query] payment_allowlist=${CRYPTO_PAYMENT_KEY_ALLOWLIST.join(',')}`);
   logs.push(`[query] currency_allowlist=${CRYPTO_CURRENCY_ALLOWLIST.join(',')}`);
-  logs.push('[guard] live fetch is disabled in this phase; fixture source only');
 
-  const sourceElements = await loadFixtureElements(args.fixture);
+  let failedFetch = 0;
+  let sourceElements: OsmElement[] = [];
+  if (args.live) {
+    try {
+      sourceElements = await fetchOverpassElements(args, query);
+    } catch (error) {
+      failedFetch = 1;
+      logs.push(`[error][fetch] ${(error as Error).message}`);
+      logs.push(`[summary] loaded=0`);
+      logs.push('[summary] written=0');
+      logs.push('[summary] skipped_missing_name=0');
+      logs.push('[summary] skipped_non_candidate=0');
+      logs.push('[summary] skipped_missing_coords=0');
+      logs.push('[summary] skipped_duplicate=0');
+      logs.push('[summary] failed_transform=0');
+      logs.push(`[summary] failed_fetch=${String(failedFetch)}`);
+      logs.push(`[end] timestamp=${new Date().toISOString()} region=${args.region}`);
+      await writeFile(args.log, `${logs.join('\n')}\n`, 'utf8');
+      throw new Error(`live fetch failed for region=${args.region}. see log: ${args.log}`);
+    }
+  } else {
+    logs.push(`[fixture] ${args.fixture}`);
+    sourceElements = await loadFixtureElements(args.fixture);
+  }
+
   let skippedInvalid = 0;
   let skippedDuplicate = 0;
   let skippedMissingName = 0;
@@ -391,11 +453,13 @@ async function main(): Promise<void> {
   logs.push(`[summary] skipped_missing_coords=${String(skippedMissingCoords)}`);
   logs.push(`[summary] skipped_duplicate=${String(skippedDuplicate)}`);
   logs.push(`[summary] failed_transform=${String(failedTransform)}`);
+  logs.push(`[summary] failed_fetch=${String(failedFetch)}`);
+  logs.push(`[end] timestamp=${new Date().toISOString()} region=${args.region}`);
   logs.push(`[done] out=${args.out}`);
 
   await writeFile(args.log, `${logs.join('\n')}\n`, 'utf8');
 
-  console.log(`dry-run complete: wrote ${records.length} records to ${args.out}`);
+  console.log(`${mode} run complete: wrote ${records.length} records to ${args.out}`);
   console.log(`log file: ${args.log}`);
 }
 
