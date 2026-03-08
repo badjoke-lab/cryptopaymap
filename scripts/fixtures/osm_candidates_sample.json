@@ -1,0 +1,163 @@
+{
+  "elements": [
+    {
+      "type": "node",
+      "id": 1001,
+      "lat": 35.6804,
+      "lon": 139.769,
+      "tags": {
+        "name": "Tokyo Crypto Cafe",
+        "amenity": "cafe",
+        "payment:lightning": "yes",
+        "payment:onchain": "yes",
+        "currency:XBT": "yes",
+        "addr:street": "Marunouchi",
+        "addr:housenumber": "1-1",
+        "addr:city": "Tokyo",
+        "addr:country": "JP",
+        "website": "https://tokyo-crypto.example",
+        "contact:telegram": "https://t.me/tokyocrypto",
+        "phone": "+81-00-1111-2222"
+      }
+    },
+    {
+      "type": "way",
+      "id": 2002,
+      "center": {
+        "lat": 52.52,
+        "lon": 13.405
+      },
+      "tags": {
+        "name": "Berlin BTC Shop",
+        "shop": "electronics",
+        "payment:onchain": "yes",
+        "currency:XBT": "yes",
+        "addr:street": "Unter den Linden",
+        "addr:housenumber": "7",
+        "addr:city": "Berlin",
+        "addr:country": "DE",
+        "contact:website": "https://berlin-btc.example",
+        "contact:instagram": "https://instagram.com/berlinbtc"
+      }
+    },
+    {
+      "type": "node",
+      "id": 5005,
+      "lat": 34.6937,
+      "lon": 135.5023,
+      "tags": {
+        "name": "Osaka BCH Market",
+        "shop": "supermarket",
+        "currency:BCH": "yes",
+        "addr:city": "Osaka",
+        "addr:country": "JP"
+      }
+    },
+    {
+      "type": "way",
+      "id": 6006,
+      "center": {
+        "lat": 48.1374,
+        "lon": 11.5755
+      },
+      "tags": {
+        "name": "Munich LTC Bakery",
+        "amenity": "bakery",
+        "currency:LTC": "yes",
+        "contact:website": "https://munich-ltc.example"
+      }
+    },
+    {
+      "type": "node",
+      "id": 7007,
+      "lat": 37.7749,
+      "lon": -122.4194,
+      "tags": {
+        "name": "ETH Hardware Store",
+        "shop": "hardware",
+        "currency:ETH": "yes"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 8008,
+      "center": {
+        "lat": 51.5072,
+        "lon": -0.1276
+      },
+      "tags": {
+        "name": "USDT Friendly Bookstore",
+        "shop": "books",
+        "currency:USDT": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3003,
+      "lat": 48.8566,
+      "lon": 2.3522,
+      "tags": {
+        "name": "",
+        "payment:lightning": "yes"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 4004,
+      "center": {
+        "lat": 95,
+        "lon": 120
+      },
+      "tags": {
+        "name": "Invalid Coordinates Market",
+        "payment:onchain": "yes",
+        "currency:XBT": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1001,
+      "lat": 35.6804,
+      "lon": 139.769,
+      "tags": {
+        "name": "Tokyo Crypto Cafe Duplicate",
+        "payment:lightning": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9009,
+      "lat": 35.6895,
+      "lon": 139.6917,
+      "tags": {
+        "name": "Cash Only Diner",
+        "amenity": "restaurant",
+        "payment:cash": "yes"
+      }
+    },
+    {
+      "type": "way",
+      "id": 9010,
+      "center": {
+        "lat": 50.1109,
+        "lon": 8.6821
+      },
+      "tags": {
+        "name": "Cards Only Boutique",
+        "shop": "clothes",
+        "payment:credit_cards": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9011,
+      "lat": 40.7128,
+      "lon": -74.006,
+      "tags": {
+        "name": "Debit Cards Only Grocery",
+        "shop": "convenience",
+        "payment:debit_cards": "yes"
+      }
+    }
+  ]
+}
