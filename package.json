@@ -22,7 +22,9 @@
     "db:migrate:stats-timeseries": "tsx scripts/db_apply_sql.ts migrations/20260227_stats_timeseries.sql",
     "snapshot:build": "tsx scripts/build_published_places_snapshot.ts",
     "snapshot:verify": "tsx scripts/verify_published_places_snapshot.ts",
-    "import:osm:raw": "node --import tsx scripts/import_osm_raw_candidates.ts"
+    "import:osm:raw": "node --import tsx scripts/import_osm_raw_candidates.ts",
+    "db:migrate:stats-cache": "tsx scripts/db_apply_sql.ts migrations/20260308_stats_cache.sql",
+    "stats:cache:refresh": "tsx scripts/refresh_stats_cache.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.862.0",
