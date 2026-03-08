@@ -10,7 +10,10 @@ import {
   getDataSourceSetting,
   withDbTimeout,
 } from "@/lib/dataSource";
-import { loadUnfilteredStatsSnapshotFastPath } from "@/lib/stats/snapshotFastPath";
+import {
+  type StatsSnapshotFastPathResult,
+  loadUnfilteredStatsSnapshotFastPath,
+} from "@/lib/stats/snapshotFastPath";
 import { getMapDisplayableWhereClauses, isMapDisplayablePlace } from "@/lib/stats/mapPopulation";
 import { normalizeAcceptanceChainKey } from "@/lib/stats/acceptance";
 
@@ -936,11 +939,12 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
     livePathSuccess: false,
   };
   let timeoutMs: number | null = null;
+  let fastPathMiss: StatsSnapshotFastPathResult["miss"];
 
   if (allowUnfilteredFastPath && isUnfiltered && shouldAttemptDb) {
     pathState.enteredFastPath = true;
     try {
-      const cachedResponse = await withDbTimeout(loadUnfilteredStatsSnapshotFastPath(route), {
+      const fastPathResult = await withDbTimeout(loadUnfilteredStatsSnapshotFastPath(route), {
         message: "DB_TIMEOUT",
         onTimeout: ({ timeoutMs: timeoutMsValue, message }) => {
           timeoutMs = timeoutMsValue;
@@ -953,11 +957,23 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
           });
         },
       });
-      if (cachedResponse) {
-        return NextResponse.json<StatsApiResponse>(withOkMeta(cachedResponse, "snapshot_fast_path"), {
+      fastPathMiss = fastPathResult.miss;
+
+      if (fastPathResult.payload) {
+        return NextResponse.json<StatsApiResponse>(withOkMeta(fastPathResult.payload, "snapshot_fast_path"), {
           headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
         });
       }
+      if (diagnosticsEnabled && fastPathMiss) {
+        console.info("[stats] fast path miss", {
+          route,
+          miss_reason: fastPathMiss.reason,
+          table: fastPathMiss.table ?? null,
+          enteredFastPath: pathState.enteredFastPath,
+          enteredLiveFallback: true,
+        });
+      }
+
       pathState.enteredLiveFallback = true;
     } catch (error) {
       pathState.enteredLiveFallback = true;
