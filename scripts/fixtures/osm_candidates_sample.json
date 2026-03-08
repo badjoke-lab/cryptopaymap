@@ -1,0 +1,71 @@
+{
+  "elements": [
+    {
+      "type": "node",
+      "id": 1001,
+      "lat": 35.6804,
+      "lon": 139.769,
+      "tags": {
+        "name": "Tokyo Crypto Cafe",
+        "amenity": "cafe",
+        "payment:lightning": "yes",
+        "payment:onchain": "yes",
+        "currency:XBT": "yes",
+        "addr:street": "Marunouchi",
+        "addr:housenumber": "1-1",
+        "addr:city": "Tokyo",
+        "addr:country": "JP",
+        "website": "https://tokyo-crypto.example",
+        "contact:telegram": "https://t.me/tokyocrypto",
+        "phone": "+81-00-1111-2222"
+      }
+    },
+    {
+      "type": "way",
+      "id": 2002,
+      "center": { "lat": 52.52, "lon": 13.405 },
+      "tags": {
+        "name": "Berlin BTC Shop",
+        "shop": "electronics",
+        "payment:onchain": "yes",
+        "currency:XBT": "yes",
+        "addr:street": "Unter den Linden",
+        "addr:housenumber": "7",
+        "addr:city": "Berlin",
+        "addr:country": "DE",
+        "contact:website": "https://berlin-btc.example",
+        "contact:instagram": "https://instagram.com/berlinbtc"
+      }
+    },
+    {
+      "type": "node",
+      "id": 3003,
+      "lat": 48.8566,
+      "lon": 2.3522,
+      "tags": {
+        "name": "",
+        "payment:lightning": "yes"
+      }
+    },
+    {
+      "type": "relation",
+      "id": 4004,
+      "center": { "lat": 95, "lon": 120 },
+      "tags": {
+        "name": "Invalid Coordinates Market",
+        "payment:onchain": "yes",
+        "currency:XBT": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 1001,
+      "lat": 35.6804,
+      "lon": 139.769,
+      "tags": {
+        "name": "Tokyo Crypto Cafe Duplicate",
+        "payment:lightning": "yes"
+      }
+    }
+  ]
+}
