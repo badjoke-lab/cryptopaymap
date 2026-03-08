@@ -10,7 +10,7 @@
 
 ## 候補抽出ポリシー（crypto payment 候補に限定）
 
-raw 段階は「crypto payment candidate を広く拾う」目的で、次の合わせ技で抽出します。
+raw 段階は「crypto payment candidate を広く拾う」目的で、次の合わせ技で抽出します。最終 accepted 判定は後段の正規化・審査で行います。
 
 - `currency:*` allowlist
   - `currency:XBT|BTC|BCH|LTC|ETH|DOGE|USDT|USDC = yes|limited|only`
@@ -23,7 +23,7 @@ raw 段階は「crypto payment candidate を広く拾う」目的で、次の合
   - `payment:crypto`
   - 上記が `yes|limited|only`
 
-> `payment:cash` / `payment:credit_cards` / `payment:contactless` など一般決済タグは対象外。
+> `payment:cash` / `payment:credit_cards` / `payment:debit_cards` / `payment:contactless` など一般決済タグは対象外。
 
 ## 小試走（fixture / dry-run のみ）
 
@@ -81,10 +81,10 @@ log file: data/import/logs/raw_osm_candidates.japan.log
 
 ログ要約（例）:
 
-- loaded=11
+- loaded=12
 - written=6
 - skipped_missing_name=1
-- skipped_non_candidate=2  # cash/cards only fixture
+- skipped_non_candidate=3  # cash/credit/debit only fixture
 - skipped_missing_coords=1
 - skipped_duplicate=1
 - failed_transform=0
