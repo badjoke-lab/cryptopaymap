@@ -6,6 +6,20 @@ type SnapshotSourceRow = {
   payload: unknown;
 };
 
+export type StatsSnapshotFastPathMissReason =
+  | "table_missing"
+  | "column_missing"
+  | "payload_invalid"
+  | "exception";
+
+export type StatsSnapshotFastPathResult = {
+  payload: StatsApiResponse | null;
+  miss?: {
+    reason: StatsSnapshotFastPathMissReason;
+    table?: string;
+  };
+};
+
 const SNAPSHOT_TABLE_CANDIDATES = [
   { table: "stats_cache", payloadColumn: "payload", timestampColumn: "as_of" },
   { table: "stats_snapshot", payloadColumn: "payload", timestampColumn: "as_of" },
@@ -51,36 +65,59 @@ const isStatsApiResponse = (value: unknown): value is StatsApiResponse => {
 
 export const loadUnfilteredStatsSnapshotFastPath = async (
   route: string,
-): Promise<StatsApiResponse | null> => {
+): Promise<StatsSnapshotFastPathResult> => {
+  let miss: StatsSnapshotFastPathResult["miss"];
+
   for (const candidate of SNAPSHOT_TABLE_CANDIDATES) {
-    const exists = await tableExists(route, candidate.table);
-    if (!exists) continue;
+    try {
+      const exists = await tableExists(route, candidate.table);
+      if (!exists) {
+        miss = miss ?? { reason: "table_missing", table: candidate.table };
+        continue;
+      }
 
-    const [hasPayload, hasTimestamp] = await Promise.all([
-      hasColumn(route, candidate.table, candidate.payloadColumn),
-      hasColumn(route, candidate.table, candidate.timestampColumn),
-    ]);
+      const [hasPayload, hasTimestamp] = await Promise.all([
+        hasColumn(route, candidate.table, candidate.payloadColumn),
+        hasColumn(route, candidate.table, candidate.timestampColumn),
+      ]);
 
-    if (!hasPayload || !hasTimestamp) continue;
+      if (!hasPayload || !hasTimestamp) {
+        miss = { reason: "column_missing", table: candidate.table };
+        continue;
+      }
 
-    const payloadSql = quoteIdentifier(candidate.payloadColumn);
-    const timestampSql = quoteIdentifier(candidate.timestampColumn);
-    const tableSql = quoteIdentifier(candidate.table);
+      const payloadSql = quoteIdentifier(candidate.payloadColumn);
+      const timestampSql = quoteIdentifier(candidate.timestampColumn);
+      const tableSql = quoteIdentifier(candidate.table);
 
-    const { rows } = await dbQuery<SnapshotSourceRow>(
-      `SELECT ${payloadSql} AS payload
-       FROM ${tableSql}
-       ORDER BY ${timestampSql} DESC
-       LIMIT 1`,
-      [],
-      { route },
-    );
+      const { rows } = await dbQuery<SnapshotSourceRow>(
+        `SELECT ${payloadSql} AS payload
+         FROM ${tableSql}
+         ORDER BY ${timestampSql} DESC
+         LIMIT 1`,
+        [],
+        { route },
+      );
 
-    const payload = rows[0]?.payload;
-    if (isStatsApiResponse(payload)) {
-      return payload;
+      const payload = rows[0]?.payload;
+      if (isStatsApiResponse(payload)) {
+        return { payload };
+      }
+
+      miss = { reason: "payload_invalid", table: candidate.table };
+    } catch {
+      return {
+        payload: null,
+        miss: {
+          reason: "exception",
+          table: candidate.table,
+        },
+      };
     }
   }
 
-  return null;
+  return {
+    payload: null,
+    miss,
+  };
 };
