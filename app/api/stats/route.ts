@@ -893,9 +893,12 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
   };
 };
 
-const loadStatsFromDb = async (route: string, filters: StatsFilters): Promise<StatsApiResponse> => {
+export const loadStatsFromDb = async (route: string, filters: StatsFilters): Promise<StatsApiResponse> => {
   return fetchDbSnapshotV4(route, filters);
 };
+
+export const loadUnfilteredStatsFromDb = (route: string): Promise<StatsApiResponse> =>
+  loadStatsFromDb(route, { ...EMPTY_FILTERS });
 
 const withOkMeta = (statsResponse: StatsApiResponse, sourceOverride?: StatsMetaSource): StatsApiResponse => {
   const fallbackMeta = {
