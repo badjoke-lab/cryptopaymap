@@ -1,7 +1,25 @@
-# OSM raw candidate import (Phase 1 / implementation-only)
+# OSM raw candidate import (Phase 1 / raw候補取得)
 
-このジョブは `scripts/import_osm_raw_candidates.ts` を使って、OSM/Overpass から取得可能な構造を実装します。  
-**このフェーズでは実データ取得を実行しません。** `--dry-run` が必須で、fixture からのみ生成します。
+このジョブは `scripts/import_osm_raw_candidates.ts` を使って、OSM 候補を **region 単位**で raw JSONL に保存します。  
+Phase 1 では **DB 書込なし（insert / update / delete なし）** で、保存対象は raw JSONL とログのみです。
+
+## 安全ガード（最重要）
+
+- デフォルトは安全側: `--live` を付けない限り実通信しません。
+- `--dry-run` 指定時: fixture を読み込んで変換のみ実行します。
+- `--live` 指定時のみ: Overpass へ実通信します。
+- `--dry-run` と `--live` の同時指定はエラーです。
+
+## CLI オプション
+
+- `--region`（必須）: 出力・ログを分離する region 名
+- `--limit`（必須運用）: 最大書込件数
+- `--out`: Raw JSONL 出力先（省略時: `data/import/raw/raw_osm_candidates.<region>.jsonl`）
+- `--log`: ログ出力先（省略時: `data/import/logs/raw_osm_candidates.<region>.log`）
+- `--dry-run`: fixture モード
+- `--live`: Overpass 実通信モード（明示必須）
+- `--fixture`: fixture JSON パス（dry-run 時に使用）
+- `--overpass-url`: Overpass endpoint（live 時に使用）
 
 ## 出力先
 
@@ -25,36 +43,86 @@ raw 段階は「crypto payment candidate を広く拾う」目的で、次の合
 
 > `payment:cash` / `payment:credit_cards` / `payment:debit_cards` / `payment:contactless` など一般決済タグは対象外。
 
-## 小試走（fixture / dry-run のみ）
+## dry-run 実行例（fixture のみ）
 
 ```bash
 node --import tsx scripts/import_osm_raw_candidates.ts \
   --region japan \
-  --limit 1000 \
+  --limit 300 \
   --out data/import/raw/raw_osm_candidates.japan.jsonl \
-  --dry-run
-```
-
-fixture を差し替える場合:
-
-```bash
-node --import tsx scripts/import_osm_raw_candidates.ts \
-  --region germany \
-  --limit 200 \
+  --log data/import/logs/raw_osm_candidates.japan.log \
   --fixture scripts/fixtures/osm_candidates_sample.json \
   --dry-run
 ```
 
-## 本番取得コマンド例（将来運用時の参考。今回実行禁止）
-
-> 以下は将来の運用時に使う想定の例です。Phase 1 では実行しません。
+## live 実行例（小規模）
 
 ```bash
 node --import tsx scripts/import_osm_raw_candidates.ts \
-  --region europe-west \
-  --limit 5000 \
-  --out data/import/raw/raw_osm_candidates.europe-west.jsonl \
-  --dry-run
+  --region japan \
+  --limit 300 \
+  --out data/import/raw/raw_osm_candidates.japan.jsonl \
+  --log data/import/logs/raw_osm_candidates.japan.log \
+  --overpass-url https://overpass-api.de/api/interpreter \
+  --live
+```
+
+## live 実行例（本番拡張時の region 分割）
+
+```bash
+node --import tsx scripts/import_osm_raw_candidates.ts --region japan --limit 500 --out data/import/raw/raw_osm_candidates.japan.jsonl --log data/import/logs/raw_osm_candidates.japan.log --live
+node --import tsx scripts/import_osm_raw_candidates.ts --region germany --limit 500 --out data/import/raw/raw_osm_candidates.germany.jsonl --log data/import/logs/raw_osm_candidates.germany.log --live
+node --import tsx scripts/import_osm_raw_candidates.ts --region europe-west --limit 500 --out data/import/raw/raw_osm_candidates.europe-west.jsonl --log data/import/logs/raw_osm_candidates.europe-west.log --live
+```
+
+## ログ項目（live / dry-run 共通）
+
+- start/end timestamp
+- region
+- overpass url
+- loaded
+- written
+- skipped_missing_name
+- skipped_non_candidate
+- skipped_missing_coords
+- skipped_duplicate
+- failed_transform
+- failed_fetch
+- mode（fixture / live）
+
+想定ログ（例）:
+
+```text
+[mode] live
+[start] timestamp=2026-03-08T16:10:00.000Z region=japan dry_run=false live=true limit=300
+[overpass_url] https://overpass-api.de/api/interpreter
+...
+[summary] loaded=428
+[summary] written=300
+[summary] skipped_missing_name=8
+[summary] skipped_non_candidate=60
+[summary] skipped_missing_coords=5
+[summary] skipped_duplicate=3
+[summary] failed_transform=0
+[summary] failed_fetch=0
+[end] timestamp=2026-03-08T16:10:20.000Z region=japan
+[done] out=data/import/raw/raw_osm_candidates.japan.jsonl
+```
+
+## 失敗時の再実行
+
+- fetch 失敗時は region 単位で失敗終了します（他 region に影響なし）。
+- 同一 region を同じ `--region` / `--out` / `--log` で再実行してください。
+- 例:
+
+```bash
+node --import tsx scripts/import_osm_raw_candidates.ts \
+  --region japan \
+  --limit 300 \
+  --out data/import/raw/raw_osm_candidates.japan.jsonl \
+  --log data/import/logs/raw_osm_candidates.japan.log \
+  --overpass-url https://overpass-api.de/api/interpreter \
+  --live
 ```
 
 ## chain candidate 判定
@@ -63,31 +131,6 @@ node --import tsx scripts/import_osm_raw_candidates.ts \
 - `payment:onchain=yes|only` かつ `currency:XBT=yes` (または `currency:BTC=yes`) → `raw_chain_candidate=Bitcoin`, `raw_chain_confidence=medium`
 - payment/currency タグはあるが上記に合致しない（例: `currency:BCH=yes`, `currency:ETH=yes`, `currency:USDT=yes`） → `raw_chain_candidate=null`, `raw_chain_confidence=low`
 - payment/currency タグが存在しない → `raw_chain_candidate=null`, `raw_chain_confidence=none`
-
-## 注意
-
-- 実通信（Overpass/OSM API）は Phase 1 では禁止。
-- DB への insert/update/delete はこのジョブでは行わない。
-- region 単位で再実行可能（出力ファイルを region 別に分離）。
-
-## dry-run 想定出力
-
-標準出力（例）:
-
-```text
-dry-run complete: wrote 6 records to data/import/raw/raw_osm_candidates.japan.jsonl
-log file: data/import/logs/raw_osm_candidates.japan.log
-```
-
-ログ要約（例）:
-
-- loaded=12
-- written=6
-- skipped_missing_name=1
-- skipped_non_candidate=3  # cash/credit/debit only fixture
-- skipped_missing_coords=1
-- skipped_duplicate=1
-- failed_transform=0
 
 ## JSONL 1レコード例
 
