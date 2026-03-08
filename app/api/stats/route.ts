@@ -69,7 +69,7 @@ export type StatsApiResponse = {
   generated_at?: string;
   limited?: boolean;
   meta?: {
-    source: "db_live";
+    source: "db_live" | "snapshot_fast_path";
     population_id: typeof MAP_POPULATION_ID;
     as_of: string;
     acceptance_chain_missing_places: number;
@@ -79,6 +79,8 @@ export type StatsApiResponse = {
     network_coverage: number;
   };
 };
+
+type StatsMetaSource = NonNullable<StatsApiResponse["meta"]>["source"];
 
 type StatsUnavailableResponse = {
   ok: false;
@@ -892,11 +894,9 @@ const loadStatsFromDb = async (route: string, filters: StatsFilters): Promise<St
   return fetchDbSnapshotV4(route, filters);
 };
 
-const withOkMeta = (statsResponse: StatsApiResponse): StatsApiResponse => ({
-  ...statsResponse,
-  ok: true,
-  meta: statsResponse.meta ?? {
-    source: "db_live",
+const withOkMeta = (statsResponse: StatsApiResponse, sourceOverride?: StatsMetaSource): StatsApiResponse => {
+  const fallbackMeta = {
+    source: "db_live" as const,
     population_id: MAP_POPULATION_ID,
     as_of: new Date().toISOString(),
     acceptance_chain_missing_places: 0,
@@ -904,8 +904,17 @@ const withOkMeta = (statsResponse: StatsApiResponse): StatsApiResponse => ({
     accepts_with_chain_count: 0,
     accepts_missing_chain_count: 0,
     network_coverage: 0,
-  },
-});
+  };
+
+  return {
+    ...statsResponse,
+    ok: true,
+    meta: {
+      ...(statsResponse.meta ?? fallbackMeta),
+      ...(sourceOverride ? { source: sourceOverride } : {}),
+    },
+  };
+};
 
 export const getStatsResponse = async (request: Request, options: StatsRouteOptions): Promise<Response> => {
   const filters = parseFilters(request);
@@ -945,7 +954,7 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
         },
       });
       if (cachedResponse) {
-        return NextResponse.json<StatsApiResponse>(withOkMeta(cachedResponse), {
+        return NextResponse.json<StatsApiResponse>(withOkMeta(cachedResponse, "snapshot_fast_path"), {
           headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
         });
       }
