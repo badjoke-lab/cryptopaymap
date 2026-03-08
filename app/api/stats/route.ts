@@ -436,6 +436,22 @@ const summarizeFiltersForLog = (filters: StatsFilters) => ({
   source: filters.source || null,
 });
 
+const summarizeErrorForLog = (error: unknown) => {
+  if (error instanceof Error) {
+    return {
+      message: error.message,
+      name: error.name,
+      stack_head: error.stack?.split("\n").slice(0, 5).join("\n") ?? null,
+    };
+  }
+
+  return {
+    message: toErrorSummary(error),
+    name: null,
+    stack_head: null,
+  };
+};
+
 const runStatsQuery = <T extends Record<string, unknown>>(
   label: string,
   sql: string,
@@ -895,6 +911,8 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
   const filters = parseFilters(request);
   const route = options.route;
   const requestId = resolveRequestId(request);
+  const allowUnfilteredFastPath = Boolean(options.allowUnfilteredFastPath);
+  const diagnosticsEnabled = shouldLogStatsDiagnostics();
   const dataSource = getDataSourceSetting();
   const { shouldAttemptDb, shouldAllowJson, hasDb } = getDataSourceContext(dataSource);
 
@@ -903,17 +921,25 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
   }
 
   const isUnfiltered = isUnfilteredRequest(filters);
+  const pathState = {
+    enteredFastPath: false,
+    enteredLiveFallback: false,
+    livePathSuccess: false,
+  };
+  let timeoutMs: number | null = null;
 
-  if (options.allowUnfilteredFastPath && isUnfiltered && shouldAttemptDb) {
+  if (allowUnfilteredFastPath && isUnfiltered && shouldAttemptDb) {
+    pathState.enteredFastPath = true;
     try {
       const cachedResponse = await withDbTimeout(loadUnfilteredStatsSnapshotFastPath(route), {
         message: "DB_TIMEOUT",
-        onTimeout: ({ timeoutMs, message }) => {
-          if (!shouldLogStatsDiagnostics()) return;
-          console.info("[stats] db timeout reached", {
+        onTimeout: ({ timeoutMs: timeoutMsValue, message }) => {
+          timeoutMs = timeoutMsValue;
+          if (!diagnosticsEnabled) return;
+          console.info("[stats] fast path timeout", {
             route,
             filters: summarizeFiltersForLog(filters),
-            timeout_ms: timeoutMs,
+            timeout_ms: timeoutMsValue,
             message,
           });
         },
@@ -923,7 +949,9 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
           headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
         });
       }
+      pathState.enteredLiveFallback = true;
     } catch (error) {
+      pathState.enteredLiveFallback = true;
       console.warn("[stats] fast path unavailable; falling back to live aggregation", {
         requestId,
         error: toErrorSummary(error),
@@ -949,18 +977,28 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
   }
 
   try {
+    pathState.enteredLiveFallback = true;
     const statsResponse = await withDbTimeout(loadStatsFromDb(route, filters), {
       message: "DB_TIMEOUT",
-      onTimeout: ({ timeoutMs, message }) => {
-        if (!shouldLogStatsDiagnostics()) return;
-        console.info("[stats] db timeout reached", {
+      onTimeout: ({ timeoutMs: timeoutMsValue, message }) => {
+        timeoutMs = timeoutMsValue;
+        if (!diagnosticsEnabled) return;
+        console.info("[stats] live path timeout", {
           route,
           filters: summarizeFiltersForLog(filters),
-          timeout_ms: timeoutMs,
+          timeout_ms: timeoutMsValue,
           message,
         });
       },
     });
+    pathState.livePathSuccess = true;
+    if (diagnosticsEnabled) {
+      console.info("[stats] live path success", {
+        route,
+        filters: summarizeFiltersForLog(filters),
+        source: statsResponse.meta?.source ?? "db_live",
+      });
+    }
     return NextResponse.json<StatsApiResponse>(withOkMeta(statsResponse), {
       headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
     });
@@ -968,6 +1006,24 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
     const code = classifyFailure(error);
     const errorSummary = toErrorSummary(error);
     console.error("[stats] failed to load stats snapshot", { requestId, code, error: errorSummary, detail: error });
+
+    if (diagnosticsEnabled) {
+      const errorInfo = summarizeErrorForLog(error);
+      console.error("[stats] failure diagnostic", {
+        route,
+        filters: summarizeFiltersForLog(filters),
+        allowUnfilteredFastPath,
+        isUnfilteredRequest: isUnfiltered,
+        enteredFastPath: pathState.enteredFastPath,
+        enteredLiveFallback: pathState.enteredLiveFallback,
+        livePathSuccess: pathState.livePathSuccess,
+        failure_code: code,
+        error_message: errorInfo.message,
+        error_name: errorInfo.name,
+        error_stack_head: errorInfo.stack_head,
+        timeout_ms: timeoutMs,
+      });
+    }
 
     if (!shouldAllowJson || process.env.NODE_ENV === "production") {
       const status = code === "db_connect_failed" ? 503 : 500;
