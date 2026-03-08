@@ -67,7 +67,16 @@ const REGION_PRESETS: Record<string, RegionPreset> = {
 };
 
 const CRYPTO_CURRENCY_ALLOWLIST = ['XBT', 'BTC', 'BCH', 'LTC', 'ETH', 'DOGE', 'USDT', 'USDC'];
+const CRYPTO_PAYMENT_KEY_ALLOWLIST = [
+  'payment:lightning',
+  'payment:onchain',
+  'payment:bitcoin',
+  'payment:ethereum',
+  'payment:cryptocurrency',
+  'payment:crypto',
+];
 const PAYMENT_ACCEPTED_VALUES_PATTERN = '^(yes|limited|only)$';
+const PAYMENT_ACCEPTED_VALUES = new Set(['yes', 'limited', 'only']);
 
 const DEFAULT_FIXTURE = 'scripts/fixtures/osm_candidates_sample.json';
 const DEFAULT_OVERPASS_URL = 'https://overpass-api.de/api/interpreter';
@@ -128,9 +137,11 @@ function selectRegionPreset(region: string): RegionPreset {
 
 function buildOverpassQuery(region: string, limit: number): string {
   const preset = selectRegionPreset(region);
-  const paymentClauses = ['node', 'way', 'relation']
-    .map((osmType) => `${osmType}[~"^payment:.*"~"${PAYMENT_ACCEPTED_VALUES_PATTERN}"](area.searchArea);`)
-    .join('\n  ');
+  const paymentClauses = CRYPTO_PAYMENT_KEY_ALLOWLIST.flatMap((paymentKey) =>
+    ['node', 'way', 'relation'].map(
+      (osmType) => `${osmType}["${paymentKey}"~"${PAYMENT_ACCEPTED_VALUES_PATTERN}"](area.searchArea);`,
+    ),
+  ).join('\n  ');
 
   const currencyClauses = CRYPTO_CURRENCY_ALLOWLIST.flatMap((symbol) =>
     ['node', 'way', 'relation'].map(
@@ -174,6 +185,26 @@ function pickPaymentTags(tags: Record<string, string | undefined>): Record<strin
     }
   }
   return out;
+}
+
+function isAcceptedTagValue(value: string | undefined): boolean {
+  return PAYMENT_ACCEPTED_VALUES.has(String(value || '').toLowerCase());
+}
+
+function hasCryptoCandidateSignal(tags: Record<string, string | undefined>): boolean {
+  for (const paymentKey of CRYPTO_PAYMENT_KEY_ALLOWLIST) {
+    if (isAcceptedTagValue(tags[paymentKey])) {
+      return true;
+    }
+  }
+
+  for (const currencySymbol of CRYPTO_CURRENCY_ALLOWLIST) {
+    if (isAcceptedTagValue(tags[`currency:${currencySymbol}`])) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 function inferChainCandidate(paymentTags: Record<string, string>): {
@@ -227,6 +258,10 @@ function toRawRecord(el: OsmElement, ingestedAt: string): NormalizedRawRecord | 
   const rawName = String(tags.name || '').trim();
 
   if (hasSuspiciousName(rawName)) {
+    return null;
+  }
+
+  if (!hasCryptoCandidateSignal(tags)) {
     return null;
   }
 
@@ -289,6 +324,7 @@ async function main(): Promise<void> {
   const logs: string[] = [];
   logs.push(`[start] region=${args.region} dry_run=${String(args.dryRun)} limit=${String(args.limit)}`);
   logs.push(`[query] ${query.replace(/\s+/g, ' ').trim()}`);
+  logs.push(`[query] payment_allowlist=${CRYPTO_PAYMENT_KEY_ALLOWLIST.join(',')}`);
   logs.push(`[query] currency_allowlist=${CRYPTO_CURRENCY_ALLOWLIST.join(',')}`);
   logs.push('[guard] live fetch is disabled in this phase; fixture source only');
 
@@ -297,6 +333,7 @@ async function main(): Promise<void> {
   let skippedDuplicate = 0;
   let skippedMissingName = 0;
   let skippedMissingCoords = 0;
+  let skippedNonCandidate = 0;
   let failedTransform = 0;
 
   const seen = new Set<string>();
@@ -311,6 +348,11 @@ async function main(): Promise<void> {
         if (!name) {
           skippedMissingName += 1;
           logs.push(`[skip][name] type=${String(element.type)} id=${String(element.id || '')}`);
+          continue;
+        }
+        if (!hasCryptoCandidateSignal(tags)) {
+          skippedNonCandidate += 1;
+          logs.push(`[skip][non_crypto_payment] type=${String(element.type)} id=${String(element.id || '')}`);
           continue;
         }
         if (!extractLatLng(element)) {
@@ -345,6 +387,7 @@ async function main(): Promise<void> {
   logs.push(`[summary] written=${String(records.length)}`);
   logs.push(`[summary] skipped_invalid=${String(skippedInvalid)}`);
   logs.push(`[summary] skipped_missing_name=${String(skippedMissingName)}`);
+  logs.push(`[summary] skipped_non_candidate=${String(skippedNonCandidate)}`);
   logs.push(`[summary] skipped_missing_coords=${String(skippedMissingCoords)}`);
   logs.push(`[summary] skipped_duplicate=${String(skippedDuplicate)}`);
   logs.push(`[summary] failed_transform=${String(failedTransform)}`);

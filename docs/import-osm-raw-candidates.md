@@ -8,13 +8,22 @@
 - Raw JSONL: `data/import/raw/raw_osm_candidates.<region>.jsonl`
 - Log: `data/import/logs/raw_osm_candidates.<region>.log`
 
-## 候補抽出ポリシー（BTC限定ではない）
+## 候補抽出ポリシー（crypto payment 候補に限定）
 
-- raw 段階は「仮想通貨受け入れらしきものを広く拾う」目的。
-- Overpass クエリは以下を候補対象にする:
-  - `payment:* = yes|limited|only`
-  - `currency:*` 系のうち allowlist (`XBT/BTC/BCH/LTC/ETH/DOGE/USDT/USDC`) が `yes|limited|only`
-- つまり raw は **BTC 限定でない**。最終的な絞り込みは後続の正規化・重複排除段階で行う。
+raw 段階は「crypto payment candidate を広く拾う」目的で、次の合わせ技で抽出します。
+
+- `currency:*` allowlist
+  - `currency:XBT|BTC|BCH|LTC|ETH|DOGE|USDT|USDC = yes|limited|only`
+- `payment:*` は全件対象にせず **crypto payment key allowlist** のみ対象
+  - `payment:lightning`
+  - `payment:onchain`
+  - `payment:bitcoin`
+  - `payment:ethereum`
+  - `payment:cryptocurrency`
+  - `payment:crypto`
+  - 上記が `yes|limited|only`
+
+> `payment:cash` / `payment:credit_cards` / `payment:contactless` など一般決済タグは対象外。
 
 ## 小試走（fixture / dry-run のみ）
 
@@ -72,9 +81,10 @@ log file: data/import/logs/raw_osm_candidates.japan.log
 
 ログ要約（例）:
 
-- loaded=9
+- loaded=11
 - written=6
 - skipped_missing_name=1
+- skipped_non_candidate=2  # cash/cards only fixture
 - skipped_missing_coords=1
 - skipped_duplicate=1
 - failed_transform=0

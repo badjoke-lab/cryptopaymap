@@ -23,7 +23,10 @@
     {
       "type": "way",
       "id": 2002,
-      "center": { "lat": 52.52, "lon": 13.405 },
+      "center": {
+        "lat": 52.52,
+        "lon": 13.405
+      },
       "tags": {
         "name": "Berlin BTC Shop",
         "shop": "electronics",
@@ -53,7 +56,10 @@
     {
       "type": "way",
       "id": 6006,
-      "center": { "lat": 48.1374, "lon": 11.5755 },
+      "center": {
+        "lat": 48.1374,
+        "lon": 11.5755
+      },
       "tags": {
         "name": "Munich LTC Bakery",
         "amenity": "bakery",
@@ -75,7 +81,10 @@
     {
       "type": "relation",
       "id": 8008,
-      "center": { "lat": 51.5072, "lon": -0.1276 },
+      "center": {
+        "lat": 51.5072,
+        "lon": -0.1276
+      },
       "tags": {
         "name": "USDT Friendly Bookstore",
         "shop": "books",
@@ -95,7 +104,10 @@
     {
       "type": "relation",
       "id": 4004,
-      "center": { "lat": 95, "lon": 120 },
+      "center": {
+        "lat": 95,
+        "lon": 120
+      },
       "tags": {
         "name": "Invalid Coordinates Market",
         "payment:onchain": "yes",
@@ -110,6 +122,30 @@
       "tags": {
         "name": "Tokyo Crypto Cafe Duplicate",
         "payment:lightning": "yes"
+      }
+    },
+    {
+      "type": "node",
+      "id": 9009,
+      "lat": 35.6895,
+      "lon": 139.6917,
+      "tags": {
+        "name": "Cash Only Diner",
+        "amenity": "restaurant",
+        "payment:cash": "yes"
+      }
+    },
+    {
+      "type": "way",
+      "id": 9010,
+      "center": {
+        "lat": 50.1109,
+        "lon": 8.6821
+      },
+      "tags": {
+        "name": "Cards Only Boutique",
+        "shop": "clothes",
+        "payment:credit_cards": "yes"
       }
     }
   ]
