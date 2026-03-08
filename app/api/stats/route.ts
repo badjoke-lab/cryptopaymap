@@ -423,17 +423,44 @@ const toFinalSqlForLog = (text: string, params: unknown[]) =>
     return quoteSqlValue(params[index]);
   });
 
+const shouldLogStatsDiagnostics = () =>
+  process.env.NODE_ENV !== "production" || process.env.CPM_STATS_DEBUG_TIMING === "1";
+
+const summarizeFiltersForLog = (filters: StatsFilters) => ({
+  country: filters.country || null,
+  city: filters.city || null,
+  category: filters.category || null,
+  accepted: filters.accepted || null,
+  verification: filters.verification || null,
+  promoted: filters.promoted || null,
+  source: filters.source || null,
+});
+
 const runStatsQuery = <T extends Record<string, unknown>>(
   label: string,
   sql: string,
   params: unknown[],
   route: string,
+  filters: StatsFilters,
 ) => {
   const finalSql = toFinalSqlForLog(sql, params);
-  return dbQuery<T>(sql, params, { route }).catch((error) => {
-    console.error(`[stats] query failed: ${label}`, { finalSql, params, error });
-    throw error;
-  });
+  const startedAt = Date.now();
+  return dbQuery<T>(sql, params, { route })
+    .then((result) => {
+      if (shouldLogStatsDiagnostics()) {
+        console.info("[stats] query timing", {
+          route,
+          query: label,
+          elapsed_ms: Date.now() - startedAt,
+          filters: summarizeFiltersForLog(filters),
+        });
+      }
+      return result;
+    })
+    .catch((error) => {
+      console.error(`[stats] query failed: ${label}`, { finalSql, params, error });
+      throw error;
+    });
 };
 
 type FilterSqlOptions = {
@@ -565,6 +592,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
     totalsSql,
     params,
     route,
+    filters,
   );
 
   const verificationPromise = verificationColumn
@@ -588,6 +616,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          GROUP BY 1`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ key: string | null; total: string }> });
 
@@ -603,6 +632,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          LIMIT ${TOP_RANKING_LIMIT}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ key: string | null; total: string }> });
 
@@ -618,6 +648,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          LIMIT ${TOP_RANKING_LIMIT}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ key: string | null; total: string }> });
 
@@ -638,6 +669,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          LIMIT ${TOP_RANKING_LIMIT}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ key: string | null; total: string }> });
 
@@ -654,6 +686,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          LIMIT ${TOP_CHAIN_LIMIT}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ key: string | null; total: string }> });
 
@@ -670,6 +703,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          LIMIT ${TOP_CHAIN_LIMIT}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ key: string | null; total: string }> });
 
@@ -684,6 +718,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
             OR ${hasPaymentAsset ? "NULLIF(BTRIM(COALESCE(pa.asset, '')), '') IS NOT NULL" : "FALSE"}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [{ total: "0" }] as Array<{ total: string }> });
 
@@ -701,6 +736,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          LIMIT ${TOP_MATRIX_LIMIT * TOP_MATRIX_LIMIT}`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [] as Array<{ asset: string | null; chain: string | null; total: string }> });
 
@@ -715,6 +751,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
            AND NULLIF(BTRIM(pa.chain), '') IS NULL`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [{ total: "0" }] as Array<{ total: string }> });
 
@@ -735,6 +772,7 @@ const fetchDbSnapshotV4 = async (route: string, filters: StatsFilters): Promise<
          INNER JOIN filtered_places fp ON fp.id = pa.place_id`,
         params,
         route,
+        filters,
       )
     : Promise.resolve({ rows: [{ accepts_with_chain_count: "0", accepts_missing_chain_count: "0" }] as Array<{ accepts_with_chain_count: string; accepts_missing_chain_count: string }> });
 
@@ -870,6 +908,15 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
     try {
       const cachedResponse = await withDbTimeout(loadUnfilteredStatsSnapshotFastPath(route), {
         message: "DB_TIMEOUT",
+        onTimeout: ({ timeoutMs, message }) => {
+          if (!shouldLogStatsDiagnostics()) return;
+          console.info("[stats] db timeout reached", {
+            route,
+            filters: summarizeFiltersForLog(filters),
+            timeout_ms: timeoutMs,
+            message,
+          });
+        },
       });
       if (cachedResponse) {
         return NextResponse.json<StatsApiResponse>(withOkMeta(cachedResponse), {
@@ -904,6 +951,15 @@ export const getStatsResponse = async (request: Request, options: StatsRouteOpti
   try {
     const statsResponse = await withDbTimeout(loadStatsFromDb(route, filters), {
       message: "DB_TIMEOUT",
+      onTimeout: ({ timeoutMs, message }) => {
+        if (!shouldLogStatsDiagnostics()) return;
+        console.info("[stats] db timeout reached", {
+          route,
+          filters: summarizeFiltersForLog(filters),
+          timeout_ms: timeoutMs,
+          message,
+        });
+      },
     });
     return NextResponse.json<StatsApiResponse>(withOkMeta(statsResponse), {
       headers: { "Cache-Control": CACHE_CONTROL, ...buildDataSourceHeaders("db", false) },
