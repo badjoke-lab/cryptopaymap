@@ -54,11 +54,11 @@ type RegionPreset = {
 const REGION_PRESETS: Record<string, RegionPreset> = {
   japan: {
     areaName: 'japan',
-    overpassAreaExpression: 'area["name"="Japan"]["boundary"="administrative"]["admin_level"="2"]->.searchArea;',
+    overpassAreaExpression: 'area["ISO3166-1"="JP"]["boundary"="administrative"]["admin_level"="2"]->.searchArea;',
   },
   germany: {
     areaName: 'germany',
-    overpassAreaExpression: 'area["name"="Deutschland"]["boundary"="administrative"]["admin_level"="2"]->.searchArea;',
+    overpassAreaExpression: 'area["ISO3166-1"="DE"]["boundary"="administrative"]["admin_level"="2"]->.searchArea;',
   },
   'europe-west': {
     areaName: 'europe-west',
@@ -250,6 +250,23 @@ function collectSocials(tags: Record<string, string | undefined>): string[] {
   return keys.map((k) => tags[k]).filter((v): v is string => Boolean(v && v.trim()));
 }
 
+function pickRawCategory(tags: Record<string, string | undefined>): string | null {
+  const candidates = [
+    tags.shop,
+    tags.amenity,
+    tags.office,
+    tags.tourism,
+    tags.leisure,
+    tags.craft,
+    tags.healthcare,
+  ].map((v) => (v || '').trim()).filter(Boolean);
+
+  for (const v of candidates) {
+    if (v.toLowerCase() !== 'yes') return v;
+  }
+  return null;
+}
+
 function toRawRecord(el: OsmElement, ingestedAt: string): NormalizedRawRecord | null {
   const osmType = String(el.type || 'unknown');
   const osmId = String(el.id || '').trim();
@@ -283,7 +300,7 @@ function toRawRecord(el: OsmElement, ingestedAt: string): NormalizedRawRecord | 
     ingested_at: ingestedAt,
     raw_hash: '',
     raw_name: rawName,
-    raw_category: tags.shop || tags.amenity || tags.office || null,
+    raw_category: pickRawCategory(tags),
     raw_payment_tags: rawPaymentTags,
     raw_chain_candidate: chain.raw_chain_candidate,
     raw_chain_confidence: chain.raw_chain_confidence,

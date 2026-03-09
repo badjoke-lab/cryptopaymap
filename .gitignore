@@ -157,3 +157,5 @@ scripts/audit/out/submission-ids.json
 # local/dev artifacts
 data/submissions-pending.ndjson
 data/submissions/sub-*.json
+.vercel
+.env*.local
