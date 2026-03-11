@@ -1,32 +1,65 @@
-# CryptoPayMap v2
+# CryptoPayMap
 
-Initial scaffold for the CryptoPayMap v2 Next.js application. This repository currently contains placeholder routes, configuration, and documentation stubs. Business logic and UI features will be implemented in subsequent tasks.
+CryptoPayMap is a **public map project for discovering places that accept cryptocurrency payments**.  
+Through its map interface, supporting pages, and submission flows, the project aims to make crypto-friendly places easier to find while continuously improving the quality and clarity of listing data.
 
-## Getting Started
+- Live site: https://www.cryptopaymap.com
+- About: https://www.cryptopaymap.com/about
+- Donate: https://www.cryptopaymap.com/donate
 
-Install dependencies and start the development server:
+---
 
-```bash
-npm install
-npm run dev
-```
+## About the project
 
-## Map Layout
+CryptoPayMap is a website built to help people discover shops, venues, and services that accept cryptocurrency payments.
 
-- [Map layering rules (click-through prevention)](docs/map-layering.md)
+This repository is the **main codebase for the live CryptoPayMap website**.  
+It is not just a sample project or a packaged tool. It is the repository used to build, improve, and maintain the public site in production.
 
-## Operations: Retention (submission media)
+---
 
-Manual retention for submission media (proof/evidence expiry + unadopted gallery expiry):
+## What it includes
 
-```bash
-# dry-run (list candidates)
-node --import tsx scripts/retention/submissionMedia.ts --dry-run
+CryptoPayMap mainly covers the following:
 
-# execute deletions
-node --import tsx scripts/retention/submissionMedia.ts --execute
-```
+- a map interface for crypto-accepting places
+- supporting pages such as Discover and Stats
+- submission flows for owner / community / report
+- listing states and verification-level handling
+- specifications and operational logic required to run the public site
 
-Defaults are proof=90 days, evidence=180 days, gallery=365 days. Override with
-`RETENTION_PROOF_DAYS`, `RETENTION_EVIDENCE_DAYS`, `RETENTION_GALLERY_DAYS`, or
-`--proof-days`, `--evidence-days`, `--gallery-days`.
+---
+
+## About the data
+
+Not all listings represent the same level of certainty.  
+For that reason, CryptoPayMap is designed to distinguish between different source types and confirmation levels instead of treating every entry as equally verified.
+
+Listing details may change over time, so users should confirm important information with the business, operator, or official source when needed before relying on a listing in practice.
+
+More background on the project is available on the About page.  
+https://www.cryptopaymap.com/about
+
+---
+
+## Role of this repository
+
+This repository is the working core of the CryptoPayMap public service.  
+It is maintained with the live site in mind and covers not only UI implementation, but also submission flows, display rules, data handling, and internal operational logic.
+
+---
+
+## Support the project
+
+CryptoPayMap is an ongoing public project that requires continued maintenance and improvement.  
+Support helps sustain map UI improvements, data cleanup, submission handling, operations, and future feature development.
+
+**Donate:** https://www.cryptopaymap.com/donate
+
+---
+
+## Related links
+
+- Live site: https://www.cryptopaymap.com
+- About: https://www.cryptopaymap.com/about
+- Donate: https://www.cryptopaymap.com/donate
