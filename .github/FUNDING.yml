@@ -1,1 +1,2 @@
-custom: ['https://www.cryptopaymap.com/donate']
+custom:
+  - "https://www.cryptopaymap.com/donate"
