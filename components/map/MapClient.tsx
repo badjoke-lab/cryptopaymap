@@ -38,6 +38,7 @@ const DEFAULT_COORDINATES: [number, number] = [20, 0];
 const DEFAULT_ZOOM = 2;
 const MAX_CLIENT_LIMIT = 12000;
 const BBOX_PRECISION = 6;
+const WORLD_BBOX_KEY = "-180,-85,180,85";
 
 const PIN_SVGS: Record<PinType, string> = {
   owner: `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g><path d="M16 2 C10 2,6 6.5,6 12 C6 20,16 30,16 30 C16 30,26 20,26 12 C26 6.5,22 2,16 2Z" fill="#F59E0B" stroke="white" stroke-width="2"/><circle cx="16" cy="12" r="4" fill="white"/></g></svg>`,
@@ -115,7 +116,7 @@ export default function MapClient() {
     zoom: number;
   } | null>(null);
   const lastRequestKeyRef = useRef<string | null>(null);
-  const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
+  const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null; isWorldBbox: boolean }>>(
     new Map(),
   );
   const [places, setPlaces] = useState<Place[]>([]);
@@ -503,6 +504,8 @@ export default function MapClient() {
       fetchTimeoutRef.current = null;
     };
 
+    const isWorldBbox = (bboxKey: string) => bboxKey === WORLD_BBOX_KEY;
+
     const formatBbox = (bounds: import("leaflet").LatLngBounds) => {
       const round = (value: number) => Number(value.toFixed(BBOX_PRECISION));
       const clamp = (value: number, min: number, max: number) =>
@@ -612,7 +615,11 @@ export default function MapClient() {
           setPlacesError(null);
           placesRef.current = cached.places;
           setPlaces(cached.places);
-          setLimitNotice(cached.places.length >= cached.limit ? { count: cached.places.length, limit: cached.limit } : null);
+          setLimitNotice(
+            cached.places.length >= cached.limit && !cached.isWorldBbox
+              ? { count: cached.places.length, limit: cached.limit }
+              : null,
+          );
           setLimitedMode(cached.limited);
           setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
           buildIndexAndRender(cached.places);
@@ -666,9 +673,16 @@ export default function MapClient() {
           setPlaces(nextPlaces);
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
-          setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
+          const worldBbox = isWorldBbox(bboxKey);
+          setLimitNotice(nextPlaces.length >= limit && !worldBbox ? { count: nextPlaces.length, limit } : null);
           buildIndexAndRender(nextPlaces);
-          placesCacheRef.current.set(requestKey, { places: nextPlaces, limit, limited: isLimited, lastUpdatedISO });
+          placesCacheRef.current.set(requestKey, {
+            places: nextPlaces,
+            limit,
+            limited: isLimited,
+            lastUpdatedISO,
+            isWorldBbox: worldBbox,
+          });
           if (placesCacheRef.current.size > 30) {
             const [firstKey] = placesCacheRef.current.keys();
             if (firstKey) {
