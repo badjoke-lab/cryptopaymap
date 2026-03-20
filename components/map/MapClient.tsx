@@ -38,6 +38,7 @@ const DEFAULT_COORDINATES: [number, number] = [20, 0];
 const DEFAULT_ZOOM = 2;
 const MAX_CLIENT_LIMIT = 12000;
 const BBOX_PRECISION = 6;
+const OVERVIEW_MAX_ZOOM = 3;
 
 const PIN_SVGS: Record<PinType, string> = {
   owner: `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g><path d="M16 2 C10 2,6 6.5,6 12 C6 20,16 30,16 30 C16 30,26 20,26 12 C26 6.5,22 2,16 2Z" fill="#F59E0B" stroke="white" stroke-width="2"/><circle cx="16" cy="12" r="4" fill="white"/></g></svg>`,
@@ -114,8 +115,12 @@ export default function MapClient() {
     force: boolean;
     zoom: number;
   } | null>(null);
+  const usingOverviewRef = useRef(false);
   const lastRequestKeyRef = useRef<string | null>(null);
   const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
+    new Map(),
+  );
+  const overviewCacheRef = useRef<Map<string, { clusters: ClusterResult[]; limited: boolean; lastUpdatedISO: string | null }>>(
     new Map(),
   );
   const [places, setPlaces] = useState<Place[]>([]);
@@ -425,9 +430,12 @@ export default function MapClient() {
 
           const marker = L.marker([lat, lng], { icon: clusterIcon });
           marker.on("click", () => {
-            const expansionZoom = clusterIndexRef.current?.getClusterExpansionZoom(
-              clusterItem.id,
-            );
+            if (usingOverviewRef.current) {
+              const nextZoom = Math.max(OVERVIEW_MAX_ZOOM + 1, Math.min(map.getZoom() + 2, 18));
+              map.flyTo([lat, lng], nextZoom, { animate: true });
+              return;
+            }
+            const expansionZoom = clusterIndexRef.current?.getClusterExpansionZoom(clusterItem.id);
             if (expansionZoom !== undefined) {
               map.flyTo([lat, lng], expansionZoom, { animate: true });
             }
@@ -594,6 +602,92 @@ export default function MapClient() {
       const buildRequestKey = (bboxKey: string, zoom: number, filterQuery: string) =>
         `${bboxKey}@${zoom}|${filterQuery}`;
 
+      const fetchOverviewForBbox = async (
+        bboxKey: string,
+        zoom: number,
+        filterQuery: string,
+        requestKey: string,
+      ) => {
+        if (!isMounted) return;
+        requestIdRef.current += 1;
+        const requestId = requestIdRef.current;
+        abortControllerRef.current?.abort();
+        const controller = new AbortController();
+        abortControllerRef.current = controller;
+
+        const cached = overviewCacheRef.current.get(requestKey);
+        if (cached) {
+          setPlacesError(null);
+          placesRef.current = [];
+          setPlaces([]);
+          setLimitNotice(null);
+          setLimitedMode(cached.limited);
+          setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
+          renderClusters(cached.clusters);
+          setPlacesStatus("success");
+          usingOverviewRef.current = true;
+          return;
+        }
+
+        const hadPlaces = placesRef.current.length > 0;
+        setPlacesStatus("loading");
+        setPlacesError(null);
+        if (!hadPlaces) {
+          setLimitNotice(null);
+        }
+
+        try {
+          const params = new URLSearchParams(filterQuery.replace("?", ""));
+          params.set("bbox", bboxKey);
+          params.set("zoom", String(zoom));
+          const pageQuery = params.toString();
+          const response = await fetch(`/api/places/overview${pageQuery ? `?${pageQuery}` : ""}`, {
+            signal: controller.signal,
+          });
+          if (!response.ok) {
+            throw new Error(`Request failed with status ${response.status}`);
+          }
+          const payload = (await response.json()) as {
+            clusters?: Array<{ id: string; lat: number; lng: number; count: number }>;
+          };
+          const isLimited = isLimitedHeader(response.headers);
+          const lastUpdatedISO = getLastUpdatedHeader(response.headers);
+          if (!isMounted || requestIdRef.current !== requestId) return;
+
+          const nextClusters: ClusterResult[] = (payload.clusters ?? []).map((cluster, index) => ({
+            type: "cluster",
+            id: index + 1,
+            coordinates: [cluster.lng, cluster.lat],
+            pointCount: cluster.count,
+          }));
+
+          placesRef.current = [];
+          setPlaces([]);
+          setLimitNotice(null);
+          setLimitedMode(isLimited);
+          setLimitedModeLastUpdatedISO(lastUpdatedISO);
+          renderClusters(nextClusters);
+          usingOverviewRef.current = true;
+          overviewCacheRef.current.set(requestKey, { clusters: nextClusters, limited: isLimited, lastUpdatedISO });
+          if (overviewCacheRef.current.size > 30) {
+            const [firstKey] = overviewCacheRef.current.keys();
+            if (firstKey) {
+              overviewCacheRef.current.delete(firstKey);
+            }
+          }
+          setPlacesStatus("success");
+        } catch (error) {
+          if (error instanceof DOMException && error.name === "AbortError") {
+            return;
+          }
+          console.error(error);
+          if (!isMounted || requestIdRef.current !== requestId) return;
+          const message = "Failed to load map overview. Please try again.";
+          setPlacesError(message);
+          setPlacesStatus("error");
+        }
+      };
+
       const fetchPlacesForBbox = async (
         bboxKey: string,
         zoom: number,
@@ -668,6 +762,7 @@ export default function MapClient() {
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
           buildIndexAndRender(nextPlaces);
+          usingOverviewRef.current = false;
           placesCacheRef.current.set(requestKey, { places: nextPlaces, limit, limited: isLimited, lastUpdatedISO });
           if (placesCacheRef.current.size > 30) {
             const [firstKey] = placesCacheRef.current.keys();
@@ -708,12 +803,16 @@ export default function MapClient() {
           if (!pending) return;
           if (!pending.force && pending.requestKey === lastRequestKeyRef.current) return;
           lastRequestKeyRef.current = pending.requestKey;
-          void fetchPlacesForBbox(
-            pending.bboxKey,
-            pending.zoom,
-            pending.filterQuery,
-            pending.requestKey,
-          );
+          if (pending.zoom <= OVERVIEW_MAX_ZOOM) {
+            void fetchOverviewForBbox(
+              pending.bboxKey,
+              pending.zoom,
+              pending.filterQuery,
+              pending.requestKey,
+            );
+            return;
+          }
+          void fetchPlacesForBbox(pending.bboxKey, pending.zoom, pending.filterQuery, pending.requestKey);
         }, 120);
       };
 
@@ -1291,6 +1390,11 @@ export default function MapClient() {
         {limitNotice && placesStatus !== "loading" && (
           <div className="pointer-events-none absolute inset-x-0 top-4 z-40 mx-auto w-[min(90%,520px)] rounded-md border border-amber-200 bg-amber-50/95 px-4 py-2 text-sm font-medium text-amber-900 shadow-sm backdrop-blur">
             Too many results ({limitNotice.count} of {limitNotice.limit}). Zoom in to narrow down.
+          </div>
+        )}
+        {!limitNotice && placesStatus === "success" && usingOverviewRef.current && (
+          <div className="pointer-events-none absolute inset-x-0 top-4 z-40 mx-auto w-[min(90%,580px)] rounded-md border border-sky-200 bg-sky-50/95 px-4 py-2 text-sm font-medium text-sky-900 shadow-sm backdrop-blur">
+            Overview mode: aggregated markers are shown at low zoom. Zoom in for place-level pins and list.
           </div>
         )}
         <div
