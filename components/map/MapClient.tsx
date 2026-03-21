@@ -37,7 +37,7 @@ const HEADER_HEIGHT = 64;
 const DEFAULT_COORDINATES: [number, number] = [20, 0];
 const DEFAULT_ZOOM = 2;
 const MAX_CLIENT_LIMIT = 12000;
-const BBOX_PRECISION = 6;
+const BBOX_PRECISION = 3;
 const OVERVIEW_MAX_ZOOM = 3;
 
 const PIN_SVGS: Record<PinType, string> = {
@@ -123,6 +123,7 @@ export default function MapClient() {
   const overviewCacheRef = useRef<Map<string, { clusters: ClusterResult[]; totalPlaces: number; limited: boolean; lastUpdatedISO: string | null }>>(
     new Map(),
   );
+  const lastRenderedClustersKeyRef = useRef<string | null>(null);
   const [isOverviewMode, setIsOverviewMode] = useState(false);
   const [overviewTotalPlaces, setOverviewTotalPlaces] = useState<number | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
@@ -414,6 +415,19 @@ export default function MapClient() {
 
       if (!markerLayerRef.current || !L || !map) return;
 
+      const clustersKey = clusters
+        .map((clusterItem) => {
+          if (clusterItem.type === "cluster") {
+            return `c:${clusterItem.coordinates[0].toFixed(4)}:${clusterItem.coordinates[1].toFixed(4)}:${clusterItem.pointCount}`;
+          }
+          return `p:${clusterItem.id}:${clusterItem.coordinates[0].toFixed(4)}:${clusterItem.coordinates[1].toFixed(4)}`;
+        })
+        .join("|");
+      if (lastRenderedClustersKeyRef.current === clustersKey) {
+        return;
+      }
+      lastRenderedClustersKeyRef.current = clustersKey;
+
       stopRenderFrame();
       const nextLayer = L.layerGroup();
       const nextMarkers = new Map<string, import("leaflet").Marker>();
@@ -479,12 +493,13 @@ export default function MapClient() {
         } else {
           renderFrameRef.current = null;
           if (!mapInstanceRef.current) return;
-          if (markerLayerRef.current) {
-            map.removeLayer(markerLayerRef.current);
-          }
+          const previousLayer = markerLayerRef.current;
           nextLayer.addTo(map);
           markerLayerRef.current = nextLayer;
           markersRef.current = nextMarkers;
+          if (previousLayer) {
+            map.removeLayer(previousLayer);
+          }
         }
       };
 

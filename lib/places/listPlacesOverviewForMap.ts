@@ -51,11 +51,18 @@ const normalizeText = (value: string | null | undefined): string | null => {
   return trimmed.length ? trimmed : null;
 };
 
-const getCellSizeDeg = (zoom: number): number => {
+const getBaseCellSizeDeg = (zoom: number): number => {
   if (zoom <= 1) return 12;
   if (zoom <= 2) return 6;
   if (zoom <= 3) return 3;
   return 1.5;
+};
+
+const getTargetClusterBudget = (zoom: number): number => {
+  if (zoom <= 1) return 24;
+  if (zoom <= 2) return 36;
+  if (zoom <= 3) return 72;
+  return 120;
 };
 
 const aggregateToGrid = (points: Array<{ id: string; lat: number; lng: number }>, cellSizeDeg: number): OverviewCluster[] => {
@@ -80,6 +87,24 @@ const aggregateToGrid = (points: Array<{ id: string; lat: number; lng: number }>
       count: value.count,
     }))
     .sort((a, b) => b.count - a.count);
+};
+
+const aggregateToGridWithBudget = (
+  points: Array<{ id: string; lat: number; lng: number }>,
+  zoom: number,
+): { clusters: OverviewCluster[]; cellSizeDeg: number } => {
+  const target = getTargetClusterBudget(zoom);
+  let cellSizeDeg = getBaseCellSizeDeg(zoom);
+  let clusters = aggregateToGrid(points, cellSizeDeg);
+
+  let guard = 0;
+  while (clusters.length > target && guard < 8) {
+    cellSizeDeg *= 1.5;
+    clusters = aggregateToGrid(points, cellSizeDeg);
+    guard += 1;
+  }
+
+  return { clusters, cellSizeDeg };
 };
 
 const loadPlacesFromSnapshot = async (): Promise<PublishedSnapshot> => {
@@ -223,16 +248,15 @@ export async function listPlacesOverviewForMap(options: {
   dataSource: "db" | "json" | "auto";
   filters: ListPlacesOverviewFilters;
 }): Promise<ListPlacesOverviewResult> {
-  const cellSizeDeg = getCellSizeDeg(options.filters.zoom);
-
   if (options.dataSource !== "json") {
     try {
       const dbResult = await loadOverviewPointsFromDb(options.filters);
       if (dbResult) {
+        const aggregated = aggregateToGridWithBudget(dbResult.points, options.filters.zoom);
         return {
-          clusters: aggregateToGrid(dbResult.points, cellSizeDeg),
+          clusters: aggregated.clusters,
           totalPlaces: dbResult.total,
-          cellSizeDeg,
+          cellSizeDeg: aggregated.cellSizeDeg,
           source: "db",
           limited: false,
         };
@@ -280,11 +304,12 @@ export async function listPlacesOverviewForMap(options: {
     });
 
   const points = filtered.map((place) => ({ id: place.id, lat: place.lat, lng: place.lng }));
+  const aggregated = aggregateToGridWithBudget(points, options.filters.zoom);
 
   return {
-    clusters: aggregateToGrid(points, cellSizeDeg),
+    clusters: aggregated.clusters,
     totalPlaces: filtered.length,
-    cellSizeDeg,
+    cellSizeDeg: aggregated.cellSizeDeg,
     source: "json",
     limited: true,
     lastUpdatedISO: normalizeText(snapshot.meta?.last_updated) ?? undefined,
