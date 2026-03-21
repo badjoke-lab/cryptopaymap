@@ -26,7 +26,8 @@ stateDiagram-v2
   %% =========================
   state RouteHomeMap {
     [*] --> MapLoad
-    MapLoad --> MapIdle : places list loaded
+    MapLoad --> MapIdle : places list loaded (mid/high zoom)
+    MapLoad --> MapIdle : overview clusters loaded (world/low zoom)
     MapLoad --> MapEmpty : no results
     MapLoad --> MapDegraded : data source degraded (db down/json)
     MapLoad --> MapError : fetch failed (network/parse)
