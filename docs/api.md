@@ -83,6 +83,7 @@ internal 系は **運営のみ**が触れる。
 | Route                                                         | 用途                                             |
 | ------------------------------------------------------------- | ---------------------------------------------- |
 | `GET /api/places`                                             | 地図用の全店舗取得（軽量版）                                 |
+| `GET /api/places/overview`                                    | world / low-zoom 用の集約マーカー取得                         |
 | `GET /api/places/[id]`                                        | 個別店舗詳細（Drawer用）                                |
 | `GET /api/places/by-id?id=...`                                | 個別店舗詳細（cpm/osm IDの安全取得）                     |
 | `GET /api/stats`                                              | v3 コア統計                                        |
@@ -258,7 +259,39 @@ type SubmissionMedia = {
 ## 4.1 GET `/api/places/by-id?id=...`
 
 * `id`: `cpm:...` / `osm:...` をクエリで指定
-* Response：`PlaceDetail`
+
+---
+
+## 4.2 GET `/api/places/overview`（world / low-zoom）
+
+### Description
+
+world / low-zoom の地図表示向けに、place 一覧ではなく **集約済みクラスタ点**を返す。
+
+### Query
+
+`/api/places` と同様の filter query（`bbox`, `q`, `country`, `city`, `category`, `chain`, `payment`, `verification`, `asset`）に加えて:
+
+* `zoom`（現在の map zoom）
+
+### Response
+
+```ts
+type PlacesOverviewResponse = {
+  clusters: {
+    id: string
+    lat: number
+    lng: number
+    count: number
+  }[]
+  totalPlaces: number
+  cellSizeDeg: number
+}
+```
+
+* `clusters`: 表示用の集約マーカー
+* `totalPlaces`: filter適用後の総 place 件数
+* `cellSizeDeg`: 集約に使ったグリッドの粒度（度）
 
 ---
 
