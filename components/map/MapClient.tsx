@@ -120,9 +120,11 @@ export default function MapClient() {
   const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
     new Map(),
   );
-  const overviewCacheRef = useRef<Map<string, { clusters: ClusterResult[]; limited: boolean; lastUpdatedISO: string | null }>>(
+  const overviewCacheRef = useRef<Map<string, { clusters: ClusterResult[]; totalPlaces: number; limited: boolean; lastUpdatedISO: string | null }>>(
     new Map(),
   );
+  const [isOverviewMode, setIsOverviewMode] = useState(false);
+  const [overviewTotalPlaces, setOverviewTotalPlaces] = useState<number | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [placesStatus, setPlacesStatus] = useState<
     "idle" | "loading" | "success" | "error"
@@ -621,6 +623,8 @@ export default function MapClient() {
           placesRef.current = [];
           setPlaces([]);
           setLimitNotice(null);
+          setIsOverviewMode(true);
+          setOverviewTotalPlaces(cached.totalPlaces);
           setLimitedMode(cached.limited);
           setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
           renderClusters(cached.clusters);
@@ -649,6 +653,7 @@ export default function MapClient() {
           }
           const payload = (await response.json()) as {
             clusters?: Array<{ id: string; lat: number; lng: number; count: number }>;
+            totalPlaces?: number;
           };
           const isLimited = isLimitedHeader(response.headers);
           const lastUpdatedISO = getLastUpdatedHeader(response.headers);
@@ -664,11 +669,18 @@ export default function MapClient() {
           placesRef.current = [];
           setPlaces([]);
           setLimitNotice(null);
+          setIsOverviewMode(true);
+          setOverviewTotalPlaces(Number(payload.totalPlaces ?? 0));
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           renderClusters(nextClusters);
           usingOverviewRef.current = true;
-          overviewCacheRef.current.set(requestKey, { clusters: nextClusters, limited: isLimited, lastUpdatedISO });
+          overviewCacheRef.current.set(requestKey, {
+            clusters: nextClusters,
+            totalPlaces: Number(payload.totalPlaces ?? 0),
+            limited: isLimited,
+            lastUpdatedISO,
+          });
           if (overviewCacheRef.current.size > 30) {
             const [firstKey] = overviewCacheRef.current.keys();
             if (firstKey) {
@@ -758,6 +770,8 @@ export default function MapClient() {
 
           placesRef.current = nextPlaces;
           setPlaces(nextPlaces);
+          setIsOverviewMode(false);
+          setOverviewTotalPlaces(null);
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
@@ -931,6 +945,7 @@ export default function MapClient() {
 
 
   useEffect(() => {
+    if (isOverviewMode) return;
     if (!selectedPlaceId || placesStatus !== "success") return;
     const selectedStillExists = places.some((place) => place.id === selectedPlaceId);
     if (selectedStillExists) {
@@ -949,7 +964,9 @@ export default function MapClient() {
     }
 
     setSelectionNotice("Selected place is outside the current map area or filters.");
-  }, [places, placesStatus, router, selectedPlaceId, selectedPlaceParam]);
+  }, [isOverviewMode, places, placesStatus, router, selectedPlaceId, selectedPlaceParam]);
+
+  const displayPlaceCount = isOverviewMode ? (overviewTotalPlaces ?? 0) : places.length;
 
   useEffect(() => {
     if (!fetchPlacesRef.current) return;
@@ -1099,9 +1116,13 @@ export default function MapClient() {
                 />
                 <div className="mt-4 space-y-2">
                   <div className="text-sm font-semibold text-gray-800">
-                    Places ({places.length})
+                    Places ({displayPlaceCount})
                   </div>
-                  {places.length === 0 ? (
+                  {isOverviewMode ? (
+                    <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800">
+                      Low-zoom overview mode is active. Zoom in to browse place list.
+                    </div>
+                  ) : places.length === 0 ? (
                     <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">
                       <div className="font-semibold">No places for current filters.</div>
                       <button
@@ -1147,7 +1168,7 @@ export default function MapClient() {
           </button>
           <div className="cpm-map-places-pill" role="status" aria-live="polite">
             <span>
-              {places.length} place{places.length === 1 ? "" : "s"}
+              {displayPlaceCount} place{displayPlaceCount === 1 ? "" : "s"}
             </span>
             {placesStatus === "loading" ? (
               <span className="cpm-inline-loading-spinner" aria-hidden />
@@ -1165,6 +1186,13 @@ export default function MapClient() {
   };
 
   const renderPlaceList = useCallback(() => {
+    if (isOverviewMode) {
+      return (
+        <div className="rounded-lg border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800">
+          Overview mode: aggregated markers are shown at low zoom. Zoom in for place-level list.
+        </div>
+      );
+    }
     if (!places.length) {
       return (
         <div className="rounded-lg border border-gray-100 bg-gray-50 p-3 text-sm text-gray-600">
@@ -1202,7 +1230,7 @@ export default function MapClient() {
         })}
       </div>
     );
-  }, [openDrawerForPlace, places, selectedPlaceId]);
+  }, [isOverviewMode, openDrawerForPlace, places, selectedPlaceId]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -1346,7 +1374,7 @@ export default function MapClient() {
 />
           <div className="mt-4 inline-flex items-center gap-2 rounded-md bg-gray-50 px-3 py-2 text-sm font-semibold text-gray-700">
             <span>
-              Showing {places.length} place{places.length === 1 ? "" : "s"}
+              Showing {displayPlaceCount} place{displayPlaceCount === 1 ? "" : "s"}
             </span>
             {placesStatus === "loading" ? (
               <span className="cpm-inline-loading-spinner" aria-hidden />
@@ -1392,7 +1420,7 @@ export default function MapClient() {
             Too many results ({limitNotice.count} of {limitNotice.limit}). Zoom in to narrow down.
           </div>
         )}
-        {!limitNotice && placesStatus === "success" && usingOverviewRef.current && (
+        {!limitNotice && placesStatus === "success" && isOverviewMode && (
           <div className="pointer-events-none absolute inset-x-0 top-4 z-40 mx-auto w-[min(90%,580px)] rounded-md border border-sky-200 bg-sky-50/95 px-4 py-2 text-sm font-medium text-sky-900 shadow-sm backdrop-blur">
             Overview mode: aggregated markers are shown at low zoom. Zoom in for place-level pins and list.
           </div>
