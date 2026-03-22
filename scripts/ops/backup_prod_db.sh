@@ -8,14 +8,34 @@ if [ -z "${PROD_DATABASE_URL:-}" ]; then
   exit 1
 fi
 
+PG_DUMP_BIN=""
+for candidate in \
+  "/opt/homebrew/opt/libpq/bin/pg_dump" \
+  "/opt/homebrew/bin/pg_dump" \
+  "/usr/local/opt/libpq/bin/pg_dump" \
+  "/usr/local/bin/pg_dump" \
+  "/Library/PostgreSQL/18/bin/pg_dump" \
+  "/Applications/Postgres.app/Contents/Versions/latest/bin/pg_dump"
+do
+  if [ -x "$candidate" ]; then
+    PG_DUMP_BIN="$candidate"
+    break
+  fi
+done
+
+if [ -z "$PG_DUMP_BIN" ]; then
+  echo "ERROR: pg_dump binary not found in known locations" >&2
+  exit 1
+fi
+
 STAMP="$(date +%Y%m%d-%H%M%S)"
 ROOT="${HOME}/cpm-backups/auto"
 OUT="${ROOT}/${STAMP}"
 
 mkdir -p "$OUT"
 
-pg_dump "$PROD_DATABASE_URL" -Fc -f "$OUT/cpm-prod-full.dump"
-pg_dump "$PROD_DATABASE_URL" --schema-only -f "$OUT/cpm-prod-schema.sql"
+"$PG_DUMP_BIN" "$PROD_DATABASE_URL" -Fc -f "$OUT/cpm-prod-full.dump"
+"$PG_DUMP_BIN" "$PROD_DATABASE_URL" --schema-only -f "$OUT/cpm-prod-schema.sql"
 
 OUT_DIR="$OUT" node - <<'NODE'
 const fs = require('fs');
@@ -48,3 +68,4 @@ shasum -a 256 "$OUT"/* > "$OUT/SHA256SUMS.txt"
 find "$ROOT" -maxdepth 1 -mindepth 1 -type d | sort | head -n -14 | xargs rm -rf 2>/dev/null || true
 
 echo "backup complete: $OUT"
+echo "pg_dump_bin=$PG_DUMP_BIN"
