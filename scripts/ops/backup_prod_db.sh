@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+
 if [ -z "${PROD_DATABASE_URL:-}" ]; then
   echo "ERROR: PROD_DATABASE_URL is required" >&2
   exit 1
