@@ -47,11 +47,18 @@ const PIN_SVGS: Record<PinType, string> = {
   unverified: `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g><path d="M16 2 C10 2,6 6.5,6 12 C6 20,16 30,16 30 C16 30,26 20,26 12 C26 6.5,22 2,16 2Z" fill="#9CA3AF" stroke="white" stroke-width="2"/><circle cx="16" cy="12" r="4" fill="white"/><path d="M16 10V14" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="17" r="0.75" fill="#9CA3AF"/></g></svg>`,
 };
 
+const normalizePinType = (verification: string): PinType => {
+  if (verification === "owner" || verification === "community" || verification === "directory") {
+    return verification;
+  }
+  return "unverified";
+};
+
 const placeToPin = (place: Place): Pin => ({
   id: place.id,
   lat: place.lat,
   lng: place.lng,
-  verification: place.verification,
+  verification: normalizePinType(place.verification),
 });
 
 const hasSummaryPlusForDrawer = (place: Place | null): boolean => {
@@ -115,6 +122,7 @@ export default function MapClient() {
     force: boolean;
     zoom: number;
   } | null>(null);
+  const isFetchingMarkersRef = useRef(false);
   const usingOverviewRef = useRef(false);
   const lastRequestKeyRef = useRef<string | null>(null);
   const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
@@ -414,6 +422,9 @@ export default function MapClient() {
       const map = mapInstanceRef.current;
 
       if (!markerLayerRef.current || !L || !map) return;
+      if (clusters.length === 0 && isFetchingMarkersRef.current && markersRef.current.size > 0) {
+        return;
+      }
 
       const clustersKey = clusters
         .map((clusterItem) => {
@@ -463,8 +474,9 @@ export default function MapClient() {
 
         const [lng, lat] = clusterItem.coordinates;
         const isSelected = selectedPlaceIdRef.current === clusterItem.id;
+        const pinType = normalizePinType(clusterItem.verification);
         const icon = L.divIcon({
-          html: `<div class="cpm-pin cpm-pin-${clusterItem.verification}${isSelected ? " active" : ""}">${PIN_SVGS[clusterItem.verification]}</div>`,
+          html: `<div class="cpm-pin cpm-pin-${pinType}${isSelected ? " active" : ""}">${PIN_SVGS[pinType]}</div>`,
           className: "",
           iconSize: [32, 32],
           iconAnchor: [16, 32],
@@ -634,6 +646,7 @@ export default function MapClient() {
 
         const cached = overviewCacheRef.current.get(requestKey);
         if (cached) {
+          isFetchingMarkersRef.current = false;
           setPlacesError(null);
           placesRef.current = [];
           setPlaces([]);
@@ -649,6 +662,7 @@ export default function MapClient() {
         }
 
         const hadPlaces = placesRef.current.length > 0;
+        isFetchingMarkersRef.current = true;
         setPlacesStatus("loading");
         setPlacesError(null);
         if (!hadPlaces) {
@@ -688,6 +702,7 @@ export default function MapClient() {
           setOverviewTotalPlaces(Number(payload.totalPlaces ?? 0));
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
+          isFetchingMarkersRef.current = false;
           renderClusters(nextClusters);
           usingOverviewRef.current = true;
           overviewCacheRef.current.set(requestKey, {
@@ -709,6 +724,7 @@ export default function MapClient() {
           }
           console.error(error);
           if (!isMounted || requestIdRef.current !== requestId) return;
+          isFetchingMarkersRef.current = false;
           const message = "Failed to load map overview. Please try again.";
           setPlacesError(message);
           setPlacesStatus("error");
@@ -730,6 +746,7 @@ export default function MapClient() {
 
         const cached = placesCacheRef.current.get(requestKey);
         if (cached) {
+          isFetchingMarkersRef.current = false;
           setPlacesError(null);
           placesRef.current = cached.places;
           setPlaces(cached.places);
@@ -742,6 +759,7 @@ export default function MapClient() {
         }
 
         const hadPlaces = placesRef.current.length > 0;
+        isFetchingMarkersRef.current = true;
         setPlacesStatus("loading");
         setPlacesError(null);
         if (!hadPlaces) {
@@ -790,6 +808,7 @@ export default function MapClient() {
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
+          isFetchingMarkersRef.current = false;
           buildIndexAndRender(nextPlaces);
           usingOverviewRef.current = false;
           placesCacheRef.current.set(requestKey, { places: nextPlaces, limit, limited: isLimited, lastUpdatedISO });
@@ -806,6 +825,7 @@ export default function MapClient() {
           }
           console.error(error);
           if (!isMounted || requestIdRef.current !== requestId) return;
+          isFetchingMarkersRef.current = false;
           const message = "Failed to load places. Please try again.";
           setPlacesError(message);
           if (placesRef.current.length > 0) {
