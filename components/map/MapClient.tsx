@@ -122,6 +122,7 @@ export default function MapClient() {
     force: boolean;
     zoom: number;
   } | null>(null);
+  const isFetchingMarkersRef = useRef(false);
   const usingOverviewRef = useRef(false);
   const lastRequestKeyRef = useRef<string | null>(null);
   const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
@@ -421,6 +422,9 @@ export default function MapClient() {
       const map = mapInstanceRef.current;
 
       if (!markerLayerRef.current || !L || !map) return;
+      if (clusters.length === 0 && isFetchingMarkersRef.current && markersRef.current.size > 0) {
+        return;
+      }
 
       const clustersKey = clusters
         .map((clusterItem) => {
@@ -642,6 +646,7 @@ export default function MapClient() {
 
         const cached = overviewCacheRef.current.get(requestKey);
         if (cached) {
+          isFetchingMarkersRef.current = false;
           setPlacesError(null);
           placesRef.current = [];
           setPlaces([]);
@@ -657,6 +662,7 @@ export default function MapClient() {
         }
 
         const hadPlaces = placesRef.current.length > 0;
+        isFetchingMarkersRef.current = true;
         setPlacesStatus("loading");
         setPlacesError(null);
         if (!hadPlaces) {
@@ -696,6 +702,7 @@ export default function MapClient() {
           setOverviewTotalPlaces(Number(payload.totalPlaces ?? 0));
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
+          isFetchingMarkersRef.current = false;
           renderClusters(nextClusters);
           usingOverviewRef.current = true;
           overviewCacheRef.current.set(requestKey, {
@@ -717,6 +724,7 @@ export default function MapClient() {
           }
           console.error(error);
           if (!isMounted || requestIdRef.current !== requestId) return;
+          isFetchingMarkersRef.current = false;
           const message = "Failed to load map overview. Please try again.";
           setPlacesError(message);
           setPlacesStatus("error");
@@ -738,6 +746,7 @@ export default function MapClient() {
 
         const cached = placesCacheRef.current.get(requestKey);
         if (cached) {
+          isFetchingMarkersRef.current = false;
           setPlacesError(null);
           placesRef.current = cached.places;
           setPlaces(cached.places);
@@ -750,6 +759,7 @@ export default function MapClient() {
         }
 
         const hadPlaces = placesRef.current.length > 0;
+        isFetchingMarkersRef.current = true;
         setPlacesStatus("loading");
         setPlacesError(null);
         if (!hadPlaces) {
@@ -798,6 +808,7 @@ export default function MapClient() {
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
+          isFetchingMarkersRef.current = false;
           buildIndexAndRender(nextPlaces);
           usingOverviewRef.current = false;
           placesCacheRef.current.set(requestKey, { places: nextPlaces, limit, limited: isLimited, lastUpdatedISO });
@@ -814,6 +825,7 @@ export default function MapClient() {
           }
           console.error(error);
           if (!isMounted || requestIdRef.current !== requestId) return;
+          isFetchingMarkersRef.current = false;
           const message = "Failed to load places. Please try again.";
           setPlacesError(message);
           if (placesRef.current.length > 0) {
