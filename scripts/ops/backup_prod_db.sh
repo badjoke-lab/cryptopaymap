@@ -65,7 +65,7 @@ NODE
 
 shasum -a 256 "$OUT"/* > "$OUT/SHA256SUMS.txt"
 
-find "$ROOT" -maxdepth 1 -mindepth 1 -type d | sort | head -n -14 | xargs rm -rf 2>/dev/null || true
+find "$ROOT" -maxdepth 1 -mindepth 1 -type d | sort | sed -e :a -e '1,14!{P;N;D;};N;ba' | xargs rm -rf 2>/dev/null || true
 
 echo "backup complete: $OUT"
 echo "pg_dump_bin=$PG_DUMP_BIN"
