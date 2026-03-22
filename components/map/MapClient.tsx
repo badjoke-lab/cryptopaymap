@@ -47,11 +47,18 @@ const PIN_SVGS: Record<PinType, string> = {
   unverified: `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g><path d="M16 2 C10 2,6 6.5,6 12 C6 20,16 30,16 30 C16 30,26 20,26 12 C26 6.5,22 2,16 2Z" fill="#9CA3AF" stroke="white" stroke-width="2"/><circle cx="16" cy="12" r="4" fill="white"/><path d="M16 10V14" stroke="#9CA3AF" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="17" r="0.75" fill="#9CA3AF"/></g></svg>`,
 };
 
+const normalizePinType = (verification: string): PinType => {
+  if (verification === "owner" || verification === "community" || verification === "directory") {
+    return verification;
+  }
+  return "unverified";
+};
+
 const placeToPin = (place: Place): Pin => ({
   id: place.id,
   lat: place.lat,
   lng: place.lng,
-  verification: place.verification,
+  verification: normalizePinType(place.verification),
 });
 
 const hasSummaryPlusForDrawer = (place: Place | null): boolean => {
@@ -463,8 +470,9 @@ export default function MapClient() {
 
         const [lng, lat] = clusterItem.coordinates;
         const isSelected = selectedPlaceIdRef.current === clusterItem.id;
+        const pinType = normalizePinType(clusterItem.verification);
         const icon = L.divIcon({
-          html: `<div class="cpm-pin cpm-pin-${clusterItem.verification}${isSelected ? " active" : ""}">${PIN_SVGS[clusterItem.verification]}</div>`,
+          html: `<div class="cpm-pin cpm-pin-${pinType}${isSelected ? " active" : ""}">${PIN_SVGS[pinType]}</div>`,
           className: "",
           iconSize: [32, 32],
           iconAnchor: [16, 32],
