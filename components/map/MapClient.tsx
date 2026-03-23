@@ -121,9 +121,13 @@ export default function MapClient() {
     filterQuery: string;
     force: boolean;
     zoom: number;
+    trigger: "threshold-crossing" | "zoom" | "pan" | "filters";
   } | null>(null);
   const isFetchingMarkersRef = useRef(false);
   const usingOverviewRef = useRef(false);
+  const currentRenderSourceRef = useRef<"overview" | "places" | "empty">("empty");
+  const renderedItemCountRef = useRef(0);
+  const lastViewportZoomRef = useRef<number>(DEFAULT_ZOOM);
   const lastRequestKeyRef = useRef<string | null>(null);
   const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
     new Map(),
@@ -422,7 +426,11 @@ export default function MapClient() {
       const map = mapInstanceRef.current;
 
       if (!markerLayerRef.current || !L || !map) return;
-      if (clusters.length === 0 && isFetchingMarkersRef.current && markersRef.current.size > 0) {
+      if (
+        clusters.length === 0 &&
+        renderedItemCountRef.current > 0 &&
+        (isFetchingMarkersRef.current || pendingFetchRef.current !== null)
+      ) {
         return;
       }
 
@@ -509,6 +517,7 @@ export default function MapClient() {
           nextLayer.addTo(map);
           markerLayerRef.current = nextLayer;
           markersRef.current = nextMarkers;
+          renderedItemCountRef.current = clusters.length;
           if (previousLayer) {
             map.removeLayer(previousLayer);
           }
@@ -520,6 +529,7 @@ export default function MapClient() {
 
     const updateVisibleMarkers = () => {
       const map = mapInstanceRef.current;
+      if (currentRenderSourceRef.current !== "places") return;
       if (!markerLayerRef.current || !clusterIndexRef.current || !map) return;
       const bounds = map.getBounds();
       const bbox: [number, number, number, number] = [
@@ -625,6 +635,7 @@ export default function MapClient() {
       const buildIndexAndRender = (nextPlaces: Place[]) => {
         const pins = nextPlaces.map(placeToPin);
         clusterIndexRef.current = createSuperclusterIndex(pins);
+        currentRenderSourceRef.current = "places";
         updateVisibleMarkers();
       };
 
@@ -655,6 +666,7 @@ export default function MapClient() {
           setOverviewTotalPlaces(cached.totalPlaces);
           setLimitedMode(cached.limited);
           setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
+          currentRenderSourceRef.current = "overview";
           renderClusters(cached.clusters);
           setPlacesStatus("success");
           usingOverviewRef.current = true;
@@ -703,6 +715,7 @@ export default function MapClient() {
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           isFetchingMarkersRef.current = false;
+          currentRenderSourceRef.current = "overview";
           renderClusters(nextClusters);
           usingOverviewRef.current = true;
           overviewCacheRef.current.set(requestKey, {
@@ -755,6 +768,8 @@ export default function MapClient() {
           setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
           buildIndexAndRender(cached.places);
           setPlacesStatus("success");
+          currentRenderSourceRef.current = "places";
+          usingOverviewRef.current = false;
           return;
         }
 
@@ -810,6 +825,7 @@ export default function MapClient() {
           setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
           isFetchingMarkersRef.current = false;
           buildIndexAndRender(nextPlaces);
+          currentRenderSourceRef.current = "places";
           usingOverviewRef.current = false;
           placesCacheRef.current.set(requestKey, { places: nextPlaces, limit, limited: isLimited, lastUpdatedISO });
           if (placesCacheRef.current.size > 30) {
@@ -838,17 +854,23 @@ export default function MapClient() {
 
       const scheduleFetchForBounds = (
         bounds: import("leaflet").LatLngBounds,
-        { force = false }: { force?: boolean } = {},
+        {
+          force = false,
+          trigger = "pan",
+        }: { force?: boolean; trigger?: "threshold-crossing" | "zoom" | "pan" | "filters" } = {},
       ) => {
         const bboxKey = formatBbox(bounds);
         const zoom = map.getZoom();
         const filterQuery = buildQueryFromFilters(filtersRef.current);
         const requestKey = buildRequestKey(bboxKey, zoom, filterQuery);
         if (!force && requestKey === lastRequestKeyRef.current) return;
-        pendingFetchRef.current = { bboxKey, requestKey, filterQuery, force, zoom };
+        pendingFetchRef.current = { bboxKey, requestKey, filterQuery, force, zoom, trigger };
         clearFetchTimeout();
+        const delayMs =
+          trigger === "threshold-crossing" ? 0 : trigger === "zoom" ? 40 : trigger === "filters" ? 60 : 80;
         fetchTimeoutRef.current = window.setTimeout(() => {
           const pending = pendingFetchRef.current;
+          pendingFetchRef.current = null;
           if (!pending) return;
           if (!pending.force && pending.requestKey === lastRequestKeyRef.current) return;
           lastRequestKeyRef.current = pending.requestKey;
@@ -862,12 +884,28 @@ export default function MapClient() {
             return;
           }
           void fetchPlacesForBbox(pending.bboxKey, pending.zoom, pending.filterQuery, pending.requestKey);
-        }, 120);
+        }, delayMs);
       };
 
       const handleMapViewChange = () => {
-        scheduleFetchForBounds(map.getBounds(), { force: true });
-        updateVisibleMarkers();
+        const bounds = map.getBounds();
+        const zoom = map.getZoom();
+        const previousZoom = lastViewportZoomRef.current;
+        const previousMode = previousZoom <= OVERVIEW_MAX_ZOOM ? "overview" : "places";
+        const nextMode = zoom <= OVERVIEW_MAX_ZOOM ? "overview" : "places";
+        const didCrossThreshold = previousMode !== nextMode;
+        const didZoomChange = zoom !== previousZoom;
+
+        if (didCrossThreshold) {
+          scheduleFetchForBounds(bounds, { force: true, trigger: "threshold-crossing" });
+        } else {
+          scheduleFetchForBounds(bounds, { force: true, trigger: didZoomChange ? "zoom" : "pan" });
+          if (nextMode === "places") {
+            updateVisibleMarkers();
+          }
+        }
+
+        lastViewportZoomRef.current = zoom;
       };
 
       map.on("moveend zoomend", handleMapViewChange);
@@ -876,11 +914,12 @@ export default function MapClient() {
 
       fetchPlacesRef.current = () => {
         if (!mapInstanceRef.current) return;
-        scheduleFetchForBounds(mapInstanceRef.current.getBounds(), { force: true });
+        scheduleFetchForBounds(mapInstanceRef.current.getBounds(), { force: true, trigger: "filters" });
       };
       map.whenReady(() => {
         invalidateMapSize();
-        scheduleFetchForBounds(map.getBounds(), { force: true });
+        lastViewportZoomRef.current = map.getZoom();
+        scheduleFetchForBounds(map.getBounds(), { force: true, trigger: "threshold-crossing" });
       });
 
       return () => {
@@ -898,11 +937,14 @@ export default function MapClient() {
       disposeMapListeners?.();
       stopRenderFrame();
       clearFetchTimeout();
+      pendingFetchRef.current = null;
       abortControllerRef.current?.abort();
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
+      currentRenderSourceRef.current = "empty";
+      renderedItemCountRef.current = 0;
     };
   }, [closeDrawer, invalidateMapSize, openDrawerForPlace]);
 
@@ -1007,7 +1049,7 @@ export default function MapClient() {
     if (!fetchPlacesRef.current) return;
     const timeout = window.setTimeout(() => {
       fetchPlacesRef.current?.();
-    }, 150);
+    }, 60);
 
     return () => window.clearTimeout(timeout);
   }, [filters]);
