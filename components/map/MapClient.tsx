@@ -1096,6 +1096,7 @@ export default function MapClient() {
                   <div className="text-sm font-semibold text-gray-800">
                     Places ({displayPlaceCount})
                   </div>
+                  {renderListCapNotice()}
                   {isOverviewMode ? (
                     <div className="rounded-xl border border-sky-200 bg-sky-50 p-3 text-sm text-sky-800">
                       Low-zoom overview mode is active. Zoom in to browse place list.
@@ -1209,6 +1210,16 @@ export default function MapClient() {
       </div>
     );
   }, [isOverviewMode, openDrawerForPlace, places, selectedPlaceId]);
+
+  const renderListCapNotice = useCallback(() => {
+    if (!limitNotice || placesStatus === "loading") return null;
+
+    return (
+      <div className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+        List capped at 2,000 results. Map markers continue to load normally. Zoom in or use filters to narrow the list.
+      </div>
+    );
+  }, [limitNotice, placesStatus]);
 
   useEffect(() => {
     const map = mapInstanceRef.current;
@@ -1359,7 +1370,10 @@ export default function MapClient() {
             ) : null}
           </div>
           <div className="mt-4 h-px bg-gray-100" />
-          <div className="mt-4 flex flex-col gap-2">{renderPlaceList()}</div>
+          <div className="mt-4 flex flex-col gap-2">
+            {renderListCapNotice()}
+            {renderPlaceList()}
+          </div>
         </div>
       </aside>
       <div className="relative flex-1 bg-gray-50 min-h-0">
@@ -1393,11 +1407,6 @@ export default function MapClient() {
           {renderMobileFilters()}
           {renderAntarcticaDemoNotice()}
         </div>
-        {limitNotice && placesStatus !== "loading" && (
-          <div className="pointer-events-none absolute inset-x-0 top-4 z-40 mx-auto w-[min(90%,520px)] rounded-md border border-amber-200 bg-amber-50/95 px-4 py-2 text-sm font-medium text-amber-900 shadow-sm backdrop-blur">
-            Too many results ({limitNotice.count} of {limitNotice.limit}). Zoom in to narrow down.
-          </div>
-        )}
         {!limitNotice && placesStatus === "success" && isOverviewMode && (
           <div className="pointer-events-none absolute inset-x-0 top-4 z-40 mx-auto w-[min(90%,580px)] rounded-md border border-sky-200 bg-sky-50/95 px-4 py-2 text-sm font-medium text-sky-900 shadow-sm backdrop-blur">
             Overview mode: aggregated markers are shown at low zoom. Zoom in for place-level pins and list.
