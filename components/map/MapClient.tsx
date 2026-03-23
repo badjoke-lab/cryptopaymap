@@ -115,7 +115,6 @@ export default function MapClient() {
   const requestIdRef = useRef(0);
   const abortControllerRef = useRef<AbortController | null>(null);
   const fetchTimeoutRef = useRef<number | null>(null);
-  const isFetchScheduledRef = useRef(false);
   const pendingFetchRef = useRef<{
     bboxKey: string;
     requestKey: string;
@@ -423,9 +422,7 @@ export default function MapClient() {
       const map = mapInstanceRef.current;
 
       if (!markerLayerRef.current || !L || !map) return;
-      const hasVisibleMarkers = markersRef.current.size > 0;
-      const hasPendingMarkerRefresh = isFetchingMarkersRef.current || isFetchScheduledRef.current;
-      if (clusters.length === 0 && hasPendingMarkerRefresh && hasVisibleMarkers) {
+      if (clusters.length === 0 && isFetchingMarkersRef.current && markersRef.current.size > 0) {
         return;
       }
 
@@ -541,7 +538,6 @@ export default function MapClient() {
       if (fetchTimeoutRef.current === null) return;
       window.clearTimeout(fetchTimeoutRef.current);
       fetchTimeoutRef.current = null;
-      isFetchScheduledRef.current = false;
     };
 
     const formatBbox = (bounds: import("leaflet").LatLngBounds) => {
@@ -851,12 +847,9 @@ export default function MapClient() {
         if (!force && requestKey === lastRequestKeyRef.current) return;
         pendingFetchRef.current = { bboxKey, requestKey, filterQuery, force, zoom };
         clearFetchTimeout();
-        isFetchScheduledRef.current = true;
         fetchTimeoutRef.current = window.setTimeout(() => {
-          isFetchScheduledRef.current = false;
           const pending = pendingFetchRef.current;
           if (!pending) return;
-          pendingFetchRef.current = null;
           if (!pending.force && pending.requestKey === lastRequestKeyRef.current) return;
           lastRequestKeyRef.current = pending.requestKey;
           if (pending.zoom <= OVERVIEW_MAX_ZOOM) {
@@ -874,6 +867,7 @@ export default function MapClient() {
 
       const handleMapViewChange = () => {
         scheduleFetchForBounds(map.getBounds(), { force: true });
+        updateVisibleMarkers();
       };
 
       map.on("moveend zoomend", handleMapViewChange);
