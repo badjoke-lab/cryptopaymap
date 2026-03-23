@@ -37,8 +37,8 @@ const HEADER_HEIGHT = 64;
 const DEFAULT_COORDINATES: [number, number] = [20, 0];
 const DEFAULT_ZOOM = 2;
 const MAX_CLIENT_LIMIT = 12000;
+const MAX_PIN_LIMIT = 20000;
 const BBOX_PRECISION = 3;
-const OVERVIEW_MAX_ZOOM = 3;
 
 const PIN_SVGS: Record<PinType, string> = {
   owner: `<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><g><path d="M16 2 C10 2,6 6.5,6 12 C6 20,16 30,16 30 C16 30,26 20,26 12 C26 6.5,22 2,16 2Z" fill="#F59E0B" stroke="white" stroke-width="2"/><circle cx="16" cy="12" r="4" fill="white"/></g></svg>`,
@@ -54,11 +54,18 @@ const normalizePinType = (verification: string): PinType => {
   return "unverified";
 };
 
-const placeToPin = (place: Place): Pin => ({
-  id: place.id,
-  lat: place.lat,
-  lng: place.lng,
-  verification: normalizePinType(place.verification),
+type MarkerPin = {
+  id: string;
+  lat: number;
+  lng: number;
+  verification: string;
+};
+
+const markerPinToPin = (pin: MarkerPin): Pin => ({
+  id: pin.id,
+  lat: pin.lat,
+  lng: pin.lng,
+  verification: normalizePinType(pin.verification),
 });
 
 const hasSummaryPlusForDrawer = (place: Place | null): boolean => {
@@ -123,18 +130,17 @@ export default function MapClient() {
     zoom: number;
   } | null>(null);
   const isFetchingMarkersRef = useRef(false);
-  const usingOverviewRef = useRef(false);
+  const markerPinsRef = useRef<MarkerPin[]>([]);
   const lastRequestKeyRef = useRef<string | null>(null);
+  const lastPinsFilterQueryRef = useRef<string | null>(null);
   const placesCacheRef = useRef<Map<string, { places: Place[]; limit: number; limited: boolean; lastUpdatedISO: string | null }>>(
     new Map(),
   );
-  const overviewCacheRef = useRef<Map<string, { clusters: ClusterResult[]; totalPlaces: number; limited: boolean; lastUpdatedISO: string | null }>>(
-    new Map(),
-  );
+  const markerPinsCacheRef = useRef<Map<string, { pins: MarkerPin[]; limited: boolean; lastUpdatedISO: string | null }>>(new Map());
   const lastRenderedClustersKeyRef = useRef<string | null>(null);
   const [isOverviewMode, setIsOverviewMode] = useState(false);
-  const [overviewTotalPlaces, setOverviewTotalPlaces] = useState<number | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
+  const [markerPinsTotal, setMarkerPinsTotal] = useState(0);
   const [placesStatus, setPlacesStatus] = useState<
     "idle" | "loading" | "success" | "error"
   >("loading");
@@ -457,11 +463,6 @@ export default function MapClient() {
 
           const marker = L.marker([lat, lng], { icon: clusterIcon });
           marker.on("click", () => {
-            if (usingOverviewRef.current) {
-              const nextZoom = Math.max(OVERVIEW_MAX_ZOOM + 1, Math.min(map.getZoom() + 2, 18));
-              map.flyTo([lat, lng], nextZoom, { animate: true });
-              return;
-            }
             const expansionZoom = clusterIndexRef.current?.getClusterExpansionZoom(clusterItem.id);
             if (expansionZoom !== undefined) {
               map.flyTo([lat, lng], expansionZoom, { animate: true });
@@ -622,8 +623,8 @@ export default function MapClient() {
         closeDrawer("map-blank-click");
       };
 
-      const buildIndexAndRender = (nextPlaces: Place[]) => {
-        const pins = nextPlaces.map(placeToPin);
+      const buildIndexAndRender = (markerPins: MarkerPin[]) => {
+        const pins = markerPins.map(markerPinToPin);
         clusterIndexRef.current = createSuperclusterIndex(pins);
         updateVisibleMarkers();
       };
@@ -631,103 +632,45 @@ export default function MapClient() {
       const buildRequestKey = (bboxKey: string, zoom: number, filterQuery: string) =>
         `${bboxKey}@${zoom}|${filterQuery}`;
 
-      const fetchOverviewForBbox = async (
-        bboxKey: string,
-        zoom: number,
-        filterQuery: string,
-        requestKey: string,
-      ) => {
-        if (!isMounted) return;
-        requestIdRef.current += 1;
-        const requestId = requestIdRef.current;
-        abortControllerRef.current?.abort();
-        const controller = new AbortController();
-        abortControllerRef.current = controller;
-
-        const cached = overviewCacheRef.current.get(requestKey);
+      const fetchMarkerPins = async (filterQuery: string) => {
+        const requestKey = filterQuery || "__all__";
+        const cached = markerPinsCacheRef.current.get(requestKey);
         if (cached) {
-          isFetchingMarkersRef.current = false;
-          setPlacesError(null);
-          placesRef.current = [];
-          setPlaces([]);
-          setLimitNotice(null);
-          setIsOverviewMode(true);
-          setOverviewTotalPlaces(cached.totalPlaces);
+          markerPinsRef.current = cached.pins;
+          setMarkerPinsTotal(cached.pins.length);
           setLimitedMode(cached.limited);
           setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
-          renderClusters(cached.clusters);
-          setPlacesStatus("success");
-          usingOverviewRef.current = true;
+          buildIndexAndRender(cached.pins);
           return;
         }
 
-        const hadPlaces = placesRef.current.length > 0;
-        isFetchingMarkersRef.current = true;
-        setPlacesStatus("loading");
-        setPlacesError(null);
-        if (!hadPlaces) {
-          setLimitNotice(null);
+        const params = new URLSearchParams(filterQuery.replace("?", ""));
+        params.set("limit", String(MAX_PIN_LIMIT));
+        const pageQuery = params.toString();
+        const response = await fetch(`/api/places/pins${pageQuery ? `?${pageQuery}` : ""}`);
+        if (!response.ok) {
+          throw new Error(`Pins request failed with status ${response.status}`);
         }
 
-        try {
-          const params = new URLSearchParams(filterQuery.replace("?", ""));
-          params.set("bbox", bboxKey);
-          params.set("zoom", String(zoom));
-          const pageQuery = params.toString();
-          const response = await fetch(`/api/places/overview${pageQuery ? `?${pageQuery}` : ""}`, {
-            signal: controller.signal,
-          });
-          if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
-          }
-          const payload = (await response.json()) as {
-            clusters?: Array<{ id: string; lat: number; lng: number; count: number }>;
-            totalPlaces?: number;
-          };
-          const isLimited = isLimitedHeader(response.headers);
-          const lastUpdatedISO = getLastUpdatedHeader(response.headers);
-          if (!isMounted || requestIdRef.current !== requestId) return;
+        const nextPins = (await response.json()) as MarkerPin[];
+        const isLimited = isLimitedHeader(response.headers);
+        const lastUpdatedISO = getLastUpdatedHeader(response.headers);
+        const pinsTotalHeader = Number(response.headers.get("x-cpm-pins-total") ?? "");
+        const normalizedPinsTotal = Number.isFinite(pinsTotalHeader) && pinsTotalHeader >= 0 ? pinsTotalHeader : nextPins.length;
 
-          const nextClusters: ClusterResult[] = (payload.clusters ?? []).map((cluster, index) => ({
-            type: "cluster",
-            id: index + 1,
-            coordinates: [cluster.lng, cluster.lat],
-            pointCount: cluster.count,
-          }));
-
-          placesRef.current = [];
-          setPlaces([]);
-          setLimitNotice(null);
-          setIsOverviewMode(true);
-          setOverviewTotalPlaces(Number(payload.totalPlaces ?? 0));
-          setLimitedMode(isLimited);
-          setLimitedModeLastUpdatedISO(lastUpdatedISO);
-          isFetchingMarkersRef.current = false;
-          renderClusters(nextClusters);
-          usingOverviewRef.current = true;
-          overviewCacheRef.current.set(requestKey, {
-            clusters: nextClusters,
-            totalPlaces: Number(payload.totalPlaces ?? 0),
-            limited: isLimited,
-            lastUpdatedISO,
-          });
-          if (overviewCacheRef.current.size > 30) {
-            const [firstKey] = overviewCacheRef.current.keys();
-            if (firstKey) {
-              overviewCacheRef.current.delete(firstKey);
-            }
-          }
-          setPlacesStatus("success");
-        } catch (error) {
-          if (error instanceof DOMException && error.name === "AbortError") {
-            return;
-          }
-          console.error(error);
-          if (!isMounted || requestIdRef.current !== requestId) return;
-          isFetchingMarkersRef.current = false;
-          const message = "Failed to load map overview. Please try again.";
-          setPlacesError(message);
-          setPlacesStatus("error");
+        markerPinsRef.current = nextPins;
+        setMarkerPinsTotal(normalizedPinsTotal);
+        setLimitedMode(isLimited);
+        setLimitedModeLastUpdatedISO(lastUpdatedISO);
+        buildIndexAndRender(nextPins);
+        markerPinsCacheRef.current.set(requestKey, {
+          pins: nextPins,
+          limited: isLimited,
+          lastUpdatedISO,
+        });
+        if (markerPinsCacheRef.current.size > 20) {
+          const [firstKey] = markerPinsCacheRef.current.keys();
+          if (firstKey) markerPinsCacheRef.current.delete(firstKey);
         }
       };
 
@@ -753,7 +696,6 @@ export default function MapClient() {
           setLimitNotice(cached.places.length >= cached.limit ? { count: cached.places.length, limit: cached.limit } : null);
           setLimitedMode(cached.limited);
           setLimitedModeLastUpdatedISO(cached.lastUpdatedISO);
-          buildIndexAndRender(cached.places);
           setPlacesStatus("success");
           return;
         }
@@ -804,13 +746,10 @@ export default function MapClient() {
           placesRef.current = nextPlaces;
           setPlaces(nextPlaces);
           setIsOverviewMode(false);
-          setOverviewTotalPlaces(null);
           setLimitedMode(isLimited);
           setLimitedModeLastUpdatedISO(lastUpdatedISO);
           setLimitNotice(nextPlaces.length >= limit ? { count: nextPlaces.length, limit } : null);
           isFetchingMarkersRef.current = false;
-          buildIndexAndRender(nextPlaces);
-          usingOverviewRef.current = false;
           placesCacheRef.current.set(requestKey, { places: nextPlaces, limit, limited: isLimited, lastUpdatedISO });
           if (placesCacheRef.current.size > 30) {
             const [firstKey] = placesCacheRef.current.keys();
@@ -851,15 +790,19 @@ export default function MapClient() {
           const pending = pendingFetchRef.current;
           if (!pending) return;
           if (!pending.force && pending.requestKey === lastRequestKeyRef.current) return;
+          const shouldFetchPins =
+            pending.force || lastPinsFilterQueryRef.current !== pending.filterQuery || markerPinsRef.current.length === 0;
           lastRequestKeyRef.current = pending.requestKey;
-          if (pending.zoom <= OVERVIEW_MAX_ZOOM) {
-            void fetchOverviewForBbox(
-              pending.bboxKey,
-              pending.zoom,
-              pending.filterQuery,
-              pending.requestKey,
-            );
-            return;
+          if (shouldFetchPins) {
+            lastPinsFilterQueryRef.current = pending.filterQuery;
+            void fetchMarkerPins(pending.filterQuery).catch((error) => {
+              console.error(error);
+              if (!isMounted) return;
+              setPlacesError("Failed to load map pins. Please try again.");
+              if (markerPinsRef.current.length === 0) {
+                setPlacesStatus("error");
+              }
+            });
           }
           void fetchPlacesForBbox(pending.bboxKey, pending.zoom, pending.filterQuery, pending.requestKey);
         }, 120);
@@ -1001,7 +944,7 @@ export default function MapClient() {
     setSelectionNotice("Selected place is outside the current map area or filters.");
   }, [isOverviewMode, places, placesStatus, router, selectedPlaceId, selectedPlaceParam]);
 
-  const displayPlaceCount = isOverviewMode ? (overviewTotalPlaces ?? 0) : places.length;
+  const displayPlaceCount = markerPinsTotal;
 
   useEffect(() => {
     if (!fetchPlacesRef.current) return;
