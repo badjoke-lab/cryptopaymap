@@ -49,6 +49,30 @@ export const normalizeAmenities = (raw: unknown): string[] | null => {
   return null;
 };
 
+const ADDRESS_CITY_ALIASES: Record<string, string[]> = {
+  "mexico city": ["ciudad de méxico"],
+};
+
+const splitAddressSegments = (value: string | null | undefined): string[] =>
+  (value ?? "")
+    .split(",")
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+
+const hasExactAddressSegment = (
+  segments: string[],
+  target: string | null | undefined,
+  aliases: string[] = [],
+): boolean => {
+  const normalizedTarget = normalizeText(target);
+  if (!normalizedTarget) return false;
+
+  const normalizedSegments = new Set(segments.map((segment) => segment.toLowerCase()));
+  if (normalizedSegments.has(normalizedTarget.toLowerCase())) return true;
+
+  return aliases.some((alias) => normalizedSegments.has(alias.toLowerCase()));
+};
+
 export const buildAddressFull = (place: {
   address_full?: string | null;
   address?: string | null;
@@ -58,10 +82,29 @@ export const buildAddressFull = (place: {
   const explicit = normalizeText(place.address_full);
   if (explicit) return explicit;
 
-  const parts = [place.address, place.city, place.country]
-    .map((value) => normalizeText(value))
-    .filter((value): value is string => Boolean(value));
-  return parts.length ? parts.join(", ") : null;
+  const address = normalizeText(place.address);
+  const city = normalizeText(place.city);
+  const country = normalizeText(place.country);
+
+  if (!address) {
+    const fallbackParts = [city, country].filter((value): value is string => Boolean(value));
+    return fallbackParts.length ? fallbackParts.join(", ") : null;
+  }
+
+  const addressSegments = splitAddressSegments(address);
+  const cityAliases = city ? (ADDRESS_CITY_ALIASES[city.toLowerCase()] ?? []) : [];
+
+  const parts = [address];
+
+  if (city && !hasExactAddressSegment(addressSegments, city, cityAliases)) {
+    parts.push(city);
+  }
+
+  if (country && !hasExactAddressSegment(addressSegments, country)) {
+    parts.push(country);
+  }
+
+  return parts.join(", ");
 };
 
 export const pickCoverImage = (place: {

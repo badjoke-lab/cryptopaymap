@@ -1,0 +1,1063 @@
+{
+  "total_samples": 120,
+  "changed_samples": 117,
+  "changed_by_city": {
+    "Berlin": 53,
+    "Buenos Aires": 64
+  },
+  "changed": [
+    {
+      "id": "osm:node:12853222862",
+      "name": "A.C.T. Computer TEAM",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "A.C.T. Computer TEAM, 366, Wendenschloßstraße, Köpenick, Treptow-Köpenick, Berlin, 12557, Deutschland",
+      "before": "A.C.T. Computer TEAM, 366, Wendenschloßstraße, Köpenick, Treptow-Köpenick, Berlin, 12557, Deutschland, Berlin, DE",
+      "after": "A.C.T. Computer TEAM, 366, Wendenschloßstraße, Köpenick, Treptow-Köpenick, Berlin, 12557, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:7069855803",
+      "name": "All the Colors",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "All the Colors, 28, Bötzowstraße, Bötzowkiez, Prenzlauer Berg, Pankow, Berlin, 10407, Deutschland",
+      "before": "All the Colors, 28, Bötzowstraße, Bötzowkiez, Prenzlauer Berg, Pankow, Berlin, 10407, Deutschland, Berlin, DE",
+      "after": "All the Colors, 28, Bötzowstraße, Bötzowkiez, Prenzlauer Berg, Pankow, Berlin, 10407, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12400272704",
+      "name": "AndresEDV & Consulting",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "AndresEDV & Consulting, 1, Jugendweg, Alt-Siemensstadt, Siemensstadt, Spandau, Berlin, 13629, Deutschland",
+      "before": "AndresEDV & Consulting, 1, Jugendweg, Alt-Siemensstadt, Siemensstadt, Spandau, Berlin, 13629, Deutschland, Berlin, DE",
+      "after": "AndresEDV & Consulting, 1, Jugendweg, Alt-Siemensstadt, Siemensstadt, Spandau, Berlin, 13629, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:4970428921",
+      "name": "Atheist Shoes",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Atheist Shoes, 8, Sophienstraße, Spandauer Vorstadt, Mitte, Berlin, 10178, Deutschland",
+      "before": "Atheist Shoes, 8, Sophienstraße, Spandauer Vorstadt, Mitte, Berlin, 10178, Deutschland, Berlin, DE",
+      "after": "Atheist Shoes, 8, Sophienstraße, Spandauer Vorstadt, Mitte, Berlin, 10178, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:2521156202",
+      "name": "Augenarztpraxis Dipl.-Med. Ricarda Hoffmann",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Augenarztpraxis Dr. Azar Hasanli, 75, Am Treptower Park, Kungerkiez, Alt-Treptow, Treptow-Köpenick, Berlin, 12435, Deutschland",
+      "before": "Augenarztpraxis Dr. Azar Hasanli, 75, Am Treptower Park, Kungerkiez, Alt-Treptow, Treptow-Köpenick, Berlin, 12435, Deutschland, Berlin, DE",
+      "after": "Augenarztpraxis Dr. Azar Hasanli, 75, Am Treptower Park, Kungerkiez, Alt-Treptow, Treptow-Köpenick, Berlin, 12435, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:2935266552",
+      "name": "Barberium",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Barberium, 59, Boxhagener Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland",
+      "before": "Barberium, 59, Boxhagener Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland, Berlin, DE",
+      "after": "Barberium, 59, Boxhagener Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3675739247",
+      "name": "C.Translations UG",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "C.Translations UG, 26, Rankestraße, City West, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10789, Deutschland",
+      "before": "C.Translations UG, 26, Rankestraße, City West, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10789, Deutschland, Berlin, DE",
+      "after": "C.Translations UG, 26, Rankestraße, City West, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10789, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10698030584",
+      "name": "CI Space",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "CI Space, 9, Bugenhagenstraße, Alt-Moabit, Moabit, Mitte, Berlin, 10551, Deutschland",
+      "before": "CI Space, 9, Bugenhagenstraße, Alt-Moabit, Moabit, Mitte, Berlin, 10551, Deutschland, Berlin, DE",
+      "after": "CI Space, 9, Bugenhagenstraße, Alt-Moabit, Moabit, Mitte, Berlin, 10551, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10313585322",
+      "name": "Café Holzmarktperle",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Café Holzmarktperle, 25, Holzmarktstraße, Andreasviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland",
+      "before": "Café Holzmarktperle, 25, Holzmarktstraße, Andreasviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland, Berlin, DE",
+      "after": "Café Holzmarktperle, 25, Holzmarktstraße, Andreasviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:9215009717",
+      "name": "Chipi Chipi Bombón",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Chipi Chipi Bombón, 12, Warschauer Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland",
+      "before": "Chipi Chipi Bombón, 12, Warschauer Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland, Berlin, DE",
+      "after": "Chipi Chipi Bombón, 12, Warschauer Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10243, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:2641068367",
+      "name": "Coworking Space Berlin-Friedrichshain Launch/Co",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Coworking Space Berlin-Friedrichshain Launch/Co, 14, Rudolfstraße, Rudolfkiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland",
+      "before": "Coworking Space Berlin-Friedrichshain Launch/Co, 14, Rudolfstraße, Rudolfkiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland, Berlin, DE",
+      "after": "Coworking Space Berlin-Friedrichshain Launch/Co, 14, Rudolfstraße, Rudolfkiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12277896916",
+      "name": "David Tenorio Tattoo",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "David Tenorio Tattoo, 3, Riemannstraße, Bergmannkiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10961, Deutschland",
+      "before": "David Tenorio Tattoo, 3, Riemannstraße, Bergmannkiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10961, Deutschland, Berlin, DE",
+      "after": "David Tenorio Tattoo, 3, Riemannstraße, Bergmannkiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10961, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12754079336",
+      "name": "Dirty Jobs",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Dirty Jobs, 12, Weserstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland",
+      "before": "Dirty Jobs, 12, Weserstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland, Berlin, DE",
+      "after": "Dirty Jobs, 12, Weserstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:1263799847",
+      "name": "Disconnect Art Gallery and Record Shop",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Disconnect Art Gallery and Record Shop, 25, Finowstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland",
+      "before": "Disconnect Art Gallery and Record Shop, 25, Finowstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland, Berlin, DE",
+      "after": "Disconnect Art Gallery and Record Shop, 25, Finowstraße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:1372898402",
+      "name": "DoYouSpace",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "DoYouSpace, 93, Rigaer Straße, Samariterviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland",
+      "before": "DoYouSpace, 93, Rigaer Straße, Samariterviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland, Berlin, DE",
+      "after": "DoYouSpace, 93, Rigaer Straße, Samariterviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10247, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:318704396",
+      "name": "Drittes Ohr",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Drittes Ohr, 14, Matternstraße, Hausburgviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland",
+      "before": "Drittes Ohr, 14, Matternstraße, Hausburgviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland, Berlin, DE",
+      "after": "Drittes Ohr, 14, Matternstraße, Hausburgviertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3036860727",
+      "name": "Fabelhaft Bar",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Fabelhaft Bar, 6, Schönleinstraße, Graefekiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10967, Deutschland",
+      "before": "Fabelhaft Bar, 6, Schönleinstraße, Graefekiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10967, Deutschland, Berlin, DE",
+      "after": "Fabelhaft Bar, 6, Schönleinstraße, Graefekiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10967, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12386806388",
+      "name": "Fabio Pasta (Wochenmarkt Kollwitzplatz)",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Fabio Pasta (Wochenmarkt Kollwitzplatz), Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland",
+      "before": "Fabio Pasta (Wochenmarkt Kollwitzplatz), Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland, Berlin, DE",
+      "after": "Fabio Pasta (Wochenmarkt Kollwitzplatz), Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:11931158041",
+      "name": "Fotostudio Kreuzberg",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Fotostudio Kreuzberg, 77, Manteuffelstraße, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland",
+      "before": "Fotostudio Kreuzberg, 77, Manteuffelstraße, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland, Berlin, DE",
+      "after": "Fotostudio Kreuzberg, 77, Manteuffelstraße, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3734954314",
+      "name": "Friedel Richter",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Friedel Richter, 199, Torstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland",
+      "before": "Friedel Richter, 199, Torstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland, Berlin, DE",
+      "after": "Friedel Richter, 199, Torstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10118305052",
+      "name": "Fulmo GmbH",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Fulmo GmbH, 6-9, Eberswalder Straße, Gleimviertel, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland",
+      "before": "Fulmo GmbH, 6-9, Eberswalder Straße, Gleimviertel, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland, Berlin, DE",
+      "after": "Fulmo GmbH, 6-9, Eberswalder Straße, Gleimviertel, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3937876098",
+      "name": "Hair Müller",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Hair Müller, 153, Invalidenstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland",
+      "before": "Hair Müller, 153, Invalidenstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland, Berlin, DE",
+      "after": "Hair Müller, 153, Invalidenstraße, Oranienburger Vorstadt, Mitte, Berlin, 10115, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:941439093",
+      "name": "Horváth",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Horváth, 44a, Paul-Lincke-Ufer, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland",
+      "before": "Horváth, 44a, Paul-Lincke-Ufer, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland, Berlin, DE",
+      "after": "Horváth, 44a, Paul-Lincke-Ufer, Luisenstadt, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10999, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3037805664",
+      "name": "ICE Aesthetic - Zentrum Kryolipolyse Berlin",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "ICE Aesthetic - Zentrum Kryolipolyse Berlin, 20-25, Uhlandstraße, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10623, Deutschland",
+      "before": "ICE Aesthetic - Zentrum Kryolipolyse Berlin, 20-25, Uhlandstraße, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10623, Deutschland, Berlin, DE",
+      "after": "ICE Aesthetic - Zentrum Kryolipolyse Berlin, 20-25, Uhlandstraße, Charlottenburg, Charlottenburg-Wilmersdorf, Berlin, 10623, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10134931577",
+      "name": "KOSAE jewellery & design",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "KOSAE jewellery & design, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland",
+      "before": "KOSAE jewellery & design, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland, Berlin, DE",
+      "after": "KOSAE jewellery & design, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:11377463071",
+      "name": "Karmen Kraft",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Karmen Kraft, 55, Herzbergstraße, Lichtenberg, Berlin, 10365, Deutschland",
+      "before": "Karmen Kraft, 55, Herzbergstraße, Lichtenberg, Berlin, 10365, Deutschland, Berlin, DE",
+      "after": "Karmen Kraft, 55, Herzbergstraße, Lichtenberg, Berlin, 10365, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3747274058",
+      "name": "Keith",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Keith, 2, Schillerpromenade, Schillerkiez, Neukölln, Berlin, 12049, Deutschland",
+      "before": "Keith, 2, Schillerpromenade, Schillerkiez, Neukölln, Berlin, 12049, Deutschland, Berlin, DE",
+      "after": "Keith, 2, Schillerpromenade, Schillerkiez, Neukölln, Berlin, 12049, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:9911287150",
+      "name": "Legacy",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Legacy, 53, Yorckstraße, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10965, Deutschland",
+      "before": "Legacy, 53, Yorckstraße, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10965, Deutschland, Berlin, DE",
+      "after": "Legacy, 53, Yorckstraße, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10965, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:11183254526",
+      "name": "Liebener Coaching",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Liebener Coaching, 3, Petersburger Straße, Richard-Sorge-Viertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland",
+      "before": "Liebener Coaching, 3, Petersburger Straße, Richard-Sorge-Viertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland, Berlin, DE",
+      "after": "Liebener Coaching, 3, Petersburger Straße, Richard-Sorge-Viertel, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10249, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:11861712699",
+      "name": "Martina Lubanski, Grafik Design, Art Direktorin",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Martina Lubanski, Grafik Design, Art Direktorin, 10, Willmanndamm, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10827, Deutschland",
+      "before": "Martina Lubanski, Grafik Design, Art Direktorin, 10, Willmanndamm, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10827, Deutschland, Berlin, DE",
+      "after": "Martina Lubanski, Grafik Design, Art Direktorin, 10, Willmanndamm, Crellekiez, Schöneberg, Tempelhof-Schöneberg, Berlin, 10827, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12850682170",
+      "name": "Massage Miguel",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Massage Miguel, 1, Schulzestraße, Florakiez, Pankow, Berlin, 13187, Deutschland",
+      "before": "Massage Miguel, 1, Schulzestraße, Florakiez, Pankow, Berlin, 13187, Deutschland, Berlin, DE",
+      "after": "Massage Miguel, 1, Schulzestraße, Florakiez, Pankow, Berlin, 13187, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:11054531199",
+      "name": "Mein Palo Santo",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Mein Palo Santo, 72-74, Grünberger Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland",
+      "before": "Mein Palo Santo, 72-74, Grünberger Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland, Berlin, DE",
+      "after": "Mein Palo Santo, 72-74, Grünberger Straße, Boxhagener Kiez, Friedrichshain, Friedrichshain-Kreuzberg, Berlin, 10245, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:8145412017",
+      "name": "Mein Palo Santo",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Mein Palo Santo, Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland",
+      "before": "Mein Palo Santo, Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland, Berlin, DE",
+      "after": "Mein Palo Santo, Kollwitzplatz, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10084805955",
+      "name": "Mood - Café & Spätkauf",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Mood - Café & Spätkauf, 46, Kollwitzstraße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10405, Deutschland",
+      "before": "Mood - Café & Spätkauf, 46, Kollwitzstraße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10405, Deutschland, Berlin, DE",
+      "after": "Mood - Café & Spätkauf, 46, Kollwitzstraße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10405, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:2537196472",
+      "name": "Musikschule Kling-Klang",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Musikschule Kling-Klang, 20, Randowstraße, Vincent-van-Gogh-Straße, Neu-Hohenschönhausen, Lichtenberg, Berlin, 13057, Deutschland",
+      "before": "Musikschule Kling-Klang, 20, Randowstraße, Vincent-van-Gogh-Straße, Neu-Hohenschönhausen, Lichtenberg, Berlin, 13057, Deutschland, Berlin, DE",
+      "after": "Musikschule Kling-Klang, 20, Randowstraße, Vincent-van-Gogh-Straße, Neu-Hohenschönhausen, Lichtenberg, Berlin, 13057, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:8311143284",
+      "name": "Noku Studio",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Noku Studio, 60, Leipziger Straße, Friedrichswerder, Mitte, Berlin, 10117, Deutschland",
+      "before": "Noku Studio, 60, Leipziger Straße, Friedrichswerder, Mitte, Berlin, 10117, Deutschland, Berlin, DE",
+      "after": "Noku Studio, 60, Leipziger Straße, Friedrichswerder, Mitte, Berlin, 10117, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:4294659989",
+      "name": "Onkel Philipp's Spielzeugwerkstatt",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Onkel Philipp's Spielzeugwerkstatt, 35, Choriner Straße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland",
+      "before": "Onkel Philipp's Spielzeugwerkstatt, 35, Choriner Straße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland, Berlin, DE",
+      "after": "Onkel Philipp's Spielzeugwerkstatt, 35, Choriner Straße, Kollwitzkiez, Prenzlauer Berg, Pankow, Berlin, 10435, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:4965923057",
+      "name": "Paranoid Internet",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Paranoid Internet, 68, Friedrichstraße, Friedrichstadt, Mitte, Berlin, 10117, Deutschland",
+      "before": "Paranoid Internet, 68, Friedrichstraße, Friedrichstadt, Mitte, Berlin, 10117, Deutschland, Berlin, DE",
+      "after": "Paranoid Internet, 68, Friedrichstraße, Friedrichstadt, Mitte, Berlin, 10117, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10297995578",
+      "name": "Physiotherapie Alexandros Swoch",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Physiotherapie Alexandros Swoch, 7, Auguste-Viktoria-Straße, Grunewald, Charlottenburg-Wilmersdorf, Berlin, 14193, Deutschland",
+      "before": "Physiotherapie Alexandros Swoch, 7, Auguste-Viktoria-Straße, Grunewald, Charlottenburg-Wilmersdorf, Berlin, 14193, Deutschland, Berlin, DE",
+      "after": "Physiotherapie Alexandros Swoch, 7, Auguste-Viktoria-Straße, Grunewald, Charlottenburg-Wilmersdorf, Berlin, 14193, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12219015529",
+      "name": "RML",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Rml, 4, Döbelner Straße, Schleipfuhl, Hellersdorf, Marzahn-Hellersdorf, Berlin, 12627, Deutschland",
+      "before": "Rml, 4, Döbelner Straße, Schleipfuhl, Hellersdorf, Marzahn-Hellersdorf, Berlin, 12627, Deutschland, Berlin, DE",
+      "after": "Rml, 4, Döbelner Straße, Schleipfuhl, Hellersdorf, Marzahn-Hellersdorf, Berlin, 12627, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12170692127",
+      "name": "Steinberg Imkerei",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Steinberg Imkerei, 21, Rosentreterpromenade, Cité Foch, Wittenau, Reinickendorf, Berlin, 13437, Deutschland",
+      "before": "Steinberg Imkerei, 21, Rosentreterpromenade, Cité Foch, Wittenau, Reinickendorf, Berlin, 13437, Deutschland, Berlin, DE",
+      "after": "Steinberg Imkerei, 21, Rosentreterpromenade, Cité Foch, Wittenau, Reinickendorf, Berlin, 13437, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12459074874",
+      "name": "Studio Zitrone",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Studio Zitrone, 72 HH, Kreuzbergstraße, Chamissokiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10965, Deutschland",
+      "before": "Studio Zitrone, 72 HH, Kreuzbergstraße, Chamissokiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10965, Deutschland, Berlin, DE",
+      "after": "Studio Zitrone, 72 HH, Kreuzbergstraße, Chamissokiez, Kreuzberg, Friedrichshain-Kreuzberg, Berlin, 10965, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:1765786432",
+      "name": "Subway",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Subway, 2, Am Borsigturm, Alt-Tegel, Tegel, Reinickendorf, Berlin, 13507, Deutschland",
+      "before": "Subway, 2, Am Borsigturm, Alt-Tegel, Tegel, Reinickendorf, Berlin, 13507, Deutschland, Berlin, DE",
+      "after": "Subway, 2, Am Borsigturm, Alt-Tegel, Tegel, Reinickendorf, Berlin, 13507, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:4841008105",
+      "name": "Süssmädchen",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Süssmädchen, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland",
+      "before": "Süssmädchen, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland, Berlin, DE",
+      "after": "Süssmädchen, 23, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12009761189",
+      "name": "Tante Tom",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Tante Tom, 169, Hermsdorfer Damm, Kurviertel, Hermsdorf, Reinickendorf, Berlin, 13467, Deutschland",
+      "before": "Tante Tom, 169, Hermsdorfer Damm, Kurviertel, Hermsdorf, Reinickendorf, Berlin, 13467, Deutschland, Berlin, DE",
+      "after": "Tante Tom, 169, Hermsdorfer Damm, Kurviertel, Hermsdorf, Reinickendorf, Berlin, 13467, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:415551815",
+      "name": "Trattoria Felice",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Trattoria Felice, 41, Lychener Straße, Helmholtzkiez, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland",
+      "before": "Trattoria Felice, 41, Lychener Straße, Helmholtzkiez, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland, Berlin, DE",
+      "after": "Trattoria Felice, 41, Lychener Straße, Helmholtzkiez, Prenzlauer Berg, Pankow, Berlin, 10437, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:7610691602",
+      "name": "Vater Bar",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Vater Bar, 202, Weserstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland",
+      "before": "Vater Bar, 202, Weserstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland, Berlin, DE",
+      "after": "Vater Bar, 202, Weserstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:303319474",
+      "name": "Vettern Bar",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Vettern Bar, 61, Hobrechtstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland",
+      "before": "Vettern Bar, 61, Hobrechtstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland, Berlin, DE",
+      "after": "Vettern Bar, 61, Hobrechtstraße, Reuterkiez, Neukölln, Berlin, 12047, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:318526010",
+      "name": "Viale dei Tigli",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Viale dei Tigli, 75, Wilhelmstraße, Dorotheenstadt, Mitte, Berlin, 10117, Deutschland",
+      "before": "Viale dei Tigli, 75, Wilhelmstraße, Dorotheenstadt, Mitte, Berlin, 10117, Deutschland, Berlin, DE",
+      "after": "Viale dei Tigli, 75, Wilhelmstraße, Dorotheenstadt, Mitte, Berlin, 10117, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3039050673",
+      "name": "WAHL Rechtsanwälte",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "WAHL Rechtsanwälte, 54, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland",
+      "before": "WAHL Rechtsanwälte, 54, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland, Berlin, DE",
+      "after": "WAHL Rechtsanwälte, 54, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:11918209446",
+      "name": "Zimt & Pfeffer",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "Zimt & Pfeffer, Rungestraße, Luisenstadt, Mitte, Berlin, 10179, Deutschland",
+      "before": "Zimt & Pfeffer, Rungestraße, Luisenstadt, Mitte, Berlin, 10179, Deutschland, Berlin, DE",
+      "after": "Zimt & Pfeffer, Rungestraße, Luisenstadt, Mitte, Berlin, 10179, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:3039051050",
+      "name": "dg.digital",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "dg.digital, 89, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland",
+      "before": "dg.digital, 89, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland, Berlin, DE",
+      "after": "dg.digital, 89, Berliner Allee, Munizipalviertel, Weißensee, Pankow, Berlin, 13088, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:10272682416",
+      "name": "nexondo",
+      "city": "Berlin",
+      "country": "DE",
+      "address": "nexondo, 29, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland",
+      "before": "nexondo, 29, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland, Berlin, DE",
+      "after": "nexondo, 29, Fehrbelliner Straße, Rosenthaler Vorstadt, Mitte, Berlin, 10119, Deutschland, DE"
+    },
+    {
+      "id": "osm:node:12994611340",
+      "name": "Academia Sports Light",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Academia Sports Light, A. Lugano, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, 1832, Argentina",
+      "before": "Academia Sports Light, A. Lugano, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, 1832, Argentina, Buenos Aires, AR",
+      "after": "Academia Sports Light, A. Lugano, Lomas de Zamora, Partido de Lomas de Zamora, Buenos Aires, 1832, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843859",
+      "name": "After Office TRENDY Miercoles Palermo",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "After Office TRENDY Miercoles Palermo, Gorriti, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWF, Argentina",
+      "before": "After Office TRENDY Miercoles Palermo, Gorriti, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWF, Argentina, Buenos Aires, AR",
+      "after": "After Office TRENDY Miercoles Palermo, Gorriti, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWF, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906600",
+      "name": "Agricola il Giardino",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Agricola il Giardino, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Agricola il Giardino, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Agricola il Giardino, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233688",
+      "name": "Agustín Imperio Joyería Libertad",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Agustín Imperio Joyería Libertad, Sarmiento, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAL, Argentina",
+      "before": "Agustín Imperio Joyería Libertad, Sarmiento, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAL, Argentina, Buenos Aires, AR",
+      "after": "Agustín Imperio Joyería Libertad, Sarmiento, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAL, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233696",
+      "name": "Agustín by Recoleta",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Agustín by Recoleta, Arenales, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1012AAY, Argentina",
+      "before": "Agustín by Recoleta, Arenales, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1012AAY, Argentina, Buenos Aires, AR",
+      "after": "Agustín by Recoleta, Arenales, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1012AAY, Argentina, AR"
+    },
+    {
+      "id": "osm:node:10274339402",
+      "name": "Aleph Citadel",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Aleph Citadel, Boulevard Bartolomé Mitre, General Mansilla, Partido de Magdalena, Buenos Aires, B1911BRQ, Argentina",
+      "before": "Aleph Citadel, Boulevard Bartolomé Mitre, General Mansilla, Partido de Magdalena, Buenos Aires, B1911BRQ, Argentina, Buenos Aires, AR",
+      "after": "Aleph Citadel, Boulevard Bartolomé Mitre, General Mansilla, Partido de Magdalena, Buenos Aires, B1911BRQ, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11350739453",
+      "name": "Apolo Games",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Apolo Games, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043ABN, Argentina",
+      "before": "Apolo Games, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043ABN, Argentina, Buenos Aires, AR",
+      "after": "Apolo Games, Avenida Corrientes, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043ABN, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274101137",
+      "name": "Artesanías Argentinas",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Artesanías Argentinas, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
+      "before": "Artesanías Argentinas, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina, Buenos Aires, AR",
+      "after": "Artesanías Argentinas, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843858",
+      "name": "Aura",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Aura, Avenida Juan Bautista Justo, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWS, Argentina",
+      "before": "Aura, Avenida Juan Bautista Justo, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWS, Argentina, Buenos Aires, AR",
+      "after": "Aura, Avenida Juan Bautista Justo, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414CWS, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11270187265",
+      "name": "Autoservicio San Cayetano",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Autoservicio San Cayetano, 558, Montserrat, Don Orione, Zeballos, Partido de Florencio Varela, Buenos Aires, 1888, Argentina",
+      "before": "Autoservicio San Cayetano, 558, Montserrat, Don Orione, Zeballos, Partido de Florencio Varela, Buenos Aires, 1888, Argentina, Buenos Aires, AR",
+      "after": "Autoservicio San Cayetano, 558, Montserrat, Don Orione, Zeballos, Partido de Florencio Varela, Buenos Aires, 1888, Argentina, AR"
+    },
+    {
+      "id": "osm:way:1185766629",
+      "name": "Bar 9 de julio",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "1270, Avenida Larrazábal, Mataderos, Buenos Aires, Comuna 9, Ciudad Autónoma de Buenos Aires, 1440, Argentina",
+      "before": "1270, Avenida Larrazábal, Mataderos, Buenos Aires, Comuna 9, Ciudad Autónoma de Buenos Aires, 1440, Argentina, Buenos Aires, AR",
+      "after": "1270, Avenida Larrazábal, Mataderos, Buenos Aires, Comuna 9, Ciudad Autónoma de Buenos Aires, 1440, Argentina, AR"
+    },
+    {
+      "id": "osm:node:12476401801",
+      "name": "Boga. Café & vinos",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Boga. Café & vinos, 1790, Gurruchaga, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DMJ, Argentina",
+      "before": "Boga. Café & vinos, 1790, Gurruchaga, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DMJ, Argentina, Buenos Aires, AR",
+      "after": "Boga. Café & vinos, 1790, Gurruchaga, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DMJ, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274086837",
+      "name": "Bonche",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Bonche, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
+      "before": "Bonche, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina, Buenos Aires, AR",
+      "after": "Bonche, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11055542005",
+      "name": "Bucarest",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Bucarest, 659, Avenida Raúl Scalabrini Ortiz, Villa Crespo, Buenos Aires, Comuna 15, Ciudad Autónoma de Buenos Aires, C1414DNG, Argentina",
+      "before": "Bucarest, 659, Avenida Raúl Scalabrini Ortiz, Villa Crespo, Buenos Aires, Comuna 15, Ciudad Autónoma de Buenos Aires, C1414DNG, Argentina, Buenos Aires, AR",
+      "after": "Bucarest, 659, Avenida Raúl Scalabrini Ortiz, Villa Crespo, Buenos Aires, Comuna 15, Ciudad Autónoma de Buenos Aires, C1414DNG, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906596",
+      "name": "Calan Fava",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Calan Fava, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Calan Fava, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Calan Fava, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274086836",
+      "name": "Calzados Zarpas",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Calzados Zarpas, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
+      "before": "Calzados Zarpas, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina, Buenos Aires, AR",
+      "after": "Calzados Zarpas, Suipacha, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina, AR"
+    },
+    {
+      "id": "osm:node:6132879822",
+      "name": "Caracas Bar",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Caracas Bar, 4802, Guatemala, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BUN, Argentina",
+      "before": "Caracas Bar, 4802, Guatemala, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BUN, Argentina, Buenos Aires, AR",
+      "after": "Caracas Bar, 4802, Guatemala, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BUN, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906604",
+      "name": "Carlos Bayon",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Carlos Bayon, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Carlos Bayon, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Carlos Bayon, Del Cultivo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906598",
+      "name": "Carros Ariel y Alan libre 4 puesto 32",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Carros Ariel y Alan libre 4 puesto 32, Del Riego, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Carros Ariel y Alan libre 4 puesto 32, Del Riego, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Carros Ariel y Alan libre 4 puesto 32, Del Riego, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906603",
+      "name": "Carros Juan Carlos",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Carros Juan Carlos, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Carros Juan Carlos, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Carros Juan Carlos, Del Tallo, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:12434400820",
+      "name": "Coffee Bar Rosa",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Coffee Bar Rosa, Doctor Pedro Ignacio Rivera, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DUB, Argentina",
+      "before": "Coffee Bar Rosa, Doctor Pedro Ignacio Rivera, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DUB, Argentina, Buenos Aires, AR",
+      "after": "Coffee Bar Rosa, Doctor Pedro Ignacio Rivera, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DUB, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374867040",
+      "name": "Dario Andreoli",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Dario Andreoli, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CER, Argentina",
+      "before": "Dario Andreoli, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CER, Argentina, Buenos Aires, AR",
+      "after": "Dario Andreoli, Avenida Rivadavia, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CER, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233690",
+      "name": "Don Sodio Grow Shop",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Don Sodio Grow Shop, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina",
+      "before": "Don Sodio Grow Shop, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina, Buenos Aires, AR",
+      "after": "Don Sodio Grow Shop, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274086839",
+      "name": "El Bar de Mon",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "El Bar de Mon, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina",
+      "before": "El Bar de Mon, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina, Buenos Aires, AR",
+      "after": "El Bar de Mon, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1057, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274101136",
+      "name": "El Buda del Este",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "El Buda del Este, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina",
+      "before": "El Buda del Este, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina, Buenos Aires, AR",
+      "after": "El Buda del Este, Lavalle, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAI, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274101139",
+      "name": "Elif Tour",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Elif Tour, Florida, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina",
+      "before": "Elif Tour, Florida, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina, Buenos Aires, AR",
+      "after": "Elif Tour, Florida, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11432563187",
+      "name": "Espacio Cultural Bitcoin",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Espacio Cultural Bitcoin, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina",
+      "before": "Espacio Cultural Bitcoin, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina, Buenos Aires, AR",
+      "after": "Espacio Cultural Bitcoin, Marcelo T. de Alvear, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1003ABG, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843860",
+      "name": "Famous Loungebar",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Famous Loungebar, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425FWB, Argentina",
+      "before": "Famous Loungebar, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425FWB, Argentina, Buenos Aires, AR",
+      "after": "Famous Loungebar, Fitz Roy, Palermo Hollywood, Palermo, Buenos Aires, Distrito Audiovisual, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425FWB, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906592",
+      "name": "Forlans Hnas",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Forlans Hnas, Blanco Encalada, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DOD, Argentina",
+      "before": "Forlans Hnas, Blanco Encalada, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DOD, Argentina, Buenos Aires, AR",
+      "after": "Forlans Hnas, Blanco Encalada, Villa Urquiza, Buenos Aires, Comuna 12, Ciudad Autónoma de Buenos Aires, C1431DOD, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906609",
+      "name": "Fusion 3",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Fusion 3, Avenida de Circunvalación, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Fusion 3, Avenida de Circunvalación, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Fusion 3, Avenida de Circunvalación, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906607",
+      "name": "GAYEL 333 SRL",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Gayel 333, De la Flor, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Gayel 333, De la Flor, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Gayel 333, De la Flor, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906608",
+      "name": "GAYEL 333 SRL",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Gayel 333, De la Tierra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Gayel 333, De la Tierra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Gayel 333, De la Tierra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274086835",
+      "name": "GR Relojería-Joyería",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "GR Relojería-Joyería, Florida, Microcentro, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina",
+      "before": "GR Relojería-Joyería, Florida, Microcentro, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina, Buenos Aires, AR",
+      "after": "GR Relojería-Joyería, Florida, Microcentro, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1005, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843861",
+      "name": "Ganesha - Arts & Pizza",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Ganesha - Arts & Pizza, 5519, Paraguay, Palermo Hollywood, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BTK, Argentina",
+      "before": "Ganesha - Arts & Pizza, 5519, Paraguay, Palermo Hollywood, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BTK, Argentina, Buenos Aires, AR",
+      "after": "Ganesha - Arts & Pizza, 5519, Paraguay, Palermo Hollywood, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1425BTK, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233689",
+      "name": "Gondolveo Hombre",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Gondolveo Hombre, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina",
+      "before": "Gondolveo Hombre, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina, Buenos Aires, AR",
+      "after": "Gondolveo Hombre, Cerrito, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAO, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11260032052",
+      "name": "Hilade Blanco",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Hilade Blanco, Chacabuco, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1067ABB, Argentina",
+      "before": "Hilade Blanco, Chacabuco, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1067ABB, Argentina, Buenos Aires, AR",
+      "after": "Hilade Blanco, Chacabuco, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1067ABB, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11260033707",
+      "name": "Jacaranda Rentals",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Jacaranda Rentals, Adolfo Alsina, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1091AAQ, Argentina",
+      "before": "Jacaranda Rentals, Adolfo Alsina, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1091AAQ, Argentina, Buenos Aires, AR",
+      "after": "Jacaranda Rentals, Adolfo Alsina, Monserrat, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1091AAQ, Argentina, AR"
+    },
+    {
+      "id": "osm:node:13098835276",
+      "name": "Jardín Los Bajitos",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Jardín Los Bajitos, 3582, Machain, Pescopagano, Lanús Oeste, Partido de Lanús, Buenos Aires, B1823, Argentina",
+      "before": "Jardín Los Bajitos, 3582, Machain, Pescopagano, Lanús Oeste, Partido de Lanús, Buenos Aires, B1823, Argentina, Buenos Aires, AR",
+      "after": "Jardín Los Bajitos, 3582, Machain, Pescopagano, Lanús Oeste, Partido de Lanús, Buenos Aires, B1823, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906594",
+      "name": "Juegos Mentales - Lomas de Zamora",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Juegos Mentales - Lomas de Zamora, Avenida Alsina, Banfield, Partido de Lomas de Zamora, Buenos Aires, 1828, Argentina",
+      "before": "Juegos Mentales - Lomas de Zamora, Avenida Alsina, Banfield, Partido de Lomas de Zamora, Buenos Aires, 1828, Argentina, Buenos Aires, AR",
+      "after": "Juegos Mentales - Lomas de Zamora, Avenida Alsina, Banfield, Partido de Lomas de Zamora, Buenos Aires, 1828, Argentina, AR"
+    },
+    {
+      "id": "osm:node:4289373249",
+      "name": "Kiosko Alem",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Kiosko Alem, Avenida Leandro N. Alem, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAC, Argentina",
+      "before": "Kiosko Alem, Avenida Leandro N. Alem, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAC, Argentina, Buenos Aires, AR",
+      "after": "Kiosko Alem, Avenida Leandro N. Alem, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1043AAC, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11260033706",
+      "name": "Kiosko CityMax",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Kiosko CityMax, Suipacha, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1008, Argentina",
+      "before": "Kiosko CityMax, Suipacha, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1008, Argentina, Buenos Aires, AR",
+      "after": "Kiosko CityMax, Suipacha, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, 1008, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233687",
+      "name": "La Verduleria",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "La Verduleria, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAC, Argentina",
+      "before": "La Verduleria, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAC, Argentina, Buenos Aires, AR",
+      "after": "La Verduleria, Teniente General Juan Domingo Perón, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1033AAC, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906601",
+      "name": "La brusquita",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "La brusquita, De la Siembra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "La brusquita, De la Siembra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "La brusquita, De la Siembra, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233683",
+      "name": "La casa del celular",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "La casa del celular, Avenida Entre Ríos, San Cristóbal, Buenos Aires, Comuna 3, Ciudad Autónoma de Buenos Aires, C1080ABC, Argentina",
+      "before": "La casa del celular, Avenida Entre Ríos, San Cristóbal, Buenos Aires, Comuna 3, Ciudad Autónoma de Buenos Aires, C1080ABC, Argentina, Buenos Aires, AR",
+      "after": "La casa del celular, Avenida Entre Ríos, San Cristóbal, Buenos Aires, Comuna 3, Ciudad Autónoma de Buenos Aires, C1080ABC, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274233686",
+      "name": "La kiosquetica",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "La kiosquetica, Paraná, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1017, Argentina",
+      "before": "La kiosquetica, Paraná, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1017, Argentina, Buenos Aires, AR",
+      "after": "La kiosquetica, Paraná, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1017, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374867039",
+      "name": "Lapelu Rulitos",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Lapelu Rulitos, Avenida Acoyte, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEF, Argentina",
+      "before": "Lapelu Rulitos, Avenida Acoyte, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEF, Argentina, Buenos Aires, AR",
+      "after": "Lapelu Rulitos, Avenida Acoyte, Caballito, Buenos Aires, Comuna 6, Ciudad Autónoma de Buenos Aires, C1424CEF, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274101138",
+      "name": "Lhobeard",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Lhobeard, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina",
+      "before": "Lhobeard, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina, Buenos Aires, AR",
+      "after": "Lhobeard, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843864",
+      "name": "Liberia BBM",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Liberia BBM, Avenida Rivadavia, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GLL, Argentina",
+      "before": "Liberia BBM, Avenida Rivadavia, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GLL, Argentina, Buenos Aires, AR",
+      "after": "Liberia BBM, Avenida Rivadavia, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GLL, Argentina, AR"
+    },
+    {
+      "id": "osm:node:4600637865",
+      "name": "Librería January",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Librería January, 2131, 91 - San Lorenzo, Ciudad del Libertador General San Martín, Partido de General San Martín, Buenos Aires, B1650BQA, Argentina",
+      "before": "Librería January, 2131, 91 - San Lorenzo, Ciudad del Libertador General San Martín, Partido de General San Martín, Buenos Aires, B1650BQA, Argentina, Buenos Aires, AR",
+      "after": "Librería January, 2131, 91 - San Lorenzo, Ciudad del Libertador General San Martín, Partido de General San Martín, Buenos Aires, B1650BQA, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906606",
+      "name": "Lo de nico",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Lo de nico, Del Fruto, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Lo de nico, Del Fruto, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Lo de nico, Del Fruto, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:10980520088",
+      "name": "Lucent",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Lucent, 1534, Congreso, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1428, Argentina",
+      "before": "Lucent, 1534, Congreso, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1428, Argentina, Buenos Aires, AR",
+      "after": "Lucent, 1534, Congreso, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1428, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11762201964",
+      "name": "L´Aperó",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "L´Aperó, 1800, Iberá, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1429, Argentina",
+      "before": "L´Aperó, 1800, Iberá, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1429, Argentina, Buenos Aires, AR",
+      "after": "L´Aperó, 1800, Iberá, Núñez, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, 1429, Argentina, AR"
+    },
+    {
+      "id": "osm:node:12674567056",
+      "name": "MC Carnes Premium",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "MC Carnes Premium, 1729, Remedios de Escalada de San Martín, Florida, Vicente López, Partido de Vicente López, Buenos Aires, 1602, Argentina",
+      "before": "MC Carnes Premium, 1729, Remedios de Escalada de San Martín, Florida, Vicente López, Partido de Vicente López, Buenos Aires, 1602, Argentina, Buenos Aires, AR",
+      "after": "MC Carnes Premium, 1729, Remedios de Escalada de San Martín, Florida, Vicente López, Partido de Vicente López, Buenos Aires, 1602, Argentina, AR"
+    },
+    {
+      "id": "osm:node:12092766081",
+      "name": "MT Ballroom",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "MT Ballroom, 625, Esmeralda, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1007ABH, Argentina",
+      "before": "MT Ballroom, 625, Esmeralda, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1007ABH, Argentina, Buenos Aires, AR",
+      "after": "MT Ballroom, 625, Esmeralda, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1007ABH, Argentina, AR"
+    },
+    {
+      "id": "osm:node:6358499689",
+      "name": "Marlon",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Marlon, Pasaje Coronel Cabrer, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DKD, Argentina",
+      "before": "Marlon, Pasaje Coronel Cabrer, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DKD, Argentina, Buenos Aires, AR",
+      "after": "Marlon, Pasaje Coronel Cabrer, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414DKD, Argentina, AR"
+    },
+    {
+      "id": "osm:node:12544905046",
+      "name": "Martinelli",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Martinelli, 1779, Malabia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina",
+      "before": "Martinelli, 1779, Malabia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina, Buenos Aires, AR",
+      "after": "Martinelli, 1779, Malabia, Palermo Soho, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1414, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274101132",
+      "name": "Maxy Accesorios",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Maxy Accesorios, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina",
+      "before": "Maxy Accesorios, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina, Buenos Aires, AR",
+      "after": "Maxy Accesorios, Maipú, Microcentro, San Nicolás, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1006ACF, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11274101141",
+      "name": "Mister Cuero",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Mister Cuero, Avenida Córdoba, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1054AAC, Argentina",
+      "before": "Mister Cuero, Avenida Córdoba, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1054AAC, Argentina, Buenos Aires, AR",
+      "after": "Mister Cuero, Avenida Córdoba, Retiro, Buenos Aires, Comuna 1, Ciudad Autónoma de Buenos Aires, C1054AAC, Argentina, AR"
+    },
+    {
+      "id": "osm:node:12616293274",
+      "name": "Motohoy",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Motohoy, 3544, Avenida Córdoba, Almagro, Buenos Aires, Comuna 5, Ciudad Autónoma de Buenos Aires, C1188, Argentina",
+      "before": "Motohoy, 3544, Avenida Córdoba, Almagro, Buenos Aires, Comuna 5, Ciudad Autónoma de Buenos Aires, C1188, Argentina, Buenos Aires, AR",
+      "after": "Motohoy, 3544, Avenida Córdoba, Almagro, Buenos Aires, Comuna 5, Ciudad Autónoma de Buenos Aires, C1188, Argentina, AR"
+    },
+    {
+      "id": "osm:node:9884174757",
+      "name": "Negroni Bistro & Sushi Bar",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Negroni Bistro & Sushi Bar, Mariscal Antonio José de Sucre, Bajo Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428DUB, Argentina",
+      "before": "Negroni Bistro & Sushi Bar, Mariscal Antonio José de Sucre, Bajo Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428DUB, Argentina, Buenos Aires, AR",
+      "after": "Negroni Bistro & Sushi Bar, Mariscal Antonio José de Sucre, Bajo Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428DUB, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374906597",
+      "name": "Nestor1107",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Nestor1107, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina",
+      "before": "Nestor1107, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, Buenos Aires, AR",
+      "after": "Nestor1107, De la Semilla, Mercado Central, Tapiales, Partido de La Matanza, Buenos Aires, 1771, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843863",
+      "name": "Oslo",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Oslo, Báez, Las Cañitas, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1426BRH, Argentina",
+      "before": "Oslo, Báez, Las Cañitas, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1426BRH, Argentina, Buenos Aires, AR",
+      "after": "Oslo, Báez, Las Cañitas, Palermo, Buenos Aires, Comuna 14, Ciudad Autónoma de Buenos Aires, C1426BRH, Argentina, AR"
+    },
+    {
+      "id": "osm:node:7644907185",
+      "name": "Oslo",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Oslo, Blanco Encalada, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAS, Argentina",
+      "before": "Oslo, Blanco Encalada, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAS, Argentina, Buenos Aires, AR",
+      "after": "Oslo, Blanco Encalada, Belgrano, Buenos Aires, Comuna 13, Ciudad Autónoma de Buenos Aires, C1428AAS, Argentina, AR"
+    },
+    {
+      "id": "osm:node:11374843865",
+      "name": "Oszadia",
+      "city": "Buenos Aires",
+      "country": "AR",
+      "address": "Oszadia, Membrillar, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GSB, Argentina",
+      "before": "Oszadia, Membrillar, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GSB, Argentina, Buenos Aires, AR",
+      "after": "Oszadia, Membrillar, Flores, Buenos Aires, Comuna 7, Ciudad Autónoma de Buenos Aires, C1406GSB, Argentina, AR"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-03-26T14:17:49.916Z",
+  "reason": "country/address mismatch suspect: address contains Ecuador but country is US",
+  "count": 4,
+  "rows": [
+    {
+      "id": "osm:node:10687965519",
+      "name": "Recotur Cia. Ltda.",
+      "category": "travel_agency",
+      "address": "Recotur Cia. Ltda., 593, José Joaquin de Olmedo, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
+      "id": "osm:node:12026421265",
+      "name": "Los Pinos",
+      "category": "cafe",
+      "address": "Los Pinos, Eusebio Borrero, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
+      "id": "osm:node:12053286920",
+      "name": "IFECS (International Fund For Education Charlie Studies)",
+      "category": "other",
+      "address": "IFECS (International Fund For Education Charlie Studies), 225, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100105, Ecuador",
+      "city": "San Francisco",
+      "country": "US"
+    },
+    {
+      "id": "osm:node:13012002745",
+      "name": "Oficinas Legales Ariadna Jaramillo y Asociados",
+      "category": "other",
+      "address": "Oficinas Legales Ariadna Jaramillo y Asociados, Avenida Eloy Alfaro, San Francisco, Ibarra, Imbabura, 100150, Ecuador",
+      "city": "San Francisco",
+      "country": "US"
+    }
+  ]
+}
