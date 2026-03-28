@@ -47,46 +47,7 @@ const Drawer = forwardRef<HTMLDivElement, Props>(
     const viewModel = useMemo(() => getPlaceViewModel(place), [place]);
 
     if (!place) {
-      const emptyMessage =
-        selectionStatus === "loading"
-          ? "Loading place details..."
-          : "Place details are unavailable right now.";
-      return (
-        <div
-          ref={ref}
-          className={`cpm-drawer ${isOpen ? "open" : ""}`}
-          style={{
-            top: `var(--header-height, ${headerHeight}px)`,
-            height: `calc(100vh - ${headerHeight}px)`,
-          }}
-          data-testid="place-drawer"
-          aria-hidden
-        >
-          {isOpen && (
-            <div className="cpm-drawer__panel">
-              <header className="cpm-drawer__header">
-                <div className="cpm-drawer__title-block">
-                  <h2 className="cpm-drawer__title">Place details</h2>
-                </div>
-                <button
-                  type="button"
-                  className="cpm-drawer__close"
-                  aria-label="Close drawer"
-                  onClick={onClose}
-                >
-                  ×
-                </button>
-              </header>
-              <div className="cpm-drawer__content" role="presentation">
-                <section className="cpm-drawer__section">
-                  <h3 className="cpm-drawer__section-title">Status</h3>
-                  <p className="cpm-drawer__muted">{emptyMessage}</p>
-                </section>
-              </div>
-            </div>
-          )}
-        </div>
-      );
+      return null;
     }
 
     const photos = viewModel.media;

@@ -1,4 +1,5 @@
 import type { Place } from "../../types/places";
+import { buildAddressFull } from "@/lib/places/mapDto/toSummaryPlus";
 
 export type PlaceViewModel = {
   accepted: string[];
@@ -174,12 +175,12 @@ export const getPlaceViewModel = (place: Place | null): PlaceViewModel => {
 
   const mediaPool = place.images?.length ? place.images : place.photos?.length ? place.photos : [];
   const media = Array.from(new Set([place.coverImage, ...mediaPool].filter(Boolean) as string[]));
-  const fullAddress =
-    place.address_full?.trim() ||
-    [place.address, place.city, place.country]
-      .map((value) => value?.trim())
-      .filter(Boolean)
-      .join(" / ");
+  const fullAddress = buildAddressFull({
+    address_full: place.address_full ?? null,
+    address: place.address ?? null,
+    city: place.city ?? null,
+    country: place.country ?? null,
+  }) ?? "";
 
   return {
     accepted: normalizeAccepted(place),

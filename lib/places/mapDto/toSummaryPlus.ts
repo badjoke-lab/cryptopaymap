@@ -134,6 +134,7 @@ export function toPlaceMapItem(place: PlaceSummaryPlus): PlaceMapItem {
     city: place.city,
     country: place.country,
     accepted: place.accepted,
+    address_full: place.address_full,
   };
 }
 export function toSummaryPlus(

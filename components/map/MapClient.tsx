@@ -96,6 +96,15 @@ const mergePlaceSummaryAndDetail = (summary: Place | null, detail: Place | null)
     if (value === null || value === undefined) continue;
     if (typeof value === "string" && value.trim().length === 0) continue;
     if (Array.isArray(value) && value.length === 0) continue;
+
+    if (key === "address_full") {
+      const existingAddressFull =
+        typeof merged.address_full === "string" ? merged.address_full.trim() : "";
+      if (existingAddressFull.length > 0) {
+        continue;
+      }
+    }
+
     merged[key] = value;
   }
 
