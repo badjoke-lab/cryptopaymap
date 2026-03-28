@@ -133,53 +133,6 @@ const MobileBottomSheet = forwardRef<HTMLDivElement, Props>(
     const showDetails = effectiveStage === "expanded";
     const isVisible = isOpen && (Boolean(renderedPlace) || showPlaceholder);
 
-    if (showPlaceholder) {
-      const placeholderMessage =
-        selectionStatus === "loading"
-          ? "Loading place details..."
-          : "Place details are unavailable right now.";
-      return (
-        <div className={`cpm-bottom-sheet ${isVisible ? "open" : ""}`} ref={ref}>
-          <div
-            className="cpm-bottom-sheet__panel"
-            style={{ height: sheetHeight, transform: `translateY(${isVisible ? "0" : "100%"})` }}
-          >
-            <div
-              className="cpm-bottom-sheet__handle"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            >
-              <span className="cpm-bottom-sheet__handle-bar" aria-hidden />
-            </div>
-            <header className="cpm-bottom-sheet__header">
-              <div className="cpm-bottom-sheet__title-block">
-                <div className="cpm-bottom-sheet__title-row">
-                  <h2 className="cpm-bottom-sheet__title">Place details</h2>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="cpm-bottom-sheet__close"
-                onClick={onClose}
-                aria-label="Close drawer"
-              >
-                ×
-              </button>
-            </header>
-            <div className="cpm-bottom-sheet__content" role="presentation">
-              <section className="cpm-bottom-sheet__section">
-                <div className="cpm-bottom-sheet__section-head">
-                  <h3 className="cpm-bottom-sheet__section-title">Status</h3>
-                </div>
-                <p className="cpm-bottom-sheet__muted">{placeholderMessage}</p>
-              </section>
-            </div>
-          </div>
-        </div>
-      );
-    }
-
     if (!renderedPlace) {
       return null;
     }

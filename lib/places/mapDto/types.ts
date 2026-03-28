@@ -12,7 +12,9 @@ export type PlaceSummary = {
   accepted: string[];
 };
 
-export type PlaceMapItem = PlaceSummary;
+export type PlaceMapItem = PlaceSummary & {
+  address_full: string | null;
+};
 
 export type PlaceSummaryPlus = PlaceSummary & {
   address_full: string | null;

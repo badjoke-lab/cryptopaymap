@@ -1,6 +1,7 @@
 import { DbUnavailableError, dbQuery, hasDatabaseUrl } from "@/lib/db";
 import { places as fallbackPlaces } from "@/lib/data/places";
 import { normalizeAccepted, type PaymentAccept } from "@/lib/accepted";
+import { buildAddressFull } from "@/lib/places/mapDto/toSummaryPlus";
 
 const allowedVerificationLevels = ["owner", "community", "directory", "unverified"] as const;
 
@@ -282,7 +283,11 @@ const loadPlaceDetailFromDb = async (id: string, fallbackPlace?: FallbackPlace) 
       contact: pickContactFromSocials(socials),
       images: normalizeImages(media, verification),
       media: normalizeImages(media, verification),
-      address_full: place.address ?? null,
+      address_full: buildAddressFull({
+        address: place.address ?? null,
+        city: place.city ?? null,
+        country: place.country ?? null,
+      }),
       location: {
         address1: place.address ?? null,
         address2: null,
