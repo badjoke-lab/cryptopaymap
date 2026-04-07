@@ -20,7 +20,12 @@ type PlaceSummary = {
 };
 
 const formatLocation = (city: string | null | undefined, country: string | null | undefined) => {
-  const location = [city, country].map((value) => value?.trim()).filter(Boolean).join(', ');
+  const normalizedCity = city?.trim();
+  const normalizedCountry = country?.trim();
+
+  if (!normalizedCity) return null;
+
+  const location = [normalizedCity, normalizedCountry].filter(Boolean).join(', ');
   return location.length ? location : null;
 };
 
@@ -175,7 +180,7 @@ export default async function PlaceDetailPage({ params }: PlacePageProps) {
 
   const location = formatLocation(place.city, place.country);
   const heading = location ? `${place.name} — ${location}` : place.name;
-  const address = place.address_full?.trim() || formatLocation(place.city, place.country);
+  const address = place.address_full?.trim() || null;
   const placeUrl = `${siteUrl}/place/${encodeURIComponent(place.id)}`;
   const citySlug = place.city?.trim() ? toCitySlug(place.city) : '';
   const primaryAsset = detectPrimaryAsset(place);

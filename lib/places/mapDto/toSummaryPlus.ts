@@ -87,6 +87,7 @@ export const buildAddressFull = (place: {
   const country = normalizeText(place.country);
 
   if (!address) {
+    if (!city) return null;
     const fallbackParts = [city, country].filter((value): value is string => Boolean(value));
     return fallbackParts.length ? fallbackParts.join(", ") : null;
   }
