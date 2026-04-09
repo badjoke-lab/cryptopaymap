@@ -1,6 +1,3 @@
-import { promises as fs } from "node:fs";
-import path from "node:path";
-
 import { normalizeAccepted, type PaymentAccept } from "@/lib/accepted";
 import { DbUnavailableError, dbQuery, hasDatabaseUrl } from "@/lib/db";
 import { type ParsedBbox } from "@/lib/geo/bbox";
@@ -19,12 +16,21 @@ import {
 } from "./mapDto/toSummaryPlus";
 import type { DbContact, PlaceSummaryPlus } from "./mapDto/types";
 
-const FALLBACK_SNAPSHOT_FILE = path.join(process.cwd(), "data", "fallback", "published_places_snapshot.json");
+const FALLBACK_SNAPSHOT_URL =
+  "https://raw.githubusercontent.com/badjoke-lab/cryptopaymap-v2/main/data/fallback/published_places_snapshot.json";
+const FALLBACK_SNAPSHOT_CACHE_TTL_MS = 45_000;
 
 type PublishedSnapshot = {
   meta?: { last_updated?: string };
   places: Place[];
 };
+
+type SnapshotCacheEntry = {
+  expiresAt: number;
+  snapshot: PublishedSnapshot;
+};
+
+let snapshotCache: SnapshotCacheEntry | null = null;
 
 type ListFilters = {
   asset: string | null;
@@ -79,10 +85,26 @@ const sanitizeOptionalStrings = <T>(input: T): T => {
 };
 
 const loadPlacesFromSnapshot = async (): Promise<PublishedSnapshot> => {
-  const raw = await fs.readFile(FALLBACK_SNAPSHOT_FILE, "utf8");
-  const parsed = JSON.parse(raw);
+  if (snapshotCache && snapshotCache.expiresAt > Date.now()) {
+    return snapshotCache.snapshot;
+  }
+
+  const response = await fetch(FALLBACK_SNAPSHOT_URL, {
+    headers: { Accept: "application/json" },
+    next: { revalidate: 45 },
+  });
+  if (!response.ok) {
+    throw new Error("FALLBACK_SNAPSHOT_UNAVAILABLE");
+  }
+
+  const parsed = await response.json();
   if (parsed && typeof parsed === "object" && Array.isArray((parsed as PublishedSnapshot).places)) {
-    return parsed as PublishedSnapshot;
+    const snapshot = parsed as PublishedSnapshot;
+    snapshotCache = {
+      snapshot,
+      expiresAt: Date.now() + FALLBACK_SNAPSHOT_CACHE_TTL_MS,
+    };
+    return snapshot;
   }
   throw new Error("FALLBACK_SNAPSHOT_UNAVAILABLE");
 };
