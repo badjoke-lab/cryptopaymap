@@ -29,7 +29,15 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Check formatting
+        run: set -o pipefail && npm run format:check 2>&1 | tee validation-format.log
+
+      - name: Lint source
+        if: always()
+        run: set -o pipefail && npm run lint 2>&1 | tee validation-lint.log
+
       - name: Check Astro and TypeScript
+        if: always()
         run: set -o pipefail && npm run check 2>&1 | tee validation-check.log
 
       - name: Check runtime schemas
@@ -39,6 +47,10 @@ jobs:
       - name: Check migration history
         if: always()
         run: set -o pipefail && npm run db:check 2>&1 | tee validation-database.log
+
+      - name: Run unit and component tests
+        if: always()
+        run: set -o pipefail && npm run test -- --reporter=verbose 2>&1 | tee validation-test.log
 
       - name: Build static site
         if: always()
@@ -50,9 +62,12 @@ jobs:
         with:
           name: foundation-validation-logs
           path: |
+            validation-format.log
+            validation-lint.log
             validation-check.log
             validation-schema.log
             validation-database.log
+            validation-test.log
             validation-build.log
           if-no-files-found: warn
           retention-days: 7
