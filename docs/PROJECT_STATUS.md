@@ -9,23 +9,22 @@ Phase 0 — Public specifications and development control
 
 ## Current implementation item
 
-`P0-01 — Development control`
+`P0-02 — Product constitution`
 
 ## Active pull request
 
-[#1 — P0-01: Add repository development control](https://github.com/badjoke-lab/cryptopaymap/pull/1)
+None.
 
 ## Latest completed work
 
-- Repository created.
-- Default branch established as `main`.
+- Repository created and default branch established as `main`.
 - Minimal public README added in bootstrap commit `bdbd57f`.
+- `P0-01 — Development control` completed through [pull request #1](https://github.com/badjoke-lab/cryptopaymap/pull/1).
+- Repository development rules, implementation tracking, current status, and the pull request template established.
 
 ## Next
 
-`P0-02 — Product constitution`
-
-Expected deliverables:
+Open the P0-02 pull request with:
 
 - `docs/PRODUCT_SPEC.md`
 - `docs/MVP_SCOPE.md`
