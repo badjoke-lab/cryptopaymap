@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-06-25  
+**Last verified:** 2026-06-26  
 **Repository:** `badjoke-lab/cryptopaymap`
 
 ## Current phase
@@ -9,11 +9,11 @@ Phase 0 — Public specifications and development control
 
 ## Current implementation item
 
-`P0-03 — Information architecture`
+`P0-04 — Data architecture`
 
 ## Active pull request
 
-[#4 — P0-03: Define information architecture and route contract](https://github.com/badjoke-lab/cryptopaymap/pull/4)
+[#5 — P0-04: Define canonical data architecture](https://github.com/badjoke-lab/cryptopaymap/pull/5)
 
 ## Latest completed work
 
@@ -21,16 +21,17 @@ Phase 0 — Public specifications and development control
 - Minimal public README added in bootstrap commit `bdbd57f`.
 - `P0-01 — Development control` completed through [pull request #1](https://github.com/badjoke-lab/cryptopaymap/pull/1).
 - `P0-02 — Product constitution` completed through [pull request #3](https://github.com/badjoke-lab/cryptopaymap/pull/3), merged as `d09849c`.
+- `P0-03 — Information architecture` completed through [pull request #4](https://github.com/badjoke-lab/cryptopaymap/pull/4), merged as `09b9807`.
 
 ## Current deliverable
 
-- `docs/INFORMATION_ARCHITECTURE.md`
+- `docs/DATA_MODEL.md`
 
 ## Next
 
-1. Review and merge pull request #4 when its completion criteria are satisfied.
-2. Mark P0-03 completed in `docs/IMPLEMENTATION_PLAN.md`.
-3. Start `P0-04 — Data architecture`.
+1. Review and merge pull request #5 when its completion criteria are satisfied.
+2. Mark P0-04 completed in `docs/IMPLEMENTATION_PLAN.md`.
+3. Start `P0-05 — Verification, sources, and licenses`.
 
 ## Blocked
 
