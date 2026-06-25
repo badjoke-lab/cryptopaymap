@@ -20,9 +20,9 @@ export interface SheetProps {
 
 const sideClasses: Record<SheetSide, string> = {
   bottom:
-    'inset-x-0 bottom-0 max-h-[85svh] rounded-t-card border-x border-t pb-[env(safe-area-inset-bottom)]',
+    'cpm-sheet-bottom inset-x-0 bottom-0 max-h-[85svh] rounded-t-card border-x border-t pb-[env(safe-area-inset-bottom)]',
   right:
-    'inset-y-0 right-0 h-full w-[min(100%,28rem)] border-l pb-[env(safe-area-inset-bottom)]',
+    'cpm-sheet-right inset-y-0 right-0 h-full w-[min(100%,28rem)] border-l pb-[env(safe-area-inset-bottom)]',
 };
 
 export function Sheet({
@@ -47,7 +47,7 @@ export function Sheet({
     <DialogPrimitive.Root {...rootProps}>
       <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/45 backdrop-blur-[2px]" />
+        <DialogPrimitive.Overlay className="cpm-overlay fixed inset-0 z-50 bg-ink/45 backdrop-blur-[2px]" />
         <DialogPrimitive.Content
           className={cn(
             'fixed z-50 flex flex-col overflow-hidden border-border bg-surface shadow-panel focus:outline-none',
@@ -74,7 +74,7 @@ export function Sheet({
           <DialogPrimitive.Close asChild>
             <button
               type="button"
-              className="absolute top-3 right-3 inline-flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas hover:text-ink"
+              className="motion-feedback absolute top-3 right-3 inline-flex size-11 items-center justify-center rounded-control text-muted transition-colors hover:bg-canvas hover:text-ink"
               aria-label="Close sheet"
             >
               <X aria-hidden="true" className="size-5" />

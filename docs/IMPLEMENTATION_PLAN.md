@@ -40,8 +40,8 @@ Phase 0 established the public product, route, data, verification, submission, m
 | P1-01 | Repository and application foundation | Completed | Phase 0 | [#11](https://github.com/badjoke-lab/cryptopaymap/pull/11) |
 | P1-02 | Tailwind, design tokens, and responsive application shell | Completed | P1-01 | [#12](https://github.com/badjoke-lab/cryptopaymap/pull/12) |
 | P1-03 | Reusable UI primitives and interaction states | Completed | P1-02 | [#13](https://github.com/badjoke-lab/cryptopaymap/pull/13) |
-| P1-04 | Motion tokens and reduced-motion behavior | In progress | P1-02, P1-03 | — |
-| P1-05 | Client, server, and URL-state boundaries | Planned | P1-01 | — |
+| P1-04 | Motion tokens and reduced-motion behavior | Completed | P1-02, P1-03 | [#14](https://github.com/badjoke-lab/cryptopaymap/pull/14) |
+| P1-05 | Client, server, and URL-state boundaries | In progress | P1-01 | — |
 | P1-06 | Zod, Drizzle, and migration foundation | Planned | P1-01 | — |
 | P1-07 | CI and test foundation | Planned | P1-01 | — |
 | P1-08 | Cloudflare staging foundation | Planned | P1-01, P1-07 | — |
@@ -106,19 +106,22 @@ Phase 0 established the public product, route, data, verification, submission, m
 
 **Deliverables**
 
+- Motion for React dependency and locked graph
 - `instant`, `fast`, `normal`, and `slow` duration tokens
-- shared easing tokens
-- feedback transitions for controls, cards, dialogs, sheets, toasts, and state changes
-- page-transition boundary between Astro navigation and React application state
-- explicit reduced-motion equivalents
+- shared standard, enter, and exit easing tokens
+- MotionConfig reduced-motion policy and animated state replacement
+- CSS `data-state` motion for Dialog, Sheet, Select, and Toast
+- Astro ClientRouter page-transition boundary
+- documented map and bottom-sheet motion constraints
 
 **Completion criteria**
 
+- locked install, Astro check, and static build pass;
 - motion improves orientation or feedback rather than decoration;
 - reduced-motion users receive equivalent usable states;
 - controls remain immediately responsive;
-- map interaction is not blocked by animation;
-- check and build remain green.
+- route, React state, and portal motion have separate ownership;
+- map interaction is not blocked by animation.
 
 ### P1-05 — Client, server, and URL-state boundaries
 

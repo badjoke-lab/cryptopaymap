@@ -37,6 +37,14 @@
     color: var(--color-ink);
     font-synthesis: none;
     text-rendering: optimizeLegibility;
+
+    --motion-instant: 80ms;
+    --motion-fast: 140ms;
+    --motion-normal: 220ms;
+    --motion-slow: 320ms;
+    --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+    --ease-enter: cubic-bezier(0, 0, 0, 1);
+    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   }
 
   * {
@@ -88,6 +96,14 @@
     background: var(--color-brand-50);
     color: var(--color-ink);
   }
+
+  ::view-transition-old(root) {
+    animation: cpm-page-out var(--motion-fast) var(--ease-exit) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: cpm-page-in var(--motion-normal) var(--ease-enter) both;
+  }
 }
 
 @layer components {
@@ -123,12 +139,140 @@
     color: white;
     padding: 0.75rem 1rem;
     font-weight: 700;
-    transition: translate 140ms ease;
+    transition: translate var(--motion-fast) var(--ease-standard);
   }
 
   .skip-link:focus {
     translate: 0 0;
   }
+
+  .motion-feedback {
+    transition-duration: var(--motion-fast);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  .motion-panel {
+    transition-duration: var(--motion-normal);
+    transition-timing-function: var(--ease-standard);
+  }
+
+  .cpm-overlay[data-state="open"] {
+    animation: cpm-fade-in var(--motion-fast) var(--ease-enter) both;
+  }
+
+  .cpm-overlay[data-state="closed"] {
+    animation: cpm-fade-out var(--motion-fast) var(--ease-exit) both;
+  }
+
+  .cpm-dialog[data-state="open"] {
+    animation: cpm-dialog-in var(--motion-normal) var(--ease-enter) both;
+  }
+
+  .cpm-dialog[data-state="closed"] {
+    animation: cpm-dialog-out var(--motion-fast) var(--ease-exit) both;
+  }
+
+  .cpm-sheet-bottom[data-state="open"] {
+    animation: cpm-sheet-bottom-in var(--motion-normal) var(--ease-enter) both;
+  }
+
+  .cpm-sheet-bottom[data-state="closed"] {
+    animation: cpm-sheet-bottom-out var(--motion-fast) var(--ease-exit) both;
+  }
+
+  .cpm-sheet-right[data-state="open"] {
+    animation: cpm-sheet-right-in var(--motion-normal) var(--ease-enter) both;
+  }
+
+  .cpm-sheet-right[data-state="closed"] {
+    animation: cpm-sheet-right-out var(--motion-fast) var(--ease-exit) both;
+  }
+
+  .cpm-toast[data-state="open"] {
+    animation: cpm-toast-in var(--motion-normal) var(--ease-enter) both;
+  }
+
+  .cpm-toast[data-state="closed"] {
+    animation: cpm-toast-out var(--motion-fast) var(--ease-exit) both;
+  }
+
+  .cpm-toast[data-swipe="move"] {
+    translate: var(--radix-toast-swipe-move-x) 0;
+  }
+
+  .cpm-toast[data-swipe="cancel"] {
+    translate: 0 0;
+    transition: translate var(--motion-fast) var(--ease-standard);
+  }
+
+  .cpm-toast[data-swipe="end"] {
+    animation: cpm-toast-swipe-out var(--motion-fast) var(--ease-exit) both;
+  }
+}
+
+@keyframes cpm-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cpm-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes cpm-dialog-in {
+  from { opacity: 0; scale: 0.98; }
+  to { opacity: 1; scale: 1; }
+}
+
+@keyframes cpm-dialog-out {
+  from { opacity: 1; scale: 1; }
+  to { opacity: 0; scale: 0.98; }
+}
+
+@keyframes cpm-sheet-bottom-in {
+  from { translate: 0 100%; }
+  to { translate: 0 0; }
+}
+
+@keyframes cpm-sheet-bottom-out {
+  from { translate: 0 0; }
+  to { translate: 0 100%; }
+}
+
+@keyframes cpm-sheet-right-in {
+  from { translate: 100% 0; }
+  to { translate: 0 0; }
+}
+
+@keyframes cpm-sheet-right-out {
+  from { translate: 0 0; }
+  to { translate: 100% 0; }
+}
+
+@keyframes cpm-toast-in {
+  from { opacity: 0; translate: 0 0.5rem; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes cpm-toast-out {
+  from { opacity: 1; translate: 0 0; }
+  to { opacity: 0; translate: 0 0.5rem; }
+}
+
+@keyframes cpm-toast-swipe-out {
+  from { translate: var(--radix-toast-swipe-end-x) 0; }
+  to { translate: calc(100% + 1rem) 0; }
+}
+
+@keyframes cpm-page-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes cpm-page-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -139,5 +283,10 @@
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+  }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation: none !important;
   }
 }

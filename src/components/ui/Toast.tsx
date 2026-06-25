@@ -54,7 +54,7 @@ export function ToastNotice({
     <ToastPrimitive.Root
       open={open}
       onOpenChange={onOpenChange}
-      className="grid grid-cols-[auto_minmax(0,1fr)_auto] gap-x-3 gap-y-1 rounded-card border border-border bg-surface p-4 shadow-panel"
+      className="cpm-toast grid grid-cols-[auto_minmax(0,1fr)_auto] gap-x-3 gap-y-1 rounded-card border border-border bg-surface p-4 shadow-panel"
     >
       <Icon aria-hidden="true" className={cn('mt-0.5 size-5', iconClassName)} />
       <div className="min-w-0">
@@ -69,7 +69,7 @@ export function ToastNotice({
             <button
               type="button"
               onClick={onAction}
-              className="mt-3 min-h-10 rounded-control bg-brand-50 px-3 text-sm font-semibold text-brand-800 hover:bg-brand-50/70"
+              className="motion-feedback mt-3 min-h-10 rounded-control bg-brand-50 px-3 text-sm font-semibold text-brand-800 transition-colors hover:bg-brand-50/70"
             >
               {actionLabel}
             </button>
@@ -79,7 +79,7 @@ export function ToastNotice({
       <ToastPrimitive.Close asChild>
         <button
           type="button"
-          className="inline-flex size-10 items-center justify-center rounded-control text-muted hover:bg-canvas hover:text-ink"
+          className="motion-feedback inline-flex size-10 items-center justify-center rounded-control text-muted transition-colors hover:bg-canvas hover:text-ink"
           aria-label="Dismiss notification"
         >
           <X aria-hidden="true" className="size-4" />

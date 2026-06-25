@@ -36,10 +36,10 @@ export function ModalDialog({
     <DialogPrimitive.Root {...rootProps}>
       <DialogPrimitive.Trigger asChild>{trigger}</DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-ink/45 backdrop-blur-[2px]" />
+        <DialogPrimitive.Overlay className="cpm-overlay fixed inset-0 z-50 bg-ink/45 backdrop-blur-[2px]" />
         <DialogPrimitive.Content
           className={cn(
-            'fixed top-1/2 left-1/2 z-50 max-h-[min(85svh,48rem)] w-[min(calc(100%-2rem),36rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto',
+            'cpm-dialog fixed top-1/2 left-1/2 z-50 max-h-[min(85svh,48rem)] w-[min(calc(100%-2rem),36rem)] -translate-x-1/2 -translate-y-1/2 overflow-y-auto',
             'rounded-card border border-border bg-surface shadow-panel focus:outline-none',
             className,
           )}
@@ -60,7 +60,7 @@ export function ModalDialog({
           <DialogPrimitive.Close asChild>
             <button
               type="button"
-              className="absolute top-3 right-3 inline-flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas hover:text-ink"
+              className="motion-feedback absolute top-3 right-3 inline-flex size-11 items-center justify-center rounded-control text-muted transition-colors hover:bg-canvas hover:text-ink"
               aria-label="Close dialog"
             >
               <X aria-hidden="true" className="size-5" />
