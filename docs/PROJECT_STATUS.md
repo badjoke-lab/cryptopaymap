@@ -9,11 +9,11 @@ Phase 1 — Foundation
 
 ## Current implementation item
 
-`P1-01 — Repository and application foundation`
+`P1-02 — Tailwind, design tokens, and responsive application shell`
 
 ## Active pull request
 
-Not opened yet.
+None after pull request #11 is merged.
 
 ## Latest completed work
 
@@ -27,13 +27,15 @@ Not opened yet.
 - `P0-06 — Submission and media policies` completed through [pull request #7](https://github.com/badjoke-lab/cryptopaymap/pull/7), merged as `f3a8076`.
 - `P0-07 — Technical, UX, security, and privacy architecture` completed through [pull request #8](https://github.com/badjoke-lab/cryptopaymap/pull/8), merged as `d754c8d`.
 - `P0-08 — Operations, migration, launch, and public roadmap` completed through [pull request #9](https://github.com/badjoke-lab/cryptopaymap/pull/9), merged as `c268263`.
-- Phase 0 public specifications completed and cross-document responsibilities established.
+- Phase 0 completion transition merged through [pull request #10](https://github.com/badjoke-lab/cryptopaymap/pull/10), merged as `d3120a5`.
+- `P1-01 — Repository and application foundation` completed through [pull request #11](https://github.com/badjoke-lab/cryptopaymap/pull/11), with locked dependency installation, Astro check, and static build validated in GitHub Actions.
 
 ## Next
 
-1. Complete this Phase 0 status transition.
-2. Start `P1-01 — Repository and application foundation`.
-3. Establish the Astro, React, TypeScript, package, and local development baseline.
+1. Create the P1-02 branch from the merged P1-01 main.
+2. Add Tailwind and the first design-token contract.
+3. Build the responsive public application shell and mobile safe-area baseline.
+4. Keep final visual polish and reusable component expansion in their later items.
 
 ## Blocked
 
