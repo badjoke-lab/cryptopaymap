@@ -1,0 +1,11 @@
+{
+  "id": "foundation-example-place",
+  "slug": "example-coffee",
+  "name": "Example Coffee",
+  "status": "confirmed",
+  "asset": "BTC",
+  "network": "lightning",
+  "route": "direct_wallet",
+  "lastConfirmed": "2026-06-01",
+  "howToPay": "Ask staff to display a Lightning invoice and scan the QR code with a compatible wallet."
+}
