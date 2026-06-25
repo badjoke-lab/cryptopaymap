@@ -25,8 +25,8 @@ This document tracks public, repository-level implementation work. It is not the
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
 | P0-01 | Development control | Completed | Repository bootstrap | [#1](https://github.com/badjoke-lab/cryptopaymap/pull/1) |
-| P0-02 | Product constitution | Planned | P0-01 | — |
-| P0-03 | Information architecture | Planned | P0-02 | — |
+| P0-02 | Product constitution | Completed | P0-01 | [#3](https://github.com/badjoke-lab/cryptopaymap/pull/3) |
+| P0-03 | Information architecture | In progress | P0-02 | [#4](https://github.com/badjoke-lab/cryptopaymap/pull/4) |
 | P0-04 | Data architecture | Planned | P0-02 | — |
 | P0-05 | Verification, sources, and licenses | Planned | P0-04 | — |
 | P0-06 | Submission and media policies | Planned | P0-04, P0-05 | — |
@@ -74,7 +74,7 @@ This document tracks public, repository-level implementation work. It is not the
 - Public routes and navigation are defined without route conflicts.
 - Places, Online Services, Stats, Updates, Roadmap, Changelog, and contribution flows have distinct roles.
 - Desktop and mobile discovery paths are documented.
-- Legacy redirects are defined.
+- Legacy redirects and migration behavior are defined.
 
 ### P0-04 — Data architecture
 
