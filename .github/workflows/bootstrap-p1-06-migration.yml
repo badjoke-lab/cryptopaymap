@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - feat/p1-06-schema-migrations
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: write
@@ -13,7 +16,7 @@ jobs:
     if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
+      - name: Check out implementation branch
         uses: actions/checkout@v4
         with:
           ref: feat/p1-06-schema-migrations
@@ -28,10 +31,10 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Check runtime schemas
-        run: npm run schema:check
+        run: set -o pipefail && npm run schema:check 2>&1 | tee migration-schema.log
 
       - name: Generate reviewable migration
-        run: npm run db:generate
+        run: set -o pipefail && npm run db:generate 2>&1 | tee migration-generate.log
 
       - name: Commit migration files
         run: |
@@ -43,3 +46,14 @@ jobs:
           git add drizzle
           git commit -m "P1-06: add initial Drizzle migration"
           git push origin HEAD:feat/p1-06-schema-migrations
+
+      - name: Upload generation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p1-06-migration-generation
+          path: |
+            migration-schema.log
+            migration-generate.log
+          if-no-files-found: warn
+          retention-days: 7
