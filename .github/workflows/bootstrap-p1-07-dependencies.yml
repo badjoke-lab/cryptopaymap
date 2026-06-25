@@ -1,0 +1,38 @@
+name: Bootstrap P1-07 dependencies
+
+on:
+  push:
+    branches:
+      - feat/p1-07-quality
+
+permissions:
+  contents: write
+
+jobs:
+  dependencies:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/p1-07-quality
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+
+      - name: Install quality dependencies
+        run: npm install --save-dev --save-exact --no-audit --no-fund @biomejs/biome@latest vitest@latest @testing-library/react@latest @testing-library/jest-dom@latest @testing-library/user-event@latest jsdom@latest
+
+      - name: Commit dependency graph
+        run: |
+          if git diff --quiet -- package.json package-lock.json; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add package.json package-lock.json
+          git commit -m "P1-07: pin quality dependencies"
+          git push origin HEAD:feat/p1-07-quality
