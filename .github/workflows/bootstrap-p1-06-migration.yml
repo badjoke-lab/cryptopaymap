@@ -1,0 +1,45 @@
+name: Bootstrap P1-06 migration
+
+on:
+  push:
+    branches:
+      - feat/p1-06-schema-migrations
+
+permissions:
+  contents: write
+
+jobs:
+  migration:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: feat/p1-06-schema-migrations
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check runtime schemas
+        run: npm run schema:check
+
+      - name: Generate reviewable migration
+        run: npm run db:generate
+
+      - name: Commit migration files
+        run: |
+          if git diff --quiet -- drizzle; then
+            exit 0
+          fi
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add drizzle
+          git commit -m "P1-06: add initial Drizzle migration"
+          git push origin HEAD:feat/p1-06-schema-migrations
