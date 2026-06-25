@@ -1,0 +1,11 @@
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=()
+
+/_astro/*
+  Cache-Control: public, max-age=31556952, immutable
+
+/data/*
+  Cache-Control: public, max-age=300, must-revalidate
