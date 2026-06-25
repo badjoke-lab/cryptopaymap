@@ -2,15 +2,15 @@
 
 ## Purpose
 
-This document defines the public repository contract for CryptoPayMap's canonical records, source candidates, verification evidence, submissions, media, provenance, history, and public exports.
+This document defines the public repository contract for CryptoPayMap's source records, candidates, canonical identities, locations, acceptance claims, evidence, verification history, submissions, media, provenance, migration, audit, and public projections.
 
-The model is designed to preserve three boundaries:
+The model preserves three mandatory boundaries:
 
 1. source material is not canonical data;
 2. canonical data is not automatically public data;
 3. public data never includes private review, contact, ownership-proof, or submission material.
 
-Verification thresholds, source-quality rules, licensing policy, submission operations, and security implementation are defined in separate documents. This model provides the fields and relationships required to enforce those policies.
+Verification thresholds, source-quality rules, licensing policy, submission operations, media policy, and security implementation are defined in separate documents. This model provides the fields and relationships required to enforce those policies.
 
 ---
 
@@ -28,19 +28,19 @@ Examples:
 - legacy CryptoPayMap records;
 - processor directories;
 - business websites;
-- user suggestions;
 - archived pages;
+- user suggestions;
 - payment reports.
 
 ### 1.2 Review layer
 
-Candidates, evidence, proposed changes, reviewer decisions, and media review exist here.
+Candidates, evidence, proposed changes, reviewer decisions, holds, and media review exist here.
 
 Nothing in this layer becomes public merely because it was imported or submitted.
 
 ### 1.3 Canonical layer
 
-Reviewed entities, locations, acceptance claims, asset and network relationships, verification events, and approved media form the operational source of truth.
+Reviewed entities, locations, acceptance claims, asset and network relationships, verification events, approved media, and provenance form the operational source of truth.
 
 ### 1.4 Public projection layer
 
@@ -76,7 +76,7 @@ public JSON / GeoJSON / pages
 
 - Database timestamps use `timestamptz` and UTC.
 - Public dates are rendered in an appropriate user-facing format.
-- Observation time, publication time, confirmation time, and ingestion time remain distinct.
+- Observation time, publication time, confirmation time, ingestion time, and record-creation time remain distinct.
 
 ### 2.3 Country and language
 
@@ -104,9 +104,9 @@ Application code must never export an entire operational table as public JSON.
 
 ---
 
-## 3. Core enumerations
+## 3. Controlled state values
 
-Enumerations may be implemented as PostgreSQL enums, constrained text values, or versioned registry tables. Values exposed publicly must remain stable.
+Controlled values may be implemented as PostgreSQL enums, constrained text, or versioned registry tables. Values exposed publicly must remain stable.
 
 ### 3.1 Entity type
 
@@ -150,7 +150,7 @@ ended
 rejected
 ```
 
-### 3.5 Visibility
+### 3.5 Canonical record visibility
 
 ```text
 public
@@ -158,7 +158,7 @@ hidden
 temporarily_hidden
 ```
 
-Visibility is separate from verification status. A confirmed record may be temporarily hidden for privacy, rights, or safety reasons without changing the underlying claim status.
+This visibility set applies to canonical entities, locations, and acceptance claims. It is separate from evidence and media visibility.
 
 ### 3.6 Claim scope
 
@@ -230,7 +230,30 @@ private
 restricted
 ```
 
-### 3.13 Submission type
+### 3.13 Evidence review status
+
+```text
+pending
+accepted
+rejected
+superseded
+```
+
+### 3.14 Candidate intake status
+
+```text
+new
+triaged
+linked
+promoted
+duplicate
+rejected
+archived
+```
+
+This is an intake workflow state. It is not an acceptance-claim status.
+
+### 3.15 Submission type
 
 ```text
 suggest
@@ -240,7 +263,7 @@ claim
 photos
 ```
 
-### 3.14 Submission workflow status
+### 3.16 Submission workflow status
 
 ```text
 received
@@ -254,7 +277,7 @@ rejected_spam
 withdrawn
 ```
 
-### 3.15 Submission resolution
+### 3.17 Submission resolution
 
 ```text
 approved
@@ -266,7 +289,7 @@ no_change
 withdrawn
 ```
 
-### 3.16 Media role
+### 3.18 Media role
 
 ```text
 cover
@@ -281,7 +304,7 @@ evidence_image
 owner_verification_proof
 ```
 
-### 3.17 Media review status
+### 3.19 Media review status
 
 ```text
 uploaded
@@ -291,6 +314,37 @@ approved_private
 approved_public
 rejected
 deleted
+```
+
+### 3.20 Media visibility
+
+```text
+private
+restricted
+public
+deleted
+```
+
+Media visibility is not interchangeable with canonical record visibility.
+
+### 3.21 Ownership-verification status
+
+```text
+pending
+verified
+rejected
+expired
+revoked
+```
+
+### 3.22 Publication-run status
+
+```text
+pending
+validating
+published
+failed
+superseded
 ```
 
 ---
@@ -336,7 +390,7 @@ Stores an observed external record without asserting canonical truth.
 | `source_id` | uuid | References `sources`. |
 | `external_id` | text nullable | Source-native identifier. |
 | `source_url` | text nullable | Exact source record URL. |
-| `raw_payload` | jsonb | Internal-only original or normalized source payload. |
+| `raw_payload` | jsonb | Internal-only original or safely normalized source payload. |
 | `observed_at` | timestamptz nullable | When the source claim was observed to apply. |
 | `published_at` | timestamptz nullable | Source publication time if known. |
 | `fetched_at` | timestamptz | Ingestion time. |
@@ -355,8 +409,8 @@ Represents a reviewable candidate derived from one or more source records.
 |---|---|---|
 | `id` | uuid | Primary key. |
 | `candidate_type` | text | `physical_place`, `online_service`, `processor`, or another approved type. |
-| `normalized_name` | text | Review/search aid. |
-| `candidate_status` | text | Internal intake state, separate from claim status. |
+| `normalized_name` | text | Review and duplicate-detection aid. |
+| `candidate_status` | text | Uses the candidate-intake status set. |
 | `priority` | integer nullable | Internal ordering only. |
 | `duplicate_group_id` | uuid nullable | Groups suspected duplicates. |
 | `first_seen_at` | timestamptz | |
@@ -385,15 +439,17 @@ Attaches source and license metadata to a canonical record or field.
 | Column | Type | Notes |
 |---|---|---|
 | `id` | uuid | Primary key. |
-| `subject_type` | text | Examples: `entity`, `location`, `acceptance_claim`, `claim_asset`, `media`. |
+| `subject_type` | text | Controlled values such as `entity`, `location`, `acceptance_claim`, `claim_asset`, or `media`. |
 | `subject_id` | uuid | Canonical subject. |
-| `field_path` | text nullable | Optional field-level provenance, such as `address` or `latitude`. |
+| `field_path` | text nullable | Optional field-level provenance, such as `address_line` or `latitude`. |
 | `source_record_id` | uuid | References `source_records`. |
 | `license_id` | uuid nullable | License applying to this contribution. |
 | `provenance_role` | text | Examples: `origin`, `verification`, `correction`, `attribution`. |
 | `effective_from` | timestamptz nullable | |
 | `effective_to` | timestamptz nullable | |
 | `created_at` | timestamptz | |
+
+The application validates that `subject_type` is approved and `subject_id` exists in the corresponding canonical table.
 
 This layer allows OpenStreetMap-derived location fields and CryptoPayMap-authored verification fields to remain distinguishable in combined exports.
 
@@ -483,14 +539,14 @@ Represents a merchant brand, independent business, online service, processor, pr
 | Column | Type | Notes |
 |---|---|---|
 | `id` | uuid | Primary key. |
-| `entity_type` | text | Uses the entity-type enumeration. |
+| `entity_type` | text | Uses the entity-type set. |
 | `name` | text | Public display name. |
-| `slug` | text unique | Stable public slug when the entity has a public route. |
+| `slug` | text nullable unique | Stable public slug when the entity has a public route. |
 | `legal_name` | text nullable | Public only when appropriate. |
 | `website_url` | text nullable | Canonical official website. |
 | `country_code` | char(2) nullable | Headquarters or primary jurisdiction, not a location substitute. |
 | `entity_status` | text | Independent from payment acceptance. |
-| `visibility` | text | Public eligibility of the entity identity. |
+| `visibility` | text | Uses canonical record visibility. |
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 | `deleted_at` | timestamptz nullable | Soft deletion where required. |
@@ -522,6 +578,7 @@ Represents a physical place associated with an entity.
 | `latitude` | numeric | Valid latitude. |
 | `longitude` | numeric | Valid longitude. |
 | `location_status` | text | Independent from payment acceptance. |
+| `visibility` | text | Uses canonical record visibility. |
 | `website_url` | text nullable | Branch-specific official page. |
 | `phone` | text nullable | Public only when appropriate. |
 | `osm_type` | text nullable | `node`, `way`, or `relation`. |
@@ -574,11 +631,11 @@ Represents a reviewed claim that cryptocurrency can be used through a defined ch
 | `id` | uuid | Primary key. |
 | `entity_id` | uuid | Required canonical entity. |
 | `location_id` | uuid nullable | Required for `location_specific`. |
-| `claim_scope` | text | Uses the claim-scope enumeration. |
+| `claim_scope` | text | Uses the claim-scope set. |
 | `route_type` | text | `direct_wallet` or `processor_checkout`. |
 | `acceptance_scope` | text | Product, renewal, regional, or temporary scope. |
 | `claim_status` | text | Candidate, confirmed, stale, ended, or rejected. |
-| `visibility` | text | Public, hidden, or temporarily hidden. |
+| `visibility` | text | Uses canonical record visibility. |
 | `customer_pays_crypto` | boolean | Must be true for normal public acceptance. |
 | `merchant_explicitly_accepts_crypto` | boolean | Distinguishes merchant acceptance from indirect spending. |
 | `processor_id` | uuid nullable | References an entity whose type is `payment_processor`. |
@@ -601,10 +658,11 @@ Core constraints:
 - `online_service` requires an `online_service` entity and no physical location;
 - `processor_checkout` requires `processor_id`;
 - `direct_wallet` normally requires `processor_id` to be null;
+- `processor_id` must reference an entity with `entity_type = payment_processor`;
 - `platform_capability` cannot by itself create a public place pin;
 - `ended` requires `ended_at`;
 - `confirmed` requires public instructions, confirmation date, eligible asset/network rows, and qualifying evidence;
-- `public` visibility is not permitted for rejected or unreviewed candidate claims.
+- public visibility is not permitted for rejected or unreviewed candidate claims.
 
 ### 7.2 `claim_regions`
 
@@ -618,6 +676,8 @@ Defines regional applicability for brand or online claims.
 | `inclusion_type` | text | Include or exclude. |
 | `notes` | text nullable |
 
+The combination `(claim_id, country_code, region_code, inclusion_type)` is unique.
+
 ### 7.3 `claim_assets`
 
 Defines accepted asset, network, and payment-method combinations.
@@ -629,7 +689,7 @@ Defines accepted asset, network, and payment-method combinations.
 | `asset_id` | uuid | Required. |
 | `network_id` | uuid | Required for a publishable row. |
 | `payment_method_id` | uuid | Required for a publishable row. |
-| `contract_address` | text nullable | Token contract where useful. |
+| `contract_address` | text nullable | Normalized token contract where useful. |
 | `is_primary` | boolean | Preferred or prominently displayed option. |
 | `notes` | text nullable | Public-safe method note. |
 | `created_at` | timestamptz | |
@@ -677,8 +737,8 @@ Only reviewed translations may enter public projections.
 | `observed_at` | timestamptz nullable | When the evidence applied. |
 | `published_at` | timestamptz nullable | Source publication time. |
 | `summary` | text | Reviewed summary. |
-| `visibility` | text | Public, private, or restricted. |
-| `review_status` | text | Pending, accepted, rejected, superseded. |
+| `visibility` | text | Uses evidence visibility. |
+| `review_status` | text | Uses evidence review status. |
 | `archive_url` | text nullable | Where permitted. |
 | `content_hash` | text nullable | |
 | `created_at` | timestamptz | |
@@ -729,14 +789,14 @@ The current `claim_status` is stored on the claim for efficient reads. `verifica
 | `claim_id` | uuid nullable | |
 | `evidence_id` | uuid nullable | |
 | `submission_id` | uuid nullable | |
-| `role` | text | Cover, gallery, evidence, ownership proof, or another approved role. |
+| `role` | text | Uses the media-role set. |
 | `source_type` | text | Owner, user, operator, licensed source, or another approved source. |
 | `rights_basis` | text | Reviewed rights basis. |
 | `license_id` | uuid nullable | Where an open license applies. |
 | `attribution` | text nullable | Public attribution when required. |
 | `alt_text` | text nullable | Required for public display. |
-| `review_status` | text | Uses the media-review enumeration. |
-| `visibility` | text | Public, private, restricted, or deleted. |
+| `review_status` | text | Uses media review status. |
+| `visibility` | text | Uses media visibility. |
 | `original_storage_key` | text nullable | Private storage reference; never exported. |
 | `public_storage_key` | text nullable | Approved derivative reference. |
 | `display_order` | integer nullable | |
@@ -754,7 +814,8 @@ The current `claim_status` is stored on the claim for efficient reads. `verifica
 
 Constraints:
 
-- a public medium requires `approved_public`, public visibility, public derivative, rights basis, and alt text;
+- public media requires `review_status = approved_public` and `visibility = public`;
+- public media also requires a public derivative, reviewed rights basis, and alt text;
 - original private storage keys never enter public exports;
 - owner proof cannot be converted to public gallery media without a separate rights and privacy decision;
 - submission approval does not imply media approval.
@@ -769,13 +830,13 @@ Constraints:
 |---|---|---|
 | `id` | uuid | Internal primary key. |
 | `public_id` | text unique | Safe reference such as `CPM-S-2026-000123`. |
-| `submission_type` | text | Suggest, payment report, problem report, claim, or photos. |
+| `submission_type` | text | Uses the submission-type set. |
 | `target_type` | text nullable | Entity, location, claim, or new record. |
 | `target_id` | uuid nullable | Internal target. |
-| `workflow_status` | text | Separate from canonical claim status. |
-| `resolution` | text nullable | Final decision. |
+| `workflow_status` | text | Uses submission workflow status. |
+| `resolution` | text nullable | Uses submission resolution. |
 | `priority` | integer nullable | Internal only. |
-| `status_token_hash` | text | Hash only; plaintext secret is not stored. |
+| `status_token_hash` | text unique | Hash only; plaintext secret is not stored. |
 | `submitted_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 | `resolved_at` | timestamptz nullable | |
@@ -785,7 +846,7 @@ Constraints:
 
 | Column | Type | Notes |
 |---|---|---|
-| `submission_id` | uuid | Primary/foreign key. |
+| `submission_id` | uuid | Primary and foreign key. |
 | `original_payload` | jsonb | Immutable received payload after safe parsing. |
 | `normalized_payload` | jsonb nullable | Reviewer-normalized values. |
 | `proposed_changes` | jsonb nullable | Field-level canonical proposal. |
@@ -884,7 +945,7 @@ Stores an approved or pending relationship between a claimant and a business rec
 | `location_id` | uuid nullable |
 | `submission_id` | uuid |
 | `verification_method` | text |
-| `verification_status` | text |
+| `verification_status` | text | Uses ownership-verification status. |
 | `verified_at` | timestamptz nullable |
 | `expires_at` | timestamptz nullable |
 | `revoked_at` | timestamptz nullable |
@@ -892,7 +953,7 @@ Stores an approved or pending relationship between a claimant and a business rec
 | `created_at` | timestamptz |
 | `updated_at` | timestamptz |
 
-Ownership verification authorizes a reviewed relationship. It does not permit automatic publication or bypass verification requirements.
+Ownership verification authorizes a reviewed relationship. It does not permit automatic publication or bypass acceptance-verification requirements.
 
 ---
 
@@ -965,7 +1026,7 @@ Tracks generation and release of public artifacts.
 | Column | Type |
 |---|---|
 | `id` | uuid |
-| `status` | text | Pending, validating, published, failed, or superseded. |
+| `status` | text | Uses publication-run status. |
 | `schema_version` | text |
 | `started_at` | timestamptz |
 | `validated_at` | timestamptz nullable |
@@ -1072,7 +1133,7 @@ The application and database validation must preserve these rules.
 
 ## 16. Public projection rules
 
-Public views or export builders should be explicit, named projections rather than generic table serialization.
+Public views or export builders are explicit, named projections rather than generic table serialization.
 
 ### 16.1 `public_acceptance_claims`
 
@@ -1142,7 +1203,8 @@ Combined records include enough metadata to distinguish:
 
 - no orphan claim, location, asset, network, evidence, or media references;
 - processors reference processor entities;
-- public slugs are unique within their route type.
+- public slugs are unique within their route type;
+- controlled polymorphic references validate their subject type and subject existence.
 
 ### 18.2 Geographic integrity
 
@@ -1232,7 +1294,7 @@ submission
 problem report
 → private submission and evidence
 → review
-→ no change, stale, ended, or temporary hide decision
+→ no change, stale, ended, or temporary-hide decision
 → verification and audit events
 → validated public export
 ```
@@ -1242,7 +1304,7 @@ problem report
 ```text
 claim submission
 → private verification material
-→ ownership verification decision
+→ ownership-verification decision
 → approved relationship
 → reviewed proposed corrections
 → canonical transaction
