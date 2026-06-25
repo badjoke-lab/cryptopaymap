@@ -38,7 +38,7 @@ jobs:
 
       - name: Commit migration files
         run: |
-          if git diff --quiet -- drizzle; then
+          if [ -z "$(git status --porcelain -- drizzle)" ]; then
             exit 0
           fi
           git config user.name github-actions[bot]
