@@ -67,6 +67,7 @@ The repository implementation plan is for development tracking. The public produ
 - [Design system foundation](docs/DESIGN_SYSTEM.md)
 - [Shared UI primitives](docs/UI_PRIMITIVES.md)
 - [Motion system](docs/MOTION_SYSTEM.md)
+- [State management](docs/STATE_MANAGEMENT.md)
 - [Security and privacy architecture](docs/SECURITY_AND_PRIVACY.md)
 
 ### Operations and release
