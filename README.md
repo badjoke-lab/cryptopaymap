@@ -61,4 +61,4 @@ Repository-wide working rules are defined in [AGENTS.md](AGENTS.md). Pull reques
 
 ## Current phase
 
-The public specification phase is being completed before application implementation begins.
+Phase 0 public specifications are complete. Phase 1 establishes the application foundation, development tooling, design system base, state-management boundaries, staging path, and quality checks.
