@@ -1,0 +1,51 @@
+---
+const navigation = [
+  { href: '/places', label: 'Places' },
+  { href: '/online', label: 'Online Services' },
+  { href: '/stats', label: 'Stats' },
+  { href: '/updates', label: 'Updates' },
+  { href: '/contribute', label: 'Contribute' },
+  { href: '/support', label: 'Support' },
+];
+
+const pathname = Astro.url.pathname;
+---
+
+<header class="border-b border-border bg-surface/95 backdrop-blur">
+  <div class="safe-area-inline page-container flex min-h-16 items-center gap-4 py-3">
+    <a
+      class="shrink-0 rounded-control font-semibold tracking-tight text-ink no-underline"
+      href="/"
+      aria-label="CryptoPayMap home"
+    >
+      <span class="text-brand-600">Crypto</span>PayMap
+    </a>
+
+    <nav class="min-w-0 flex-1 overflow-x-auto" aria-label="Primary">
+      <ul class="flex min-w-max items-center justify-end gap-1">
+        {
+          navigation.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+
+            return (
+              <li>
+                <a
+                  class:list={[
+                    'inline-flex min-h-11 items-center rounded-control px-3 text-sm font-medium no-underline transition-colors',
+                    isActive
+                      ? 'bg-brand-50 text-brand-800'
+                      : 'text-muted hover:bg-canvas hover:text-ink',
+                  ]}
+                  href={item.href}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

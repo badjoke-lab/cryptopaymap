@@ -53,9 +53,9 @@ This document tracks public, repository-level implementation work. It is not the
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
-| P1-01 | Repository and application foundation | In progress | Phase 0 | — |
-| P1-02 | Tailwind, design tokens, and responsive application shell | Planned | P1-01 | — |
-| P1-03 | Reusable UI primitives and interaction states | Planned | P1-02 | — |
+| P1-01 | Repository and application foundation | Completed | Phase 0 | [#11](https://github.com/badjoke-lab/cryptopaymap/pull/11) |
+| P1-02 | Tailwind, design tokens, and responsive application shell | Completed | P1-01 | [#12](https://github.com/badjoke-lab/cryptopaymap/pull/12) |
+| P1-03 | Reusable UI primitives and interaction states | In progress | P1-02 | — |
 | P1-04 | Motion tokens and reduced-motion behavior | Planned | P1-02, P1-03 | — |
 | P1-05 | Client, server, and URL-state boundaries | Planned | P1-01 | — |
 | P1-06 | Zod, Drizzle, and migration foundation | Planned | P1-01 | — |
@@ -73,16 +73,18 @@ This document tracks public, repository-level implementation work. It is not the
 - Astro project foundation
 - React integration
 - TypeScript strict configuration
-- package scripts
+- package scripts and npm lockfile
 - source and public directory structure
 - development and production build commands
 - initial application entry and static page shell
 - environment-variable example without secrets
+- read-only foundation validation workflow
 
 **Completion criteria**
 
-- a clean checkout can install dependencies and run the documented development command;
-- the repository can produce a production build;
+- a clean checkout installs locked dependencies;
+- Astro and TypeScript checks pass;
+- the repository produces a static production build;
 - React is available only where interactive application behavior requires it;
 - TypeScript strict mode is enabled;
 - no secret or private configuration is committed;
@@ -92,17 +94,21 @@ This document tracks public, repository-level implementation work. It is not the
 
 **Deliverables**
 
-- Tailwind integration
-- CSS custom-property tokens
-- typography, spacing, radius, state, and surface foundations
-- responsive site shell
-- mobile safe-area behavior
+- Tailwind CSS 4 Vite-plugin integration
+- semantic CSS and Tailwind theme tokens
+- typography, spacing, radius, status, and surface foundations
+- responsive header, main-content, and footer shell
+- mobile safe-area utilities and viewport coverage
+- visible focus, skip-link, touch-target, and reduced-motion baseline
+- design-system foundation documentation
 
 **Completion criteria**
 
+- locked dependency installation, Astro check, and static build pass;
 - tokens support the documented visual system without hard-coding product states throughout components;
-- the shell works at the published breakpoints;
+- the shell works at the 640 / 768 / 1024 / 1280 breakpoints;
 - mobile controls can meet the documented touch-target requirements;
+- status is not communicated by color alone in the example surface;
 - future dark-mode support is not blocked, but dark mode is not implemented.
 
 ### P1-03 — Reusable UI primitives and interaction states

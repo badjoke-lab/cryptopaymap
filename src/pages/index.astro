@@ -4,83 +4,52 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="CryptoPayMap">
-  <main>
-    <header>
-      <p>CryptoPayMap</p>
-      <h1>Where crypto actually works at checkout.</h1>
-      <p>
-        A verified discovery service for physical places and online services where customers can pay from a cryptocurrency wallet.
-      </p>
-    </header>
+  <div class="safe-area-inline page-container py-12 sm:py-16 lg:py-24">
+    <section class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
+      <div class="max-w-3xl">
+        <p class="m-0 text-sm font-semibold uppercase tracking-[0.12em] text-brand-700">CryptoPayMap</p>
+        <h1 class="mt-4 text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-ink sm:text-6xl lg:text-7xl">
+          Where crypto actually works at checkout.
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
+          A verified discovery service for physical places and online services where customers can pay from a
+          cryptocurrency wallet.
+        </p>
 
-    <FoundationStatus client:visible />
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a
+            class="inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white no-underline transition-colors hover:bg-brand-700"
+            href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/PROJECT_STATUS.md"
+          >
+            Project status
+          </a>
+          <a
+            class="inline-flex min-h-11 items-center justify-center rounded-control border border-border bg-surface px-5 py-2.5 font-semibold text-ink no-underline transition-colors hover:bg-brand-50"
+            href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/ROADMAP.md"
+          >
+            Public roadmap
+          </a>
+        </div>
+      </div>
 
-    <nav aria-label="Project documentation">
-      <a href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/PROJECT_STATUS.md">Project status</a>
-      <a href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/ROADMAP.md">Public roadmap</a>
-    </nav>
-  </main>
+      <aside class="rounded-card border border-border bg-surface p-5 shadow-panel sm:p-6" aria-labelledby="shell-contract-title">
+        <p class="m-0 text-sm font-semibold text-brand-700">P1-02 shell contract</p>
+        <h2 id="shell-contract-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+          Responsive by default
+        </h2>
+        <ul class="mt-4 grid gap-3 text-sm leading-6 text-muted">
+          <li>Semantic color and status tokens</li>
+          <li>640 / 768 / 1024 / 1280 breakpoints</li>
+          <li>Mobile safe-area utilities</li>
+          <li>Minimum 44px interactive targets</li>
+          <li>Visible keyboard focus</li>
+          <li>Reduced-motion baseline</li>
+        </ul>
+      </aside>
+    </section>
+
+    <div class="mt-12 lg:mt-16">
+      <FoundationStatus client:visible />
+    </div>
+  </div>
 </BaseLayout>
-
-<style>
-  main {
-    width: min(100% - 2rem, 72rem);
-    margin-inline: auto;
-    padding-block: clamp(3rem, 8vw, 7rem);
-  }
-
-  header {
-    max-width: 48rem;
-  }
-
-  header > p:first-child {
-    color: #0f766e;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  h1 {
-    margin-block: 0.75rem 1rem;
-    font-size: clamp(2.5rem, 8vw, 5.5rem);
-    line-height: 0.98;
-    letter-spacing: -0.05em;
-  }
-
-  header > p:last-child {
-    max-width: 42rem;
-    color: #475569;
-    font-size: clamp(1rem, 2vw, 1.25rem);
-    line-height: 1.7;
-  }
-
-  section {
-    margin-top: 3rem;
-    padding: 1.5rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 0.75rem;
-    background: #ffffff;
-  }
-
-  button {
-    min-height: 44px;
-    padding: 0.65rem 1rem;
-    border: 0;
-    border-radius: 0.625rem;
-    background: #0f766e;
-    color: white;
-    cursor: pointer;
-  }
-
-  nav {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-
-  nav a {
-    color: #0f766e;
-    font-weight: 600;
-  }
-</style>
