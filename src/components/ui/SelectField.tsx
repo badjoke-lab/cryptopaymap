@@ -39,11 +39,15 @@ export function SelectField({
   className,
 }: SelectFieldProps) {
   const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
-  const rootProps = value === undefined ? { defaultValue, onValueChange } : { value, onValueChange };
+  const rootProps = {
+    ...(value !== undefined ? { value } : defaultValue !== undefined ? { defaultValue } : {}),
+    ...(disabled !== undefined ? { disabled } : {}),
+    ...(onValueChange !== undefined ? { onValueChange } : {}),
+  };
 
   return (
     <FieldFrame id={id} label={label} hint={hint} error={error} optional={optional} className={className}>
-      <SelectPrimitive.Root disabled={disabled} {...rootProps}>
+      <SelectPrimitive.Root {...rootProps}>
         <SelectPrimitive.Trigger
           id={id}
           aria-invalid={Boolean(error)}
@@ -72,7 +76,7 @@ export function SelectField({
                 <SelectPrimitive.Item
                   key={option.value}
                   value={option.value}
-                  disabled={option.disabled}
+                  {...(option.disabled !== undefined ? { disabled: option.disabled } : {})}
                   className={cn(
                     'relative flex min-h-10 cursor-default select-none items-center rounded-control py-2 pr-3 pl-9 text-sm text-ink outline-none',
                     'data-[highlighted]:bg-brand-50 data-[highlighted]:text-brand-800',
