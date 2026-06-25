@@ -4,11 +4,11 @@ import { cn } from '../../lib/classnames';
 interface FieldFrameProps {
   id: string;
   label: string;
-  hint?: string;
-  error?: string;
-  optional?: boolean;
+  hint?: string | undefined;
+  error?: string | undefined;
+  optional?: boolean | undefined;
   children: ReactNode;
-  className?: string;
+  className?: string | undefined;
 }
 
 export function FieldFrame({
@@ -46,10 +46,10 @@ export interface TextFieldProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id' | 'aria-invalid' | 'aria-describedby'> {
   id: string;
   label: string;
-  hint?: string;
-  error?: string;
-  optional?: boolean;
-  fieldClassName?: string;
+  hint?: string | undefined;
+  error?: string | undefined;
+  optional?: boolean | undefined;
+  fieldClassName?: string | undefined;
 }
 
 export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
