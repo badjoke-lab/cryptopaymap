@@ -12,7 +12,11 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "check": "astro check"
+    "check": "astro check",
+    "schema:check": "tsx scripts/check-runtime-schemas.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:check": "drizzle-kit check",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
     "@astrojs/react": "6.0.0",
