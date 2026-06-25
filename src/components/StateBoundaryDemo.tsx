@@ -156,7 +156,8 @@ function StateBoundaryContent() {
               onValueChange={handleAssetChange}
             />
 
-            <div className="grid grid-cols-2 gap-3" role="group" aria-label="View mode">
+            <fieldset className="grid grid-cols-2 gap-3">
+              <legend className="sr-only">View mode</legend>
               <Button
                 variant={urlState.view === 'map' ? 'primary' : 'secondary'}
                 onClick={() => commitUrlPatch({ view: 'map' }, 'replace')}
@@ -171,7 +172,7 @@ function StateBoundaryContent() {
                 <List aria-hidden="true" className="size-4" />
                 List
               </Button>
-            </div>
+            </fieldset>
 
             <div className="rounded-control border border-border bg-canvas p-4">
               <p className="m-0 flex items-center gap-2 text-sm font-semibold text-ink">

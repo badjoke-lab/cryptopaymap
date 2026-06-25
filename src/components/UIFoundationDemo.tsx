@@ -208,6 +208,7 @@ export function UIFoundationDemo() {
 
             <div
               className="grid gap-4 rounded-card border border-border bg-surface p-5 sm:p-6"
+              role="status"
               aria-label="Loading example"
             >
               <span className="sr-only">Loading example</span>
