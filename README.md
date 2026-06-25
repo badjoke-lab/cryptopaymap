@@ -18,13 +18,13 @@ The project is in active development. Public listings are designed to identify t
 
 Requirements:
 
-- Node.js 22.12 or later
-- npm
+- Node.js 24
+- npm 11
 
 Commands:
 
 ```bash
-npm install
+npm ci
 npm run dev
 npm run check
 npm run build
@@ -61,9 +61,10 @@ The repository implementation plan is for development tracking. The public produ
 - [Submission workflow](docs/SUBMISSION_WORKFLOW.md)
 - [Media policy](docs/MEDIA_POLICY.md)
 
-### Technical and security
+### Technical, design, and security
 
 - [Technical architecture](docs/TECH_ARCHITECTURE.md)
+- [Design system foundation](docs/DESIGN_SYSTEM.md)
 - [Security and privacy architecture](docs/SECURITY_AND_PRIVACY.md)
 
 ### Operations and release
