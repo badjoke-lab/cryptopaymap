@@ -35,10 +35,11 @@ const checks = [
 const failures = checks.filter((result) => !result.success);
 
 if (failures.length > 0) {
-  for (const failure of failures) {
-    if (!failure.success) console.error(failure.error.issues);
-  }
-  process.exitCode = 1;
-} else {
-  console.log('Runtime schema checks passed.');
+  const issues = failures.flatMap((failure) =>
+    failure.success ? [] : failure.error.issues,
+  );
+
+  throw new Error(`Runtime schema checks failed: ${JSON.stringify(issues)}`);
 }
+
+console.log('Runtime schema checks passed.');
