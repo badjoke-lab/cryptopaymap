@@ -5,15 +5,15 @@
 
 ## Current phase
 
-Phase 0 — Public specifications and development control
+Phase 1 — Foundation
 
 ## Current implementation item
 
-`P0-08 — Operations, migration, launch, and public roadmap`
+`P1-01 — Repository and application foundation`
 
 ## Active pull request
 
-[#9 — P0-08: Define operations, migration, launch, and public roadmap](https://github.com/badjoke-lab/cryptopaymap/pull/9)
+Not opened yet.
 
 ## Latest completed work
 
@@ -26,20 +26,14 @@ Phase 0 — Public specifications and development control
 - `P0-05 — Verification, sources, and licenses` completed through [pull request #6](https://github.com/badjoke-lab/cryptopaymap/pull/6), merged as `a7b475b`.
 - `P0-06 — Submission and media policies` completed through [pull request #7](https://github.com/badjoke-lab/cryptopaymap/pull/7), merged as `f3a8076`.
 - `P0-07 — Technical, UX, security, and privacy architecture` completed through [pull request #8](https://github.com/badjoke-lab/cryptopaymap/pull/8), merged as `d754c8d`.
-
-## Current deliverables
-
-- `docs/OPERATIONS.md`
-- `docs/MIGRATION_AND_CUTOVER.md`
-- `docs/LAUNCH_CRITERIA.md`
-- `docs/ROADMAP.md`
+- `P0-08 — Operations, migration, launch, and public roadmap` completed through [pull request #9](https://github.com/badjoke-lab/cryptopaymap/pull/9), merged as `c268263`.
+- Phase 0 public specifications completed and cross-document responsibilities established.
 
 ## Next
 
-1. Complete the cross-document Phase 0 audit.
-2. Merge pull request #9 when its completion criteria are satisfied.
-3. Mark Phase 0 complete in `docs/IMPLEMENTATION_PLAN.md`.
-4. Start Phase 1 foundation implementation.
+1. Complete this Phase 0 status transition.
+2. Start `P1-01 — Repository and application foundation`.
+3. Establish the Astro, React, TypeScript, package, and local development baseline.
 
 ## Blocked
 
