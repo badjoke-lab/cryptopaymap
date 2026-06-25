@@ -1,0 +1,27 @@
+---
+import FoundationStatus from '../components/FoundationStatus';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="CryptoPayMap" description="CryptoPayMap application foundation.">
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="/">CryptoPayMap</a>
+      <span class="phase-badge">Foundation</span>
+    </header>
+
+    <section class="hero" aria-labelledby="page-title">
+      <p class="eyebrow">Verified payment discovery</p>
+      <h1 id="page-title">The application foundation is active.</h1>
+      <p class="hero-copy">
+        Public discovery features will be added through the documented implementation plan.
+      </p>
+    </section>
+
+    <FoundationStatus client:load />
+
+    <footer class="site-footer">
+      <p>Public specifications are available in this repository.</p>
+    </footer>
+  </div>
+</BaseLayout>
