@@ -9,6 +9,7 @@
       "tests/**/*.tsx",
       "*.ts",
       "*.json",
+      "*.jsonc",
       "src/**/*.css"
     ]
   },
