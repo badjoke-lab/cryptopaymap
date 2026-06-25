@@ -22,9 +22,10 @@
     "db:generate": "drizzle-kit generate",
     "db:check": "drizzle-kit check",
     "db:migrate": "drizzle-kit migrate",
-    "pages:dev": "npm run build && wrangler pages dev",
-    "pages:deploy:staging": "npm run build && wrangler pages deploy dist --project-name cryptopaymap-staging --branch staging",
-    "quality": "npm run format:check && npm run lint && npm run check && npm run schema:check && npm run db:check && npm run test && npm run build"
+    "staging:check": "tsx scripts/check-staging-artifact.ts",
+    "pages:dev": "npm run build && npm run staging:check && wrangler pages dev",
+    "pages:deploy:staging": "npm run build && npm run staging:check && wrangler pages deploy dist --project-name cryptopaymap-staging --branch staging",
+    "quality": "npm run format:check && npm run lint && npm run check && npm run schema:check && npm run db:check && npm run test && npm run build && npm run staging:check"
   },
   "dependencies": {
     "@astrojs/react": "6.0.0",
