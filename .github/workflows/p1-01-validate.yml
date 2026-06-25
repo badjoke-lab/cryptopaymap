@@ -1,12 +1,9 @@
-name: P1-01 foundation validation
+name: Foundation validation
 
 on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - feat/p1-01-application-foundation
 
 permissions:
   contents: read
@@ -22,21 +19,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24.18.0
+          cache: npm
 
-      - name: Install dependencies
-        run: npm install --no-audit --no-fund
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Check Astro and TypeScript
         run: npm run check
 
       - name: Build static site
         run: npm run build
-
-      - name: Upload generated lockfile
-        if: success()
-        uses: actions/upload-artifact@v4
-        with:
-          name: p1-01-package-lock
-          path: package-lock.json
-          if-no-files-found: error
-          retention-days: 7
