@@ -1,7 +1,7 @@
 import type { HTMLAttributes, ReactNode } from 'react';
 import { cn } from '../../lib/classnames';
 
-export interface CardProps extends HTMLAttributes<HTMLElement> {
+export interface CardProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   as?: 'article' | 'section' | 'div';
   eyebrow?: ReactNode;
   title?: ReactNode;
