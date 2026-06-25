@@ -13,7 +13,7 @@ Phase 1 — Foundation
 
 ## Active pull request
 
-Not opened yet.
+[#11 — P1-01: Establish Astro React application foundation](https://github.com/badjoke-lab/cryptopaymap/pull/11) — Draft
 
 ## Latest completed work
 
@@ -27,17 +27,30 @@ Not opened yet.
 - `P0-06 — Submission and media policies` completed through [pull request #7](https://github.com/badjoke-lab/cryptopaymap/pull/7), merged as `f3a8076`.
 - `P0-07 — Technical, UX, security, and privacy architecture` completed through [pull request #8](https://github.com/badjoke-lab/cryptopaymap/pull/8), merged as `d754c8d`.
 - `P0-08 — Operations, migration, launch, and public roadmap` completed through [pull request #9](https://github.com/badjoke-lab/cryptopaymap/pull/9), merged as `c268263`.
-- Phase 0 public specifications completed and cross-document responsibilities established.
+- Phase 0 completion transition merged through [pull request #10](https://github.com/badjoke-lab/cryptopaymap/pull/10), merged as `d3120a5`.
+
+## Current deliverables
+
+- Astro and React package foundation
+- strict TypeScript configuration
+- static Astro output configuration
+- base layout and global style baseline
+- minimal React integration proof
+- initial application entry
+- environment and ignore-file contracts
+- local development commands
 
 ## Next
 
-1. Complete this Phase 0 status transition.
-2. Start `P1-01 — Repository and application foundation`.
-3. Establish the Astro, React, TypeScript, package, and local development baseline.
+1. Validate a clean dependency installation for pull request #11.
+2. Run `npm run check`.
+3. Run `npm run build`.
+4. Correct any dependency or framework compatibility issues.
+5. Mark pull request #11 ready only after all three checks pass.
 
 ## Blocked
 
-None.
+P1-01 cannot be merged until dependency installation, Astro check, and production build are verified. CI is planned for P1-07 and is not available yet.
 
 ## Verification rule
 
