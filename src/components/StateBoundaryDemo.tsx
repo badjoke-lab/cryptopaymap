@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { Database, Link2, List, Map, RefreshCw } from 'lucide-react';
+import { Database, Link2, List, Map as MapIcon, RefreshCw } from 'lucide-react';
 import { AppStateProviders } from './state/AppStateProviders';
 import { useDiscoveryStore } from './state/DiscoveryStoreProvider';
 import { Badge, Button, Card, SelectField, StatePanel } from './ui';
@@ -156,12 +156,12 @@ function StateBoundaryContent() {
               onValueChange={handleAssetChange}
             />
 
-            <div className="grid grid-cols-2 gap-3" aria-label="View mode">
+            <div className="grid grid-cols-2 gap-3" role="group" aria-label="View mode">
               <Button
                 variant={urlState.view === 'map' ? 'primary' : 'secondary'}
                 onClick={() => commitUrlPatch({ view: 'map' }, 'replace')}
               >
-                <Map aria-hidden="true" className="size-4" />
+                <MapIcon aria-hidden="true" className="size-4" />
                 Map
               </Button>
               <Button
