@@ -1,5 +1,5 @@
 ---
-import { FoundationStatus } from '../components/FoundationStatus';
+import { UIFoundationDemo } from '../components/UIFoundationDemo';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
@@ -33,23 +33,23 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
 
       <aside class="rounded-card border border-border bg-surface p-5 shadow-panel sm:p-6" aria-labelledby="shell-contract-title">
-        <p class="m-0 text-sm font-semibold text-brand-700">P1-02 shell contract</p>
+        <p class="m-0 text-sm font-semibold text-brand-700">Foundation status</p>
         <h2 id="shell-contract-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
-          Responsive by default
+          Shared before feature-specific
         </h2>
         <ul class="mt-4 grid gap-3 text-sm leading-6 text-muted">
-          <li>Semantic color and status tokens</li>
-          <li>640 / 768 / 1024 / 1280 breakpoints</li>
-          <li>Mobile safe-area utilities</li>
-          <li>Minimum 44px interactive targets</li>
-          <li>Visible keyboard focus</li>
-          <li>Reduced-motion baseline</li>
+          <li>Semantic design and status tokens</li>
+          <li>Responsive shell and safe areas</li>
+          <li>Accessible fields and selection</li>
+          <li>Dialog, sheet, and toast foundations</li>
+          <li>Loading, empty, success, and error states</li>
+          <li>Reusable across public and admin surfaces</li>
         </ul>
       </aside>
     </section>
 
     <div class="mt-12 lg:mt-16">
-      <FoundationStatus client:visible />
+      <UIFoundationDemo client:load />
     </div>
   </div>
 </BaseLayout>
