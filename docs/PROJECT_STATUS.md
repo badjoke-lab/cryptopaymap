@@ -13,7 +13,7 @@ Phase 1 — Foundation
 
 ## Active pull request
 
-None after pull request #12 is merged.
+[#13 — P1-03: Add reusable UI primitives and interaction states](https://github.com/badjoke-lab/cryptopaymap/pull/13) — Draft
 
 ## Latest completed work
 
@@ -29,18 +29,28 @@ None after pull request #12 is merged.
 - `P0-08 — Operations, migration, launch, and public roadmap` completed through [pull request #9](https://github.com/badjoke-lab/cryptopaymap/pull/9), merged as `c268263`.
 - Phase 0 completion transition merged through [pull request #10](https://github.com/badjoke-lab/cryptopaymap/pull/10), merged as `d3120a5`.
 - `P1-01 — Repository and application foundation` completed through [pull request #11](https://github.com/badjoke-lab/cryptopaymap/pull/11), merged as `1dd3232`.
-- `P1-02 — Tailwind, design tokens, and responsive application shell` completed through [pull request #12](https://github.com/badjoke-lab/cryptopaymap/pull/12), with locked dependency installation, Astro check, and static build validated in GitHub Actions.
+- `P1-02 — Tailwind, design tokens, and responsive application shell` completed through [pull request #12](https://github.com/badjoke-lab/cryptopaymap/pull/12), merged as `2cc56dc`.
+
+## Current deliverables
+
+- shared buttons, fields, selects, badges, and cards
+- accessible dialog and sheet foundations
+- toast notifications
+- skeleton and standardized interaction-state panels
+- integrated UI primitive demonstration
+- shared component contract documentation
 
 ## Next
 
-1. Create the P1-03 branch from the merged P1-02 main.
-2. Implement reusable buttons, inputs, selects, chips, badges, and cards.
-3. Add dialog, sheet, toast, skeleton, and standard interaction-state foundations.
-4. Keep motion-system expansion in P1-04.
+1. Run locked dependency installation for pull request #13.
+2. Run Astro and TypeScript checks.
+3. Run the static build.
+4. Correct any component typing or Radix integration issues.
+5. Advance to P1-04 only after all checks pass.
 
 ## Blocked
 
-None.
+P1-03 remains a draft until locked install, check, and build validation pass.
 
 ## Verification rule
 
