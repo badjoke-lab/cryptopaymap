@@ -1,0 +1,75 @@
+{
+  "id": "33e8fd9d-d10b-41f9-af32-4468bbfdb276",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {},
+  "enums": {
+    "public.acceptance_claim_status": {
+      "name": "acceptance_claim_status",
+      "schema": "public",
+      "values": [
+        "candidate",
+        "confirmed",
+        "stale",
+        "ended",
+        "rejected"
+      ]
+    },
+    "public.claim_visibility": {
+      "name": "claim_visibility",
+      "schema": "public",
+      "values": [
+        "public",
+        "hidden",
+        "temporarily_hidden"
+      ]
+    },
+    "public.route_type": {
+      "name": "route_type",
+      "schema": "public",
+      "values": [
+        "direct_wallet",
+        "processor_checkout"
+      ]
+    },
+    "public.submission_resolution": {
+      "name": "submission_resolution",
+      "schema": "public",
+      "values": [
+        "approved",
+        "partially_approved",
+        "accepted_as_candidate",
+        "not_approved",
+        "duplicate",
+        "no_change",
+        "withdrawn"
+      ]
+    },
+    "public.submission_workflow_status": {
+      "name": "submission_workflow_status",
+      "schema": "public",
+      "values": [
+        "received",
+        "triage",
+        "in_review",
+        "needs_information",
+        "on_hold",
+        "resolved",
+        "duplicate",
+        "rejected_spam",
+        "withdrawn"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

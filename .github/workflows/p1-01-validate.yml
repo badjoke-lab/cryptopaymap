@@ -32,6 +32,14 @@ jobs:
       - name: Check Astro and TypeScript
         run: set -o pipefail && npm run check 2>&1 | tee validation-check.log
 
+      - name: Check runtime schemas
+        if: always()
+        run: set -o pipefail && npm run schema:check 2>&1 | tee validation-schema.log
+
+      - name: Check migration history
+        if: always()
+        run: set -o pipefail && npm run db:check 2>&1 | tee validation-database.log
+
       - name: Build static site
         if: always()
         run: set -o pipefail && npm run build 2>&1 | tee validation-build.log
@@ -43,6 +51,8 @@ jobs:
           name: foundation-validation-logs
           path: |
             validation-check.log
+            validation-schema.log
+            validation-database.log
             validation-build.log
           if-no-files-found: warn
           retention-days: 7

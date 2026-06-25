@@ -41,8 +41,8 @@ Phase 0 established the public product, route, data, verification, submission, m
 | P1-02 | Tailwind, design tokens, and responsive application shell | Completed | P1-01 | [#12](https://github.com/badjoke-lab/cryptopaymap/pull/12) |
 | P1-03 | Reusable UI primitives and interaction states | Completed | P1-02 | [#13](https://github.com/badjoke-lab/cryptopaymap/pull/13) |
 | P1-04 | Motion tokens and reduced-motion behavior | Completed | P1-02, P1-03 | [#14](https://github.com/badjoke-lab/cryptopaymap/pull/14) |
-| P1-05 | Client, server, and URL-state boundaries | In progress | P1-01 | — |
-| P1-06 | Zod, Drizzle, and migration foundation | Planned | P1-01 | — |
+| P1-05 | Client, server, and URL-state boundaries | Completed | P1-01 | [#15](https://github.com/badjoke-lab/cryptopaymap/pull/15) |
+| P1-06 | Zod, Drizzle, and migration foundation | In progress | P1-01 | [#16](https://github.com/badjoke-lab/cryptopaymap/pull/16) |
 | P1-07 | CI and test foundation | Planned | P1-01 | — |
 | P1-08 | Cloudflare staging foundation | Planned | P1-01, P1-07 | — |
 | P1-09 | PWA manifest and installability baseline | Planned | P1-02 | — |
@@ -127,30 +127,42 @@ Phase 0 established the public product, route, data, verification, submission, m
 
 **Deliverables**
 
-- TanStack Query and Zustand foundations
-- URL parameter conventions
-- serialization, restoration, and local-state guidance
+- TanStack Query server-state foundation
+- per-island Zustand application-state foundation
+- deterministic URL parsing and serialization
+- browser-history restoration and push/replace rules
+- public/private state boundary documentation
+- integrated state-ownership demonstration
 
 **Completion criteria**
 
+- locked install, Astro check, and static build pass;
 - server data, application UI state, shareable URL state, and local state have distinct ownership;
-- future map, list, filter, selection, and browser-back state can be restored;
-- private state never enters public URLs.
+- map, list, filter, selection, and browser-back state can be restored;
+- private workflow state never enters public URLs or public query keys.
 
 ### P1-06 — Zod, Drizzle, and migration foundation
 
 **Deliverables**
 
-- shared schema validation
-- Drizzle configuration
-- reviewable SQL migration structure
-- database environment contract without credentials
+- pinned Zod, Drizzle ORM, Drizzle Kit, Neon serverless driver, and tsx dependencies
+- shared runtime validation schemas
+- foundational PostgreSQL enums
+- explicit Neon HTTP database factory
+- Drizzle PostgreSQL configuration
+- reviewable generated SQL migration and metadata
+- schema and migration commands
+- database environment contract without committed connection values
+- database foundation documentation
+- CI checks for runtime schemas and migration history
 
 **Completion criteria**
 
-- runtime validation can be reused by APIs and build tools;
-- public static builds do not require production database access;
-- migrations remain reviewable and reversible where practical.
+- locked install, Astro and TypeScript check, runtime-schema check, migration-history check, and static build pass;
+- runtime validation reuses the structural values used by the database schema;
+- public static builds do not require database configuration or database access;
+- migrations remain reviewable SQL and are generated separately from application;
+- Phase 2 domain tables are not introduced prematurely.
 
 ### P1-07 — CI and test foundation
 
