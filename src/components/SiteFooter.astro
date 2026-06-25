@@ -17,7 +17,10 @@ const links = [
         {
           links.map((item) => (
             <li>
-              <a class="rounded-control underline-offset-4 hover:text-ink hover:underline" href={item.href}>
+              <a
+                class="motion-feedback rounded-control underline-offset-4 transition-colors hover:text-ink hover:underline"
+                href={item.href}
+              >
                 {item.label}
               </a>
             </li>
