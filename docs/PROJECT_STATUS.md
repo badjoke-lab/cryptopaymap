@@ -9,11 +9,11 @@ Phase 1 — Foundation
 
 ## Current implementation item
 
-`P1-02 — Tailwind, design tokens, and responsive application shell`
+`P1-03 — Reusable UI primitives and interaction states`
 
 ## Active pull request
 
-None after pull request #11 is merged.
+None after pull request #12 is merged.
 
 ## Latest completed work
 
@@ -28,14 +28,15 @@ None after pull request #11 is merged.
 - `P0-07 — Technical, UX, security, and privacy architecture` completed through [pull request #8](https://github.com/badjoke-lab/cryptopaymap/pull/8), merged as `d754c8d`.
 - `P0-08 — Operations, migration, launch, and public roadmap` completed through [pull request #9](https://github.com/badjoke-lab/cryptopaymap/pull/9), merged as `c268263`.
 - Phase 0 completion transition merged through [pull request #10](https://github.com/badjoke-lab/cryptopaymap/pull/10), merged as `d3120a5`.
-- `P1-01 — Repository and application foundation` completed through [pull request #11](https://github.com/badjoke-lab/cryptopaymap/pull/11), with locked dependency installation, Astro check, and static build validated in GitHub Actions.
+- `P1-01 — Repository and application foundation` completed through [pull request #11](https://github.com/badjoke-lab/cryptopaymap/pull/11), merged as `1dd3232`.
+- `P1-02 — Tailwind, design tokens, and responsive application shell` completed through [pull request #12](https://github.com/badjoke-lab/cryptopaymap/pull/12), with locked dependency installation, Astro check, and static build validated in GitHub Actions.
 
 ## Next
 
-1. Create the P1-02 branch from the merged P1-01 main.
-2. Add Tailwind and the first design-token contract.
-3. Build the responsive public application shell and mobile safe-area baseline.
-4. Keep final visual polish and reusable component expansion in their later items.
+1. Create the P1-03 branch from the merged P1-02 main.
+2. Implement reusable buttons, inputs, selects, chips, badges, and cards.
+3. Add dialog, sheet, toast, skeleton, and standard interaction-state foundations.
+4. Keep motion-system expansion in P1-04.
 
 ## Blocked
 
