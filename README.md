@@ -14,6 +14,24 @@ The project is in active development. Public listings are designed to identify t
 - Sponsorship, support, and partnerships do not determine verification status.
 - Public discovery must work on mobile and desktop and must not depend on map-only interaction.
 
+## Local development
+
+Requirements:
+
+- Node.js 22.12 or later
+- npm
+
+Commands:
+
+```bash
+npm install
+npm run dev
+npm run check
+npm run build
+```
+
+Copy `.env.example` to `.env` only when local configuration is required. Never commit credentials or production secrets.
+
 ## Project status
 
 See:
