@@ -13,7 +13,7 @@ Phase 0 — Public specifications and development control
 
 ## Active pull request
 
-Pending creation
+[#1 — P0-01: Add repository development control](https://github.com/badjoke-lab/cryptopaymap/pull/1)
 
 ## Latest completed work
 
