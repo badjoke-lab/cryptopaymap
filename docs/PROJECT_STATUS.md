@@ -13,7 +13,7 @@ Phase 0 — Public specifications and development control
 
 ## Active pull request
 
-None.
+[#3 — P0-02: Define product constitution and MVP scope](https://github.com/badjoke-lab/cryptopaymap/pull/3)
 
 ## Latest completed work
 
@@ -22,12 +22,16 @@ None.
 - `P0-01 — Development control` completed through [pull request #1](https://github.com/badjoke-lab/cryptopaymap/pull/1).
 - Repository development rules, implementation tracking, current status, and the pull request template established.
 
-## Next
-
-Open the P0-02 pull request with:
+## Current deliverables
 
 - `docs/PRODUCT_SPEC.md`
 - `docs/MVP_SCOPE.md`
+
+## Next
+
+1. Review and merge pull request #3 when its completion criteria are satisfied.
+2. Mark P0-02 completed in `docs/IMPLEMENTATION_PLAN.md`.
+3. Start `P0-03 — Information architecture`.
 
 ## Blocked
 
