@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+type EnvironmentRecord = Readonly<Record<string, string | undefined>>;
+
+function readProcessEnvironment(): EnvironmentRecord {
+  const runtime = globalThis as typeof globalThis & {
+    process?: { env?: EnvironmentRecord };
+  };
+
+  return runtime.process?.env ?? {};
+}
+
 export const databaseUrlSchema = z
   .url()
   .refine((value) => {
@@ -16,13 +26,13 @@ export const requiredDatabaseEnvironmentSchema = z.object({
 });
 
 export function readOptionalDatabaseEnvironment(
-  environment: NodeJS.ProcessEnv = process.env,
+  environment: EnvironmentRecord = readProcessEnvironment(),
 ) {
   return optionalDatabaseEnvironmentSchema.parse(environment);
 }
 
 export function readRequiredDatabaseEnvironment(
-  environment: NodeJS.ProcessEnv = process.env,
+  environment: EnvironmentRecord = readProcessEnvironment(),
 ) {
   return requiredDatabaseEnvironmentSchema.parse(environment);
 }
