@@ -24,7 +24,7 @@ This document tracks public, repository-level implementation work. It is not the
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
-| P0-01 | Development control | In progress | Repository bootstrap | Pending |
+| P0-01 | Development control | In progress | Repository bootstrap | [#1](https://github.com/badjoke-lab/cryptopaymap/pull/1) |
 | P0-02 | Product constitution | Planned | P0-01 | — |
 | P0-03 | Information architecture | Planned | P0-02 | — |
 | P0-04 | Data architecture | Planned | P0-02 | — |
