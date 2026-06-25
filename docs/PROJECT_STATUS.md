@@ -9,11 +9,11 @@ Phase 0 — Public specifications and development control
 
 ## Current implementation item
 
-`P0-06 — Submission and media policies`
+`P0-07 — Technical, UX, security, and privacy architecture`
 
 ## Active pull request
 
-[#7 — P0-06: Define submission and media policies](https://github.com/badjoke-lab/cryptopaymap/pull/7)
+[#8 — P0-07: Define technical, UX, security, and privacy architecture](https://github.com/badjoke-lab/cryptopaymap/pull/8)
 
 ## Latest completed work
 
@@ -24,17 +24,18 @@ Phase 0 — Public specifications and development control
 - `P0-03 — Information architecture` completed through [pull request #4](https://github.com/badjoke-lab/cryptopaymap/pull/4), merged as `09b9807`.
 - `P0-04 — Data architecture` completed through [pull request #5](https://github.com/badjoke-lab/cryptopaymap/pull/5), merged as `6e7392d`.
 - `P0-05 — Verification, sources, and licenses` completed through [pull request #6](https://github.com/badjoke-lab/cryptopaymap/pull/6), merged as `a7b475b`.
+- `P0-06 — Submission and media policies` completed through [pull request #7](https://github.com/badjoke-lab/cryptopaymap/pull/7), merged as `f3a8076`.
 
 ## Current deliverables
 
-- `docs/SUBMISSION_WORKFLOW.md`
-- `docs/MEDIA_POLICY.md`
+- `docs/TECH_ARCHITECTURE.md`
+- `docs/SECURITY_AND_PRIVACY.md`
 
 ## Next
 
-1. Review and merge pull request #7 when its completion criteria are satisfied.
-2. Mark P0-06 completed in `docs/IMPLEMENTATION_PLAN.md`.
-3. Start `P0-07 — Technical, UX, security, and privacy architecture`.
+1. Review and merge pull request #8 when its completion criteria are satisfied.
+2. Mark P0-07 completed in `docs/IMPLEMENTATION_PLAN.md`.
+3. Start `P0-08 — Operations, migration, launch, and public roadmap`.
 
 ## Blocked
 
