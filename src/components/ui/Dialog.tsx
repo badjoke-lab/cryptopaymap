@@ -26,7 +26,11 @@ export function ModalDialog({
   defaultOpen,
   onOpenChange,
 }: ModalDialogProps) {
-  const rootProps = open === undefined ? { defaultOpen, onOpenChange } : { open, onOpenChange };
+  const rootProps = {
+    ...(open !== undefined ? { open } : {}),
+    ...(open === undefined && defaultOpen !== undefined ? { defaultOpen } : {}),
+    ...(onOpenChange !== undefined ? { onOpenChange } : {}),
+  };
 
   return (
     <DialogPrimitive.Root {...rootProps}>
