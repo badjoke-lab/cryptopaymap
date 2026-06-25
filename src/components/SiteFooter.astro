@@ -1,0 +1,29 @@
+---
+const links = [
+  { href: '/about', label: 'About' },
+  { href: '/methodology', label: 'Methodology' },
+  { href: '/sources-and-licenses', label: 'Sources & Licenses' },
+  { href: '/roadmap', label: 'Roadmap' },
+  { href: '/changelog', label: 'Changelog' },
+  { href: '/privacy', label: 'Privacy' },
+];
+---
+
+<footer class="border-t border-border bg-surface">
+  <div class="safe-area-inline page-container flex flex-col gap-4 py-6 text-sm text-muted md:flex-row md:items-center md:justify-between">
+    <p class="m-0">CryptoPayMap · Verified crypto payment discovery</p>
+    <nav aria-label="Footer">
+      <ul class="flex flex-wrap gap-x-4 gap-y-2">
+        {
+          links.map((item) => (
+            <li>
+              <a class="rounded-control underline-offset-4 hover:text-ink hover:underline" href={item.href}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</footer>
