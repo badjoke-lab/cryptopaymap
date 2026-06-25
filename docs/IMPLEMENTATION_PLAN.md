@@ -22,6 +22,8 @@ This document tracks public, repository-level implementation work. It is not the
 
 ## Phase 0 — Public specifications and development control
 
+**Status:** Completed
+
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
 | P0-01 | Development control | Completed | Repository bootstrap | [#1](https://github.com/badjoke-lab/cryptopaymap/pull/1) |
@@ -31,141 +33,239 @@ This document tracks public, repository-level implementation work. It is not the
 | P0-05 | Verification, sources, and licenses | Completed | P0-04 | [#6](https://github.com/badjoke-lab/cryptopaymap/pull/6) |
 | P0-06 | Submission and media policies | Completed | P0-04, P0-05 | [#7](https://github.com/badjoke-lab/cryptopaymap/pull/7) |
 | P0-07 | Technical, UX, security, and privacy architecture | Completed | P0-03, P0-04 | [#8](https://github.com/badjoke-lab/cryptopaymap/pull/8) |
-| P0-08 | Operations, migration, launch, and public roadmap | In progress | P0-03 through P0-07 | [#9](https://github.com/badjoke-lab/cryptopaymap/pull/9) |
+| P0-08 | Operations, migration, launch, and public roadmap | Completed | P0-03 through P0-07 | [#9](https://github.com/badjoke-lab/cryptopaymap/pull/9) |
 
-### P0-01 — Development control
+### Phase 0 completion criteria
 
-**Deliverables**
-
-- `AGENTS.md`
-- `docs/IMPLEMENTATION_PLAN.md`
-- `docs/PROJECT_STATUS.md`
-- `.github/pull_request_template.md`
-
-**Completion criteria**
-
-- The current phase and item can be identified immediately.
-- Pull requests can reference stable implementation item IDs.
-- The pull request template checks documentation synchronization and publication boundaries.
+- The public product scope and MVP boundary are defined.
+- Public routes and legacy redirects are defined.
+- Candidate, canonical, claim, evidence, submission, media, and public-export boundaries are defined.
+- Verification, source, attribution, and license policies are defined.
+- Submission and media review policies are defined.
+- Technical, mobile UX, security, privacy, accessibility, and performance architecture are defined.
+- Operations, migration, cutover, launch, public Roadmap, and product Changelog responsibilities are defined.
+- Repository development controls and public specification links are present.
 - No private planning documents are stored in the public repository.
-
-### P0-02 — Product constitution
-
-**Deliverables**
-
-- `docs/PRODUCT_SPEC.md`
-- `docs/MVP_SCOPE.md`
-
-**Completion criteria**
-
-- Product purpose, users, included payment cases, exclusions, and core principles are explicit.
-- Candidate records are defined as non-public.
-- MVP-A, MVP-B, and post-MVP boundaries are defined.
-- Sponsorship and verification are explicitly separated.
-
-### P0-03 — Information architecture
-
-**Deliverable**
-
-- `docs/INFORMATION_ARCHITECTURE.md`
-
-**Completion criteria**
-
-- Public routes and navigation are defined without route conflicts.
-- Places, Online Services, Stats, Updates, Roadmap, Changelog, and contribution flows have distinct roles.
-- Desktop and mobile discovery paths are documented.
-- Legacy redirects and migration behavior are defined.
-
-### P0-04 — Data architecture
-
-**Deliverable**
-
-- `docs/DATA_MODEL.md`
-
-**Completion criteria**
-
-- Source candidates, canonical records, claims, evidence, verification events, submissions, media, and legacy IDs are separated.
-- Claim status and submission workflow status are not conflated.
-- Payment route and payment method are separate fields.
-- Public and private visibility can be enforced by the model.
-
-### P0-05 — Verification, sources, and licenses
-
-**Deliverables**
-
-- `docs/VERIFICATION_POLICY.md`
-- `docs/SOURCE_AND_LICENSE_POLICY.md`
-
-**Completion criteria**
-
-- Evidence classes and confirmation requirements are explicit.
-- Direct payments without a known network cannot be confirmed.
-- Reconfirmation, stale, and ended behavior is defined.
-- OpenStreetMap and project-originated data can be attributed and licensed separately.
-
-### P0-06 — Submission and media policies
-
-**Deliverables**
-
-- `docs/SUBMISSION_WORKFLOW.md`
-- `docs/MEDIA_POLICY.md`
-
-**Completion criteria**
-
-- Submissions never update canonical public records automatically.
-- Partial approval, requests for information, and time-bounded holds are defined.
-- Evidence media, owner-verification material, and public gallery candidates are separated.
-- Rights, privacy review, retention, and deletion behavior are defined.
-
-### P0-07 — Technical, UX, security, and privacy architecture
-
-**Deliverables**
-
-- `docs/TECH_ARCHITECTURE.md`
-- `docs/SECURITY_AND_PRIVACY.md`
-
-**Completion criteria**
-
-- Static and interactive application responsibilities are separated.
-- Places is defined as one coordinated React application area.
-- Mobile app-shell, bottom-sheet, URL-state, browser-back, motion, and accessibility requirements are explicit.
-- Public exports cannot include private review or submission fields.
-
-### P0-08 — Operations, migration, launch, and public roadmap
-
-**Deliverables**
-
-- `docs/OPERATIONS.md`
-- `docs/MIGRATION_AND_CUTOVER.md`
-- `docs/LAUNCH_CRITERIA.md`
-- `docs/ROADMAP.md`
-
-**Completion criteria**
-
-- Review, reconfirmation, publishing, backup, migration, redirect, cutover, and rollback procedures are documented.
-- The public roadmap uses capability milestones rather than private numeric targets.
-- Product changelog and record updates have separate operating rules.
-- All Phase 0 documents cross-reference consistently.
 
 ## Phase 1 — Foundation
 
-Planned work includes:
+**Status:** In progress
 
-- Astro, React, and TypeScript foundation;
-- Tailwind and design tokens;
-- reusable UI primitives and motion tokens;
-- client-state and server-state boundaries;
-- schema, database, and validation foundations;
-- staging deployment and CI;
-- PWA manifest and accessibility baseline;
-- roadmap and changelog content loaders.
+| ID | Item | Status | Depends on | Pull request |
+|---|---|---|---|---|
+| P1-01 | Repository and application foundation | In progress | Phase 0 | — |
+| P1-02 | Tailwind, design tokens, and responsive application shell | Planned | P1-01 | — |
+| P1-03 | Reusable UI primitives and interaction states | Planned | P1-02 | — |
+| P1-04 | Motion tokens and reduced-motion behavior | Planned | P1-02, P1-03 | — |
+| P1-05 | Client, server, and URL-state boundaries | Planned | P1-01 | — |
+| P1-06 | Zod, Drizzle, and migration foundation | Planned | P1-01 | — |
+| P1-07 | CI and test foundation | Planned | P1-01 | — |
+| P1-08 | Cloudflare staging foundation | Planned | P1-01, P1-07 | — |
+| P1-09 | PWA manifest and installability baseline | Planned | P1-02 | — |
+| P1-10 | Accessibility baseline | Planned | P1-03, P1-04 | — |
+| P1-11 | Public Roadmap and Changelog content loaders | Planned | P1-01 | — |
+| P1-12 | Phase 1 integration and quality audit | Planned | P1-02 through P1-11 | — |
 
-**Phase completion criteria**
+### P1-01 — Repository and application foundation
 
-- A staging build is available.
-- Linting, type checking, tests, and builds run in CI as applicable.
-- The responsive application shell and bottom-sheet foundation exist.
-- No secrets or private planning documents are committed.
+**Deliverables**
+
+- Astro project foundation
+- React integration
+- TypeScript strict configuration
+- package scripts
+- source and public directory structure
+- development and production build commands
+- initial application entry and static page shell
+- environment-variable example without secrets
+
+**Completion criteria**
+
+- a clean checkout can install dependencies and run the documented development command;
+- the repository can produce a production build;
+- React is available only where interactive application behavior requires it;
+- TypeScript strict mode is enabled;
+- no secret or private configuration is committed;
+- the foundation follows the published technical architecture.
+
+### P1-02 — Tailwind, design tokens, and responsive application shell
+
+**Deliverables**
+
+- Tailwind integration
+- CSS custom-property tokens
+- typography, spacing, radius, state, and surface foundations
+- responsive site shell
+- mobile safe-area behavior
+
+**Completion criteria**
+
+- tokens support the documented visual system without hard-coding product states throughout components;
+- the shell works at the published breakpoints;
+- mobile controls can meet the documented touch-target requirements;
+- future dark-mode support is not blocked, but dark mode is not implemented.
+
+### P1-03 — Reusable UI primitives and interaction states
+
+**Deliverables**
+
+- buttons
+- inputs and selects
+- chips and badges
+- cards
+- dialog and sheet foundations
+- toast
+- skeleton
+- empty, loading, success, and error states
+
+**Completion criteria**
+
+- primitives are keyboard accessible;
+- status is not communicated by color alone;
+- components expose consistent focus behavior;
+- primitives are reusable by Places, submissions, and administration.
+
+### P1-04 — Motion tokens and reduced-motion behavior
+
+**Deliverables**
+
+- motion duration and easing tokens
+- reduced-motion utilities
+- base transitions for buttons, cards, sheets, and page changes
+
+**Completion criteria**
+
+- motion supports orientation and feedback rather than decoration;
+- reduced-motion users receive equivalent usable states;
+- map interaction is not blocked by animation.
+
+### P1-05 — Client, server, and URL-state boundaries
+
+**Deliverables**
+
+- TanStack Query foundation
+- Zustand foundation
+- URL search-parameter conventions
+- local-state guidance
+- serialization and restoration rules
+
+**Completion criteria**
+
+- server data, application UI state, shareable URL state, and local component state have distinct responsibilities;
+- future map/list/filter state can be restored through browser navigation;
+- private state is not placed in public URLs.
+
+### P1-06 — Zod, Drizzle, and migration foundation
+
+**Deliverables**
+
+- schema-validation foundation
+- Drizzle configuration
+- migration directory and scripts
+- database environment contract without credentials
+
+**Completion criteria**
+
+- migrations are reviewable as SQL;
+- runtime input validation can be shared by APIs and build tools;
+- public request paths are not forced to query the database directly;
+- no production database dependency is required for a static public build.
+
+### P1-07 — CI and test foundation
+
+**Deliverables**
+
+- formatting or linting
+- type checking
+- unit-test runner
+- production build validation
+- dependency-cache configuration
+
+**Completion criteria**
+
+- pull requests receive deterministic quality checks;
+- checks fail closed;
+- no check is reported as passed unless it ran successfully;
+- future component, end-to-end, accessibility, and data checks have defined extension points.
+
+### P1-08 — Cloudflare staging foundation
+
+**Deliverables**
+
+- Cloudflare-compatible build configuration
+- staging deployment contract
+- environment separation
+- cache and security-header baseline where applicable
+
+**Completion criteria**
+
+- staging can be deployed without production secrets;
+- production and preview configuration remain distinct;
+- deployment does not expose private administration or candidate data.
+
+### P1-09 — PWA manifest and installability baseline
+
+**Deliverables**
+
+- web app manifest
+- application name and theme metadata
+- icon placeholders or approved icons
+- standalone display and start URL
+
+**Completion criteria**
+
+- installability metadata validates;
+- the baseline does not cache stale payment data as a permanent offline truth;
+- advanced offline behavior remains outside this item.
+
+### P1-10 — Accessibility baseline
+
+**Deliverables**
+
+- semantic page shell
+- visible focus rules
+- keyboard-navigation baseline
+- reduced-motion integration
+- automated accessibility check foundation
+
+**Completion criteria**
+
+- the foundation supports WCAG 2.2 AA-oriented implementation;
+- map-only interaction is not assumed;
+- sheets and dialogs have an accessible focus strategy.
+
+### P1-11 — Public Roadmap and Changelog content loaders
+
+**Deliverables**
+
+- versioned Roadmap content source
+- Changelog content source
+- schema validation
+- static rendering contract
+
+**Completion criteria**
+
+- Roadmap and Changelog remain separate content types;
+- Roadmap content uses capability milestones rather than private numeric targets;
+- Changelog entries represent released product changes, not every pull request.
+
+### P1-12 — Phase 1 integration and quality audit
+
+**Deliverables**
+
+- integrated foundation review
+- build and CI verification
+- accessibility baseline review
+- publication-boundary audit
+- Phase 2 readiness record
+
+**Completion criteria**
+
+- a staging build is available or the documented staging path is proven;
+- linting, type checking, unit tests, and builds run in CI;
+- the responsive application shell and sheet foundation exist;
+- state, schema, deployment, and content foundations agree with the public architecture;
+- no secrets or private planning documents are committed.
 
 ## Phase 2 — Data core
 
