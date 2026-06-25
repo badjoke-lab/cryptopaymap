@@ -53,15 +53,19 @@ export function SelectField({
           aria-invalid={Boolean(error)}
           aria-describedby={describedBy}
           className={cn(
-            'flex min-h-11 w-full items-center justify-between gap-3 rounded-control border bg-surface px-3 py-2',
-            'text-left text-base text-ink shadow-sm focus:border-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-50',
+            'motion-feedback flex min-h-11 w-full items-center justify-between gap-3 rounded-control border bg-surface px-3 py-2',
+            'text-left text-base text-ink shadow-sm transition-[background-color,border-color,box-shadow,color]',
+            'focus:border-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-50',
             'data-[placeholder]:text-muted/70 disabled:cursor-not-allowed disabled:bg-canvas disabled:text-muted',
             error ? 'border-danger' : 'border-border',
           )}
         >
           <SelectPrimitive.Value placeholder={placeholder} />
           <SelectPrimitive.Icon asChild>
-            <ChevronDown aria-hidden="true" className="size-4 shrink-0 text-muted" />
+            <ChevronDown
+              aria-hidden="true"
+              className="motion-feedback size-4 shrink-0 text-muted transition-transform data-[state=open]:rotate-180"
+            />
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
 
@@ -69,7 +73,7 @@ export function SelectField({
           <SelectPrimitive.Content
             position="popper"
             sideOffset={6}
-            className="z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-card border border-border bg-surface p-1 shadow-panel"
+            className="cpm-dialog z-50 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-card border border-border bg-surface p-1 shadow-panel"
           >
             <SelectPrimitive.Viewport>
               {options.map((option) => (
@@ -78,7 +82,7 @@ export function SelectField({
                   value={option.value}
                   {...(option.disabled !== undefined ? { disabled: option.disabled } : {})}
                   className={cn(
-                    'relative flex min-h-10 cursor-default select-none items-center rounded-control py-2 pr-3 pl-9 text-sm text-ink outline-none',
+                    'motion-feedback relative flex min-h-10 cursor-default select-none items-center rounded-control py-2 pr-3 pl-9 text-sm text-ink outline-none transition-colors',
                     'data-[highlighted]:bg-brand-50 data-[highlighted]:text-brand-800',
                     'data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
                   )}
