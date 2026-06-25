@@ -66,6 +66,7 @@ The repository implementation plan is for development tracking. The public produ
 - [Technical architecture](docs/TECH_ARCHITECTURE.md)
 - [Design system foundation](docs/DESIGN_SYSTEM.md)
 - [Shared UI primitives](docs/UI_PRIMITIVES.md)
+- [Motion system](docs/MOTION_SYSTEM.md)
 - [Security and privacy architecture](docs/SECURITY_AND_PRIVACY.md)
 
 ### Operations and release
