@@ -1,4 +1,5 @@
 ---
+import { StateBoundaryDemo } from '../components/StateBoundaryDemo';
 import { UIFoundationDemo } from '../components/UIFoundationDemo';
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
@@ -18,13 +19,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="mt-8 flex flex-wrap gap-3">
           <a
-            class="inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white no-underline transition-colors hover:bg-brand-700"
+            class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white no-underline transition-colors hover:bg-brand-700"
             href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/PROJECT_STATUS.md"
           >
             Project status
           </a>
           <a
-            class="inline-flex min-h-11 items-center justify-center rounded-control border border-border bg-surface px-5 py-2.5 font-semibold text-ink no-underline transition-colors hover:bg-brand-50"
+            class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control border border-border bg-surface px-5 py-2.5 font-semibold text-ink no-underline transition-colors hover:bg-brand-50"
             href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/ROADMAP.md"
           >
             Public roadmap
@@ -40,9 +41,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <ul class="mt-4 grid gap-3 text-sm leading-6 text-muted">
           <li>Semantic design and status tokens</li>
           <li>Responsive shell and safe areas</li>
-          <li>Accessible fields and selection</li>
-          <li>Dialog, sheet, and toast foundations</li>
-          <li>Loading, empty, success, and error states</li>
+          <li>Accessible UI primitives</li>
+          <li>Reduced-motion-aware feedback</li>
+          <li>Separated query, UI, URL, and local state</li>
           <li>Reusable across public and admin surfaces</li>
         </ul>
       </aside>
@@ -50,6 +51,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     <div class="mt-12 lg:mt-16">
       <UIFoundationDemo client:load />
+    </div>
+
+    <div class="mt-16 border-t border-border pt-12 lg:mt-24 lg:pt-16">
+      <StateBoundaryDemo client:load />
     </div>
   </div>
 </BaseLayout>
