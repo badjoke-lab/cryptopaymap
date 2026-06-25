@@ -56,6 +56,10 @@ jobs:
         if: always()
         run: set -o pipefail && npm run build 2>&1 | tee validation-build.log
 
+      - name: Check staging artifact
+        if: always()
+        run: set -o pipefail && npm run staging:check 2>&1 | tee validation-staging.log
+
       - name: Upload staging artifact
         if: success()
         uses: actions/upload-artifact@v4
@@ -78,5 +82,6 @@ jobs:
             validation-database.log
             validation-test.log
             validation-build.log
+            validation-staging.log
           if-no-files-found: warn
           retention-days: 7
