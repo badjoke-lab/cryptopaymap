@@ -30,7 +30,19 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Check Astro and TypeScript
-        run: npm run check
+        run: set -o pipefail && npm run check 2>&1 | tee validation-check.log
 
       - name: Build static site
-        run: npm run build
+        if: always()
+        run: set -o pipefail && npm run build 2>&1 | tee validation-build.log
+
+      - name: Upload validation logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: foundation-validation-logs
+          path: |
+            validation-check.log
+            validation-build.log
+          if-no-files-found: warn
+          retention-days: 7
