@@ -30,8 +30,8 @@ This document tracks public, repository-level implementation work. It is not the
 | P0-04 | Data architecture | Completed | P0-02 | [#5](https://github.com/badjoke-lab/cryptopaymap/pull/5) |
 | P0-05 | Verification, sources, and licenses | Completed | P0-04 | [#6](https://github.com/badjoke-lab/cryptopaymap/pull/6) |
 | P0-06 | Submission and media policies | Completed | P0-04, P0-05 | [#7](https://github.com/badjoke-lab/cryptopaymap/pull/7) |
-| P0-07 | Technical, UX, security, and privacy architecture | In progress | P0-03, P0-04 | [#8](https://github.com/badjoke-lab/cryptopaymap/pull/8) |
-| P0-08 | Operations, migration, launch, and public roadmap | Planned | P0-03 through P0-07 | — |
+| P0-07 | Technical, UX, security, and privacy architecture | Completed | P0-03, P0-04 | [#8](https://github.com/badjoke-lab/cryptopaymap/pull/8) |
+| P0-08 | Operations, migration, launch, and public roadmap | In progress | P0-03 through P0-07 | [#9](https://github.com/badjoke-lab/cryptopaymap/pull/9) |
 
 ### P0-01 — Development control
 
