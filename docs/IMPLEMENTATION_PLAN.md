@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-06-25
+**Last updated:** 2026-06-26
 
 This document tracks public, repository-level implementation work. It is not the user-facing product roadmap and does not contain private operational planning.
 
@@ -26,8 +26,8 @@ This document tracks public, repository-level implementation work. It is not the
 |---|---|---|---|---|
 | P0-01 | Development control | Completed | Repository bootstrap | [#1](https://github.com/badjoke-lab/cryptopaymap/pull/1) |
 | P0-02 | Product constitution | Completed | P0-01 | [#3](https://github.com/badjoke-lab/cryptopaymap/pull/3) |
-| P0-03 | Information architecture | In progress | P0-02 | [#4](https://github.com/badjoke-lab/cryptopaymap/pull/4) |
-| P0-04 | Data architecture | Planned | P0-02 | — |
+| P0-03 | Information architecture | Completed | P0-02 | [#4](https://github.com/badjoke-lab/cryptopaymap/pull/4) |
+| P0-04 | Data architecture | In progress | P0-02 | [#5](https://github.com/badjoke-lab/cryptopaymap/pull/5) |
 | P0-05 | Verification, sources, and licenses | Planned | P0-04 | — |
 | P0-06 | Submission and media policies | Planned | P0-04, P0-05 | — |
 | P0-07 | Technical, UX, security, and privacy architecture | Planned | P0-03, P0-04 | — |
