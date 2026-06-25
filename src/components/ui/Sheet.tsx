@@ -69,7 +69,11 @@ export function Sheet({
 
           <div className="min-h-0 flex-1 overflow-y-auto px-5 py-5 sm:px-6 sm:py-6">{children}</div>
 
-          {footer ? <footer className="shrink-0 border-t border-border bg-canvas px-5 py-4 sm:px-6">{footer}</footer> : null}
+          {footer ? (
+            <footer className="shrink-0 border-t border-border bg-canvas px-5 py-4 sm:px-6">
+              {footer}
+            </footer>
+          ) : null}
 
           <DialogPrimitive.Close asChild>
             <button

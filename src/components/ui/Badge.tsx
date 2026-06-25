@@ -27,7 +27,9 @@ export function Badge({ tone = 'neutral', icon, className, children, ...props }:
       )}
       {...props}
     >
-      {icon ? <span className="inline-flex size-3.5 items-center justify-center">{icon}</span> : null}
+      {icon ? (
+        <span className="inline-flex size-3.5 items-center justify-center">{icon}</span>
+      ) : null}
       {children}
     </span>
   );

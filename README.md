@@ -26,8 +26,12 @@ Commands:
 ```bash
 npm ci
 npm run dev
+npm run format:check
+npm run lint
 npm run check
+npm run test
 npm run build
+npm run quality
 ```
 
 Copy `.env.example` to `.env` only when local configuration is required. Never commit credentials or production secrets.
@@ -61,7 +65,7 @@ The repository implementation plan is for development tracking. The public produ
 - [Submission workflow](docs/SUBMISSION_WORKFLOW.md)
 - [Media policy](docs/MEDIA_POLICY.md)
 
-### Technical, design, and security
+### Technical and design
 
 - [Technical architecture](docs/TECH_ARCHITECTURE.md)
 - [Design system foundation](docs/DESIGN_SYSTEM.md)
@@ -69,6 +73,7 @@ The repository implementation plan is for development tracking. The public produ
 - [Motion system](docs/MOTION_SYSTEM.md)
 - [State management](docs/STATE_MANAGEMENT.md)
 - [Database foundation](docs/DATABASE_FOUNDATION.md)
+- [Testing and quality](docs/TESTING.md)
 - [Security and privacy architecture](docs/SECURITY_AND_PRIVACY.md)
 
 ### Operations and release

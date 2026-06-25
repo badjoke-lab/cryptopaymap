@@ -46,7 +46,14 @@ export function SelectField({
   };
 
   return (
-    <FieldFrame id={id} label={label} hint={hint} error={error} optional={optional} className={className}>
+    <FieldFrame
+      id={id}
+      label={label}
+      hint={hint}
+      error={error}
+      optional={optional}
+      className={className}
+    >
       <SelectPrimitive.Root {...rootProps}>
         <SelectPrimitive.Trigger
           id={id}

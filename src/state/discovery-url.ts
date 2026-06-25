@@ -64,13 +64,15 @@ function readEnumList<T extends string>(
 ): T[] {
   const allowedValues = new Set<string>(allowed);
 
-  return [...new Set(
-    params
-      .getAll(key)
-      .flatMap((value) => value.split(','))
-      .map((value) => value.trim().toLowerCase())
-      .filter((value): value is T => allowedValues.has(value)),
-  )].sort();
+  return [
+    ...new Set(
+      params
+        .getAll(key)
+        .flatMap((value) => value.split(','))
+        .map((value) => value.trim().toLowerCase())
+        .filter((value): value is T => allowedValues.has(value)),
+    ),
+  ].sort();
 }
 
 function readFiniteNumber(params: URLSearchParams, key: string): number | null {
@@ -134,13 +136,36 @@ export function serializeDiscoveryUrlState(state: DiscoveryUrlState): URLSearchP
   const params = new URLSearchParams();
 
   if (state.search) params.set('q', normalizeSearch(state.search));
-  appendList(params, 'asset', state.assets.map((value) => normalizeSlug(value)).filter((value): value is string => value !== null));
-  appendList(params, 'network', state.networks.map((value) => normalizeSlug(value)).filter((value): value is string => value !== null));
-  appendList(params, 'category', state.categories.map((value) => normalizeSlug(value)).filter((value): value is string => value !== null));
-  appendList(params, 'route', state.routes.filter((value) => discoveryRouteFilters.includes(value)));
+  appendList(
+    params,
+    'asset',
+    state.assets
+      .map((value) => normalizeSlug(value))
+      .filter((value): value is string => value !== null),
+  );
+  appendList(
+    params,
+    'network',
+    state.networks
+      .map((value) => normalizeSlug(value))
+      .filter((value): value is string => value !== null),
+  );
+  appendList(
+    params,
+    'category',
+    state.categories
+      .map((value) => normalizeSlug(value))
+      .filter((value): value is string => value !== null),
+  );
+  appendList(
+    params,
+    'route',
+    state.routes.filter((value) => discoveryRouteFilters.includes(value)),
+  );
 
   const statuses = state.statuses.filter((value) => discoveryStatusFilters.includes(value));
-  if (!(statuses.length === 1 && statuses[0] === 'confirmed')) appendList(params, 'status', statuses);
+  if (!(statuses.length === 1 && statuses[0] === 'confirmed'))
+    appendList(params, 'status', statuses);
 
   if (state.viewport) {
     params.set('lat', String(round(clamp(state.viewport.latitude, -90, 90), 5)));
