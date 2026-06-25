@@ -58,7 +58,9 @@ export function ToastNotice({
     >
       <Icon aria-hidden="true" className={cn('mt-0.5 size-5', iconClassName)} />
       <div className="min-w-0">
-        <ToastPrimitive.Title className="text-sm font-semibold text-ink">{title}</ToastPrimitive.Title>
+        <ToastPrimitive.Title className="text-sm font-semibold text-ink">
+          {title}
+        </ToastPrimitive.Title>
         {description ? (
           <ToastPrimitive.Description className="mt-1 text-sm leading-5 text-muted">
             {description}

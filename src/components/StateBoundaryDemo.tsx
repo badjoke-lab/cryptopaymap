@@ -68,12 +68,16 @@ function StateBoundaryContent() {
     <section className="grid gap-6" aria-labelledby="state-boundary-title">
       <div className="max-w-3xl">
         <p className="m-0 text-sm font-semibold text-brand-700">P1-05 state ownership</p>
-        <h2 id="state-boundary-title" className="mt-1 text-3xl font-semibold tracking-tight text-ink">
+        <h2
+          id="state-boundary-title"
+          className="mt-1 text-3xl font-semibold tracking-tight text-ink"
+        >
           Each kind of state has one owner
         </h2>
         <p className="mt-3 text-base leading-7 text-muted">
-          Public fetched data is cached by TanStack Query. Shareable discovery state is encoded in the URL. Temporary
-          interface state remains in a per-island Zustand store and browser history state.
+          Public fetched data is cached by TanStack Query. Shareable discovery state is encoded in
+          the URL. Temporary interface state remains in a per-island Zustand store and browser
+          history state.
         </p>
       </div>
 
@@ -87,7 +91,11 @@ function StateBoundaryContent() {
               <Badge tone="brand" icon={<Database aria-hidden="true" className="size-3.5" />}>
                 TanStack Query
               </Badge>
-              <Button variant="secondary" onClick={() => void placeQuery.refetch()} loading={placeQuery.isFetching}>
+              <Button
+                variant="secondary"
+                onClick={() => void placeQuery.refetch()}
+                loading={placeQuery.isFetching}
+              >
                 <RefreshCw aria-hidden="true" className="size-4" />
                 Refresh public data
               </Button>
@@ -126,7 +134,9 @@ function StateBoundaryContent() {
                 {placeQuery.data.howToPay}
               </p>
               <Button variant="secondary" onClick={toggleSelectedPlace}>
-                {urlState.selectedPlace === placeQuery.data.slug ? 'Clear selected place' : 'Select public place'}
+                {urlState.selectedPlace === placeQuery.data.slug
+                  ? 'Clear selected place'
+                  : 'Select public place'}
               </Button>
             </div>
           )}
@@ -168,7 +178,9 @@ function StateBoundaryContent() {
                 <Link2 aria-hidden="true" className="size-4 text-brand-700" />
                 Canonical query string
               </p>
-              <code className="mt-2 block break-all text-xs leading-5 text-muted">{serializedState}</code>
+              <code className="mt-2 block break-all text-xs leading-5 text-muted">
+                {serializedState}
+              </code>
             </div>
           </div>
         </Card>
@@ -182,23 +194,33 @@ function StateBoundaryContent() {
       >
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="rounded-control bg-canvas p-4">
-            <p className="m-0 text-xs font-semibold uppercase tracking-wide text-muted">Bottom sheet</p>
+            <p className="m-0 text-xs font-semibold uppercase tracking-wide text-muted">
+              Bottom sheet
+            </p>
             <p className="mt-2 font-semibold text-ink">{bottomSheet}</p>
           </div>
           <div className="rounded-control bg-canvas p-4">
-            <p className="m-0 text-xs font-semibold uppercase tracking-wide text-muted">List scroll</p>
+            <p className="m-0 text-xs font-semibold uppercase tracking-wide text-muted">
+              List scroll
+            </p>
             <p className="mt-2 font-semibold text-ink">{Math.round(listScrollOffset)}px</p>
           </div>
           <div className="rounded-control bg-canvas p-4">
-            <p className="m-0 text-xs font-semibold uppercase tracking-wide text-muted">Selected public place</p>
-            <p className="mt-2 break-all font-semibold text-ink">{urlState.selectedPlace ?? 'none'}</p>
+            <p className="m-0 text-xs font-semibold uppercase tracking-wide text-muted">
+              Selected public place
+            </p>
+            <p className="mt-2 break-all font-semibold text-ink">
+              {urlState.selectedPlace ?? 'none'}
+            </p>
           </div>
         </div>
 
         <div className="mt-5 flex flex-wrap gap-3">
           <Button
             variant="secondary"
-            onClick={() => commitUiPatch({ bottomSheet: bottomSheet === 'expanded' ? 'peek' : 'expanded' })}
+            onClick={() =>
+              commitUiPatch({ bottomSheet: bottomSheet === 'expanded' ? 'peek' : 'expanded' })
+            }
           >
             Toggle sheet state
           </Button>

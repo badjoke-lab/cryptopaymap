@@ -8,16 +8,9 @@ export const acceptanceClaimStatusValues = [
   'rejected',
 ] as const;
 
-export const claimVisibilityValues = [
-  'public',
-  'hidden',
-  'temporarily_hidden',
-] as const;
+export const claimVisibilityValues = ['public', 'hidden', 'temporarily_hidden'] as const;
 
-export const routeTypeValues = [
-  'direct_wallet',
-  'processor_checkout',
-] as const;
+export const routeTypeValues = ['direct_wallet', 'processor_checkout'] as const;
 
 export const submissionWorkflowStatusValues = [
   'received',
@@ -46,10 +39,7 @@ export const acceptanceClaimStatusEnum = pgEnum(
   acceptanceClaimStatusValues,
 );
 
-export const claimVisibilityEnum = pgEnum(
-  'claim_visibility',
-  claimVisibilityValues,
-);
+export const claimVisibilityEnum = pgEnum('claim_visibility', claimVisibilityValues);
 
 export const routeTypeEnum = pgEnum('route_type', routeTypeValues);
 
@@ -58,7 +48,4 @@ export const submissionWorkflowStatusEnum = pgEnum(
   submissionWorkflowStatusValues,
 );
 
-export const submissionResolutionEnum = pgEnum(
-  'submission_resolution',
-  submissionResolutionValues,
-);
+export const submissionResolutionEnum = pgEnum('submission_resolution', submissionResolutionValues);

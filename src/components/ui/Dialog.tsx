@@ -55,7 +55,9 @@ export function ModalDialog({
 
           <div className="px-5 py-5 sm:px-6 sm:py-6">{children}</div>
 
-          {footer ? <footer className="border-t border-border bg-canvas px-5 py-4 sm:px-6">{footer}</footer> : null}
+          {footer ? (
+            <footer className="border-t border-border bg-canvas px-5 py-4 sm:px-6">{footer}</footer>
+          ) : null}
 
           <DialogPrimitive.Close asChild>
             <button

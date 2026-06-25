@@ -26,17 +26,20 @@ const assetSummaries = {
   btc: {
     label: 'BTC · Lightning',
     route: 'Direct wallet',
-    instruction: 'Ask staff to display a Lightning invoice, then scan the QR code with a compatible wallet.',
+    instruction:
+      'Ask staff to display a Lightning invoice, then scan the QR code with a compatible wallet.',
   },
   'usdc-base': {
     label: 'USDC · Base',
     route: 'Processor checkout',
-    instruction: 'Choose cryptocurrency at checkout, select USDC on Base, and complete the processor invoice.',
+    instruction:
+      'Choose cryptocurrency at checkout, select USDC on Base, and complete the processor invoice.',
   },
   xrp: {
     label: 'XRP · XRPL',
     route: 'Direct wallet',
-    instruction: 'Scan the XRPL payment request and verify the destination tag before signing in your wallet.',
+    instruction:
+      'Scan the XRPL payment request and verify the destination tag before signing in your wallet.',
   },
 } as const;
 
@@ -59,12 +62,15 @@ export function UIFoundationDemo() {
         <section className="grid gap-8" aria-labelledby="ui-foundation-title">
           <div className="max-w-3xl">
             <p className="m-0 text-sm font-semibold text-brand-700">P1-04 motion contract</p>
-            <h2 id="ui-foundation-title" className="mt-1 text-3xl font-semibold tracking-tight text-ink">
+            <h2
+              id="ui-foundation-title"
+              className="mt-1 text-3xl font-semibold tracking-tight text-ink"
+            >
               Motion explains state changes without delaying the task
             </h2>
             <p className="mt-3 text-base leading-7 text-muted">
-              Selection feedback, modal surfaces, notifications, and page navigation share one restrained timing system
-              and respect the operating system's reduced-motion preference.
+              Selection feedback, modal surfaces, notifications, and page navigation share one
+              restrained timing system and respect the operating system's reduced-motion preference.
             </p>
           </div>
 
@@ -98,7 +104,7 @@ export function UIFoundationDemo() {
                   onValueChange={handleAssetChange}
                   hint="Stablecoins always include their network."
                 />
-                <AnimatedSwap motionKey={asset} className="rounded-control bg-brand-50 p-4" >
+                <AnimatedSwap motionKey={asset} className="rounded-control bg-brand-50 p-4">
                   <p className="m-0 text-sm font-semibold text-brand-800">{selectedAsset.label}</p>
                   <p className="mt-1 text-sm text-muted">{selectedAsset.route}</p>
                   <p className="mt-3 text-sm leading-6 text-ink">{selectedAsset.instruction}</p>
@@ -129,8 +135,8 @@ export function UIFoundationDemo() {
                     }
                   >
                     <p className="m-0 text-sm leading-6 text-muted">
-                      The merchant's official payment page identifies Bitcoin Lightning at checkout and was reviewed
-                      recently.
+                      The merchant's official payment page identifies Bitcoin Lightning at checkout
+                      and was reviewed recently.
                     </p>
                   </ModalDialog>
 
@@ -169,7 +175,10 @@ export function UIFoundationDemo() {
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                  <Badge tone="confirmed" icon={<CircleCheck aria-hidden="true" className="size-3.5" />}>
+                  <Badge
+                    tone="confirmed"
+                    icon={<CircleCheck aria-hidden="true" className="size-3.5" />}
+                  >
                     Confirmed
                   </Badge>
                   <Badge tone="brand">BTC · Lightning</Badge>
@@ -177,7 +186,8 @@ export function UIFoundationDemo() {
                 </div>
 
                 <p className="m-0 rounded-control bg-canvas p-4 text-sm leading-6 text-muted">
-                  Ask staff to display a Lightning invoice, then scan the QR code with a compatible wallet.
+                  Ask staff to display a Lightning invoice, then scan the QR code with a compatible
+                  wallet.
                 </p>
               </div>
             </Card>
@@ -196,7 +206,10 @@ export function UIFoundationDemo() {
               }
             />
 
-            <div className="grid gap-4 rounded-card border border-border bg-surface p-5 sm:p-6" aria-label="Loading example">
+            <div
+              className="grid gap-4 rounded-card border border-border bg-surface p-5 sm:p-6"
+              aria-label="Loading example"
+            >
               <span className="sr-only">Loading example</span>
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-7 w-3/4" />

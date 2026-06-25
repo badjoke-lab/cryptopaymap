@@ -25,10 +25,18 @@ export function StatePanel({ tone, title, description, action, className }: Stat
 
   return (
     <section
-      className={cn('grid justify-items-center rounded-card border border-border bg-surface px-5 py-8 text-center', className)}
+      className={cn(
+        'grid justify-items-center rounded-card border border-border bg-surface px-5 py-8 text-center',
+        className,
+      )}
       aria-live={tone === 'loading' ? 'polite' : undefined}
     >
-      <span className={cn('inline-flex size-12 items-center justify-center rounded-pill', iconClassName)}>
+      <span
+        className={cn(
+          'inline-flex size-12 items-center justify-center rounded-pill',
+          iconClassName,
+        )}
+      >
         <Icon
           aria-hidden="true"
           className={cn('size-6', tone === 'loading' && 'animate-spin motion-reduce:animate-none')}

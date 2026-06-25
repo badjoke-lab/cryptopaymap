@@ -35,9 +35,7 @@ const checks = [
 const failures = checks.filter((result) => !result.success);
 
 if (failures.length > 0) {
-  const issues = failures.flatMap((failure) =>
-    failure.success ? [] : failure.error.issues,
-  );
+  const issues = failures.flatMap((failure) => (failure.success ? [] : failure.error.issues));
 
   throw new Error(`Runtime schema checks failed: ${JSON.stringify(issues)}`);
 }

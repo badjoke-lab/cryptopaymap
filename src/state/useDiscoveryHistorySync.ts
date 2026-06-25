@@ -9,10 +9,7 @@ import {
 import { mergeDiscoveryUrlState, type DiscoveryUrlState } from './discovery-url';
 
 export interface DiscoveryHistoryControls {
-  commitUrlPatch: (
-    patch: Partial<DiscoveryUrlState>,
-    mode?: DiscoveryHistoryMode,
-  ) => void;
+  commitUrlPatch: (patch: Partial<DiscoveryUrlState>, mode?: DiscoveryHistoryMode) => void;
   commitUiPatch: (patch: Partial<DiscoveryHistoryUiState>) => void;
 }
 
