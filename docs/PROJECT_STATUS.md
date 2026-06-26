@@ -7,13 +7,14 @@
 
 Phase 2 — Data core
 
-## Current implementation item
+## Current implementation items
 
-`P2-01 — Asset registry`
+`P2-01 — Asset registry`  
+`P2-02 — Network registry`
 
 ## Active pull request
 
-[#24 — P2-01: Add asset registry](https://github.com/badjoke-lab/cryptopaymap/pull/24)
+[#24 — P2-01/P2-02: Add asset and network registries](https://github.com/badjoke-lab/cryptopaymap/pull/24)
 
 ## Latest completed work
 
@@ -21,14 +22,15 @@ Phase 2 — Data core
 - P1-01 through P1-11 completed through pull requests #11 through #21.
 - P1-12 repository integration audit completed through pull request #22.
 
-## P2-01 in progress
+## P2-01 and P2-02 in progress
 
-- canonical asset lifecycle and type values
-- PostgreSQL asset table and reviewable migration
-- initial ten-asset registry
-- stable slug, symbol, name, alias, stablecoin, wrapped-asset, and decimal metadata
-- runtime validation and alias resolution
+- canonical asset and network lifecycle values
+- PostgreSQL asset and network tables with reviewable migrations
+- initial ten-asset and fourteen-network registries
+- stable slugs, canonical names, aliases, and runtime validation
+- XBT, LN, Bitcoin mainnet, TRC20, ERC20, and BSC normalization
 - explicit rule that an asset never implies a network
+- migration drift validation in GitHub Actions
 
 ## Cloudflare status
 
@@ -36,8 +38,8 @@ Live Cloudflare staging verification remains deferred because external access is
 
 ## Next
 
-1. Complete and merge P2-01.
-2. Start P2-02 network registry.
+1. Complete CI and merge pull request #24.
+2. Start P2-03 payment method and route registries.
 3. Continue Phase 2 work that requires only GitHub and repository CI.
 4. Return to pull request #23 when Cloudflare access becomes available.
 
