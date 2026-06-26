@@ -1,0 +1,167 @@
+verified-data-foundation:
+  section: now
+  order: 10
+  title: Verified data foundation
+  status: in_progress
+  lastUpdated: '2026-06-26'
+  outcome: Create a public data foundation that distinguishes reviewed acceptance from unverified source material and explains how a customer can attempt payment.
+  includes:
+    - Canonical merchants, places, and online services
+    - Explicit asset and network combinations
+    - Direct-wallet and processor-checkout routes
+    - Payment methods and How to pay instructions
+    - Evidence, confirmation dates, and history
+    - Confirmed, stale, and ended states
+    - Provenance and licensing
+    - Private candidate separation
+    - Validated public JSON and GeoJSON
+    - Protected review and publication workflow
+  dependsOn:
+    - Public data and verification contracts
+    - Canonical registries and database
+    - Review and publication validation
+
+core-discovery-experience:
+  section: next
+  order: 20
+  title: Core discovery experience
+  status: planned
+  lastUpdated: '2026-06-26'
+  outcome: Make verified physical places and online services easy to discover and understand on mobile and desktop.
+  includes:
+    - Home discovery entry
+    - Coordinated Places map and list
+    - Search this area
+    - Asset, network, category, route, and status filters
+    - Mobile Map and List modes
+    - Selected-place bottom sheet
+    - Shareable and restorable URL state
+    - Browser-back restoration
+    - Place and service details
+    - Stats, Updates, Roadmap, and Changelog
+    - Accessibility and performance baselines
+    - Installable web-app manifest
+  dependsOn:
+    - Verified data foundation
+    - Responsive application shell
+    - Public artifact delivery
+    - Mapping and accessibility implementation
+
+community-contribution-and-business-claims:
+  section: later
+  order: 30
+  title: Community contribution and business claims
+  status: planned
+  lastUpdated: '2026-06-26'
+  outcome: Allow customers and businesses to improve records without permitting automatic or unreviewed public edits.
+  includes:
+    - Suggestions
+    - Payment reports
+    - Problem and closure reports
+    - Business and service claims
+    - Ownership verification
+    - Photo submissions
+    - Private submission-status access
+    - Requests for information
+    - Time-bounded holds
+    - Field-level partial approval
+    - Media quarantine, rights review, privacy review, and public derivatives
+    - Canonical transaction and publication validation
+  dependsOn:
+    - Verified data foundation
+    - Core discovery experience
+    - Submission security
+    - Media processing
+    - Administration and audit workflow
+
+data-access-and-business-tools:
+  section: later
+  order: 40
+  title: Data access and business tools
+  status: planned
+  lastUpdated: '2026-06-26'
+  outcome: Make verified payment-acceptance data easier to reuse and make it easier for businesses to maintain accurate records.
+  includes:
+    - Documented public data files
+    - Stable schemas and versions
+    - Public change feeds
+    - Broader data-access options
+    - Business record maintenance
+    - Multi-location management
+    - Processor and wallet integration paths
+    - Clearly disclosed partnership surfaces independent from verification
+  dependsOn:
+    - Stable public schema
+    - Contribution and ownership workflows
+    - Authorization and audit controls
+    - Published data and license policy
+
+indirect-spending-guides:
+  section: exploring
+  order: 50
+  title: Indirect spending guides
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider separately labeled guides for card-funded spending, vouchers, and bill-payment intermediaries without treating them as direct merchant acceptance.
+  includes: []
+  dependsOn: []
+
+accounts-and-saved-places:
+  section: exploring
+  order: 60
+  title: Accounts and saved places
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider optional accounts, favorites, recently viewed records, and saved searches subject to privacy and data-minimization review.
+  includes: []
+  dependsOn: []
+
+notifications:
+  section: exploring
+  order: 70
+  title: Notifications
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider opt-in notices for changes to followed records or payment routes with clear consent and bounded retention.
+  includes: []
+  dependsOn: []
+
+multilingual-support:
+  section: exploring
+  order: 80
+  title: Multilingual support
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider reviewed translations without changing canonical identities or weakening verification.
+  includes: []
+  dependsOn: []
+
+regional-verification-collaboration:
+  section: exploring
+  order: 90
+  title: Regional verification collaboration
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider publicly disclosed collaboration that improves local evidence and reconfirmation under the same verification rules.
+  includes: []
+  dependsOn: []
+
+advanced-change-detection:
+  section: exploring
+  order: 100
+  title: Advanced change detection
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider tools that create private review candidates from approved public-source changes without automatic public updates.
+  includes: []
+  dependsOn: []
+
+limited-offline-support:
+  section: exploring
+  order: 110
+  title: Limited offline support
+  status: under_consideration
+  lastUpdated: '2026-06-26'
+  outcome: Consider an offline application shell and clearly dated recently viewed records without presenting old payment data as current.
+  includes: []
+  dependsOn: []
