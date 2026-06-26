@@ -15,12 +15,7 @@ import {
 import { claimVisibilityEnum } from './enums';
 import { entities } from './entities';
 
-export const locationStatusValues = [
-  'active',
-  'temporarily_closed',
-  'closed',
-  'unknown',
-] as const;
+export const locationStatusValues = ['active', 'temporarily_closed', 'closed', 'unknown'] as const;
 export const osmElementTypeValues = ['node', 'way', 'relation'] as const;
 
 export const locationStatusEnum = pgEnum('location_status', locationStatusValues);
