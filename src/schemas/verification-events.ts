@@ -17,6 +17,17 @@ const claimStatusSchema = z.enum(acceptanceClaimStatusValues);
 const claimVisibilitySchema = z.enum(claimVisibilityValues);
 const nullableClaimStatusSchema = claimStatusSchema.nullable();
 const nullableClaimVisibilitySchema = claimVisibilitySchema.nullable();
+const statusEventTypes = new Set<(typeof verificationEventTypeValues)[number]>([
+  'confirmed',
+  'reconfirmed',
+  'marked_stale',
+  'ended',
+  'restored',
+]);
+const visibilityEventTypes = new Set<(typeof verificationEventTypeValues)[number]>([
+  'hidden',
+  'unhidden',
+]);
 
 export const verificationEventInputSchema = z
   .object({
@@ -56,6 +67,42 @@ export const verificationEventInputSchema = z
         code: 'custom',
         path: ['actorId'],
         message: 'Operator events require an actor identifier.',
+      });
+    }
+
+    if (
+      statusEventTypes.has(event.eventType) &&
+      (event.fromVisibility !== null || event.toVisibility !== null)
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['toVisibility'],
+        message: 'Status events cannot also change visibility.',
+      });
+    }
+
+    if (
+      visibilityEventTypes.has(event.eventType) &&
+      (event.fromStatus !== null || event.toStatus !== null)
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['toStatus'],
+        message: 'Visibility events cannot also change verification status.',
+      });
+    }
+
+    if (
+      event.eventType === 'corrected' &&
+      (event.fromStatus !== null ||
+        event.toStatus !== null ||
+        event.fromVisibility !== null ||
+        event.toVisibility !== null)
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['eventType'],
+        message: 'Corrected events record metadata corrections and do not change claim state.',
       });
     }
 
