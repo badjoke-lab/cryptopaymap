@@ -112,7 +112,8 @@ if (findPaymentRouteCandidates('Direct wallet')[0]?.slug !== 'direct_wallet') {
   throw new Error('Payment route lookup failed.');
 }
 
-if (paymentMethodRegistry.some((method) => method.slug === 'direct_wallet')) {
+const methodSlugs = new Set<string>(paymentMethodRegistry.map((method) => method.slug));
+if (methodSlugs.has('direct_wallet')) {
   throw new Error('Payment methods must not contain route identifiers.');
 }
 
