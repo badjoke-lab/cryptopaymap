@@ -36,6 +36,13 @@
       "when": 1782491390151,
       "tag": "0004_aromatic_silvermane",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1782493497677,
+      "tag": "0005_goofy_spectrum",
+      "breakpoints": true
     }
   ]
 }
