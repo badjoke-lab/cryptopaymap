@@ -11,9 +11,9 @@ Phase 1 — Foundation
 
 `P1-12 — Phase 1 integration and quality audit`
 
-## Active work
+## Repository audit pull request
 
-P1-12 repository audit branch is active.
+[#22 — P1-12: Add Phase 1 integration audit](https://github.com/badjoke-lab/cryptopaymap/pull/22)
 
 ## Latest completed work
 
@@ -21,13 +21,13 @@ P1-12 repository audit branch is active.
 - P1-01 through P1-05 completed through pull requests #11 through #15.
 - P1-06 through P1-11 completed through pull requests #16 through #21.
 
-## P1-12 in progress
+## P1-12 repository checks
 
-- integrated foundation file and dependency checks
-- publication-boundary checks
-- generated artifact checks
-- CI and staging workflow integration
-- live staging checklist
+- integrated foundation file and dependency checks: passed
+- publication-boundary checks: passed
+- generated artifact checks: passed
+- formatting, linting, types, schemas, migrations, tests, build, accessibility, and staging checks: passed
+- deployable artifact upload: passed
 
 ## Cloudflare gate
 
@@ -35,8 +35,8 @@ Cloudflare staging should be connected now, after P1-11 and before P1-12 is clos
 
 ## Next
 
-1. Complete repository checks and open the P1-12 pull request.
-2. Provision and run Cloudflare staging.
+1. Merge the repository-side P1-12 audit.
+2. Provision and run Cloudflare staging from merged `main`.
 3. Record the live URL, commit, and verification result.
 4. Advance to Phase 2 only after both repository and live checks pass.
 
