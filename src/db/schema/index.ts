@@ -55,10 +55,10 @@ export const entities = pgTable('entities', {
   legalName: varchar('legal_name', { length: 200 }),
   websiteUrl: text('website_url'),
   countryCode: varchar('country_code', { length: 2 }),
+  entityStatus: entityStatusEnum('entity_status').default('active').notNull(),
 });
 
 void claimVisibilityEnum;
 void index;
-void text;
 void timestamp;
 void uniqueIndex;
