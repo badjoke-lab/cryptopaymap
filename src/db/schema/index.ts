@@ -11,5 +11,7 @@ export {
   submissionWorkflowStatusValues,
 } from './enums';
 export * from './assets';
+export * from './entities';
+export * from './locations';
 export * from './networks';
 export * from './payment-registries';

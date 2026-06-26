@@ -1,3 +1,4 @@
+import './check-canonical-identity';
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';
 import { findNetworkCandidates, networkRegistry } from '../src/registries/networks';
 import {
