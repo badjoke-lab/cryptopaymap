@@ -9,11 +9,11 @@ Phase 1 — Foundation
 
 ## Current implementation item
 
-`P1-09 — PWA manifest and installability baseline`
+`P1-10 — Accessibility baseline`
 
 ## Active pull request
 
-[#19 — P1-09: Add PWA manifest and installability baseline](https://github.com/badjoke-lab/cryptopaymap/pull/19)
+[#20 — P1-10: Add accessibility baseline and automated checks](https://github.com/badjoke-lab/cryptopaymap/pull/20)
 
 ## Latest completed work
 
@@ -22,23 +22,24 @@ Phase 1 — Foundation
 - P1-06 schema and migration foundation completed through pull request #16.
 - P1-07 CI and test foundation completed through pull request #17.
 - P1-08 Cloudflare staging foundation completed through pull request #18.
+- P1-09 PWA manifest and installability baseline completed through pull request #19.
 
-## P1-09 in progress
+## P1-10 in progress
 
-- scoped standalone web app manifest
-- standard and maskable application icons
-- shared manifest, icon, theme, and mobile metadata
-- staging artifact validation for PWA files
-- manifest and icon cache policy
-- installability and no-offline-cache tests
-- PWA scope and freshness documentation
+- focusable main landmark for skip-link navigation
+- build-time document and landmark validation
+- duplicate ID, focus-order, accessible-name, and form-label checks
+- field, dialog, and sheet accessibility tests
+- accessibility quality command integrated into preview, deployment, and CI
+- accessibility validation logs
+- keyboard, motion, status, form, map-alternative, and manual-review contract
 
 ## Next
 
-1. Complete all repository checks for pull request #19.
-2. Merge P1-09 without adding a service worker or offline payment-data cache.
-3. Start P1-10 accessibility baseline.
-4. Keep Cloudflare unconnected through P1-10 and P1-11.
+1. Complete all repository checks for pull request #20.
+2. Merge P1-10 after the accessibility artifact and component checks are green.
+3. Start P1-11 public Roadmap and Changelog content loaders.
+4. Keep Cloudflare unconnected through P1-11.
 5. Provision and verify the external staging project before closing P1-12.
 
 ## Blocked
