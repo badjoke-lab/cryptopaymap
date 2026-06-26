@@ -11,17 +11,15 @@ Phase 1 — Foundation
 
 `P1-12 — Phase 1 integration and quality audit`
 
-## Repository audit pull request
+## Repository audit
 
-[#22 — P1-12: Add Phase 1 integration audit](https://github.com/badjoke-lab/cryptopaymap/pull/22)
+PR #22 is merged at main commit `98efe4304d2c85509c2a4810a9d1313f7da201d1`.
 
-## Latest completed work
+## Active pull request
 
-- Phase 0 public specifications completed.
-- P1-01 through P1-05 completed through pull requests #11 through #15.
-- P1-06 through P1-11 completed through pull requests #16 through #21.
+[#23 — P1-12: Record live Cloudflare staging verification](https://github.com/badjoke-lab/cryptopaymap/pull/23)
 
-## P1-12 repository checks
+## Repository checks
 
 - integrated foundation file and dependency checks: passed
 - publication-boundary checks: passed
@@ -31,18 +29,19 @@ Phase 1 — Foundation
 
 ## Cloudflare gate
 
-Cloudflare staging should be connected now, after P1-11 and before P1-12 is closed. The live deployment result remains required for P1-12 completion.
+Cloudflare staging should be connected now. The live deployment result remains required for P1-12 completion.
 
 ## Next
 
-1. Merge the repository-side P1-12 audit.
-2. Provision and run Cloudflare staging from merged `main`.
-3. Record the live URL, commit, and verification result.
-4. Advance to Phase 2 only after both repository and live checks pass.
+1. Create the `cryptopaymap-staging` Pages project.
+2. Create the GitHub `staging` environment and configure the documented values.
+3. Run `Deploy staging` from merged `main`.
+4. Record the workflow, URL, commit, and verification results in PR #23.
+5. Merge PR #23 and advance to Phase 2.
 
 ## Blocked
 
-Repository work is not blocked. P1-12 completion awaits the external staging result.
+Repository work is complete. P1-12 awaits the external staging result.
 
 ## Verification rule
 

@@ -1,20 +1,51 @@
 # Phase 1 integration audit
 
-**Status:** In progress  
+**Status:** Live staging pending  
 **Item:** `P1-12`
 
 ## Repository results
 
-P1-01 through P1-11 are merged. Their application shell, UI primitives, motion, state boundaries, database foundation, CI, staging contract, PWA metadata, accessibility baseline, and public content loaders are present.
+P1-01 through P1-11 are merged. The repository-side P1-12 audit was merged through PR #22 at main commit `98efe4304d2c85509c2a4810a9d1313f7da201d1`.
 
-The automated audit checks required files, dependencies, commands, manifest settings, shared layout contracts, public content sources, staging workflow boundaries, public-build artifacts, and tracked-file publication boundaries.
+Formatting, linting, types, runtime schemas, migration history, tests, static build, accessibility checks, the integrated Phase 1 audit, staging artifact validation, and artifact upload passed before merge.
 
-## External staging gate
+## External staging setup
 
-Create the Cloudflare Pages project `cryptopaymap-staging` and a GitHub environment named `staging`. Add environment values named `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`, then manually run the `Deploy staging` workflow from merged `main`.
+Create:
 
-Record the deployment URL and commit SHA. Verify Home, Roadmap, Changelog, manifest, icons, response headers, keyboard focus, skip-link behavior, reduced motion, mobile viewport behavior, and the absence of private configuration in public files.
+```text
+Cloudflare Pages project: cryptopaymap-staging
+GitHub environment: staging
+Environment values:
+- CLOUDFLARE_API_TOKEN
+- CLOUDFLARE_ACCOUNT_ID
+```
+
+Then manually run `Deploy staging` from merged `main`.
+
+## Result record
+
+Complete these fields after deployment:
+
+```text
+Workflow run:
+Deployment URL:
+Deployed commit:
+Deployment time:
+```
+
+Verification:
+
+- [ ] Home loads successfully.
+- [ ] Roadmap loads and displays all public sections.
+- [ ] Changelog loads and displays the pre-release empty state.
+- [ ] Manifest and both application icons load.
+- [ ] Response security and cache headers are present.
+- [ ] Public files contain no private configuration values.
+- [ ] Skip-link and keyboard focus behavior work.
+- [ ] Reduced-motion behavior works.
+- [ ] Mobile viewport and safe-area behavior work.
 
 ## Completion rule
 
-P1-12 completes only after repository CI is green and the live staging deployment is recorded and checked. Until then, Phase 1 remains in progress and no live staging URL is claimed.
+P1-12 completes only after the result record and verification checklist are complete. Until then, Phase 1 remains in progress and no live staging URL is claimed.
