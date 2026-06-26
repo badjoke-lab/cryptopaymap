@@ -80,6 +80,7 @@ The repository implementation plan is for development tracking. The public produ
 - [Cloudflare staging](docs/CLOUDFLARE_STAGING.md)
 - [PWA baseline](docs/PWA.md)
 - [Accessibility baseline](docs/ACCESSIBILITY.md)
+- [Content loaders](docs/CONTENT_LOADERS.md)
 - [Security and privacy architecture](docs/SECURITY_AND_PRIVACY.md)
 
 ### Operations and release
@@ -95,4 +96,4 @@ Repository-wide working rules are defined in [AGENTS.md](AGENTS.md). Pull reques
 
 ## Current phase
 
-Phase 0 public specifications are complete. Phase 1 establishes the application foundation, development tooling, design system base, state-management boundaries, staging path, installability, accessibility, and quality checks.
+Phase 0 public specifications are complete. Phase 1 establishes the application foundation, design system, state boundaries, staging path, installability, accessibility, public content loaders, and quality checks.
