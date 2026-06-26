@@ -5,44 +5,45 @@
 
 ## Current phase
 
-Phase 1 — Foundation
+Phase 2 — Data core
 
 ## Current implementation item
 
-`P1-12 — Phase 1 integration and quality audit`
+`P2-01 — Asset registry`
 
-## Repository audit pull request
+## Active pull request
 
-[#22 — P1-12: Add Phase 1 integration audit](https://github.com/badjoke-lab/cryptopaymap/pull/22)
+[#24 — P2-01: Add asset registry](https://github.com/badjoke-lab/cryptopaymap/pull/24)
 
 ## Latest completed work
 
 - Phase 0 public specifications completed.
-- P1-01 through P1-05 completed through pull requests #11 through #15.
-- P1-06 through P1-11 completed through pull requests #16 through #21.
+- P1-01 through P1-11 completed through pull requests #11 through #21.
+- P1-12 repository integration audit completed through pull request #22.
 
-## P1-12 repository checks
+## P2-01 in progress
 
-- integrated foundation file and dependency checks: passed
-- publication-boundary checks: passed
-- generated artifact checks: passed
-- formatting, linting, types, schemas, migrations, tests, build, accessibility, and staging checks: passed
-- deployable artifact upload: passed
+- canonical asset lifecycle and type values
+- PostgreSQL asset table and reviewable migration
+- initial ten-asset registry
+- stable slug, symbol, name, alias, stablecoin, wrapped-asset, and decimal metadata
+- runtime validation and alias resolution
+- explicit rule that an asset never implies a network
 
-## Cloudflare gate
+## Cloudflare status
 
-Cloudflare staging should be connected now, after P1-11 and before P1-12 is closed. The live deployment result remains required for P1-12 completion.
+Live Cloudflare staging verification remains deferred because external access is unavailable. Draft pull request #23 preserves the verification record. This external task does not block Phase 2 repository and data-model work.
 
 ## Next
 
-1. Merge the repository-side P1-12 audit.
-2. Provision and run Cloudflare staging from merged `main`.
-3. Record the live URL, commit, and verification result.
-4. Advance to Phase 2 only after both repository and live checks pass.
+1. Complete and merge P2-01.
+2. Start P2-02 network registry.
+3. Continue Phase 2 work that requires only GitHub and repository CI.
+4. Return to pull request #23 when Cloudflare access becomes available.
 
 ## Blocked
 
-Repository work is not blocked. P1-12 completion awaits the external staging result.
+No repository blocker. Only live staging verification is deferred.
 
 ## Verification rule
 
