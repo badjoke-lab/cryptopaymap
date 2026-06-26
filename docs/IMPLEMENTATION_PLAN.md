@@ -61,8 +61,8 @@ Phase 2 establishes the Candidate-to-canonical-to-public-export path. It does no
 | P2-01 | Asset registry | Completed | Phase 1 repository audit | [#24](https://github.com/badjoke-lab/cryptopaymap/pull/24) |
 | P2-02 | Network registry | Completed | P2-01 | [#24](https://github.com/badjoke-lab/cryptopaymap/pull/24) |
 | P2-03 | Payment method and route registries | Completed | P2-01, P2-02 | [#25](https://github.com/badjoke-lab/cryptopaymap/pull/25) |
-| P2-04 | Entity and location schema | In progress | Phase 1 repository audit | [#26](https://github.com/badjoke-lab/cryptopaymap/pull/26) |
-| P2-05 | Acceptance claim schema and status rules | Planned | P2-03, P2-04 | — |
+| P2-04 | Entity and location schema | Completed | Phase 1 repository audit | [#26](https://github.com/badjoke-lab/cryptopaymap/pull/26) |
+| P2-05 | Acceptance claim schema and status rules | In progress | P2-03, P2-04 | [#29](https://github.com/badjoke-lab/cryptopaymap/pull/29) |
 | P2-06 | Claim asset and network combinations | Planned | P2-02, P2-03, P2-05 | — |
 | P2-07 | Evidence schema and source capture | Planned | P2-05 | — |
 | P2-08 | Verification event history | Planned | P2-05, P2-07 | — |
