@@ -114,7 +114,7 @@ CREATE TABLE "sources" (
 	CONSTRAINT "sources_attribution_nonempty" CHECK ("sources"."attribution_text" is null or length(trim("sources"."attribution_text")) > 0)
 );
 --> statement-breakpoint
-ALTER TABLE "evidence" ALTER COLUMN "license_id" SET DATA TYPE uuid;--> statement-breakpoint
+ALTER TABLE "evidence" ALTER COLUMN "license_id" SET DATA TYPE uuid USING "license_id"::uuid;--> statement-breakpoint
 ALTER TABLE "candidate_source_records" ADD CONSTRAINT "candidate_source_records_candidate_id_source_candidates_id_fk" FOREIGN KEY ("candidate_id") REFERENCES "public"."source_candidates"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "candidate_source_records" ADD CONSTRAINT "candidate_source_records_source_record_id_source_records_id_fk" FOREIGN KEY ("source_record_id") REFERENCES "public"."source_records"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "provenance_links" ADD CONSTRAINT "provenance_links_source_record_id_source_records_id_fk" FOREIGN KEY ("source_record_id") REFERENCES "public"."source_records"("id") ON DELETE restrict ON UPDATE no action;--> statement-breakpoint
