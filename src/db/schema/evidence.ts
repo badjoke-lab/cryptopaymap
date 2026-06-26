@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { check, index, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { acceptanceClaims } from './acceptance-claims';
+import { licenses, sourceRecords } from './source-provenance';
 
 export const evidenceKindValues = [
   'live_checkout',
@@ -68,7 +69,9 @@ export const evidence = pgTable(
     id: uuid('id').defaultRandom().primaryKey(),
     claimId: uuid('claim_id').references(() => acceptanceClaims.id, { onDelete: 'restrict' }),
     submissionId: uuid('submission_id'),
-    sourceRecordId: uuid('source_record_id'),
+    sourceRecordId: uuid('source_record_id').references(() => sourceRecords.id, {
+      onDelete: 'restrict',
+    }),
     evidenceKind: evidenceKindEnum('evidence_kind').notNull(),
     evidenceClass: evidenceClassEnum('evidence_class').notNull(),
     sourceType: evidenceSourceTypeEnum('source_type').notNull(),
@@ -85,7 +88,7 @@ export const evidence = pgTable(
     reviewStatus: evidenceReviewStatusEnum('review_status').default('pending').notNull(),
     archiveUrl: text('archive_url'),
     contentHash: varchar('content_hash', { length: 128 }),
-    licenseId: varchar('license_id', { length: 96 }),
+    licenseId: uuid('license_id').references(() => licenses.id, { onDelete: 'restrict' }),
     attribution: text('attribution'),
     independenceKey: varchar('independence_key', { length: 160 }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -99,6 +102,7 @@ export const evidence = pgTable(
     index('evidence_review_idx').on(table.reviewStatus, table.evidenceClass),
     index('evidence_observed_idx').on(table.observedAt),
     index('evidence_content_hash_idx').on(table.contentHash),
+    index('evidence_license_idx').on(table.licenseId),
     check(
       'evidence_parent_required',
       sql`${table.claimId} is not null or ${table.submissionId} is not null or ${table.sourceRecordId} is not null`,
