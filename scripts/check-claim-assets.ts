@@ -63,7 +63,9 @@ if (!claimAssetSetSchema.safeParse(claimAssetSet).success) {
   throw new Error('Valid claim asset set was rejected.');
 }
 
-if (validContexts.some((context) => !claimAssetPublicationContextSchema.safeParse(context).success)) {
+if (
+  validContexts.some((context) => !claimAssetPublicationContextSchema.safeParse(context).success)
+) {
   throw new Error('Valid claim asset publication context was rejected.');
 }
 
