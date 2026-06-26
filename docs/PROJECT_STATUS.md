@@ -8,11 +8,11 @@ Phase 2 — Data core
 
 ## Current implementation item
 
-P2-06 — Claim asset and network combinations
+P2-08 — Verification event history
 
 ## Active pull request
 
-[#30 — P2-06: Add claim asset and network combinations](https://github.com/badjoke-lab/cryptopaymap/pull/30)
+[#32 — P2-08: Add verification event history](https://github.com/badjoke-lab/cryptopaymap/pull/32)
 
 ## Latest completed work
 
@@ -20,14 +20,17 @@ P2-06 — Claim asset and network combinations
 - P2-03 completed through pull request #25.
 - P2-04 completed through pull request #26.
 - P2-05 completed through pull request #29.
+- P2-06 completed through pull request #30.
+- P2-07 completed through pull request #31.
 
-## P2-06 in progress
+## P2-08 in progress
 
-- explicit claim, asset, network, and payment-method combinations
-- duplicate prevention with and without contract addresses
-- one-primary-row database boundary
-- publication eligibility and route/method compatibility validation
-- case-preserving contract-address normalization
+- append-only verification-event and event-evidence tables
+- status and visibility transition constraints
+- machine-readable reason codes and effective times
+- operator, system, and import actor tracking
+- evidence-link requirements for verification decisions
+- ordered history replay and projection validation
 - reviewable migration, snapshot, and journal
 
 ## Cloudflare status
@@ -36,8 +39,8 @@ Live staging verification remains deferred in draft pull request #23 and does no
 
 ## Next
 
-1. Complete CI and merge pull request #30.
-2. Start P2-07 evidence schema and source capture.
+1. Complete CI and merge pull request #32.
+2. Start P2-09 source candidates, provenance, and duplicate boundaries.
 
 ## Blocked
 
