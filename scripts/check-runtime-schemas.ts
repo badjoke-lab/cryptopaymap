@@ -1,3 +1,5 @@
+import { assetRegistry, findAssetCandidates } from '../src/registries/assets';
+import { assetRegistryEntrySchema } from '../src/schemas/assets';
 import {
   acceptanceClaimStatusSchema,
   claimVisibilitySchema,
@@ -29,15 +31,24 @@ const checks = [
   submissionWorkflowStatusSchema.safeParse('in_review'),
   submissionResolutionSchema.safeParse('approved'),
   foundationPlaceSchema.safeParse(samplePlace),
+  assetRegistryEntrySchema.safeParse(assetRegistry[0]),
   optionalDatabaseEnvironmentSchema.safeParse({}),
 ];
 
 const failures = checks.filter((result) => !result.success);
+const uniqueSlugs = new Set(assetRegistry.map((asset) => asset.slug));
 
 if (failures.length > 0) {
   const issues = failures.flatMap((failure) => (failure.success ? [] : failure.error.issues));
-
   throw new Error(`Runtime schema checks failed: ${JSON.stringify(issues)}`);
+}
+
+if (assetRegistry.length !== 10 || uniqueSlugs.size !== assetRegistry.length) {
+  throw new Error('Asset registry must contain ten unique initial canonical assets.');
+}
+
+if (findAssetCandidates('XBT')[0]?.slug !== 'bitcoin') {
+  throw new Error('Asset alias resolution failed.');
 }
 
 console.log('Runtime schema checks passed.');
