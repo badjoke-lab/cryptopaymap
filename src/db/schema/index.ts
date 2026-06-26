@@ -52,6 +52,9 @@ export const entities = pgTable('entities', {
   kind: varchar('entity_type', { length: 32 }).notNull(),
   name: varchar('name', { length: 160 }).notNull(),
   slug: varchar('slug', { length: 64 }),
+  legalName: varchar('legal_name', { length: 200 }),
+  websiteUrl: text('website_url'),
+  countryCode: varchar('country_code', { length: 2 }),
 });
 
 void claimVisibilityEnum;
