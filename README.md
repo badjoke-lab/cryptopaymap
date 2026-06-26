@@ -31,7 +31,9 @@ npm run lint
 npm run check
 npm run test
 npm run build
+npm run staging:check
 npm run quality
+npm run pages:dev
 ```
 
 Copy `.env.example` to `.env` only when local configuration is required. Never commit credentials or production secrets.
@@ -74,6 +76,7 @@ The repository implementation plan is for development tracking. The public produ
 - [State management](docs/STATE_MANAGEMENT.md)
 - [Database foundation](docs/DATABASE_FOUNDATION.md)
 - [Testing and quality](docs/TESTING.md)
+- [Cloudflare staging](docs/CLOUDFLARE_STAGING.md)
 - [Security and privacy architecture](docs/SECURITY_AND_PRIVACY.md)
 
 ### Operations and release
