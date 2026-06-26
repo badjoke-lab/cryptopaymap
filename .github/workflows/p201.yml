@@ -1,23 +1,31 @@
-name: P201
+name: Migration drift
 
 on:
   pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read
 
 jobs:
-  generate:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
           node-version: 24.18.0
           cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm run db:generate
-      - uses: actions/upload-artifact@v4
-        with:
-          name: p201-drizzle
-          path: drizzle
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Regenerate migration metadata
+        run: npm run db:generate
+
+      - name: Reject uncommitted migration drift
+        run: git diff --exit-code -- drizzle
