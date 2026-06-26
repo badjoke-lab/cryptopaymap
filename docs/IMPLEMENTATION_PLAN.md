@@ -63,9 +63,9 @@ Phase 2 establishes the Candidate-to-canonical-to-public-export path. It does no
 | P2-03 | Payment method and route registries | Completed | P2-01, P2-02 | [#25](https://github.com/badjoke-lab/cryptopaymap/pull/25) |
 | P2-04 | Entity and location schema | Completed | Phase 1 repository audit | [#26](https://github.com/badjoke-lab/cryptopaymap/pull/26) |
 | P2-05 | Acceptance claim schema and status rules | Completed | P2-03, P2-04 | [#29](https://github.com/badjoke-lab/cryptopaymap/pull/29) |
-| P2-06 | Claim asset and network combinations | In progress | P2-02, P2-03, P2-05 | [#30](https://github.com/badjoke-lab/cryptopaymap/pull/30) |
-| P2-07 | Evidence schema and source capture | Planned | P2-05 | — |
-| P2-08 | Verification event history | Planned | P2-05, P2-07 | — |
+| P2-06 | Claim asset and network combinations | Completed | P2-02, P2-03, P2-05 | [#30](https://github.com/badjoke-lab/cryptopaymap/pull/30) |
+| P2-07 | Evidence schema and source capture | Completed | P2-05 | [#31](https://github.com/badjoke-lab/cryptopaymap/pull/31) |
+| P2-08 | Verification event history | In progress | P2-05, P2-07 | [#32](https://github.com/badjoke-lab/cryptopaymap/pull/32) |
 | P2-09 | Source candidates, provenance, and duplicate boundaries | Planned | P2-04, P2-07 | — |
 | P2-10 | Media metadata and legacy identifiers | Planned | P2-04, P2-09 | — |
 | P2-11 | Public export schemas | Planned | P2-05 through P2-10 | — |
