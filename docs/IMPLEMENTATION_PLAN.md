@@ -44,8 +44,8 @@ Phase 0 established the public product, route, data, verification, submission, m
 | P1-05 | Client, server, and URL-state boundaries | Completed | P1-01 | [#15](https://github.com/badjoke-lab/cryptopaymap/pull/15) |
 | P1-06 | Zod, Drizzle, and migration foundation | Completed | P1-01 | [#16](https://github.com/badjoke-lab/cryptopaymap/pull/16) |
 | P1-07 | CI and test foundation | Completed | P1-01 | [#17](https://github.com/badjoke-lab/cryptopaymap/pull/17) |
-| P1-08 | Cloudflare staging foundation | In progress | P1-01, P1-07 | [#18](https://github.com/badjoke-lab/cryptopaymap/pull/18) |
-| P1-09 | PWA manifest and installability baseline | Planned | P1-02 | — |
+| P1-08 | Cloudflare staging foundation | Completed | P1-01, P1-07 | [#18](https://github.com/badjoke-lab/cryptopaymap/pull/18) |
+| P1-09 | PWA manifest and installability baseline | In progress | P1-02 | [#19](https://github.com/badjoke-lab/cryptopaymap/pull/19) |
 | P1-10 | Accessibility baseline | Planned | P1-03, P1-04 | — |
 | P1-11 | Public Roadmap and Changelog content loaders | Planned | P1-01 | — |
 | P1-12 | Phase 1 integration and quality audit | Planned | P1-02 through P1-11 | — |
@@ -206,11 +206,16 @@ Provision the Cloudflare Pages staging project and GitHub `staging` environment 
 
 **Deliverables**
 
-- web app manifest, names, icons, theme metadata, standalone display, and start URL
+- scoped web app manifest
+- standard and maskable application icons
+- shared theme, icon, and installability metadata
+- artifact and unit-test validation
+- explicit no-service-worker freshness boundary
 
 **Completion criteria**
 
 - installability metadata validates;
+- the static artifact contains the manifest and declared icons;
 - stale payment data is not cached as permanent offline truth;
 - advanced offline behavior remains deferred.
 
