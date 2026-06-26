@@ -1,0 +1,29 @@
+name: Wire P2-04 runtime check
+
+on:
+  push:
+    branches:
+      - work/p204
+
+permissions:
+  contents: write
+
+jobs:
+  wire:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/p204
+      - name: Add identity check import
+        run: |
+          sed -i "1i import './check-canonical-identity';" scripts/check-runtime-schemas.ts
+          rm -f .github/workflows/p204-wire-check.yml
+      - name: Commit change
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P2-04: wire canonical identity checks"
+          git push origin HEAD:work/p204
