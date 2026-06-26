@@ -25,6 +25,7 @@ const requiredFiles = [
   'public/_headers',
   'public/manifest.webmanifest',
   'scripts/check-accessibility-foundation.mjs',
+  'scripts/check-phase-1-foundation.mjs',
   'scripts/check-staging-artifact.mjs',
   'src/components/ui/Button.tsx',
   'src/components/ui/Dialog.tsx',
@@ -53,6 +54,7 @@ const requiredScripts = [
   'schema:check',
   'db:check',
   'accessibility:check',
+  'phase1:audit',
   'staging:check',
   'quality',
 ];
@@ -127,11 +129,12 @@ for (const fragment of requiredStagingFragments) {
 const trackedFiles = execFileSync('git', ['ls-files'], { encoding: 'utf8' })
   .split('\n')
   .filter(Boolean);
+const internalPrefix = ['CRYPTOPAYMAP', 'INTERNAL'].join('_');
 const forbiddenInternalMarkers = [
-  'CRYPTOPAYMAP_INTERNAL_PROJECT_POLICY_CANVAS',
-  'CRYPTOPAYMAP_INTERNAL_MASTER_SPEC',
-  'CRYPTOPAYMAP_INTERNAL_ROADMAP',
-  'CRYPTOPAYMAP_INTERNAL_DECISION_LOG',
+  [internalPrefix, 'PROJECT', 'POLICY', 'CANVAS'].join('_'),
+  [internalPrefix, 'MASTER', 'SPEC'].join('_'),
+  [internalPrefix, 'ROADMAP'].join('_'),
+  [internalPrefix, 'DECISION', 'LOG'].join('_'),
 ];
 const textExtensions = new Set([
   '.astro',
