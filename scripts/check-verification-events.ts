@@ -34,11 +34,18 @@ if (!verificationDecisionInputSchema.safeParse(confirmedDecision).success) {
 const invalidEvents = [
   { ...confirmedEvent, fromStatus: 'stale' },
   { ...confirmedEvent, eventType: 'reconfirmed', fromStatus: 'candidate' },
+  { ...confirmedEvent, toVisibility: 'public' },
   {
     ...confirmedEvent,
     eventType: 'marked_stale',
     fromStatus: 'stale',
     toStatus: 'stale',
+  },
+  {
+    ...confirmedEvent,
+    eventType: 'hidden',
+    fromVisibility: 'public',
+    toVisibility: 'hidden',
   },
   {
     ...confirmedEvent,
@@ -56,6 +63,11 @@ const invalidEvents = [
     toStatus: null,
     publicSummary: null,
     internalNote: null,
+  },
+  {
+    ...confirmedEvent,
+    eventType: 'corrected',
+    internalNote: 'Corrected a metadata field.',
   },
 ];
 
