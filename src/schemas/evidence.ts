@@ -21,7 +21,10 @@ const nullableUuidSchema = z.uuid().nullable();
 const nullableTimestampSchema = z.iso.datetime({ offset: true }).nullable();
 const nullableWebUrlSchema = z
   .url()
-  .refine((value) => ['http:', 'https:'].includes(new URL(value).protocol), 'Use an HTTP or HTTPS URL.')
+  .refine(
+    (value) => ['http:', 'https:'].includes(new URL(value).protocol),
+    'Use an HTTP or HTTPS URL.',
+  )
   .nullable();
 
 const classAKinds = new Set<(typeof evidenceKindValues)[number]>([

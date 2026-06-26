@@ -1,14 +1,5 @@
 import { sql } from 'drizzle-orm';
-import {
-  check,
-  index,
-  pgEnum,
-  pgTable,
-  text,
-  timestamp,
-  uuid,
-  varchar,
-} from 'drizzle-orm/pg-core';
+import { check, index, pgEnum, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
 import { acceptanceClaims } from './acceptance-claims';
 
 export const evidenceKindValues = [
@@ -28,7 +19,12 @@ export const evidenceKindValues = [
   'other',
 ] as const;
 export const evidenceClassValues = ['a', 'b', 'c'] as const;
-export const evidenceReviewStatusValues = ['pending', 'accepted', 'rejected', 'superseded'] as const;
+export const evidenceReviewStatusValues = [
+  'pending',
+  'accepted',
+  'rejected',
+  'superseded',
+] as const;
 export const evidenceVisibilityValues = ['public', 'private', 'restricted'] as const;
 export const evidencePolarityValues = ['supporting', 'contradicting', 'neutral'] as const;
 export const evidenceOriginRoleValues = [
