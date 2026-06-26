@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { assetStatusValues, assetTypeValues } from '../db/schema/asset-enums';
+import { assetStatusValues, assetTypeValues } from '../db/schema/assets';
 import { publicSlugSchema } from './core';
 
 export const assetTypeSchema = z.enum(assetTypeValues);
