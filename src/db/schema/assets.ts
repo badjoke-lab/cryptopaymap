@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  pgEnum,
   pgTable,
   smallint,
   text,
@@ -9,7 +10,11 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
-import { assetStatusEnum, assetTypeEnum } from './asset-enums';
+
+export const assetTypeValues = ['native', 'token', 'other'] as const;
+export const assetStatusValues = ['active', 'deprecated'] as const;
+export const assetTypeEnum = pgEnum('asset_type', assetTypeValues);
+export const assetStatusEnum = pgEnum('asset_status', assetStatusValues);
 
 export const assets = pgTable(
   'assets',
