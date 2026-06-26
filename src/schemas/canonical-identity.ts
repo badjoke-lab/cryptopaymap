@@ -5,12 +5,7 @@ import {
   locationStatusValues,
   osmElementTypeValues,
 } from '../db/schema';
-import {
-  claimVisibilitySchema,
-  countryCodeSchema,
-  httpsUrlSchema,
-  publicSlugSchema,
-} from './core';
+import { claimVisibilitySchema, countryCodeSchema, httpsUrlSchema, publicSlugSchema } from './core';
 
 export const entityTypeSchema = z.enum(entityTypeValues);
 export const entityStatusSchema = z.enum(entityStatusValues);
