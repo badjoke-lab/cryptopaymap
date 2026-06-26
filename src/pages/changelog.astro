@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const releases = (await getCollection('changelog', ({ data }) => data.draft !== true)).sort(
+  (left, right) => right.data.publishedAt.localeCompare(left.data.publishedAt),
+);
+---
+
+<BaseLayout title="Changelog · CryptoPayMap" description="Released CryptoPayMap changes.">
+  <div class="safe-area-inline page-container py-12 sm:py-16 lg:py-20">
+    <header class="max-w-3xl">
+      <p class="m-0 text-sm font-semibold uppercase tracking-[0.12em] text-brand-700">Public Changelog</p>
+      <h1 class="mt-4 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Released product changes</h1>
+      <p class="mt-5 text-lg leading-8 text-muted">
+        This page records released product, policy, interface, security, and public data-contract changes.
+      </p>
+    </header>
+
+    {
+      releases.length === 0 ? (
+        <section class="mt-12 rounded-card border border-border bg-surface p-6 shadow-panel">
+          <h2 class="m-0 text-xl font-semibold text-ink">No public release entries yet</h2>
+          <p class="mt-3 text-base leading-7 text-muted">
+            This page begins when a product release is made available to users.
+          </p>
+        </section>
+      ) : (
+        <div class="mt-12 grid gap-8">
+          {releases.map((release) => (
+            <article class="rounded-card border border-border bg-surface p-6 shadow-panel">
+              <p class="m-0 text-sm font-semibold text-brand-700">Version {release.data.version}</p>
+              <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{release.data.summary}</h2>
+              <p class="mt-2 text-sm text-muted">Released {release.data.publishedAt}</p>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </div>
+</BaseLayout>
