@@ -9,40 +9,40 @@ Phase 1 — Foundation
 
 ## Current implementation item
 
-`P1-11 — Public Roadmap and Changelog content loaders`
+`P1-12 — Phase 1 integration and quality audit`
 
-## Active pull request
+## Repository audit pull request
 
-[#21 — P1-11: Add public Roadmap and Changelog content loaders](https://github.com/badjoke-lab/cryptopaymap/pull/21)
+[#22 — P1-12: Add Phase 1 integration audit](https://github.com/badjoke-lab/cryptopaymap/pull/22)
 
 ## Latest completed work
 
 - Phase 0 public specifications completed.
 - P1-01 through P1-05 completed through pull requests #11 through #15.
-- P1-06 completed through pull request #16.
-- P1-07 completed through pull request #17.
-- P1-08 completed through pull request #18.
-- P1-09 completed through pull request #19.
-- P1-10 completed through pull request #20.
+- P1-06 through P1-11 completed through pull requests #16 through #21.
 
-## P1-11 in progress
+## P1-12 repository checks
 
-- separate Roadmap and Changelog collections
-- structured Roadmap data and static page
-- validated Changelog metadata and static page
-- draft filtering and release-body rendering
-- content separation tests and documentation
+- integrated foundation file and dependency checks: passed
+- publication-boundary checks: passed
+- generated artifact checks: passed
+- formatting, linting, types, schemas, migrations, tests, build, accessibility, and staging checks: passed
+- deployable artifact upload: passed
+
+## Cloudflare gate
+
+Cloudflare staging should be connected now, after P1-11 and before P1-12 is closed. The live deployment result remains required for P1-12 completion.
 
 ## Next
 
-1. Complete checks and merge pull request #21.
-2. Connect the external Cloudflare staging project.
-3. Run the first staging deployment.
-4. Start P1-12 integration and quality audit.
+1. Merge the repository-side P1-12 audit.
+2. Provision and run Cloudflare staging from merged `main`.
+3. Record the live URL, commit, and verification result.
+4. Advance to Phase 2 only after both repository and live checks pass.
 
 ## Blocked
 
-None. Cloudflare connection begins after P1-11 is merged.
+Repository work is not blocked. P1-12 completion awaits the external staging result.
 
 ## Verification rule
 
