@@ -1,0 +1,30 @@
+{
+  "id": "/",
+  "name": "CryptoPayMap",
+  "short_name": "CryptoPayMap",
+  "description": "Find verified physical places and online services where cryptocurrency can be used at checkout.",
+  "lang": "en",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui", "browser"],
+  "orientation": "any",
+  "background_color": "#f8fafc",
+  "theme_color": "#0f766e",
+  "categories": ["navigation", "finance", "travel", "utilities"],
+  "icons": [
+    {
+      "src": "/icons/cryptopaymap.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/cryptopaymap-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

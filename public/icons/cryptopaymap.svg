@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="CryptoPayMap">
+  <rect width="512" height="512" rx="96" fill="#0f766e" />
+  <path d="M256 80c-88.4 0-160 70.4-160 157.3 0 119.5 137.8 190.6 151.5 197.4a19.2 19.2 0 0 0 17 0C278.2 427.9 416 356.8 416 237.3 416 150.4 344.4 80 256 80Z" fill="#ccfbf1" />
+  <circle cx="256" cy="232" r="82" fill="#0f766e" />
+  <path d="M220 206h78a30 30 0 0 1 0 60h-18m12-60-72 88m0-88h78a30 30 0 0 1 0 60h-78" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round" />
+</svg>
