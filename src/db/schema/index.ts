@@ -13,3 +13,5 @@ export {
 export * from './assets';
 export * from './networks';
 export * from './payment-registries';
+
+export const canonicalSchemaVersion = 1;
