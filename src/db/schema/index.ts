@@ -18,3 +18,4 @@ export * from './evidence';
 export * from './locations';
 export * from './networks';
 export * from './payment-registries';
+export * from './verification-events';
