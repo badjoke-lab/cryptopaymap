@@ -1,5 +1,5 @@
 {
-  "id": "8039d6af-be46-4614-9d92-8d9b467c0944",
+  "id": "e93c8e55-dcb8-4a89-a3c3-5c74e7ac6e87",
   "prevId": "1c3a0e86-7e8b-4bf5-b20b-4ba35866f8cb",
   "version": "7",
   "dialect": "postgresql",
@@ -1929,33 +1929,6 @@
         }
       },
       "indexes": {
-        "verification_event_evidence_relationship_unique": {
-          "name": "verification_event_evidence_relationship_unique",
-          "columns": [
-            {
-              "expression": "verification_event_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "evidence_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "relationship",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
         "verification_event_evidence_evidence_idx": {
           "name": "verification_event_evidence_evidence_idx",
           "columns": [
@@ -2196,9 +2169,25 @@
           "name": "verification_events_internal_note_nonempty",
           "value": "\"verification_events\".\"internal_note\" is null or length(trim(\"verification_events\".\"internal_note\")) > 0"
         },
+        "verification_events_operator_actor": {
+          "name": "verification_events_operator_actor",
+          "value": "\"verification_events\".\"actor_type\" <> 'operator' or \"verification_events\".\"actor_id\" is not null"
+        },
         "verification_events_transition_present": {
           "name": "verification_events_transition_present",
           "value": "\"verification_events\".\"to_status\" is not null or \"verification_events\".\"to_visibility\" is not null or \"verification_events\".\"event_type\" = 'corrected'"
+        },
+        "verification_events_status_event_shape": {
+          "name": "verification_events_status_event_shape",
+          "value": "\"verification_events\".\"event_type\" not in ('confirmed', 'reconfirmed', 'marked_stale', 'ended', 'restored') or (\"verification_events\".\"from_visibility\" is null and \"verification_events\".\"to_visibility\" is null)"
+        },
+        "verification_events_visibility_event_shape": {
+          "name": "verification_events_visibility_event_shape",
+          "value": "\"verification_events\".\"event_type\" not in ('hidden', 'unhidden') or (\"verification_events\".\"from_status\" is null and \"verification_events\".\"to_status\" is null)"
+        },
+        "verification_events_corrected_shape": {
+          "name": "verification_events_corrected_shape",
+          "value": "\"verification_events\".\"event_type\" <> 'corrected' or (\"verification_events\".\"from_status\" is null and \"verification_events\".\"to_status\" is null and \"verification_events\".\"from_visibility\" is null and \"verification_events\".\"to_visibility\" is null and (\"verification_events\".\"public_summary\" is not null or \"verification_events\".\"internal_note\" is not null))"
         },
         "verification_events_confirmed_transition": {
           "name": "verification_events_confirmed_transition",
