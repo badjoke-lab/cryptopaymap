@@ -14,6 +14,17 @@ function requireMatch(pattern, message) {
   }
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function hasAssociatedLabel(element) {
+  const id = element.match(/\bid=(["'])(.*?)\1/i)?.[2];
+  if (!id) return false;
+
+  return new RegExp(`<label\\b[^>]*\\bfor=["']${escapeRegExp(id)}["']`, 'i').test(html);
+}
+
 requireMatch(/<html\b[^>]*\blang=["']en["']/i, 'The document must declare an English language.');
 requireMatch(/<title>\s*[^<]+\s*<\/title>/i, 'The document must include a non-empty title.');
 requireMatch(
@@ -60,21 +71,15 @@ for (const button of html.match(/<button\b[^>]*>[\s\S]*?<\/button>/gi) ?? []) {
     .trim();
   const hasExplicitName = /\baria-(?:label|labelledby)=(["']).+?\1/i.test(openingTag);
 
-  if (!hasExplicitName && text.length === 0) {
+  if (!hasExplicitName && !hasAssociatedLabel(openingTag) && text.length === 0) {
     throw new Error(`Button is missing an accessible name: ${openingTag}`);
   }
 }
 
 for (const input of html.match(/<input\b[^>]*>/gi) ?? []) {
-  const id = input.match(/\bid=(["'])(.*?)\1/i)?.[2];
   const hasExplicitName = /\baria-(?:label|labelledby)=(["']).+?\1/i.test(input);
-  const hasAssociatedLabel = id
-    ? new RegExp(`<label\\b[^>]*\\bfor=["']${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}["']`, 'i').test(
-        html,
-      )
-    : false;
 
-  if (!hasExplicitName && !hasAssociatedLabel) {
+  if (!hasExplicitName && !hasAssociatedLabel(input)) {
     throw new Error(`Input is missing an accessible label: ${input}`);
   }
 }
