@@ -11,3 +11,4 @@ export {
   submissionWorkflowStatusValues,
 } from './enums';
 export * from './assets';
+export * from './networks';
