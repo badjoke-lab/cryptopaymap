@@ -10,3 +10,4 @@ export {
   submissionWorkflowStatusEnum,
   submissionWorkflowStatusValues,
 } from './enums';
+export { assets } from './assets';
