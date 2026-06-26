@@ -24,11 +24,7 @@ describe('accessibility foundation', () => {
     );
 
     rerender(
-      <TextField
-        id="business-name"
-        label="Business name"
-        error="Business name is required."
-      />,
+      <TextField id="business-name" label="Business name" error="Business name is required." />,
     );
 
     expect(input).toHaveAttribute('aria-invalid', 'true');
