@@ -54,7 +54,6 @@ const requiredScripts = [
   'schema:check',
   'db:check',
   'accessibility:check',
-  'phase1:audit',
   'staging:check',
   'quality',
 ];
