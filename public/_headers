@@ -9,3 +9,9 @@
 
 /data/*
   Cache-Control: public, max-age=300, must-revalidate
+
+/manifest.webmanifest
+  Cache-Control: public, max-age=300, must-revalidate
+
+/icons/*
+  Cache-Control: public, max-age=86400, must-revalidate
