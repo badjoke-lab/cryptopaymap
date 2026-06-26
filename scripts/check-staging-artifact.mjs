@@ -2,7 +2,14 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
 const outputDirectory = 'dist';
-const requiredFiles = ['index.html', '_headers', 'data/foundation-place.json'];
+const requiredFiles = [
+  'index.html',
+  '_headers',
+  'data/foundation-place.json',
+  'manifest.webmanifest',
+  'icons/cryptopaymap.svg',
+  'icons/cryptopaymap-maskable.svg',
+];
 
 for (const relativePath of requiredFiles) {
   const absolutePath = join(outputDirectory, relativePath);
@@ -26,7 +33,17 @@ for (const fragment of requiredHeaderFragments) {
   }
 }
 
-const textExtensions = new Set(['.css', '.html', '.js', '.json', '.map', '.svg', '.txt', '']);
+const textExtensions = new Set([
+  '.css',
+  '.html',
+  '.js',
+  '.json',
+  '.map',
+  '.svg',
+  '.txt',
+  '.webmanifest',
+  '',
+]);
 const forbiddenMarkers = ['CLOUDFLARE_API_TOKEN', 'CLOUDFLARE_ACCOUNT_ID', 'DATABASE_URL='];
 
 function scanDirectory(directory) {
