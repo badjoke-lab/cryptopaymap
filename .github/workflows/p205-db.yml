@@ -1,0 +1,20 @@
+name: P205 DB
+
+on:
+  push:
+    branches:
+      - work/p205
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/p205
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: bash scripts/commit-p205-db.sh
