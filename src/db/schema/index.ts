@@ -1,3 +1,5 @@
+import { pgEnum } from 'drizzle-orm/pg-core';
+
 export {
   acceptanceClaimStatusEnum,
   acceptanceClaimStatusValues,
@@ -14,4 +16,5 @@ export * from './assets';
 export * from './networks';
 export * from './payment-registries';
 
-export const canonicalSchemaVersion = 1;
+export const entityStatusValues = ['active', 'inactive', 'ended', 'unknown'] as const;
+export const entityStatusEnum = pgEnum('entity_status', entityStatusValues);
