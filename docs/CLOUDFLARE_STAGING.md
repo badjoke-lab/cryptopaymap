@@ -77,6 +77,12 @@ Only the names belong in repository documentation. Values remain in the GitHub e
 
 The API token should be limited to the Cloudflare account and permissions required for Pages deployment.
 
+## Provisioning timing
+
+Do not provision the external staging project during P1-08 repository work.
+
+Provision and connect Cloudflare only after P1-09, P1-10, and P1-11 are merged. Run the first credential-scoped staging deployment before P1-12 is closed. This timing gives the integration audit a representative PWA, accessibility, and content-loading surface while ordinary pull requests remain independent from Cloudflare credentials.
+
 ## Initial Pages project provisioning
 
 Before the first automated deployment, create the Pages project under the intended Cloudflare account.
