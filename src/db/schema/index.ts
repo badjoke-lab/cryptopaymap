@@ -1,4 +1,13 @@
-import { pgEnum, pgTable, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+  index,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
 export {
   acceptanceClaimStatusEnum,
@@ -37,6 +46,10 @@ export const entityStatusEnum = pgEnum('entity_status', entityStatusValues);
 export const locationStatusEnum = pgEnum('location_status', locationStatusValues);
 export const osmElementTypeEnum = pgEnum('osm_element_type', osmElementTypeValues);
 
+void index;
 void pgTable;
+void text;
+void timestamp;
+void uniqueIndex;
 void uuid;
 void varchar;
