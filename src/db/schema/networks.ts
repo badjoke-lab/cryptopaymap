@@ -1,4 +1,13 @@
-import { index, pgEnum, pgTable, text, timestamp, uniqueIndex, uuid, varchar } from 'drizzle-orm/pg-core';
+import {
+  index,
+  pgEnum,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+  varchar,
+} from 'drizzle-orm/pg-core';
 
 export const networkStatusValues = ['active', 'deprecated'] as const;
 export const networkStatusEnum = pgEnum('network_status', networkStatusValues);
