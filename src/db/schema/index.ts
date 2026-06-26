@@ -49,6 +49,7 @@ export const osmElementTypeEnum = pgEnum('osm_element_type', osmElementTypeValue
 
 export const entities = pgTable('entities', {
   id: uuid('id').defaultRandom().primaryKey(),
+  kind: varchar('entity_type', { length: 32 }).notNull(),
   name: varchar('name', { length: 160 }).notNull(),
   slug: varchar('slug', { length: 64 }),
 });
