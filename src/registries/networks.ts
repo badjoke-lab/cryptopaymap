@@ -1,7 +1,4 @@
-import {
-  networkRegistryEntrySchema,
-  type NetworkRegistryEntry,
-} from '../schemas/network-registry';
+import { networkRegistryEntrySchema, type NetworkRegistryEntry } from '../schemas/network-registry';
 
 const source = [
   { slug: 'bitcoin', name: 'Bitcoin', aliases: ['Bitcoin mainnet'], status: 'active' },
