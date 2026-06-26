@@ -56,9 +56,9 @@ export const entities = pgTable('entities', {
   websiteUrl: text('website_url'),
   countryCode: varchar('country_code', { length: 2 }),
   entityStatus: entityStatusEnum('entity_status').default('active').notNull(),
+  visibility: claimVisibilityEnum('visibility').default('hidden').notNull(),
 });
 
-void claimVisibilityEnum;
 void index;
 void timestamp;
 void uniqueIndex;
