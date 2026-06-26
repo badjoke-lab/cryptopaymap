@@ -43,6 +43,13 @@
       "when": 1782500727335,
       "tag": "0005_blue_thing",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1782501213507,
+      "tag": "0006_orange_sebastian_shaw",
+      "breakpoints": true
     }
   ]
 }
