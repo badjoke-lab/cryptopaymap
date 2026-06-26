@@ -50,11 +50,7 @@ export const verificationEventInputSchema = z
     actorId: z.uuid().nullable(),
   })
   .superRefine((event, context) => {
-    if (
-      event.toStatus === null &&
-      event.toVisibility === null &&
-      event.eventType !== 'corrected'
-    ) {
+    if (event.toStatus === null && event.toVisibility === null && event.eventType !== 'corrected') {
       context.addIssue({
         code: 'custom',
         path: ['eventType'],
@@ -235,9 +231,7 @@ export const verificationDecisionInputSchema = z
 
     if (
       ['marked_stale', 'ended'].includes(decision.event.eventType) &&
-      !decision.evidenceLinks.some((link) =>
-        ['basis', 'contradiction'].includes(link.relationship),
-      )
+      !decision.evidenceLinks.some((link) => ['basis', 'contradiction'].includes(link.relationship))
     ) {
       context.addIssue({
         code: 'custom',
@@ -270,7 +264,9 @@ export function projectClaimState(
       throw new Error('Verification event status history does not match the current projection.');
     }
     if (event.fromVisibility !== null && event.fromVisibility !== projection.visibility) {
-      throw new Error('Verification event visibility history does not match the current projection.');
+      throw new Error(
+        'Verification event visibility history does not match the current projection.',
+      );
     }
 
     if (event.toStatus !== null) {
