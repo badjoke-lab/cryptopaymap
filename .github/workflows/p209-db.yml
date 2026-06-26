@@ -3,7 +3,7 @@ name: P209 DB
 on:
   push:
     branches:
-      - work/p209
+      - work/p209-final
 
 permissions:
   contents: write
@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: work/p209
+          ref: work/p209-final
       - uses: actions/setup-node@v4
         with:
           node-version: 24.18.0
