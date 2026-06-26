@@ -47,11 +47,13 @@ export const entityStatusEnum = pgEnum('entity_status', entityStatusValues);
 export const locationStatusEnum = pgEnum('location_status', locationStatusValues);
 export const osmElementTypeEnum = pgEnum('osm_element_type', osmElementTypeValues);
 
+export const organizations = pgTable('organizations', {
+  id: uuid('id').defaultRandom().primaryKey(),
+  name: varchar('name', { length: 160 }).notNull(),
+});
+
 void claimVisibilityEnum;
 void index;
-void pgTable;
 void text;
 void timestamp;
 void uniqueIndex;
-void uuid;
-void varchar;
