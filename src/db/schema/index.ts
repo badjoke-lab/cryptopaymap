@@ -10,6 +10,7 @@ export {
   submissionWorkflowStatusEnum,
   submissionWorkflowStatusValues,
 } from './enums';
+export * from './acceptance-claims';
 export * from './assets';
 export * from './entities';
 export * from './locations';
