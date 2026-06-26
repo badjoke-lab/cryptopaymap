@@ -1,9 +1,13 @@
 ---
-import { getCollection } from 'astro:content';
+import { getCollection, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const releases = (await getCollection('changelog', ({ data }) => data.draft !== true)).sort(
+const publishedEntries = (await getCollection('changelog', ({ data }) => data.draft !== true)).sort(
   (left, right) => right.data.publishedAt.localeCompare(left.data.publishedAt),
+);
+
+const releases = await Promise.all(
+  publishedEntries.map(async (entry) => ({ entry, Content: (await render(entry)).Content })),
 );
 ---
 
@@ -27,11 +31,23 @@ const releases = (await getCollection('changelog', ({ data }) => data.draft !== 
         </section>
       ) : (
         <div class="mt-12 grid gap-8">
-          {releases.map((release) => (
+          {releases.map(({ entry, Content }) => (
             <article class="rounded-card border border-border bg-surface p-6 shadow-panel">
-              <p class="m-0 text-sm font-semibold text-brand-700">Version {release.data.version}</p>
-              <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{release.data.summary}</h2>
-              <p class="mt-2 text-sm text-muted">Released {release.data.publishedAt}</p>
+              <header class="border-b border-border pb-5">
+                <p class="m-0 text-sm font-semibold text-brand-700">Version {entry.data.version}</p>
+                <h2 class="mt-2 text-2xl font-semibold tracking-tight text-ink">{entry.data.summary}</h2>
+                <p class="mt-2 text-sm text-muted">Released {entry.data.publishedAt}</p>
+                <ul class="mt-4 flex flex-wrap gap-2" aria-label="Change categories">
+                  {entry.data.categories.map((category) => (
+                    <li class="rounded-pill bg-canvas px-3 py-1 text-xs font-semibold text-muted">
+                      {category}
+                    </li>
+                  ))}
+                </ul>
+              </header>
+              <div class="pt-5 text-base leading-7 text-muted">
+                <Content />
+              </div>
             </article>
           ))}
         </div>
