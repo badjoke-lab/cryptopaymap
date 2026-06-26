@@ -9,7 +9,8 @@ const routeSource = [
   {
     slug: 'direct_wallet',
     name: 'Direct wallet',
-    description: 'The customer sends cryptocurrency from a wallet without a processor checkout layer.',
+    description:
+      'The customer sends cryptocurrency from a wallet without a processor checkout layer.',
     status: 'active',
   },
   {
@@ -79,7 +80,9 @@ const methodSource = [
   },
 ] as const;
 
-export const paymentRouteRegistry = routeSource.map((entry) => paymentRouteRecordSchema.parse(entry));
+export const paymentRouteRegistry = routeSource.map((entry) =>
+  paymentRouteRecordSchema.parse(entry),
+);
 export const paymentMethodRegistry = methodSource.map((entry) =>
   paymentMethodRecordSchema.parse(entry),
 );
