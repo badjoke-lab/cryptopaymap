@@ -106,7 +106,10 @@ export const licenses = pgTable(
     check('licenses_slug_nonempty', sql`length(trim(${table.slug})) > 0`),
     check('licenses_name_nonempty', sql`length(trim(${table.name})) > 0`),
     check('licenses_url_nonempty', sql`${table.url} is null or length(trim(${table.url})) > 0`),
-    check('licenses_notes_nonempty', sql`${table.notes} is null or length(trim(${table.notes})) > 0`),
+    check(
+      'licenses_notes_nonempty',
+      sql`${table.notes} is null or length(trim(${table.notes})) > 0`,
+    ),
   ],
 );
 
@@ -253,10 +256,7 @@ export const sourceCandidates = pgTable(
       'source_candidates_priority_range',
       sql`${table.priority} is null or ${table.priority} between 0 and 1000`,
     ),
-    check(
-      'source_candidates_seen_order',
-      sql`${table.firstSeenAt} <= ${table.lastSeenAt}`,
-    ),
+    check('source_candidates_seen_order', sql`${table.firstSeenAt} <= ${table.lastSeenAt}`),
     check(
       'source_candidates_location_type',
       sql`${table.canonicalLocationId} is null or ${table.candidateType} = 'physical_place'`,

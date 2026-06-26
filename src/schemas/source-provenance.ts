@@ -22,7 +22,10 @@ const nullableUuidSchema = z.uuid().nullable();
 const nullableTimestampSchema = z.iso.datetime({ offset: true }).nullable();
 const webUrlSchema = z
   .url()
-  .refine((value) => ['http:', 'https:'].includes(new URL(value).protocol), 'Use an HTTP or HTTPS URL.');
+  .refine(
+    (value) => ['http:', 'https:'].includes(new URL(value).protocol),
+    'Use an HTTP or HTTPS URL.',
+  );
 const nullableWebUrlSchema = webUrlSchema.nullable();
 
 export const licenseInputSchema = z.object({
@@ -61,10 +64,7 @@ export const sourceLicenseContextSchema = z
       });
     }
 
-    if (
-      contextValue.source.defaultLicenseId === null &&
-      contextValue.defaultLicense !== null
-    ) {
+    if (contextValue.source.defaultLicenseId === null && contextValue.defaultLicense !== null) {
       context.addIssue({
         code: 'custom',
         path: ['source', 'defaultLicenseId'],
@@ -219,10 +219,7 @@ export const provenanceLinkInputSchema = z
       .trim()
       .min(1)
       .max(160)
-      .regex(
-        /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/,
-        'Use a lowercase dot-separated field path.',
-      )
+      .regex(/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/, 'Use a lowercase dot-separated field path.')
       .nullable(),
     sourceRecordId: z.uuid(),
     licenseId: nullableUuidSchema,
