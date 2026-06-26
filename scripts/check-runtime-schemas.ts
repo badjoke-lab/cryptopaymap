@@ -1,5 +1,11 @@
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';
 import { findNetworkCandidates, networkRegistry } from '../src/registries/networks';
+import {
+  findPaymentMethodCandidates,
+  findPaymentRouteCandidates,
+  paymentMethodRegistry,
+  paymentRouteRegistry,
+} from '../src/registries/payment';
 import { assetRegistryEntrySchema } from '../src/schemas/assets';
 import {
   acceptanceClaimStatusSchema,
@@ -12,6 +18,10 @@ import {
 } from '../src/schemas/core';
 import { optionalDatabaseEnvironmentSchema } from '../src/schemas/environment';
 import { networkRegistryEntrySchema } from '../src/schemas/network-registry';
+import {
+  paymentMethodRecordSchema,
+  paymentRouteRecordSchema,
+} from '../src/schemas/payment-registry-records';
 
 const samplePlace = {
   id: 'foundation-example-place',
@@ -35,12 +45,16 @@ const checks = [
   foundationPlaceSchema.safeParse(samplePlace),
   assetRegistryEntrySchema.safeParse(assetRegistry[0]),
   networkRegistryEntrySchema.safeParse(networkRegistry[0]),
+  paymentRouteRecordSchema.safeParse(paymentRouteRegistry[0]),
+  paymentMethodRecordSchema.safeParse(paymentMethodRegistry[0]),
   optionalDatabaseEnvironmentSchema.safeParse({}),
 ];
 
 const failures = checks.filter((result) => !result.success);
 const uniqueAssetSlugs = new Set(assetRegistry.map((asset) => asset.slug));
 const uniqueNetworkSlugs = new Set(networkRegistry.map((network) => network.slug));
+const uniqueRouteSlugs = new Set(paymentRouteRegistry.map((route) => route.slug));
+const uniqueMethodSlugs = new Set(paymentMethodRegistry.map((method) => method.slug));
 
 if (failures.length > 0) {
   const issues = failures.flatMap((failure) => (failure.success ? [] : failure.error.issues));
@@ -53,6 +67,14 @@ if (assetRegistry.length !== 10 || uniqueAssetSlugs.size !== assetRegistry.lengt
 
 if (networkRegistry.length !== 14 || uniqueNetworkSlugs.size !== networkRegistry.length) {
   throw new Error('Network registry must contain fourteen unique initial networks.');
+}
+
+if (paymentRouteRegistry.length !== 2 || uniqueRouteSlugs.size !== paymentRouteRegistry.length) {
+  throw new Error('Payment route registry must contain two unique routes.');
+}
+
+if (paymentMethodRegistry.length !== 8 || uniqueMethodSlugs.size !== paymentMethodRegistry.length) {
+  throw new Error('Payment method registry must contain eight unique methods.');
 }
 
 if (findAssetCandidates('XBT')[0]?.slug !== 'bitcoin') {
@@ -71,6 +93,28 @@ for (const [alias, expectedSlug] of networkAliases) {
   if (findNetworkCandidates(alias)[0]?.slug !== expectedSlug) {
     throw new Error(`Network alias resolution failed for ${alias}.`);
   }
+}
+
+const methodAliases = [
+  ['LN invoice', 'lightning_invoice'],
+  ['wallet QR code', 'wallet_qr'],
+  ['crypto POS', 'pos_terminal'],
+  ['pay link', 'payment_link'],
+] as const;
+
+for (const [alias, expectedSlug] of methodAliases) {
+  if (findPaymentMethodCandidates(alias)[0]?.slug !== expectedSlug) {
+    throw new Error(`Payment method alias resolution failed for ${alias}.`);
+  }
+}
+
+if (findPaymentRouteCandidates('Direct wallet')[0]?.slug !== 'direct_wallet') {
+  throw new Error('Payment route lookup failed.');
+}
+
+const methodSlugs = new Set<string>(paymentMethodRegistry.map((method) => method.slug));
+if (methodSlugs.has('direct_wallet')) {
+  throw new Error('Payment methods must not contain route identifiers.');
 }
 
 console.log('Runtime schema checks passed.');

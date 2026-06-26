@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   acceptanceClaimStatusValues,
   claimVisibilityValues,
+  paymentMethodValues,
   routeTypeValues,
   submissionResolutionValues,
   submissionWorkflowStatusValues,
@@ -30,18 +31,6 @@ export const claimVisibilitySchema = z.enum(claimVisibilityValues);
 export const routeTypeSchema = z.enum(routeTypeValues);
 export const submissionWorkflowStatusSchema = z.enum(submissionWorkflowStatusValues);
 export const submissionResolutionSchema = z.enum(submissionResolutionValues);
-
-export const paymentMethodValues = [
-  'onchain',
-  'lightning_invoice',
-  'lightning_nfc',
-  'wallet_qr',
-  'processor_checkout',
-  'pos_terminal',
-  'invoice',
-  'payment_link',
-] as const;
-
 export const paymentMethodSchema = z.enum(paymentMethodValues);
 
 export const foundationPlaceSchema = z.object({

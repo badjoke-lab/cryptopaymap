@@ -12,3 +12,4 @@ export {
 } from './enums';
 export * from './assets';
 export * from './networks';
+export * from './payment-registries';
