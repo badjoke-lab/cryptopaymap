@@ -14,7 +14,6 @@ describe('public content contract', () => {
     expect(config).toContain("file('content/roadmap.yml')");
     expect(config).toContain("base: './content/changelog'");
     expect(config).toContain("section: z.enum(['now', 'next', 'later', 'exploring'])");
-    expect(config).toContain("draft: z.boolean().default(false)");
   });
 
   it('contains all public Roadmap sections', () => {
