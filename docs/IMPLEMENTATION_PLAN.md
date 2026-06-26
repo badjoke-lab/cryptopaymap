@@ -42,9 +42,9 @@ Phase 0 established the public product, route, data, verification, submission, m
 | P1-03 | Reusable UI primitives and interaction states | Completed | P1-02 | [#13](https://github.com/badjoke-lab/cryptopaymap/pull/13) |
 | P1-04 | Motion tokens and reduced-motion behavior | Completed | P1-02, P1-03 | [#14](https://github.com/badjoke-lab/cryptopaymap/pull/14) |
 | P1-05 | Client, server, and URL-state boundaries | Completed | P1-01 | [#15](https://github.com/badjoke-lab/cryptopaymap/pull/15) |
-| P1-06 | Zod, Drizzle, and migration foundation | In progress | P1-01 | [#16](https://github.com/badjoke-lab/cryptopaymap/pull/16) |
-| P1-07 | CI and test foundation | Planned | P1-01 | — |
-| P1-08 | Cloudflare staging foundation | Planned | P1-01, P1-07 | — |
+| P1-06 | Zod, Drizzle, and migration foundation | Completed | P1-01 | [#16](https://github.com/badjoke-lab/cryptopaymap/pull/16) |
+| P1-07 | CI and test foundation | Completed | P1-01 | [#17](https://github.com/badjoke-lab/cryptopaymap/pull/17) |
+| P1-08 | Cloudflare staging foundation | In progress | P1-01, P1-07 | [#18](https://github.com/badjoke-lab/cryptopaymap/pull/18) |
 | P1-09 | PWA manifest and installability baseline | Planned | P1-02 | — |
 | P1-10 | Accessibility baseline | Planned | P1-03, P1-04 | — |
 | P1-11 | Public Roadmap and Changelog content loaders | Planned | P1-01 | — |
@@ -168,11 +168,12 @@ Phase 0 established the public product, route, data, verification, submission, m
 
 **Deliverables**
 
-- formatting or linting
+- deterministic formatting and linting
 - deterministic type checking and build validation
-- unit-test runner
+- unit and component-test runner
 - dependency caching
-- extension points for component, end-to-end, accessibility, and data checks
+- extension points for end-to-end, accessibility, and data checks
+- separately preserved validation logs
 
 **Completion criteria**
 
@@ -184,15 +185,22 @@ Phase 0 established the public product, route, data, verification, submission, m
 
 **Deliverables**
 
-- Cloudflare-compatible build and staging contract
+- Cloudflare-compatible static build and staging contract
 - preview/production environment separation
 - cache and security-header baseline
+- manual credential-scoped deployment workflow
+- validated and uploaded `dist` artifact
 
 **Completion criteria**
 
-- staging deploys without production secrets;
-- preview and production remain distinct;
-- no candidate, submission, or administration data is exposed.
+- repository checks and artifact creation require no Cloudflare credentials;
+- staging and production responsibilities remain distinct;
+- no candidate, submission, administration, database, or deployment secret is exposed;
+- live external staging provisioning may remain deferred until the Phase 1 staging verification gate.
+
+**External staging verification gate**
+
+Provision the Cloudflare Pages staging project and GitHub `staging` environment after P1-09 through P1-11 are merged. Run the first live deployment before P1-12 is closed so the integrated Phase 1 audit can verify the real Pages runtime without making ordinary pull requests depend on Cloudflare access.
 
 ### P1-09 — PWA manifest and installability baseline
 
@@ -243,6 +251,7 @@ Phase 0 established the public product, route, data, verification, submission, m
 - the responsive shell and sheet foundation exist;
 - linting, type checking, unit tests, and builds run in CI;
 - state, schema, deployment, and content foundations match the public architecture;
+- the first credential-scoped Cloudflare staging deployment has been verified or a documented external provisioning blocker is recorded;
 - no secrets or private planning documents are committed.
 
 ## Phase 2 — Data core
