@@ -1,0 +1,2538 @@
+{
+  "id": "8039d6af-be46-4614-9d92-8d9b467c0944",
+  "prevId": "1c3a0e86-7e8b-4bf5-b20b-4ba35866f8cb",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.acceptance_claims": {
+      "name": "acceptance_claims",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "entity_id": {
+          "name": "entity_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location_id": {
+          "name": "location_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "claim_scope": {
+          "name": "claim_scope",
+          "type": "claim_scope",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "route_type": {
+          "name": "route_type",
+          "type": "route_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "acceptance_scope": {
+          "name": "acceptance_scope",
+          "type": "acceptance_scope",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'all_checkout'"
+        },
+        "claim_status": {
+          "name": "claim_status",
+          "type": "acceptance_claim_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'candidate'"
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "claim_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'hidden'"
+        },
+        "customer_pays_crypto": {
+          "name": "customer_pays_crypto",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "merchant_explicitly_accepts_crypto": {
+          "name": "merchant_explicitly_accepts_crypto",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "processor_id": {
+          "name": "processor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "how_to_pay": {
+          "name": "how_to_pay",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "instructions_language": {
+          "name": "instructions_language",
+          "type": "varchar(35)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'en'"
+        },
+        "merchant_receives": {
+          "name": "merchant_receives",
+          "type": "merchant_receives",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'not_publicly_confirmed'"
+        },
+        "restrictions": {
+          "name": "restrictions",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "first_confirmed_at": {
+          "name": "first_confirmed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "last_confirmed_at": {
+          "name": "last_confirmed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "next_review_at": {
+          "name": "next_review_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ended_at": {
+          "name": "ended_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ended_reason": {
+          "name": "ended_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "acceptance_claims_entity_idx": {
+          "name": "acceptance_claims_entity_idx",
+          "columns": [
+            {
+              "expression": "entity_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "acceptance_claims_location_idx": {
+          "name": "acceptance_claims_location_idx",
+          "columns": [
+            {
+              "expression": "location_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "acceptance_claims_processor_idx": {
+          "name": "acceptance_claims_processor_idx",
+          "columns": [
+            {
+              "expression": "processor_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "acceptance_claims_status_idx": {
+          "name": "acceptance_claims_status_idx",
+          "columns": [
+            {
+              "expression": "claim_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "acceptance_claims_review_idx": {
+          "name": "acceptance_claims_review_idx",
+          "columns": [
+            {
+              "expression": "next_review_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "acceptance_claims_entity_id_entities_id_fk": {
+          "name": "acceptance_claims_entity_id_entities_id_fk",
+          "tableFrom": "acceptance_claims",
+          "tableTo": "entities",
+          "columnsFrom": [
+            "entity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "acceptance_claims_location_id_locations_id_fk": {
+          "name": "acceptance_claims_location_id_locations_id_fk",
+          "tableFrom": "acceptance_claims",
+          "tableTo": "locations",
+          "columnsFrom": [
+            "location_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "acceptance_claims_processor_id_entities_id_fk": {
+          "name": "acceptance_claims_processor_id_entities_id_fk",
+          "tableFrom": "acceptance_claims",
+          "tableTo": "entities",
+          "columnsFrom": [
+            "processor_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "acceptance_claims_location_scope": {
+          "name": "acceptance_claims_location_scope",
+          "value": "(\"acceptance_claims\".\"claim_scope\" = 'location_specific' and \"acceptance_claims\".\"location_id\" is not null) or (\"acceptance_claims\".\"claim_scope\" <> 'location_specific' and \"acceptance_claims\".\"location_id\" is null)"
+        },
+        "acceptance_claims_processor_route": {
+          "name": "acceptance_claims_processor_route",
+          "value": "\"acceptance_claims\".\"route_type\" <> 'processor_checkout' or \"acceptance_claims\".\"processor_id\" is not null"
+        },
+        "acceptance_claims_ended_timestamp": {
+          "name": "acceptance_claims_ended_timestamp",
+          "value": "\"acceptance_claims\".\"claim_status\" <> 'ended' or \"acceptance_claims\".\"ended_at\" is not null"
+        },
+        "acceptance_claims_confirmed_requirements": {
+          "name": "acceptance_claims_confirmed_requirements",
+          "value": "\"acceptance_claims\".\"claim_status\" <> 'confirmed' or (\"acceptance_claims\".\"how_to_pay\" is not null and length(trim(\"acceptance_claims\".\"how_to_pay\")) > 0 and \"acceptance_claims\".\"first_confirmed_at\" is not null and \"acceptance_claims\".\"last_confirmed_at\" is not null)"
+        },
+        "acceptance_claims_public_status": {
+          "name": "acceptance_claims_public_status",
+          "value": "\"acceptance_claims\".\"visibility\" <> 'public' or \"acceptance_claims\".\"claim_status\" in ('confirmed', 'stale', 'ended')"
+        },
+        "acceptance_claims_public_payment_flags": {
+          "name": "acceptance_claims_public_payment_flags",
+          "value": "\"acceptance_claims\".\"visibility\" <> 'public' or (\"acceptance_claims\".\"customer_pays_crypto\" = true and \"acceptance_claims\".\"merchant_explicitly_accepts_crypto\" = true)"
+        },
+        "acceptance_claims_confirmation_order": {
+          "name": "acceptance_claims_confirmation_order",
+          "value": "\"acceptance_claims\".\"first_confirmed_at\" is null or \"acceptance_claims\".\"last_confirmed_at\" is null or \"acceptance_claims\".\"first_confirmed_at\" <= \"acceptance_claims\".\"last_confirmed_at\""
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.claim_regions": {
+      "name": "claim_regions",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "claim_id": {
+          "name": "claim_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "country_code": {
+          "name": "country_code",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "region_code": {
+          "name": "region_code",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "inclusion_type": {
+          "name": "inclusion_type",
+          "type": "claim_region_inclusion",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "claim_regions_identity_unique": {
+          "name": "claim_regions_identity_unique",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "country_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "region_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "inclusion_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "claim_regions_claim_idx": {
+          "name": "claim_regions_claim_idx",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "claim_regions_claim_id_acceptance_claims_id_fk": {
+          "name": "claim_regions_claim_id_acceptance_claims_id_fk",
+          "tableFrom": "claim_regions",
+          "tableTo": "acceptance_claims",
+          "columnsFrom": [
+            "claim_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.assets": {
+      "name": "assets",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "symbol": {
+          "name": "symbol",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aliases": {
+          "name": "aliases",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "asset_type": {
+          "name": "asset_type",
+          "type": "asset_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_stablecoin": {
+          "name": "is_stablecoin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_wrapped": {
+          "name": "is_wrapped",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "default_decimals": {
+          "name": "default_decimals",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "asset_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "assets_slug_unique": {
+          "name": "assets_slug_unique",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "assets_symbol_idx": {
+          "name": "assets_symbol_idx",
+          "columns": [
+            {
+              "expression": "symbol",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "assets_status_idx": {
+          "name": "assets_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.claim_assets": {
+      "name": "claim_assets",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "claim_id": {
+          "name": "claim_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "asset_id": {
+          "name": "asset_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "network_id": {
+          "name": "network_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "payment_method_id": {
+          "name": "payment_method_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "contract_address": {
+          "name": "contract_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_primary": {
+          "name": "is_primary",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "claim_assets_without_contract_unique": {
+          "name": "claim_assets_without_contract_unique",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "asset_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "network_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "payment_method_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"claim_assets\".\"contract_address\" is null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "claim_assets_with_contract_unique": {
+          "name": "claim_assets_with_contract_unique",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "asset_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "network_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "payment_method_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "contract_address",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"claim_assets\".\"contract_address\" is not null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "claim_assets_primary_per_claim_unique": {
+          "name": "claim_assets_primary_per_claim_unique",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"claim_assets\".\"is_primary\" = true",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "claim_assets_claim_idx": {
+          "name": "claim_assets_claim_idx",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "claim_assets_asset_network_idx": {
+          "name": "claim_assets_asset_network_idx",
+          "columns": [
+            {
+              "expression": "asset_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "network_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "claim_assets_payment_method_idx": {
+          "name": "claim_assets_payment_method_idx",
+          "columns": [
+            {
+              "expression": "payment_method_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "claim_assets_claim_id_acceptance_claims_id_fk": {
+          "name": "claim_assets_claim_id_acceptance_claims_id_fk",
+          "tableFrom": "claim_assets",
+          "tableTo": "acceptance_claims",
+          "columnsFrom": [
+            "claim_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "claim_assets_asset_id_assets_id_fk": {
+          "name": "claim_assets_asset_id_assets_id_fk",
+          "tableFrom": "claim_assets",
+          "tableTo": "assets",
+          "columnsFrom": [
+            "asset_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "claim_assets_network_id_networks_id_fk": {
+          "name": "claim_assets_network_id_networks_id_fk",
+          "tableFrom": "claim_assets",
+          "tableTo": "networks",
+          "columnsFrom": [
+            "network_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "claim_assets_payment_method_id_payment_methods_id_fk": {
+          "name": "claim_assets_payment_method_id_payment_methods_id_fk",
+          "tableFrom": "claim_assets",
+          "tableTo": "payment_methods",
+          "columnsFrom": [
+            "payment_method_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "claim_assets_contract_address_nonempty": {
+          "name": "claim_assets_contract_address_nonempty",
+          "value": "\"claim_assets\".\"contract_address\" is null or length(trim(\"claim_assets\".\"contract_address\")) > 0"
+        },
+        "claim_assets_notes_nonempty": {
+          "name": "claim_assets_notes_nonempty",
+          "value": "\"claim_assets\".\"notes\" is null or length(trim(\"claim_assets\".\"notes\")) > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.entities": {
+      "name": "entities",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "entity_type": {
+          "name": "entity_type",
+          "type": "entity_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "legal_name": {
+          "name": "legal_name",
+          "type": "varchar(200)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "website_url": {
+          "name": "website_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "country_code": {
+          "name": "country_code",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "entity_status": {
+          "name": "entity_status",
+          "type": "entity_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "claim_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'hidden'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "entities_slug_unique": {
+          "name": "entities_slug_unique",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "entities_type_idx": {
+          "name": "entities_type_idx",
+          "columns": [
+            {
+              "expression": "entity_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "entities_status_idx": {
+          "name": "entities_status_idx",
+          "columns": [
+            {
+              "expression": "entity_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "entities_visibility_idx": {
+          "name": "entities_visibility_idx",
+          "columns": [
+            {
+              "expression": "visibility",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.evidence": {
+      "name": "evidence",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "claim_id": {
+          "name": "claim_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "submission_id": {
+          "name": "submission_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source_record_id": {
+          "name": "source_record_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "evidence_kind": {
+          "name": "evidence_kind",
+          "type": "evidence_kind",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_class": {
+          "name": "evidence_class",
+          "type": "evidence_class",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "source_type": {
+          "name": "source_type",
+          "type": "evidence_source_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "origin_role": {
+          "name": "origin_role",
+          "type": "evidence_origin_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "polarity": {
+          "name": "polarity",
+          "type": "evidence_polarity",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'supporting'"
+        },
+        "source_name": {
+          "name": "source_name",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source_url": {
+          "name": "source_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "source_native_id": {
+          "name": "source_native_id",
+          "type": "varchar(256)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "observed_at": {
+          "name": "observed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "fetched_at": {
+          "name": "fetched_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "evidence_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'private'"
+        },
+        "review_status": {
+          "name": "review_status",
+          "type": "evidence_review_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "archive_url": {
+          "name": "archive_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "content_hash": {
+          "name": "content_hash",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "license_id": {
+          "name": "license_id",
+          "type": "varchar(96)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "attribution": {
+          "name": "attribution",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "independence_key": {
+          "name": "independence_key",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "evidence_claim_idx": {
+          "name": "evidence_claim_idx",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "evidence_submission_idx": {
+          "name": "evidence_submission_idx",
+          "columns": [
+            {
+              "expression": "submission_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "evidence_source_record_idx": {
+          "name": "evidence_source_record_idx",
+          "columns": [
+            {
+              "expression": "source_record_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "evidence_review_idx": {
+          "name": "evidence_review_idx",
+          "columns": [
+            {
+              "expression": "review_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "evidence_class",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "evidence_observed_idx": {
+          "name": "evidence_observed_idx",
+          "columns": [
+            {
+              "expression": "observed_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "evidence_content_hash_idx": {
+          "name": "evidence_content_hash_idx",
+          "columns": [
+            {
+              "expression": "content_hash",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "evidence_claim_id_acceptance_claims_id_fk": {
+          "name": "evidence_claim_id_acceptance_claims_id_fk",
+          "tableFrom": "evidence",
+          "tableTo": "acceptance_claims",
+          "columnsFrom": [
+            "claim_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "evidence_parent_required": {
+          "name": "evidence_parent_required",
+          "value": "\"evidence\".\"claim_id\" is not null or \"evidence\".\"submission_id\" is not null or \"evidence\".\"source_record_id\" is not null"
+        },
+        "evidence_public_reviewed": {
+          "name": "evidence_public_reviewed",
+          "value": "\"evidence\".\"visibility\" <> 'public' or \"evidence\".\"review_status\" = 'accepted'"
+        },
+        "evidence_accepted_observation": {
+          "name": "evidence_accepted_observation",
+          "value": "\"evidence\".\"review_status\" <> 'accepted' or \"evidence\".\"evidence_class\" = 'c' or \"evidence\".\"observed_at\" is not null"
+        },
+        "evidence_accepted_b_independence": {
+          "name": "evidence_accepted_b_independence",
+          "value": "\"evidence\".\"review_status\" <> 'accepted' or \"evidence\".\"evidence_class\" <> 'b' or \"evidence\".\"independence_key\" is not null"
+        },
+        "evidence_summary_nonempty": {
+          "name": "evidence_summary_nonempty",
+          "value": "length(trim(\"evidence\".\"summary\")) > 0"
+        },
+        "evidence_source_name_nonempty": {
+          "name": "evidence_source_name_nonempty",
+          "value": "\"evidence\".\"source_name\" is null or length(trim(\"evidence\".\"source_name\")) > 0"
+        },
+        "evidence_source_url_nonempty": {
+          "name": "evidence_source_url_nonempty",
+          "value": "\"evidence\".\"source_url\" is null or length(trim(\"evidence\".\"source_url\")) > 0"
+        },
+        "evidence_archive_url_nonempty": {
+          "name": "evidence_archive_url_nonempty",
+          "value": "\"evidence\".\"archive_url\" is null or length(trim(\"evidence\".\"archive_url\")) > 0"
+        },
+        "evidence_content_hash_nonempty": {
+          "name": "evidence_content_hash_nonempty",
+          "value": "\"evidence\".\"content_hash\" is null or length(trim(\"evidence\".\"content_hash\")) > 0"
+        },
+        "evidence_independence_key_nonempty": {
+          "name": "evidence_independence_key_nonempty",
+          "value": "\"evidence\".\"independence_key\" is null or length(trim(\"evidence\".\"independence_key\")) > 0"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.locations": {
+      "name": "locations",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "entity_id": {
+          "name": "entity_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(160)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_line": {
+          "name": "address_line",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "locality": {
+          "name": "locality",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "region": {
+          "name": "region",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "postal_code": {
+          "name": "postal_code",
+          "type": "varchar(32)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "country_code": {
+          "name": "country_code",
+          "type": "varchar(2)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "latitude": {
+          "name": "latitude",
+          "type": "numeric(9, 6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "longitude": {
+          "name": "longitude",
+          "type": "numeric(10, 6)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "location_status": {
+          "name": "location_status",
+          "type": "location_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "visibility": {
+          "name": "visibility",
+          "type": "claim_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'hidden'"
+        },
+        "website_url": {
+          "name": "website_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "osm_type": {
+          "name": "osm_type",
+          "type": "osm_element_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "osm_id": {
+          "name": "osm_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "locations_slug_unique": {
+          "name": "locations_slug_unique",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "locations_osm_identity_unique": {
+          "name": "locations_osm_identity_unique",
+          "columns": [
+            {
+              "expression": "osm_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "osm_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"locations\".\"osm_type\" is not null and \"locations\".\"osm_id\" is not null",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "locations_entity_idx": {
+          "name": "locations_entity_idx",
+          "columns": [
+            {
+              "expression": "entity_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "locations_country_locality_idx": {
+          "name": "locations_country_locality_idx",
+          "columns": [
+            {
+              "expression": "country_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "locality",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "locations_status_idx": {
+          "name": "locations_status_idx",
+          "columns": [
+            {
+              "expression": "location_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "locations_visibility_idx": {
+          "name": "locations_visibility_idx",
+          "columns": [
+            {
+              "expression": "visibility",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "locations_entity_id_entities_id_fk": {
+          "name": "locations_entity_id_entities_id_fk",
+          "tableFrom": "locations",
+          "tableTo": "entities",
+          "columnsFrom": [
+            "entity_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "locations_latitude_range": {
+          "name": "locations_latitude_range",
+          "value": "\"locations\".\"latitude\" between -90 and 90"
+        },
+        "locations_longitude_range": {
+          "name": "locations_longitude_range",
+          "value": "\"locations\".\"longitude\" between -180 and 180"
+        },
+        "locations_osm_identity_pair": {
+          "name": "locations_osm_identity_pair",
+          "value": "(\"locations\".\"osm_type\" is null and \"locations\".\"osm_id\" is null) or (\"locations\".\"osm_type\" is not null and \"locations\".\"osm_id\" is not null)"
+        }
+      },
+      "isRLSEnabled": false
+    },
+    "public.networks": {
+      "name": "networks",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aliases": {
+          "name": "aliases",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "network_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "networks_slug_unique": {
+          "name": "networks_slug_unique",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "networks_status_idx": {
+          "name": "networks_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payment_methods": {
+      "name": "payment_methods",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "aliases": {
+          "name": "aliases",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "payment_registry_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "payment_methods_slug_unique": {
+          "name": "payment_methods_slug_unique",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payment_methods_status_idx": {
+          "name": "payment_methods_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.payment_routes": {
+      "name": "payment_routes",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "slug": {
+          "name": "slug",
+          "type": "route_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(120)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "payment_registry_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "payment_routes_slug_unique": {
+          "name": "payment_routes_slug_unique",
+          "columns": [
+            {
+              "expression": "slug",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "payment_routes_status_idx": {
+          "name": "payment_routes_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.verification_event_evidence": {
+      "name": "verification_event_evidence",
+      "schema": "",
+      "columns": {
+        "verification_event_id": {
+          "name": "verification_event_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "evidence_id": {
+          "name": "evidence_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relationship": {
+          "name": "relationship",
+          "type": "verification_evidence_relationship",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "verification_event_evidence_relationship_unique": {
+          "name": "verification_event_evidence_relationship_unique",
+          "columns": [
+            {
+              "expression": "verification_event_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "evidence_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "relationship",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "verification_event_evidence_evidence_idx": {
+          "name": "verification_event_evidence_evidence_idx",
+          "columns": [
+            {
+              "expression": "evidence_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "verification_event_evidence_verification_event_id_verification_events_id_fk": {
+          "name": "verification_event_evidence_verification_event_id_verification_events_id_fk",
+          "tableFrom": "verification_event_evidence",
+          "tableTo": "verification_events",
+          "columnsFrom": [
+            "verification_event_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "verification_event_evidence_evidence_id_evidence_id_fk": {
+          "name": "verification_event_evidence_evidence_id_evidence_id_fk",
+          "tableFrom": "verification_event_evidence",
+          "tableTo": "evidence",
+          "columnsFrom": [
+            "evidence_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "verification_event_evidence_pk": {
+          "name": "verification_event_evidence_pk",
+          "columns": [
+            "verification_event_id",
+            "evidence_id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.verification_events": {
+      "name": "verification_events",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "claim_id": {
+          "name": "claim_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "event_type": {
+          "name": "event_type",
+          "type": "verification_event_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "from_status": {
+          "name": "from_status",
+          "type": "acceptance_claim_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "to_status": {
+          "name": "to_status",
+          "type": "acceptance_claim_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "from_visibility": {
+          "name": "from_visibility",
+          "type": "claim_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "to_visibility": {
+          "name": "to_visibility",
+          "type": "claim_visibility",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "reason_code": {
+          "name": "reason_code",
+          "type": "varchar(96)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "effective_at": {
+          "name": "effective_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "public_summary": {
+          "name": "public_summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "internal_note": {
+          "name": "internal_note",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "actor_type": {
+          "name": "actor_type",
+          "type": "verification_actor_type",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'operator'"
+        },
+        "actor_id": {
+          "name": "actor_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "verification_events_claim_effective_idx": {
+          "name": "verification_events_claim_effective_idx",
+          "columns": [
+            {
+              "expression": "claim_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "effective_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "verification_events_type_idx": {
+          "name": "verification_events_type_idx",
+          "columns": [
+            {
+              "expression": "event_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "verification_events_reason_idx": {
+          "name": "verification_events_reason_idx",
+          "columns": [
+            {
+              "expression": "reason_code",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "verification_events_claim_id_acceptance_claims_id_fk": {
+          "name": "verification_events_claim_id_acceptance_claims_id_fk",
+          "tableFrom": "verification_events",
+          "tableTo": "acceptance_claims",
+          "columnsFrom": [
+            "claim_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {
+        "verification_events_reason_nonempty": {
+          "name": "verification_events_reason_nonempty",
+          "value": "length(trim(\"verification_events\".\"reason_code\")) > 0"
+        },
+        "verification_events_public_summary_nonempty": {
+          "name": "verification_events_public_summary_nonempty",
+          "value": "\"verification_events\".\"public_summary\" is null or length(trim(\"verification_events\".\"public_summary\")) > 0"
+        },
+        "verification_events_internal_note_nonempty": {
+          "name": "verification_events_internal_note_nonempty",
+          "value": "\"verification_events\".\"internal_note\" is null or length(trim(\"verification_events\".\"internal_note\")) > 0"
+        },
+        "verification_events_transition_present": {
+          "name": "verification_events_transition_present",
+          "value": "\"verification_events\".\"to_status\" is not null or \"verification_events\".\"to_visibility\" is not null or \"verification_events\".\"event_type\" = 'corrected'"
+        },
+        "verification_events_confirmed_transition": {
+          "name": "verification_events_confirmed_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'confirmed' or (\"verification_events\".\"to_status\" = 'confirmed' and (\"verification_events\".\"from_status\" is null or \"verification_events\".\"from_status\" = 'candidate'))"
+        },
+        "verification_events_reconfirmed_transition": {
+          "name": "verification_events_reconfirmed_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'reconfirmed' or (\"verification_events\".\"from_status\" = 'confirmed' and \"verification_events\".\"to_status\" = 'confirmed')"
+        },
+        "verification_events_stale_transition": {
+          "name": "verification_events_stale_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'marked_stale' or (\"verification_events\".\"from_status\" = 'confirmed' and \"verification_events\".\"to_status\" = 'stale')"
+        },
+        "verification_events_ended_transition": {
+          "name": "verification_events_ended_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'ended' or (\"verification_events\".\"from_status\" in ('confirmed', 'stale') and \"verification_events\".\"to_status\" = 'ended')"
+        },
+        "verification_events_restored_transition": {
+          "name": "verification_events_restored_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'restored' or (\"verification_events\".\"from_status\" = 'stale' and \"verification_events\".\"to_status\" = 'confirmed')"
+        },
+        "verification_events_hidden_transition": {
+          "name": "verification_events_hidden_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'hidden' or (\"verification_events\".\"to_visibility\" in ('hidden', 'temporarily_hidden') and (\"verification_events\".\"from_visibility\" is null or \"verification_events\".\"from_visibility\" = 'public'))"
+        },
+        "verification_events_unhidden_transition": {
+          "name": "verification_events_unhidden_transition",
+          "value": "\"verification_events\".\"event_type\" <> 'unhidden' or (\"verification_events\".\"from_visibility\" in ('hidden', 'temporarily_hidden') and \"verification_events\".\"to_visibility\" = 'public')"
+        }
+      },
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {
+    "public.acceptance_claim_status": {
+      "name": "acceptance_claim_status",
+      "schema": "public",
+      "values": [
+        "candidate",
+        "confirmed",
+        "stale",
+        "ended",
+        "rejected"
+      ]
+    },
+    "public.claim_visibility": {
+      "name": "claim_visibility",
+      "schema": "public",
+      "values": [
+        "public",
+        "hidden",
+        "temporarily_hidden"
+      ]
+    },
+    "public.route_type": {
+      "name": "route_type",
+      "schema": "public",
+      "values": [
+        "direct_wallet",
+        "processor_checkout"
+      ]
+    },
+    "public.submission_resolution": {
+      "name": "submission_resolution",
+      "schema": "public",
+      "values": [
+        "approved",
+        "partially_approved",
+        "accepted_as_candidate",
+        "not_approved",
+        "duplicate",
+        "no_change",
+        "withdrawn"
+      ]
+    },
+    "public.submission_workflow_status": {
+      "name": "submission_workflow_status",
+      "schema": "public",
+      "values": [
+        "received",
+        "triage",
+        "in_review",
+        "needs_information",
+        "on_hold",
+        "resolved",
+        "duplicate",
+        "rejected_spam",
+        "withdrawn"
+      ]
+    },
+    "public.acceptance_scope": {
+      "name": "acceptance_scope",
+      "schema": "public",
+      "values": [
+        "all_checkout",
+        "selected_products",
+        "new_purchase_only",
+        "renewal_only",
+        "region_limited",
+        "temporary"
+      ]
+    },
+    "public.claim_region_inclusion": {
+      "name": "claim_region_inclusion",
+      "schema": "public",
+      "values": [
+        "include",
+        "exclude"
+      ]
+    },
+    "public.claim_scope": {
+      "name": "claim_scope",
+      "schema": "public",
+      "values": [
+        "location_specific",
+        "brand_region",
+        "brand_global",
+        "online_service",
+        "platform_capability"
+      ]
+    },
+    "public.merchant_receives": {
+      "name": "merchant_receives",
+      "schema": "public",
+      "values": [
+        "crypto",
+        "fiat",
+        "crypto_or_fiat",
+        "not_publicly_confirmed"
+      ]
+    },
+    "public.asset_status": {
+      "name": "asset_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "deprecated"
+      ]
+    },
+    "public.asset_type": {
+      "name": "asset_type",
+      "schema": "public",
+      "values": [
+        "native",
+        "token",
+        "other"
+      ]
+    },
+    "public.entity_status": {
+      "name": "entity_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "inactive",
+        "ended",
+        "unknown"
+      ]
+    },
+    "public.entity_type": {
+      "name": "entity_type",
+      "schema": "public",
+      "values": [
+        "merchant",
+        "online_service",
+        "payment_processor",
+        "payment_program",
+        "platform"
+      ]
+    },
+    "public.evidence_class": {
+      "name": "evidence_class",
+      "schema": "public",
+      "values": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    "public.evidence_kind": {
+      "name": "evidence_kind",
+      "schema": "public",
+      "values": [
+        "live_checkout",
+        "official_payment_page",
+        "verified_representative",
+        "payment_proof",
+        "official_social",
+        "processor_case_study",
+        "dated_osm_observation",
+        "independent_user_report",
+        "directory_listing",
+        "undated_osm_tag",
+        "article",
+        "search_snippet",
+        "platform_capability",
+        "other"
+      ]
+    },
+    "public.evidence_origin_role": {
+      "name": "evidence_origin_role",
+      "schema": "public",
+      "values": [
+        "merchant_side",
+        "processor_side",
+        "usage_side",
+        "on_ground",
+        "osm_side",
+        "directory",
+        "other"
+      ]
+    },
+    "public.evidence_polarity": {
+      "name": "evidence_polarity",
+      "schema": "public",
+      "values": [
+        "supporting",
+        "contradicting",
+        "neutral"
+      ]
+    },
+    "public.evidence_review_status": {
+      "name": "evidence_review_status",
+      "schema": "public",
+      "values": [
+        "pending",
+        "accepted",
+        "rejected",
+        "superseded"
+      ]
+    },
+    "public.evidence_source_type": {
+      "name": "evidence_source_type",
+      "schema": "public",
+      "values": [
+        "official_page",
+        "official_social",
+        "processor",
+        "openstreetmap",
+        "directory",
+        "article",
+        "search",
+        "user_submission",
+        "business_representative",
+        "live_observation",
+        "payment_proof",
+        "other"
+      ]
+    },
+    "public.evidence_visibility": {
+      "name": "evidence_visibility",
+      "schema": "public",
+      "values": [
+        "public",
+        "private",
+        "restricted"
+      ]
+    },
+    "public.location_status": {
+      "name": "location_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "temporarily_closed",
+        "closed",
+        "unknown"
+      ]
+    },
+    "public.osm_element_type": {
+      "name": "osm_element_type",
+      "schema": "public",
+      "values": [
+        "node",
+        "way",
+        "relation"
+      ]
+    },
+    "public.network_status": {
+      "name": "network_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "deprecated"
+      ]
+    },
+    "public.payment_registry_status": {
+      "name": "payment_registry_status",
+      "schema": "public",
+      "values": [
+        "active",
+        "deprecated"
+      ]
+    },
+    "public.verification_actor_type": {
+      "name": "verification_actor_type",
+      "schema": "public",
+      "values": [
+        "operator",
+        "system",
+        "import"
+      ]
+    },
+    "public.verification_event_type": {
+      "name": "verification_event_type",
+      "schema": "public",
+      "values": [
+        "confirmed",
+        "reconfirmed",
+        "marked_stale",
+        "ended",
+        "restored",
+        "corrected",
+        "hidden",
+        "unhidden"
+      ]
+    },
+    "public.verification_evidence_relationship": {
+      "name": "verification_evidence_relationship",
+      "schema": "public",
+      "values": [
+        "basis",
+        "contradiction",
+        "context",
+        "superseded"
+      ]
+    }
+  },
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
