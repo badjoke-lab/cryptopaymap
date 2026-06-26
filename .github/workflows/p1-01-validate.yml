@@ -56,6 +56,10 @@ jobs:
         if: always()
         run: set -o pipefail && npm run build 2>&1 | tee validation-build.log
 
+      - name: Check accessibility foundation
+        if: always()
+        run: set -o pipefail && npm run accessibility:check 2>&1 | tee validation-accessibility.log
+
       - name: Check staging artifact
         if: always()
         run: set -o pipefail && npm run staging:check 2>&1 | tee validation-staging.log
@@ -82,6 +86,7 @@ jobs:
             validation-database.log
             validation-test.log
             validation-build.log
+            validation-accessibility.log
             validation-staging.log
           if-no-files-found: warn
           retention-days: 7
