@@ -1,5 +1,6 @@
 import {
   projectClaimState,
+  type VerificationEventInput,
   verificationDecisionInputSchema,
   verificationEventInputSchema,
 } from '../src/schemas/verification-events';
@@ -20,7 +21,7 @@ const confirmedEvent = {
   internalNote: null,
   actorType: 'system',
   actorId: null,
-};
+} as const satisfies VerificationEventInput;
 
 const confirmedDecision = {
   event: confirmedEvent,
@@ -86,7 +87,9 @@ const invalidDecisions = [
   },
 ];
 
-if (invalidDecisions.some((decision) => verificationDecisionInputSchema.safeParse(decision).success)) {
+if (
+  invalidDecisions.some((decision) => verificationDecisionInputSchema.safeParse(decision).success)
+) {
   throw new Error('Invalid verification decision was accepted.');
 }
 
@@ -118,7 +121,7 @@ const history = [
     reasonCode: 'acceptance_reconfirmed',
     effectiveAt: '2026-12-03T00:00:00Z',
   },
-];
+] as const satisfies readonly VerificationEventInput[];
 
 const projection = projectClaimState({ status: 'candidate', visibility: 'hidden' }, history);
 if (projection.status !== 'confirmed' || projection.visibility !== 'public') {
@@ -127,17 +130,14 @@ if (projection.status !== 'confirmed' || projection.visibility !== 'public') {
 
 let mismatchRejected = false;
 try {
-  projectClaimState(
-    { status: 'candidate', visibility: 'hidden' },
-    [
-      {
-        ...confirmedEvent,
-        eventType: 'marked_stale',
-        fromStatus: 'confirmed',
-        toStatus: 'stale',
-      },
-    ],
-  );
+  projectClaimState({ status: 'candidate', visibility: 'hidden' }, [
+    {
+      ...confirmedEvent,
+      eventType: 'marked_stale',
+      fromStatus: 'confirmed',
+      toStatus: 'stale',
+    },
+  ]);
 } catch {
   mismatchRejected = true;
 }
