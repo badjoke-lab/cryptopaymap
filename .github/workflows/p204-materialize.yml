@@ -1,0 +1,60 @@
+name: Materialize P2-04 schema
+
+on:
+  push:
+    branches:
+      - work/p204
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/p204
+      - name: Decode schema files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import base64
+          import gzip
+
+          def write(parts, target, reverse=False):
+              encoded = ''.join(Path(part).read_text() for part in parts)
+              if reverse:
+                  encoded = encoded[::-1]
+              second = bytes.fromhex(encoded)
+              first = base64.b64decode(second)
+              compressed = base64.b64decode(first)
+              Path(target).write_bytes(gzip.decompress(compressed))
+
+          write(
+              ['tmp-p204-entities-hex-00.txt', 'tmp-p204-entities-hex-01.txt'],
+              'src/db/schema/entities.ts',
+          )
+          write(
+              [
+                  'tmp-p204-locations-rev-00.txt',
+                  'tmp-p204-locations-rev-01.txt',
+                  'tmp-p204-locations-rev-02.txt',
+              ],
+              'src/db/schema/locations.ts',
+              reverse=True,
+          )
+          write(['tmp-p204-index-rev.txt'], 'src/db/schema/index.ts', reverse=True)
+          PY
+      - name: Remove temporary payloads
+        run: |
+          rm -f tmp-p204-*.txt
+          rm -f .github/workflows/p204-materialize.yml
+      - name: Commit schema
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P2-04: add entity and location schema"
+          git push origin HEAD:work/p204
