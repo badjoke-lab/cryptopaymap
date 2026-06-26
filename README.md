@@ -32,6 +32,7 @@ npm run check
 npm run test
 npm run build
 npm run accessibility:check
+node scripts/check-phase-1-foundation.mjs
 npm run staging:check
 npm run quality
 npm run pages:dev
@@ -45,6 +46,7 @@ See:
 
 - [Project status](docs/PROJECT_STATUS.md)
 - [Repository implementation plan](docs/IMPLEMENTATION_PLAN.md)
+- [Phase 1 integration audit](docs/PHASE_1_AUDIT.md)
 - [Public product roadmap](docs/ROADMAP.md)
 
 The repository implementation plan is for development tracking. The public product roadmap describes user-facing capabilities. They are intentionally separate.
@@ -96,4 +98,4 @@ Repository-wide working rules are defined in [AGENTS.md](AGENTS.md). Pull reques
 
 ## Current phase
 
-Phase 0 public specifications are complete. Phase 1 establishes the application foundation, design system, state boundaries, staging path, installability, accessibility, public content loaders, and quality checks.
+Phase 1 integration auditing is active. The repository foundation is assembled, and live Cloudflare staging verification remains the external completion gate before Phase 2.
