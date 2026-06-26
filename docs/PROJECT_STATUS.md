@@ -8,25 +8,26 @@ Phase 2 — Data core
 
 ## Current implementation item
 
-P2-05 — Acceptance claim schema and status rules
+P2-06 — Claim asset and network combinations
 
 ## Active pull request
 
-[#29 — P2-05: Add acceptance claim schema and status rules](https://github.com/badjoke-lab/cryptopaymap/pull/29)
+[#30 — P2-06: Add claim asset and network combinations](https://github.com/badjoke-lab/cryptopaymap/pull/30)
 
 ## Latest completed work
 
 - P2-01 and P2-02 completed through pull request #24.
 - P2-03 completed through pull request #25.
 - P2-04 completed through pull request #26.
+- P2-05 completed through pull request #29.
 
-## P2-05 in progress
+## P2-06 in progress
 
-- canonical acceptance claim and claim-region tables
-- entity, location, and processor relationships
-- claim, acceptance, receipt, and regional scope enums
-- confirmed, ended, public, location, and processor constraints
-- runtime validation and lifecycle transition rules
+- explicit claim, asset, network, and payment-method combinations
+- duplicate prevention with and without contract addresses
+- one-primary-row database boundary
+- publication eligibility and route/method compatibility validation
+- case-preserving contract-address normalization
 - reviewable migration, snapshot, and journal
 
 ## Cloudflare status
@@ -35,8 +36,8 @@ Live staging verification remains deferred in draft pull request #23 and does no
 
 ## Next
 
-1. Complete CI and merge pull request #29.
-2. Start P2-06 claim asset and network combinations.
+1. Complete CI and merge pull request #30.
+2. Start P2-07 evidence schema and source capture.
 
 ## Blocked
 
