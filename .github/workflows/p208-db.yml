@@ -1,0 +1,24 @@
+name: P208 DB
+
+on:
+  push:
+    branches:
+      - work/p208-final
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/p208-final
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: bash scripts/commit-p208-db.sh
