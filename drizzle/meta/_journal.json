@@ -15,6 +15,13 @@
       "when": 1782449069963,
       "tag": "0001",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782477539480,
+      "tag": "0002_uneven_eternals",
+      "breakpoints": true
     }
   ]
 }
