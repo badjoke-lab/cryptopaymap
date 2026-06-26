@@ -46,8 +46,8 @@ Phase 0 established the public product, route, data, verification, submission, m
 | P1-07 | CI and test foundation | Completed | P1-01 | [#17](https://github.com/badjoke-lab/cryptopaymap/pull/17) |
 | P1-08 | Cloudflare staging foundation | Completed | P1-01, P1-07 | [#18](https://github.com/badjoke-lab/cryptopaymap/pull/18) |
 | P1-09 | PWA manifest and installability baseline | Completed | P1-02 | [#19](https://github.com/badjoke-lab/cryptopaymap/pull/19) |
-| P1-10 | Accessibility baseline | In progress | P1-03, P1-04 | [#20](https://github.com/badjoke-lab/cryptopaymap/pull/20) |
-| P1-11 | Public Roadmap and Changelog content loaders | Planned | P1-01 | — |
+| P1-10 | Accessibility baseline | Completed | P1-03, P1-04 | [#20](https://github.com/badjoke-lab/cryptopaymap/pull/20) |
+| P1-11 | Public Roadmap and Changelog content loaders | In progress | P1-01 | [#21](https://github.com/badjoke-lab/cryptopaymap/pull/21) |
 | P1-12 | Phase 1 integration and quality audit | Planned | P1-02 through P1-11 | — |
 
 ### P1-01 — Repository and application foundation
@@ -244,12 +244,20 @@ Provision the Cloudflare Pages staging project and GitHub `staging` environment 
 
 **Deliverables**
 
-- separate validated Roadmap and Changelog content sources and static rendering contracts
+- separate Astro collections for structured Roadmap data and Changelog Markdown;
+- validated Roadmap sections, statuses, ordering, outcomes, capabilities, and dependencies;
+- validated Changelog versions, dates, summaries, draft state, and categories;
+- static `/roadmap` rendering grouped by Now, Next, Later, and Exploring;
+- draft-filtered `/changelog` rendering with Markdown release bodies and a pre-release empty state;
+- content separation tests and public content-loader documentation.
 
 **Completion criteria**
 
-- Roadmap uses capability milestones, not private numeric targets;
-- Changelog records released product changes rather than every pull request.
+- Roadmap uses capability milestones rather than repository execution counts;
+- Changelog records released product changes rather than every pull request;
+- draft Changelog entries are not rendered publicly;
+- invalid collection data fails type checking or the static build;
+- Roadmap and Changelog remain separate from Stats, Updates, and repository status.
 
 ### P1-12 — Phase 1 integration and quality audit
 
