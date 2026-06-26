@@ -45,8 +45,8 @@ Phase 0 established the public product, route, data, verification, submission, m
 | P1-06 | Zod, Drizzle, and migration foundation | Completed | P1-01 | [#16](https://github.com/badjoke-lab/cryptopaymap/pull/16) |
 | P1-07 | CI and test foundation | Completed | P1-01 | [#17](https://github.com/badjoke-lab/cryptopaymap/pull/17) |
 | P1-08 | Cloudflare staging foundation | Completed | P1-01, P1-07 | [#18](https://github.com/badjoke-lab/cryptopaymap/pull/18) |
-| P1-09 | PWA manifest and installability baseline | In progress | P1-02 | [#19](https://github.com/badjoke-lab/cryptopaymap/pull/19) |
-| P1-10 | Accessibility baseline | Planned | P1-03, P1-04 | — |
+| P1-09 | PWA manifest and installability baseline | Completed | P1-02 | [#19](https://github.com/badjoke-lab/cryptopaymap/pull/19) |
+| P1-10 | Accessibility baseline | In progress | P1-03, P1-04 | [#20](https://github.com/badjoke-lab/cryptopaymap/pull/20) |
 | P1-11 | Public Roadmap and Changelog content loaders | Planned | P1-01 | — |
 | P1-12 | Phase 1 integration and quality audit | Planned | P1-02 through P1-11 | — |
 
@@ -223,13 +223,22 @@ Provision the Cloudflare Pages staging project and GitHub `staging` environment 
 
 **Deliverables**
 
-- semantic shell, keyboard baseline, focus rules, reduced-motion integration, and automated accessibility checks
+- focusable skip-link target and semantic shared shell
+- labeled navigation and document landmark validation
+- field, dialog, and sheet accessibility tests
+- fail-closed generated-artifact accessibility checks
+- dedicated local and CI accessibility command with retained logs
+- keyboard, focus, forms, status, motion, map-alternative, and manual-review documentation
 
 **Completion criteria**
 
 - foundation supports WCAG 2.2 AA-oriented implementation;
+- skip-link navigation reaches a programmatically focusable main landmark;
+- shared fields expose labels, descriptions, invalid state, and errors;
+- modal surfaces expose names, descriptions, close controls, Escape handling, and managed focus;
+- positive tabindex, duplicate IDs, unnamed controls, and unlabeled inputs fail the foundation check;
 - map-only interaction is never assumed;
-- sheets and dialogs have verified focus behavior.
+- automated checks complement rather than replace the P1-12 manual staging review.
 
 ### P1-11 — Public Roadmap and Changelog content loaders
 
@@ -254,7 +263,7 @@ Provision the Cloudflare Pages staging project and GitHub `staging` environment 
 **Completion criteria**
 
 - the responsive shell and sheet foundation exist;
-- linting, type checking, unit tests, and builds run in CI;
+- linting, type checking, unit tests, accessibility checks, and builds run in CI;
 - state, schema, deployment, and content foundations match the public architecture;
 - the first credential-scoped Cloudflare staging deployment has been verified or a documented external provisioning blocker is recorded;
 - no secrets or private planning documents are committed.
