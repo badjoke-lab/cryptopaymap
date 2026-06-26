@@ -36,13 +36,19 @@ const sampleLocation = {
   osmId: null,
 };
 
-void canonicalEntitySchema;
-void canonicalLocationSchema;
-void entityStatusSchema;
-void entityTypeSchema;
-void locationStatusSchema;
-void osmElementTypeSchema;
-void sampleEntity;
-void sampleLocation;
+const checks = [
+  entityTypeSchema.safeParse('merchant'),
+  entityStatusSchema.safeParse('active'),
+  locationStatusSchema.safeParse('temporarily_closed'),
+  osmElementTypeSchema.safeParse('relation'),
+  canonicalEntitySchema.safeParse(sampleEntity),
+  canonicalLocationSchema.safeParse(sampleLocation),
+];
 
-console.log('Canonical identity checks loaded.');
+const failures = checks.filter((result) => !result.success);
+if (failures.length > 0) {
+  const issues = failures.flatMap((failure) => (failure.success ? [] : failure.error.issues));
+  throw new Error(`Canonical identity schema checks failed: ${JSON.stringify(issues)}`);
+}
+
+console.log('Canonical identity checks passed.');
