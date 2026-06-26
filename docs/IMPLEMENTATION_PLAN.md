@@ -3,15 +3,14 @@
 **Status:** Active  
 **Last updated:** 2026-06-26
 
-This document tracks public, repository-level implementation work. It is not the user-facing product roadmap and does not contain private operational planning.
+This document tracks repository implementation work. It is separate from the public product Roadmap and does not contain private operational planning.
 
 ## Tracking rules
 
 - Stable implementation item IDs are independent of pull request numbers.
 - Repository reality, merged pull requests, and CI results take precedence if this file disagrees.
-- Each active or planned item records dependencies, deliverables, and completion criteria.
-- Completed items remain linked to their pull requests.
-- Unplanned work uses `FIX-`, `SEC-`, or `DATA-` prefixes without renumbering planned items.
+- Candidate records, canonical records, and public exports remain separate layers.
+- Cloudflare-dependent verification may be deferred without blocking repository-only data work.
 
 Status values: `Planned`, `In progress`, `Completed`, `Deferred`, `Revised`.
 
@@ -32,7 +31,7 @@ Status values: `Planned`, `In progress`, `Completed`, `Deferred`, `Revised`.
 
 ## Phase 1 — Foundation
 
-**Status:** In progress
+**Status:** Repository work completed; live staging verification deferred
 
 | ID | Item | Status | Pull request |
 |---|---|---|---|
@@ -47,55 +46,40 @@ Status values: `Planned`, `In progress`, `Completed`, `Deferred`, `Revised`.
 | P1-09 | PWA manifest and installability baseline | Completed | [#19](https://github.com/badjoke-lab/cryptopaymap/pull/19) |
 | P1-10 | Accessibility baseline | Completed | [#20](https://github.com/badjoke-lab/cryptopaymap/pull/20) |
 | P1-11 | Public Roadmap and Changelog content loaders | Completed | [#21](https://github.com/badjoke-lab/cryptopaymap/pull/21) |
-| P1-12 | Phase 1 integration and quality audit | In progress | [#22](https://github.com/badjoke-lab/cryptopaymap/pull/22) |
+| P1-12 | Integration and quality audit | Repository completed; live verification deferred | [#22](https://github.com/badjoke-lab/cryptopaymap/pull/22), [#23](https://github.com/badjoke-lab/cryptopaymap/pull/23) |
 
-### P1-12 — Phase 1 integration and quality audit
-
-**Deliverables**
-
-- integrated required-file, dependency, workflow, and generated-artifact audit;
-- public and internal publication-boundary checks;
-- CI and pre-deployment audit integration;
-- live Cloudflare staging checklist;
-- Phase 2 implementation breakdown.
-
-**Repository completion criteria**
-
-- formatting, linting, type checking, runtime schemas, migrations, tests, and build pass;
-- accessibility, integrated foundation, and staging artifact checks pass;
-- deployable artifact upload succeeds;
-- no internal-only project documents are present in tracked public content.
-
-**External staging gate**
-
-After P1-11, provision the `cryptopaymap-staging` Cloudflare Pages project and GitHub `staging` environment. Run the manual staging workflow from merged `main`. P1-12 completes only after the live URL, commit, response headers, PWA files, public content pages, keyboard behavior, reduced motion, and mobile behavior are recorded and checked.
+The repository audit, generated artifact checks, and deployment contract are complete. Pull request #23 remains a draft record for the first live Cloudflare staging verification. External access is unavailable, so the live verification is deferred and does not block repository-only Phase 2 work.
 
 ## Phase 2 — Data core
 
-**Status:** Planned
+**Status:** In progress
 
 Phase 2 establishes the Candidate-to-canonical-to-public-export path. It does not add public submission forms or the full administration interface.
 
-| ID | Item | Depends on |
-|---|---|---|
-| P2-01 | Asset registry | P1-12 |
-| P2-02 | Network registry | P2-01 |
-| P2-03 | Payment method and route registries | P2-01, P2-02 |
-| P2-04 | Entity and location schema | P1-12 |
-| P2-05 | Acceptance claim schema and status rules | P2-03, P2-04 |
-| P2-06 | Claim asset and network combinations | P2-02, P2-03, P2-05 |
-| P2-07 | Evidence schema and source capture | P2-05 |
-| P2-08 | Verification event history | P2-05, P2-07 |
-| P2-09 | Source candidates, provenance, and duplicate boundaries | P2-04, P2-07 |
-| P2-10 | Media metadata and legacy identifiers | P2-04, P2-09 |
-| P2-11 | Public export schemas | P2-05 through P2-10 |
-| P2-12 | Export allowlist and leakage validator | P2-11 |
-| P2-13 | Physical-place candidate importer | P2-09, P2-10, P2-12 |
-| P2-14 | Online-service importer and Phase 2 integration audit | P2-09, P2-12, P2-13 |
+| ID | Item | Status | Depends on | Pull request |
+|---|---|---|---|---|
+| P2-01 | Asset registry | In progress | Phase 1 repository audit | [#24](https://github.com/badjoke-lab/cryptopaymap/pull/24) |
+| P2-02 | Network registry | Planned | P2-01 | — |
+| P2-03 | Payment method and route registries | Planned | P2-01, P2-02 | — |
+| P2-04 | Entity and location schema | Planned | Phase 1 repository audit | — |
+| P2-05 | Acceptance claim schema and status rules | Planned | P2-03, P2-04 | — |
+| P2-06 | Claim asset and network combinations | Planned | P2-02, P2-03, P2-05 | — |
+| P2-07 | Evidence schema and source capture | Planned | P2-05 | — |
+| P2-08 | Verification event history | Planned | P2-05, P2-07 | — |
+| P2-09 | Source candidates, provenance, and duplicate boundaries | Planned | P2-04, P2-07 | — |
+| P2-10 | Media metadata and legacy identifiers | Planned | P2-04, P2-09 | — |
+| P2-11 | Public export schemas | Planned | P2-05 through P2-10 | — |
+| P2-12 | Export allowlist and leakage validator | Planned | P2-11 | — |
+| P2-13 | Physical-place candidate importer | Planned | P2-09, P2-10, P2-12 | — |
+| P2-14 | Online-service importer and Phase 2 integration audit | Planned | P2-09, P2-12, P2-13 | — |
 
-### P2-01 through P2-03 — Registries
+### P2-01 — Asset registry
 
-Create canonical asset, network, payment-method, and route registries. Preserve original source text while normalizing aliases. Do not infer a network from an asset symbol. Stablecoins and multi-network assets require explicit combinations.
+Create stable asset identities with canonical slugs, symbols, names, aliases, lifecycle state, stablecoin and wrapped-asset flags, and optional descriptive decimal metadata. Symbols are not identifiers and assets never imply networks. Multi-network token precision remains network-specific and is introduced later.
+
+### P2-02 and P2-03 — Network and payment registries
+
+Create canonical network, payment-method, and route registries. Preserve original source text while normalizing aliases. Do not infer a network from an asset symbol. Stablecoins and multi-network assets require explicit combinations.
 
 ### P2-04 through P2-06 — Canonical acceptance model
 
@@ -115,36 +99,36 @@ Import physical and online legacy records as source candidates rather than Confi
 
 **Phase 2 completion criteria**
 
-- Candidate and canonical records are structurally separate;
-- reviewable migrations are reversible or have documented rollback;
-- verification states and history are auditable;
-- only eligible public records enter validated exports;
-- source and license metadata remain traceable;
-- test imports produce no automatic Confirmed records.
+- Candidate and canonical records are structurally separate.
+- Reviewable migrations are reversible or have documented rollback.
+- Verification states and history are auditable.
+- Only eligible public records enter validated exports.
+- Source and license metadata remain traceable.
+- Test imports produce no automatic Confirmed records.
 
 ## Phase 3 — Administration and review
 
 **Status:** Planned
 
-Build the protected administration shell, review queue, candidate detail, claim editor, evidence review, state transitions, reconfirmation queue, media review, export controls, and audit history. Completion requires a full Candidate-to-Confirmed-to-public-export path and auditable stale, reconfirmed, and ended transitions.
+Build the protected administration shell, review queue, candidate detail, claim editor, evidence review, state transitions, reconfirmation queue, media review, export controls, and audit history.
 
 ## Phase 4 — Public core / MVP-A
 
 **Status:** Planned
 
-Build place detail, the coordinated Places application, MapLibre map, list, filters, URL restoration, mobile bottom sheet, online-service discovery, Home, Stats, Updates, public Roadmap, Changelog, trust pages, and administrator-managed media.
+Build place details, coordinated map/list discovery, filters, URL restoration, mobile sheets, online-service discovery, Home, Stats, Updates, trust pages, and administrator-managed media.
 
 ## Phase 5 — Public submissions / MVP-B
 
 **Status:** Planned
 
-Build suggestions, payment reports, problem reports, claims, photos, private status links, quarantine uploads, review diffs, requests for information, time-bounded holds, partial approval, canonical transactions, owner verification, negative-evidence handling, and retention jobs. Completion defines the formal MVP.
+Build suggestions, payment reports, problem reports, claims, photos, private status links, quarantine uploads, review diffs, requests for information, holds, partial approval, canonical transactions, ownership verification, negative-evidence handling, and retention jobs.
 
 ## Phase 6 — Launch and cutover
 
 **Status:** Planned
 
-Run data, license, privacy, mobile, accessibility, performance, security, redirect, sitemap, migration, backup, monitoring, and rollback checks before production-domain cutover.
+Run data, license, privacy, mobile, accessibility, performance, security, redirect, sitemap, migration, backup, monitoring, and rollback checks before production cutover.
 
 ## Phase 7 — Stabilization
 
