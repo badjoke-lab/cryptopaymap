@@ -1,17 +1,21 @@
-name: P205 DB
+name: P205 Final DB
 
 on:
   push:
     branches:
-      - work/p205
+      - work/p205-final
+
+permissions:
+  contents: write
 
 jobs:
   update:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: work/p205
+          ref: work/p205-final
       - uses: actions/setup-node@v4
         with:
           node-version: 24.18.0
