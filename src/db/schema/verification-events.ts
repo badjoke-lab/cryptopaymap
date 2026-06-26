@@ -7,7 +7,6 @@ import {
   primaryKey,
   text,
   timestamp,
-  uniqueIndex,
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core';
@@ -80,8 +79,24 @@ export const verificationEvents = pgTable(
       sql`${table.internalNote} is null or length(trim(${table.internalNote})) > 0`,
     ),
     check(
+      'verification_events_operator_actor',
+      sql`${table.actorType} <> 'operator' or ${table.actorId} is not null`,
+    ),
+    check(
       'verification_events_transition_present',
       sql`${table.toStatus} is not null or ${table.toVisibility} is not null or ${table.eventType} = 'corrected'`,
+    ),
+    check(
+      'verification_events_status_event_shape',
+      sql`${table.eventType} not in ('confirmed', 'reconfirmed', 'marked_stale', 'ended', 'restored') or (${table.fromVisibility} is null and ${table.toVisibility} is null)`,
+    ),
+    check(
+      'verification_events_visibility_event_shape',
+      sql`${table.eventType} not in ('hidden', 'unhidden') or (${table.fromStatus} is null and ${table.toStatus} is null)`,
+    ),
+    check(
+      'verification_events_corrected_shape',
+      sql`${table.eventType} <> 'corrected' or (${table.fromStatus} is null and ${table.toStatus} is null and ${table.fromVisibility} is null and ${table.toVisibility} is null and (${table.publicSummary} is not null or ${table.internalNote} is not null))`,
     ),
     check(
       'verification_events_confirmed_transition',
@@ -131,11 +146,6 @@ export const verificationEventEvidence = pgTable(
       name: 'verification_event_evidence_pk',
       columns: [table.verificationEventId, table.evidenceId],
     }),
-    uniqueIndex('verification_event_evidence_relationship_unique').on(
-      table.verificationEventId,
-      table.evidenceId,
-      table.relationship,
-    ),
     index('verification_event_evidence_evidence_idx').on(table.evidenceId),
   ],
 );
