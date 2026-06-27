@@ -6,9 +6,9 @@ describe('public export boundary', () => {
     await expect(import('../scripts/check-public-export-boundary')).resolves.toBeDefined();
   });
 
-  it('canonicalizes artifact hashes independently of object key order', () => {
-    expect(hashPublicArtifact({ beta: 2, alpha: 1 })).toBe(
-      hashPublicArtifact({ alpha: 1, beta: 2 }),
+  it('canonicalizes artifact hashes independently of object key order', async () => {
+    await expect(hashPublicArtifact({ beta: 2, alpha: 1 })).resolves.toBe(
+      await hashPublicArtifact({ alpha: 1, beta: 2 }),
     );
   });
 
