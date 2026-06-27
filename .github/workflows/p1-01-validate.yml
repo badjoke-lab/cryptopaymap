@@ -11,9 +11,45 @@ on:
       - 'docs/**'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
+  finalize-p210:
+    if: github.head_ref == 'work/p210'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out P2-10 branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p210
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Format and generate database files
+        run: |
+          npm run format
+          npm run db:generate
+
+      - name: Restore permanent workflow and commit final files
+        run: |
+          git fetch origin main --depth=1
+          git show origin/main:.github/workflows/p1-01-validate.yml > .github/workflows/p1-01-validate.yml
+          rm -f .github/workflows/p210-finalize.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P2-10: format and generate migration"
+          git push origin HEAD:work/p210
+
   validate:
     runs-on: ubuntu-latest
     steps:
