@@ -1,19 +1,18 @@
 name: P2-10 finalize
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
-    types:
-      - synchronize
+      - work/p210
 
 permissions:
   contents: write
 
 jobs:
   finalize:
-    if: github.head_ref == 'work/p210' && github.event.pull_request.head.sha == github.sha
+    if: github.event.head_commit.message != 'P2-10: format and generate migration'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Check out branch
         uses: actions/checkout@v4
