@@ -18,7 +18,7 @@
     "lint": "biome lint .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "schema:check": "tsx scripts/check-runtime-schemas.ts",
+    "schema:check": "tsx scripts/check-runtime-schemas.ts && tsx scripts/check-public-export-schemas.ts",
     "db:generate": "drizzle-kit generate",
     "db:check": "drizzle-kit check",
     "db:migrate": "drizzle-kit migrate",
