@@ -11,42 +11,9 @@ on:
       - 'docs/**'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  finalize-p210-fix:
-    if: github.event_name == 'push' && github.ref == 'refs/heads/fix/p210-deleted-media-public-guard'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    steps:
-      - name: Check out fix branch
-        uses: actions/checkout@v4
-        with:
-          ref: fix/p210-deleted-media-public-guard
-          fetch-depth: 0
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24.18.0
-          cache: npm
-
-      - name: Install locked dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Generate follow-up migration
-        run: npm run db:generate
-
-      - name: Restore permanent workflow and commit
-        run: |
-          git fetch origin main --depth=1
-          git show origin/main:.github/workflows/p1-01-validate.yml > .github/workflows/p1-01-validate.yml
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A
-          git commit -m "FIX-P2-10-001: add deleted media guard migration"
-          git push origin HEAD:fix/p210-deleted-media-public-guard
-
   validate:
     runs-on: ubuntu-latest
     steps:
