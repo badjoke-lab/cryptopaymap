@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import {
   publicExportPaths,
@@ -14,6 +13,7 @@ export type ValidatedPublicArtifactSet = Readonly<Record<PublicExportPath, unkno
 const publicExportPathSet = new Set<string>(publicExportPaths);
 const manifestPath: PublicExportPath = '/data/manifest.json';
 const manifestInventoryPaths = publicExportPaths.filter((path) => path !== manifestPath);
+const manifestInventoryPathSet = new Set<PublicExportPath>(manifestInventoryPaths);
 const blockedKeyPatterns = [
   /^internal/,
   /^private/,
@@ -107,8 +107,10 @@ export function canonicalPublicJson(value: unknown): string {
   return `${JSON.stringify(canonicalize(value))}\n`;
 }
 
-export function hashPublicArtifact(value: unknown): string {
-  return createHash('sha256').update(canonicalPublicJson(value)).digest('hex');
+export async function hashPublicArtifact(value: unknown): Promise<string> {
+  const bytes = new TextEncoder().encode(canonicalPublicJson(value));
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  return Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function deepFreeze<T>(value: T): T {
@@ -138,7 +140,10 @@ export function validatePublicArtifact(path: string, value: unknown): unknown {
 
   const nonPublicContent = findNonPublicContent(result.data);
   if (nonPublicContent.length > 0) {
-    throw new PublicExportBoundaryError(`Non-public content was found in ${path}.`, nonPublicContent);
+    throw new PublicExportBoundaryError(
+      `Non-public content was found in ${path}.`,
+      nonPublicContent,
+    );
   }
 
   return result.data;
@@ -168,7 +173,9 @@ function artifactGeneratedAt(value: unknown): string {
   return (value as { generatedAt: string }).generatedAt;
 }
 
-export function validatePublicArtifactSet(input: PublicArtifactInput): ValidatedPublicArtifactSet {
+export async function validatePublicArtifactSet(
+  input: PublicArtifactInput,
+): Promise<ValidatedPublicArtifactSet> {
   const issues: string[] = [];
   const inputPaths = Object.keys(input);
 
@@ -185,7 +192,10 @@ export function validatePublicArtifactSet(input: PublicArtifactInput): Validated
   }
 
   if (issues.length > 0) {
-    throw new PublicExportBoundaryError('Public artifact set is incomplete or contains extra files.', issues);
+    throw new PublicExportBoundaryError(
+      'Public artifact set is incomplete or contains extra files.',
+      issues,
+    );
   }
 
   const parsed = {} as Record<PublicExportPath, unknown>;
@@ -251,13 +261,13 @@ export function validatePublicArtifactSet(input: PublicArtifactInput): Validated
     if (entry.recordCount !== recordCount(path, parsed[path])) {
       issues.push(`${path}: manifest record count does not match the artifact`);
     }
-    if (entry.sha256 !== hashPublicArtifact(parsed[path])) {
+    if (entry.sha256 !== (await hashPublicArtifact(parsed[path]))) {
       issues.push(`${path}: manifest SHA-256 does not match the artifact`);
     }
   }
 
   for (const path of manifestEntries.keys()) {
-    if (!manifestInventoryPaths.includes(path)) {
+    if (!manifestInventoryPathSet.has(path)) {
       issues.push(`${path}: manifest entry is not part of the release inventory`);
     }
   }
@@ -273,7 +283,9 @@ export function validatePublicArtifactSet(input: PublicArtifactInput): Validated
   return deepFreeze(parsed) as ValidatedPublicArtifactSet;
 }
 
-export function publicSnapshotDigest(artifacts: ValidatedPublicArtifactSet): string {
+export async function publicSnapshotDigest(
+  artifacts: ValidatedPublicArtifactSet,
+): Promise<string> {
   return hashPublicArtifact(
     Object.fromEntries(publicExportPaths.map((path) => [path, artifacts[path]])),
   );
