@@ -30,6 +30,7 @@ import {
   paymentRouteRecordSchema,
 } from '../src/schemas/payment-registry-records';
 
+// Side-effect imports enforce each Phase 2 boundary before the shared registry checks run.
 const samplePlace = {
   id: 'foundation-example-place',
   slug: 'example-coffee',
