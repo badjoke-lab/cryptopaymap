@@ -1,16 +1,18 @@
 name: P2-10 finalize
 
 on:
-  push:
+  pull_request:
     branches:
-      - work/p210
+      - main
+    types:
+      - synchronize
 
 permissions:
   contents: write
 
 jobs:
   finalize:
-    if: github.event.head_commit.message != 'P2-10: format and generate migration'
+    if: github.head_ref == 'work/p210' && github.event.pull_request.head.sha == github.sha
     runs-on: ubuntu-latest
     steps:
       - name: Check out branch
