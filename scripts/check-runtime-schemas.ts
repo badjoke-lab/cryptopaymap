@@ -2,6 +2,7 @@ import './check-acceptance-claims';
 import './check-canonical-identity';
 import './check-claim-assets';
 import './check-evidence';
+import './check-media-legacy';
 import './check-source-provenance';
 import './check-verification-events';
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';
@@ -29,6 +30,7 @@ import {
   paymentRouteRecordSchema,
 } from '../src/schemas/payment-registry-records';
 
+// Side-effect imports enforce each Phase 2 boundary before the shared registry checks run.
 const samplePlace = {
   id: 'foundation-example-place',
   slug: 'example-coffee',
