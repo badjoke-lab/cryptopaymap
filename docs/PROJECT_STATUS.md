@@ -8,11 +8,11 @@ Phase 2 — Data core
 
 ## Current implementation item
 
-P2-10 — Media metadata and legacy identifiers
+P2-11 — Public export schemas
 
 ## Active pull request
 
-[#35 — P2-10: Add media metadata and legacy identifiers](https://github.com/badjoke-lab/cryptopaymap/pull/35)
+[#36 — P2-11: Add explicit public export schemas](https://github.com/badjoke-lab/cryptopaymap/pull/36)
 
 ## Latest completed work
 
@@ -24,19 +24,18 @@ P2-10 — Media metadata and legacy identifiers
 - P2-07 completed through pull request #31.
 - P2-08 completed through pull request #32.
 - P2-09 completed through pull request #34.
+- P2-10 completed through pull request #35.
 
-## P2-10 in progress
+## P2-11 in progress
 
-- media assets separated from stored file variants
-- evidence, owner-verification, gallery-candidate, gallery, and canonical-logo purposes
-- original, display, and thumbnail variants
-- quarantine, private, and public storage scopes
-- review, rights, license, attribution, consent, alt-text, order, and publication metadata
-- public-media eligibility and original-upload privacy rules
-- legacy CryptoPayMap and Crypto Acceptance Registry identifier mappings
-- pending, mapped, unresolved, and retired migration outcomes
-- runtime validation and boundary checks
-- reviewable migration, snapshot, and journal
+- strict schemas for all 12 planned public JSON and GeoJSON files
+- canonical-only acceptance-claim projections
+- explicit place, map-pin, online-service, registry, stats, update, manifest, and version contracts
+- public media and evidence summaries without private storage or review fields
+- cross-field rules for location scope, processor routes, ended claims, and payment combinations
+- public identifiers that reject internal UUID-shaped values
+- runtime examples that reject candidate states, private fields, unknown keys, and invalid coordinates
+- no database migration or Cloudflare dependency
 
 ## Cloudflare status
 
@@ -44,9 +43,9 @@ Live staging verification remains deferred in draft pull request #23 and does no
 
 ## Next
 
-1. Complete migration generation and CI for pull request #35.
-2. Merge P2-10.
-3. Start P2-11 public export schemas.
+1. Complete CI and merge pull request #36.
+2. Start P2-12 export allowlist and leakage validation.
+3. Keep live data generation and publication disabled until the fail-closed boundary is complete.
 
 ## Blocked
 
