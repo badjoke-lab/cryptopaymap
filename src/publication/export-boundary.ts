@@ -3,6 +3,8 @@ import { z } from 'zod';
 import {
   publicExportPaths,
   publicExportSchemaByPath,
+  publicManifestFileSchema,
+  publicVersionSchema,
   type PublicExportPath,
 } from '../schemas/public-exports';
 
@@ -10,6 +12,8 @@ export type PublicArtifactInput = Record<string, unknown>;
 export type ValidatedPublicArtifactSet = Readonly<Record<PublicExportPath, unknown>>;
 
 const publicExportPathSet = new Set<string>(publicExportPaths);
+const manifestPath: PublicExportPath = '/data/manifest.json';
+const manifestInventoryPaths = publicExportPaths.filter((path) => path !== manifestPath);
 const blockedKeyPatterns = [
   /^internal/,
   /^private/,
@@ -107,6 +111,16 @@ export function hashPublicArtifact(value: unknown): string {
   return createHash('sha256').update(canonicalPublicJson(value)).digest('hex');
 }
 
+function deepFreeze<T>(value: T): T {
+  if (value !== null && typeof value === 'object' && !Object.isFrozen(value)) {
+    Object.freeze(value);
+    for (const child of Object.values(value)) {
+      deepFreeze(child);
+    }
+  }
+  return value;
+}
+
 export function validatePublicArtifact(path: string, value: unknown): unknown {
   if (!publicExportPathSet.has(path)) {
     throw new PublicExportBoundaryError('Unrecognized public artifact path.', [
@@ -128,4 +142,139 @@ export function validatePublicArtifact(path: string, value: unknown): unknown {
   }
 
   return result.data;
+}
+
+function recordCount(path: PublicExportPath, value: unknown): number {
+  if (path === '/version.json' || path === '/data/stats.json') {
+    return 1;
+  }
+
+  if (path === '/data/places.geojson') {
+    return (value as { features: unknown[] }).features.length;
+  }
+
+  return (value as { records: unknown[] }).records.length;
+}
+
+function expectedMediaType(path: PublicExportPath): 'application/json' | 'application/geo+json' {
+  return path === '/data/places.geojson' ? 'application/geo+json' : 'application/json';
+}
+
+function artifactSchemaVersion(value: unknown): string {
+  return (value as { schemaVersion: string }).schemaVersion;
+}
+
+function artifactGeneratedAt(value: unknown): string {
+  return (value as { generatedAt: string }).generatedAt;
+}
+
+export function validatePublicArtifactSet(input: PublicArtifactInput): ValidatedPublicArtifactSet {
+  const issues: string[] = [];
+  const inputPaths = Object.keys(input);
+
+  for (const path of inputPaths) {
+    if (!publicExportPathSet.has(path)) {
+      issues.push(`${path}: path is not in the public export allowlist`);
+    }
+  }
+
+  for (const path of publicExportPaths) {
+    if (!Object.hasOwn(input, path)) {
+      issues.push(`${path}: required public artifact is missing`);
+    }
+  }
+
+  if (issues.length > 0) {
+    throw new PublicExportBoundaryError('Public artifact set is incomplete or contains extra files.', issues);
+  }
+
+  const parsed = {} as Record<PublicExportPath, unknown>;
+  for (const path of publicExportPaths) {
+    try {
+      parsed[path] = validatePublicArtifact(path, input[path]);
+    } catch (error) {
+      if (error instanceof PublicExportBoundaryError) {
+        issues.push(...error.issues.map((issue) => `${path} ${issue}`));
+      } else {
+        throw error;
+      }
+    }
+  }
+
+  if (issues.length > 0) {
+    throw new PublicExportBoundaryError('One or more public artifacts failed validation.', issues);
+  }
+
+  const manifest = publicManifestFileSchema.parse(parsed[manifestPath]);
+  const version = publicVersionSchema.parse(parsed['/version.json']);
+
+  if (manifest.datasetVersion !== version.datasetVersion) {
+    issues.push('manifest and version datasetVersion values do not match');
+  }
+  if (manifest.schemaVersion !== version.schemaVersion) {
+    issues.push('manifest and version schemaVersion values do not match');
+  }
+  if (manifest.generatedAt !== version.generatedAt) {
+    issues.push('manifest and version generatedAt values do not match');
+  }
+
+  for (const path of publicExportPaths) {
+    if (artifactGeneratedAt(parsed[path]) !== version.generatedAt) {
+      issues.push(`${path}: generatedAt does not match the release version`);
+    }
+    if (artifactSchemaVersion(parsed[path]) !== version.schemaVersion) {
+      issues.push(`${path}: schemaVersion does not match the release version`);
+    }
+  }
+
+  const manifestEntries = new Map<PublicExportPath, (typeof manifest.files)[number]>();
+  for (const entry of manifest.files) {
+    if (manifestEntries.has(entry.path)) {
+      issues.push(`${entry.path}: duplicate manifest entry`);
+    }
+    manifestEntries.set(entry.path, entry);
+  }
+
+  for (const path of manifestInventoryPaths) {
+    const entry = manifestEntries.get(path);
+    if (entry === undefined) {
+      issues.push(`${path}: missing manifest entry`);
+      continue;
+    }
+
+    if (entry.mediaType !== expectedMediaType(path)) {
+      issues.push(`${path}: manifest media type does not match the artifact`);
+    }
+    if (entry.schemaVersion !== artifactSchemaVersion(parsed[path])) {
+      issues.push(`${path}: manifest schema version does not match the artifact`);
+    }
+    if (entry.recordCount !== recordCount(path, parsed[path])) {
+      issues.push(`${path}: manifest record count does not match the artifact`);
+    }
+    if (entry.sha256 !== hashPublicArtifact(parsed[path])) {
+      issues.push(`${path}: manifest SHA-256 does not match the artifact`);
+    }
+  }
+
+  for (const path of manifestEntries.keys()) {
+    if (!manifestInventoryPaths.includes(path)) {
+      issues.push(`${path}: manifest entry is not part of the release inventory`);
+    }
+  }
+
+  if (manifestEntries.size !== manifestInventoryPaths.length) {
+    issues.push('manifest inventory must contain exactly one entry for every publishable file');
+  }
+
+  if (issues.length > 0) {
+    throw new PublicExportBoundaryError('Public artifact set failed release validation.', issues);
+  }
+
+  return deepFreeze(parsed) as ValidatedPublicArtifactSet;
+}
+
+export function publicSnapshotDigest(artifacts: ValidatedPublicArtifactSet): string {
+  return hashPublicArtifact(
+    Object.fromEntries(publicExportPaths.map((path) => [path, artifacts[path]])),
+  );
 }
