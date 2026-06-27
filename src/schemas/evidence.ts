@@ -69,7 +69,7 @@ export const evidenceInputSchema = z
     reviewStatus: evidenceReviewStatusSchema,
     archiveUrl: nullableWebUrlSchema,
     contentHash: z.string().trim().min(1).max(128).nullable(),
-    licenseId: z.string().trim().min(1).max(96).nullable(),
+    licenseId: nullableUuidSchema,
     attribution: z.string().trim().min(1).max(500).nullable(),
     independenceKey: z.string().trim().min(1).max(160).nullable(),
   })
