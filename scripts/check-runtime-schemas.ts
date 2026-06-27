@@ -2,6 +2,7 @@ import './check-acceptance-claims';
 import './check-canonical-identity';
 import './check-claim-assets';
 import './check-evidence';
+import './check-media-legacy';
 import './check-source-provenance';
 import './check-verification-events';
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';
