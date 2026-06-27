@@ -176,7 +176,8 @@ export const publicAcceptanceClaimSchema = z
       context.addIssue({
         code: 'custom',
         path: ['processorSlug'],
-        message: 'Processor checkout requires a processor and direct wallet routes cannot name one.',
+        message:
+          'Processor checkout requires a processor and direct wallet routes cannot name one.',
       });
     }
 
@@ -337,6 +338,22 @@ export const publicOnlineServiceSchema = z
     }
   });
 
+const publicGeoJsonPropertiesSchema = z
+  .object({
+    placeSlug: publicIdentifierSchema,
+    name: z.string().trim().min(1).max(160),
+    categorySlug: publicIdentifierSchema,
+    countryCode: countryCodeSchema,
+    locality: z.string().trim().min(1).max(120).nullable(),
+    status: publicPinStatusSchema,
+    assetSlugs: z.array(publicIdentifierSchema).min(1).max(100),
+    networkSlugs: z.array(publicIdentifierSchema).min(1).max(100),
+    routeTypes: z.array(z.enum(routeTypeValues)).min(1).max(routeTypeValues.length),
+    lastConfirmedAt: timestampSchema,
+    thumbnail: publicMediaSchema.nullable(),
+  })
+  .strict();
+
 export const publicGeoJsonFeatureSchema = z
   .object({
     type: z.literal('Feature'),
@@ -346,7 +363,7 @@ export const publicGeoJsonFeatureSchema = z
         coordinates: z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]),
       })
       .strict(),
-    properties: publicPlacePinSchema.omit({ latitude: true, longitude: true }),
+    properties: publicGeoJsonPropertiesSchema,
   })
   .strict();
 
@@ -451,7 +468,9 @@ export const publicPlacesGeoJsonFileSchema = publicFileHeaderSchema
   })
   .strict();
 export const publicOnlineServicesFileSchema = recordsFileSchema(publicOnlineServiceSchema);
-export const publicStatsFileSchema = publicFileHeaderSchema.extend({ stats: publicStatsSchema }).strict();
+export const publicStatsFileSchema = publicFileHeaderSchema
+  .extend({ stats: publicStatsSchema })
+  .strict();
 export const publicUpdatesFileSchema = recordsFileSchema(publicUpdateSchema);
 export const publicAssetsFileSchema = recordsFileSchema(publicAssetRegistryRecordSchema);
 export const publicNetworksFileSchema = recordsFileSchema(publicNetworkRegistryRecordSchema);
