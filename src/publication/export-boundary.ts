@@ -283,9 +283,7 @@ export async function validatePublicArtifactSet(
   return deepFreeze(parsed) as ValidatedPublicArtifactSet;
 }
 
-export async function publicSnapshotDigest(
-  artifacts: ValidatedPublicArtifactSet,
-): Promise<string> {
+export async function publicSnapshotDigest(artifacts: ValidatedPublicArtifactSet): Promise<string> {
   return hashPublicArtifact(
     Object.fromEntries(publicExportPaths.map((path) => [path, artifacts[path]])),
   );
