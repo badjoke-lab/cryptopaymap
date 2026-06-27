@@ -75,7 +75,11 @@ if (
 
 const duplicateInput = {
   ...envelope,
-  records: [record(1), record(1), { ...record(2), legacyId: 'legacy-place-duplicate', osmId: '10001' }],
+  records: [
+    record(1),
+    record(1),
+    { ...record(2), legacyId: 'legacy-place-duplicate', osmId: '10001' },
+  ],
 };
 const duplicatePlan = await createPhysicalPlaceImportPlan(duplicateInput);
 if (
@@ -88,7 +92,10 @@ if (
 
 const invalidPlan = await createPhysicalPlaceImportPlan({
   ...envelope,
-  records: [{ ...record(1), latitude: 190 }, { ...record(2), name: '<script>bad</script>' }],
+  records: [
+    { ...record(1), latitude: 190 },
+    { ...record(2), name: '<script>bad</script>' },
+  ],
 });
 if (invalidPlan.summary.rejectedCount !== 2 || invalidPlan.summary.acceptedCount !== 0) {
   throw new Error('Invalid physical records were not quarantined as rejections.');

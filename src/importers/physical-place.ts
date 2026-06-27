@@ -112,10 +112,7 @@ async function sha256(value: unknown): Promise<string> {
 }
 
 async function deterministicUuid(label: string): Promise<string> {
-  const digest = await globalThis.crypto.subtle.digest(
-    'SHA-256',
-    new TextEncoder().encode(label),
-  );
+  const digest = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(label));
   const bytes = new Uint8Array(digest).slice(0, 16);
   bytes[6] = ((bytes[6] ?? 0) & 0x0f) | 0x80;
   bytes[8] = ((bytes[8] ?? 0) & 0x3f) | 0x80;
@@ -292,10 +289,14 @@ function duplicateSignals(drafts: PhysicalPlaceImportDraft[]): PhysicalPlaceDupl
     }
   }
 
-  return [...signals.values()].sort((left, right) => signalKey(left).localeCompare(signalKey(right)));
+  return [...signals.values()].sort((left, right) =>
+    signalKey(left).localeCompare(signalKey(right)),
+  );
 }
 
-function issueStrings(error: { issues: Array<{ path: PropertyKey[]; message: string }> }): string[] {
+function issueStrings(error: {
+  issues: Array<{ path: PropertyKey[]; message: string }>;
+}): string[] {
   return error.issues.map((issue) => {
     const path = issue.path.length === 0 ? '$' : `$.${issue.path.join('.')}`;
     return `${path}: ${issue.message}`;
@@ -336,7 +337,11 @@ export async function createPhysicalPlaceImportPlan(
     const existing = seenLegacyIds.get(record.legacyId);
     if (existing !== undefined) {
       if (existing.contentHash === contentHash) {
-        replays.push({ inputIndex, legacyId: record.legacyId, sourceRecordId: existing.sourceRecordId });
+        replays.push({
+          inputIndex,
+          legacyId: record.legacyId,
+          sourceRecordId: existing.sourceRecordId,
+        });
       } else {
         rejections.push({
           inputIndex,

@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
-const nullableTrimmedString = (maximum: number) =>
-  z.string().trim().min(1).max(maximum).nullable();
+const nullableTrimmedString = (maximum: number) => z.string().trim().min(1).max(maximum).nullable();
 
 const httpUrlSchema = z
   .url()
