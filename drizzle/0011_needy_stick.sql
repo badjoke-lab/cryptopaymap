@@ -1,0 +1,2 @@
+ALTER TABLE "media_assets" DROP CONSTRAINT "media_assets_public_eligible";--> statement-breakpoint
+ALTER TABLE "media_assets" ADD CONSTRAINT "media_assets_public_eligible" CHECK ("media_assets"."visibility" <> 'public' or ("media_assets"."review_status" = 'accepted' and "media_assets"."purpose" in ('public_gallery', 'canonical_logo') and "media_assets"."rights_status" in ('submitted_with_permission', 'licensed', 'public_domain') and "media_assets"."published_at" is not null and "media_assets"."alt_text" is not null and "media_assets"."deleted_at" is null));
