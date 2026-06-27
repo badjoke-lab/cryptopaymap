@@ -1,0 +1,48 @@
+name: P2-10 regenerate migration
+
+on:
+  push:
+    branches:
+      - work/p210
+
+permissions:
+  contents: write
+
+jobs:
+  regenerate:
+    if: github.event.head_commit.message != 'P2-10: regenerate final migration'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p210
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Regenerate unpublished migration
+        run: |
+          git fetch origin main --depth=1
+          rm -f drizzle/0010_*.sql
+          rm -f drizzle/meta/0010_snapshot.json
+          git show origin/main:drizzle/meta/_journal.json > drizzle/meta/_journal.json
+          npm run format
+          npm run db:generate
+
+      - name: Remove one-time workflow and commit
+        run: |
+          rm -f .github/workflows/p210-regenerate.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P2-10: regenerate final migration"
+          git push origin HEAD:work/p210
