@@ -3,6 +3,7 @@ import './check-canonical-identity';
 import './check-claim-assets';
 import './check-evidence';
 import './check-media-legacy';
+import './check-physical-place-importer';
 import './check-source-provenance';
 import './check-verification-events';
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';

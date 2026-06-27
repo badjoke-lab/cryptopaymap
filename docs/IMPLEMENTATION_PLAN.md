@@ -67,10 +67,10 @@ Phase 2 establishes the Candidate-to-canonical-to-public-export path. It does no
 | P2-07 | Evidence schema and source capture | Completed | P2-05 | [#31](https://github.com/badjoke-lab/cryptopaymap/pull/31) |
 | P2-08 | Verification event history | Completed | P2-05, P2-07 | [#32](https://github.com/badjoke-lab/cryptopaymap/pull/32) |
 | P2-09 | Source candidates, provenance, and duplicate boundaries | Completed | P2-04, P2-07 | [#34](https://github.com/badjoke-lab/cryptopaymap/pull/34) |
-| P2-10 | Media metadata and legacy identifiers | In progress | P2-04, P2-09 | [#35](https://github.com/badjoke-lab/cryptopaymap/pull/35) |
-| P2-11 | Public export schemas | Planned | P2-05 through P2-10 | — |
-| P2-12 | Export allowlist and leakage validator | Planned | P2-11 | — |
-| P2-13 | Physical-place candidate importer | Planned | P2-09, P2-10, P2-12 | — |
+| P2-10 | Media metadata and legacy identifiers | Completed | P2-04, P2-09 | [#35](https://github.com/badjoke-lab/cryptopaymap/pull/35), [#37](https://github.com/badjoke-lab/cryptopaymap/pull/37) |
+| P2-11 | Public export schemas | Completed | P2-05 through P2-10 | [#36](https://github.com/badjoke-lab/cryptopaymap/pull/36) |
+| P2-12 | Export allowlist and leakage validator | Completed | P2-11 | [#38](https://github.com/badjoke-lab/cryptopaymap/pull/38) |
+| P2-13 | Physical-place candidate importer | In progress | P2-09, P2-10, P2-12 | [#39](https://github.com/badjoke-lab/cryptopaymap/pull/39) |
 | P2-14 | Online-service importer and Phase 2 integration audit | Planned | P2-09, P2-12, P2-13 | — |
 
 ### P2-01 — Asset registry

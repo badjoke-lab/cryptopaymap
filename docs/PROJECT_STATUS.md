@@ -8,11 +8,11 @@ Phase 2 — Data core
 
 ## Current implementation item
 
-P2-12 — Export allowlist and leakage validator
+P2-13 — Physical-place candidate importer
 
 ## Active pull request
 
-[#38 — P2-12: Add fail-closed export validation](https://github.com/badjoke-lab/cryptopaymap/pull/38)
+[#39 — P2-13: Add physical-place candidate importer](https://github.com/badjoke-lab/cryptopaymap/pull/39)
 
 ## Latest completed work
 
@@ -25,20 +25,21 @@ P2-12 — Export allowlist and leakage validator
 - P2-08 completed through pull request #32.
 - P2-09 completed through pull request #34.
 - P2-10 completed through pull request #35.
+- P2-10 database guard follow-up completed through pull request #37.
 - P2-11 completed through pull request #36.
+- P2-12 completed through pull request #38.
 
-## P2-12 in progress
+## P2-13 in progress
 
-- exact allowlist for all 12 public artifact paths
-- strict schema parsing before release eligibility
-- recursive rejection of fields and URI schemes outside the public contract
-- deterministic canonical JSON and SHA-256 hashing
-- complete release-set validation rather than file-by-file publication
-- manifest path, media-type, schema-version, record-count, license, and digest checks
-- dataset-version and generation-time consistency checks
-- immutable validated release sets with no publication side effects
-- positive and negative automated checks
-- no database migration or Cloudflare dependency
+- strict validation for untrusted legacy physical-place rows
+- deterministic candidate, source-record, and legacy-mapping identities
+- immutable raw payload and SHA-256 content provenance
+- candidate-only output with pending legacy mappings
+- exact replay collapse and conflicting legacy-ID rejection
+- OSM-identity and same-name/same-coordinate review signals without automatic merge
+- preservation of source payment tags without asset, network, method, or Confirmed inference
+- ten-record runtime proof and positive/negative unit tests
+- no database write, live legacy access, public export, or Cloudflare dependency
 
 ## Cloudflare status
 
@@ -46,9 +47,9 @@ Live staging verification remains deferred in draft pull request #23 and does no
 
 ## Next
 
-1. Complete CI and merge pull request #38.
-2. Start P2-13 physical-place candidate importer.
-3. Keep live publication disabled until import and integration checks are complete.
+1. Complete CI and merge pull request #39.
+2. Start P2-14 online-service importer and Phase 2 integration audit.
+3. Keep imported candidates private until Phase 3 administrative review and promotion.
 
 ## Blocked
 
