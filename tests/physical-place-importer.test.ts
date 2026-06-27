@@ -72,6 +72,29 @@ describe('physical-place candidate importer', () => {
     );
   });
 
+  it('preserves raw source values separately from normalized values', async () => {
+    const rawRecord = {
+      ...record(1),
+      name: '  Example Place 1  ',
+      countryCode: 'jp',
+    };
+    const plan = await createPhysicalPlaceImportPlan({
+      ...envelopeBase,
+      records: [rawRecord],
+    });
+    const rawPayload = plan.drafts[0]?.sourceRecord.rawPayload as {
+      rawRecord: Record<string, unknown>;
+      normalizedRecord: Record<string, unknown>;
+    };
+
+    expect(rawPayload.rawRecord.name).toBe('  Example Place 1  ');
+    expect(rawPayload.rawRecord.countryCode).toBe('jp');
+    expect(rawPayload.normalizedRecord.name).toBe('Example Place 1');
+    expect(rawPayload.normalizedRecord.countryCode).toBe('JP');
+    expect(plan.drafts[0]?.reviewData.name).toBe('Example Place 1');
+    expect(plan.drafts[0]?.reviewData.countryCode).toBe('JP');
+  });
+
   it('collapses exact replays and rejects conflicting legacy identities', async () => {
     const plan = await createPhysicalPlaceImportPlan({
       ...envelopeBase,
