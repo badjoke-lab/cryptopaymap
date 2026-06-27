@@ -148,6 +148,7 @@ function sourceUrl(record: LegacyPhysicalPlaceRecord): string | null {
 
 async function createDraft(
   envelope: PhysicalPlaceImportEnvelope,
+  rawRecord: unknown,
   record: LegacyPhysicalPlaceRecord,
   contentHash: string,
 ): Promise<PhysicalPlaceImportDraft> {
@@ -168,7 +169,8 @@ async function createDraft(
     rawPayload: {
       sourceSystem: 'cryptopaymap_v2',
       importerVersion: envelope.importerVersion,
-      record,
+      rawRecord,
+      normalizedRecord: record,
     },
     observedAt,
     publishedAt: null,
@@ -298,7 +300,7 @@ function issueStrings(error: {
   issues: Array<{ path: PropertyKey[]; message: string }>;
 }): string[] {
   return error.issues.map((issue) => {
-    const path = issue.path.length === 0 ? '$' : `$.${issue.path.join('.')}`;
+    const path = issue.path.length === 0 ? '$' : `$.${issue.path.map(String).join('.')}`;
     return `${path}: ${issue.message}`;
   });
 }
@@ -322,18 +324,19 @@ export async function createPhysicalPlaceImportPlan(
   for (const [inputIndex, unknownRecord] of envelope.records.entries()) {
     const result = legacyPhysicalPlaceRecordSchema.safeParse(unknownRecord);
     if (!result.success) {
+      const issues = issueStrings(result.error);
       rejections.push({
         inputIndex,
         legacyId: possibleLegacyId(unknownRecord),
         reason: 'invalid_record',
-        issues: issueStrings(result.error),
+        issues,
       });
-      checksumRecords.push({ inputIndex, rejected: issueStrings(result.error) });
+      checksumRecords.push({ inputIndex, rawRecord: unknownRecord, rejected: issues });
       continue;
     }
 
     const record = result.data;
-    const contentHash = await sha256(record);
+    const contentHash = await sha256(unknownRecord);
     const existing = seenLegacyIds.get(record.legacyId);
     if (existing !== undefined) {
       if (existing.contentHash === contentHash) {
@@ -350,14 +353,14 @@ export async function createPhysicalPlaceImportPlan(
           issues: ['$.legacyId: the same legacy ID has conflicting content in this batch'],
         });
       }
-      checksumRecords.push({ inputIndex, record, replayOrConflict: true });
+      checksumRecords.push({ inputIndex, rawRecord: unknownRecord, replayOrConflict: true });
       continue;
     }
 
-    const draft = await createDraft(envelope, record, contentHash);
+    const draft = await createDraft(envelope, unknownRecord, record, contentHash);
     seenLegacyIds.set(record.legacyId, { contentHash, sourceRecordId: draft.sourceRecordId });
     drafts.push(draft);
-    checksumRecords.push({ inputIndex, record });
+    checksumRecords.push({ inputIndex, rawRecord: unknownRecord });
   }
 
   const detectedDuplicateSignals = duplicateSignals(drafts);
