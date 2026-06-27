@@ -16,6 +16,7 @@ export * from './claim-assets';
 export * from './entities';
 export * from './evidence';
 export * from './locations';
+export * from './media-legacy';
 export * from './networks';
 export * from './payment-registries';
 export * from './source-provenance';
