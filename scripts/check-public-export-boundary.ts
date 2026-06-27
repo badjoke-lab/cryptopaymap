@@ -281,18 +281,20 @@ artifacts['/data/manifest.json'] = {
   ...header,
   datasetVersion,
   canonicalOnly: true,
-  files: inventoryPaths.map((path) => ({
-    path,
-    mediaType: path === '/data/places.geojson' ? 'application/geo+json' : 'application/json',
-    schemaVersion,
-    recordCount: recordCount(path, artifacts[path]),
-    sha256: hashPublicArtifact(artifacts[path]),
-    licenses: ['odc-by-1-0'],
-  })),
+  files: await Promise.all(
+    inventoryPaths.map(async (path) => ({
+      path,
+      mediaType: path === '/data/places.geojson' ? 'application/geo+json' : 'application/json',
+      schemaVersion,
+      recordCount: recordCount(path, artifacts[path]),
+      sha256: await hashPublicArtifact(artifacts[path]),
+      licenses: ['odc-by-1-0'],
+    })),
+  ),
 };
 
-const validated = validatePublicArtifactSet(artifacts);
-const digest = publicSnapshotDigest(validated);
+const validated = await validatePublicArtifactSet(artifacts);
+const digest = await publicSnapshotDigest(validated);
 if (!/^[a-f0-9]{64}$/.test(digest) || !Object.isFrozen(validated)) {
   throw new Error('Validated release sets must be immutable and have a stable SHA-256 digest.');
 }
@@ -317,7 +319,7 @@ const withCandidateState = structuredClone(artifacts);
   withCandidateState['/data/acceptance-claims.json'] as {
     records: Array<{ status: string }>;
   }
-).records[0].status = 'candidate';
+).records[0]!.status = 'candidate';
 invalidSets.push(withCandidateState);
 
 const withUnexpectedField = structuredClone(artifacts);
@@ -325,7 +327,7 @@ const withUnexpectedField = structuredClone(artifacts);
   withUnexpectedField['/data/places.json'] as {
     records: Array<Record<string, unknown>>;
   }
-).records[0].internalMetadata = 'not publishable';
+).records[0]!.internalMetadata = 'not publishable';
 invalidSets.push(withUnexpectedField);
 
 const withWrongHash = structuredClone(artifacts);
@@ -351,7 +353,7 @@ invalidSets.push(withMismatchedTime);
 
 for (const invalid of invalidSets) {
   try {
-    validatePublicArtifactSet(invalid);
+    await validatePublicArtifactSet(invalid);
     throw new Error('An invalid release set passed validation.');
   } catch (error) {
     if (!(error instanceof PublicExportBoundaryError)) {
