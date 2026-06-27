@@ -195,10 +195,7 @@ const invalidPublications = [
   },
   {
     ...publication,
-    files: [
-      displayFile,
-      { ...displayFile, storageKey: 'media/public/asset-1/display-2.webp' },
-    ],
+    files: [displayFile, { ...displayFile, storageKey: 'media/public/asset-1/display-2.webp' }],
   },
   {
     ...publication,
@@ -206,11 +203,7 @@ const invalidPublications = [
   },
 ];
 
-if (
-  invalidPublications.some(
-    (value) => mediaPublicationInputSchema.safeParse(value).success,
-  )
-) {
+if (invalidPublications.some((value) => mediaPublicationInputSchema.safeParse(value).success)) {
   throw new Error('Invalid media publication was accepted.');
 }
 
@@ -227,9 +220,7 @@ const invalidLegacyIds = [
   { ...physicalLegacyId, canonicalPath: physicalLegacyId.legacyPath },
 ];
 
-if (
-  invalidLegacyIds.some((legacy) => legacyPlaceIdInputSchema.safeParse(legacy).success)
-) {
+if (invalidLegacyIds.some((legacy) => legacyPlaceIdInputSchema.safeParse(legacy).success)) {
   throw new Error('Invalid legacy identifier was accepted.');
 }
 

@@ -38,12 +38,7 @@ export const mediaRoleValues = [
   'evidence_image',
   'owner_verification_proof',
 ] as const;
-export const mediaReviewStatusValues = [
-  'pending',
-  'accepted',
-  'rejected',
-  'superseded',
-] as const;
+export const mediaReviewStatusValues = ['pending', 'accepted', 'rejected', 'superseded'] as const;
 export const mediaRightsStatusValues = [
   'unknown',
   'submitted_with_permission',
@@ -54,16 +49,8 @@ export const mediaRightsStatusValues = [
 export const mediaVisibilityValues = ['private', 'public', 'restricted'] as const;
 export const mediaVariantValues = ['original', 'display', 'thumbnail'] as const;
 export const mediaStorageScopeValues = ['quarantine', 'private', 'public'] as const;
-export const legacySourceSystemValues = [
-  'cryptopaymap_v2',
-  'crypto_acceptance_registry',
-] as const;
-export const legacyMigrationStatusValues = [
-  'pending',
-  'mapped',
-  'unresolved',
-  'retired',
-] as const;
+export const legacySourceSystemValues = ['cryptopaymap_v2', 'crypto_acceptance_registry'] as const;
+export const legacyMigrationStatusValues = ['pending', 'mapped', 'unresolved', 'retired'] as const;
 
 export const mediaPurposeEnum = pgEnum('media_purpose', mediaPurposeValues);
 export const mediaRoleEnum = pgEnum('media_role', mediaRoleValues);

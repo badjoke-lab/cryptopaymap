@@ -202,7 +202,10 @@ export const mediaFileInputSchema = z
       .min(1)
       .max(1_024)
       .regex(/^[A-Za-z0-9][A-Za-z0-9._/-]*$/, 'Use a relative object-storage key.')
-      .refine((value) => !value.split('/').includes('..'), 'Storage keys cannot traverse directories.'),
+      .refine(
+        (value) => !value.split('/').includes('..'),
+        'Storage keys cannot traverse directories.',
+      ),
     originalFilename: z
       .string()
       .trim()
@@ -356,7 +359,8 @@ export const legacyPlaceIdInputSchema = z
         context.addIssue({
           code: 'custom',
           path: ['canonicalPath'],
-          message: 'Mapped legacy identifiers require one target, a canonical path, and a resolution time.',
+          message:
+            'Mapped legacy identifiers require one target, a canonical path, and a resolution time.',
         });
       }
 
@@ -368,10 +372,7 @@ export const legacyPlaceIdInputSchema = z
         });
       }
 
-      if (
-        legacy.sourceSystem === 'crypto_acceptance_registry' &&
-        legacy.entityId === null
-      ) {
+      if (legacy.sourceSystem === 'crypto_acceptance_registry' && legacy.entityId === null) {
         context.addIssue({
           code: 'custom',
           path: ['entityId'],
@@ -390,7 +391,8 @@ export const legacyPlaceIdInputSchema = z
         context.addIssue({
           code: 'custom',
           path: ['resolutionNote'],
-          message: 'Unresolved and retired identifiers require a time and explanatory note, but no target.',
+          message:
+            'Unresolved and retired identifiers require a time and explanatory note, but no target.',
         });
       }
     }
