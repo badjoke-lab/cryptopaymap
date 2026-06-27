@@ -114,7 +114,7 @@ export const mediaAssets = pgTable(
     ),
     check(
       'media_assets_public_eligible',
-      sql`${table.visibility} <> 'public' or (${table.reviewStatus} = 'accepted' and ${table.purpose} in ('public_gallery', 'canonical_logo') and ${table.rightsStatus} in ('submitted_with_permission', 'licensed', 'public_domain') and ${table.publishedAt} is not null and ${table.altText} is not null)`,
+      sql`${table.visibility} <> 'public' or (${table.reviewStatus} = 'accepted' and ${table.purpose} in ('public_gallery', 'canonical_logo') and ${table.rightsStatus} in ('submitted_with_permission', 'licensed', 'public_domain') and ${table.publishedAt} is not null and ${table.altText} is not null and ${table.deletedAt} is null)`,
     ),
     check(
       'media_assets_licensed_reference',
