@@ -4,11 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { CandidateQueueResponse } from '../src/admin/candidates/queue';
 import { CandidateQueue } from '../src/components/admin/CandidateQueue';
 
-function page(
-  name: string,
-  id: string,
-  nextCursor: string | null = null,
-): CandidateQueueResponse {
+function page(name: string, id: string, nextCursor: string | null = null): CandidateQueueResponse {
   return {
     generatedAt: '2026-06-28T12:00:00.000Z',
     items: [
@@ -46,7 +42,7 @@ afterEach(() => {
 
 describe('CandidateQueue', () => {
   it('loads and displays validated Candidate summaries', async () => {
-    const fetchMock = vi.fn(async () =>
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL) =>
       jsonResponse(page('Example Candidate', '00000000-0000-4000-8000-000000000001')),
     );
     vi.stubGlobal('fetch', fetchMock);
@@ -55,14 +51,14 @@ describe('CandidateQueue', () => {
 
     expect(screen.getByRole('heading', { name: 'Loading Candidate queue' })).toBeInTheDocument();
     expect(await screen.findByRole('heading', { name: 'Example Candidate' })).toBeInTheDocument();
-    expect(screen.getByText('Official Site · 1 record')).toBeInTheDocument();
+    expect(screen.getByText(/official_site/)).toHaveTextContent('official_site · 1 record');
     expect(fetchMock.mock.calls[0]?.[0]).toContain('status=new%2Ctriaged');
   });
 
   it('applies filters and replaces the current page', async () => {
     const user = userEvent.setup();
-    const fetchMock = vi
-      .fn()
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL) => jsonResponse({}));
+    fetchMock
       .mockResolvedValueOnce(
         jsonResponse(page('First Candidate', '00000000-0000-4000-8000-000000000001')),
       )
@@ -84,12 +80,10 @@ describe('CandidateQueue', () => {
 
   it('appends the next cursor page without replacing loaded Candidates', async () => {
     const user = userEvent.setup();
-    const fetchMock = vi
-      .fn()
+    const fetchMock = vi.fn(async (_input: RequestInfo | URL) => jsonResponse({}));
+    fetchMock
       .mockResolvedValueOnce(
-        jsonResponse(
-          page('First Candidate', '00000000-0000-4000-8000-000000000001', 'next-page'),
-        ),
+        jsonResponse(page('First Candidate', '00000000-0000-4000-8000-000000000001', 'next-page')),
       )
       .mockResolvedValueOnce(
         jsonResponse(page('Second Candidate', '00000000-0000-4000-8000-000000000002')),
@@ -106,14 +100,20 @@ describe('CandidateQueue', () => {
   });
 
   it('fails closed on denied and invalid responses', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ error: 'candidate_queue_denied' }, 403)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ error: 'candidate_queue_denied' }, 403)),
+    );
     const { unmount } = render(<CandidateQueue />);
     expect(
       await screen.findByRole('heading', { name: 'Candidate queue access denied' }),
     ).toBeInTheDocument();
     unmount();
 
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ generatedAt: 'invalid' })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ generatedAt: 'invalid' })),
+    );
     render(<CandidateQueue />);
     expect(
       await screen.findByRole('heading', {
