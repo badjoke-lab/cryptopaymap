@@ -112,28 +112,28 @@ The detailed result is recorded in `docs/PHASE_2_COMPLETION_AUDIT.md`. Database 
 
 ## Phase 3 — Administration and review
 
-**Status:** Planned
+**Status:** In progress
 
 Phase 3 adds protected operational tools that persist, review, resolve, and promote the private data contracts created in Phase 2.
 
-| ID | Item | Status | Depends on |
-|---|---|---|---|
-| P3-01 | Admin data-access and transaction foundation | Planned | Phase 2 completion audit |
-| P3-02 | Protected admin shell and access contract | Planned | P3-01, Phase 1 staging contract |
-| P3-03 | Dashboard and operational queue summaries | Planned | P3-01, P3-02 |
-| P3-04 | Candidate queue | Planned | P3-01, P3-02 |
-| P3-05 | Candidate detail and provenance review | Planned | P3-04 |
-| P3-06 | Duplicate review and identity resolution | Planned | P3-05 |
-| P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 |
-| P3-08 | Evidence review and verification decisions | Planned | P3-07 |
-| P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 |
-| P3-10 | Media review | Planned | P3-02, P2-10 |
-| P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10, P2-12 |
-| P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 |
+| ID | Item | Status | Depends on | Pull request |
+|---|---|---|---|---|
+| P3-01 | Admin data-access and transaction foundation | Completed | Phase 2 completion audit | [#41](https://github.com/badjoke-lab/cryptopaymap/pull/41) |
+| P3-02 | Protected admin shell and access contract | Planned | P3-01, Phase 1 staging contract | — |
+| P3-03 | Dashboard and operational queue summaries | Planned | P3-01, P3-02 | — |
+| P3-04 | Candidate queue | Planned | P3-01, P3-02 | — |
+| P3-05 | Candidate detail and provenance review | Planned | P3-04 | — |
+| P3-06 | Duplicate review and identity resolution | Planned | P3-05 | — |
+| P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 | — |
+| P3-08 | Evidence review and verification decisions | Planned | P3-07 | — |
+| P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 | — |
+| P3-10 | Media review | Planned | P3-02, P2-10 | — |
+| P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10, P2-12 | — |
+| P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
 ### P3-01 — Admin data-access and transaction foundation
 
-Create repository-only data services for private candidates, source records, legacy mappings, canonical entities, locations, claims, Evidence, verification events, and audit events. Define transaction, idempotency, rollback, and authorization-context boundaries without adding public routes or automatic promotion.
+Create the private import-batch and Candidate persistence boundary. Require an explicit administration mutation context, validate Candidate-only invariants before backend access, persist source records, Candidates, origin relationships, and pending legacy mappings in one Neon HTTP batch transaction, and reject conflicting deterministic identities without adding public routes or automatic promotion.
 
 ### P3-02 through P3-06 — Protected review workspace
 
