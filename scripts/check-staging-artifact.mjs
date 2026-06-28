@@ -48,15 +48,19 @@ const adminOverview = readFileSync(join(outputDirectory, 'admin/index.html'), 'u
 const requiredAdminFragments = [
   'noindex, nofollow, noarchive',
   'Protected workspace',
-  'No private records are embedded in static HTML.',
+  'Read-only bounded counts',
+  'Dashboard access grants no write capability.',
+  'Private records are not embedded in static HTML.',
 ];
 const forbiddenAdminFragments = [
   'CF_ACCESS_TEAM_DOMAIN',
   'CF_ACCESS_AUD',
+  'CPM_ADMIN_DASHBOARD_SUBJECTS',
   'Cf-Access-Jwt-Assertion',
   'rawPayload',
   'candidateId',
   'sourceRecordId',
+  'storageKey',
 ];
 
 for (const fragment of requiredAdminFragments) {

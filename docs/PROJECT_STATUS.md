@@ -8,47 +8,50 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-03 — Dashboard and operational queue summaries
+P3-04 — Candidate queue
 
 ## Active pull request
 
-None. P3-02 closes with pull request #42.
+None. P3-03 closes with pull request #43.
 
 ## Latest completed work
 
 - Phase 2 completed through pull request #40.
 - P3-01 completed through pull request #41.
 - P3-02 completed through pull request #42.
+- P3-03 completed through pull request #43.
 - `/admin` and descendant routes use a fail-closed Pages Function boundary.
 - Cloudflare Access assertions are checked for signature, issuer, audience, expiration, and not-before values.
-- Administration identity is derived only from verified claims and placed in protected request context.
-- Successful and failed administration responses use private, no-store, noindex, and no-referrer behavior.
-- The responsive administration shell exposes navigation and placeholders without private records or write controls.
-- Repository checks cover configuration, verification, identity propagation, route failure, static artifacts, accessibility, and build behavior.
-- Candidate-to-canonical promotion and public export publication remain disabled.
+- Exact verified Access subjects map to the read-only `dashboard:read` capability without email-based authorization.
+- The protected dashboard exposes bounded Candidate, duplicate, Evidence, recheck, media, import, and recent-event summaries.
+- Dashboard responses exclude record identifiers, source payloads, contacts, Evidence content, media keys, and write controls.
+- Loading, ready, zero-work, denied, unavailable, invalid-response, and retry states are implemented.
+- Publication remains unavailable until the dedicated P3-11 release workflow.
+- Candidate-to-canonical promotion remains disabled.
 
-## P3-03 next
+## P3-04 next
 
-- define purpose-built operational summary contracts rather than generic private-table responses
-- add dashboard cards for review work, rechecks, media review, publication state, and recent canonical activity
-- preserve explicit capability checks before every private query
-- add loading, empty, unavailable, and error states without leaking record existence
-- keep dashboard summaries separate from Candidate detail and canonical write operations
-- add query, authorization, rendering, accessibility, and build tests
+- define a bounded Candidate queue contract with explicit `candidate:read` capability
+- query private Candidate rows without returning raw source payloads, contacts, internal notes, or canonical write controls
+- add stable sorting, status, type, source, priority, and duplicate-signal filters
+- add cursor-based pagination with bounded page size
+- expose protected queue loading, empty, denied, unavailable, invalid-response, and retry states
+- keep Candidate detail and provenance expansion outside the queue item
+- add authorization, query, endpoint, rendering, accessibility, and artifact tests
 
 ## Cloudflare status
 
-Live staging and Cloudflare Access browser verification remain deferred. The repository-level P3-02 access contract is complete and does not block P3-03 work.
+Live staging, Access browser verification, and live database aggregation remain deferred. The repository-level P3-03 dashboard contract is complete and does not block P3-04 work.
 
 ## Next
 
-1. Start P3-03 from the P3-02 completion main.
-2. Add bounded dashboard summary services and protected UI states.
-3. Keep Candidate details, promotion, and publication actions outside the dashboard item.
+1. Start P3-04 from the P3-03 completion main.
+2. Add a bounded read-only Candidate queue and protected filtering contract.
+3. Keep Candidate detail, duplicate resolution, promotion, and publication outside P3-04.
 
 ## Blocked
 
-No repository blocker. Only live Cloudflare deployment verification is deferred.
+No repository blocker. Only live deployment and database verification are deferred.
 
 ## Verification rule
 
