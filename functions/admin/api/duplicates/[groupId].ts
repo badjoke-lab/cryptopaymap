@@ -87,7 +87,7 @@ export interface DuplicateReviewHandlerDependencies {
   now?: () => Date;
 }
 
-function jsonResponse(status: number, body: Record<string, unknown>): Response {
+function jsonResponse(status: number, body: unknown): Response {
   return withAdminSecurityHeaders(
     new Response(JSON.stringify(body), {
       status,
