@@ -1,18 +1,18 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-06-27
+**Last verified:** 2026-06-28
 
 ## Current phase
 
-Phase 2 — Data core
+Phase 3 — Administration and review
 
 ## Current implementation item
 
-P2-13 — Physical-place candidate importer
+P3-01 — Admin data-access and transaction foundation
 
 ## Active pull request
 
-[#39 — P2-13: Add physical-place candidate importer](https://github.com/badjoke-lab/cryptopaymap/pull/39)
+None. Phase 2 closes with pull request #40.
 
 ## Latest completed work
 
@@ -24,36 +24,48 @@ P2-13 — Physical-place candidate importer
 - P2-07 completed through pull request #31.
 - P2-08 completed through pull request #32.
 - P2-09 completed through pull request #34.
-- P2-10 completed through pull request #35.
-- P2-10 database guard follow-up completed through pull request #37.
+- P2-10 completed through pull requests #35 and #37.
 - P2-11 completed through pull request #36.
 - P2-12 completed through pull request #38.
+- P2-13 completed through pull request #39.
+- P2-14 completed through pull request #40.
 
-## P2-13 in progress
+## Phase 2 completion result
 
-- strict validation for untrusted legacy physical-place rows
-- deterministic candidate, source-record, and legacy-mapping identities
-- immutable raw payload and SHA-256 content provenance
-- candidate-only output with pending legacy mappings
-- exact replay collapse and conflicting legacy-ID rejection
-- OSM-identity and same-name/same-coordinate review signals without automatic merge
-- preservation of source payment tags without asset, network, method, or Confirmed inference
-- ten-record runtime proof and positive/negative unit tests
-- no database write, live legacy access, public export, or Cloudflare dependency
+- canonical assets, networks, payment methods, routes, entities, locations, claims, Evidence, and verification history are defined
+- private source candidates preserve original and normalized source values, provenance, licenses, and legacy identities
+- media public eligibility and rights boundaries are enforced
+- twelve public JSON and GeoJSON contracts use an exact allowlist
+- recursive leakage, manifest, count, version, time, and SHA-256 validation fail closed
+- ten physical and ten online synthetic records import as private candidates
+- indirect spending, exchange, and ATM types are excluded from the main online directory
+- duplicate signals do not merge records automatically
+- importers create no automatic Confirmed records or public artifacts
+- the complete result is recorded in `docs/PHASE_2_COMPLETION_AUDIT.md`
+
+## P3-01 next
+
+- define private data repositories and service interfaces
+- define transaction and rollback boundaries
+- define idempotent candidate-plan persistence
+- define authorization context for administration actions
+- persist source records, candidates, and pending legacy mappings without promotion
+- keep all public and automatic-Confirmed paths disabled
+- add positive, replay, rollback, and authorization tests
 
 ## Cloudflare status
 
-Live staging verification remains deferred in draft pull request #23 and does not block repository-only Phase 2 work.
+Live staging and Cloudflare Access verification remain deferred and do not block repository-only P3-01 work.
 
 ## Next
 
-1. Complete CI and merge pull request #39.
-2. Start P2-14 online-service importer and Phase 2 integration audit.
-3. Keep imported candidates private until Phase 3 administrative review and promotion.
+1. Merge pull request #40 after final CI and diff audit.
+2. Start P3-01 on a new branch from the resulting main.
+3. Keep Candidate-to-canonical promotion disabled until the later reviewed promotion item.
 
 ## Blocked
 
-No repository blocker. Only live staging verification is deferred.
+No repository blocker. Only live Cloudflare verification is deferred.
 
 ## Verification rule
 
