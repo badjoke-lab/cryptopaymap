@@ -1,11 +1,15 @@
 import { sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
+  candidateDuplicateGroups,
+  candidateDuplicateSignals,
   candidateSourceRecords,
   importBatches,
   legacyPlaceIds,
   sourceCandidates,
   sourceRecords,
+  type NewCandidateDuplicateGroup,
+  type NewCandidateDuplicateSignal,
 } from '../../db/schema';
 import {
   CandidatePlanPersistenceError,
@@ -14,6 +18,7 @@ import {
   type CandidatePlanAtomicBackend,
 } from './candidate-plan';
 
+// Drizzle's batch tuple is intentionally broad at runtime but narrow at the type boundary.
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
 function postgresErrorCode(error: unknown): string | null {
@@ -47,6 +52,22 @@ function importBatchGuard(database: CryptoPayMapDatabase, batch: CandidatePersis
         and ${importBatches.rejectionSummary} = ${JSON.stringify(value.rejectionSummary)}::jsonb
         and ${importBatches.startedAt} = ${value.startedAt}
         and ${importBatches.completedAt} = ${value.completedAt}
+    ) then 1 else 0 end as persistence_guard
+  `);
+}
+
+function duplicateGroupGuard(
+  database: CryptoPayMapDatabase,
+  group: NewCandidateDuplicateGroup,
+) {
+  return database.execute(sql`
+    select 1 / case when exists (
+      select 1
+      from ${candidateDuplicateGroups}
+      where ${candidateDuplicateGroups.id} = ${group.id}
+        and ${candidateDuplicateGroups.status} = ${group.status}
+        and ${candidateDuplicateGroups.resolutionNote} is not distinct from ${group.resolutionNote}
+        and ${candidateDuplicateGroups.resolvedAt} is not distinct from ${group.resolvedAt}
     ) then 1 else 0 end as persistence_guard
   `);
 }
@@ -106,6 +127,25 @@ function draftGuard(database: CryptoPayMapDatabase, draft: CandidatePersistenceD
   `);
 }
 
+function duplicateSignalGuard(
+  database: CryptoPayMapDatabase,
+  signal: NewCandidateDuplicateSignal,
+) {
+  return database.execute(sql`
+    select 1 / case when exists (
+      select 1
+      from ${candidateDuplicateSignals}
+      where ${candidateDuplicateSignals.id} = ${signal.id}
+        and ${candidateDuplicateSignals.duplicateGroupId} = ${signal.duplicateGroupId}
+        and ${candidateDuplicateSignals.leftCandidateId} = ${signal.leftCandidateId}
+        and ${candidateDuplicateSignals.rightCandidateId} = ${signal.rightCandidateId}
+        and ${candidateDuplicateSignals.reason} = ${signal.reason}
+        and ${candidateDuplicateSignals.strength} = ${signal.strength}
+        and ${candidateDuplicateSignals.importBatchId} is not distinct from ${signal.importBatchId}
+    ) then 1 else 0 end as persistence_guard
+  `);
+}
+
 export function createDrizzleCandidatePlanBackend(
   database: CryptoPayMapDatabase,
 ): CandidatePlanAtomicBackend {
@@ -115,6 +155,13 @@ export function createDrizzleCandidatePlanBackend(
         database.insert(importBatches).values(batch.importBatch).onConflictDoNothing(),
         importBatchGuard(database, batch),
       ];
+
+      for (const group of batch.duplicateGroups) {
+        statements.push(
+          database.insert(candidateDuplicateGroups).values(group).onConflictDoNothing(),
+          duplicateGroupGuard(database, group),
+        );
+      }
 
       for (const draft of batch.drafts) {
         statements.push(
@@ -126,6 +173,13 @@ export function createDrizzleCandidatePlanBackend(
             .onConflictDoNothing(),
           database.insert(legacyPlaceIds).values(draft.legacyMapping).onConflictDoNothing(),
           draftGuard(database, draft),
+        );
+      }
+
+      for (const signal of batch.duplicateSignals) {
+        statements.push(
+          database.insert(candidateDuplicateSignals).values(signal).onConflictDoNothing(),
+          duplicateSignalGuard(database, signal),
         );
       }
 
