@@ -106,8 +106,10 @@ describe('Candidate queue contract', () => {
     invalidPage.hasNextPage = true;
     const backend: CandidateQueueBackend = { loadPage: vi.fn(async () => invalidPage) };
     const query = parseCandidateQueueQuery(new URL('https://example.test/admin/api/candidates'));
-    await expect(loadCandidateQueue(authorizedContext, backend, query, asOf)).rejects.toMatchObject({
-      code: 'invalid_page',
-    });
+    await expect(loadCandidateQueue(authorizedContext, backend, query, asOf)).rejects.toMatchObject(
+      {
+        code: 'invalid_page',
+      },
+    );
   });
 });
