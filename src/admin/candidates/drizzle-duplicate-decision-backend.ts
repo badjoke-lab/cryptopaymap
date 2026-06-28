@@ -21,10 +21,7 @@ function postgresErrorCode(error: unknown): string | null {
   return typeof code === 'string' ? code : null;
 }
 
-async function readExistingDecision(
-  database: CryptoPayMapDatabase,
-  requestId: string,
-) {
+async function readExistingDecision(database: CryptoPayMapDatabase, requestId: string) {
   const rows = await database
     .select({
       id: candidateDuplicateDecisions.id,
@@ -58,10 +55,7 @@ function replayReceipt(
   };
 }
 
-function groupGuard(
-  database: CryptoPayMapDatabase,
-  command: CandidateDuplicateDecisionCommand,
-) {
+function groupGuard(database: CryptoPayMapDatabase, command: CandidateDuplicateDecisionCommand) {
   return database.execute(sql`
     select 1 / case when exists (
       select 1
