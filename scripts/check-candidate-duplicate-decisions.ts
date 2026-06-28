@@ -56,8 +56,7 @@ if (receipt.groupStatus !== 'resolved' || receipt.state !== 'committed') {
 }
 const snapshot = backend.snapshot();
 if (
-  snapshot.candidates.find((candidate) => candidate.id === primaryId)?.candidateStatus !==
-  'triaged'
+  snapshot.candidates.find((candidate) => candidate.id === primaryId)?.candidateStatus !== 'triaged'
 ) {
   throw new Error('Candidate duplicate decision changed the selected primary Candidate.');
 }
