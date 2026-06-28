@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { ProtectedAdminIdentity } from '../dashboard/identity-context';
+import type { AdminAccessIdentity } from '../access/identity';
 import type { CandidateDuplicateMutationContext } from './duplicate-decision';
 
 export const candidateDuplicateAuthorizationEnvironmentSchema = z
@@ -39,7 +39,7 @@ function parseSubjects(value: string | undefined): Set<string> {
   let parsed: unknown;
   try {
     parsed = JSON.parse(value);
-  } catch (error) {
+  } catch {
     throw new CandidateDuplicateAuthorizationError(
       'configuration',
       'Candidate duplicate resolve subjects must be a JSON array.',
@@ -74,7 +74,7 @@ export function readCandidateDuplicateAuthorizationPolicy(
 }
 
 export function authorizeCandidateDuplicateResolve(
-  identity: ProtectedAdminIdentity | null,
+  identity: AdminAccessIdentity | null,
   policy: CandidateDuplicateAuthorizationPolicy,
   requestId: string | null,
 ): CandidateDuplicateMutationContext {
