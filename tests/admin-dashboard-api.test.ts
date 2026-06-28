@@ -38,17 +38,11 @@ function summary(): AdminDashboardSummary {
   };
 }
 
-function context(
-  overrides: {
-    identity?: unknown;
-    subjects?: string;
-  } = {},
-) {
+function context(overrides: { identity?: unknown; subjects?: string } = {}) {
   return {
     request: new Request('https://cryptopaymap.example/admin/api/dashboard'),
     env: {
-      CPM_ADMIN_DASHBOARD_SUBJECTS:
-        overrides.subjects ?? JSON.stringify(['reviewer-subject']),
+      CPM_ADMIN_DASHBOARD_SUBJECTS: overrides.subjects ?? JSON.stringify(['reviewer-subject']),
     },
     params: {},
     data: {
@@ -96,9 +90,7 @@ describe('protected administration dashboard endpoint', () => {
     const loadSummary = vi.fn(async () => summary());
     const handler = createAdminDashboardHandler({ loadSummary });
 
-    const response = await handler(
-      context({ subjects: JSON.stringify(['another-subject']) }),
-    );
+    const response = await handler(context({ subjects: JSON.stringify(['another-subject']) }));
 
     expect(response.status).toBe(403);
     await expect(response.json()).resolves.toEqual({ error: 'dashboard_denied' });
