@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-06-27
+**Last updated:** 2026-06-28
 
 This document tracks repository implementation work. It is separate from the public product Roadmap and does not contain private operational planning.
 
@@ -48,11 +48,11 @@ Status values: `Planned`, `In progress`, `Completed`, `Deferred`, `Revised`.
 | P1-11 | Public Roadmap and Changelog content loaders | Completed | [#21](https://github.com/badjoke-lab/cryptopaymap/pull/21) |
 | P1-12 | Integration and quality audit | Repository completed; live verification deferred | [#22](https://github.com/badjoke-lab/cryptopaymap/pull/22), [#23](https://github.com/badjoke-lab/cryptopaymap/pull/23) |
 
-The repository audit, generated artifact checks, and deployment contract are complete. Pull request #23 remains a draft record for the first live Cloudflare staging verification. External access is unavailable, so the live verification is deferred and does not block repository-only Phase 2 work.
+The repository audit, generated artifact checks, and deployment contract are complete. Pull request #23 remains a draft record for the first live Cloudflare staging verification. External access is unavailable, so the live verification is deferred and does not block repository-only work.
 
 ## Phase 2 — Data core
 
-**Status:** In progress
+**Status:** Completed
 
 Phase 2 establishes the Candidate-to-canonical-to-public-export path. It does not add public submission forms or the full administration interface.
 
@@ -70,8 +70,8 @@ Phase 2 establishes the Candidate-to-canonical-to-public-export path. It does no
 | P2-10 | Media metadata and legacy identifiers | Completed | P2-04, P2-09 | [#35](https://github.com/badjoke-lab/cryptopaymap/pull/35), [#37](https://github.com/badjoke-lab/cryptopaymap/pull/37) |
 | P2-11 | Public export schemas | Completed | P2-05 through P2-10 | [#36](https://github.com/badjoke-lab/cryptopaymap/pull/36) |
 | P2-12 | Export allowlist and leakage validator | Completed | P2-11 | [#38](https://github.com/badjoke-lab/cryptopaymap/pull/38) |
-| P2-13 | Physical-place candidate importer | In progress | P2-09, P2-10, P2-12 | [#39](https://github.com/badjoke-lab/cryptopaymap/pull/39) |
-| P2-14 | Online-service importer and Phase 2 integration audit | Planned | P2-09, P2-12, P2-13 | — |
+| P2-13 | Physical-place candidate importer | Completed | P2-09, P2-10, P2-12 | [#39](https://github.com/badjoke-lab/cryptopaymap/pull/39) |
+| P2-14 | Online-service importer and Phase 2 integration audit | Completed | P2-09, P2-12, P2-13 | [#40](https://github.com/badjoke-lab/cryptopaymap/pull/40) |
 
 ### P2-01 — Asset registry
 
@@ -91,26 +91,61 @@ Create evidence, verification events, source candidates, provenance, media metad
 
 ### P2-11 and P2-12 — Public export boundary
 
-Define compact map pins, physical places, GeoJSON, online services, registries, manifest, and version outputs. Use an allowlist rather than serializing database rows directly. Validation fails on Candidate, private evidence, contact, internal note, or private media leakage.
+Define compact map pins, physical places, GeoJSON, online services, registries, manifest, and version outputs. Use an allowlist rather than serializing database rows directly. Validation fails on Candidate, private evidence, contact, internal note, private media, storage, or raw-payload leakage.
 
 ### P2-13 and P2-14 — Importers and integration
 
-Import physical and online legacy records as source candidates rather than Confirmed records. Preserve provenance and legacy IDs, run duplicate checks, and prove the complete path with at least ten physical and ten online test records.
+Import physical and online legacy records as source candidates rather than Confirmed records. Preserve original and normalized values, provenance, licenses, and legacy IDs; produce duplicate review signals without automatic merges; exclude indirect spending categories; and prove the complete path with ten physical and ten online synthetic records.
 
 **Phase 2 completion criteria**
 
 - Candidate and canonical records are structurally separate.
-- Reviewable migrations are reversible or have documented rollback.
+- Reviewable migrations and drift checks are present.
 - Verification states and history are auditable.
-- Only eligible public records enter validated exports.
+- Only eligible public records can enter validated exports.
 - Source and license metadata remain traceable.
+- Ten physical and ten online test imports succeed.
 - Test imports produce no automatic Confirmed records.
+- Importer plans fail public artifact validation.
+
+The detailed result is recorded in `docs/PHASE_2_COMPLETION_AUDIT.md`.
 
 ## Phase 3 — Administration and review
 
 **Status:** Planned
 
-Build the protected administration shell, review queue, candidate detail, claim editor, evidence review, state transitions, reconfirmation queue, media review, export controls, and audit history.
+Phase 3 adds protected operational tools that persist, review, resolve, and promote the private data contracts created in Phase 2.
+
+| ID | Item | Status | Depends on |
+|---|---|---|---|
+| P3-01 | Admin data-access and transaction foundation | Planned | Phase 2 completion audit |
+| P3-02 | Protected admin shell and access contract | Planned | P3-01, Phase 1 staging contract |
+| P3-03 | Dashboard and operational queue summaries | Planned | P3-01, P3-02 |
+| P3-04 | Candidate queue | Planned | P3-01, P3-02 |
+| P3-05 | Candidate detail and provenance review | Planned | P3-04 |
+| P3-06 | Duplicate review and identity resolution | Planned | P3-05 |
+| P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 |
+| P3-08 | Evidence review and verification decisions | Planned | P3-07 |
+| P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 |
+| P3-10 | Media review | Planned | P3-02, P2-10 |
+| P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10, P2-12 |
+| P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 |
+
+### P3-01 — Admin data-access and transaction foundation
+
+Create repository-only data services for private candidates, source records, legacy mappings, canonical entities, locations, claims, Evidence, verification events, and audit events. Define transaction, idempotency, rollback, and authorization-context boundaries without adding public routes or automatic promotion.
+
+### P3-02 through P3-06 — Protected review workspace
+
+Build the administration shell, access boundary, dashboard, candidate queue, candidate detail, provenance inspection, and explicit duplicate decisions. Live Cloudflare Access verification may remain deferred while repository contracts and route protection are tested.
+
+### P3-07 through P3-10 — Canonical decisions
+
+Add claim editing, field normalization, Candidate-to-canonical promotion, Evidence decisions, status transitions, reconfirmation work, and media review. Confirmed promotion must enforce the verification policy, explicit network and method resolution, How-to-pay, and public/private boundaries.
+
+### P3-11 and P3-12 — Controlled publication and audit
+
+Add explicit export controls, release validation, immutable audit history, and a complete integration proof from private candidate through reviewed canonical state to validated public artifacts.
 
 ## Phase 4 — Public core / MVP-A
 
