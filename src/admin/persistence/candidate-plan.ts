@@ -118,7 +118,9 @@ function rejectionSummary(plan: CandidateImportPlan): Record<string, number> {
   for (const rejection of plan.rejections) {
     counts[rejection.reason] = (counts[rejection.reason] ?? 0) + 1;
   }
-  return Object.fromEntries(Object.entries(counts).sort(([left], [right]) => left.localeCompare(right)));
+  return Object.fromEntries(
+    Object.entries(counts).sort(([left], [right]) => left.localeCompare(right)),
+  );
 }
 
 function assertUnique(values: readonly string[], label: string, issues: string[]): void {
@@ -287,6 +289,9 @@ function buildPersistenceBatch(request: PersistCandidatePlanRequest): CandidateP
     mutation,
     importBatch: {
       id: plan.importBatchId,
+      requestId: mutation.requestId,
+      actorId: mutation.actorId,
+      actorType: mutation.actorType,
       sourceId: metadata.sourceId,
       importKind: metadata.importKind,
       sourceSchemaVersion: metadata.sourceSchemaVersion,
