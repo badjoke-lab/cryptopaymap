@@ -1,7 +1,7 @@
 # Candidate detail and provenance contract
 
 **Implementation item:** P3-05  
-**Status:** In progress  
+**Status:** Completed  
 **Visibility:** Repository-public implementation contract; no private Candidate values are included
 
 ## Purpose
@@ -166,4 +166,4 @@ All responses use private, no-store administration headers and noindex directive
 
 ## Deferred verification
 
-Live Cloudflare Access browser verification and live Neon result inspection remain deferred. Repository contracts, tests, static artifact checks, and fail-closed behavior must pass before merge.
+Live Cloudflare Access browser verification and live Neon result inspection remain deferred. Repository contracts, tests, static artifact checks, and fail-closed behavior pass on the P3-05 implementation head.
