@@ -300,7 +300,8 @@ function duplicateSignals(drafts: OnlineServiceImportDraft[]): OnlineServiceDupl
     const domain = draft.reviewData.officialDomain;
     if (domain !== null) {
       const owner = domainOwners.get(domain);
-      if (owner !== undefined) addSignal(owner, draft.candidateId, 'shared_official_domain', 'strong');
+      if (owner !== undefined)
+        addSignal(owner, draft.candidateId, 'shared_official_domain', 'strong');
       else domainOwners.set(domain, draft.candidateId);
     }
 
@@ -401,7 +402,10 @@ export async function createOnlineServiceImportPlan(
       continue;
     }
 
-    const importableRecord = { ...record, recordType: record.recordType } as LegacyOnlineServiceRecord & {
+    const importableRecord = {
+      ...record,
+      recordType: record.recordType,
+    } as LegacyOnlineServiceRecord & {
       recordType: ImportableOnlineCandidateType;
     };
     const draft = await createDraft(envelope, unknownRecord, importableRecord, contentHash);
@@ -421,7 +425,9 @@ export async function createOnlineServiceImportPlan(
     importerVersion: envelope.importerVersion,
     records: checksumRecords,
   });
-  const outOfScopeCount = rejections.filter((rejection) => rejection.reason === 'out_of_scope').length;
+  const outOfScopeCount = rejections.filter(
+    (rejection) => rejection.reason === 'out_of_scope',
+  ).length;
 
   return {
     importerVersion: envelope.importerVersion,
