@@ -1,1 +1,108 @@
-export {};
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  candidateDuplicateReviewResponseSchema,
+  type CandidateDuplicateReviewResponse,
+} from '../../admin/candidates/duplicate-review';
+import { Button } from '../ui/Button';
+
+function humanize(value: string): string {
+  return value.split('_').map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`).join(' ');
+}
+
+type State =
+  | { status: 'loading' }
+  | { status: 'ready'; review: CandidateDuplicateReviewResponse }
+  | { status: 'missing' | 'denied' | 'not_found' | 'unavailable' | 'error' };
+
+export function CandidateDuplicateReview() {
+  const groupId = useMemo(() => new URLSearchParams(window.location.search).get('group'), []);
+  const [state, setState] = useState<State>({ status: 'loading' });
+
+  const loadReview = useCallback(async (signal?: AbortSignal) => {
+    if (!groupId) return setState({ status: 'missing' });
+    setState({ status: 'loading' });
+    try {
+      const response = await fetch(`/admin/api/duplicates/${encodeURIComponent(groupId)}`, {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+        signal: signal ?? null,
+      });
+      if (response.status === 403) return setState({ status: 'denied' });
+      if (response.status === 404) return setState({ status: 'not_found' });
+      if (response.status === 400) return setState({ status: 'missing' });
+      if (response.status === 503) return setState({ status: 'unavailable' });
+      if (!response.ok) return setState({ status: 'error' });
+      const parsed = candidateDuplicateReviewResponseSchema.safeParse(await response.json());
+      setState(parsed.success ? { status: 'ready', review: parsed.data } : { status: 'error' });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return;
+      setState({ status: 'error' });
+    }
+  }, [groupId]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadReview(controller.signal);
+    return () => controller.abort();
+  }, [loadReview]);
+
+  if (state.status === 'loading') {
+    return <p className="rounded-card border border-border bg-surface p-6 text-sm text-muted">Loading review…</p>;
+  }
+  if (state.status !== 'ready') {
+    const message = {
+      missing: 'A duplicate-group identifier is required.',
+      denied: 'This identity cannot read the group.',
+      not_found: 'The group was not found.',
+      unavailable: 'The review service is unavailable.',
+      error: 'The response could not be verified.',
+    }[state.status];
+    return (
+      <section className="rounded-card border border-border bg-surface p-6">
+        <h2 className="m-0 text-xl font-semibold text-ink">Duplicate review unavailable</h2>
+        <p className="mt-2 text-sm text-muted">{message}</p>
+        {state.status === 'unavailable' || state.status === 'error' ? (
+          <Button className="mt-5" variant="secondary" onClick={() => void loadReview()}>
+            Retry review
+          </Button>
+        ) : null}
+      </section>
+    );
+  }
+
+  const { review } = state;
+  return (
+    <div>
+      <a className="text-sm font-semibold text-brand-700" href="/admin/candidates/">← Back to Candidate queue</a>
+      <section className="mt-5 rounded-card border border-border bg-surface p-5 shadow-sm">
+        <p className="m-0 text-xs font-semibold uppercase text-brand-700">Protected duplicate group</p>
+        <h2 className="mt-2 text-2xl font-semibold text-ink">{review.members.length} Candidate records</h2>
+        <p className="mt-2 break-all text-xs text-muted">{review.group.id} · {humanize(review.group.status)}</p>
+      </section>
+      <section className="mt-8">
+        <h2 className="text-2xl font-semibold text-ink">Candidate comparison</h2>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {review.members.map((member) => (
+            <article key={member.id} className="rounded-card border border-border bg-surface p-5 shadow-sm">
+              <h3 className="m-0 text-lg font-semibold text-ink">{member.name}</h3>
+              <p className="mt-1 text-sm text-muted">{humanize(member.status)} · {member.sourceCount} sources</p>
+              <p className="mt-3 text-sm text-muted">{member.sourceTypes.map(humanize).join(', ') || 'No source types'}</p>
+              <a className="mt-4 inline-flex text-sm font-semibold text-brand-700" href={`/admin/candidates/detail/?id=${encodeURIComponent(member.id)}`}>Open Candidate detail</a>
+            </article>
+          ))}
+        </div>
+      </section>
+      <section className="mt-8 rounded-card border border-border bg-surface p-5 shadow-sm">
+        <h2 className="m-0 text-xl font-semibold text-ink">Persisted signals</h2>
+        <ul className="mt-4 grid gap-3 p-0">
+          {review.signals.map((signal) => (
+            <li key={signal.id} className="list-none rounded-control border border-border bg-canvas p-4 text-sm text-ink">
+              {humanize(signal.reason)} · {humanize(signal.strength)}
+            </li>
+          ))}
+        </ul>
+      </section>
+    </div>
+  );
+}
