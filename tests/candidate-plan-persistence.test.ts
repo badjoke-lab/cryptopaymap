@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   CandidatePlanPersistenceError,
   createCandidatePlanPersistenceService,
+  type AdminMutationContext,
   type PersistCandidatePlanRequest,
 } from '../src/admin/persistence/candidate-plan';
 import { InMemoryCandidatePlanBackend } from '../src/admin/persistence/in-memory-candidate-plan-backend';
@@ -11,12 +12,12 @@ import { createPhysicalPlaceImportPlan } from '../src/importers/physical-place';
 const physicalSourceId = '11111111-1111-4111-8111-111111111111';
 const onlineSourceId = '44444444-4444-4444-8444-444444444444';
 
-function mutation() {
+function mutation(): AdminMutationContext {
   return {
     requestId: '77777777-7777-4777-8777-777777777777',
     actorId: 'admin:test-reviewer',
-    actorType: 'human' as const,
-    capabilities: ['candidate:write'] as const,
+    actorType: 'human',
+    capabilities: ['candidate:write'],
   };
 }
 
