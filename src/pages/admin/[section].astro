@@ -1,42 +1,42 @@
 ---
 import AdminLayout from '../../layouts/AdminLayout.astro';
 
-const sections = {
-  candidates: {
-    heading: 'Candidates',
-    description: 'Private source candidates waiting for identity, provenance, and duplicate review.',
-  },
-  claims: {
-    heading: 'Claims',
-    description: 'Canonical payment-claim editing will be added after candidate review boundaries are complete.',
-  },
-  evidence: {
-    heading: 'Evidence',
-    description: 'Evidence strength, source, observation, visibility, and contradiction review will be added here.',
-  },
-  rechecks: {
-    heading: 'Rechecks',
-    description: 'Reconfirmation due dates and stale-state work will be managed in this protected section.',
-  },
-  submissions: {
-    heading: 'Submissions',
-    description: 'Public contribution review belongs to MVP-B and is not connected in the current administration phase.',
-  },
-  media: {
-    heading: 'Media',
-    description: 'Private proof, rights review, privacy checks, and public-gallery decisions will remain separate.',
-  },
-  exports: {
-    heading: 'Exports',
-    description: 'Validated public releases will require an explicit protected action and complete artifact checks.',
-  },
-  audit: {
-    heading: 'Audit',
-    description: 'Immutable administration events and decision history will be exposed here after the audit layer exists.',
-  },
-} as const;
-
 export function getStaticPaths() {
+  const sections = {
+    candidates: {
+      heading: 'Candidates',
+      description: 'Private source candidates waiting for identity, provenance, and duplicate review.',
+    },
+    claims: {
+      heading: 'Claims',
+      description: 'Canonical payment-claim editing will be added after candidate review boundaries are complete.',
+    },
+    evidence: {
+      heading: 'Evidence',
+      description: 'Evidence strength, source, observation, visibility, and contradiction review will be added here.',
+    },
+    rechecks: {
+      heading: 'Rechecks',
+      description: 'Reconfirmation due dates and stale-state work will be managed in this protected section.',
+    },
+    submissions: {
+      heading: 'Submissions',
+      description: 'Public contribution review belongs to MVP-B and is not connected in the current administration phase.',
+    },
+    media: {
+      heading: 'Media',
+      description: 'Private proof, rights review, privacy checks, and public-gallery decisions will remain separate.',
+    },
+    exports: {
+      heading: 'Exports',
+      description: 'Validated public releases will require an explicit protected action and complete artifact checks.',
+    },
+    audit: {
+      heading: 'Audit',
+      description: 'Immutable administration events and decision history will be exposed here after the audit layer exists.',
+    },
+  } as const;
+
   return Object.entries(sections).map(([section, value]) => ({
     params: { section },
     props: value,
