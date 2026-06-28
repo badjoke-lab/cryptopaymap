@@ -8,7 +8,8 @@ P3-02 establishes a protected administration route and a responsive administrati
 request to /admin or /admin/*
   -> Cloudflare Access application policy
   -> Pages Function middleware
-  -> JWT signature, issuer, and audience validation
+  -> JWT signature, issuer, audience, and time validation
+  -> verified administration identity
   -> static administration shell
 ```
 
@@ -32,17 +33,22 @@ The administration interface is mounted under:
 
 A nested Pages Function middleware at `functions/admin/_middleware.ts` applies to the administration path and its descendants. Public pages and public static assets do not use this middleware.
 
-## Cloudflare Access validation
+## Cloudflare Access assertion validation
 
-The middleware uses the official Cloudflare Access Pages Plugin.
+The middleware validates the `Cf-Access-Jwt-Assertion` on the server before serving an administration response.
 
-The Plugin validates the application JWT against:
+The verifier:
 
-- the configured Cloudflare Access team domain;
-- the configured application audience tag;
-- Cloudflare Access signing keys.
+- requires a three-part JWT;
+- accepts only an `RS256` header with a non-empty signing-key ID;
+- fetches signing keys from the configured Cloudflare Access team origin;
+- selects the matching RSA signing key;
+- verifies the JWT signature through Web Crypto;
+- requires the configured issuer and application audience;
+- rejects expired and not-yet-valid assertions;
+- derives administration identity only from the verified payload.
 
-Requests that fail Plugin validation receive `403` from the Plugin. The application does not trust the presence of `Cf-Access-Jwt-Assertion` or identity headers without cryptographic validation.
+The application does not trust the presence of the assertion header, an email header, or any caller-supplied identity value without cryptographic verification.
 
 ## Runtime configuration
 
@@ -65,17 +71,20 @@ Missing or malformed Access configuration returns:
 
 ```text
 HTTP 503
-Cache-Control: no-store
+Cache-Control: private, no-store
 Referrer-Policy: no-referrer
+X-Robots-Tag: noindex, nofollow, noarchive
 ```
 
-The response does not reveal the missing variable, team name, audience tag, or internal configuration details.
+A missing, malformed, expired, wrong-issuer, wrong-audience, unknown-key, or invalid-signature assertion returns the same private response headers with HTTP 403.
 
-There is no production or local request-header bypass. Local verification uses injected test middleware and synthetic verified payloads rather than disabling the route boundary.
+Failure responses do not reveal the missing variable, team name, audience tag, key identifier, assertion content, or internal verification details.
+
+There is no production or local request-header bypass. Local verification uses injected fetch, Web Crypto, clock, and verifier test doubles rather than disabling the route boundary.
 
 ## Verified identity
 
-After the Plugin validates a request, its verified payload may be converted into an administration identity.
+After successful assertion verification, the payload is converted into an administration identity.
 
 ```text
 actor_id
@@ -87,6 +96,8 @@ actor_type
 ```
 
 The actor ID is derived from the verified subject, not a caller-supplied header. Email is optional because service authorizations may not have identity-provider fields.
+
+The verified identity is placed in the Pages Function request context for later protected services. It is not embedded in generated HTML or browser storage.
 
 P3-02 does not grant write capabilities based on email or domain. Later services must explicitly map the verified identity to required administration capabilities.
 
@@ -116,7 +127,7 @@ Static JavaScript and CSS may remain ordinary public assets because they contain
 
 ## Caching and indexing
 
-Administration HTML responses use:
+Administration responses use:
 
 ```text
 Cache-Control: private, no-store
@@ -124,7 +135,7 @@ X-Robots-Tag: noindex, nofollow, noarchive
 Referrer-Policy: no-referrer
 ```
 
-The HTML also contains equivalent `robots` and `referrer` metadata.
+The middleware applies these headers to successful and failed administration responses. The static `_headers` file provides a defense-in-depth rule for `/admin/*`, and the HTML contains equivalent robots and referrer metadata.
 
 ## Shell behavior
 
@@ -148,20 +159,24 @@ Repository tests cover:
 - missing, insecure, non-Cloudflare, path-bearing, and malformed configuration rejection;
 - fail-closed response behavior;
 - human and service identity normalization from verified payloads;
-- incomplete payload rejection;
-- no Plugin invocation when configuration is unavailable;
-- delegation to the Plugin when configuration is valid;
+- malformed and missing assertion rejection;
+- signing-key retrieval and key selection;
+- signature verification failure;
+- issuer, audience, expiration, and not-before boundaries;
+- no verifier invocation when configuration is unavailable;
+- verified identity propagation only after successful verification;
+- no shell response after verification failure;
 - static administration routes in the built artifact;
 - noindex and no-store markers;
 - absence of private and server-only markers in generated administration HTML.
 
-Live Cloudflare Access validation remains deferred until the deployment configuration is available. The first live check must verify an authorized browser request, a denied request, an expired or wrong-audience token, direct administration subroutes, and logout behavior.
+Live Cloudflare Access validation remains deferred until deployment configuration is available. The first live check must verify an authorized browser request, a denied request, an expired or wrong-audience token, direct administration subroutes, and logout behavior.
 
 ## Later Phase 3 use
 
 Later administration items must:
 
-- obtain identity only from Plugin-verified payload data;
+- obtain identity only from the verified request context;
 - map identity to explicit capabilities;
 - keep every private API under an equivalent Access boundary;
 - return no private data before authorization;
