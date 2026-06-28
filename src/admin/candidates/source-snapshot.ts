@@ -59,7 +59,9 @@ export function projectCandidateSourceSnapshot(
     payloadResult.data.normalizedRecord,
   );
   if (!recordResult.success) return null;
-  const recordTypeResult = importableOnlineCandidateTypeSchema.safeParse(recordResult.data.recordType);
+  const recordTypeResult = importableOnlineCandidateTypeSchema.safeParse(
+    recordResult.data.recordType,
+  );
   if (!recordTypeResult.success || recordTypeResult.data !== candidateTypeResult.data) return null;
   const record = recordResult.data;
 
