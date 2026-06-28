@@ -25,8 +25,7 @@ function context(overrides: { identity?: unknown; subjects?: string; url?: strin
       overrides.url ?? 'https://example.test/admin/api/candidates?status=new&limit=10',
     ),
     env: {
-      CPM_ADMIN_CANDIDATE_SUBJECTS:
-        overrides.subjects ?? JSON.stringify(['reviewer-subject']),
+      CPM_ADMIN_CANDIDATE_SUBJECTS: overrides.subjects ?? JSON.stringify(['reviewer-subject']),
     },
     params: {},
     data: {
