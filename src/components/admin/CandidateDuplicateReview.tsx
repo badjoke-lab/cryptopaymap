@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   candidateDuplicateReviewResponseSchema,
   type CandidateDuplicateReviewResponse,
@@ -19,11 +19,16 @@ type State =
   | { status: 'missing' | 'denied' | 'not_found' | 'unavailable' | 'error' };
 
 export function CandidateDuplicateReview() {
-  const groupId = useMemo(() => new URLSearchParams(window.location.search).get('group'), []);
+  const [groupId, setGroupId] = useState<string | null | undefined>(undefined);
   const [state, setState] = useState<State>({ status: 'loading' });
   const [primaryCandidateId, setPrimaryCandidateId] = useState('');
 
+  useEffect(() => {
+    setGroupId(new URLSearchParams(window.location.search).get('group'));
+  }, []);
+
   const loadReview = useCallback(async (signal?: AbortSignal) => {
+    if (groupId === undefined) return;
     if (!groupId) return setState({ status: 'missing' });
     setState({ status: 'loading' });
     try {
