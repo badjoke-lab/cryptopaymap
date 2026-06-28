@@ -1,5 +1,5 @@
 import { AlertTriangle, CheckCircle2, RefreshCw, ShieldAlert } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import {
   candidateQueueResponseSchema,
   type CandidateQueueItem,
@@ -58,14 +58,22 @@ function StatusPanel({
 }
 
 export function CandidateQueue() {
-  const [draftFilters, setDraftFilters] =
-    useState<CandidateQueueFiltersValue>(defaultCandidateQueueFilters);
-  const [filters, setFilters] =
-    useState<CandidateQueueFiltersValue>(defaultCandidateQueueFilters);
+  const [draftFilters, setDraftFilters] = useState<CandidateQueueFiltersValue>(
+    defaultCandidateQueueFilters,
+  );
+  const [filters, setFilters] = useState<CandidateQueueFiltersValue>(defaultCandidateQueueFilters);
   const [state, setState] = useState<CandidateQueueState>({ status: 'loading' });
+  const requestSequence = useRef(0);
 
   const loadQueue = useCallback(
-    async (activeFilters: CandidateQueueFiltersValue, cursor?: string, append = false) => {
+    async (
+      activeFilters: CandidateQueueFiltersValue,
+      cursor?: string,
+      append = false,
+      signal?: AbortSignal,
+    ) => {
+      const requestId = requestSequence.current + 1;
+      requestSequence.current = requestId;
       setState((current) =>
         append && (current.status === 'ready' || current.status === 'loading_more')
           ? { ...current, status: 'loading_more' }
@@ -77,7 +85,10 @@ export function CandidateQueue() {
           cache: 'no-store',
           credentials: 'same-origin',
           headers: { Accept: 'application/json' },
+          signal: signal ?? null,
         });
+        if (requestId !== requestSequence.current) return;
+
         if (response.status === 403) {
           setState({ status: 'denied' });
           return;
@@ -96,6 +107,7 @@ export function CandidateQueue() {
         }
 
         const result = candidateQueueResponseSchema.safeParse(await response.json());
+        if (requestId !== requestSequence.current) return;
         if (!result.success) {
           setState({ status: 'error' });
           return;
@@ -109,7 +121,9 @@ export function CandidateQueue() {
               : result.data.items,
           nextCursor: result.data.nextCursor,
         }));
-      } catch {
+      } catch (error) {
+        if (requestId !== requestSequence.current) return;
+        if (error instanceof DOMException && error.name === 'AbortError') return;
         setState({ status: 'error' });
       }
     },
@@ -117,13 +131,10 @@ export function CandidateQueue() {
   );
 
   useEffect(() => {
-    void loadQueue(filters);
+    const controller = new AbortController();
+    void loadQueue(filters, undefined, false, controller.signal);
+    return () => controller.abort();
   }, [filters, loadQueue]);
-
-  const submitFilters = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setFilters(draftFilters);
-  };
 
   const resetFilters = () => {
     setDraftFilters(defaultCandidateQueueFilters);
@@ -134,17 +145,18 @@ export function CandidateQueue() {
     void loadQueue(filters);
   };
 
-  const currentItems = useMemo(
-    () => (state.status === 'ready' || state.status === 'loading_more' ? state.items : []),
-    [state],
-  );
+  const pageState =
+    state.status === 'ready' || state.status === 'loading_more' ? state : null;
+  const currentItems = useMemo(() => pageState?.items ?? [], [pageState]);
+  const nextCursor = pageState?.nextCursor ?? null;
+  const loadingMore = pageState?.status === 'loading_more';
 
   return (
     <div>
       <CandidateQueueFilters
         value={draftFilters}
         onChange={setDraftFilters}
-        onSubmit={submitFilters}
+        onSubmit={() => setFilters(draftFilters)}
         onReset={resetFilters}
       />
 
@@ -200,8 +212,7 @@ export function CandidateQueue() {
           />
         ) : null}
 
-        {(state.status === 'ready' || state.status === 'loading_more') &&
-        currentItems.length === 0 ? (
+        {pageState && currentItems.length === 0 ? (
           <StatusPanel
             title="No Candidates match these filters"
             description="The queue returned a valid empty page. Broaden the filters or reset to the actionable queue."
@@ -230,14 +241,14 @@ export function CandidateQueue() {
                 <CandidateQueueCard key={item.id} item={item} />
               ))}
             </div>
-            {state.nextCursor ? (
+            {nextCursor ? (
               <div className="mt-5 flex justify-center">
                 <Button
                   variant="secondary"
-                  disabled={state.status === 'loading_more'}
-                  onClick={() => void loadQueue(filters, state.nextCursor ?? undefined, true)}
+                  disabled={loadingMore}
+                  onClick={() => void loadQueue(filters, nextCursor, true)}
                 >
-                  {state.status === 'loading_more' ? 'Loading more…' : 'Load more'}
+                  {loadingMore ? 'Loading more…' : 'Load more'}
                 </Button>
               </div>
             ) : null}
