@@ -5,6 +5,15 @@ const outputDirectory = 'dist';
 const requiredFiles = [
   'index.html',
   '_headers',
+  'admin/index.html',
+  'admin/candidates/index.html',
+  'admin/claims/index.html',
+  'admin/evidence/index.html',
+  'admin/rechecks/index.html',
+  'admin/submissions/index.html',
+  'admin/media/index.html',
+  'admin/exports/index.html',
+  'admin/audit/index.html',
   'data/foundation-place.json',
   'manifest.webmanifest',
   'icons/cryptopaymap.svg',
@@ -23,6 +32,8 @@ const requiredHeaderFragments = [
   'X-Content-Type-Options: nosniff',
   'X-Frame-Options: DENY',
   'Referrer-Policy: strict-origin-when-cross-origin',
+  'Cache-Control: private, no-store',
+  'X-Robots-Tag: noindex, nofollow, noarchive',
   'Cache-Control: public, max-age=31556952, immutable',
   'Cache-Control: public, max-age=300, must-revalidate',
 ];
@@ -30,6 +41,32 @@ const requiredHeaderFragments = [
 for (const fragment of requiredHeaderFragments) {
   if (!headers.includes(fragment)) {
     throw new Error(`Missing required staging header: ${fragment}`);
+  }
+}
+
+const adminOverview = readFileSync(join(outputDirectory, 'admin/index.html'), 'utf8');
+const requiredAdminFragments = [
+  'noindex, nofollow, noarchive',
+  'Protected workspace',
+  'No private records are embedded in static HTML.',
+];
+const forbiddenAdminFragments = [
+  'CF_ACCESS_TEAM_DOMAIN',
+  'CF_ACCESS_AUD',
+  'Cf-Access-Jwt-Assertion',
+  'rawPayload',
+  'candidateId',
+  'sourceRecordId',
+];
+
+for (const fragment of requiredAdminFragments) {
+  if (!adminOverview.includes(fragment)) {
+    throw new Error(`Missing administration shell marker: ${fragment}`);
+  }
+}
+for (const fragment of forbiddenAdminFragments) {
+  if (adminOverview.includes(fragment)) {
+    throw new Error(`Private or server-only marker found in admin HTML: ${fragment}`);
   }
 }
 

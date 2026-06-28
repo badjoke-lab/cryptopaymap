@@ -1,0 +1,71 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+export function getStaticPaths() {
+  const sections = {
+    candidates: {
+      heading: 'Candidates',
+      description: 'Private source candidates waiting for identity, provenance, and duplicate review.',
+    },
+    claims: {
+      heading: 'Claims',
+      description: 'Canonical payment-claim editing will be added after candidate review boundaries are complete.',
+    },
+    evidence: {
+      heading: 'Evidence',
+      description: 'Evidence strength, source, observation, visibility, and contradiction review will be added here.',
+    },
+    rechecks: {
+      heading: 'Rechecks',
+      description: 'Reconfirmation due dates and stale-state work will be managed in this protected section.',
+    },
+    submissions: {
+      heading: 'Submissions',
+      description: 'Public contribution review belongs to MVP-B and is not connected in the current administration phase.',
+    },
+    media: {
+      heading: 'Media',
+      description: 'Private proof, rights review, privacy checks, and public-gallery decisions will remain separate.',
+    },
+    exports: {
+      heading: 'Exports',
+      description: 'Validated public releases will require an explicit protected action and complete artifact checks.',
+    },
+    audit: {
+      heading: 'Audit',
+      description: 'Immutable administration events and decision history will be exposed here after the audit layer exists.',
+    },
+  } as const;
+
+  return Object.entries(sections).map(([section, value]) => ({
+    params: { section },
+    props: value,
+  }));
+}
+
+interface Props {
+  heading: string;
+  description: string;
+}
+
+const { heading, description } = Astro.props;
+---
+
+<AdminLayout title={`${heading} | CryptoPayMap Admin`} heading={heading} description={description}>
+  <section class="rounded-card border border-border bg-surface p-6 shadow-sm" aria-labelledby="placeholder-title">
+    <p class="m-0 text-sm font-semibold uppercase tracking-[0.1em] text-brand-700">Protected placeholder</p>
+    <h2 id="placeholder-title" class="mt-2 text-xl font-semibold tracking-tight text-ink">
+      No private records are loaded
+    </h2>
+    <p class="mt-3 max-w-2xl text-sm leading-6 text-muted">
+      This route establishes navigation, responsive layout, noindex behavior, and the shared Access boundary only. Its data
+      service and review controls will be added in the corresponding Phase 3 implementation item.
+    </p>
+    <a
+      class="motion-feedback mt-5 inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
+      href="/admin"
+    >
+      Return to overview
+    </a>
+  </section>
+</AdminLayout>
