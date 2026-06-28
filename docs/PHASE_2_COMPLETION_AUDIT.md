@@ -127,7 +127,15 @@ This preserves the distinction between direct merchant or service acceptance and
 
 Phase 2 migrations are represented as reviewable SQL plus Drizzle snapshots and journal history. Migration drift validation is required on every pull request.
 
-The importers currently create plans rather than database writes. Transactional persistence, rollback behavior for review actions, and canonical promotion are Phase 3 responsibilities.
+CryptoPayMap does not claim universal automatic down migrations. Production rollback uses the documented decision tree in `docs/DATABASE_MIGRATION_ROLLBACK.md`:
+
+- stop before application when a migration has not run;
+- roll back only the application when an additive schema remains backward compatible;
+- restore a verified pre-migration snapshot or ship a reviewed forward correction when database behavior is unsafe;
+- keep serving the previous validated public artifact set when export generation fails;
+- reset and replay only in disposable non-production environments.
+
+The importers currently create plans rather than database writes. Transactional persistence and rollback behavior for administration actions remain Phase 3 responsibilities.
 
 ## Automated validation
 
@@ -152,7 +160,7 @@ Phase 2 completion requires green results for:
 | Criterion | Result |
 |---|---|
 | Candidate and canonical records are structurally separate | Passed |
-| Reviewable migration history exists | Passed |
+| Reviewable migrations are reversible or have documented rollback | Passed through the documented rollback contract |
 | Verification states and history are auditable | Passed |
 | Only eligible records can enter validated exports | Passed |
 | Source and license metadata remain traceable | Passed |
