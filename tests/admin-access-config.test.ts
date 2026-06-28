@@ -30,12 +30,14 @@ describe('administration Access configuration', () => {
     );
   });
 
-  it('returns a no-store unavailable response without configuration details', async () => {
+  it('returns a private unavailable response without configuration details', async () => {
     const response = adminAccessUnavailableResponse();
 
     expect(response.status).toBe(503);
-    expect(response.headers.get('cache-control')).toBe('no-store');
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow, noarchive');
     expect(response.headers.get('referrer-policy')).toBe('no-referrer');
+    expect(response.headers.get('x-content-type-options')).toBe('nosniff');
     await expect(response.text()).resolves.toBe('Administration access is unavailable.');
   });
 });
