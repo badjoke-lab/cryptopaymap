@@ -93,6 +93,16 @@ function claimUnique(map: Map<string, string>, key: string, id: string, label: s
   map.set(key, id);
 }
 
+function requiredId(value: string | undefined, label: string): string {
+  if (value === undefined) {
+    throw new CandidatePlanPersistenceError(
+      'invalid_plan',
+      `The validated persistence batch is missing a ${label}.`,
+    );
+  }
+  return value;
+}
+
 export class InMemoryCandidatePlanBackend implements CandidatePlanAtomicBackend {
   private state = createState();
   private readonly options: InMemoryCandidatePlanBackendOptions;
@@ -120,35 +130,39 @@ export class InMemoryCandidatePlanBackend implements CandidatePlanAtomicBackend 
     );
 
     for (const draft of batch.drafts) {
-      putExact(next.sourceRecords, draft.sourceRecord.id, draft.sourceRecord, 'source record');
+      const sourceRecordId = requiredId(draft.sourceRecord.id, 'source-record ID');
+      const candidateId = requiredId(draft.candidate.id, 'candidate ID');
+      const legacyMappingId = requiredId(draft.legacyMapping.id, 'legacy-mapping ID');
+
+      putExact(next.sourceRecords, sourceRecordId, draft.sourceRecord, 'source record');
       if (draft.sourceRecord.externalId !== null && draft.sourceRecord.externalId !== undefined) {
         claimUnique(
           next.sourceExternalIds,
           `${draft.sourceRecord.sourceId}:${draft.sourceRecord.externalId}`,
-          draft.sourceRecord.id,
+          sourceRecordId,
           'source external identity',
         );
       }
 
-      putExact(next.candidates, draft.candidate.id, draft.candidate, 'candidate');
+      putExact(next.candidates, candidateId, draft.candidate, 'candidate');
       putExact(
         next.candidateSourceRecords,
         `${draft.candidateSourceRecord.candidateId}:${draft.candidateSourceRecord.sourceRecordId}`,
         draft.candidateSourceRecord,
         'candidate source relationship',
       );
-      putExact(next.legacyMappings, draft.legacyMapping.id, draft.legacyMapping, 'legacy mapping');
+      putExact(next.legacyMappings, legacyMappingId, draft.legacyMapping, 'legacy mapping');
       claimUnique(
         next.legacySourceIds,
         `${draft.legacyMapping.sourceSystem}:${draft.legacyMapping.legacyId}`,
-        draft.legacyMapping.id,
+        legacyMappingId,
         'legacy source identity',
       );
       if (draft.legacyMapping.legacyPath !== null && draft.legacyMapping.legacyPath !== undefined) {
         claimUnique(
           next.legacyPaths,
           draft.legacyMapping.legacyPath,
-          draft.legacyMapping.id,
+          legacyMappingId,
           'legacy path',
         );
       }
