@@ -1,0 +1,93 @@
+name: P3-01 tracking update
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - synchronize
+
+permissions:
+  contents: write
+
+jobs:
+  update-tracking:
+    if: github.head_ref == 'work/p301'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/p301
+          fetch-depth: 0
+
+      - name: Update Phase 3 tracking block
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = path.read_text()
+          old = '''## Phase 3 — Administration and review
+
+          **Status:** Planned
+
+          Phase 3 adds protected operational tools that persist, review, resolve, and promote the private data contracts created in Phase 2.
+
+          | ID | Item | Status | Depends on |
+          |---|---|---|---|
+          | P3-01 | Admin data-access and transaction foundation | Planned | Phase 2 completion audit |
+          | P3-02 | Protected admin shell and access contract | Planned | P3-01, Phase 1 staging contract |
+          | P3-03 | Dashboard and operational queue summaries | Planned | P3-01, P3-02 |
+          | P3-04 | Candidate queue | Planned | P3-01, P3-02 |
+          | P3-05 | Candidate detail and provenance review | Planned | P3-04 |
+          | P3-06 | Duplicate review and identity resolution | Planned | P3-05 |
+          | P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 |
+          | P3-08 | Evidence review and verification decisions | Planned | P3-07 |
+          | P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 |
+          | P3-10 | Media review | Planned | P3-02, P2-10 |
+          | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10, P2-12 |
+          | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 |
+
+          ### P3-01 — Admin data-access and transaction foundation
+
+          Create repository-only data services for private candidates, source records, legacy mappings, canonical entities, locations, claims, Evidence, verification events, and audit events. Define transaction, idempotency, rollback, and authorization-context boundaries without adding public routes or automatic promotion.
+          '''
+          new = '''## Phase 3 — Administration and review
+
+          **Status:** In progress
+
+          Phase 3 adds protected operational tools that persist, review, resolve, and promote the private data contracts created in Phase 2.
+
+          | ID | Item | Status | Depends on | Pull request |
+          |---|---|---|---|---|
+          | P3-01 | Admin data-access and transaction foundation | Completed | Phase 2 completion audit | [#41](https://github.com/badjoke-lab/cryptopaymap/pull/41) |
+          | P3-02 | Protected admin shell and access contract | Planned | P3-01, Phase 1 staging contract | — |
+          | P3-03 | Dashboard and operational queue summaries | Planned | P3-01, P3-02 | — |
+          | P3-04 | Candidate queue | Planned | P3-01, P3-02 | — |
+          | P3-05 | Candidate detail and provenance review | Planned | P3-04 | — |
+          | P3-06 | Duplicate review and identity resolution | Planned | P3-05 | — |
+          | P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 | — |
+          | P3-08 | Evidence review and verification decisions | Planned | P3-07 | — |
+          | P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 | — |
+          | P3-10 | Media review | Planned | P3-02, P2-10 | — |
+          | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10, P2-12 | — |
+          | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
+
+          ### P3-01 — Admin data-access and transaction foundation
+
+          Create the private import-batch and Candidate persistence boundary. Require an explicit administration mutation context, validate Candidate-only invariants before backend access, persist source records, Candidates, origin relationships, and pending legacy mappings in one Neon HTTP batch transaction, and reject conflicting deterministic identities without adding public routes or automatic promotion.
+          '''
+          if old not in text:
+              raise SystemExit('Expected Phase 3 block was not found.')
+          path.write_text(text.replace(old, new, 1))
+          PY
+
+      - name: Remove one-time workflow and commit
+        run: |
+          rm -f .github/workflows/p301-track.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P3-01: complete implementation tracking"
+          git push origin HEAD:work/p301
