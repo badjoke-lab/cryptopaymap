@@ -12,7 +12,7 @@ P3-03 — Dashboard and operational queue summaries
 
 ## Active pull request
 
-None. P3-02 closes with pull request #42.
+[#43 — P3-03: Add operational dashboard summaries](https://github.com/badjoke-lab/cryptopaymap/pull/43)
 
 ## Latest completed work
 
@@ -24,31 +24,34 @@ None. P3-02 closes with pull request #42.
 - Administration identity is derived only from verified claims and placed in protected request context.
 - Successful and failed administration responses use private, no-store, noindex, and no-referrer behavior.
 - The responsive administration shell exposes navigation and placeholders without private records or write controls.
-- Repository checks cover configuration, verification, identity propagation, route failure, static artifacts, accessibility, and build behavior.
 - Candidate-to-canonical promotion and public export publication remain disabled.
 
-## P3-03 next
+## P3-03 work in progress
 
-- define purpose-built operational summary contracts rather than generic private-table responses
-- add dashboard cards for review work, rechecks, media review, publication state, and recent canonical activity
-- preserve explicit capability checks before every private query
-- add loading, empty, unavailable, and error states without leaking record existence
-- keep dashboard summaries separate from Candidate detail and canonical write operations
-- add query, authorization, rendering, accessibility, and build tests
+- define a strict bounded summary contract and read-only `dashboard:read` capability
+- map exact verified Access subject identifiers to dashboard access without using email addresses
+- aggregate Candidate, duplicate, Evidence, recheck, media, import, and recent event totals through purpose-built private queries
+- expose the summary through protected `/admin/api/dashboard`
+- validate the response again in the browser before rendering values
+- provide loading, ready, zero-work, denied, unavailable, invalid-response, and retry states
+- keep Candidate identifiers, source payloads, contacts, Evidence content, media keys, and write controls out of dashboard responses
+- keep publication unavailable until the dedicated P3-11 release workflow
+- add authorization, service, endpoint, component, runtime, build, and artifact checks
 
 ## Cloudflare status
 
-Live staging and Cloudflare Access browser verification remain deferred. The repository-level P3-02 access contract is complete and does not block P3-03 work.
+Live staging, Access browser verification, and live database aggregation remain deferred. Repository-level authorization, query, API, UI, and fail-closed contracts proceed without live credentials.
 
 ## Next
 
-1. Start P3-03 from the P3-02 completion main.
-2. Add bounded dashboard summary services and protected UI states.
-3. Keep Candidate details, promotion, and publication actions outside the dashboard item.
+1. Complete pull request #43 implementation and CI.
+2. Verify that static artifacts contain no private dashboard configuration or payload markers.
+3. Merge P3-03 after all checks pass.
+4. Advance to P3-04 — Candidate queue.
 
 ## Blocked
 
-No repository blocker. Only live Cloudflare deployment verification is deferred.
+No repository blocker. Only live deployment and database verification are deferred.
 
 ## Verification rule
 
