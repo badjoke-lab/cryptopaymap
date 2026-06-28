@@ -117,6 +117,7 @@ export const candidateDetailDataSchema = z
         createdAt: timestampSchema,
         updatedAt: timestampSchema,
         duplicateSignal: z.boolean(),
+        duplicateGroupId: z.uuid().nullable(),
         duplicateGroupStatus: z.enum(duplicateGroupStatusValues).nullable(),
         linkedEntity: z.boolean(),
         linkedLocation: z.boolean(),
@@ -138,11 +139,14 @@ export const candidateDetailDataSchema = z
   })
   .strict()
   .superRefine((value, context) => {
-    if (!value.candidate.duplicateSignal && value.candidate.duplicateGroupStatus !== null) {
+    if (
+      value.candidate.duplicateSignal !== (value.candidate.duplicateGroupId !== null) ||
+      (value.candidate.duplicateGroupId === null && value.candidate.duplicateGroupStatus !== null)
+    ) {
       context.addIssue({
         code: 'custom',
-        path: ['candidate', 'duplicateGroupStatus'],
-        message: 'A duplicate group status requires a duplicate signal.',
+        path: ['candidate', 'duplicateGroupId'],
+        message: 'Duplicate signal, group identity, and group status must remain consistent.',
       });
     }
     if (value.candidate.linkedLocation && value.candidate.candidateType !== 'physical_place') {
