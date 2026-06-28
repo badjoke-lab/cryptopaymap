@@ -81,7 +81,7 @@ export const adminDashboardSummaryDataSchema = z
     }
   });
 
-export const adminDashboardSummarySchema = adminDashboardSummaryDataSchema.extend({
+export const adminDashboardSummarySchema = adminDashboardSummaryDataSchema.safeExtend({
   generatedAt: summaryTimestampSchema,
 });
 
