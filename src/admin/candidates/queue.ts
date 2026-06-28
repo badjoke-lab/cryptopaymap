@@ -135,10 +135,7 @@ export class CandidateQueueError extends Error {
   }
 }
 
-function parseMultiValue(
-  searchParameters: URLSearchParams,
-  key: string,
-): string[] {
+function parseMultiValue(searchParameters: URLSearchParams, key: string): string[] {
   return searchParameters
     .getAll(key)
     .flatMap((value) => value.split(','))
