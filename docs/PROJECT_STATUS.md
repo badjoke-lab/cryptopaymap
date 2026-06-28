@@ -18,6 +18,7 @@ None. P3-01 closes with pull request #41.
 
 - Phase 2 completed through pull request #40.
 - P3-01 completed through pull request #41.
+- Migration `0012_marvelous_iron_fist.sql` adds the private import-batch audit table and constraints.
 - The private import-batch schema records source, checksum, counts, actor, request, and timing metadata.
 - Candidate-plan persistence requires the `candidate:write` capability.
 - Source records, Candidates, origin links, and pending legacy mappings commit in one batch transaction.
