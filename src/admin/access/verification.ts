@@ -1,9 +1,6 @@
 import { z } from 'zod';
 import type { AdminAccessConfiguration } from './config';
-import {
-  parseVerifiedAdminAccessIdentity,
-  type AdminAccessIdentity,
-} from './identity';
+import { parseVerifiedAdminAccessIdentity, type AdminAccessIdentity } from './identity';
 
 const jwtHeaderSchema = z
   .object({
@@ -54,12 +51,16 @@ function verificationError(message: string): AdminAccessVerificationError {
   return new AdminAccessVerificationError(message);
 }
 
-function decodeBase64Url(value: string): Uint8Array {
+function decodeBase64Url(value: string): Uint8Array<ArrayBuffer> {
   try {
     const normalized = value.replace(/-/g, '+').replace(/_/g, '/').replace(/\s/g, '');
     const paddingLength = (4 - (normalized.length % 4)) % 4;
     const decoded = globalThis.atob(normalized.padEnd(normalized.length + paddingLength, '='));
-    return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+    const bytes = new Uint8Array(decoded.length);
+    for (let index = 0; index < decoded.length; index += 1) {
+      bytes[index] = decoded.charCodeAt(index);
+    }
+    return bytes;
   } catch {
     throw verificationError('The Access assertion is not valid base64url data.');
   }
