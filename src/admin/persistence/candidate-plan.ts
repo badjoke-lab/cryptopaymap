@@ -147,10 +147,7 @@ function validateDraft(
   if (draft.candidate.candidateStatus !== 'new') {
     issues.push(`${draft.candidateId}: imported candidates must remain new`);
   }
-  if (
-    draft.candidate.canonicalEntityId !== null ||
-    draft.candidate.canonicalLocationId !== null
-  ) {
+  if (draft.candidate.canonicalEntityId !== null || draft.candidate.canonicalLocationId !== null) {
     issues.push(`${draft.candidateId}: persistence cannot assign a canonical target`);
   }
   if (
@@ -282,8 +279,7 @@ function asDate(value: string | null): Date | null {
 
 function buildPersistenceBatch(request: PersistCandidatePlanRequest): CandidatePersistenceBatch {
   const { metadata, plan, mutation } = request;
-  const outOfScopeCount =
-    'outOfScopeCount' in plan.summary ? plan.summary.outOfScopeCount : 0;
+  const outOfScopeCount = 'outOfScopeCount' in plan.summary ? plan.summary.outOfScopeCount : 0;
 
   return {
     mutation,

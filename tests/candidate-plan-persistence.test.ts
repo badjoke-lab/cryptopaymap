@@ -150,8 +150,7 @@ describe('candidate-plan persistence service', () => {
     const backend = new InMemoryCandidatePlanBackend();
     const service = createCandidatePlanPersistenceService(backend);
     const request = await physicalRequest();
-    request.plan.drafts[0]!.candidate.canonicalEntityId =
-      '88888888-8888-4888-8888-888888888888';
+    request.plan.drafts[0]!.candidate.canonicalEntityId = '88888888-8888-4888-8888-888888888888';
 
     await expect(service.persist(request)).rejects.toMatchObject({
       code: 'invalid_plan',
@@ -185,9 +184,7 @@ describe('candidate-plan persistence service', () => {
     const conflict = structuredClone(original);
     conflict.plan.drafts[0]!.candidate.normalizedName = 'conflicting normalized name';
 
-    await expect(service.persist(conflict)).rejects.toBeInstanceOf(
-      CandidatePlanPersistenceError,
-    );
+    await expect(service.persist(conflict)).rejects.toBeInstanceOf(CandidatePlanPersistenceError);
     expect(backend.snapshot().candidates).toBe(2);
   });
 

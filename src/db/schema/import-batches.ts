@@ -64,10 +64,7 @@ export const importBatches = pgTable(
       'import_batches_importer_version_nonempty',
       sql`length(trim(${table.importerVersion})) > 0`,
     ),
-    check(
-      'import_batches_input_checksum_sha256',
-      sql`${table.inputChecksum} ~ '^[a-f0-9]{64}$'`,
-    ),
+    check('import_batches_input_checksum_sha256', sql`${table.inputChecksum} ~ '^[a-f0-9]{64}$'`),
     check(
       'import_batches_counts_nonnegative',
       sql`${table.inputCount} >= 0 and ${table.acceptedCount} >= 0 and ${table.rejectedCount} >= 0 and ${table.replayedCount} >= 0 and ${table.outOfScopeCount} >= 0 and ${table.duplicateSignalCount} >= 0 and ${table.automaticConfirmedCount} >= 0`,
@@ -80,14 +77,8 @@ export const importBatches = pgTable(
       'import_batches_out_of_scope_subset',
       sql`${table.outOfScopeCount} <= ${table.rejectedCount}`,
     ),
-    check(
-      'import_batches_no_automatic_confirmed',
-      sql`${table.automaticConfirmedCount} = 0`,
-    ),
-    check(
-      'import_batches_time_order',
-      sql`${table.startedAt} <= ${table.completedAt}`,
-    ),
+    check('import_batches_no_automatic_confirmed', sql`${table.automaticConfirmedCount} = 0`),
+    check('import_batches_time_order', sql`${table.startedAt} <= ${table.completedAt}`),
   ],
 );
 
