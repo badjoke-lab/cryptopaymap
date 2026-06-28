@@ -12,43 +12,43 @@ P3-02 — Protected admin shell and access contract
 
 ## Active pull request
 
-None. P3-01 closes with pull request #41.
+[#42 — P3-02: Add protected admin shell and access contract](https://github.com/badjoke-lab/cryptopaymap/pull/42)
 
 ## Latest completed work
 
 - Phase 2 completed through pull request #40.
 - P3-01 completed through pull request #41.
 - Migration `0012_marvelous_iron_fist.sql` adds the private import-batch audit table and constraints.
-- The private import-batch schema records source, checksum, counts, actor, request, and timing metadata.
 - Candidate-plan persistence requires the `candidate:write` capability.
 - Source records, Candidates, origin links, and pending legacy mappings commit in one batch transaction.
 - Exact deterministic replays are idempotent; conflicting identities roll back.
-- Runtime checks and tests cover authorization, replay, conflict, rollback, all-rejected batches, and the canonical boundary.
 - No canonical entity, location, claim, verification event, or public artifact is created by P3-01.
 
-## P3-02 next
+## P3-02 work in progress
 
-- define the protected `/admin` route boundary
-- define trusted access headers and local test identity handling
-- reject missing, malformed, or untrusted administration identity
-- add the responsive administration application shell
-- add navigation placeholders without exposing private records
-- keep live Cloudflare Access verification deferred until credentials are available
-- add route, authorization, accessibility, and build tests
+- protect `/admin` and descendant routes through nested Pages Function middleware
+- validate Cloudflare Access team-domain and application-audience configuration
+- verify assertion signature, issuer, audience, expiration, and not-before values server-side
+- derive administration identity only from verified assertion claims
+- apply private, no-store, noindex, and no-referrer response behavior
+- provide a responsive administration shell and protected placeholder routes
+- keep Candidate records, counts, contacts, Evidence payloads, and write controls out of static HTML
+- test configuration, verification, identity propagation, fail-closed behavior, accessibility, build, and staging artifacts
 
 ## Cloudflare status
 
-Live staging and Cloudflare Access verification remain deferred. Repository-level access contracts and fail-closed route behavior can proceed without live credentials.
+Live staging and Cloudflare Access verification remain deferred. Repository-level verification, route protection, shell behavior, and fail-closed contracts are covered in pull request #42 without live credentials.
 
 ## Next
 
-1. Merge pull request #41 after final CI and diff audit.
-2. Start P3-02 from the resulting main.
-3. Keep Candidate-to-canonical promotion disabled until the reviewed promotion item.
+1. Complete pull request #42 CI and final boundary audit.
+2. Merge P3-02 after all repository checks pass.
+3. Advance to P3-03 — Dashboard and operational queue summaries.
+4. Keep Candidate-to-canonical promotion disabled until the reviewed promotion item.
 
 ## Blocked
 
-No repository blocker. Only live Cloudflare verification is deferred.
+No repository blocker. Only live Cloudflare deployment verification is deferred.
 
 ## Verification rule
 
