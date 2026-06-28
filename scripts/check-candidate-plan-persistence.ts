@@ -1,4 +1,7 @@
-import { createCandidatePlanPersistenceService } from '../src/admin/persistence/candidate-plan';
+import {
+  createCandidatePlanPersistenceService,
+  type PersistCandidatePlanRequest,
+} from '../src/admin/persistence/candidate-plan';
 import { InMemoryCandidatePlanBackend } from '../src/admin/persistence/in-memory-candidate-plan-backend';
 import { createPhysicalPlaceImportPlan } from '../src/importers/physical-place';
 
@@ -33,15 +36,15 @@ const plan = await createPhysicalPlaceImportPlan({
   ],
 });
 
-const request = {
+const request: PersistCandidatePlanRequest = {
   mutation: {
     requestId: '77777777-7777-4777-8777-777777777777',
     actorId: 'system:runtime-check',
-    actorType: 'system' as const,
-    capabilities: ['candidate:write'] as const,
+    actorType: 'system',
+    capabilities: ['candidate:write'],
   },
   metadata: {
-    importKind: 'physical_place' as const,
+    importKind: 'physical_place',
     sourceId,
     sourceSchemaVersion: 'cryptopaymap-v2-legacy-v1',
     startedAt: '2026-06-27T00:00:00Z',
