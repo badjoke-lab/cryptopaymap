@@ -1,17 +1,17 @@
 import { AlertTriangle, CheckCircle2, RefreshCw, ShieldAlert } from 'lucide-react';
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import {
   candidateQueueResponseSchema,
   type CandidateQueueItem,
 } from '../../admin/candidates/queue';
 import { Button } from '../ui/Button';
-import { CandidateQueueCard } from './CandidateQueueCard';
 import {
   buildCandidateQueueUrl,
   CandidateQueueFilters,
   defaultCandidateQueueFilters,
   type CandidateQueueFiltersValue,
 } from './CandidateQueueFilters';
+import { CandidateSummaryCard } from './CandidateSummaryCard';
 
 const numberFormatter = new Intl.NumberFormat('en-US');
 
@@ -147,7 +147,7 @@ export function CandidateQueue() {
 
   const pageState =
     state.status === 'ready' || state.status === 'loading_more' ? state : null;
-  const currentItems = useMemo(() => pageState?.items ?? [], [pageState]);
+  const currentItems = pageState?.items ?? [];
   const nextCursor = pageState?.nextCursor ?? null;
   const loadingMore = pageState?.status === 'loading_more';
 
@@ -238,7 +238,7 @@ export function CandidateQueue() {
             </div>
             <div className="mt-5 grid gap-4">
               {currentItems.map((item) => (
-                <CandidateQueueCard key={item.id} item={item} />
+                <CandidateSummaryCard key={item.id} item={item} />
               ))}
             </div>
             {nextCursor ? (
