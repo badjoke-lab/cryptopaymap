@@ -8,6 +8,7 @@ const requiredFiles = [
   'admin/index.html',
   'admin/candidates/index.html',
   'admin/candidates/detail/index.html',
+  'admin/candidates/duplicates/index.html',
   'admin/claims/index.html',
   'admin/evidence/index.html',
   'admin/rechecks/index.html',
@@ -111,7 +112,7 @@ const candidateDetailPage = readFileSync(
 const requiredCandidateDetailFragments = [
   'Candidate inspection boundary',
   'Known source payloads are revalidated before an allowlisted snapshot is shown',
-  'Read-only inspection',
+  'Protected inspection',
 ];
 const forbiddenCandidateDetailFragments = [
   'CPM_ADMIN_CANDIDATE_SUBJECTS',
@@ -130,6 +131,34 @@ for (const fragment of requiredCandidateDetailFragments) {
 for (const fragment of forbiddenCandidateDetailFragments) {
   if (candidateDetailPage.includes(fragment)) {
     throw new Error(`Private or server-only marker found in Candidate detail HTML: ${fragment}`);
+  }
+}
+
+const duplicateReviewPage = readFileSync(
+  join(outputDirectory, 'admin/candidates/duplicates/index.html'),
+  'utf8',
+);
+const requiredDuplicateReviewFragments = [
+  'Identity review boundary',
+  'Persisted signals support review but never make the decision',
+  'Explicit decision only',
+];
+const forbiddenDuplicateReviewFragments = [
+  'CPM_ADMIN_CANDIDATE_SUBJECTS',
+  'CPM_ADMIN_CANDIDATE_RESOLVE_SUBJECTS',
+  'DATABASE_URL',
+  'rawPayload',
+  'resolutionNote',
+  'actorId',
+];
+for (const fragment of requiredDuplicateReviewFragments) {
+  if (!duplicateReviewPage.includes(fragment)) {
+    throw new Error(`Missing duplicate review marker: ${fragment}`);
+  }
+}
+for (const fragment of forbiddenDuplicateReviewFragments) {
+  if (duplicateReviewPage.includes(fragment)) {
+    throw new Error(`Private or server-only marker found in duplicate review HTML: ${fragment}`);
   }
 }
 
