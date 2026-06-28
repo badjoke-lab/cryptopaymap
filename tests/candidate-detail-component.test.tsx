@@ -128,7 +128,10 @@ describe('ReviewCandidate', () => {
     ).toBeInTheDocument();
     unmount();
 
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ generatedAt: 'invalid' })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ generatedAt: 'invalid' })),
+    );
     render(<ReviewCandidate />);
     expect(
       await screen.findByRole('heading', {
