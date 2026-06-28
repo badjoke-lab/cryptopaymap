@@ -1,4 +1,5 @@
 import './check-acceptance-claims';
+import './check-candidate-plan-persistence';
 import './check-canonical-identity';
 import './check-claim-assets';
 import './check-evidence';
@@ -33,7 +34,7 @@ import {
   paymentRouteRecordSchema,
 } from '../src/schemas/payment-registry-records';
 
-// Side-effect imports enforce each Phase 2 boundary before the shared registry checks run.
+// Side-effect imports enforce each completed data boundary before shared registry checks run.
 const samplePlace = {
   id: 'foundation-example-place',
   slug: 'example-coffee',
