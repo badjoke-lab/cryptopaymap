@@ -12,6 +12,7 @@ export {
 } from './enums';
 export * from './acceptance-claims';
 export * from './assets';
+export * from './candidate-duplicates';
 export * from './claim-assets';
 export * from './entities';
 export * from './evidence';
