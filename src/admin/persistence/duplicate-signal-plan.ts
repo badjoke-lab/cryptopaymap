@@ -1,7 +1,4 @@
-import type {
-  NewCandidateDuplicateGroup,
-  NewCandidateDuplicateSignal,
-} from '../../db/schema';
+import type { NewCandidateDuplicateGroup, NewCandidateDuplicateSignal } from '../../db/schema';
 import type { CandidateImportPlan } from './candidate-plan';
 
 export interface CandidateDuplicateSignalPersistencePlan {
@@ -95,9 +92,9 @@ export async function buildCandidateDuplicateSignalPersistencePlan(
       return { ...signal, leftCandidateId, rightCandidateId };
     })
     .sort((left, right) =>
-      [left.leftCandidateId, left.rightCandidateId, left.reason].join(':').localeCompare(
-        [right.leftCandidateId, right.rightCandidateId, right.reason].join(':'),
-      ),
+      [left.leftCandidateId, left.rightCandidateId, left.reason]
+        .join(':')
+        .localeCompare([right.leftCandidateId, right.rightCandidateId, right.reason].join(':')),
     );
 
   const signalKeys = orderedSignals.map((signal) =>
