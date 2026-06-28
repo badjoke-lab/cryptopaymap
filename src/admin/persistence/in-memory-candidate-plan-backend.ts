@@ -8,6 +8,9 @@ interface InMemoryState {
   importBatches: Map<string, string>;
   requestIds: Map<string, string>;
   sourceChecksums: Map<string, string>;
+  duplicateGroups: Map<string, string>;
+  duplicateSignals: Map<string, string>;
+  duplicateSignalIdentities: Map<string, string>;
   sourceRecords: Map<string, string>;
   sourceExternalIds: Map<string, string>;
   candidates: Map<string, string>;
@@ -26,6 +29,9 @@ function createState(): InMemoryState {
     importBatches: new Map(),
     requestIds: new Map(),
     sourceChecksums: new Map(),
+    duplicateGroups: new Map(),
+    duplicateSignals: new Map(),
+    duplicateSignalIdentities: new Map(),
     sourceRecords: new Map(),
     sourceExternalIds: new Map(),
     candidates: new Map(),
@@ -41,6 +47,9 @@ function cloneState(state: InMemoryState): InMemoryState {
     importBatches: new Map(state.importBatches),
     requestIds: new Map(state.requestIds),
     sourceChecksums: new Map(state.sourceChecksums),
+    duplicateGroups: new Map(state.duplicateGroups),
+    duplicateSignals: new Map(state.duplicateSignals),
+    duplicateSignalIdentities: new Map(state.duplicateSignalIdentities),
     sourceRecords: new Map(state.sourceRecords),
     sourceExternalIds: new Map(state.sourceExternalIds),
     candidates: new Map(state.candidates),
@@ -129,6 +138,11 @@ export class InMemoryCandidatePlanBackend implements CandidatePlanAtomicBackend 
       'source checksum',
     );
 
+    for (const group of batch.duplicateGroups) {
+      const groupId = requiredId(group.id, 'duplicate-group ID');
+      putExact(next.duplicateGroups, groupId, group, 'duplicate group');
+    }
+
     for (const draft of batch.drafts) {
       const sourceRecordId = requiredId(draft.sourceRecord.id, 'source-record ID');
       const candidateId = requiredId(draft.candidate.id, 'candidate ID');
@@ -144,6 +158,17 @@ export class InMemoryCandidatePlanBackend implements CandidatePlanAtomicBackend 
         );
       }
 
+      if (
+        draft.candidate.duplicateGroupId !== null &&
+        draft.candidate.duplicateGroupId !== undefined &&
+        !next.duplicateGroups.has(draft.candidate.duplicateGroupId)
+      ) {
+        throw new CandidatePlanPersistenceError(
+          'persistence_conflict',
+          'The Candidate references an unavailable duplicate group.',
+          [`candidate ID: ${candidateId}`],
+        );
+      }
       putExact(next.candidates, candidateId, draft.candidate, 'candidate');
       putExact(
         next.candidateSourceRecords,
@@ -168,6 +193,39 @@ export class InMemoryCandidatePlanBackend implements CandidatePlanAtomicBackend 
       }
     }
 
+    for (const signal of batch.duplicateSignals) {
+      const signalId = requiredId(signal.id, 'duplicate-signal ID');
+      if (!next.duplicateGroups.has(signal.duplicateGroupId)) {
+        throw new CandidatePlanPersistenceError(
+          'persistence_conflict',
+          'The duplicate signal references an unavailable group.',
+          [`duplicate-signal ID: ${signalId}`],
+        );
+      }
+      if (
+        !next.candidates.has(signal.leftCandidateId) ||
+        !next.candidates.has(signal.rightCandidateId)
+      ) {
+        throw new CandidatePlanPersistenceError(
+          'persistence_conflict',
+          'The duplicate signal references an unavailable Candidate.',
+          [`duplicate-signal ID: ${signalId}`],
+        );
+      }
+      putExact(next.duplicateSignals, signalId, signal, 'duplicate signal');
+      claimUnique(
+        next.duplicateSignalIdentities,
+        [
+          signal.duplicateGroupId,
+          signal.leftCandidateId,
+          signal.rightCandidateId,
+          signal.reason,
+        ].join(':'),
+        signalId,
+        'duplicate signal identity',
+      );
+    }
+
     if (this.options.failBeforeCommit?.(batch) === true) {
       throw new Error('Injected failure before atomic commit.');
     }
@@ -179,6 +237,8 @@ export class InMemoryCandidatePlanBackend implements CandidatePlanAtomicBackend 
     return Object.freeze({
       importBatches: this.state.importBatches.size,
       requestIds: this.state.requestIds.size,
+      duplicateGroups: this.state.duplicateGroups.size,
+      duplicateSignals: this.state.duplicateSignals.size,
       sourceRecords: this.state.sourceRecords.size,
       candidates: this.state.candidates.size,
       candidateSourceRecords: this.state.candidateSourceRecords.size,
