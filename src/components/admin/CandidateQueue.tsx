@@ -145,8 +145,7 @@ export function CandidateQueue() {
     void loadQueue(filters);
   };
 
-  const pageState =
-    state.status === 'ready' || state.status === 'loading_more' ? state : null;
+  const pageState = state.status === 'ready' || state.status === 'loading_more' ? state : null;
   const currentItems = pageState?.items ?? [];
   const nextCursor = pageState?.nextCursor ?? null;
   const loadingMore = pageState?.status === 'loading_more';
