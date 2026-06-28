@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-06-28
+**Last updated:** 2026-06-29
 
 This document tracks repository implementation work. It is separate from the public product Roadmap and does not contain private operational planning.
 
@@ -122,7 +122,7 @@ Phase 3 adds protected operational tools that persist, review, resolve, and prom
 | P3-02 | Protected admin shell and access contract | Completed | P3-01, Phase 1 staging contract | [#42](https://github.com/badjoke-lab/cryptopaymap/pull/42) |
 | P3-03 | Dashboard and operational queue summaries | Completed | P3-01, P3-02 | [#43](https://github.com/badjoke-lab/cryptopaymap/pull/43) |
 | P3-04 | Candidate queue | Completed | P3-01, P3-02 | [#44](https://github.com/badjoke-lab/cryptopaymap/pull/44) |
-| P3-05 | Candidate detail and provenance review | Planned | P3-04 | — |
+| P3-05 | Candidate detail and provenance review | Completed | P3-04 | [#45](https://github.com/badjoke-lab/cryptopaymap/pull/45) |
 | P3-06 | Duplicate review and identity resolution | Planned | P3-05 | — |
 | P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 | — |
 | P3-08 | Evidence review and verification decisions | Planned | P3-07 | — |

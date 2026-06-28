@@ -1,0 +1,36 @@
+---
+import { ReviewCandidate } from '../../../components/admin/ReviewCandidate';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Candidate detail | CryptoPayMap Admin"
+  heading="Candidate detail"
+  description="A protected read-only workspace for Candidate source and provenance inspection. Unrestricted raw payloads, review mutations, duplicate decisions, promotion, and publication controls are not available."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="detail-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Candidate inspection boundary</p>
+    <h2 id="detail-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Known source payloads are revalidated before an allowlisted snapshot is shown
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Unknown or malformed payloads remain hidden. This page shows bounded source metadata, licenses, observation times,
+      import origin, and supported source fields without granting write capabilities.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="candidate-detail-workspace-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-05</p>
+        <h2 id="candidate-detail-workspace-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Provenance review
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Read-only inspection
+      </span>
+    </div>
+    <ReviewCandidate client:load />
+  </section>
+</AdminLayout>
