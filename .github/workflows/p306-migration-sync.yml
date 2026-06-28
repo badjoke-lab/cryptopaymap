@@ -36,7 +36,7 @@ jobs:
           import { readFileSync, writeFileSync, rmSync } from 'node:fs';
           const journalPath = 'drizzle/meta/_journal.json';
           const journal = JSON.parse(readFileSync(journalPath, 'utf8'));
-          if (journal.entries.at(-1)?.tag === '0013_yummy_terror') journal.entries.pop();
+          if (journal.entries.at(-1)?.idx === 13) journal.entries.pop();
           writeFileSync(journalPath, `${JSON.stringify(journal, null, 2)}\n`);
           rmSync('drizzle/0013_yummy_terror.sql', { force: true });
           rmSync('drizzle/meta/0013_snapshot.json', { force: true });
@@ -53,11 +53,25 @@ jobs:
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const branch = 'work/p306';
+            const journalPath = 'drizzle/meta/_journal.json';
+            const journal = JSON.parse(fs.readFileSync(journalPath, 'utf8'));
+            const generatedTag = journal.entries.at(-1)?.tag;
+            if (!generatedTag || journal.entries.at(-1)?.idx !== 13) {
+              core.setFailed('Drizzle did not generate migration index 13.');
+              return;
+            }
+            const generatedSqlPath = `drizzle/${generatedTag}.sql`;
             const paths = [
-              'drizzle/0013_yummy_terror.sql',
+              generatedSqlPath,
               'drizzle/meta/0013_snapshot.json',
-              'drizzle/meta/_journal.json',
+              journalPath,
             ];
+            for (const path of paths) {
+              if (!fs.existsSync(path)) {
+                core.setFailed(`Missing generated file: ${path}`);
+                return;
+              }
+            }
             const ref = await github.rest.git.getRef({ owner, repo, ref: `heads/${branch}` });
             const parentSha = ref.data.object.sha;
             const parent = await github.rest.git.getCommit({ owner, repo, commit_sha: parentSha });
@@ -70,6 +84,9 @@ jobs:
                 encoding: 'utf-8',
               });
               tree.push({ path, mode: '100644', type: 'blob', sha: blob.data.sha });
+            }
+            if (generatedSqlPath !== 'drizzle/0013_yummy_terror.sql') {
+              tree.push({ path: 'drizzle/0013_yummy_terror.sql', mode: '100644', type: 'blob', sha: null });
             }
             const nextTree = await github.rest.git.createTree({
               owner,
