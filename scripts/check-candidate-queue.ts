@@ -27,7 +27,10 @@ const cursor = {
   lastSeenAt: '2026-06-27T00:00:00.000Z',
   id: '00000000-0000-4000-8000-000000000001',
 };
-if (JSON.stringify(decodeCandidateQueueCursor(encodeCandidateQueueCursor(cursor))) !== JSON.stringify(cursor)) {
+if (
+  JSON.stringify(decodeCandidateQueueCursor(encodeCandidateQueueCursor(cursor))) !==
+  JSON.stringify(cursor)
+) {
   throw new Error('Candidate queue cursor round-trip failed.');
 }
 
