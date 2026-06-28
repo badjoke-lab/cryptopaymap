@@ -84,9 +84,11 @@ describe('administration dashboard summary service', () => {
       loadSummary: vi.fn(async () => invalidData),
     };
 
-    await expect(loadAdminDashboardSummary(authorizedContext, backend, asOf)).rejects.toMatchObject({
-      code: 'invalid_summary',
-    });
+    await expect(loadAdminDashboardSummary(authorizedContext, backend, asOf)).rejects.toMatchObject(
+      {
+        code: 'invalid_summary',
+      },
+    );
   });
 
   it('wraps an unexpected backend failure without exposing it', async () => {
