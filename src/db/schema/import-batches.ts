@@ -15,11 +15,16 @@ import { sources } from './source-provenance';
 
 export const importKindValues = ['physical_place', 'online_service'] as const;
 export const importKindEnum = pgEnum('import_kind', importKindValues);
+export const adminActorTypeValues = ['human', 'system'] as const;
+export const adminActorTypeEnum = pgEnum('admin_actor_type', adminActorTypeValues);
 
 export const importBatches = pgTable(
   'import_batches',
   {
     id: uuid('id').primaryKey(),
+    requestId: uuid('request_id').notNull(),
+    actorId: varchar('actor_id', { length: 200 }).notNull(),
+    actorType: adminActorTypeEnum('actor_type').notNull(),
     sourceId: uuid('source_id')
       .notNull()
       .references(() => sources.id, { onDelete: 'restrict' }),
@@ -40,14 +45,17 @@ export const importBatches = pgTable(
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [
+    uniqueIndex('import_batches_request_id_unique').on(table.requestId),
     uniqueIndex('import_batches_source_checksum_unique').on(
       table.sourceId,
       table.importKind,
       table.importerVersion,
       table.inputChecksum,
     ),
+    index('import_batches_actor_completed_idx').on(table.actorId, table.completedAt),
     index('import_batches_source_completed_idx').on(table.sourceId, table.completedAt),
     index('import_batches_kind_completed_idx').on(table.importKind, table.completedAt),
+    check('import_batches_actor_id_nonempty', sql`length(trim(${table.actorId})) > 0`),
     check(
       'import_batches_source_schema_version_nonempty',
       sql`length(trim(${table.sourceSchemaVersion})) > 0`,
