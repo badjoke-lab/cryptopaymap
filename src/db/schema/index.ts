@@ -15,6 +15,7 @@ export * from './assets';
 export * from './claim-assets';
 export * from './entities';
 export * from './evidence';
+export * from './import-batches';
 export * from './locations';
 export * from './media-legacy';
 export * from './networks';
