@@ -57,7 +57,7 @@ function backend(options: { failBeforeCommit?: boolean } = {}) {
         updatedAt: groupUpdatedAt,
       },
     ],
-    failBeforeCommit: options.failBeforeCommit ? () => true : undefined,
+    ...(options.failBeforeCommit ? { failBeforeCommit: () => true } : {}),
   });
 }
 
@@ -124,7 +124,10 @@ describe('Candidate duplicate decision service', () => {
     const decisionInput = input();
 
     const first = await service.decide(decisionContext, decisionInput);
-    const second = await service.decide(structuredClone(decisionContext), structuredClone(decisionInput));
+    const second = await service.decide(
+      structuredClone(decisionContext),
+      structuredClone(decisionInput),
+    );
 
     expect(first.state).toBe('committed');
     expect(second).toEqual({ ...first, state: 'replayed' });
@@ -167,10 +170,7 @@ describe('Candidate duplicate decision service', () => {
     const staleStore = backend();
     const staleService = createCandidateDuplicateDecisionService(staleStore);
     await expect(
-      staleService.decide(
-        context(),
-        input({ expectedGroupUpdatedAt: '2026-06-29T01:30:00.000Z' }),
-      ),
+      staleService.decide(context(), input({ expectedGroupUpdatedAt: '2026-06-29T01:30:00.000Z' })),
     ).rejects.toMatchObject({ code: 'conflict' });
 
     const changedStore = backend();
