@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { AdminAccessConfiguration } from './config';
 import { parseVerifiedAdminAccessIdentity, type AdminAccessIdentity } from './identity';
 
+const maximumAssertionLength = 16_384;
+
 const jwtHeaderSchema = z
   .object({
     alg: z.literal('RS256'),
@@ -9,12 +11,13 @@ const jwtHeaderSchema = z
   })
   .passthrough();
 
+const audienceValueSchema = z.string().min(1).max(512);
 const jwtClaimsSchema = z
   .object({
     sub: z.string().trim().min(1).max(200),
-    email: z.email().nullable().optional(),
-    iss: z.url(),
-    aud: z.union([z.string().min(1), z.array(z.string().min(1)).min(1)]),
+    email: z.email().max(320).nullable().optional(),
+    iss: z.url().max(2_048),
+    aud: z.union([audienceValueSchema, z.array(audienceValueSchema).min(1).max(16)]),
     exp: z.number().int().positive(),
     nbf: z.number().int().nonnegative().optional(),
   })
@@ -22,16 +25,16 @@ const jwtClaimsSchema = z
 
 const signingKeySchema = z
   .object({
-    kid: z.string().min(1),
+    kid: z.string().min(1).max(256),
     kty: z.literal('RSA'),
     alg: z.literal('RS256'),
-    n: z.string().min(1),
-    e: z.string().min(1),
+    n: z.string().min(1).max(8_192),
+    e: z.string().min(1).max(32),
   })
   .passthrough();
 
 const certificatesSchema = z.object({
-  keys: z.array(signingKeySchema),
+  keys: z.array(signingKeySchema).max(128),
 });
 
 export interface AdminAccessVerificationDependencies {
@@ -99,6 +102,9 @@ export async function verifyAdminAccessRequest(
   const assertion = request.headers.get('Cf-Access-Jwt-Assertion');
   if (!assertion) {
     throw verificationError('The Access assertion is missing.');
+  }
+  if (assertion.length > maximumAssertionLength) {
+    throw verificationError('The Access assertion exceeds the accepted size.');
   }
 
   const parts = assertion.split('.');
