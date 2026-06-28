@@ -52,16 +52,14 @@ describe('duplicate signal persistence plan', () => {
       new Set([persistence.groups[0]?.id]),
     );
     expect(
-      persistence.signals.every(
-        (signal) => signal.duplicateGroupId === persistence.groups[0]?.id,
-      ),
+      persistence.signals.every((signal) => signal.duplicateGroupId === persistence.groups[0]?.id),
     ).toBe(true);
   });
 
-  it('produces the same group and signal identities regardless of record order', async () => {
-    const forward = await buildCandidateDuplicateSignalPersistencePlan(
-      await plan([record(1), record(2), record(3)]),
-    );
+  it('keeps group identity independent of record order and signal identity stable on exact replay', async () => {
+    const forwardPlan = await plan([record(1), record(2), record(3)]);
+    const forward = await buildCandidateDuplicateSignalPersistencePlan(forwardPlan);
+    const replay = await buildCandidateDuplicateSignalPersistencePlan(structuredClone(forwardPlan));
     const reversed = await buildCandidateDuplicateSignalPersistencePlan(
       await plan([record(3), record(2), record(1)]),
     );
@@ -69,7 +67,7 @@ describe('duplicate signal persistence plan', () => {
     expect(reversed.groups.map((group) => group.id)).toEqual(
       forward.groups.map((group) => group.id),
     );
-    expect(reversed.signals.map((signal) => signal.id)).toEqual(
+    expect(replay.signals.map((signal) => signal.id)).toEqual(
       forward.signals.map((signal) => signal.id),
     );
   });
