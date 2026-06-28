@@ -1,0 +1,92 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const sections = [
+  {
+    href: '/admin/candidates',
+    title: 'Candidate review',
+    description: 'Inspect private source candidates and provenance before any canonical decision.',
+  },
+  {
+    href: '/admin/claims',
+    title: 'Claims',
+    description: 'Prepare explicit payment claims without bypassing Evidence or verification policy.',
+  },
+  {
+    href: '/admin/evidence',
+    title: 'Evidence',
+    description: 'Review source strength, observation dates, visibility, and contradictions.',
+  },
+  {
+    href: '/admin/rechecks',
+    title: 'Rechecks',
+    description: 'Manage time-based reconfirmation work and stale records.',
+  },
+  {
+    href: '/admin/media',
+    title: 'Media',
+    description: 'Separate private proof, rights review, and public-gallery eligibility.',
+  },
+  {
+    href: '/admin/exports',
+    title: 'Exports',
+    description: 'Control validated release generation without exposing Candidate data.',
+  },
+];
+---
+
+<AdminLayout
+  title="Administration | CryptoPayMap"
+  heading="Operations workspace"
+  description="A protected shell for reviewing private data. This static foundation contains no Candidate records, counts, contacts, Evidence payloads, or administration identity."
+>
+  <section class="rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6" aria-labelledby="access-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Access boundary active</p>
+    <h2 id="access-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Authentication happens before this page is served
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Cloudflare Access validates the application token at the Pages Function boundary. Missing configuration, invalid tokens,
+      and mismatched audiences fail closed. Private data will be loaded only by later protected administration services.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="workspace-sections-title">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">Phase 3 foundation</p>
+        <h2 id="workspace-sections-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Review areas
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Data views not connected yet
+      </span>
+    </div>
+
+    <div class="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      {
+        sections.map((section) => (
+          <a
+            class="motion-feedback group rounded-card border border-border bg-surface p-5 text-ink no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-panel"
+            href={section.href}
+          >
+            <h3 class="m-0 text-lg font-semibold tracking-tight group-hover:text-brand-800">{section.title}</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">{section.description}</p>
+            <span class="mt-4 inline-flex text-sm font-semibold text-brand-700">Open section →</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="mt-8 rounded-card border border-border bg-surface p-5 sm:p-6" aria-labelledby="safety-title">
+    <h2 id="safety-title" class="m-0 text-xl font-semibold tracking-tight text-ink">Current safety state</h2>
+    <ul class="mt-4 grid gap-3 text-sm leading-6 text-muted sm:grid-cols-2">
+      <li>Candidate-to-canonical promotion is disabled.</li>
+      <li>Public export publication is disabled.</li>
+      <li>No private records are embedded in static HTML.</li>
+      <li>No local authentication bypass exists.</li>
+    </ul>
+  </section>
+</AdminLayout>
