@@ -31,21 +31,22 @@ function assertion(overrides: Record<string, unknown> = {}): string {
 }
 
 function dependencies(signatureValid = true) {
-  const fetchImplementation = vi.fn(async () =>
-    new Response(
-      JSON.stringify({
-        keys: [
-          {
-            kid: 'signing-key-1',
-            kty: 'RSA',
-            alg: 'RS256',
-            n: 'AQAB',
-            e: 'AQAB',
-          },
-        ],
-      }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } },
-    ),
+  const fetchImplementation = vi.fn(
+    async () =>
+      new Response(
+        JSON.stringify({
+          keys: [
+            {
+              kid: 'signing-key-1',
+              kty: 'RSA',
+              alg: 'RS256',
+              n: 'AQAB',
+              e: 'AQAB',
+            },
+          ],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
+      ),
   );
   const importKey = vi.fn(async () => ({ type: 'public' }) as unknown as CryptoKey);
   const verify = vi.fn(async () => signatureValid);
