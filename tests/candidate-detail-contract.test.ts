@@ -103,7 +103,9 @@ describe('Candidate detail contract', () => {
   it('returns a validated detail with generation time', async () => {
     const backend: CandidateDetailBackend = { loadDetail: vi.fn(async () => validDetail()) };
 
-    await expect(loadCandidateDetail(authorizedContext, backend, candidateId, asOf)).resolves.toEqual({
+    await expect(
+      loadCandidateDetail(authorizedContext, backend, candidateId, asOf),
+    ).resolves.toEqual({
       ...validDetail(),
       generatedAt: asOf.toISOString(),
     });
@@ -113,7 +115,9 @@ describe('Candidate detail contract', () => {
   it('returns not found only after authorized backend access', async () => {
     const backend: CandidateDetailBackend = { loadDetail: vi.fn(async () => null) };
 
-    await expect(loadCandidateDetail(authorizedContext, backend, candidateId, asOf)).rejects.toMatchObject({
+    await expect(
+      loadCandidateDetail(authorizedContext, backend, candidateId, asOf),
+    ).rejects.toMatchObject({
       code: 'not_found',
     });
     expect(backend.loadDetail).toHaveBeenCalledOnce();
@@ -124,7 +128,9 @@ describe('Candidate detail contract', () => {
     detail.candidate.duplicateGroupStatus = 'open';
     const backend: CandidateDetailBackend = { loadDetail: vi.fn(async () => detail) };
 
-    await expect(loadCandidateDetail(authorizedContext, backend, candidateId, asOf)).rejects.toMatchObject({
+    await expect(
+      loadCandidateDetail(authorizedContext, backend, candidateId, asOf),
+    ).rejects.toMatchObject({
       code: 'invalid_detail',
     });
   });
@@ -136,7 +142,9 @@ describe('Candidate detail contract', () => {
       }),
     };
 
-    await expect(loadCandidateDetail(authorizedContext, backend, candidateId, asOf)).rejects.toMatchObject({
+    await expect(
+      loadCandidateDetail(authorizedContext, backend, candidateId, asOf),
+    ).rejects.toMatchObject({
       code: 'backend_failure',
     });
   });
