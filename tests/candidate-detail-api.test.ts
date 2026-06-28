@@ -1,9 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createCandidateDetailHandler } from '../functions/admin/api/candidates/[candidateId]';
-import {
-  CandidateDetailError,
-  type CandidateDetailResponse,
-} from '../src/admin/candidates/detail';
+import { CandidateDetailError, type CandidateDetailResponse } from '../src/admin/candidates/detail';
 
 const candidateId = '00000000-0000-4000-8000-000000000001';
 const identity = {
@@ -39,11 +36,7 @@ function detailResponse(): CandidateDetailResponse {
 }
 
 function context(
-  overrides: {
-    identity?: unknown;
-    subjects?: string;
-    candidateId?: string | string[];
-  } = {},
+  overrides: { identity?: unknown; subjects?: string; candidateId?: string | string[] } = {},
 ) {
   return {
     request: new Request(`https://example.test/admin/api/candidates/${candidateId}`),
