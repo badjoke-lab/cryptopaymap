@@ -72,9 +72,7 @@ export const candidateDuplicateDecisionInputSchema = z
 export type CandidateDuplicateMutationContext = z.infer<
   typeof candidateDuplicateMutationContextSchema
 >;
-export type CandidateDuplicateDecisionInput = z.infer<
-  typeof candidateDuplicateDecisionInputSchema
->;
+export type CandidateDuplicateDecisionInput = z.infer<typeof candidateDuplicateDecisionInputSchema>;
 
 export interface CandidateDuplicateDecisionCommand {
   decisionId: string;
@@ -200,10 +198,7 @@ export function createCandidateDuplicateDecisionService(
       input: CandidateDuplicateDecisionInput,
     ): Promise<CandidateDuplicateDecisionReceipt> {
       const contextResult = candidateDuplicateMutationContextSchema.safeParse(context);
-      if (
-        !contextResult.success ||
-        !context.capabilities.includes('candidate:resolve')
-      ) {
+      if (!contextResult.success || !context.capabilities.includes('candidate:resolve')) {
         throw new CandidateDuplicateDecisionError(
           'unauthorized',
           'The actor is not authorized to resolve Candidate duplicates.',
