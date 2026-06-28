@@ -18,8 +18,8 @@ export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
         <div>
           <dt className="font-semibold text-ink">Sources</dt>
           <dd className="mt-1 text-muted">
-            {item.sourceTypes.length === 0 ? 'None' : item.sourceTypes.join(', ')} · {item.sourceCount}{' '}
-            record{item.sourceCount === 1 ? '' : 's'}
+            {item.sourceTypes.length === 0 ? 'None' : item.sourceTypes.join(', ')} ·{' '}
+            {item.sourceCount} record{item.sourceCount === 1 ? '' : 's'}
           </dd>
         </div>
         <div>
@@ -29,7 +29,7 @@ export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
         <div>
           <dt className="font-semibold text-ink">Duplicate signal</dt>
           <dd className="mt-1 text-muted">
-            {item.duplicateSignal ? item.duplicateGroupStatus ?? 'flagged' : 'Not flagged'}
+            {item.duplicateSignal ? (item.duplicateGroupStatus ?? 'flagged') : 'Not flagged'}
           </dd>
         </div>
         <div>
