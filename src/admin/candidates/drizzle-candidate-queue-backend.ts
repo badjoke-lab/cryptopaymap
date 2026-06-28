@@ -1,17 +1,4 @@
-import {
-  and,
-  desc,
-  eq,
-  gt,
-  gte,
-  inArray,
-  isNotNull,
-  isNull,
-  lt,
-  or,
-  sql,
-  type SQL,
-} from 'drizzle-orm';
+import { and, desc, eq, gte, inArray, isNotNull, isNull, lt, or, sql, type SQL } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   candidateDuplicateGroups,
@@ -59,17 +46,15 @@ function duplicateFilter(query: CandidateQueueQuery): SQL | undefined {
 }
 
 function cursorFilter(query: CandidateQueueQuery, priorityKey: SQL<number>): SQL | undefined {
-  const cursor = query.cursor;
-  if (cursor === null) return undefined;
-  const cursorTime = new Date(cursor.lastSeenAt);
-
+  if (query.cursor === null) return undefined;
+  const cursorTime = new Date(query.cursor.lastSeenAt);
   return or(
-    lt(priorityKey, cursor.priority),
-    and(eq(priorityKey, cursor.priority), lt(sourceCandidates.lastSeenAt, cursorTime)),
+    lt(priorityKey, query.cursor.priority),
+    and(eq(priorityKey, query.cursor.priority), lt(sourceCandidates.lastSeenAt, cursorTime)),
     and(
-      eq(priorityKey, cursor.priority),
+      eq(priorityKey, query.cursor.priority),
       eq(sourceCandidates.lastSeenAt, cursorTime),
-      lt(sourceCandidates.id, cursor.id),
+      lt(sourceCandidates.id, query.cursor.id),
     ),
   );
 }
@@ -93,13 +78,13 @@ export function createDrizzleCandidateQueueBackend(
       ];
 
       if (query.sourceTypes.length > 0) {
-        const candidatesWithSourceType = database
+        const matchingCandidates = database
           .select({ candidateId: candidateSourceRecords.candidateId })
           .from(candidateSourceRecords)
           .innerJoin(sourceRecords, eq(candidateSourceRecords.sourceRecordId, sourceRecords.id))
           .innerJoin(sources, eq(sourceRecords.sourceId, sources.id))
           .where(inArray(sources.sourceType, query.sourceTypes));
-        conditions.push(inArray(sourceCandidates.id, candidatesWithSourceType));
+        conditions.push(inArray(sourceCandidates.id, matchingCandidates));
       }
 
       const rows = await database
@@ -130,7 +115,7 @@ export function createDrizzleCandidateQueueBackend(
       const hasNextPage = rows.length > query.limit;
       const pageRows = hasNextPage ? rows.slice(0, query.limit) : rows;
       const candidateIds = pageRows.map((row) => row.id);
-      const sourceSummaryRows =
+      const sourceRows =
         candidateIds.length === 0
           ? []
           : await database
@@ -143,22 +128,22 @@ export function createDrizzleCandidateQueueBackend(
               .innerJoin(sources, eq(sourceRecords.sourceId, sources.id))
               .where(inArray(candidateSourceRecords.candidateId, candidateIds));
 
-      const sourceSummaries = new Map<
+      const summaries = new Map<
         string,
-        { sourceTypes: Set<(typeof sourceSummaryRows)[number]['sourceType']>; sourceCount: number }
+        { sourceTypes: Set<(typeof sourceRows)[number]['sourceType']>; sourceCount: number }
       >();
-      for (const sourceRow of sourceSummaryRows) {
-        const summary = sourceSummaries.get(sourceRow.candidateId) ?? {
+      for (const sourceRow of sourceRows) {
+        const summary = summaries.get(sourceRow.candidateId) ?? {
           sourceTypes: new Set(),
           sourceCount: 0,
         };
         summary.sourceTypes.add(sourceRow.sourceType);
         summary.sourceCount += 1;
-        sourceSummaries.set(sourceRow.candidateId, summary);
+        summaries.set(sourceRow.candidateId, summary);
       }
 
       const items: CandidateQueueItem[] = pageRows.map((row) => {
-        const sourceSummary = sourceSummaries.get(row.id);
+        const summary = summaries.get(row.id);
         return {
           id: row.id,
           name: row.name,
@@ -168,8 +153,8 @@ export function createDrizzleCandidateQueueBackend(
           firstSeenAt: row.firstSeenAt.toISOString(),
           lastSeenAt: row.lastSeenAt.toISOString(),
           updatedAt: row.updatedAt.toISOString(),
-          sourceTypes: sourceSummary ? [...sourceSummary.sourceTypes].sort() : [],
-          sourceCount: sourceSummary?.sourceCount ?? 0,
+          sourceTypes: summary ? [...summary.sourceTypes].sort() : [],
+          sourceCount: summary?.sourceCount ?? 0,
           duplicateSignal: row.duplicateGroupId !== null,
           duplicateGroupStatus: row.duplicateGroupStatus,
           linkedToCanonical: row.linkedEntityId !== null || row.linkedLocationId !== null,
