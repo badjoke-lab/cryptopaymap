@@ -22,7 +22,14 @@ export interface InMemoryDuplicateCandidateSeed {
     | 'payment_processor'
     | 'payment_program'
     | 'platform';
-  candidateStatus: 'new' | 'triaged' | 'linked' | 'promoted' | 'duplicate' | 'rejected' | 'archived';
+  candidateStatus:
+    | 'new'
+    | 'triaged'
+    | 'linked'
+    | 'promoted'
+    | 'duplicate'
+    | 'rejected'
+    | 'archived';
   updatedAt: string;
 }
 
@@ -46,9 +53,7 @@ export interface InMemoryDuplicateDecisionBackendOptions {
 
 function cloneState(state: InMemoryDuplicateDecisionState): InMemoryDuplicateDecisionState {
   return {
-    groups: new Map(
-      [...state.groups].map(([id, group]) => [id, structuredClone(group)]),
-    ),
+    groups: new Map([...state.groups].map(([id, group]) => [id, structuredClone(group)])),
     candidates: new Map(
       [...state.candidates].map(([id, candidate]) => [id, structuredClone(candidate)]),
     ),
@@ -122,9 +127,7 @@ export class InMemoryDuplicateDecisionBackend implements CandidateDuplicateDecis
       conflict('A duplicate group cannot contain different Candidate types.');
     }
     if (
-      currentMembers.some(
-        (candidate) => !['new', 'triaged'].includes(candidate.candidateStatus),
-      )
+      currentMembers.some((candidate) => !['new', 'triaged'].includes(candidate.candidateStatus))
     ) {
       conflict('Only new or triaged Candidates can be resolved as duplicates.');
     }

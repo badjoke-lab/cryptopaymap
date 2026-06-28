@@ -381,7 +381,9 @@ export function createCandidatePlanPersistenceService(backend: CandidatePlanAtom
         acceptedCount: request.plan.summary.acceptedCount,
         rejectedCount: request.plan.summary.rejectedCount,
         replayedCount: request.plan.summary.replayedCount,
-        duplicateGroupIds: batch.duplicateGroups.map((group) => group.id).filter(Boolean) as string[],
+        duplicateGroupIds: batch.duplicateGroups
+          .map((group) => group.id)
+          .filter(Boolean) as string[],
         duplicateSignalIds: batch.duplicateSignals.map((signal) => signal.id),
         candidateIds: request.plan.drafts.map((draft) => draft.candidateId),
         state: 'committed',

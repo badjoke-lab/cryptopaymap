@@ -56,10 +56,7 @@ function importBatchGuard(database: CryptoPayMapDatabase, batch: CandidatePersis
   `);
 }
 
-function duplicateGroupGuard(
-  database: CryptoPayMapDatabase,
-  group: NewCandidateDuplicateGroup,
-) {
+function duplicateGroupGuard(database: CryptoPayMapDatabase, group: NewCandidateDuplicateGroup) {
   return database.execute(sql`
     select 1 / case when exists (
       select 1
@@ -127,10 +124,7 @@ function draftGuard(database: CryptoPayMapDatabase, draft: CandidatePersistenceD
   `);
 }
 
-function duplicateSignalGuard(
-  database: CryptoPayMapDatabase,
-  signal: NewCandidateDuplicateSignal,
-) {
+function duplicateSignalGuard(database: CryptoPayMapDatabase, signal: NewCandidateDuplicateSignal) {
   return database.execute(sql`
     select 1 / case when exists (
       select 1

@@ -174,16 +174,16 @@ describe('candidate-plan persistence service', () => {
     expect(committedBatch).not.toBeNull();
     expect(committedBatch!.duplicateGroups).toHaveLength(1);
     expect(committedBatch!.duplicateSignals).toHaveLength(1);
-    expect(new Set(committedBatch!.drafts.map((draft) => draft.candidate.duplicateGroupId))).toEqual(
-      new Set(receipt.duplicateGroupIds),
-    );
+    expect(
+      new Set(committedBatch!.drafts.map((draft) => draft.candidate.duplicateGroupId)),
+    ).toEqual(new Set(receipt.duplicateGroupIds));
     expect(committedBatch!.drafts.map((draft) => draft.candidate.candidateStatus)).toEqual([
       'new',
       'new',
     ]);
-    expect(committedBatch!.drafts.every((draft) => draft.candidate.canonicalEntityId === null)).toBe(
-      true,
-    );
+    expect(
+      committedBatch!.drafts.every((draft) => draft.candidate.canonicalEntityId === null),
+    ).toBe(true);
   });
 
   it('is idempotent when the same request and deterministic plan are replayed', async () => {
