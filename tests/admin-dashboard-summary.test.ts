@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import {
-  AdminDashboardSummaryError,
   loadAdminDashboardSummary,
   type AdminDashboardSummaryBackend,
   type AdminDashboardSummaryData,
+  type AdminDashboardSummaryError,
 } from '../src/admin/dashboard/summary';
 
 const asOf = new Date('2026-06-28T12:00:00.000Z');
