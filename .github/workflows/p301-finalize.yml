@@ -1,0 +1,47 @@
+name: P3-01 finalize
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - synchronize
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.head_ref == 'work/p301'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out P3-01 branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p301
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Format source
+        run: npm run format
+
+      - name: Generate import-batch migration
+        run: npm run db:generate
+
+      - name: Remove one-time workflow and commit
+        run: |
+          rm -f .github/workflows/p301-finalize.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P3-01: format and generate import batch migration"
+          git push origin HEAD:work/p301
