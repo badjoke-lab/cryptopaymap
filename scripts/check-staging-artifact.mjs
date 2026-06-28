@@ -74,6 +74,35 @@ for (const fragment of forbiddenAdminFragments) {
   }
 }
 
+const candidateQueuePage = readFileSync(
+  join(outputDirectory, 'admin/candidates/index.html'),
+  'utf8',
+);
+const requiredCandidateFragments = [
+  'Candidate read boundary',
+  'Queue access is separate from dashboard and write capabilities',
+  'Read-only summaries',
+];
+const forbiddenCandidateFragments = [
+  'CPM_ADMIN_CANDIDATE_SUBJECTS',
+  'rawPayload',
+  'sourceUrl',
+  'internalNote',
+  'canonicalEntityId',
+  'canonicalLocationId',
+  'storageKey',
+];
+for (const fragment of requiredCandidateFragments) {
+  if (!candidateQueuePage.includes(fragment)) {
+    throw new Error(`Missing Candidate queue marker: ${fragment}`);
+  }
+}
+for (const fragment of forbiddenCandidateFragments) {
+  if (candidateQueuePage.includes(fragment)) {
+    throw new Error(`Private or server-only marker found in Candidate HTML: ${fragment}`);
+  }
+}
+
 const textExtensions = new Set([
   '.css',
   '.html',
