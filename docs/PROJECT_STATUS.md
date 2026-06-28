@@ -12,7 +12,7 @@ P3-01 — Admin data-access and transaction foundation
 
 ## Active pull request
 
-None. Phase 2 closes with pull request #40.
+None. Phase 2 closed with pull request #40.
 
 ## Latest completed work
 
@@ -41,6 +41,7 @@ None. Phase 2 closes with pull request #40.
 - indirect spending, exchange, and ATM types are excluded from the main online directory
 - duplicate signals do not merge records automatically
 - importers create no automatic Confirmed records or public artifacts
+- database migration rollback behavior is documented
 - the complete result is recorded in `docs/PHASE_2_COMPLETION_AUDIT.md`
 
 ## P3-01 next
@@ -59,8 +60,8 @@ Live staging and Cloudflare Access verification remain deferred and do not block
 
 ## Next
 
-1. Merge pull request #40 after final CI and diff audit.
-2. Start P3-01 on a new branch from the resulting main.
+1. Start P3-01 on a new branch from the Phase 2 completion main.
+2. Implement private persistence without canonical promotion.
 3. Keep Candidate-to-canonical promotion disabled until the later reviewed promotion item.
 
 ## Blocked
