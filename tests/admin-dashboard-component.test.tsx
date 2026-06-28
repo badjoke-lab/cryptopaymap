@@ -53,11 +53,15 @@ describe('AdminDashboard', () => {
 
     render(<AdminDashboard />);
 
-    expect(screen.getByRole('heading', { name: 'Loading operational summary' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Loading operational summary' }),
+    ).toBeInTheDocument();
     expect(await screen.findByRole('heading', { name: 'Candidate review' })).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByText('2 new · 1 triaged · 1 high priority')).toBeInTheDocument();
     expect(screen.getByRole('heading', { name: 'Public release' })).toBeInTheDocument();
-    expect(screen.getByText('Release controls are intentionally disabled until P3-11.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Release controls are intentionally disabled until P3-11.'),
+    ).toBeInTheDocument();
     expect(screen.getByText('reconfirmed')).toBeInTheDocument();
     expect(fetchMock).toHaveBeenCalledWith(
       '/admin/api/dashboard',
@@ -66,11 +70,16 @@ describe('AdminDashboard', () => {
   });
 
   it('shows a denied state without rendering operational counts', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ error: 'dashboard_denied' }, 403)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ error: 'dashboard_denied' }, 403)),
+    );
 
     render(<AdminDashboard />);
 
-    expect(await screen.findByRole('heading', { name: 'Dashboard access denied' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Dashboard access denied' }),
+    ).toBeInTheDocument();
     expect(screen.queryByRole('heading', { name: 'Candidate review' })).not.toBeInTheDocument();
   });
 
