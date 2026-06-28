@@ -3,14 +3,18 @@ import type { AdminAccessIdentity } from '../access/identity';
 import type { AdminDashboardContext } from './summary';
 
 const dashboardSubjectSchema = z.string().trim().min(1).max(200);
-const dashboardSubjectsSchema = z.array(dashboardSubjectSchema).min(1).max(50).superRefine((subjects, context) => {
-  if (new Set(subjects).size !== subjects.length) {
-    context.addIssue({
-      code: 'custom',
-      message: 'Dashboard subject identifiers must be unique.',
-    });
-  }
-});
+const dashboardSubjectsSchema = z
+  .array(dashboardSubjectSchema)
+  .min(1)
+  .max(50)
+  .superRefine((subjects, context) => {
+    if (new Set(subjects).size !== subjects.length) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Dashboard subject identifiers must be unique.',
+      });
+    }
+  });
 
 export interface AdminDashboardAuthorizationEnvironment {
   CPM_ADMIN_DASHBOARD_SUBJECTS?: string;
