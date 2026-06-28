@@ -25,9 +25,7 @@ describe('administration Access configuration', () => {
     { ...validEnvironment, CF_ACCESS_TEAM_DOMAIN: 'https://test-team.cloudflareaccess.com/path' },
     { ...validEnvironment, CF_ACCESS_AUD: 'short' },
   ])('rejects missing or malformed configuration', (environment) => {
-    expect(() => readAdminAccessConfiguration(environment)).toThrow(
-      AdminAccessConfigurationError,
-    );
+    expect(() => readAdminAccessConfiguration(environment)).toThrow(AdminAccessConfigurationError);
   });
 
   it('returns a private unavailable response without configuration details', async () => {
