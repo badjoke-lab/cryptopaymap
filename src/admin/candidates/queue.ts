@@ -25,18 +25,19 @@ const candidateQueueCursorSchema = z
   })
   .strict();
 
-export const candidateQueuePriorityFilterValues = [
-  'all',
-  'high',
-  'standard',
-  'unscored',
-] as const;
+export const candidateQueuePriorityFilterValues = ['all', 'high', 'standard', 'unscored'] as const;
 export const candidateQueueDuplicateFilterValues = ['all', 'flagged', 'unflagged'] as const;
 
 export const candidateQueueQuerySchema = z
   .object({
-    statuses: z.array(z.enum(candidateStatusValues)).max(candidateStatusValues.length).default(['new', 'triaged']),
-    candidateTypes: z.array(z.enum(candidateTypeValues)).max(candidateTypeValues.length).default([]),
+    statuses: z
+      .array(z.enum(candidateStatusValues))
+      .max(candidateStatusValues.length)
+      .default(['new', 'triaged']),
+    candidateTypes: z
+      .array(z.enum(candidateTypeValues))
+      .max(candidateTypeValues.length)
+      .default([]),
     sourceTypes: z.array(z.enum(sourceTypeValues)).max(sourceTypeValues.length).default([]),
     priority: z.enum(candidateQueuePriorityFilterValues).default('all'),
     duplicate: z.enum(candidateQueueDuplicateFilterValues).default('all'),
@@ -134,7 +135,7 @@ export class CandidateQueueError extends Error {
   }
 }
 
-function parseMultiValue<T extends string>(
+function parseMultiValue(
   searchParameters: URLSearchParams,
   key: string,
 ): string[] {
@@ -142,7 +143,7 @@ function parseMultiValue<T extends string>(
     .getAll(key)
     .flatMap((value) => value.split(','))
     .map((value) => value.trim())
-    .filter((value): value is T => value.length > 0);
+    .filter((value) => value.length > 0);
 }
 
 export function encodeCandidateQueueCursor(cursor: CandidateQueueCursor): string {
@@ -162,7 +163,9 @@ export function decodeCandidateQueueCursor(value: string): CandidateQueueCursor 
   try {
     const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
     const padding = (4 - (normalized.length % 4)) % 4;
-    const decoded = JSON.parse(globalThis.atob(normalized.padEnd(normalized.length + padding, '=')));
+    const decoded = JSON.parse(
+      globalThis.atob(normalized.padEnd(normalized.length + padding, '=')),
+    );
     return candidateQueueCursorSchema.parse(decoded);
   } catch (error) {
     if (error instanceof CandidateQueueError) throw error;
@@ -173,21 +176,20 @@ export function decodeCandidateQueueCursor(value: string): CandidateQueueCursor 
 }
 
 export function parseCandidateQueueQuery(url: URL): CandidateQueueQuery {
+  const statuses = parseMultiValue(url.searchParams, 'status');
+  const candidateTypes = parseMultiValue(url.searchParams, 'type');
+  const sourceTypes = parseMultiValue(url.searchParams, 'source');
   const limitValue = url.searchParams.get('limit');
   const cursorValue = url.searchParams.get('cursor');
   const input = {
-    statuses: parseMultiValue(url.searchParams, 'status'),
-    candidateTypes: parseMultiValue(url.searchParams, 'type'),
-    sourceTypes: parseMultiValue(url.searchParams, 'source'),
+    ...(statuses.length > 0 ? { statuses } : {}),
+    ...(candidateTypes.length > 0 ? { candidateTypes } : {}),
+    ...(sourceTypes.length > 0 ? { sourceTypes } : {}),
     priority: url.searchParams.get('priority') ?? undefined,
     duplicate: url.searchParams.get('duplicate') ?? undefined,
     limit: limitValue === null ? undefined : Number(limitValue),
     cursor: cursorValue === null ? undefined : decodeCandidateQueueCursor(cursorValue),
   };
-
-  if (input.statuses.length === 0) delete input.statuses;
-  if (input.candidateTypes.length === 0) delete input.candidateTypes;
-  if (input.sourceTypes.length === 0) delete input.sourceTypes;
 
   const result = candidateQueueQuerySchema.safeParse(input);
   if (!result.success) {
