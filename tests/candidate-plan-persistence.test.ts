@@ -3,6 +3,7 @@ import {
   CandidatePlanPersistenceError,
   createCandidatePlanPersistenceService,
   type AdminMutationContext,
+  type CandidatePersistenceBatch,
   type PersistCandidatePlanRequest,
 } from '../src/admin/persistence/candidate-plan';
 import { InMemoryCandidatePlanBackend } from '../src/admin/persistence/in-memory-candidate-plan-backend';
@@ -92,6 +93,19 @@ async function physicalRequest(): Promise<PersistCandidatePlanRequest> {
   };
 }
 
+function emptySnapshot() {
+  return {
+    importBatches: 0,
+    requestIds: 0,
+    duplicateGroups: 0,
+    duplicateSignals: 0,
+    sourceRecords: 0,
+    candidates: 0,
+    candidateSourceRecords: 0,
+    legacyMappings: 0,
+  };
+}
+
 describe('candidate-plan persistence service', () => {
   it('commits a validated private candidate batch', async () => {
     const backend = new InMemoryCandidatePlanBackend();
@@ -104,9 +118,12 @@ describe('candidate-plan persistence service', () => {
       requestId: request.mutation.requestId,
       importBatchId: request.plan.importBatchId,
       acceptedCount: 2,
+      duplicateGroupIds: [],
+      duplicateSignalIds: [],
       state: 'committed',
     });
     expect(backend.snapshot()).toEqual({
+      ...emptySnapshot(),
       importBatches: 1,
       requestIds: 1,
       sourceRecords: 2,
@@ -114,6 +131,59 @@ describe('candidate-plan persistence service', () => {
       candidateSourceRecords: 2,
       legacyMappings: 2,
     });
+  });
+
+  it('persists connected duplicate signals without automatically changing Candidate status', async () => {
+    const first = physicalRecord(1);
+    const second = physicalRecord(2);
+    second.osmId = first.osmId;
+    second.name = 'A different display name';
+    const plan = await createPhysicalPlaceImportPlan({
+      sourceId: physicalSourceId,
+      licenseId: '22222222-2222-4222-8222-222222222222',
+      importBatchId: 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+      fetchedAt: '2026-06-27T00:00:00Z',
+      importerVersion: '1.0.0',
+      records: [first, second],
+    });
+    let committedBatch: CandidatePersistenceBatch | null = null;
+    const service = createCandidatePlanPersistenceService({
+      async persistAtomically(batch) {
+        committedBatch = batch;
+      },
+    });
+
+    const receipt = await service.persist({
+      mutation: {
+        ...mutation(),
+        requestId: 'cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+      },
+      metadata: {
+        importKind: 'physical_place',
+        sourceId: physicalSourceId,
+        sourceSchemaVersion: 'cryptopaymap-v2-legacy-v1',
+        startedAt: '2026-06-27T00:00:00Z',
+        completedAt: '2026-06-27T00:01:00Z',
+      },
+      plan,
+    });
+
+    expect(plan.duplicateSignals).toHaveLength(1);
+    expect(receipt.duplicateGroupIds).toHaveLength(1);
+    expect(receipt.duplicateSignalIds).toHaveLength(1);
+    expect(committedBatch).not.toBeNull();
+    expect(committedBatch!.duplicateGroups).toHaveLength(1);
+    expect(committedBatch!.duplicateSignals).toHaveLength(1);
+    expect(
+      new Set(committedBatch!.drafts.map((draft) => draft.candidate.duplicateGroupId)),
+    ).toEqual(new Set(receipt.duplicateGroupIds));
+    expect(committedBatch!.drafts.map((draft) => draft.candidate.candidateStatus)).toEqual([
+      'new',
+      'new',
+    ]);
+    expect(
+      committedBatch!.drafts.every((draft) => draft.candidate.canonicalEntityId === null),
+    ).toBe(true);
   });
 
   it('is idempotent when the same request and deterministic plan are replayed', async () => {
@@ -125,6 +195,7 @@ describe('candidate-plan persistence service', () => {
     await service.persist(structuredClone(request));
 
     expect(backend.snapshot()).toEqual({
+      ...emptySnapshot(),
       importBatches: 1,
       requestIds: 1,
       sourceRecords: 2,
@@ -165,14 +236,7 @@ describe('candidate-plan persistence service', () => {
     await expect(service.persist(await physicalRequest())).rejects.toMatchObject({
       code: 'backend_failure',
     });
-    expect(backend.snapshot()).toEqual({
-      importBatches: 0,
-      requestIds: 0,
-      sourceRecords: 0,
-      candidates: 0,
-      candidateSourceRecords: 0,
-      legacyMappings: 0,
-    });
+    expect(backend.snapshot()).toEqual(emptySnapshot());
   });
 
   it('rolls back a conflicting deterministic replay', async () => {
@@ -219,6 +283,8 @@ describe('candidate-plan persistence service', () => {
     expect(receipt.rejectedCount).toBe(1);
     expect(backend.snapshot()).toMatchObject({
       importBatches: 1,
+      duplicateGroups: 0,
+      duplicateSignals: 0,
       candidates: 0,
       sourceRecords: 0,
     });
