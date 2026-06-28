@@ -1,5 +1,7 @@
 import { z } from 'zod';
 import type {
+  NewCandidateDuplicateGroup,
+  NewCandidateDuplicateSignal,
   NewCandidateSourceRecord,
   NewImportBatch,
   NewLegacyPlaceId,
@@ -14,6 +16,7 @@ import type {
   PhysicalPlaceImportDraft,
   PhysicalPlaceImportPlan,
 } from '../../importers/physical-place';
+import { buildCandidateDuplicateSignalPersistencePlan } from './duplicate-signal-plan';
 
 export const adminCapabilityValues = ['candidate:write'] as const;
 export const adminCapabilitySchema = z.enum(adminCapabilityValues);
@@ -65,6 +68,8 @@ export interface CandidatePersistenceDraft {
 export interface CandidatePersistenceBatch {
   mutation: AdminMutationContext;
   importBatch: NewImportBatch;
+  duplicateGroups: NewCandidateDuplicateGroup[];
+  duplicateSignals: NewCandidateDuplicateSignal[];
   drafts: CandidatePersistenceDraft[];
 }
 
@@ -86,6 +91,8 @@ export interface CandidatePlanPersistenceReceipt {
   acceptedCount: number;
   rejectedCount: number;
   replayedCount: number;
+  duplicateGroupIds: string[];
+  duplicateSignalIds: string[];
   candidateIds: string[];
   state: 'committed';
 }
@@ -146,6 +153,9 @@ function validateDraft(
   }
   if (draft.candidate.candidateStatus !== 'new') {
     issues.push(`${draft.candidateId}: imported candidates must remain new`);
+  }
+  if (draft.candidate.duplicateGroupId !== null) {
+    issues.push(`${draft.candidateId}: import drafts cannot preassign duplicate groups`);
   }
   if (draft.candidate.canonicalEntityId !== null || draft.candidate.canonicalLocationId !== null) {
     issues.push(`${draft.candidateId}: persistence cannot assign a canonical target`);
@@ -277,9 +287,12 @@ function asDate(value: string | null): Date | null {
   return value === null ? null : new Date(value);
 }
 
-function buildPersistenceBatch(request: PersistCandidatePlanRequest): CandidatePersistenceBatch {
+async function buildPersistenceBatch(
+  request: PersistCandidatePlanRequest,
+): Promise<CandidatePersistenceBatch> {
   const { metadata, plan, mutation } = request;
   const outOfScopeCount = 'outOfScopeCount' in plan.summary ? plan.summary.outOfScopeCount : 0;
+  const duplicatePlan = await buildCandidateDuplicateSignalPersistencePlan(plan);
 
   return {
     mutation,
@@ -304,6 +317,8 @@ function buildPersistenceBatch(request: PersistCandidatePlanRequest): CandidateP
       startedAt: new Date(metadata.startedAt),
       completedAt: new Date(metadata.completedAt),
     },
+    duplicateGroups: duplicatePlan.groups,
+    duplicateSignals: duplicatePlan.signals,
     drafts: plan.drafts.map((draft) => ({
       sourceRecord: {
         id: draft.sourceRecordId,
@@ -315,6 +330,7 @@ function buildPersistenceBatch(request: PersistCandidatePlanRequest): CandidateP
       candidate: {
         id: draft.candidateId,
         ...draft.candidate,
+        duplicateGroupId: duplicatePlan.candidateGroupIds.get(draft.candidateId) ?? null,
         firstSeenAt: new Date(draft.candidate.firstSeenAt),
         lastSeenAt: new Date(draft.candidate.lastSeenAt),
       },
@@ -332,7 +348,18 @@ export function createCandidatePlanPersistenceService(backend: CandidatePlanAtom
   return {
     async persist(request: PersistCandidatePlanRequest): Promise<CandidatePlanPersistenceReceipt> {
       validateRequest(request);
-      const batch = buildPersistenceBatch(request);
+
+      let batch: CandidatePersistenceBatch;
+      try {
+        batch = await buildPersistenceBatch(request);
+      } catch (error) {
+        throw new CandidatePlanPersistenceError(
+          'invalid_plan',
+          'The duplicate signal plan is invalid.',
+          [error instanceof Error ? error.message : 'Unknown duplicate signal error.'],
+          { cause: error },
+        );
+      }
 
       try {
         await backend.persistAtomically(batch);
@@ -354,6 +381,8 @@ export function createCandidatePlanPersistenceService(backend: CandidatePlanAtom
         acceptedCount: request.plan.summary.acceptedCount,
         rejectedCount: request.plan.summary.rejectedCount,
         replayedCount: request.plan.summary.replayedCount,
+        duplicateGroupIds: batch.duplicateGroups.map((group) => group.id).filter(Boolean) as string[],
+        duplicateSignalIds: batch.duplicateSignals.map((signal) => signal.id),
         candidateIds: request.plan.drafts.map((draft) => draft.candidateId),
         state: 'committed',
       };
