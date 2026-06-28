@@ -91,7 +91,9 @@ if (
   throw new Error('A Phase 2 importer crossed the candidate-to-canonical boundary.');
 }
 
-const leakageIssues = findNonPublicContent({ physical: physicalPlan, online: onlinePlan });
+const leakageIssues = findNonPublicContent({ physical: physicalPlan, online: onlinePlan }).map(
+  (issue) => issue.toLowerCase(),
+);
 if (
   !leakageIssues.some((issue) => issue.includes('candidate')) ||
   !leakageIssues.some((issue) => issue.includes('payload'))
@@ -115,4 +117,6 @@ if (publicExportPaths.length !== 12) {
   throw new Error('The Phase 2 integration audit expects the complete twelve-artifact allowlist.');
 }
 
-console.log('Phase 2 integration checks passed for 20 private candidate drafts and 12 public paths.');
+console.log(
+  'Phase 2 integration checks passed for 20 private candidate drafts and 12 public paths.',
+);
