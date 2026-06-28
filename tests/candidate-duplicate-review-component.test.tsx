@@ -14,7 +14,12 @@ function review(status: 'open' | 'resolved' = 'open'): CandidateDuplicateReviewR
     id,
     name,
     candidateType: 'physical_place' as const,
-    status: status === 'open' ? ('new' as const) : id === leftId ? ('duplicate' as const) : ('triaged' as const),
+    status:
+      status === 'open'
+        ? ('new' as const)
+        : id === leftId
+          ? ('duplicate' as const)
+          : ('triaged' as const),
     priority: 500,
     firstSeenAt: '2026-06-01T00:00:00.000Z',
     lastSeenAt: '2026-06-28T00:00:00.000Z',
@@ -29,7 +34,8 @@ function review(status: 'open' | 'resolved' = 'open'): CandidateDuplicateReviewR
     group: {
       id: groupId,
       status,
-      updatedAt: status === 'open' ? '2026-06-28T01:00:00.000Z' : '2026-06-29T03:00:00.000Z',
+      updatedAt:
+        status === 'open' ? '2026-06-28T01:00:00.000Z' : '2026-06-29T03:00:00.000Z',
       resolvedAt: status === 'open' ? null : '2026-06-29T03:00:00.000Z',
     },
     members: [member(leftId, 'Left Cafe'), member(rightId, 'Right Cafe')],
@@ -85,12 +91,16 @@ describe('CandidateDuplicateReview', () => {
 
     render(<CandidateDuplicateReview />);
 
-    expect(await screen.findByRole('heading', { name: 'Candidate comparison' })).toBeInTheDocument();
-    expect(screen.getByText('Shared OSM Identity · Strong')).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Candidate comparison' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('Shared Osm Identity · Strong')).toBeInTheDocument();
     await user.click(screen.getByRole('radio', { name: 'Select Right Cafe as primary Candidate' }));
     await user.click(screen.getByRole('button', { name: 'Commit decision' }));
 
-    expect(await screen.findByText('This group is closed. No further decision control is displayed.')).toBeInTheDocument();
+    expect(
+      await screen.findByText('This group is closed. No further decision control is displayed.'),
+    ).toBeInTheDocument();
     const postCall = fetchMock.mock.calls[1];
     expect(postCall?.[0]).toBe(`/admin/api/duplicates/${groupId}`);
     const request = postCall?.[1] as RequestInit;
@@ -105,7 +115,10 @@ describe('CandidateDuplicateReview', () => {
 
   it('fails closed on an invalid response', async () => {
     window.history.replaceState({}, '', `/admin/candidates/duplicates/?group=${groupId}`);
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ group: { id: groupId } })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ group: { id: groupId } })),
+    );
 
     render(<CandidateDuplicateReview />);
 
@@ -115,7 +128,10 @@ describe('CandidateDuplicateReview', () => {
 
   it('shows read denial without rendering private group values', async () => {
     window.history.replaceState({}, '', `/admin/candidates/duplicates/?group=${groupId}`);
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ error: 'duplicate_review_denied' }, 403)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ error: 'duplicate_review_denied' }, 403)),
+    );
 
     render(<CandidateDuplicateReview />);
 

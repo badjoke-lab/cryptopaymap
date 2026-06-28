@@ -57,7 +57,9 @@ function validGroup(): CandidateDuplicateReviewData {
 
 describe('Candidate duplicate review contract', () => {
   it('rejects unauthorized contexts before backend access', async () => {
-    const backend: CandidateDuplicateReviewBackend = { loadGroup: vi.fn(async () => validGroup()) };
+    const backend: CandidateDuplicateReviewBackend = {
+      loadGroup: vi.fn(async () => validGroup()),
+    };
     await expect(
       loadCandidateDuplicateReview({ ...context, capabilities: [] }, backend, groupId, now),
     ).rejects.toMatchObject({ code: 'unauthorized' });
@@ -65,15 +67,19 @@ describe('Candidate duplicate review contract', () => {
   });
 
   it('rejects invalid group identifiers before backend access', async () => {
-    const backend: CandidateDuplicateReviewBackend = { loadGroup: vi.fn(async () => validGroup()) };
-    await expect(loadCandidateDuplicateReview(context, backend, 'invalid', now)).rejects.toMatchObject({
-      code: 'invalid_group_id',
-    });
+    const backend: CandidateDuplicateReviewBackend = {
+      loadGroup: vi.fn(async () => validGroup()),
+    };
+    await expect(
+      loadCandidateDuplicateReview(context, backend, 'invalid', now),
+    ).rejects.toMatchObject({ code: 'invalid_group_id' });
     expect(backend.loadGroup).not.toHaveBeenCalled();
   });
 
   it('returns one validated bounded group', async () => {
-    const backend: CandidateDuplicateReviewBackend = { loadGroup: vi.fn(async () => validGroup()) };
+    const backend: CandidateDuplicateReviewBackend = {
+      loadGroup: vi.fn(async () => validGroup()),
+    };
     await expect(loadCandidateDuplicateReview(context, backend, groupId, now)).resolves.toEqual({
       ...validGroup(),
       generatedAt: now.toISOString(),
@@ -84,17 +90,19 @@ describe('Candidate duplicate review contract', () => {
     const invalid = validGroup();
     invalid.members[1]!.candidateType = 'online_service';
     invalid.signals[0]!.rightCandidateId = '20000000-0000-4000-8000-000000000099';
-    const backend: CandidateDuplicateReviewBackend = { loadGroup: vi.fn(async () => invalid) };
-    await expect(loadCandidateDuplicateReview(context, backend, groupId, now)).rejects.toMatchObject({
-      code: 'invalid_group',
-    });
+    const backend: CandidateDuplicateReviewBackend = {
+      loadGroup: vi.fn(async () => invalid),
+    };
+    await expect(
+      loadCandidateDuplicateReview(context, backend, groupId, now),
+    ).rejects.toMatchObject({ code: 'invalid_group' });
   });
 
   it('returns not found only after authorized lookup', async () => {
     const backend: CandidateDuplicateReviewBackend = { loadGroup: vi.fn(async () => null) };
-    await expect(loadCandidateDuplicateReview(context, backend, groupId, now)).rejects.toMatchObject({
-      code: 'not_found',
-    });
+    await expect(
+      loadCandidateDuplicateReview(context, backend, groupId, now),
+    ).rejects.toMatchObject({ code: 'not_found' });
     expect(backend.loadGroup).toHaveBeenCalledOnce();
   });
 });

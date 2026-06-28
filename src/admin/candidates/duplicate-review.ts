@@ -127,19 +127,15 @@ export const candidateDuplicateReviewDataSchema = z
     }
   });
 
-export const candidateDuplicateReviewResponseSchema = candidateDuplicateReviewDataSchema.safeExtend({
-  generatedAt: timestampSchema,
-});
+export const candidateDuplicateReviewResponseSchema = candidateDuplicateReviewDataSchema.safeExtend(
+  {
+    generatedAt: timestampSchema,
+  },
+);
 
-export type CandidateDuplicateReviewContext = z.infer<
-  typeof candidateDuplicateReviewContextSchema
->;
-export type CandidateDuplicateReviewMember = z.infer<
-  typeof candidateDuplicateReviewMemberSchema
->;
-export type CandidateDuplicateReviewSignal = z.infer<
-  typeof candidateDuplicateReviewSignalSchema
->;
+export type CandidateDuplicateReviewContext = z.infer<typeof candidateDuplicateReviewContextSchema>;
+export type CandidateDuplicateReviewMember = z.infer<typeof candidateDuplicateReviewMemberSchema>;
+export type CandidateDuplicateReviewSignal = z.infer<typeof candidateDuplicateReviewSignalSchema>;
 export type CandidateDuplicateReviewData = z.infer<typeof candidateDuplicateReviewDataSchema>;
 export type CandidateDuplicateReviewResponse = z.infer<
   typeof candidateDuplicateReviewResponseSchema

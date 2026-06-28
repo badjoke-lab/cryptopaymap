@@ -35,7 +35,12 @@ function review(): CandidateDuplicateReviewResponse {
   });
   return {
     generatedAt: now.toISOString(),
-    group: { id: groupId, status: 'open', updatedAt: '2026-06-28T01:00:00.000Z', resolvedAt: null },
+    group: {
+      id: groupId,
+      status: 'open',
+      updatedAt: '2026-06-28T01:00:00.000Z',
+      resolvedAt: null,
+    },
     members: [member(leftId, 'Left Cafe'), member(rightId, 'Right Cafe')],
     signals: [],
     signalsTruncated: false,
@@ -56,27 +61,33 @@ function receipt(): CandidateDuplicateDecisionReceipt {
   };
 }
 
-function context(options: {
-  method?: 'GET' | 'POST';
-  body?: unknown;
-  identity?: unknown;
-  candidateSubjects?: string;
-  resolveSubjects?: string;
-  idempotencyKey?: string;
-  group?: string | string[];
-} = {}) {
+function context(
+  options: {
+    method?: 'GET' | 'POST';
+    body?: unknown;
+    identity?: unknown;
+    candidateSubjects?: string;
+    resolveSubjects?: string;
+    idempotencyKey?: string;
+    group?: string | string[];
+  } = {},
+) {
+  const method = options.method ?? 'GET';
   const headers = new Headers({ Accept: 'application/json' });
-  if (options.method === 'POST') headers.set('Content-Type', 'application/json');
+  if (method === 'POST') headers.set('Content-Type', 'application/json');
   if (options.idempotencyKey) headers.set('Idempotency-Key', options.idempotencyKey);
+  const requestInit: RequestInit = {
+    method,
+    headers,
+    ...(method === 'POST' ? { body: JSON.stringify(options.body) } : {}),
+  };
   return {
-    request: new Request(`https://example.test/admin/api/duplicates/${groupId}`, {
-      method: options.method ?? 'GET',
-      headers,
-      body: options.method === 'POST' ? JSON.stringify(options.body) : undefined,
-    }),
+    request: new Request(
+      `https://example.test/admin/api/duplicates/${groupId}`,
+      requestInit,
+    ),
     env: {
-      CPM_ADMIN_CANDIDATE_SUBJECTS:
-        options.candidateSubjects ?? JSON.stringify(['reviewer']),
+      CPM_ADMIN_CANDIDATE_SUBJECTS: options.candidateSubjects ?? JSON.stringify(['reviewer']),
       CPM_ADMIN_CANDIDATE_RESOLVE_SUBJECTS:
         options.resolveSubjects ?? JSON.stringify(['reviewer']),
     },

@@ -27,31 +27,34 @@ export function CandidateDuplicateReview() {
     setGroupId(new URLSearchParams(window.location.search).get('group'));
   }, []);
 
-  const loadReview = useCallback(async (signal?: AbortSignal) => {
-    if (groupId === undefined) return;
-    if (!groupId) return setState({ status: 'missing' });
-    setState({ status: 'loading' });
-    try {
-      const response = await fetch(`/admin/api/duplicates/${encodeURIComponent(groupId)}`, {
-        cache: 'no-store',
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-        signal: signal ?? null,
-      });
-      if (response.status === 403) return setState({ status: 'denied' });
-      if (response.status === 404) return setState({ status: 'not_found' });
-      if (response.status === 400) return setState({ status: 'missing' });
-      if (response.status === 503) return setState({ status: 'unavailable' });
-      if (!response.ok) return setState({ status: 'error' });
-      const parsed = candidateDuplicateReviewResponseSchema.safeParse(await response.json());
-      if (!parsed.success) return setState({ status: 'error' });
-      setPrimaryCandidateId(parsed.data.members[0]?.id ?? '');
-      setState({ status: 'ready', review: parsed.data });
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return;
-      setState({ status: 'error' });
-    }
-  }, [groupId]);
+  const loadReview = useCallback(
+    async (signal?: AbortSignal) => {
+      if (groupId === undefined) return;
+      if (!groupId) return setState({ status: 'missing' });
+      setState({ status: 'loading' });
+      try {
+        const response = await fetch(`/admin/api/duplicates/${encodeURIComponent(groupId)}`, {
+          cache: 'no-store',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' },
+          signal: signal ?? null,
+        });
+        if (response.status === 403) return setState({ status: 'denied' });
+        if (response.status === 404) return setState({ status: 'not_found' });
+        if (response.status === 400) return setState({ status: 'missing' });
+        if (response.status === 503) return setState({ status: 'unavailable' });
+        if (!response.ok) return setState({ status: 'error' });
+        const parsed = candidateDuplicateReviewResponseSchema.safeParse(await response.json());
+        if (!parsed.success) return setState({ status: 'error' });
+        setPrimaryCandidateId(parsed.data.members[0]?.id ?? '');
+        setState({ status: 'ready', review: parsed.data });
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setState({ status: 'error' });
+      }
+    },
+    [groupId],
+  );
 
   useEffect(() => {
     const controller = new AbortController();

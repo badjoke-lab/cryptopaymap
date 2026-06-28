@@ -89,14 +89,14 @@ export function createDrizzleDuplicateReviewBackend(
           })
           .from(candidateDuplicateSignals)
           .where(eq(candidateDuplicateSignals.duplicateGroupId, groupId))
-          .orderBy(
-            asc(candidateDuplicateSignals.createdAt),
-            asc(candidateDuplicateSignals.id),
-          )
+          .orderBy(asc(candidateDuplicateSignals.createdAt), asc(candidateDuplicateSignals.id))
           .limit(maximumSignals + 1),
       ]);
 
-      const summaries = new Map<string, { sourceTypes: Set<(typeof sourceRows)[number]['sourceType']>; sourceCount: number }>();
+      const summaries = new Map<
+        string,
+        { sourceTypes: Set<(typeof sourceRows)[number]['sourceType']>; sourceCount: number }
+      >();
       for (const source of sourceRows) {
         const summary = summaries.get(source.candidateId) ?? {
           sourceTypes: new Set(),
