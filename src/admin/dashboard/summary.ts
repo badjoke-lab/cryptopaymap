@@ -93,10 +93,7 @@ export interface AdminDashboardSummaryBackend {
   loadSummary(asOf: Date): Promise<AdminDashboardSummaryData>;
 }
 
-export type AdminDashboardSummaryErrorCode =
-  | 'unauthorized'
-  | 'invalid_summary'
-  | 'backend_failure';
+export type AdminDashboardSummaryErrorCode = 'unauthorized' | 'invalid_summary' | 'backend_failure';
 
 export class AdminDashboardSummaryError extends Error {
   readonly code: AdminDashboardSummaryErrorCode;
@@ -132,7 +129,10 @@ export async function loadAdminDashboardSummary(
   }
 
   if (Number.isNaN(asOf.getTime())) {
-    throw new AdminDashboardSummaryError('invalid_summary', 'The dashboard summary time is invalid.');
+    throw new AdminDashboardSummaryError(
+      'invalid_summary',
+      'The dashboard summary time is invalid.',
+    );
   }
 
   let data: AdminDashboardSummaryData;
