@@ -8,46 +8,46 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-03 — Dashboard and operational queue summaries
+P3-04 — Candidate queue
 
 ## Active pull request
 
-[#43 — P3-03: Add operational dashboard summaries](https://github.com/badjoke-lab/cryptopaymap/pull/43)
+None. P3-03 closes with pull request #43.
 
 ## Latest completed work
 
 - Phase 2 completed through pull request #40.
 - P3-01 completed through pull request #41.
 - P3-02 completed through pull request #42.
+- P3-03 completed through pull request #43.
 - `/admin` and descendant routes use a fail-closed Pages Function boundary.
 - Cloudflare Access assertions are checked for signature, issuer, audience, expiration, and not-before values.
-- Administration identity is derived only from verified claims and placed in protected request context.
-- Successful and failed administration responses use private, no-store, noindex, and no-referrer behavior.
-- The responsive administration shell exposes navigation and placeholders without private records or write controls.
-- Candidate-to-canonical promotion and public export publication remain disabled.
+- Exact verified Access subjects map to the read-only `dashboard:read` capability without email-based authorization.
+- The protected dashboard exposes bounded Candidate, duplicate, Evidence, recheck, media, import, and recent-event summaries.
+- Dashboard responses exclude record identifiers, source payloads, contacts, Evidence content, media keys, and write controls.
+- Loading, ready, zero-work, denied, unavailable, invalid-response, and retry states are implemented.
+- Publication remains unavailable until the dedicated P3-11 release workflow.
+- Candidate-to-canonical promotion remains disabled.
 
-## P3-03 work in progress
+## P3-04 next
 
-- define a strict bounded summary contract and read-only `dashboard:read` capability
-- map exact verified Access subject identifiers to dashboard access without using email addresses
-- aggregate Candidate, duplicate, Evidence, recheck, media, import, and recent event totals through purpose-built private queries
-- expose the summary through protected `/admin/api/dashboard`
-- validate the response again in the browser before rendering values
-- provide loading, ready, zero-work, denied, unavailable, invalid-response, and retry states
-- keep Candidate identifiers, source payloads, contacts, Evidence content, media keys, and write controls out of dashboard responses
-- keep publication unavailable until the dedicated P3-11 release workflow
-- add authorization, service, endpoint, component, runtime, build, and artifact checks
+- define a bounded Candidate queue contract with explicit `candidate:read` capability
+- query private Candidate rows without returning raw source payloads, contacts, internal notes, or canonical write controls
+- add stable sorting, status, type, source, priority, and duplicate-signal filters
+- add cursor-based pagination with bounded page size
+- expose protected queue loading, empty, denied, unavailable, invalid-response, and retry states
+- keep Candidate detail and provenance expansion outside the queue item
+- add authorization, query, endpoint, rendering, accessibility, and artifact tests
 
 ## Cloudflare status
 
-Live staging, Access browser verification, and live database aggregation remain deferred. Repository-level authorization, query, API, UI, and fail-closed contracts proceed without live credentials.
+Live staging, Access browser verification, and live database aggregation remain deferred. The repository-level P3-03 dashboard contract is complete and does not block P3-04 work.
 
 ## Next
 
-1. Complete pull request #43 implementation and CI.
-2. Verify that static artifacts contain no private dashboard configuration or payload markers.
-3. Merge P3-03 after all checks pass.
-4. Advance to P3-04 — Candidate queue.
+1. Start P3-04 from the P3-03 completion main.
+2. Add a bounded read-only Candidate queue and protected filtering contract.
+3. Keep Candidate detail, duplicate resolution, promotion, and publication outside P3-04.
 
 ## Blocked
 
