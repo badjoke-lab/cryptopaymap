@@ -40,14 +40,15 @@ const sections = [
   heading="Operations workspace"
   description="A protected shell for reviewing private data. This static foundation contains no Candidate records, counts, contacts, Evidence payloads, or administration identity."
 >
-  <section class="rounded-card border border-brand-200 bg-brand-50 p-5 sm:p-6" aria-labelledby="access-boundary-title">
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="access-boundary-title">
     <p class="m-0 text-sm font-semibold text-brand-800">Access boundary active</p>
     <h2 id="access-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
       Authentication happens before this page is served
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      Cloudflare Access validates the application token at the Pages Function boundary. Missing configuration, invalid tokens,
-      and mismatched audiences fail closed. Private data will be loaded only by later protected administration services.
+      The Pages Function verifies the Cloudflare Access assertion signature, issuer, audience, and validity period. Missing
+      configuration and invalid assertions fail closed. Private data will be loaded only by later protected administration
+      services.
     </p>
   </section>
 
@@ -68,7 +69,7 @@ const sections = [
       {
         sections.map((section) => (
           <a
-            class="motion-feedback group rounded-card border border-border bg-surface p-5 text-ink no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-panel"
+            class="motion-feedback group rounded-card border border-border bg-surface p-5 text-ink no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-brand-600 hover:shadow-panel"
             href={section.href}
           >
             <h3 class="m-0 text-lg font-semibold tracking-tight group-hover:text-brand-800">{section.title}</h3>
