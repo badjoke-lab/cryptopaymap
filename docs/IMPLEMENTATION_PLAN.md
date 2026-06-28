@@ -100,7 +100,7 @@ Import physical and online legacy records as source candidates rather than Confi
 **Phase 2 completion criteria**
 
 - Candidate and canonical records are structurally separate.
-- Reviewable migrations and drift checks are present.
+- Reviewable migrations are reversible or have documented rollback.
 - Verification states and history are auditable.
 - Only eligible public records can enter validated exports.
 - Source and license metadata remain traceable.
@@ -108,7 +108,7 @@ Import physical and online legacy records as source candidates rather than Confi
 - Test imports produce no automatic Confirmed records.
 - Importer plans fail public artifact validation.
 
-The detailed result is recorded in `docs/PHASE_2_COMPLETION_AUDIT.md`.
+The detailed result is recorded in `docs/PHASE_2_COMPLETION_AUDIT.md`. Database rollback behavior is recorded in `docs/DATABASE_MIGRATION_ROLLBACK.md`.
 
 ## Phase 3 — Administration and review
 
