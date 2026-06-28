@@ -81,14 +81,41 @@ export function readAdminAccessConfiguration(
   };
 }
 
-export function adminAccessUnavailableResponse(): Response {
-  return new Response('Administration access is unavailable.', {
-    status: 503,
-    headers: {
-      'Cache-Control': 'no-store',
-      'Content-Type': 'text/plain; charset=utf-8',
-      'Referrer-Policy': 'no-referrer',
-      'X-Content-Type-Options': 'nosniff',
-    },
+const adminSecurityHeaders = {
+  'Cache-Control': 'private, no-store',
+  'Referrer-Policy': 'no-referrer',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Robots-Tag': 'noindex, nofollow, noarchive',
+} as const;
+
+export function withAdminSecurityHeaders(response: Response): Response {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(adminSecurityHeaders)) {
+    headers.set(name, value);
+  }
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
   });
+}
+
+function adminAccessFailureResponse(status: 403 | 503, message: string): Response {
+  return withAdminSecurityHeaders(
+    new Response(message, {
+      status,
+      headers: {
+        'Content-Type': 'text/plain; charset=utf-8',
+      },
+    }),
+  );
+}
+
+export function adminAccessDeniedResponse(): Response {
+  return adminAccessFailureResponse(403, 'Administration access was denied.');
+}
+
+export function adminAccessUnavailableResponse(): Response {
+  return adminAccessFailureResponse(503, 'Administration access is unavailable.');
 }
