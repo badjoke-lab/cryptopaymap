@@ -30,7 +30,7 @@ const onlineRecord = {
   websiteUrl: 'https://service.example.test',
   countryCode: 'US',
   category: 'software',
-  acceptanceScope: 'online',
+  acceptanceScope: 'all_checkout',
   routeType: 'direct_wallet',
   processorName: null,
   processorUrl: null,

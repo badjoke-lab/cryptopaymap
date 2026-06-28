@@ -227,7 +227,10 @@ function CandidateDetailContent({ detail }: { detail: CandidateDetailResponse })
                 : 'Not flagged'
             }
           />
-          <SummaryField term="Entity link" value={candidate.linkedEntity ? 'Linked' : 'Not linked'} />
+          <SummaryField
+            term="Entity link"
+            value={candidate.linkedEntity ? 'Linked' : 'Not linked'}
+          />
           <SummaryField
             term="Location link"
             value={candidate.linkedLocation ? 'Linked' : 'Not linked'}
@@ -240,7 +243,9 @@ function CandidateDetailContent({ detail }: { detail: CandidateDetailResponse })
       <section className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm">
         <h2 className="m-0 text-xl font-semibold tracking-tight text-ink">Import origin</h2>
         {importOrigin === null ? (
-          <p className="mt-3 text-sm leading-6 text-muted">No import batch is linked to this Candidate.</p>
+          <p className="mt-3 text-sm leading-6 text-muted">
+            No import batch is linked to this Candidate.
+          </p>
         ) : (
           <dl className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
             <SummaryField term="Import kind" value={humanize(importOrigin.importKind)} />
@@ -257,7 +262,10 @@ function CandidateDetailContent({ detail }: { detail: CandidateDetailResponse })
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="m-0 text-sm font-semibold text-brand-700">Provenance inspection</p>
-            <h2 id="candidate-sources-title" className="mt-1 text-2xl font-semibold tracking-tight text-ink">
+            <h2
+              id="candidate-sources-title"
+              className="mt-1 text-2xl font-semibold tracking-tight text-ink"
+            >
               Source relationships
             </h2>
           </div>

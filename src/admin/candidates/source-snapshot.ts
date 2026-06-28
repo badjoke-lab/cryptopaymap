@@ -1,6 +1,9 @@
 import { z } from 'zod';
-import type { CandidateDetailSource, CandidateSourceSnapshot } from './detail';
-import { legacyOnlineServiceRecordSchema } from '../../schemas/online-service-import';
+import type { CandidateDetailData, CandidateSourceSnapshot } from './detail';
+import {
+  importableOnlineCandidateTypeValues,
+  legacyOnlineServiceRecordSchema,
+} from '../../schemas/online-service-import';
 import { legacyPhysicalPlaceRecordSchema } from '../../schemas/physical-place-import';
 
 const importerPayloadSchema = z
@@ -8,22 +11,18 @@ const importerPayloadSchema = z
     normalizedRecord: z.unknown(),
   })
   .passthrough();
-
-const onlineCandidateTypes = new Set([
-  'online_service',
-  'payment_processor',
-  'payment_program',
-  'platform',
-]);
+const importableOnlineCandidateTypeSchema = z.enum(importableOnlineCandidateTypeValues);
 
 function boundedPaymentTags(paymentTags: Record<string, string>): Record<string, string> {
-  return Object.fromEntries(Object.entries(paymentTags).sort(([left], [right]) => left.localeCompare(right)).slice(0, 100));
+  return Object.fromEntries(
+    Object.entries(paymentTags)
+      .sort(([left], [right]) => left.localeCompare(right))
+      .slice(0, 100),
+  );
 }
 
 export function projectCandidateSourceSnapshot(
-  candidateType: CandidateDetailSource['snapshot'] extends infer _Snapshot
-    ? 'physical_place' | 'online_service' | 'payment_processor' | 'payment_program' | 'platform'
-    : never,
+  candidateType: CandidateDetailData['candidate']['candidateType'],
   rawPayload: unknown,
 ): CandidateSourceSnapshot | null {
   const payloadResult = importerPayloadSchema.safeParse(rawPayload);
@@ -54,17 +53,19 @@ export function projectCandidateSourceSnapshot(
     };
   }
 
-  if (!onlineCandidateTypes.has(candidateType)) return null;
+  const candidateTypeResult = importableOnlineCandidateTypeSchema.safeParse(candidateType);
+  if (!candidateTypeResult.success) return null;
   const recordResult = legacyOnlineServiceRecordSchema.safeParse(
     payloadResult.data.normalizedRecord,
   );
-  if (!recordResult.success || recordResult.data.recordType !== candidateType) return null;
+  if (!recordResult.success) return null;
+  const recordTypeResult = importableOnlineCandidateTypeSchema.safeParse(recordResult.data.recordType);
+  if (!recordTypeResult.success || recordTypeResult.data !== candidateTypeResult.data) return null;
   const record = recordResult.data;
-  if (!onlineCandidateTypes.has(record.recordType)) return null;
 
   return {
     kind: 'online_service',
-    recordType: record.recordType,
+    recordType: recordTypeResult.data,
     name: record.name,
     websiteUrl: record.websiteUrl,
     countryCode: record.countryCode,

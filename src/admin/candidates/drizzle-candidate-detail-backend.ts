@@ -9,11 +9,7 @@ import {
   sourceRecords,
   sources,
 } from '../../db/schema';
-import type {
-  CandidateDetailBackend,
-  CandidateDetailData,
-  CandidateDetailSource,
-} from './detail';
+import type { CandidateDetailBackend, CandidateDetailData, CandidateDetailSource } from './detail';
 import { projectCandidateSourceSnapshot } from './source-snapshot';
 
 const maximumSources = 100;

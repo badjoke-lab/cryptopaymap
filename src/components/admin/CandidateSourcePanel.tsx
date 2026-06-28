@@ -1,7 +1,4 @@
-import type {
-  CandidateDetailSource,
-  CandidateSourceSnapshot,
-} from '../../admin/candidates/detail';
+import type { CandidateDetailSource, CandidateSourceSnapshot } from '../../admin/candidates/detail';
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
   dateStyle: 'medium',
@@ -22,7 +19,9 @@ function Field({ term, value }: { term: string; value: string | number | null })
   );
 }
 
-function snapshotFields(snapshot: CandidateSourceSnapshot): Array<[string, string | number | null]> {
+function snapshotFields(
+  snapshot: CandidateSourceSnapshot,
+): Array<[string, string | number | null]> {
   if (snapshot.kind === 'physical_place') {
     const location = [snapshot.addressLine, snapshot.locality, snapshot.region, snapshot.postalCode]
       .filter((value): value is string => value !== null)
@@ -69,7 +68,9 @@ export function CandidateSourcePanel({ source }: { source: CandidateDetailSource
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
             {source.relationship}
           </p>
-          <h3 className="mt-2 text-lg font-semibold tracking-tight text-ink">{source.sourceName}</h3>
+          <h3 className="mt-2 text-lg font-semibold tracking-tight text-ink">
+            {source.sourceName}
+          </h3>
           <p className="mt-1 text-sm text-muted">{source.sourceType}</p>
         </div>
         <span className="rounded-pill border border-border px-3 py-1 text-xs font-semibold text-muted">
@@ -108,11 +109,15 @@ export function CandidateSourcePanel({ source }: { source: CandidateDetailSource
         </div>
       ) : null}
 
-      <section className="mt-6 border-t border-border pt-5" aria-label="Allowlisted source snapshot">
+      <section
+        className="mt-6 border-t border-border pt-5"
+        aria-label="Allowlisted source snapshot"
+      >
         <h4 className="m-0 text-base font-semibold text-ink">Allowlisted source snapshot</h4>
         {source.snapshot === null ? (
           <p className="mt-2 text-sm leading-6 text-muted">
-            The payload is unknown or did not validate against a supported import schema. Raw JSON is not displayed.
+            The payload is unknown or did not validate against a supported import schema. Raw JSON
+            is not displayed.
           </p>
         ) : (
           <dl className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

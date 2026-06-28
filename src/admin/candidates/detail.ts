@@ -1,12 +1,15 @@
 import { z } from 'zod';
 import {
+  acceptanceScopeValues,
   candidateSourceRelationshipValues,
   candidateStatusValues,
   candidateTypeValues,
   duplicateGroupStatusValues,
   importKindValues,
+  routeTypeValues,
   sourceTypeValues,
 } from '../../db/schema';
+import { importableOnlineCandidateTypeValues } from '../../schemas/online-service-import';
 
 const candidateReadCapabilitySchema = z.literal('candidate:read');
 const timestampSchema = z.iso.datetime({ offset: true });
@@ -38,7 +41,10 @@ const physicalSourceSnapshotSchema = z
     category: nullableText(120),
     websiteUrl: httpUrlSchema.nullable(),
     osmType: z.enum(['node', 'way', 'relation']).nullable(),
-    osmId: z.string().regex(/^[1-9][0-9]*$/).nullable(),
+    osmId: z
+      .string()
+      .regex(/^[1-9][0-9]*$/)
+      .nullable(),
     paymentTags: z.record(z.string().max(160), z.string().max(160)),
     legacyVerificationLabel: nullableText(120),
   })
@@ -47,13 +53,13 @@ const physicalSourceSnapshotSchema = z
 const onlineSourceSnapshotSchema = z
   .object({
     kind: z.literal('online_service'),
-    recordType: z.enum(candidateTypeValues),
+    recordType: z.enum(importableOnlineCandidateTypeValues),
     name: z.string().trim().min(1).max(200),
     websiteUrl: httpUrlSchema.nullable(),
     countryCode: z.string().length(2).nullable(),
     category: nullableText(120),
-    acceptanceScope: nullableText(64),
-    routeType: nullableText(64),
+    acceptanceScope: z.enum(acceptanceScopeValues).nullable(),
+    routeType: z.enum(routeTypeValues).nullable(),
     processorName: nullableText(200),
     processorUrl: httpUrlSchema.nullable(),
     assetLabels: z.array(z.string().trim().min(1).max(160)).max(100),
