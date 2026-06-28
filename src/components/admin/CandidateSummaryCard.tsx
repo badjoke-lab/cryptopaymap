@@ -14,9 +14,29 @@ export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
           Priority {item.priority === null ? 'Unscored' : item.priority}
         </span>
       </div>
-      <p className="mt-4 text-sm text-muted">
-        {item.sourceCount} source record{item.sourceCount === 1 ? '' : 's'}
-      </p>
+      <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 xl:grid-cols-4">
+        <div>
+          <dt className="font-semibold text-ink">Sources</dt>
+          <dd className="mt-1 text-muted">
+            {item.sourceTypes.length === 0 ? 'None' : item.sourceTypes.join(', ')} · {item.sourceCount}{' '}
+            record{item.sourceCount === 1 ? '' : 's'}
+          </dd>
+        </div>
+        <div>
+          <dt className="font-semibold text-ink">Last seen</dt>
+          <dd className="mt-1 text-muted">{item.lastSeenAt.slice(0, 10)}</dd>
+        </div>
+        <div>
+          <dt className="font-semibold text-ink">Duplicate signal</dt>
+          <dd className="mt-1 text-muted">
+            {item.duplicateSignal ? item.duplicateGroupStatus ?? 'flagged' : 'Not flagged'}
+          </dd>
+        </div>
+        <div>
+          <dt className="font-semibold text-ink">Linked record</dt>
+          <dd className="mt-1 text-muted">{item.linkedToCanonical ? 'Linked' : 'Not linked'}</dd>
+        </div>
+      </dl>
     </article>
   );
 }
