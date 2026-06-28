@@ -7,6 +7,7 @@ const requiredFiles = [
   '_headers',
   'admin/index.html',
   'admin/candidates/index.html',
+  'admin/candidates/detail/index.html',
   'admin/claims/index.html',
   'admin/evidence/index.html',
   'admin/rechecks/index.html',
@@ -100,6 +101,35 @@ for (const fragment of requiredCandidateFragments) {
 for (const fragment of forbiddenCandidateFragments) {
   if (candidateQueuePage.includes(fragment)) {
     throw new Error(`Private or server-only marker found in Candidate HTML: ${fragment}`);
+  }
+}
+
+const candidateDetailPage = readFileSync(
+  join(outputDirectory, 'admin/candidates/detail/index.html'),
+  'utf8',
+);
+const requiredCandidateDetailFragments = [
+  'Candidate inspection boundary',
+  'Known source payloads are revalidated before an allowlisted snapshot is shown',
+  'Read-only inspection',
+];
+const forbiddenCandidateDetailFragments = [
+  'CPM_ADMIN_CANDIDATE_SUBJECTS',
+  'DATABASE_URL',
+  'rawPayload',
+  'normalizedRecord',
+  'privateExtra',
+  'sourceRecordId',
+  'actorId',
+];
+for (const fragment of requiredCandidateDetailFragments) {
+  if (!candidateDetailPage.includes(fragment)) {
+    throw new Error(`Missing Candidate detail marker: ${fragment}`);
+  }
+}
+for (const fragment of forbiddenCandidateDetailFragments) {
+  if (candidateDetailPage.includes(fragment)) {
+    throw new Error(`Private or server-only marker found in Candidate detail HTML: ${fragment}`);
   }
 }
 
