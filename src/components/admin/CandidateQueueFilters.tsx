@@ -1,10 +1,6 @@
 import { ChevronDown, Filter } from 'lucide-react';
-import type { FormEvent, ReactNode } from 'react';
-import {
-  candidateStatusValues,
-  candidateTypeValues,
-  sourceTypeValues,
-} from '../../db/schema';
+import type { ReactNode } from 'react';
+import { candidateStatusValues, candidateTypeValues, sourceTypeValues } from '../../db/schema';
 import { Button } from '../ui/Button';
 import { humanizeCandidateValue } from './CandidateQueueCard';
 
@@ -86,13 +82,16 @@ export function CandidateQueueFilters({
 }: {
   value: CandidateQueueFiltersValue;
   onChange(value: CandidateQueueFiltersValue): void;
-  onSubmit(event: FormEvent<HTMLFormElement>): void;
+  onSubmit(): void;
   onReset(): void;
 }) {
   return (
     <form
       className="rounded-card border border-border bg-surface p-5 shadow-sm"
-      onSubmit={onSubmit}
+      onSubmit={(event) => {
+        event.preventDefault();
+        onSubmit();
+      }}
     >
       <div className="flex items-center gap-2">
         <Filter className="size-5 text-brand-700" aria-hidden="true" />
