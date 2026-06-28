@@ -27,6 +27,7 @@ function validDetail(): CandidateDetailData {
       createdAt: '2026-06-01T00:00:00.000Z',
       updatedAt: '2026-06-28T01:00:00.000Z',
       duplicateSignal: false,
+      duplicateGroupId: null,
       duplicateGroupStatus: null,
       linkedEntity: false,
       linkedLocation: false,
