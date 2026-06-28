@@ -100,6 +100,18 @@ describe('Cloudflare Access assertion verification', () => {
     expect(runtime.fetchImplementation).not.toHaveBeenCalled();
   });
 
+  it('rejects an oversized assertion before parsing or fetching signing keys', async () => {
+    const runtime = dependencies();
+    const request = new Request('https://cryptopaymap.example/admin', {
+      headers: { 'Cf-Access-Jwt-Assertion': `a.${'b'.repeat(16_384)}.c` },
+    });
+
+    await expect(
+      verifyAdminAccessRequest(request, configuration, runtime.dependencies),
+    ).rejects.toThrow('size');
+    expect(runtime.fetchImplementation).not.toHaveBeenCalled();
+  });
+
   it('rejects a verified token for another application audience', async () => {
     const runtime = dependencies();
     const request = new Request('https://cryptopaymap.example/admin', {
@@ -111,6 +123,43 @@ describe('Cloudflare Access assertion verification', () => {
     await expect(
       verifyAdminAccessRequest(request, configuration, runtime.dependencies),
     ).rejects.toThrow('audience');
+  });
+
+  it('rejects a verified token from another issuer', async () => {
+    const runtime = dependencies();
+    const request = new Request('https://cryptopaymap.example/admin', {
+      headers: {
+        'Cf-Access-Jwt-Assertion': assertion({
+          iss: 'https://another-team.cloudflareaccess.com',
+        }),
+      },
+    });
+
+    await expect(
+      verifyAdminAccessRequest(request, configuration, runtime.dependencies),
+    ).rejects.toThrow('issuer');
+  });
+
+  it('rejects expired and not-yet-valid assertions', async () => {
+    const expiredRuntime = dependencies();
+    const expiredRequest = new Request('https://cryptopaymap.example/admin', {
+      headers: {
+        'Cf-Access-Jwt-Assertion': assertion({ exp: Math.floor(now / 1000) }),
+      },
+    });
+    await expect(
+      verifyAdminAccessRequest(expiredRequest, configuration, expiredRuntime.dependencies),
+    ).rejects.toThrow('expired');
+
+    const futureRuntime = dependencies();
+    const futureRequest = new Request('https://cryptopaymap.example/admin', {
+      headers: {
+        'Cf-Access-Jwt-Assertion': assertion({ nbf: Math.floor(now / 1000) + 60 }),
+      },
+    });
+    await expect(
+      verifyAdminAccessRequest(futureRequest, configuration, futureRuntime.dependencies),
+    ).rejects.toThrow('not yet valid');
   });
 
   it('rejects an assertion when cryptographic verification fails', async () => {
