@@ -125,7 +125,9 @@ export const candidateDuplicateDecisions = pgTable(
     note: text('note'),
     actorId: varchar('actor_id', { length: 200 }).notNull(),
     actorType: adminActorTypeEnum('actor_type').notNull(),
-    expectedGroupUpdatedAt: timestamp('expected_group_updated_at', { withTimezone: true }).notNull(),
+    expectedGroupUpdatedAt: timestamp('expected_group_updated_at', {
+      withTimezone: true,
+    }).notNull(),
     decidedAt: timestamp('decided_at', { withTimezone: true }).notNull(),
     decisionFingerprint: varchar('decision_fingerprint', { length: 64 }).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
