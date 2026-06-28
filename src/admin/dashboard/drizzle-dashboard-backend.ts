@@ -87,10 +87,7 @@ export function createDrizzleAdminDashboardBackend(
           .select({ value: count() })
           .from(acceptanceClaims)
           .where(
-            and(
-              eq(acceptanceClaims.claimStatus, 'stale'),
-              isNull(acceptanceClaims.deletedAt),
-            ),
+            and(eq(acceptanceClaims.claimStatus, 'stale'), isNull(acceptanceClaims.deletedAt)),
           ),
         database
           .select({ value: count() })
