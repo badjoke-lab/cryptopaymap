@@ -2,7 +2,13 @@ import { ChevronDown, Filter } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { candidateStatusValues, candidateTypeValues, sourceTypeValues } from '../../db/schema';
 import { Button } from '../ui/Button';
-import { humanizeCandidateValue } from './CandidateQueueCard';
+
+function humanizeCandidateValue(value: string): string {
+  return value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+}
 
 export interface CandidateQueueFiltersValue {
   status: 'actionable' | 'all' | (typeof candidateStatusValues)[number];
