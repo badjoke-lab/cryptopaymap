@@ -3,6 +3,8 @@ import './check-canonical-identity';
 import './check-claim-assets';
 import './check-evidence';
 import './check-media-legacy';
+import './check-online-service-importer';
+import './check-phase-2-integration';
 import './check-physical-place-importer';
 import './check-source-provenance';
 import './check-verification-events';
