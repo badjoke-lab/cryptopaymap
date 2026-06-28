@@ -1,0 +1,36 @@
+---
+import { CandidateQueue } from '../../components/admin/CandidateQueue';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Candidates | CryptoPayMap Admin"
+  heading="Candidate queue"
+  description="A protected read-only queue for bounded Candidate summaries. Source payloads, contacts, internal notes, canonical identifiers, and review controls are not returned by this page."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="candidate-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Candidate read boundary</p>
+    <h2 id="candidate-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Queue access is separate from dashboard and write capabilities
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      The protected endpoint requires the explicit Candidate read capability, validates every filter and cursor, and returns
+      summary fields only. Candidate detail, provenance expansion, duplicate decisions, and promotion remain unavailable.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="candidate-queue-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-04</p>
+        <h2 id="candidate-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Review queue
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Read-only summaries
+      </span>
+    </div>
+    <CandidateQueue client:load />
+  </section>
+</AdminLayout>
