@@ -15,18 +15,10 @@ export const candidatePromotionMutationContextSchema = z
   })
   .strict();
 
-const entityDraftSchema = z
-  .object({ id: z.uuid(), value: canonicalEntitySchema })
-  .strict();
-const locationDraftSchema = z
-  .object({ id: z.uuid(), value: canonicalLocationSchema })
-  .strict();
-const claimDraftSchema = z
-  .object({ id: z.uuid(), value: acceptanceClaimInputSchema })
-  .strict();
-const claimAssetDraftSchema = z
-  .object({ id: z.uuid(), value: claimAssetInputSchema })
-  .strict();
+const entityDraftSchema = z.object({ id: z.uuid(), value: canonicalEntitySchema }).strict();
+const locationDraftSchema = z.object({ id: z.uuid(), value: canonicalLocationSchema }).strict();
+const claimDraftSchema = z.object({ id: z.uuid(), value: acceptanceClaimInputSchema }).strict();
+const claimAssetDraftSchema = z.object({ id: z.uuid(), value: claimAssetInputSchema }).strict();
 
 export const candidatePromotionInputSchema = z
   .object({
@@ -155,20 +147,22 @@ function validatePromotion(input: CandidatePromotionInput): string[] {
   if (claim.entityId !== input.entity.id) issues.push('claim entityId must match the entity draft');
 
   if (input.expectedCandidateType === 'physical_place') {
-    if (entity.entityType !== 'merchant') issues.push('physical Candidates require merchant entities');
+    if (entity.entityType !== 'merchant')
+      issues.push('physical Candidates require merchant entities');
     if (input.location === null) {
       issues.push('physical Candidates require a canonical location');
-    } else if (
-      claim.locationId !== input.location.id ||
-      claim.claimScope !== 'location_specific'
-    ) {
+    } else if (claim.locationId !== input.location.id || claim.claimScope !== 'location_specific') {
       issues.push('physical Candidates require a location-specific claim');
     }
   } else {
     if (entity.entityType !== 'online_service') {
       issues.push('online Candidates require online-service entities');
     }
-    if (input.location !== null || claim.locationId !== null || claim.claimScope !== 'online_service') {
+    if (
+      input.location !== null ||
+      claim.locationId !== null ||
+      claim.claimScope !== 'online_service'
+    ) {
       issues.push('online Candidates cannot create or reference a physical location');
     }
     if (entity.slug === null) issues.push('online Candidates require an entity slug');
