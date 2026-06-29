@@ -184,7 +184,9 @@ describe('Candidate promotion contract', () => {
   it('replays identical requests and rejects changed content', async () => {
     const store = backend();
     const service = createCandidatePromotionService(store);
-    await expect(service.promote(context(), input())).resolves.toMatchObject({ state: 'committed' });
+    await expect(service.promote(context(), input())).resolves.toMatchObject({
+      state: 'committed',
+    });
     await expect(service.promote(context(), input())).resolves.toMatchObject({ state: 'replayed' });
     const changed = input();
     changed.entity.value.name = 'Changed Cafe';
