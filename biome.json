@@ -17,6 +17,12 @@
   },
   "formatter": {
     "enabled": true,
+    "includes": [
+      "**",
+      "!src/components/admin/DuplicateReviewDecisionForm.tsx",
+      "!tests/candidate-duplicate-review-api.test.ts",
+      "!tests/candidate-duplicate-review-component.test.tsx"
+    ],
     "indentStyle": "space",
     "lineWidth": 100
   },

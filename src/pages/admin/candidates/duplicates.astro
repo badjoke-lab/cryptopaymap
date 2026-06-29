@@ -1,0 +1,35 @@
+---
+import { CandidateDuplicateReview } from '../../../components/admin/CandidateDuplicateReview';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Duplicate review | CryptoPayMap Admin"
+  heading="Duplicate review"
+  description="A protected comparison workspace for explicit Candidate identity decisions. Row merging, canonical promotion, Evidence decisions, and publication are not available."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="duplicate-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Identity review boundary</p>
+    <h2 id="duplicate-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Persisted signals support review but never make the decision
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Compare bounded Candidate summaries, choose one primary record or dismiss the signal, and commit one explicit private decision.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="duplicate-workspace-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-06</p>
+        <h2 id="duplicate-workspace-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Group comparison
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Explicit decision only
+      </span>
+    </div>
+    <CandidateDuplicateReview client:load />
+  </section>
+</AdminLayout>

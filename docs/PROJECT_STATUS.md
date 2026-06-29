@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-06-29
+**Last verified:** 2026-06-30
 
 ## Current phase
 
@@ -12,7 +12,7 @@ P3-06 — Duplicate review and identity resolution
 
 ## Active pull request
 
-None. P3-05 closes with pull request #45.
+- Pull request #47 — P3-06B duplicate-group review interface and explicit decision controls.
 
 ## Latest completed work
 
@@ -22,34 +22,32 @@ None. P3-05 closes with pull request #45.
 - P3-03 completed through pull request #43.
 - P3-04 completed through pull request #44.
 - P3-05 completed through pull request #45.
-- The protected Candidate queue links to a read-only Candidate detail and provenance workspace.
-- Exact verified Access subjects use the existing `candidate:read` capability; unauthorized requests are rejected before Candidate lookup.
-- Candidate detail responses expose bounded Candidate state, import origin, effective licenses, and at most 100 source relationships.
-- Known physical-place and online import payloads are revalidated against their import schemas before an allowlisted snapshot is created.
-- Unknown, malformed, or Candidate-type-mismatched payloads return metadata only; unrestricted raw JSON is never serialized to the response.
-- Canonical entity and location identifiers, import actor identities, source external IDs, content hashes, internal notes, private Evidence, contacts, media keys, and write controls remain excluded.
-- The interface implements loading, ready, missing-ID, denied, not-found, unavailable, invalid-response, retry, zero-source, and truncated-source states.
-- Runtime checks, service tests, endpoint tests, component tests, static build, accessibility checks, and staging artifact leakage checks pass.
-- Duplicate decisions, Candidate mutation, canonical promotion, Evidence decisions, media decisions, and publication remain disabled.
+- P3-06A completed through pull request #46.
+- Importer duplicate signals are persisted with deterministic group and signal identities.
+- Duplicate decisions require the separate `candidate:resolve` capability and an explicit reviewer action.
+- Confirm-duplicate and dismiss-signal decisions are transactional, idempotent, conflict-checked, and audit-preserving.
+- Duplicate decisions do not merge Candidate rows, move source records, create canonical records, or publish data.
 
-## P3-06 next
+## P3-06B in progress
 
-- define explicit duplicate-group review and identity-resolution contracts
-- show bounded group members, duplicate signals, and provenance comparisons without generic private-row serialization
-- require an authorized mutation context and explicit reviewer decision; do not auto-merge Candidates
-- persist duplicate, dismissal, and identity-link decisions transactionally while preserving original Candidate provenance
-- prevent duplicate resolution from performing canonical promotion or publication
-- add authorization, transaction, conflict, rollback, rendering, accessibility, runtime, and artifact tests
+- expose a protected, bounded duplicate-group comparison response
+- link Candidate detail pages to duplicate-group review
+- show group members, persisted signals, provenance summaries, and closed-group states
+- provide explicit confirm-duplicate and dismiss-signal controls
+- require an authorized mutation context and optimistic group-version checks
+- return bounded denial, not-found, conflict, and unavailable states without private-detail leakage
+- add route, service, component, runtime, accessibility, and staging-artifact checks
+- keep canonical promotion, Evidence decisions, media decisions, and publication outside P3-06
 
 ## Cloudflare status
 
-Live staging, Access browser verification, and live database results remain deferred. The repository-level P3-05 detail and provenance contract is complete and does not block P3-06 work.
+Live staging, Access browser verification, and live database results remain deferred. Repository-level access, transaction, rendering, runtime, and artifact contracts continue to be verified in CI and do not block repository-only Phase 3 work.
 
 ## Next
 
-1. Start P3-06 from the P3-05 completion main.
-2. Add explicit duplicate review and identity-resolution decisions with no automatic merge.
-3. Keep claim editing, canonical promotion, Evidence decisions, and publication outside P3-06.
+1. Complete pull request #47 and close P3-06.
+2. Start P3-07 — Claim editor and canonical promotion.
+3. Keep Evidence decisions, publication, and public routes outside the first P3-07 delivery.
 
 ## Blocked
 

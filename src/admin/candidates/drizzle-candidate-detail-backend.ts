@@ -163,6 +163,7 @@ export function createDrizzleCandidateDetailBackend(
           createdAt: candidate.createdAt.toISOString(),
           updatedAt: candidate.updatedAt.toISOString(),
           duplicateSignal: candidate.duplicateGroupId !== null,
+          duplicateGroupId: candidate.duplicateGroupId,
           duplicateGroupStatus: candidate.duplicateGroupStatus,
           linkedEntity: candidate.canonicalEntityId !== null,
           linkedLocation: candidate.canonicalLocationId !== null,
