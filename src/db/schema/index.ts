@@ -13,6 +13,7 @@ export {
 export * from './acceptance-claims';
 export * from './assets';
 export * from './candidate-duplicates';
+export * from './candidate-promotions';
 export * from './claim-assets';
 export * from './entities';
 export * from './evidence';
