@@ -8,11 +8,13 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-06 — Duplicate review and identity resolution
+P3-07 — Claim editor and canonical promotion
 
-## Active pull request
+## Active work
 
-- Pull request #47 — P3-06B duplicate-group review interface and explicit decision controls.
+- P3-07A — canonical promotion service contract and atomic test backend.
+- Branch: `work/p307a`.
+- Pull request: not opened yet.
 
 ## Latest completed work
 
@@ -23,35 +25,38 @@ P3-06 — Duplicate review and identity resolution
 - P3-04 completed through pull request #44.
 - P3-05 completed through pull request #45.
 - P3-06A completed through pull request #46.
-- Importer duplicate signals are persisted with deterministic group and signal identities.
-- Duplicate decisions require the separate `candidate:resolve` capability and an explicit reviewer action.
-- Confirm-duplicate and dismiss-signal decisions are transactional, idempotent, conflict-checked, and audit-preserving.
-- Duplicate decisions do not merge Candidate rows, move source records, create canonical records, or publish data.
+- P3-06B completed through pull request #47.
+- Duplicate review now has protected group queries, explicit reviewer controls, conflict handling, bounded private responses, and complete repository CI coverage.
 
-## P3-06B in progress
+## P3-07A in progress
 
-- expose a protected, bounded duplicate-group comparison response
-- link Candidate detail pages to duplicate-group review
-- show group members, persisted signals, provenance summaries, and closed-group states
-- provide explicit confirm-duplicate and dismiss-signal controls
-- require an authorized mutation context and optimistic group-version checks
-- return bounded denial, not-found, conflict, and unavailable states without private-detail leakage
-- add route, service, component, runtime, accessibility, and staging-artifact checks
-- keep canonical promotion, Evidence decisions, media decisions, and publication outside P3-06
+- define the separate `candidate:promote` authorization boundary
+- accept explicit normalized Entity, Location, Claim, and Claim Asset drafts
+- support physical-place and online-service promotion only
+- require exact Candidate type, update time, and source provenance
+- create hidden canonical records and a hidden candidate claim
+- update Candidate canonical links and legacy mappings atomically
+- prove replay, conflict, and rollback behavior with an in-memory backend
+- prevent verification, Evidence decisions, public visibility, and export
 
-## Cloudflare status
+## Deferred within P3-07
 
-Live staging, Access browser verification, and live database results remain deferred. Repository-level access, transaction, rendering, runtime, and artifact contracts continue to be verified in CI and do not block repository-only Phase 3 work.
+- durable promotion audit schema and migration
+- Drizzle and Neon transaction backend
+- protected promotion editor and endpoint
+- existing canonical target linking
+- field-level provenance editing
+- live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete pull request #47 and close P3-06.
-2. Start P3-07 — Claim editor and canonical promotion.
-3. Keep Evidence decisions, publication, and public routes outside the first P3-07 delivery.
+1. Complete P3-07A CI and merge its contract foundation.
+2. Add durable promotion audit persistence and the Drizzle backend.
+3. Add the protected canonical promotion editor.
 
 ## Blocked
 
-No repository blocker. Only live deployment and database verification are deferred.
+No repository blocker. Live deployment and database verification remain deferred.
 
 ## Verification rule
 
