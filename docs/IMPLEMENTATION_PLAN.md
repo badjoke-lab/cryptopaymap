@@ -80,8 +80,8 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-03 | Dashboard and operational queue summaries | Completed | P3-01, P3-02 | #43 |
 | P3-04 | Candidate queue | Completed | P3-01, P3-02 | #44 |
 | P3-05 | Candidate detail and provenance review | Completed | P3-04 | #45 |
-| P3-06 | Duplicate review and identity resolution | In progress | P3-05 | #46, #47 |
-| P3-07 | Claim editor and canonical promotion | Planned | P3-05, P3-06 | — |
+| P3-06 | Duplicate review and identity resolution | Completed | P3-05 | #46, #47 |
+| P3-07 | Claim editor and canonical promotion | In progress | P3-05, P3-06 | P3-07A branch active |
 | P3-08 | Evidence review and verification decisions | Planned | P3-07 | — |
 | P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 | — |
 | P3-10 | Media review | Planned | P3-02, P2-10 | — |
@@ -90,11 +90,16 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 
 ### Current delivery
 
-P3-06A in pull request #46 completed duplicate-signal persistence and the atomic decision foundation. P3-06B in pull request #47 adds protected group comparison, explicit reviewer controls, conflict states, route and component tests, accessibility checks, and artifact checks. Duplicate review does not promote or publish records.
+P3-07A defines the separate Candidate promotion authorization and transaction contract. It creates only hidden canonical records, preserves exact source provenance, resolves pending legacy mappings, proves replay and rollback behavior, and keeps verification and publication outside promotion.
 
-### Next delivery
+### Remaining P3-07 deliveries
 
-P3-07 will create the reviewed Candidate-to-canonical promotion workspace. It must preserve provenance, require explicit normalized values, and keep verification and publication as later decisions.
+- durable promotion audit schema and migration
+- Drizzle and Neon atomic transaction backend
+- protected promotion endpoint and editor
+- existing canonical target linking
+- field-level provenance controls
+- endpoint, component, accessibility, and staging-artifact checks
 
 ## Phase 4 — Public core / MVP-A
 
