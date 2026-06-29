@@ -76,9 +76,7 @@ function cloneState(state: PromotionState): PromotionState {
     legacyMappings: new Map(
       [...state.legacyMappings].map(([id, mapping]) => [id, structuredClone(mapping)]),
     ),
-    entities: new Map(
-      [...state.entities].map(([id, entity]) => [id, structuredClone(entity)]),
-    ),
+    entities: new Map([...state.entities].map(([id, entity]) => [id, structuredClone(entity)])),
     locations: new Map(
       [...state.locations].map(([id, location]) => [id, structuredClone(location)]),
     ),
@@ -88,10 +86,7 @@ function cloneState(state: PromotionState): PromotionState {
     ),
     provenance: state.provenance.map((link) => structuredClone(link)),
     promotionsByRequest: new Map(
-      [...state.promotionsByRequest].map(([id, promotion]) => [
-        id,
-        structuredClone(promotion),
-      ]),
+      [...state.promotionsByRequest].map(([id, promotion]) => [id, structuredClone(promotion)]),
     ),
   };
 }
