@@ -110,11 +110,12 @@ describe('Candidate promotion editor', () => {
   it('renders explicit hidden-canonical controls for an eligible Candidate', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () =>
-        new Response(JSON.stringify(workspace()), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify(workspace()), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       ),
     );
 
@@ -129,17 +130,20 @@ describe('Candidate promotion editor', () => {
   it('disables mutation controls while duplicate review remains open', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () =>
-        new Response(JSON.stringify(workspace(false)), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify(workspace(false)), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       ),
     );
 
     render(<CandidatePromotionEditor />);
 
-    expect(await screen.findByRole('heading', { name: 'Promotion is blocked' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Promotion is blocked' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('Duplicate Review Open')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Create hidden canonical records' })).toBeDisabled();
   });
