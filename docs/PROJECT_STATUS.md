@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07B — durable promotion audit persistence and Drizzle transaction backend.
-- Branch: `work/p307b`.
-- Pull request: #49.
+- P3-07C — protected Candidate promotion endpoint and hidden canonical editor.
+- Branch: `work/p307c`.
+- Pull request: #51.
 
 ## Latest completed work
 
@@ -26,33 +26,31 @@ P3-07 — Claim editor and canonical promotion
 - P3-05 completed through pull request #45.
 - P3-06 completed through pull requests #46 and #47.
 - P3-07A completed through pull request #48.
-- P3-07A fixed the authorization, validation, hidden-canonical, provenance, replay, and rollback contract for Candidate promotion.
+- P3-07B completed through pull request #49.
+- Candidate promotion now has a separate authorization contract, durable audit record, exact provenance guards, an atomic Drizzle/Neon backend, and a reviewed migration set.
 
-## P3-07B in progress
+## P3-07C in progress
 
-- add the private `candidate_promotion_decisions` audit schema
-- generate and review the next Drizzle migration
-- add the Neon HTTP atomic batch backend
-- lock and recheck Candidate version and exact source provenance
-- insert hidden canonical Entity, optional Location, Claim, and Claim Assets
-- persist record-level origin provenance
-- resolve pending legacy mappings
-- update Candidate status and canonical links
-- persist and replay the durable promotion receipt
-- verify schema, types, tests, migration drift, build, and staging artifacts
+- add the separate Candidate promotion subject allowlist
+- load a bounded promotion workspace from the current Candidate and active registries
+- block unsupported types, stale status, existing links, incomplete provenance, and open duplicate review
+- expose protected GET and POST promotion endpoints
+- require exact Idempotency-Key UUIDs for mutation
+- provide explicit Entity, optional Location, Claim, and Claim Asset controls
+- keep all generated canonical records hidden with a candidate claim
+- add contract, API, component, runtime, accessibility, and staging-artifact checks
 
 ## Deferred within P3-07
 
-- protected promotion editor and endpoint
 - existing canonical-target linking
 - field-level provenance editing
 - live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete P3-07B and merge the durable database backend.
-2. Add the protected canonical promotion endpoint and editor.
-3. Complete existing-target linking and field-level provenance.
+1. Complete P3-07C CI and merge the protected editor.
+2. Add existing canonical-target linking.
+3. Add field-level provenance controls and complete the P3-07 integration audit.
 4. Advance to P3-08 Evidence review.
 
 ## Blocked
