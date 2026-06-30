@@ -11,7 +11,6 @@ import {
   varchar,
 } from 'drizzle-orm/pg-core';
 import { acceptanceClaims } from './acceptance-claims';
-import { claimAssets } from './claim-assets';
 import { entities } from './entities';
 import { adminActorTypeEnum } from './import-batches';
 import { locations } from './locations';

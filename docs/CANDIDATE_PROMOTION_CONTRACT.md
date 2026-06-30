@@ -1,7 +1,7 @@
 # Candidate promotion contract
 
 **Implementation item:** P3-07  
-**Current delivery:** P3-07A — canonical promotion service contract and atomic test backend  
+**Current delivery:** P3-07B — durable audit persistence and Drizzle transaction backend  
 **Status:** In progress
 
 ## Purpose
@@ -15,46 +15,59 @@ reviewed Candidate
   -> hidden canonical Entity and optional Location
   -> hidden candidate Acceptance Claim
   -> normalized Claim Asset combinations
+  -> record-level origin provenance
   -> Candidate status promoted
   -> pending legacy mapping resolved
+  -> durable replay receipt
 ```
 
-## P3-07A scope
+## Completed in P3-07A
 
-P3-07A defines and tests:
+P3-07A established and tested:
 
 - the `candidate:promote` capability;
-- request UUID, actor identity, and actor type;
-- exact Candidate type and update-time expectations;
-- physical-place and online-service promotion boundaries;
-- explicit canonical Entity, Location, Claim, and Claim Asset drafts;
-- exact source-record provenance expectations;
+- physical-place and online-service promotion contracts;
+- explicit Entity, Location, Claim, and Claim Asset drafts;
+- exact Candidate version and source-record expectations;
+- hidden canonical output;
 - request replay and conflicting request reuse;
-- copy-on-write rollback proof;
-- hidden canonical output and candidate claim status;
-- legacy path mapping behavior.
+- copy-on-write rollback proof in the in-memory backend;
+- legacy mapping behavior.
 
-P3-07A uses an in-memory atomic backend for contract tests. It does not claim production persistence.
+## P3-07B scope
+
+P3-07B adds the production persistence boundary:
+
+- a private `candidate_promotion_decisions` audit table;
+- request, actor, Candidate version, canonical target, source set, and receipt persistence;
+- one durable receipt per request UUID;
+- one promotion audit record per Candidate;
+- a Drizzle backend for Neon HTTP batch transactions;
+- transaction guards that lock and recheck the Candidate and its exact source-record set;
+- processor identity validation;
+- canonical Entity, optional Location, Claim, and Claim Asset insertion;
+- record-level origin provenance insertion;
+- pending legacy mapping resolution;
+- Candidate status and canonical-link updates;
+- exact replay after committed requests;
+- conflict mapping for stale state, foreign-key, uniqueness, and check failures.
 
 ## Supported Candidate types
-
-This delivery supports:
 
 ```text
 physical_place
 online_service
 ```
 
-Other Candidate types remain private and are rejected by the promotion input contract until a later reviewed extension.
+Other Candidate types remain private and are rejected by the promotion input contract.
 
 ## Canonical boundaries
 
 Physical-place promotion requires:
 
 - Entity type `merchant`;
-- one canonical Location;
+- one hidden canonical Location;
 - Claim scope `location_specific`;
-- Claim location ID matching the new Location;
 - canonical path `/place/{location-slug}`.
 
 Online-service promotion requires:
@@ -66,7 +79,7 @@ Online-service promotion requires:
 
 ## Verification and publication boundary
 
-Every newly promoted record must remain private:
+Every newly promoted record remains private:
 
 ```text
 Entity visibility       hidden
@@ -75,74 +88,40 @@ Claim status            candidate
 Claim visibility        hidden
 ```
 
-Promotion cannot assign:
-
-- Confirmed, Stale, Ended, or public status;
-- confirmation timestamps;
-- review deadlines;
-- ending timestamps or reasons;
-- Evidence decisions;
-- verification events;
-- media decisions;
-- public exports.
+Promotion cannot assign Confirmed, Stale, Ended, public visibility, confirmation timestamps, review deadlines, Evidence decisions, verification events, media decisions, or public exports.
 
 How-to-pay text may be normalized during promotion, but it is not treated as verified until P3-08.
 
-## Asset, network, and payment method boundary
+## Transaction boundary
 
-Every Claim Asset draft must explicitly identify:
+One Neon batch must either commit all of the following or none:
 
-- asset ID;
-- network ID;
-- payment method ID;
-- optional contract address;
-- one primary combination.
-
-The backend must reject unknown registry references. Asset symbols never imply networks.
-
-## Provenance
-
-The promotion request includes the exact reviewed source-record set. The backend must reject promotion if current Candidate provenance differs.
-
-P3-07A creates record-level origin provenance for:
-
-- Entity;
-- Location when present;
-- Acceptance Claim;
-- every Claim Asset.
-
-Field-level provenance editing is added with the protected editor before P3-07 is completed.
-
-## Atomicity
-
-One promotion operation must either commit all of the following or none:
-
+- Candidate version and source-set guards;
 - canonical records;
+- Claim Asset combinations;
 - provenance links;
+- legacy mapping changes;
 - Candidate status and canonical links;
-- legacy mapping resolution;
-- replay receipt.
+- durable promotion receipt.
 
-The in-memory backend proves this with copy-on-write state and injected pre-commit failure.
+Known PostgreSQL guard, foreign-key, uniqueness, and check failures are returned as promotion conflicts. Unknown infrastructure failures remain backend failures.
 
-## Replay and conflict behavior
+## Replay behavior
 
 The request UUID is the idempotency identity.
 
-- exact replay returns the original result with `state = replayed`;
+- exact replay returns the stored receipt with `state = replayed`;
 - reuse with different content is a conflict;
-- stale Candidate type, status, update time, canonical links, or provenance is a conflict;
-- existing canonical IDs or slugs are conflicts;
-- unknown processor, asset, network, or payment method references are conflicts.
+- a second request for an already promoted Candidate is a conflict;
+- concurrent exact requests converge on the durable receipt;
+- stale Candidate state or changed provenance causes the batch to roll back.
 
-## Deferred P3-07 work
+## Remaining P3-07 work
 
-Later P3-07 deliveries add:
+Later deliveries add:
 
-- durable promotion audit schema and migration;
-- Drizzle and Neon atomic backend;
-- protected Candidate promotion editor;
-- existing canonical target linking;
+- protected Candidate promotion endpoint and editor;
+- existing canonical-target linking;
 - field-level provenance controls;
-- endpoint, component, accessibility, and artifact tests;
+- route, component, accessibility, and staging-artifact checks;
 - Phase 3 handoff to Evidence review.
