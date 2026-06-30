@@ -6,9 +6,9 @@ P3-07B adds migration `0014_clean_stardust` for the private Candidate promotion 
 
 - `drizzle/0014_clean_stardust.sql`
 - `drizzle/meta/_journal.json`
-- `drizzle/meta/0014_snapshot.json.gz`
+- `drizzle/snapshot-artifacts/0014_snapshot.json.gz`
 
-The canonical snapshot is stored as a deterministic gzip artifact and materialized before every Drizzle generate, check, or migrate command.
+The canonical snapshot is stored outside `drizzle/meta` as a deterministic gzip artifact. It is materialized into `drizzle/meta` before every Drizzle generate, check, or migrate command. Keeping the compressed artifact outside `drizzle/meta` prevents Drizzle Kit from attempting to parse it as JSON.
 
 ## Integrity boundary
 
