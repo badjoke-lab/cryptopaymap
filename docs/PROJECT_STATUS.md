@@ -14,7 +14,7 @@ P3-07 — Claim editor and canonical promotion
 
 - P3-07E — durable existing-target Drizzle/Neon backend.
 - Branch: `work/p307e`.
-- Pull request: preparing.
+- Pull request: #53.
 
 ## Latest completed work
 
@@ -42,6 +42,7 @@ P3-07 — Claim editor and canonical promotion
 - update Candidate links and pending legacy mappings atomically
 - persist and replay the durable promotion receipt
 - map PostgreSQL guard, foreign-key, uniqueness, and check failures to conflicts
+- verify formatting, types, runtime checks, tests, build, migration drift, and staging artifacts
 
 ## Deferred within P3-07
 
