@@ -1,0 +1,82 @@
+name: P3-07F finalize branch
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Synchronize source branch
+        run: git pull --rebase origin "${GITHUB_HEAD_REF}"
+      - name: Tighten target guards and format files
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          backend = Path('src/admin/promotion/drizzle-target-search-backend.ts')
+          text = backend.read_text()
+          old_import = "import { and, asc, eq, ilike, inArray, isNull, or } from 'drizzle-orm';"
+          new_import = "import { and, asc, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';"
+          if old_import in text:
+              text = text.replace(old_import, new_import)
+          needle = "        eq(entities.entityType, 'online_service'),\n        inArray(entities.entityStatus, ['active', 'unknown']),"
+          replacement = "        eq(entities.entityType, 'online_service'),\n        isNotNull(entities.slug),\n        inArray(entities.entityStatus, ['active', 'unknown']),"
+          if needle in text:
+              text = text.replace(needle, replacement)
+          if "isNotNull(entities.slug)" not in text:
+              raise SystemExit('Online target slug guard is unavailable.')
+          backend.write_text(text)
+
+          component_test = Path('tests/candidate-existing-target-editor.test.tsx')
+          text = component_test.read_text()
+          old_assertion = "    expect(screen.getByText('/place/example-cafe')).toBeInTheDocument();"
+          new_assertion = "    expect(screen.getAllByText('/place/example-cafe').length).toBeGreaterThanOrEqual(2);"
+          if old_assertion in text:
+              text = text.replace(old_assertion, new_assertion)
+          if new_assertion not in text:
+              raise SystemExit('Canonical path comparison assertion is unavailable.')
+          component_test.write_text(text)
+          PY
+          npx biome format --write \
+            functions/admin/api/promotions/[candidateId]/existing-target.ts \
+            functions/admin/api/promotions/[candidateId]/targets.ts \
+            scripts/check-candidate-existing-target-artifact.mjs \
+            scripts/check-candidate-target-selection.ts \
+            src/admin/promotion/drizzle-target-search-backend.ts \
+            src/admin/promotion/target-selection.ts \
+            src/components/admin/CandidateExistingTargetEditor.tsx \
+            src/components/admin/CandidateSummaryCard.tsx \
+            tests/candidate-existing-target-api.test.ts \
+            tests/candidate-existing-target-editor.test.tsx \
+            tests/candidate-target-selection-api.test.ts \
+            tests/candidate-target-selection.test.ts
+          rm -f .github/workflows/p307f-format.yml .github/workflows/p307f-finalize.yml
+      - name: Commit finalized branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P3-07F: finalize formatter output and target guards"
+          if ! git push origin "HEAD:${GITHUB_HEAD_REF}"; then
+            git pull --rebase origin "${GITHUB_HEAD_REF}"
+            git push origin "HEAD:${GITHUB_HEAD_REF}"
+          fi
