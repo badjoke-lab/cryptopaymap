@@ -1,4 +1,4 @@
-name: P3-07C format artifact
+name: P3-07C format files
 
 on:
   pull_request:
@@ -6,14 +6,17 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   format:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
+      - name: Check out source branch
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -38,14 +41,8 @@ jobs:
             src/components/admin/CandidatePromotionEditor.tsx \
             tests/candidate-promotion-api.test.ts \
             tests/candidate-promotion-workspace.test.ts
-      - name: Upload formatted files
-        uses: actions/upload-artifact@v4
+      - name: Commit formatter output
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          name: p307c-formatted-files
-          path: |
-            src/admin/promotion/workspace.ts
-            src/components/admin/CandidatePromotionEditor.tsx
-            tests/candidate-promotion-api.test.ts
-            tests/candidate-promotion-workspace.test.ts
-          if-no-files-found: error
-          retention-days: 1
+          commit_message: 'P3-07C: apply formatter output and type fix'
+          file_pattern: 'src/admin/promotion/workspace.ts src/components/admin/CandidatePromotionEditor.tsx tests/candidate-promotion-api.test.ts tests/candidate-promotion-workspace.test.ts'
