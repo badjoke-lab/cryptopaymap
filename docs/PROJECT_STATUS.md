@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-06-30
+**Last verified:** 2026-07-01
 
 ## Current phase
 
@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07A — canonical promotion service contract and atomic test backend.
-- Branch: `work/p307a`.
-- Pull request: not opened yet.
+- P3-07B — durable promotion audit persistence and Drizzle transaction backend.
+- Branch: `work/p307b`.
+- Pull request: #49.
 
 ## Latest completed work
 
@@ -24,35 +24,36 @@ P3-07 — Claim editor and canonical promotion
 - P3-03 completed through pull request #43.
 - P3-04 completed through pull request #44.
 - P3-05 completed through pull request #45.
-- P3-06A completed through pull request #46.
-- P3-06B completed through pull request #47.
-- Duplicate review now has protected group queries, explicit reviewer controls, conflict handling, bounded private responses, and complete repository CI coverage.
+- P3-06 completed through pull requests #46 and #47.
+- P3-07A completed through pull request #48.
+- P3-07A fixed the authorization, validation, hidden-canonical, provenance, replay, and rollback contract for Candidate promotion.
 
-## P3-07A in progress
+## P3-07B in progress
 
-- define the separate `candidate:promote` authorization boundary
-- accept explicit normalized Entity, Location, Claim, and Claim Asset drafts
-- support physical-place and online-service promotion only
-- require exact Candidate type, update time, and source provenance
-- create hidden canonical records and a hidden candidate claim
-- update Candidate canonical links and legacy mappings atomically
-- prove replay, conflict, and rollback behavior with an in-memory backend
-- prevent verification, Evidence decisions, public visibility, and export
+- add the private `candidate_promotion_decisions` audit schema
+- generate and review the next Drizzle migration
+- add the Neon HTTP atomic batch backend
+- lock and recheck Candidate version and exact source provenance
+- insert hidden canonical Entity, optional Location, Claim, and Claim Assets
+- persist record-level origin provenance
+- resolve pending legacy mappings
+- update Candidate status and canonical links
+- persist and replay the durable promotion receipt
+- verify schema, types, tests, migration drift, build, and staging artifacts
 
 ## Deferred within P3-07
 
-- durable promotion audit schema and migration
-- Drizzle and Neon transaction backend
 - protected promotion editor and endpoint
-- existing canonical target linking
+- existing canonical-target linking
 - field-level provenance editing
 - live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete P3-07A CI and merge its contract foundation.
-2. Add durable promotion audit persistence and the Drizzle backend.
-3. Add the protected canonical promotion editor.
+1. Complete P3-07B and merge the durable database backend.
+2. Add the protected canonical promotion endpoint and editor.
+3. Complete existing-target linking and field-level provenance.
+4. Advance to P3-08 Evidence review.
 
 ## Blocked
 

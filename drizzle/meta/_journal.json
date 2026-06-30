@@ -99,6 +99,13 @@
       "when": 1782670340078,
       "tag": "0013_unknown_rockslide",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1782840300303,
+      "tag": "0014_clean_stardust",
+      "breakpoints": true
     }
   ]
 }
