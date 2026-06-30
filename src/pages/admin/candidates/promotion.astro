@@ -1,0 +1,35 @@
+---
+import { CandidatePromotionEditor } from '../../../components/admin/CandidatePromotionEditor';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Candidate promotion | CryptoPayMap Admin"
+  heading="Candidate promotion"
+  description="A protected editor for creating hidden canonical records from one reviewed Candidate. Promotion does not verify or publish the claim."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="promotion-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Canonical promotion boundary</p>
+    <h2 id="promotion-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Every normalized value is explicit and every new record remains hidden
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      The editor rechecks the Candidate version and complete source set before one atomic commit. Verification, Evidence decisions, media decisions, and publication remain unavailable.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="promotion-workspace-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-07C</p>
+        <h2 id="promotion-workspace-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Hidden canonical editor
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Explicit commit only
+      </span>
+    </div>
+    <CandidatePromotionEditor client:load />
+  </section>
+</AdminLayout>

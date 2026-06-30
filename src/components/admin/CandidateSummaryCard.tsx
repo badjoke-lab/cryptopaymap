@@ -2,6 +2,11 @@ import type { CandidateQueueItem } from '../../admin/candidates/queue';
 
 export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
   const detailHref = '/admin/candidates/detail/?id=' + item.id;
+  const promotionHref = '/admin/candidates/promotion/?id=' + item.id;
+  const promotionAvailable =
+    ['physical_place', 'online_service'].includes(item.candidateType) &&
+    ['new', 'triaged'].includes(item.status) &&
+    !item.linkedToCanonical;
   return (
     <article className="rounded-card border border-border bg-surface p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -42,6 +47,11 @@ export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
           <dd className="mt-1 text-muted">{item.linkedToCanonical ? 'Linked' : 'Not linked'}</dd>
         </div>
       </dl>
+      {promotionAvailable ? (
+        <a className="mt-5 inline-flex text-sm font-semibold text-brand-700" href={promotionHref}>
+          Open promotion editor
+        </a>
+      ) : null}
     </article>
   );
 }
