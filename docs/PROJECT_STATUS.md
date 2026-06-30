@@ -14,7 +14,7 @@ P3-07 — Claim editor and canonical promotion
 
 - P3-07B — durable promotion audit persistence and Drizzle transaction backend.
 - Branch: `work/p307b`.
-- Pull request: preparing.
+- Pull request: #49.
 
 ## Latest completed work
 
