@@ -6,3 +6,4 @@ dist/
 !.env.example
 .DS_Store
 *.log
+/drizzle/meta/0014_snapshot.json
