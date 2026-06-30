@@ -62,10 +62,7 @@ export const candidatePromotionDecisions = pgTable(
       'candidate_promotion_decisions_canonical_path_format',
       sql`${table.canonicalPath} ~ '^/(place|service)/[^/?#]+$'`,
     ),
-    check(
-      'candidate_promotion_decisions_actor_nonempty',
-      sql`length(trim(${table.actorId})) > 0`,
-    ),
+    check('candidate_promotion_decisions_actor_nonempty', sql`length(trim(${table.actorId})) > 0`),
     check(
       'candidate_promotion_decisions_fingerprint_nonempty',
       sql`length(${table.requestFingerprint}) > 0`,
