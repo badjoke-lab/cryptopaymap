@@ -182,9 +182,7 @@ export function createDrizzleCandidatePromotionBackend(
   database: CryptoPayMapDatabase,
 ): CandidatePromotionBackend {
   return {
-    async commitPromotion(
-      command: CandidatePromotionCommand,
-    ): Promise<CandidatePromotionReceipt> {
+    async commitPromotion(command: CandidatePromotionCommand): Promise<CandidatePromotionReceipt> {
       const existing = await readExistingPromotion(database, command.requestId);
       if (existing !== null) {
         if (existing.requestFingerprint !== command.requestFingerprint) {
@@ -302,8 +300,7 @@ export function createDrizzleCandidatePromotionBackend(
           .set({
             migrationStatus: 'mapped',
             canonicalPath: command.canonicalPath,
-            entityId:
-              command.expectedCandidateType === 'online_service' ? command.entity.id : null,
+            entityId: command.expectedCandidateType === 'online_service' ? command.entity.id : null,
             locationId:
               command.expectedCandidateType === 'physical_place'
                 ? (command.location?.id ?? null)
