@@ -81,27 +81,28 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-04 | Candidate queue | Completed | P3-01, P3-02 | #44 |
 | P3-05 | Candidate detail and provenance review | Completed | P3-04 | #45 |
 | P3-06 | Duplicate review and identity resolution | Completed | P3-05 | #46, #47 |
-| P3-07 | Claim editor and canonical promotion | In progress | P3-05, P3-06 | #48, P3-07B active |
+| P3-07 | Claim editor and canonical promotion | In progress | P3-05, P3-06 | #48, #49, #51 active |
 | P3-08 | Evidence review and verification decisions | Planned | P3-07 | — |
 | P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 | — |
 | P3-10 | Media review | Planned | P3-02, P2-10 | — |
 | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10 | — |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
-### Completed P3-07 delivery
+### Completed P3-07 deliveries
 
 P3-07A completed through pull request #48. It defines the separate Candidate promotion authorization and transaction contract, creates only hidden canonical records, preserves exact source provenance, resolves pending legacy mappings, proves replay and rollback behavior, and keeps verification and publication outside promotion.
 
+P3-07B completed through pull request #49. It adds the durable `candidate_promotion_decisions` audit record, reviewed migration set, and Drizzle/Neon atomic backend with Candidate and provenance guards, canonical insertion, legacy mapping resolution, durable replay, and conflict rollback.
+
 ### Current delivery
 
-P3-07B adds the durable `candidate_promotion_decisions` audit record and the Drizzle/Neon atomic backend. The transaction must recheck the Candidate and exact source set, insert all canonical records and origin provenance, resolve legacy mappings, update Candidate links, and persist one replayable receipt without exposing or publishing the result.
+P3-07C adds the protected promotion workspace, a separate promotion allowlist, bounded Candidate and registry reads, explicit eligibility blocks, protected GET and POST endpoints, and the hidden canonical editor. It still creates new canonical targets only; verification and publication remain separate.
 
 ### Remaining P3-07 deliveries
 
-- protected promotion endpoint and editor
 - existing canonical-target linking
 - field-level provenance controls
-- endpoint, component, accessibility, and staging-artifact checks
+- final integration and handoff checks
 
 ## Phase 4 — Public core / MVP-A
 
