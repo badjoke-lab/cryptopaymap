@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07C — protected Candidate promotion endpoint and hidden canonical editor.
-- Branch: `work/p307c`.
-- Pull request: #51.
+- P3-07D — existing canonical target link contract and atomic test backend.
+- Branch: `work/p307d`.
+- Pull request: preparing.
 
 ## Latest completed work
 
@@ -27,29 +27,32 @@ P3-07 — Claim editor and canonical promotion
 - P3-06 completed through pull requests #46 and #47.
 - P3-07A completed through pull request #48.
 - P3-07B completed through pull request #49.
-- Candidate promotion now has a separate authorization contract, durable audit record, exact provenance guards, an atomic Drizzle/Neon backend, and a reviewed migration set.
+- P3-07C completed through pull request #51.
+- Candidate promotion now has protected new-target editing, an isolated mutation allowlist, durable audit persistence, exact provenance guards, and an atomic Drizzle/Neon backend.
 
-## P3-07C in progress
+## P3-07D in progress
 
-- add the separate Candidate promotion subject allowlist
-- load a bounded promotion workspace from the current Candidate and active registries
-- block unsupported types, stale status, existing links, incomplete provenance, and open duplicate review
-- expose protected GET and POST promotion endpoints
-- require exact Idempotency-Key UUIDs for mutation
-- provide explicit Entity, optional Location, Claim, and Claim Asset controls
-- keep all generated canonical records hidden with a candidate claim
-- add contract, API, component, runtime, accessibility, and staging-artifact checks
+- define an explicit existing-target link request
+- pin Candidate, Entity, optional Location, canonical path, source set, and existing Claim set
+- support physical-place and online-service target shapes
+- create only a hidden candidate Claim and Claim Assets
+- preserve existing Entity and Location records unchanged
+- use attribution provenance for reused identity targets and origin provenance for new Claim records
+- update Candidate links and pending legacy mappings atomically
+- prove replay, conflict, target drift, and rollback behavior
 
 ## Deferred within P3-07
 
-- existing canonical-target linking
+- Drizzle/Neon existing-target link backend
+- protected target search and comparison workspace
+- existing-target editor controls
 - field-level provenance editing
 - live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete P3-07C CI and merge the protected editor.
-2. Add existing canonical-target linking.
+1. Complete P3-07D contract CI and merge it.
+2. Add the durable existing-target backend and protected target selection workspace.
 3. Add field-level provenance controls and complete the P3-07 integration audit.
 4. Advance to P3-08 Evidence review.
 
