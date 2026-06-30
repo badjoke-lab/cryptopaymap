@@ -11,10 +11,7 @@ import {
   provenanceLinks,
   sourceCandidates,
 } from '../../db/schema';
-import {
-  CandidatePromotionError,
-  type CandidatePromotionReceipt,
-} from './candidate-promotion';
+import { CandidatePromotionError, type CandidatePromotionReceipt } from './candidate-promotion';
 import type {
   CandidateExistingTargetLinkBackend,
   CandidateExistingTargetLinkCommand,
@@ -102,10 +99,7 @@ function sourceRecordGuard(
   `);
 }
 
-function entityGuard(
-  database: CryptoPayMapDatabase,
-  command: CandidateExistingTargetLinkCommand,
-) {
+function entityGuard(database: CryptoPayMapDatabase, command: CandidateExistingTargetLinkCommand) {
   const expectedType =
     command.expectedCandidateType === 'physical_place' ? 'merchant' : 'online_service';
   return database.execute(sql`
@@ -336,7 +330,10 @@ export function createDrizzleExistingTargetLinkBackend(
 
       const entity = await loadEntityState(database, command);
       if (entity === null) {
-        throw new CandidatePromotionError('not_found', 'The canonical Entity target was not found.');
+        throw new CandidatePromotionError(
+          'not_found',
+          'The canonical Entity target was not found.',
+        );
       }
       const expectedEntityType =
         command.expectedCandidateType === 'physical_place' ? 'merchant' : 'online_service';
@@ -359,7 +356,10 @@ export function createDrizzleExistingTargetLinkBackend(
           command.target.locationId === null ||
           command.target.expectedLocationUpdatedAt === null
         ) {
-          throw new CandidatePromotionError('not_found', 'The canonical Location target was not found.');
+          throw new CandidatePromotionError(
+            'not_found',
+            'The canonical Location target was not found.',
+          );
         }
         if (
           location.entityId !== command.target.entityId ||
@@ -479,13 +479,9 @@ export function createDrizzleExistingTargetLinkBackend(
             migrationStatus: 'mapped',
             canonicalPath: command.target.expectedCanonicalPath,
             entityId:
-              command.expectedCandidateType === 'online_service'
-                ? command.target.entityId
-                : null,
+              command.expectedCandidateType === 'online_service' ? command.target.entityId : null,
             locationId:
-              command.expectedCandidateType === 'physical_place'
-                ? command.target.locationId
-                : null,
+              command.expectedCandidateType === 'physical_place' ? command.target.locationId : null,
             resolvedAt: command.linkedAt,
             updatedAt: command.linkedAt,
           })
