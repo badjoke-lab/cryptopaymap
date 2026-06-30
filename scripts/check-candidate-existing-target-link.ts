@@ -1,3 +1,4 @@
+import { createDrizzleExistingTargetLinkBackend } from '../src/admin/promotion/drizzle-existing-target-link-backend';
 import {
   candidateExistingTargetLinkInputSchema,
   createCandidateExistingTargetLinkService,
@@ -12,6 +13,9 @@ if (typeof createCandidateExistingTargetLinkService !== 'function') {
 }
 if (typeof InMemoryExistingTargetLinkBackend !== 'function') {
   throw new Error('Existing-target atomic test backend is unavailable.');
+}
+if (typeof createDrizzleExistingTargetLinkBackend !== 'function') {
+  throw new Error('Existing-target Drizzle backend is unavailable.');
 }
 
 console.log('Candidate existing-target link checks passed.');
