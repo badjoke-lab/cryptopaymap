@@ -98,7 +98,11 @@ const registries: CandidatePromotionRegistryBackend = {
 };
 
 function backend(value: CandidateDetailData): CandidateDetailBackend {
-  return { async loadDetail() { return value; } };
+  return {
+    async loadDetail() {
+      return value;
+    },
+  };
 }
 
 const context = {

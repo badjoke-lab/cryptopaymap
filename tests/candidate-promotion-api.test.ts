@@ -166,14 +166,16 @@ function receipt(): CandidatePromotionReceipt {
   };
 }
 
-function context(options: {
-  method?: 'GET' | 'POST';
-  body?: unknown;
-  identity?: unknown;
-  readSubjects?: string;
-  promoteSubjects?: string;
-  idempotencyKey?: string;
-} = {}) {
+function context(
+  options: {
+    method?: 'GET' | 'POST';
+    body?: unknown;
+    identity?: unknown;
+    readSubjects?: string;
+    promoteSubjects?: string;
+    idempotencyKey?: string;
+  } = {},
+) {
   const method = options.method ?? 'GET';
   const headers = new Headers({ Accept: 'application/json' });
   if (method === 'POST') headers.set('Content-Type', 'application/json');
@@ -186,8 +188,7 @@ function context(options: {
     }),
     env: {
       CPM_ADMIN_CANDIDATE_SUBJECTS: options.readSubjects ?? JSON.stringify(['promoter']),
-      CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS:
-        options.promoteSubjects ?? JSON.stringify(['promoter']),
+      CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: options.promoteSubjects ?? JSON.stringify(['promoter']),
     },
     params: { candidateId },
     data: { adminIdentity: options.identity === undefined ? identity : options.identity },

@@ -66,7 +66,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -167,22 +170,21 @@ export function CandidatePromotionEditor() {
       if (!candidateId) return setState({ status: 'missing_id' });
       setState({ status: 'loading' });
       try {
-        const response = await fetch(
-          `/admin/api/promotions/${encodeURIComponent(candidateId)}`,
-          {
-            cache: 'no-store',
-            credentials: 'same-origin',
-            headers: { Accept: 'application/json' },
-            signal: signal ?? null,
-          },
-        );
+        const response = await fetch(`/admin/api/promotions/${encodeURIComponent(candidateId)}`, {
+          cache: 'no-store',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' },
+          signal: signal ?? null,
+        });
         if (response.status === 403) return setState({ status: 'denied' });
         if (response.status === 404) return setState({ status: 'not_found' });
         if (response.status === 400) return setState({ status: 'missing_id' });
         if (response.status === 503) return setState({ status: 'unavailable' });
         if (!response.ok) return setState({ status: 'error' });
         const parsed = candidatePromotionWorkspaceResponseSchema.safeParse(await response.json());
-        setState(parsed.success ? { status: 'ready', workspace: parsed.data } : { status: 'error' });
+        setState(
+          parsed.success ? { status: 'ready', workspace: parsed.data } : { status: 'error' },
+        );
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         setState({ status: 'error' });
@@ -208,10 +210,22 @@ export function CandidatePromotionEditor() {
   }
   if (state.status !== 'ready') {
     const messages = {
-      missing_id: ['Candidate identifier required', 'Return to the Candidate queue and choose a record.'],
-      denied: ['Promotion workspace denied', 'This verified identity cannot read the Candidate promotion workspace.'],
-      not_found: ['Candidate not found', 'The requested Candidate is unavailable or no longer exists.'],
-      unavailable: ['Promotion workspace unavailable', 'The protected service could not complete safely.'],
+      missing_id: [
+        'Candidate identifier required',
+        'Return to the Candidate queue and choose a record.',
+      ],
+      denied: [
+        'Promotion workspace denied',
+        'This verified identity cannot read the Candidate promotion workspace.',
+      ],
+      not_found: [
+        'Candidate not found',
+        'The requested Candidate is unavailable or no longer exists.',
+      ],
+      unavailable: [
+        'Promotion workspace unavailable',
+        'The protected service could not complete safely.',
+      ],
       error: ['Promotion response could not be verified', 'No unverified values are displayed.'],
     } as const;
     const [title, description] = messages[state.status];
@@ -219,7 +233,13 @@ export function CandidatePromotionEditor() {
       <StatusPanel
         title={title}
         description={description}
-        icon={state.status === 'denied' ? <ShieldAlert className="size-5" /> : <AlertTriangle className="size-5" />}
+        icon={
+          state.status === 'denied' ? (
+            <ShieldAlert className="size-5" />
+          ) : (
+            <AlertTriangle className="size-5" />
+          )
+        }
         action={
           state.status === 'unavailable' || state.status === 'error' ? (
             <Button variant="secondary" onClick={() => void loadWorkspace()}>
@@ -250,9 +270,8 @@ function PromotionWorkspace({
   const candidate = workspace.detail.candidate;
   const sourceSnapshot = useMemo(
     () =>
-      workspace.detail.sources.find(
-        (source) => source.snapshot?.kind === candidate.candidateType,
-      )?.snapshot ?? null,
+      workspace.detail.sources.find((source) => source.snapshot?.kind === candidate.candidateType)
+        ?.snapshot ?? null,
     [candidate.candidateType, workspace.detail.sources],
   );
   const physical = sourceSnapshot?.kind === 'physical_place' ? sourceSnapshot : null;
@@ -268,7 +287,10 @@ function PromotionWorkspace({
     setAssetRows((rows) => {
       const next = rows.filter((row) => row.key !== key);
       if (next.length === 0) return [createAssetRow(true)];
-      if (!next.some((row) => row.isPrimary)) next[0] = { ...next[0], isPrimary: true };
+      const first = next[0];
+      if (!next.some((row) => row.isPrimary) && first !== undefined) {
+        next[0] = { ...first, isPrimary: true };
+      }
       return next;
     });
   }
@@ -281,7 +303,8 @@ function PromotionWorkspace({
     const claimId = crypto.randomUUID();
     const locationId = candidate.candidateType === 'physical_place' ? crypto.randomUUID() : null;
     const routeType = value(form, 'routeType') as 'direct_wallet' | 'processor_checkout';
-    const processorId = routeType === 'processor_checkout' ? nullable(value(form, 'processorId')) : null;
+    const processorId =
+      routeType === 'processor_checkout' ? nullable(value(form, 'processorId')) : null;
 
     const body = {
       expectedCandidateType: candidate.candidateType,
@@ -291,7 +314,10 @@ function PromotionWorkspace({
         value: {
           entityType: candidate.candidateType === 'physical_place' ? 'merchant' : 'online_service',
           name: value(form, 'entityName'),
-          slug: candidate.candidateType === 'online_service' ? value(form, 'entitySlug') : nullable(value(form, 'entitySlug')),
+          slug:
+            candidate.candidateType === 'online_service'
+              ? value(form, 'entitySlug')
+              : nullable(value(form, 'entitySlug')),
           legalName: nullable(value(form, 'legalName')),
           websiteUrl: nullable(value(form, 'entityWebsiteUrl')),
           countryCode: nullable(value(form, 'entityCountryCode').toUpperCase()),
@@ -404,7 +430,10 @@ function PromotionWorkspace({
       const receipt = (await response.json()) as CandidatePromotionReceipt;
       setSubmitState({ status: 'success', receipt });
     } catch {
-      setSubmitState({ status: 'unavailable', message: 'The promotion request could not be completed.' });
+      setSubmitState({
+        status: 'unavailable',
+        message: 'The promotion request could not be completed.',
+      });
     }
   }
 
@@ -425,7 +454,10 @@ function PromotionWorkspace({
 
   return (
     <div>
-      <a className="text-sm font-semibold text-brand-700" href={`/admin/candidates/detail/?id=${encodeURIComponent(candidate.id)}`}>
+      <a
+        className="text-sm font-semibold text-brand-700"
+        href={`/admin/candidates/detail/?id=${encodeURIComponent(candidate.id)}`}
+      >
         ← Back to Candidate detail
       </a>
 
@@ -449,16 +481,35 @@ function PromotionWorkspace({
       ) : null}
 
       <form className="mt-8 grid gap-8" onSubmit={submit}>
-        <fieldset disabled={!workspace.eligible || submitState.status === 'submitting'} className="contents">
+        <fieldset
+          disabled={!workspace.eligible || submitState.status === 'submitting'}
+          className="contents"
+        >
           <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
             <legend className="text-xl font-semibold text-ink">Canonical entity</legend>
-            <p className="mt-2 text-sm text-muted">Review every normalized value. The new record remains hidden.</p>
+            <p className="mt-2 text-sm text-muted">
+              Review every normalized value. The new record remains hidden.
+            </p>
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <Field label="Display name" name="entityName" defaultValue={defaultName} required />
-              <Field label="Slug" name="entitySlug" defaultValue={defaultSlug} required={candidate.candidateType === 'online_service'} />
+              <Field
+                label="Slug"
+                name="entitySlug"
+                defaultValue={defaultSlug}
+                required={candidate.candidateType === 'online_service'}
+              />
               <Field label="Legal name" name="legalName" />
-              <Field label="HTTPS website" name="entityWebsiteUrl" type="url" defaultValue={sourceSnapshot?.websiteUrl ?? ''} />
-              <Field label="Country code" name="entityCountryCode" defaultValue={sourceSnapshot?.countryCode ?? ''} />
+              <Field
+                label="HTTPS website"
+                name="entityWebsiteUrl"
+                type="url"
+                defaultValue={sourceSnapshot?.websiteUrl ?? ''}
+              />
+              <Field
+                label="Country code"
+                name="entityCountryCode"
+                defaultValue={sourceSnapshot?.countryCode ?? ''}
+              />
             </div>
           </section>
 
@@ -466,27 +517,82 @@ function PromotionWorkspace({
             <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
               <legend className="text-xl font-semibold text-ink">Canonical location</legend>
               <div className="mt-5 grid gap-4 md:grid-cols-2">
-                <Field label="Location name" name="locationName" defaultValue={physical?.name ?? defaultName} />
-                <Field label="Location slug" name="locationSlug" defaultValue={defaultSlug} required />
-                <Field label="Address" name="addressLine" defaultValue={physical?.addressLine ?? ''} />
+                <Field
+                  label="Location name"
+                  name="locationName"
+                  defaultValue={physical?.name ?? defaultName}
+                />
+                <Field
+                  label="Location slug"
+                  name="locationSlug"
+                  defaultValue={defaultSlug}
+                  required
+                />
+                <Field
+                  label="Address"
+                  name="addressLine"
+                  defaultValue={physical?.addressLine ?? ''}
+                />
                 <Field label="Locality" name="locality" defaultValue={physical?.locality ?? ''} />
                 <Field label="Region" name="region" defaultValue={physical?.region ?? ''} />
-                <Field label="Postal code" name="postalCode" defaultValue={physical?.postalCode ?? ''} />
-                <Field label="Country code" name="locationCountryCode" defaultValue={physical?.countryCode ?? ''} required />
-                <Field label="Latitude" name="latitude" type="number" step="any" min={-90} max={90} defaultValue={physical?.latitude ?? ''} required />
-                <Field label="Longitude" name="longitude" type="number" step="any" min={-180} max={180} defaultValue={physical?.longitude ?? ''} required />
-                <Field label="HTTPS website" name="locationWebsiteUrl" type="url" defaultValue={physical?.websiteUrl ?? ''} />
+                <Field
+                  label="Postal code"
+                  name="postalCode"
+                  defaultValue={physical?.postalCode ?? ''}
+                />
+                <Field
+                  label="Country code"
+                  name="locationCountryCode"
+                  defaultValue={physical?.countryCode ?? ''}
+                  required
+                />
+                <Field
+                  label="Latitude"
+                  name="latitude"
+                  type="number"
+                  step="any"
+                  min={-90}
+                  max={90}
+                  defaultValue={physical?.latitude ?? ''}
+                  required
+                />
+                <Field
+                  label="Longitude"
+                  name="longitude"
+                  type="number"
+                  step="any"
+                  min={-180}
+                  max={180}
+                  defaultValue={physical?.longitude ?? ''}
+                  required
+                />
+                <Field
+                  label="HTTPS website"
+                  name="locationWebsiteUrl"
+                  type="url"
+                  defaultValue={physical?.websiteUrl ?? ''}
+                />
                 <Field label="Phone" name="phone" />
                 <label className="grid gap-2 text-sm font-semibold text-ink">
                   OSM type
-                  <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="osmType" defaultValue={physical?.osmType ?? ''}>
+                  <select
+                    className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                    name="osmType"
+                    defaultValue={physical?.osmType ?? ''}
+                  >
                     <option value="">None</option>
                     <option value="node">Node</option>
                     <option value="way">Way</option>
                     <option value="relation">Relation</option>
                   </select>
                 </label>
-                <Field label="OSM ID" name="osmId" type="number" min={1} defaultValue={physical?.osmId ?? ''} />
+                <Field
+                  label="OSM ID"
+                  name="osmId"
+                  type="number"
+                  min={1}
+                  defaultValue={physical?.osmId ?? ''}
+                />
               </div>
             </section>
           ) : null}
@@ -496,14 +602,22 @@ function PromotionWorkspace({
             <div className="mt-5 grid gap-4 md:grid-cols-2">
               <label className="grid gap-2 text-sm font-semibold text-ink">
                 Route type
-                <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="routeType" defaultValue={online?.routeType ?? 'direct_wallet'}>
+                <select
+                  className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  name="routeType"
+                  defaultValue={online?.routeType ?? 'direct_wallet'}
+                >
                   <option value="direct_wallet">Direct wallet</option>
                   <option value="processor_checkout">Processor checkout</option>
                 </select>
               </label>
               <label className="grid gap-2 text-sm font-semibold text-ink">
                 Acceptance scope
-                <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="acceptanceScope" defaultValue={online?.acceptanceScope ?? 'all_checkout'}>
+                <select
+                  className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  name="acceptanceScope"
+                  defaultValue={online?.acceptanceScope ?? 'all_checkout'}
+                >
                   <option value="all_checkout">All checkout</option>
                   <option value="selected_products">Selected products</option>
                   <option value="new_purchase_only">New purchase only</option>
@@ -514,17 +628,32 @@ function PromotionWorkspace({
               </label>
               <label className="grid gap-2 text-sm font-semibold text-ink">
                 Processor
-                <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="processorId" defaultValue="">
+                <select
+                  className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  name="processorId"
+                  defaultValue=""
+                >
                   <option value="">None</option>
                   {workspace.registries.processors.map((processor) => (
-                    <option key={processor.id} value={processor.id}>{processor.name}</option>
+                    <option key={processor.id} value={processor.id}>
+                      {processor.name}
+                    </option>
                   ))}
                 </select>
               </label>
-              <Field label="Instructions language" name="instructionsLanguage" defaultValue="en" required />
+              <Field
+                label="Instructions language"
+                name="instructionsLanguage"
+                defaultValue="en"
+                required
+              />
               <label className="grid gap-2 text-sm font-semibold text-ink">
                 Merchant receives
-                <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="merchantReceives" defaultValue="not_publicly_confirmed">
+                <select
+                  className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  name="merchantReceives"
+                  defaultValue="not_publicly_confirmed"
+                >
                   <option value="crypto">Crypto</option>
                   <option value="fiat">Fiat</option>
                   <option value="crypto_or_fiat">Crypto or fiat</option>
@@ -534,7 +663,11 @@ function PromotionWorkspace({
             </div>
             <div className="mt-5 grid gap-4">
               <TextArea label="How to pay" name="howToPay" defaultValue={online?.howToPay ?? ''} />
-              <TextArea label="Restrictions" name="restrictions" defaultValue={online?.scopeNotes ?? ''} />
+              <TextArea
+                label="Restrictions"
+                name="restrictions"
+                defaultValue={online?.scopeNotes ?? ''}
+              />
               <label className="flex items-center gap-3 text-sm font-medium text-ink">
                 <input className="size-5" type="checkbox" name="customerPaysCrypto" />
                 Customer pays crypto
@@ -550,47 +683,120 @@ function PromotionWorkspace({
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <legend className="text-xl font-semibold text-ink">Claim asset combinations</legend>
-                <p className="mt-2 text-sm text-muted">Choose explicit asset, network, and payment-method identities.</p>
+                <p className="mt-2 text-sm text-muted">
+                  Choose explicit asset, network, and payment-method identities.
+                </p>
               </div>
-              <Button type="button" variant="secondary" onClick={() => setAssetRows((rows) => [...rows, createAssetRow(false)])}>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => setAssetRows((rows) => [...rows, createAssetRow(false)])}
+              >
                 <Plus className="size-4" /> Add combination
               </Button>
             </div>
             <div className="mt-5 grid gap-4">
               {assetRows.map((row, index) => (
-                <article key={row.key} className="rounded-control border border-border bg-canvas p-4">
+                <article
+                  key={row.key}
+                  className="rounded-control border border-border bg-canvas p-4"
+                >
                   <div className="grid gap-4 md:grid-cols-3">
                     <label className="grid gap-2 text-sm font-semibold text-ink">
                       Asset
-                      <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.assetId} onChange={(event) => updateAssetRow(row.key, { assetId: event.target.value })} required>
+                      <select
+                        className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                        value={row.assetId}
+                        onChange={(event) =>
+                          updateAssetRow(row.key, { assetId: event.target.value })
+                        }
+                        required
+                      >
                         <option value="">Select asset</option>
-                        {workspace.registries.assets.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+                        {workspace.registries.assets.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.label}
+                          </option>
+                        ))}
                       </select>
                     </label>
                     <label className="grid gap-2 text-sm font-semibold text-ink">
                       Network
-                      <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.networkId} onChange={(event) => updateAssetRow(row.key, { networkId: event.target.value })} required>
+                      <select
+                        className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                        value={row.networkId}
+                        onChange={(event) =>
+                          updateAssetRow(row.key, { networkId: event.target.value })
+                        }
+                        required
+                      >
                         <option value="">Select network</option>
-                        {workspace.registries.networks.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+                        {workspace.registries.networks.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.label}
+                          </option>
+                        ))}
                       </select>
                     </label>
                     <label className="grid gap-2 text-sm font-semibold text-ink">
                       Payment method
-                      <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.paymentMethodId} onChange={(event) => updateAssetRow(row.key, { paymentMethodId: event.target.value })} required>
+                      <select
+                        className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                        value={row.paymentMethodId}
+                        onChange={(event) =>
+                          updateAssetRow(row.key, { paymentMethodId: event.target.value })
+                        }
+                        required
+                      >
                         <option value="">Select method</option>
-                        {workspace.registries.paymentMethods.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}
+                        {workspace.registries.paymentMethods.map((option) => (
+                          <option key={option.id} value={option.id}>
+                            {option.label}
+                          </option>
+                        ))}
                       </select>
                     </label>
                   </div>
                   <div className="mt-4 grid gap-4 md:grid-cols-2">
-                    <label className="grid gap-2 text-sm font-semibold text-ink">Contract address<input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.contractAddress} onChange={(event) => updateAssetRow(row.key, { contractAddress: event.target.value })} /></label>
-                    <label className="grid gap-2 text-sm font-semibold text-ink">Notes<input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.notes} onChange={(event) => updateAssetRow(row.key, { notes: event.target.value })} /></label>
+                    <label className="grid gap-2 text-sm font-semibold text-ink">
+                      Contract address
+                      <input
+                        className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                        value={row.contractAddress}
+                        onChange={(event) =>
+                          updateAssetRow(row.key, { contractAddress: event.target.value })
+                        }
+                      />
+                    </label>
+                    <label className="grid gap-2 text-sm font-semibold text-ink">
+                      Notes
+                      <input
+                        className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                        value={row.notes}
+                        onChange={(event) => updateAssetRow(row.key, { notes: event.target.value })}
+                      />
+                    </label>
                   </div>
                   <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
                     <label className="flex items-center gap-3 text-sm font-medium text-ink">
-                      <input type="radio" name="primaryAsset" checked={row.isPrimary} onChange={() => setAssetRows((rows) => rows.map((item) => ({ ...item, isPrimary: item.key === row.key })))} /> Primary combination
+                      <input
+                        type="radio"
+                        name="primaryAsset"
+                        checked={row.isPrimary}
+                        onChange={() =>
+                          setAssetRows((rows) =>
+                            rows.map((item) => ({ ...item, isPrimary: item.key === row.key })),
+                          )
+                        }
+                      />{' '}
+                      Primary combination
                     </label>
-                    <Button type="button" variant="ghost" onClick={() => removeAssetRow(row.key)} aria-label={`Remove asset combination ${index + 1}`}>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => removeAssetRow(row.key)}
+                      aria-label={`Remove asset combination ${index + 1}`}
+                    >
                       <Trash2 className="size-4" /> Remove
                     </Button>
                   </div>
@@ -601,14 +807,22 @@ function PromotionWorkspace({
         </fieldset>
 
         {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
-          <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">
+          <p
+            className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+            role="alert"
+          >
             {submitState.message}
           </p>
         ) : null}
 
         <div className="flex flex-wrap gap-3">
-          <Button type="submit" disabled={!workspace.eligible || submitState.status === 'submitting'}>
-            {submitState.status === 'submitting' ? 'Committing promotion…' : 'Create hidden canonical records'}
+          <Button
+            type="submit"
+            disabled={!workspace.eligible || submitState.status === 'submitting'}
+          >
+            {submitState.status === 'submitting'
+              ? 'Committing promotion…'
+              : 'Create hidden canonical records'}
           </Button>
           {submitState.status === 'conflict' ? (
             <Button type="button" variant="secondary" onClick={() => void reload()}>

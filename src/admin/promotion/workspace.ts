@@ -76,9 +76,7 @@ export type CandidatePromotionRegistryOptions = z.infer<
 export type CandidatePromotionWorkspaceResponse = z.infer<
   typeof candidatePromotionWorkspaceResponseSchema
 >;
-export type CandidatePromotionEditorRequest = z.infer<
-  typeof candidatePromotionEditorRequestSchema
->;
+export type CandidatePromotionEditorRequest = z.infer<typeof candidatePromotionEditorRequestSchema>;
 
 export interface CandidatePromotionRegistryBackend {
   loadRegistryOptions(): Promise<CandidatePromotionRegistryOptions>;
