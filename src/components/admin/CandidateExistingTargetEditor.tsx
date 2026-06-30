@@ -79,9 +79,15 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
-        <span className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted" aria-hidden="true">
+        <span
+          className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
+          aria-hidden="true"
+        >
           {icon}
         </span>
         <div>
@@ -102,34 +108,37 @@ export function CandidateExistingTargetEditor() {
     setCandidateId(new URLSearchParams(window.location.search).get('id'));
   }, []);
 
-  const loadWorkspace = useCallback(async (signal?: AbortSignal) => {
-    if (candidateId === undefined) return;
-    if (!candidateId) {
-      setWorkspaceState({ status: 'missing_id' });
-      return;
-    }
-    setWorkspaceState({ status: 'loading' });
-    try {
-      const response = await fetch(`/admin/api/promotions/${encodeURIComponent(candidateId)}`, {
-        cache: 'no-store',
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-        signal: signal ?? null,
-      });
-      if (response.status === 403) return setWorkspaceState({ status: 'denied' });
-      if (response.status === 404) return setWorkspaceState({ status: 'not_found' });
-      if (response.status === 400) return setWorkspaceState({ status: 'missing_id' });
-      if (response.status === 503) return setWorkspaceState({ status: 'unavailable' });
-      if (!response.ok) return setWorkspaceState({ status: 'error' });
-      const parsed = candidatePromotionWorkspaceResponseSchema.safeParse(await response.json());
-      setWorkspaceState(
-        parsed.success ? { status: 'ready', workspace: parsed.data } : { status: 'error' },
-      );
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return;
-      setWorkspaceState({ status: 'error' });
-    }
-  }, [candidateId]);
+  const loadWorkspace = useCallback(
+    async (signal?: AbortSignal) => {
+      if (candidateId === undefined) return;
+      if (!candidateId) {
+        setWorkspaceState({ status: 'missing_id' });
+        return;
+      }
+      setWorkspaceState({ status: 'loading' });
+      try {
+        const response = await fetch(`/admin/api/promotions/${encodeURIComponent(candidateId)}`, {
+          cache: 'no-store',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' },
+          signal: signal ?? null,
+        });
+        if (response.status === 403) return setWorkspaceState({ status: 'denied' });
+        if (response.status === 404) return setWorkspaceState({ status: 'not_found' });
+        if (response.status === 400) return setWorkspaceState({ status: 'missing_id' });
+        if (response.status === 503) return setWorkspaceState({ status: 'unavailable' });
+        if (!response.ok) return setWorkspaceState({ status: 'error' });
+        const parsed = candidatePromotionWorkspaceResponseSchema.safeParse(await response.json());
+        setWorkspaceState(
+          parsed.success ? { status: 'ready', workspace: parsed.data } : { status: 'error' },
+        );
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setWorkspaceState({ status: 'error' });
+      }
+    },
+    [candidateId],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -148,23 +157,48 @@ export function CandidateExistingTargetEditor() {
   }
   if (workspaceState.status !== 'ready') {
     const messages = {
-      missing_id: ['Candidate identifier required', 'Return to the Candidate queue and choose a record.'],
-      denied: ['Existing-target workspace denied', 'This verified identity cannot read Candidate promotion data.'],
-      not_found: ['Candidate not found', 'The requested Candidate is unavailable or no longer exists.'],
-      unavailable: ['Existing-target workspace unavailable', 'The protected service could not complete safely.'],
-      error: ['Workspace response could not be verified', 'No unverified canonical target data is displayed.'],
+      missing_id: [
+        'Candidate identifier required',
+        'Return to the Candidate queue and choose a record.',
+      ],
+      denied: [
+        'Existing-target workspace denied',
+        'This verified identity cannot read Candidate promotion data.',
+      ],
+      not_found: [
+        'Candidate not found',
+        'The requested Candidate is unavailable or no longer exists.',
+      ],
+      unavailable: [
+        'Existing-target workspace unavailable',
+        'The protected service could not complete safely.',
+      ],
+      error: [
+        'Workspace response could not be verified',
+        'No unverified canonical target data is displayed.',
+      ],
     } as const;
     const [title, description] = messages[workspaceState.status];
     return (
       <StatusPanel
         title={title}
         description={description}
-        icon={workspaceState.status === 'denied' ? <ShieldAlert className="size-5" /> : <AlertTriangle className="size-5" />}
+        icon={
+          workspaceState.status === 'denied' ? (
+            <ShieldAlert className="size-5" />
+          ) : (
+            <AlertTriangle className="size-5" />
+          )
+        }
         action={
           workspaceState.status === 'unavailable' || workspaceState.status === 'error' ? (
-            <Button variant="secondary" onClick={() => void loadWorkspace()}>Retry workspace</Button>
+            <Button variant="secondary" onClick={() => void loadWorkspace()}>
+              Retry workspace
+            </Button>
           ) : (
-            <a className="text-sm font-semibold text-brand-700" href="/admin/candidates/">Return to queue</a>
+            <a className="text-sm font-semibold text-brand-700" href="/admin/candidates/">
+              Return to queue
+            </a>
           )
         }
       />
@@ -174,7 +208,11 @@ export function CandidateExistingTargetEditor() {
   return <ExistingTargetWorkspace workspace={workspaceState.workspace} />;
 }
 
-function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionWorkspaceResponse }) {
+function ExistingTargetWorkspace({
+  workspace,
+}: {
+  workspace: CandidatePromotionWorkspaceResponse;
+}) {
   const candidate = workspace.detail.candidate;
   const [searchState, setSearchState] = useState<SearchState>({ status: 'idle' });
   const [selectedTarget, setSelectedTarget] = useState<CandidateCanonicalTargetOption | null>(null);
@@ -196,7 +234,10 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
         { cache: 'no-store', credentials: 'same-origin', headers: { Accept: 'application/json' } },
       );
       if (response.status === 409) {
-        setSearchState({ status: 'conflict', message: 'The Candidate is no longer eligible for target selection.' });
+        setSearchState({
+          status: 'conflict',
+          message: 'The Candidate is no longer eligible for target selection.',
+        });
         return;
       }
       if (response.status === 400) {
@@ -204,17 +245,26 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
         return;
       }
       if (!response.ok) {
-        setSearchState({ status: 'unavailable', message: 'Canonical target search is unavailable.' });
+        setSearchState({
+          status: 'unavailable',
+          message: 'Canonical target search is unavailable.',
+        });
         return;
       }
       const parsed = candidateCanonicalTargetSearchResponseSchema.safeParse(await response.json());
       if (!parsed.success) {
-        setSearchState({ status: 'unavailable', message: 'The target search response could not be verified.' });
+        setSearchState({
+          status: 'unavailable',
+          message: 'The target search response could not be verified.',
+        });
         return;
       }
       setSearchState({ status: 'ready', targets: parsed.data.targets, query: parsed.data.query });
     } catch {
-      setSearchState({ status: 'unavailable', message: 'Canonical target search could not be completed.' });
+      setSearchState({
+        status: 'unavailable',
+        message: 'Canonical target search could not be completed.',
+      });
     }
   }
 
@@ -241,7 +291,8 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
     const form = new FormData(event.currentTarget);
     const claimId = crypto.randomUUID();
     const routeType = text(form, 'routeType') as 'direct_wallet' | 'processor_checkout';
-    const processorId = routeType === 'processor_checkout' ? nullable(text(form, 'processorId')) : null;
+    const processorId =
+      routeType === 'processor_checkout' ? nullable(text(form, 'processorId')) : null;
     const body = {
       expectedCandidateType: candidate.candidateType,
       expectedCandidateUpdatedAt: candidate.updatedAt,
@@ -295,7 +346,10 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
       .omit({ candidateId: true, linkedAt: true })
       .safeParse(body);
     if (!parsed.success) {
-      setSubmitState({ status: 'invalid', message: parsed.error.issues[0]?.message ?? 'The existing-target link draft is invalid.' });
+      setSubmitState({
+        status: 'invalid',
+        message: parsed.error.issues[0]?.message ?? 'The existing-target link draft is invalid.',
+      });
       return;
     }
     try {
@@ -314,24 +368,43 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
         },
       );
       if (response.status === 403) {
-        setSubmitState({ status: 'denied', message: 'This identity cannot link Candidates to canonical targets.' });
+        setSubmitState({
+          status: 'denied',
+          message: 'This identity cannot link Candidates to canonical targets.',
+        });
         return;
       }
       if (response.status === 409) {
-        setSubmitState({ status: 'conflict', message: 'The Candidate or selected canonical target changed. Search again before retrying.' });
+        setSubmitState({
+          status: 'conflict',
+          message:
+            'The Candidate or selected canonical target changed. Search again before retrying.',
+        });
         return;
       }
       if (response.status === 400) {
-        setSubmitState({ status: 'invalid', message: 'The server rejected the existing-target link draft.' });
+        setSubmitState({
+          status: 'invalid',
+          message: 'The server rejected the existing-target link draft.',
+        });
         return;
       }
       if (!response.ok) {
-        setSubmitState({ status: 'unavailable', message: 'The existing-target link service is unavailable.' });
+        setSubmitState({
+          status: 'unavailable',
+          message: 'The existing-target link service is unavailable.',
+        });
         return;
       }
-      setSubmitState({ status: 'success', receipt: (await response.json()) as CandidatePromotionReceipt });
+      setSubmitState({
+        status: 'success',
+        receipt: (await response.json()) as CandidatePromotionReceipt,
+      });
     } catch {
-      setSubmitState({ status: 'unavailable', message: 'The existing-target link request could not be completed.' });
+      setSubmitState({
+        status: 'unavailable',
+        message: 'The existing-target link request could not be completed.',
+      });
     }
   }
 
@@ -341,7 +414,11 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
         title="Candidate linked to existing canonical target"
         description={`${submitState.receipt.canonicalPath} received a new hidden candidate Claim. Existing identity records were not rewritten.`}
         icon={<Link2 className="size-5" />}
-        action={<a className="text-sm font-semibold text-brand-700" href="/admin/candidates/">Return to Candidate queue</a>}
+        action={
+          <a className="text-sm font-semibold text-brand-700" href="/admin/candidates/">
+            Return to Candidate queue
+          </a>
+        }
       />
     );
   }
@@ -349,14 +426,29 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
   return (
     <div>
       <div className="flex flex-wrap gap-4 text-sm font-semibold">
-        <a className="text-brand-700" href={`/admin/candidates/detail/?id=${encodeURIComponent(candidate.id)}`}>← Candidate detail</a>
-        <a className="text-brand-700" href={`/admin/candidates/promotion/?id=${encodeURIComponent(candidate.id)}`}>Create a new canonical target instead</a>
+        <a
+          className="text-brand-700"
+          href={`/admin/candidates/detail/?id=${encodeURIComponent(candidate.id)}`}
+        >
+          ← Candidate detail
+        </a>
+        <a
+          className="text-brand-700"
+          href={`/admin/candidates/promotion/?id=${encodeURIComponent(candidate.id)}`}
+        >
+          Create a new canonical target instead
+        </a>
       </div>
 
       <section className="mt-5 rounded-card border border-border bg-surface p-5 shadow-sm">
-        <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">Candidate under review</p>
+        <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+          Candidate under review
+        </p>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink">{candidate.name}</h2>
-        <p className="mt-2 text-sm text-muted">{humanize(candidate.candidateType)} · {workspace.detail.sources.length} exact source record{workspace.detail.sources.length === 1 ? '' : 's'}</p>
+        <p className="mt-2 text-sm text-muted">
+          {humanize(candidate.candidateType)} · {workspace.detail.sources.length} exact source
+          record{workspace.detail.sources.length === 1 ? '' : 's'}
+        </p>
       </section>
 
       {!workspace.eligible ? (
@@ -367,8 +459,16 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
         />
       ) : (
         <>
-          <form className="mt-8 rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={searchTargets}>
-            <label className="grid gap-2 text-sm font-semibold text-ink" htmlFor="canonical-target-query">Search existing canonical records</label>
+          <form
+            className="mt-8 rounded-card border border-border bg-surface p-5 shadow-sm"
+            onSubmit={searchTargets}
+          >
+            <label
+              className="grid gap-2 text-sm font-semibold text-ink"
+              htmlFor="canonical-target-query"
+            >
+              Search existing canonical records
+            </label>
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <input
                 id="canonical-target-query"
@@ -380,36 +480,97 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
                 required
               />
               <Button type="submit" disabled={searchState.status === 'searching'}>
-                <Search className="size-4" /> {searchState.status === 'searching' ? 'Searching…' : 'Search targets'}
+                <Search className="size-4" />{' '}
+                {searchState.status === 'searching' ? 'Searching…' : 'Search targets'}
               </Button>
             </div>
           </form>
 
-          {searchState.status === 'invalid' || searchState.status === 'conflict' || searchState.status === 'unavailable' ? (
-            <p className="mt-5 rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">{searchState.message}</p>
+          {searchState.status === 'invalid' ||
+          searchState.status === 'conflict' ||
+          searchState.status === 'unavailable' ? (
+            <p
+              className="mt-5 rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+              role="alert"
+            >
+              {searchState.message}
+            </p>
           ) : null}
 
           {searchState.status === 'ready' ? (
             <section className="mt-8" aria-labelledby="target-results-title">
-              <h2 id="target-results-title" className="text-xl font-semibold text-ink">Existing target results</h2>
-              <p className="mt-2 text-sm text-muted">{searchState.targets.length} result{searchState.targets.length === 1 ? '' : 's'} for “{searchState.query}”.</p>
+              <h2 id="target-results-title" className="text-xl font-semibold text-ink">
+                Existing target results
+              </h2>
+              <p className="mt-2 text-sm text-muted">
+                {searchState.targets.length} result{searchState.targets.length === 1 ? '' : 's'} for
+                “{searchState.query}”.
+              </p>
               <div className="mt-4 grid gap-4">
                 {searchState.targets.map((target) => (
-                  <article key={target.canonicalPath} className={`rounded-card border p-5 shadow-sm ${selectedTarget?.canonicalPath === target.canonicalPath ? 'border-brand-600 bg-brand-50' : 'border-border bg-surface'}`}>
+                  <article
+                    key={target.canonicalPath}
+                    className={`rounded-card border p-5 shadow-sm ${selectedTarget?.canonicalPath === target.canonicalPath ? 'border-brand-600 bg-brand-50' : 'border-border bg-surface'}`}
+                  >
                     <div className="flex flex-wrap items-start justify-between gap-4">
                       <div>
-                        <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-muted">{humanize(target.entity.entityType)} · {humanize(target.entity.visibility)}</p>
-                        <h3 className="mt-2 text-lg font-semibold text-ink">{target.location?.name ?? target.entity.name}</h3>
+                        <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-muted">
+                          {humanize(target.entity.entityType)} ·{' '}
+                          {humanize(target.entity.visibility)}
+                        </p>
+                        <h3 className="mt-2 text-lg font-semibold text-ink">
+                          {target.location?.name ?? target.entity.name}
+                        </h3>
                         <p className="mt-1 text-sm text-muted">{target.canonicalPath}</p>
-                        {target.location ? <p className="mt-2 text-sm text-muted">{[target.location.addressLine, target.location.locality, target.location.region, target.location.countryCode].filter(Boolean).join(', ')}</p> : <p className="mt-2 text-sm text-muted">{target.entity.websiteUrl ?? 'No website stored'}</p>}
+                        {target.location ? (
+                          <p className="mt-2 text-sm text-muted">
+                            {[
+                              target.location.addressLine,
+                              target.location.locality,
+                              target.location.region,
+                              target.location.countryCode,
+                            ]
+                              .filter(Boolean)
+                              .join(', ')}
+                          </p>
+                        ) : (
+                          <p className="mt-2 text-sm text-muted">
+                            {target.entity.websiteUrl ?? 'No website stored'}
+                          </p>
+                        )}
                       </div>
-                      <Button type="button" variant={selectedTarget?.canonicalPath === target.canonicalPath ? 'primary' : 'secondary'} onClick={() => setSelectedTarget(target)}>
-                        {selectedTarget?.canonicalPath === target.canonicalPath ? 'Selected' : 'Select target'}
+                      <Button
+                        type="button"
+                        variant={
+                          selectedTarget?.canonicalPath === target.canonicalPath
+                            ? 'primary'
+                            : 'secondary'
+                        }
+                        onClick={() => setSelectedTarget(target)}
+                      >
+                        {selectedTarget?.canonicalPath === target.canonicalPath
+                          ? 'Selected'
+                          : 'Select target'}
                       </Button>
                     </div>
                     <div className="mt-4 rounded-control border border-border bg-white/70 p-4">
-                      <p className="m-0 text-sm font-semibold text-ink">Existing Claims: {target.existingClaims.length}</p>
-                      {target.existingClaims.length === 0 ? <p className="mt-2 text-sm text-muted">No non-deleted Claims currently target this identity.</p> : <ul className="mt-2 grid gap-2 pl-5 text-sm text-muted">{target.existingClaims.map((claim) => <li key={claim.id}>{humanize(claim.claimStatus)} · {humanize(claim.routeType)} · {humanize(claim.visibility)}</li>)}</ul>}
+                      <p className="m-0 text-sm font-semibold text-ink">
+                        Existing Claims: {target.existingClaims.length}
+                      </p>
+                      {target.existingClaims.length === 0 ? (
+                        <p className="mt-2 text-sm text-muted">
+                          No non-deleted Claims currently target this identity.
+                        </p>
+                      ) : (
+                        <ul className="mt-2 grid gap-2 pl-5 text-sm text-muted">
+                          {target.existingClaims.map((claim) => (
+                            <li key={claim.id}>
+                              {humanize(claim.claimStatus)} · {humanize(claim.routeType)} ·{' '}
+                              {humanize(claim.visibility)}
+                            </li>
+                          ))}
+                        </ul>
+                      )}
                     </div>
                   </article>
                 ))}
@@ -420,16 +581,22 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
           {selectedTarget ? (
             <form className="mt-8 grid gap-6" onSubmit={submitLink}>
               <section className="rounded-card border border-brand-600 bg-brand-50 p-5 shadow-sm">
-                <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">Selected existing target</p>
+                <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+                  Selected existing target
+                </p>
                 <div className="mt-4 grid gap-5 lg:grid-cols-2">
                   <div>
                     <h3 className="text-lg font-semibold text-ink">Candidate</h3>
                     <p className="mt-2 text-sm text-muted">{candidate.name}</p>
-                    <p className="mt-1 text-xs text-muted">Reviewed version: {candidate.updatedAt}</p>
+                    <p className="mt-1 text-xs text-muted">
+                      Reviewed version: {candidate.updatedAt}
+                    </p>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-ink">Canonical target</h3>
-                    <p className="mt-2 text-sm text-muted">{selectedTarget.location?.name ?? selectedTarget.entity.name}</p>
+                    <p className="mt-2 text-sm text-muted">
+                      {selectedTarget.location?.name ?? selectedTarget.entity.name}
+                    </p>
                     <p className="mt-1 text-xs text-muted">{selectedTarget.canonicalPath}</p>
                   </div>
                 </div>
@@ -437,50 +604,245 @@ function ExistingTargetWorkspace({ workspace }: { workspace: CandidatePromotionW
 
               <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
                 <h2 className="text-xl font-semibold text-ink">New hidden candidate Claim</h2>
-                <p className="mt-2 text-sm text-muted">Existing identity and Claims remain unchanged. This creates a separate hidden candidate Claim.</p>
+                <p className="mt-2 text-sm text-muted">
+                  Existing identity and Claims remain unchanged. This creates a separate hidden
+                  candidate Claim.
+                </p>
                 <div className="mt-5 grid gap-4 md:grid-cols-2">
-                  <label className="grid gap-2 text-sm font-semibold text-ink">Route type<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="routeType" defaultValue="direct_wallet"><option value="direct_wallet">Direct wallet</option><option value="processor_checkout">Processor checkout</option></select></label>
-                  <label className="grid gap-2 text-sm font-semibold text-ink">Acceptance scope<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="acceptanceScope" defaultValue="all_checkout"><option value="all_checkout">All checkout</option><option value="selected_products">Selected products</option><option value="new_purchase_only">New purchase only</option><option value="renewal_only">Renewal only</option><option value="region_limited">Region limited</option><option value="temporary">Temporary</option></select></label>
-                  <label className="grid gap-2 text-sm font-semibold text-ink">Processor<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="processorId" defaultValue=""><option value="">None</option>{workspace.registries.processors.map((processor) => <option key={processor.id} value={processor.id}>{processor.name}</option>)}</select></label>
-                  <label className="grid gap-2 text-sm font-semibold text-ink">Instructions language<input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="instructionsLanguage" defaultValue="en" required /></label>
-                  <label className="grid gap-2 text-sm font-semibold text-ink">Merchant receives<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="merchantReceives" defaultValue="not_publicly_confirmed"><option value="crypto">Crypto</option><option value="fiat">Fiat</option><option value="crypto_or_fiat">Crypto or fiat</option><option value="not_publicly_confirmed">Not publicly confirmed</option></select></label>
+                  <label className="grid gap-2 text-sm font-semibold text-ink">
+                    Route type
+                    <select
+                      className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                      name="routeType"
+                      defaultValue="direct_wallet"
+                    >
+                      <option value="direct_wallet">Direct wallet</option>
+                      <option value="processor_checkout">Processor checkout</option>
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-sm font-semibold text-ink">
+                    Acceptance scope
+                    <select
+                      className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                      name="acceptanceScope"
+                      defaultValue="all_checkout"
+                    >
+                      <option value="all_checkout">All checkout</option>
+                      <option value="selected_products">Selected products</option>
+                      <option value="new_purchase_only">New purchase only</option>
+                      <option value="renewal_only">Renewal only</option>
+                      <option value="region_limited">Region limited</option>
+                      <option value="temporary">Temporary</option>
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-sm font-semibold text-ink">
+                    Processor
+                    <select
+                      className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                      name="processorId"
+                      defaultValue=""
+                    >
+                      <option value="">None</option>
+                      {workspace.registries.processors.map((processor) => (
+                        <option key={processor.id} value={processor.id}>
+                          {processor.name}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <label className="grid gap-2 text-sm font-semibold text-ink">
+                    Instructions language
+                    <input
+                      className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                      name="instructionsLanguage"
+                      defaultValue="en"
+                      required
+                    />
+                  </label>
+                  <label className="grid gap-2 text-sm font-semibold text-ink">
+                    Merchant receives
+                    <select
+                      className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                      name="merchantReceives"
+                      defaultValue="not_publicly_confirmed"
+                    >
+                      <option value="crypto">Crypto</option>
+                      <option value="fiat">Fiat</option>
+                      <option value="crypto_or_fiat">Crypto or fiat</option>
+                      <option value="not_publicly_confirmed">Not publicly confirmed</option>
+                    </select>
+                  </label>
                 </div>
-                <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">How to pay<textarea className="min-h-28 rounded-control border border-border bg-white px-3 py-2 font-normal" name="howToPay" /></label>
-                <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">Restrictions<textarea className="min-h-24 rounded-control border border-border bg-white px-3 py-2 font-normal" name="restrictions" /></label>
+                <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">
+                  How to pay
+                  <textarea
+                    className="min-h-28 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                    name="howToPay"
+                  />
+                </label>
+                <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">
+                  Restrictions
+                  <textarea
+                    className="min-h-24 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                    name="restrictions"
+                  />
+                </label>
                 <div className="mt-4 grid gap-3">
-                  <label className="flex items-center gap-3 text-sm font-medium text-ink"><input className="size-5" type="checkbox" name="customerPaysCrypto" />Customer pays crypto</label>
-                  <label className="flex items-center gap-3 text-sm font-medium text-ink"><input className="size-5" type="checkbox" name="merchantExplicitlyAcceptsCrypto" />Merchant explicitly accepts crypto</label>
+                  <label className="flex items-center gap-3 text-sm font-medium text-ink">
+                    <input className="size-5" type="checkbox" name="customerPaysCrypto" />
+                    Customer pays crypto
+                  </label>
+                  <label className="flex items-center gap-3 text-sm font-medium text-ink">
+                    <input
+                      className="size-5"
+                      type="checkbox"
+                      name="merchantExplicitlyAcceptsCrypto"
+                    />
+                    Merchant explicitly accepts crypto
+                  </label>
                 </div>
               </section>
 
               <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
                 <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div><h2 className="text-xl font-semibold text-ink">Claim asset combinations</h2><p className="mt-2 text-sm text-muted">Select exact registry identities.</p></div>
-                  <Button type="button" variant="secondary" onClick={() => setAssetRows((rows) => [...rows, createAssetRow(false)])}><Plus className="size-4" /> Add combination</Button>
+                  <div>
+                    <h2 className="text-xl font-semibold text-ink">Claim asset combinations</h2>
+                    <p className="mt-2 text-sm text-muted">Select exact registry identities.</p>
+                  </div>
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => setAssetRows((rows) => [...rows, createAssetRow(false)])}
+                  >
+                    <Plus className="size-4" /> Add combination
+                  </Button>
                 </div>
                 <div className="mt-5 grid gap-4">
                   {assetRows.map((row, index) => (
-                    <article key={row.key} className="rounded-control border border-border bg-canvas p-4">
+                    <article
+                      key={row.key}
+                      className="rounded-control border border-border bg-canvas p-4"
+                    >
                       <div className="grid gap-4 md:grid-cols-3">
-                        <label className="grid gap-2 text-sm font-semibold text-ink">Asset<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.assetId} onChange={(event) => updateAssetRow(row.key, { assetId: event.target.value })} required><option value="">Select asset</option>{workspace.registries.assets.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>
-                        <label className="grid gap-2 text-sm font-semibold text-ink">Network<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.networkId} onChange={(event) => updateAssetRow(row.key, { networkId: event.target.value })} required><option value="">Select network</option>{workspace.registries.networks.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>
-                        <label className="grid gap-2 text-sm font-semibold text-ink">Payment method<select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.paymentMethodId} onChange={(event) => updateAssetRow(row.key, { paymentMethodId: event.target.value })} required><option value="">Select method</option>{workspace.registries.paymentMethods.map((option) => <option key={option.id} value={option.id}>{option.label}</option>)}</select></label>
+                        <label className="grid gap-2 text-sm font-semibold text-ink">
+                          Asset
+                          <select
+                            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                            value={row.assetId}
+                            onChange={(event) =>
+                              updateAssetRow(row.key, { assetId: event.target.value })
+                            }
+                            required
+                          >
+                            <option value="">Select asset</option>
+                            {workspace.registries.assets.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="grid gap-2 text-sm font-semibold text-ink">
+                          Network
+                          <select
+                            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                            value={row.networkId}
+                            onChange={(event) =>
+                              updateAssetRow(row.key, { networkId: event.target.value })
+                            }
+                            required
+                          >
+                            <option value="">Select network</option>
+                            {workspace.registries.networks.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label className="grid gap-2 text-sm font-semibold text-ink">
+                          Payment method
+                          <select
+                            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                            value={row.paymentMethodId}
+                            onChange={(event) =>
+                              updateAssetRow(row.key, { paymentMethodId: event.target.value })
+                            }
+                            required
+                          >
+                            <option value="">Select method</option>
+                            {workspace.registries.paymentMethods.map((option) => (
+                              <option key={option.id} value={option.id}>
+                                {option.label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
                       </div>
                       <div className="mt-4 grid gap-4 md:grid-cols-2">
-                        <label className="grid gap-2 text-sm font-semibold text-ink">Contract address<input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.contractAddress} onChange={(event) => updateAssetRow(row.key, { contractAddress: event.target.value })} /></label>
-                        <label className="grid gap-2 text-sm font-semibold text-ink">Notes<input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={row.notes} onChange={(event) => updateAssetRow(row.key, { notes: event.target.value })} /></label>
+                        <label className="grid gap-2 text-sm font-semibold text-ink">
+                          Contract address
+                          <input
+                            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                            value={row.contractAddress}
+                            onChange={(event) =>
+                              updateAssetRow(row.key, { contractAddress: event.target.value })
+                            }
+                          />
+                        </label>
+                        <label className="grid gap-2 text-sm font-semibold text-ink">
+                          Notes
+                          <input
+                            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                            value={row.notes}
+                            onChange={(event) =>
+                              updateAssetRow(row.key, { notes: event.target.value })
+                            }
+                          />
+                        </label>
                       </div>
                       <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-                        <label className="flex items-center gap-3 text-sm font-medium text-ink"><input type="radio" name="primaryAsset" checked={row.isPrimary} onChange={() => setAssetRows((rows) => rows.map((item) => ({ ...item, isPrimary: item.key === row.key })))} />Primary combination</label>
-                        <Button type="button" variant="ghost" onClick={() => removeAssetRow(row.key)} aria-label={`Remove asset combination ${index + 1}`}><Trash2 className="size-4" /> Remove</Button>
+                        <label className="flex items-center gap-3 text-sm font-medium text-ink">
+                          <input
+                            type="radio"
+                            name="primaryAsset"
+                            checked={row.isPrimary}
+                            onChange={() =>
+                              setAssetRows((rows) =>
+                                rows.map((item) => ({ ...item, isPrimary: item.key === row.key })),
+                              )
+                            }
+                          />
+                          Primary combination
+                        </label>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          onClick={() => removeAssetRow(row.key)}
+                          aria-label={`Remove asset combination ${index + 1}`}
+                        >
+                          <Trash2 className="size-4" /> Remove
+                        </Button>
                       </div>
                     </article>
                   ))}
                 </div>
               </section>
 
-              {submitState.status !== 'idle' && submitState.status !== 'submitting' ? <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">{submitState.message}</p> : null}
-              <Button type="submit" disabled={submitState.status === 'submitting'}><Link2 className="size-4" />{submitState.status === 'submitting' ? 'Linking Candidate…' : 'Link Candidate to selected target'}</Button>
+              {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
+                <p
+                  className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+                  role="alert"
+                >
+                  {submitState.message}
+                </p>
+              ) : null}
+              <Button type="submit" disabled={submitState.status === 'submitting'}>
+                <Link2 className="size-4" />
+                {submitState.status === 'submitting'
+                  ? 'Linking Candidate…'
+                  : 'Link Candidate to selected target'}
+              </Button>
             </form>
           ) : null}
         </>

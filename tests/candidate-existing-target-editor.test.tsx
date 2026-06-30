@@ -153,11 +153,13 @@ describe('Candidate existing-target editor', () => {
 
     await screen.findByRole('heading', { name: 'Example Cafe' });
     await user.click(screen.getByRole('button', { name: 'Search targets' }));
-    expect(await screen.findByRole('heading', { name: 'Example Cafe Main Store' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Example Cafe Main Store' }),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Select target' }));
 
     expect(screen.getByText('Selected existing target')).toBeInTheDocument();
-    expect(screen.getByText('/place/example-cafe')).toBeInTheDocument();
+    expect(screen.getAllByText('/place/example-cafe').length).toBeGreaterThanOrEqual(2);
     expect(screen.getByRole('button', { name: 'Link Candidate to selected target' })).toBeEnabled();
   });
 });

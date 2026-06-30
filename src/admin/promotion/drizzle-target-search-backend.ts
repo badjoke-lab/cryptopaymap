@@ -1,4 +1,4 @@
-import { and, asc, eq, ilike, inArray, isNull, or } from 'drizzle-orm';
+import { and, asc, eq, ilike, inArray, isNotNull, isNull, or } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import { acceptanceClaims, entities, locations } from '../../db/schema';
 import type {
@@ -42,11 +42,9 @@ interface OnlineTargetRow {
   entityUpdatedAt: Date;
 }
 
-async function loadClaimsByLocation(
-  database: CryptoPayMapDatabase,
-  locationIds: string[],
-) {
-  if (locationIds.length === 0) return new Map<string, CandidateCanonicalTargetOption['existingClaims']>();
+async function loadClaimsByLocation(database: CryptoPayMapDatabase, locationIds: string[]) {
+  if (locationIds.length === 0)
+    return new Map<string, CandidateCanonicalTargetOption['existingClaims']>();
   const rows = await database
     .select({
       id: acceptanceClaims.id,
@@ -59,7 +57,9 @@ async function loadClaimsByLocation(
       updatedAt: acceptanceClaims.updatedAt,
     })
     .from(acceptanceClaims)
-    .where(and(inArray(acceptanceClaims.locationId, locationIds), isNull(acceptanceClaims.deletedAt)))
+    .where(
+      and(inArray(acceptanceClaims.locationId, locationIds), isNull(acceptanceClaims.deletedAt)),
+    )
     .orderBy(acceptanceClaims.id);
   const result = new Map<string, CandidateCanonicalTargetOption['existingClaims']>();
   for (const row of rows) {
@@ -80,7 +80,8 @@ async function loadClaimsByLocation(
 }
 
 async function loadClaimsByEntity(database: CryptoPayMapDatabase, entityIds: string[]) {
-  if (entityIds.length === 0) return new Map<string, CandidateCanonicalTargetOption['existingClaims']>();
+  if (entityIds.length === 0)
+    return new Map<string, CandidateCanonicalTargetOption['existingClaims']>();
   const rows = await database
     .select({
       id: acceptanceClaims.id,
@@ -232,6 +233,7 @@ async function searchOnlineTargets(
     .where(
       and(
         eq(entities.entityType, 'online_service'),
+        isNotNull(entities.slug),
         inArray(entities.entityStatus, ['active', 'unknown']),
         isNull(entities.deletedAt),
         or(

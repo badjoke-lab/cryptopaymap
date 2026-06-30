@@ -90,7 +90,8 @@ export const candidateCanonicalTargetOptionSchema = z
       context.addIssue({
         code: 'custom',
         path: ['location'],
-        message: 'Merchant targets require a Location and online-service targets cannot include one.',
+        message:
+          'Merchant targets require a Location and online-service targets cannot include one.',
       });
     }
     const expectedPath =
@@ -127,9 +128,7 @@ export const candidateCanonicalTargetSearchResponseSchema = z
   .strict();
 
 export type CanonicalTargetSearchQuery = z.infer<typeof canonicalTargetSearchQuerySchema>;
-export type CandidateCanonicalTargetOption = z.infer<
-  typeof candidateCanonicalTargetOptionSchema
->;
+export type CandidateCanonicalTargetOption = z.infer<typeof candidateCanonicalTargetOptionSchema>;
 export type CandidateCanonicalTargetSearchResponse = z.infer<
   typeof candidateCanonicalTargetSearchResponseSchema
 >;

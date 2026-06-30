@@ -41,7 +41,9 @@ function responseBody(): CandidateCanonicalTargetSearchResponse {
   };
 }
 
-function context(url = `https://example.test/admin/api/promotions/${candidateId}/targets?q=Example%20Cafe`) {
+function context(
+  url = `https://example.test/admin/api/promotions/${candidateId}/targets?q=Example%20Cafe`,
+) {
   return {
     request: new Request(url, { headers: { Accept: 'application/json' } }),
     env: { CPM_ADMIN_CANDIDATE_SUBJECTS: JSON.stringify(['reviewer']) },

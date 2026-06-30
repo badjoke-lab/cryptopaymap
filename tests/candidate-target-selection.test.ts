@@ -87,7 +87,11 @@ function target(): CandidateCanonicalTargetOption {
 }
 
 function detailBackend(value: CandidateDetailData): CandidateDetailBackend {
-  return { async loadDetail() { return value; } };
+  return {
+    async loadDetail() {
+      return value;
+    },
+  };
 }
 
 const targetBackend: CandidateCanonicalTargetSearchBackend = {
@@ -146,7 +150,12 @@ describe('Candidate canonical target selection', () => {
       searchCandidateCanonicalTargets(
         context,
         detailBackend(detail()),
-        { async searchTargets() { called = true; return []; } },
+        {
+          async searchTargets() {
+            called = true;
+            return [];
+          },
+        },
         candidateId,
         { query: 'E', limit: 10 },
         now,

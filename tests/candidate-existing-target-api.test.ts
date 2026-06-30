@@ -152,8 +152,7 @@ function context(options: { idempotencyKey?: string; promoteSubjects?: string } 
     ),
     env: {
       CPM_ADMIN_CANDIDATE_SUBJECTS: JSON.stringify(['promoter']),
-      CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS:
-        options.promoteSubjects ?? JSON.stringify(['promoter']),
+      CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: options.promoteSubjects ?? JSON.stringify(['promoter']),
     },
     params: { candidateId },
     data: { adminIdentity: identity },
@@ -190,7 +189,11 @@ describe('protected existing-target link endpoint', () => {
     });
 
     expect(
-      (await handler(context({ idempotencyKey: requestId, promoteSubjects: JSON.stringify(['other']) }))).status,
+      (
+        await handler(
+          context({ idempotencyKey: requestId, promoteSubjects: JSON.stringify(['other']) }),
+        )
+      ).status,
     ).toBe(403);
     expect((await handler(context({ idempotencyKey: 'invalid' }))).status).toBe(400);
     expect(commitLink).not.toHaveBeenCalled();

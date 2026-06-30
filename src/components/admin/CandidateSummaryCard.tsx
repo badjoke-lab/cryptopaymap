@@ -50,8 +50,12 @@ export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
       </dl>
       {promotionAvailable ? (
         <div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold">
-          <a className="text-brand-700" href={promotionHref}>Create new canonical target</a>
-          <a className="text-brand-700" href={existingTargetHref}>Link existing canonical target</a>
+          <a className="text-brand-700" href={promotionHref}>
+            Create new canonical target
+          </a>
+          <a className="text-brand-700" href={existingTargetHref}>
+            Link existing canonical target
+          </a>
         </div>
       ) : null}
     </article>
