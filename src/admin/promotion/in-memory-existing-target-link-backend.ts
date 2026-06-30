@@ -1,7 +1,4 @@
-import {
-  CandidatePromotionError,
-  type CandidatePromotionReceipt,
-} from './candidate-promotion';
+import { CandidatePromotionError, type CandidatePromotionReceipt } from './candidate-promotion';
 import type {
   CandidateExistingTargetLinkBackend,
   CandidateExistingTargetLinkCommand,
@@ -10,7 +7,14 @@ import type {
 export interface ExistingTargetCandidateSeed {
   id: string;
   candidateType: 'physical_place' | 'online_service';
-  candidateStatus: 'new' | 'triaged' | 'linked' | 'promoted' | 'duplicate' | 'rejected' | 'archived';
+  candidateStatus:
+    | 'new'
+    | 'triaged'
+    | 'linked'
+    | 'promoted'
+    | 'duplicate'
+    | 'rejected'
+    | 'archived';
   updatedAt: string;
   canonicalEntityId: string | null;
   canonicalLocationId: string | null;
@@ -92,20 +96,14 @@ export interface InMemoryExistingTargetLinkBackendOptions {
 
 function cloneState(state: ExistingTargetLinkState): ExistingTargetLinkState {
   return {
-    candidates: new Map(
-      [...state.candidates].map(([id, row]) => [id, structuredClone(row)]),
-    ),
+    candidates: new Map([...state.candidates].map(([id, row]) => [id, structuredClone(row)])),
     entities: new Map([...state.entities].map(([id, row]) => [id, structuredClone(row)])),
     locations: new Map([...state.locations].map(([id, row]) => [id, structuredClone(row)])),
     existingClaims: new Map(
       [...state.existingClaims].map(([id, row]) => [id, structuredClone(row)]),
     ),
-    createdClaims: new Map(
-      [...state.createdClaims].map(([id, row]) => [id, structuredClone(row)]),
-    ),
-    claimAssets: new Map(
-      [...state.claimAssets].map(([id, row]) => [id, structuredClone(row)]),
-    ),
+    createdClaims: new Map([...state.createdClaims].map(([id, row]) => [id, structuredClone(row)])),
+    claimAssets: new Map([...state.claimAssets].map(([id, row]) => [id, structuredClone(row)])),
     legacyMappings: new Map(
       [...state.legacyMappings].map(([id, row]) => [id, structuredClone(row)]),
     ),
@@ -124,9 +122,7 @@ function conflict(message: string): never {
   throw new CandidatePromotionError('conflict', message);
 }
 
-export class InMemoryExistingTargetLinkBackend
-  implements CandidateExistingTargetLinkBackend
-{
+export class InMemoryExistingTargetLinkBackend implements CandidateExistingTargetLinkBackend {
   private state: ExistingTargetLinkState;
   private readonly assetIds: Set<string>;
   private readonly networkIds: Set<string>;
@@ -184,8 +180,7 @@ export class InMemoryExistingTargetLinkBackend
       conflict('The source Candidate already references a canonical target.');
     }
     if (
-      JSON.stringify(sorted(candidate.sourceRecordIds)) !==
-      JSON.stringify(command.sourceRecordIds)
+      JSON.stringify(sorted(candidate.sourceRecordIds)) !== JSON.stringify(command.sourceRecordIds)
     ) {
       conflict('The Candidate source provenance changed before existing-target linking.');
     }
@@ -207,15 +202,15 @@ export class InMemoryExistingTargetLinkBackend
       if (entity.entityType !== 'merchant') {
         conflict('Physical Candidates require an existing merchant Entity target.');
       }
-      if (
-        command.target.locationId === null ||
-        command.target.expectedLocationUpdatedAt === null
-      ) {
+      if (command.target.locationId === null || command.target.expectedLocationUpdatedAt === null) {
         conflict('Physical Candidates require an existing Location target.');
       }
       location = next.locations.get(command.target.locationId) ?? null;
       if (location === null) {
-        throw new CandidatePromotionError('not_found', 'The canonical Location target was not found.');
+        throw new CandidatePromotionError(
+          'not_found',
+          'The canonical Location target was not found.',
+        );
       }
       if (
         location.entityId !== entity.id ||
@@ -318,8 +313,7 @@ export class InMemoryExistingTargetLinkBackend
       }
       mapping.migrationStatus = 'mapped';
       mapping.canonicalPath = command.target.expectedCanonicalPath;
-      mapping.entityId =
-        mapping.sourceSystem === 'crypto_acceptance_registry' ? entity.id : null;
+      mapping.entityId = mapping.sourceSystem === 'crypto_acceptance_registry' ? entity.id : null;
       mapping.locationId =
         mapping.sourceSystem === 'cryptopaymap_v2' ? (location?.id ?? null) : null;
       mapping.resolvedAt = command.linkedAt.toISOString();

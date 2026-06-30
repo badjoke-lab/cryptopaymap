@@ -136,10 +136,7 @@ function validateLink(input: CandidateExistingTargetLinkInput): string[] {
     ) {
       issues.push('physical Candidates require a versioned canonical Location target');
     }
-    if (
-      claim.locationId !== input.target.locationId ||
-      claim.claimScope !== 'location_specific'
-    ) {
+    if (claim.locationId !== input.target.locationId || claim.claimScope !== 'location_specific') {
       issues.push('physical Candidates require a location-specific claim on the selected target');
     }
   } else {

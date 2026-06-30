@@ -144,7 +144,7 @@ function createBackend(failBeforeCommit = false) {
     assetIds: [assetId],
     networkIds: [networkId],
     paymentMethodIds: [paymentMethodId],
-    failBeforeCommit: failBeforeCommit ? () => true : undefined,
+    ...(failBeforeCommit ? { failBeforeCommit: () => true } : {}),
   });
 }
 
