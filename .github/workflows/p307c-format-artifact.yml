@@ -1,9 +1,9 @@
 name: P3-07C format artifact
 
 on:
-  push:
+  pull_request:
     branches:
-      - work/p307c
+      - main
 
 permissions:
   contents: read
