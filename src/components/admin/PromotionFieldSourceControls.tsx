@@ -14,9 +14,16 @@ interface SourceOption {
 export function PromotionFieldSourceControls({
   fields,
   sources,
+  title = 'Field source assignments',
+  description =
+    'Choose which reviewed Candidate sources support each factual field. Every non-empty field requires at least one source before promotion can be committed.',
+  badge = 'Origin provenance',
 }: {
   fields: readonly PromotionFieldDescriptor[];
   sources: readonly SourceOption[];
+  title?: string;
+  description?: string;
+  badge?: string;
 }) {
   const sourceIds = useMemo(() => sources.map((source) => source.id), [sources]);
   const [selections, setSelections] = useState<PromotionFieldSourceSelections>({});
@@ -50,14 +57,11 @@ export function PromotionFieldSourceControls({
     <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="m-0 text-xl font-semibold text-ink">Field source assignments</h2>
-          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Choose which reviewed Candidate sources support each factual field. Every non-empty
-            field requires at least one source before promotion can be committed.
-          </p>
+          <h2 className="m-0 text-xl font-semibold text-ink">{title}</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">{description}</p>
         </div>
         <span className="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-medium text-muted">
-          Origin provenance
+          {badge}
         </span>
       </div>
 
