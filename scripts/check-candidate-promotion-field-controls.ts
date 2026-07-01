@@ -5,9 +5,7 @@ import {
 
 const sourceRecordId = '10000000-0000-4000-8000-000000000001';
 const descriptors = newTargetFieldDescriptors(false, ['asset-row']);
-const selections = Object.fromEntries(
-  descriptors.map((field) => [field.key, [sourceRecordId]]),
-);
+const selections = Object.fromEntries(descriptors.map((field) => [field.key, [sourceRecordId]]));
 const result = buildNewTargetFieldProvenancePlan({
   selections,
   entity: {

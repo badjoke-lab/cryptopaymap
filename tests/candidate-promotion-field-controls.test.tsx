@@ -56,15 +56,14 @@ function workspace(): CandidatePromotionWorkspaceResponse {
     registries: {
       assets: [{ id: assetId, slug: 'bitcoin', name: 'Bitcoin', label: 'BTC — Bitcoin' }],
       networks: [{ id: networkId, slug: 'bitcoin', name: 'Bitcoin', label: 'Bitcoin' }],
-      paymentMethods: [
-        { id: methodId, slug: 'onchain', name: 'On-chain', label: 'On-chain' },
-      ],
+      paymentMethods: [{ id: methodId, slug: 'onchain', name: 'On-chain', label: 'On-chain' }],
       processors: [],
     },
   };
 }
 
 beforeEach(() => {
+  vi.stubGlobal('FormData', window.FormData);
   let sequence = 0;
   vi.stubGlobal('crypto', {
     randomUUID: vi.fn(() => {
@@ -81,23 +80,24 @@ afterEach(() => {
 
 describe('Candidate promotion field source controls', () => {
   it('sends explicit field provenance assignments with the promotion request', async () => {
-    const fetchMock = vi.fn(async () =>
-      new Response(
-        JSON.stringify({
-          requestId: '70000000-0000-4000-8000-000000000001',
-          candidateId,
-          entityId: '60000000-0000-4000-8000-000000000002',
-          locationId: null,
-          claimId: '60000000-0000-4000-8000-000000000003',
-          claimAssetIds: ['60000000-0000-4000-8000-000000000001'],
-          canonicalPath: '/service/example-service',
-          claimStatus: 'candidate',
-          visibility: 'hidden',
-          promotedAt: now,
-          state: 'committed',
-        }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      ),
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            requestId: '70000000-0000-4000-8000-000000000001',
+            candidateId,
+            entityId: '60000000-0000-4000-8000-000000000002',
+            locationId: null,
+            claimId: '60000000-0000-4000-8000-000000000003',
+            claimAssetIds: ['60000000-0000-4000-8000-000000000001'],
+            canonicalPath: '/service/example-service',
+            claimStatus: 'candidate',
+            visibility: 'hidden',
+            promotedAt: now,
+            state: 'committed',
+          }),
+          { status: 200, headers: { 'Content-Type': 'application/json' } },
+        ),
     );
     vi.stubGlobal('fetch', fetchMock);
     const user = userEvent.setup();
@@ -110,9 +110,7 @@ describe('Candidate promotion field source controls', () => {
     await user.selectOptions(screen.getByLabelText('Payment method'), methodId);
 
     await waitFor(() => {
-      const hidden = document.querySelector<HTMLInputElement>(
-        'input[name="provenanceSelections"]',
-      );
+      const hidden = document.querySelector<HTMLInputElement>('input[name="provenanceSelections"]');
       expect(hidden?.value).toContain(sourceId);
     });
 
