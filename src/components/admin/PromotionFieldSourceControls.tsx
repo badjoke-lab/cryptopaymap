@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
-import type { PromotionFieldDescriptor, PromotionFieldSourceSelections } from '../../admin/promotion/field-source-selection';
+import type {
+  PromotionFieldDescriptor,
+  PromotionFieldSourceSelections,
+} from '../../admin/promotion/field-source-selection';
 
 interface SourceOption {
   id: string;
@@ -21,12 +24,15 @@ export function PromotionFieldSourceControls({
   useEffect(() => {
     setSelections((current) =>
       Object.fromEntries(
-        fields.map((field) => [
-          field.key,
-          current[field.key] === undefined
-            ? sourceIds
-            : current[field.key].filter((sourceId) => sourceIds.includes(sourceId)),
-        ]),
+        fields.map((field) => {
+          const selected = current[field.key];
+          return [
+            field.key,
+            selected === undefined
+              ? sourceIds
+              : selected.filter((sourceId) => sourceIds.includes(sourceId)),
+          ];
+        }),
       ),
     );
   }, [fields, sourceIds]);
@@ -61,7 +67,10 @@ export function PromotionFieldSourceControls({
         {fields.map((field) => {
           const selected = selections[field.key] ?? [];
           return (
-            <fieldset key={field.key} className="rounded-control border border-border bg-canvas p-4">
+            <fieldset
+              key={field.key}
+              className="rounded-control border border-border bg-canvas p-4"
+            >
               <legend className="px-1 text-sm font-semibold text-ink">{field.label}</legend>
               <div className="mt-2 grid gap-2">
                 {sources.map((source) => (
