@@ -218,7 +218,7 @@ function buildCommand(
       ...input,
       sourceRecordIds,
       claimAssets,
-      provenanceAssignments,
+      ...(provenanceAssignments.length > 0 ? { provenanceAssignments } : {}),
       canonicalPath,
     }),
   );
