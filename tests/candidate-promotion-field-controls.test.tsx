@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import type { CandidatePromotionWorkspaceResponse } from '../src/admin/promotion/workspace';
@@ -114,7 +114,10 @@ describe('Candidate promotion field source controls', () => {
       expect(hidden?.value).toContain(sourceId);
     });
 
-    await user.click(screen.getByRole('button', { name: 'Create hidden canonical records' }));
+    const submitButton = screen.getByRole('button', { name: 'Create hidden canonical records' });
+    const form = submitButton.closest('form');
+    expect(form).not.toBeNull();
+    fireEvent.submit(form as HTMLFormElement);
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
     const [, request] = fetchMock.mock.calls[0] ?? [];
