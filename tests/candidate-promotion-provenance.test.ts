@@ -122,7 +122,7 @@ function existingTargetAssignments(): PromotionProvenanceAssignment[] {
 
 describe('Candidate promotion field provenance', () => {
   it('accepts complete new-target origin assignments and normalizes them into the command', async () => {
-    let captured: CandidatePromotionCommand | null = null;
+    const commands: CandidatePromotionCommand[] = [];
     const receipt: CandidatePromotionReceipt = {
       requestId,
       candidateId,
@@ -138,7 +138,7 @@ describe('Candidate promotion field provenance', () => {
     };
     const backend: CandidatePromotionBackend = {
       commitPromotion: vi.fn(async (command) => {
-        captured = command;
+        commands.push(command);
         return receipt;
       }),
     };
@@ -155,7 +155,7 @@ describe('Candidate promotion field provenance', () => {
       ),
     ).resolves.toEqual(receipt);
 
-    expect(captured?.provenanceAssignments).toEqual(
+    expect(commands[0]?.provenanceAssignments).toEqual(
       normalizePromotionProvenanceAssignments(newTargetAssignments()),
     );
   });
@@ -226,12 +226,7 @@ describe('Candidate promotion field provenance', () => {
 
   it('expands one field assignment into durable field-path rows', () => {
     const rows = expandPromotionProvenanceAssignments(
-      [
-        assignment('entity', entityId, 'name', 'origin', [
-          sourceRecordId,
-          otherSourceRecordId,
-        ]),
-      ],
+      [assignment('entity', entityId, 'name', 'origin', [sourceRecordId, otherSourceRecordId])],
       new Date(promotedAt),
     );
 
