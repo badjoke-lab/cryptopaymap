@@ -64,7 +64,10 @@ const newIssues = validateNewTargetProvenanceAssignments(
   [assignment('entity', entityId, 'name', 'origin'), ...originRows],
   {
     sourceRecordIds: [sourceRecordId],
-    entity: { id: entityId, value: { name: 'Example', legalName: null, websiteUrl: null, countryCode: null } },
+    entity: {
+      id: entityId,
+      value: { name: 'Example', legalName: null, websiteUrl: null, countryCode: null },
+    },
     location: null,
     claim,
     claimAssets,
@@ -85,7 +88,9 @@ const existingIssues = validateExistingTargetProvenanceAssignments(
   },
 );
 if (existingIssues.length > 0) {
-  throw new Error(`Existing-target promotion integration check failed: ${existingIssues.join('; ')}`);
+  throw new Error(
+    `Existing-target promotion integration check failed: ${existingIssues.join('; ')}`,
+  );
 }
 
 console.log('Candidate promotion integration checks passed.');

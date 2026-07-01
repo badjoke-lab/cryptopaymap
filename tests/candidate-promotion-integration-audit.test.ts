@@ -225,9 +225,9 @@ describe('P3-07 Candidate promotion integration audit', () => {
     expect(existingReceipt).toMatchObject({ claimStatus: 'candidate', visibility: 'hidden' });
     expect(newCommands[0]?.sourceRecordIds).toEqual([ids.source]);
     expect(existingCommands[0]?.sourceRecordIds).toEqual([ids.source]);
-    expect(newCommands[0]?.provenanceAssignments.every((row) => row.provenanceRole === 'origin')).toBe(
-      true,
-    );
+    expect(
+      newCommands[0]?.provenanceAssignments.every((row) => row.provenanceRole === 'origin'),
+    ).toBe(true);
     expect(existingCommands[0]?.provenanceAssignments).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ subjectType: 'entity', provenanceRole: 'attribution' }),
