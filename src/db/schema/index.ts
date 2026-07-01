@@ -17,6 +17,7 @@ export * from './candidate-promotions';
 export * from './claim-assets';
 export * from './entities';
 export * from './evidence';
+export * from './evidence-review-decisions';
 export * from './import-batches';
 export * from './locations';
 export * from './media-legacy';

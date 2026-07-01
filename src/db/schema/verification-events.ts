@@ -19,6 +19,7 @@ export const verificationEventTypeValues = [
   'reconfirmed',
   'marked_stale',
   'ended',
+  'rejected',
   'restored',
   'corrected',
   'hidden',
@@ -88,7 +89,7 @@ export const verificationEvents = pgTable(
     ),
     check(
       'verification_events_status_event_shape',
-      sql`${table.eventType} not in ('confirmed', 'reconfirmed', 'marked_stale', 'ended', 'restored') or (${table.fromVisibility} is null and ${table.toVisibility} is null)`,
+      sql`${table.eventType} not in ('confirmed', 'reconfirmed', 'marked_stale', 'ended', 'rejected', 'restored') or (${table.fromVisibility} is null and ${table.toVisibility} is null)`,
     ),
     check(
       'verification_events_visibility_event_shape',
@@ -113,6 +114,10 @@ export const verificationEvents = pgTable(
     check(
       'verification_events_ended_transition',
       sql`${table.eventType} <> 'ended' or (${table.fromStatus} in ('confirmed', 'stale') and ${table.toStatus} = 'ended')`,
+    ),
+    check(
+      'verification_events_rejected_transition',
+      sql`${table.eventType} <> 'rejected' or (${table.fromStatus} = 'candidate' and ${table.toStatus} = 'rejected')`,
     ),
     check(
       'verification_events_restored_transition',
