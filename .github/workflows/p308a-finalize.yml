@@ -1,0 +1,57 @@
+name: P3-08A finalize contract
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Synchronize branch
+        run: git pull --rebase origin "${GITHUB_HEAD_REF}"
+      - name: Add runtime gate and format
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('package.json')
+          text = path.read_text()
+          needle = ' && tsx scripts/check-candidate-promotion-integration.ts",'
+          replacement = ' && tsx scripts/check-candidate-promotion-integration.ts && tsx scripts/check-evidence-review-decision.ts",'
+          if replacement not in text:
+              if needle not in text:
+                  raise SystemExit('schema:check insertion point was not found')
+              text = text.replace(needle, replacement, 1)
+          path.write_text(text)
+          PY
+          npx biome format --write \
+            src/admin/evidence-review/authorization.ts \
+            src/admin/evidence-review/decision.ts \
+            src/admin/evidence-review/in-memory-backend.ts \
+            tests/evidence-review-decision.test.ts \
+            scripts/check-evidence-review-decision.ts
+          rm .github/workflows/p308a-finalize.yml
+      - name: Commit finalized branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P3-08A: finalize decision contract"
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
