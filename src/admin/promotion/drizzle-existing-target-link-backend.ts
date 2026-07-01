@@ -67,7 +67,10 @@ function provenanceRows(command: CandidateExistingTargetLinkCommand) {
     subjectId: string;
   }> = [
     { subjectType: 'acceptance_claim', subjectId: command.claim.id },
-    ...command.claimAssets.map((row) => ({ subjectType: 'claim_asset' as const, subjectId: row.id })),
+    ...command.claimAssets.map((row) => ({
+      subjectType: 'claim_asset' as const,
+      subjectId: row.id,
+    })),
   ];
   return [
     ...identitySubjects.flatMap((subject) =>
