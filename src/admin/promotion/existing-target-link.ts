@@ -7,6 +7,12 @@ import {
   type CandidatePromotionMutationContext,
   type CandidatePromotionReceipt,
 } from './candidate-promotion';
+import {
+  normalizePromotionProvenanceAssignments,
+  promotionProvenanceAssignmentsSchema,
+  validateExistingTargetProvenanceAssignments,
+  type PromotionProvenanceAssignment,
+} from './provenance-plan';
 
 const targetSchema = z
   .object({
@@ -34,6 +40,7 @@ export const candidateExistingTargetLinkInputSchema = z
     claim: claimDraftSchema,
     claimAssets: z.array(claimAssetDraftSchema).min(1).max(100),
     sourceRecordIds: z.array(z.uuid()).min(1).max(100),
+    provenanceAssignments: promotionProvenanceAssignmentsSchema.optional(),
   })
   .strict();
 
@@ -60,6 +67,7 @@ export interface CandidateExistingTargetLinkCommand {
   claim: CandidateExistingTargetLinkInput['claim'];
   claimAssets: CandidateExistingTargetLinkInput['claimAssets'];
   sourceRecordIds: string[];
+  provenanceAssignments: PromotionProvenanceAssignment[];
   requestFingerprint: string;
 }
 
@@ -160,6 +168,16 @@ function validateLink(input: CandidateExistingTargetLinkInput): string[] {
       issues.push('every claim asset must reference the new candidate claim');
     }
   }
+
+  issues.push(
+    ...validateExistingTargetProvenanceAssignments(input.provenanceAssignments, {
+      sourceRecordIds: input.sourceRecordIds,
+      targetEntityId: input.target.entityId,
+      targetLocationId: input.target.locationId,
+      claim: input.claim,
+      claimAssets: input.claimAssets,
+    }),
+  );
   return issues;
 }
 
@@ -170,6 +188,9 @@ function buildCommand(
   const sourceRecordIds = [...input.sourceRecordIds].sort();
   const expectedClaimIds = [...input.target.expectedClaimIds].sort();
   const claimAssets = [...input.claimAssets].sort((left, right) => left.id.localeCompare(right.id));
+  const provenanceAssignments = normalizePromotionProvenanceAssignments(
+    input.provenanceAssignments,
+  );
   const requestFingerprint = JSON.stringify(
     stable({
       operation: 'link_existing_target',
@@ -180,6 +201,7 @@ function buildCommand(
       target: { ...input.target, expectedClaimIds },
       sourceRecordIds,
       claimAssets,
+      provenanceAssignments,
     }),
   );
 
@@ -205,6 +227,7 @@ function buildCommand(
     claim: input.claim,
     claimAssets,
     sourceRecordIds,
+    provenanceAssignments,
     requestFingerprint,
   };
 }
