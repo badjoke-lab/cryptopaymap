@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07E — durable existing-target Drizzle/Neon backend.
-- Branch: `work/p307e`.
-- Pull request: #53.
+- P3-07G — field-level Candidate promotion provenance contract and persistence.
+- Branch: `work/p307g`.
+- Pull request: #55.
 
 ## Latest completed work
 
@@ -29,33 +29,33 @@ P3-07 — Claim editor and canonical promotion
 - P3-07B completed through pull request #49.
 - P3-07C completed through pull request #51.
 - P3-07D completed through pull request #52.
-- Existing-target linking now has an explicit review contract, exact target and Claim-set checks, attribution provenance rules, and atomic replay and rollback semantics.
+- P3-07E completed through pull request #53.
+- P3-07F completed through pull request #54.
+- Candidate reviewers can now choose between a new canonical target and an existing canonical target through protected, version-pinned workspaces.
 
-## P3-07E in progress
+## P3-07G in progress
 
-- add the Drizzle/Neon existing-target link backend
-- recheck Candidate state and exact source provenance inside the transaction
-- lock the selected Entity and optional Location versions
-- lock and compare the exact existing Claim set
-- create only the hidden candidate Claim and Claim Assets
-- use attribution provenance for existing identity targets and origin provenance for new records
-- update Candidate links and pending legacy mappings atomically
-- persist and replay the durable promotion receipt
-- map PostgreSQL guard, foreign-key, uniqueness, and check failures to conflicts
-- verify formatting, types, runtime checks, tests, build, migration drift, and staging artifacts
+- define bounded field provenance assignments for Entity, Location, Claim, and Claim Asset fields
+- restrict assignments to the exact Candidate source set
+- require origin role for newly created canonical fields
+- separate existing identity attribution from new Claim origin
+- require complete supported-field coverage whenever an explicit plan is supplied
+- normalize assignments for deterministic request fingerprints
+- persist `field_path` rows inside the same atomic Drizzle/Neon transaction
+- preserve record-level provenance and prior replay fingerprints when no plan is supplied
+- add contract, runtime, persistence, formatting, type, test, and migration-drift checks
 
 ## Deferred within P3-07
 
-- protected target search and comparison workspace
-- existing-target editor controls
-- field-level provenance editing
+- reviewer-facing field source controls
+- final P3-07 integration and handoff audit
 - live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete P3-07E CI and merge the durable backend.
-2. Add the protected target search, comparison, and selection workspace.
-3. Add field-level provenance controls and complete the P3-07 integration audit.
+1. Complete P3-07G CI and merge pull request #55.
+2. Add reviewer-facing field source controls.
+3. Complete the P3-07 integration and handoff audit.
 4. Advance to P3-08 Evidence review.
 
 ## Blocked
