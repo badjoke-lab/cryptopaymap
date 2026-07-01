@@ -22,6 +22,7 @@ const statusEventTypes = new Set<(typeof verificationEventTypeValues)[number]>([
   'reconfirmed',
   'marked_stale',
   'ended',
+  'rejected',
   'restored',
 ]);
 const visibilityEventTypes = new Set<(typeof verificationEventTypeValues)[number]>([
@@ -148,6 +149,17 @@ export const verificationEventInputSchema = z
     }
 
     if (
+      event.eventType === 'rejected' &&
+      (event.fromStatus !== 'candidate' || event.toStatus !== 'rejected')
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['toStatus'],
+        message: 'Rejected events transition candidate claims to rejected.',
+      });
+    }
+
+    if (
       event.eventType === 'restored' &&
       (event.fromStatus !== 'stale' || event.toStatus !== 'confirmed')
     ) {
@@ -230,13 +242,13 @@ export const verificationDecisionInputSchema = z
     }
 
     if (
-      ['marked_stale', 'ended'].includes(decision.event.eventType) &&
+      ['marked_stale', 'ended', 'rejected'].includes(decision.event.eventType) &&
       !decision.evidenceLinks.some((link) => ['basis', 'contradiction'].includes(link.relationship))
     ) {
       context.addIssue({
         code: 'custom',
         path: ['evidenceLinks'],
-        message: 'Stale and ended events require decision evidence.',
+        message: 'Stale, ended, and rejected events require decision evidence.',
       });
     }
   });

@@ -96,10 +96,7 @@ export const evidenceReviewDecisions = pgTable(
       sql`jsonb_typeof(${table.expectedAcceptedEvidenceIds}) = 'array' and jsonb_array_length(${table.expectedAcceptedEvidenceIds}) between 0 and 100`,
     ),
     check('evidence_review_decisions_actor_nonempty', sql`length(trim(${table.actorId})) > 0`),
-    check(
-      'evidence_review_decisions_reason_nonempty',
-      sql`length(trim(${table.reasonCode})) > 0`,
-    ),
+    check('evidence_review_decisions_reason_nonempty', sql`length(trim(${table.reasonCode})) > 0`),
     check(
       'evidence_review_decisions_fingerprint_nonempty',
       sql`length(${table.requestFingerprint}) > 0`,
@@ -126,7 +123,7 @@ export const evidenceReviewDecisions = pgTable(
     ),
     check(
       'evidence_review_decisions_action_event_shape',
-      sql`(${table.claimAction} = 'no_change' and ${table.verificationEventId} is null and ${table.fromClaimStatus} = ${table.toClaimStatus}) or (${table.claimAction} <> 'no_change' and ${table.verificationEventId} is not null)`,
+      sql`(${table.claimAction} = 'no_change' and ${table.verificationEventId} is null and ${table.fromClaimStatus} = ${table.toClaimStatus}) or (${table.claimAction} <> 'no_change' and ${table.disposition} = 'accepted' and ${table.verificationEventId} is not null)`,
     ),
     check(
       'evidence_review_decisions_confirm_shape',
