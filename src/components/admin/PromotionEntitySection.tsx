@@ -53,12 +53,7 @@ export function EntitySection({
           required={candidateType === 'online_service'}
         />
         <Field label="Legal name" name="legalName" />
-        <Field
-          label="HTTPS website"
-          name="entityWebsiteUrl"
-          type="url"
-          defaultValue={websiteUrl}
-        />
+        <Field label="HTTPS website" name="entityWebsiteUrl" type="url" defaultValue={websiteUrl} />
         <Field label="Country code" name="entityCountryCode" defaultValue={countryCode} />
       </div>
     </section>
