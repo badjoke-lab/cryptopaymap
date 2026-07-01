@@ -8,13 +8,13 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-07 — Claim editor and canonical promotion
+P3-08 — Evidence review and verification decisions
 
 ## Active work
 
-- P3-07J — final Candidate promotion integration and handoff audit.
-- Branch: work/p307j.
-- Pull request: #58.
+- P3-08A — Evidence review authorization and atomic decision contract.
+- Branch: work/p308-tests.
+- Pull request: #59.
 
 ## Latest completed work
 
@@ -25,38 +25,34 @@ P3-07 — Claim editor and canonical promotion
 - P3-04 completed through pull request #44.
 - P3-05 completed through pull request #45.
 - P3-06 completed through pull requests #46 and #47.
-- P3-07A completed through pull request #48.
-- P3-07B completed through pull request #49.
-- P3-07C completed through pull request #51.
-- P3-07D completed through pull request #52.
-- P3-07E completed through pull request #53.
-- P3-07F completed through pull request #54.
-- P3-07G completed through pull request #55.
-- P3-07H completed through pull request #56.
-- P3-07I completed through pull request #57.
-- Both reviewer promotion choices now submit explicit field-level provenance plans.
+- P3-07 completed through pull request #58.
+- Both Candidate promotion choices are hidden, source-pinned, atomic, and separated from verification and publication.
 
-## P3-07J in progress
+## P3-08A in progress
 
-- audit new-target and existing-target service boundaries together
-- assert hidden candidate Claim status and visibility on both paths
-- assert exact Candidate source sets reach both transaction commands
-- assert new-target origin versus existing identity attribution role separation
-- reject Confirmed or public Claims before backend mutation
-- add a machine-executed cross-path runtime check
-- document repository completion and deferred live verification boundaries
+- define a separate `evidence:review` capability and subject allowlist
+- fix Evidence, Claim, and accepted-Evidence-set expectations in every decision
+- separate Evidence disposition, review finding, and explicit Claim action
+- require the existing Evidence threshold for confirmation
+- require accepted contradicting Evidence for stale, end, and reject actions
+- preserve Claim visibility during review decisions
+- provide deterministic request fingerprints and replay behavior
+- prove confirmation, hold, stale, conflict, invalid transition, and rollback behavior
+- add a machine-executed runtime contract check
 
-## Deferred after repository completion
+## Deferred within P3-08
 
-- live Cloudflare Access verification
-- live database transaction verification
-- production deployment verification
+- durable Evidence review decision table and migration
+- Drizzle and Neon atomic decision backend
+- rejected verification-event persistence representation
+- protected Evidence queue and reviewer workspace
+- live Cloudflare Access and database verification
 
 ## Next
 
-1. Complete P3-07J CI and merge pull request #58.
-2. Mark P3-07 repository implementation complete.
-3. Advance to P3-08 Evidence review and verification decisions.
+1. Complete P3-08A CI and merge pull request #59.
+2. Add durable Evidence review persistence and migration in P3-08B.
+3. Add the protected Evidence review workspace.
 
 ## Blocked
 
