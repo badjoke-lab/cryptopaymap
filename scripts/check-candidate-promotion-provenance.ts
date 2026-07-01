@@ -18,7 +18,10 @@ const assignments = [
 if (!promotionProvenanceAssignmentsSchema.safeParse(assignments).success) {
   throw new Error('Candidate promotion field provenance rejected a valid assignment.');
 }
-if (promotionProvenanceAssignmentsSchema.safeParse([{ ...assignments[0], fieldPath: 'bad.path' }]).success) {
+if (
+  promotionProvenanceAssignmentsSchema.safeParse([{ ...assignments[0], fieldPath: 'bad.path' }])
+    .success
+) {
   throw new Error('Candidate promotion field provenance accepted an invalid field path.');
 }
 
