@@ -7,6 +7,12 @@ import {
   type CandidatePromotionMutationContext,
   type CandidatePromotionReceipt,
 } from './candidate-promotion';
+import {
+  normalizePromotionProvenanceAssignments,
+  promotionProvenanceAssignmentsSchema,
+  validateExistingTargetProvenanceAssignments,
+  type PromotionProvenanceAssignment,
+} from './provenance-plan';
 
 const targetSchema = z
   .object({
@@ -34,13 +40,13 @@ export const candidateExistingTargetLinkInputSchema = z
     claim: claimDraftSchema,
     claimAssets: z.array(claimAssetDraftSchema).min(1).max(100),
     sourceRecordIds: z.array(z.uuid()).min(1).max(100),
+    provenanceAssignments: promotionProvenanceAssignmentsSchema.optional(),
   })
   .strict();
 
 export type CandidateExistingTargetLinkInput = z.infer<
   typeof candidateExistingTargetLinkInputSchema
 >;
-
 export interface CandidateExistingTargetLinkCommand {
   requestId: string;
   actorId: string;
@@ -60,9 +66,9 @@ export interface CandidateExistingTargetLinkCommand {
   claim: CandidateExistingTargetLinkInput['claim'];
   claimAssets: CandidateExistingTargetLinkInput['claimAssets'];
   sourceRecordIds: string[];
+  provenanceAssignments: PromotionProvenanceAssignment[];
   requestFingerprint: string;
 }
-
 export interface CandidateExistingTargetLinkBackend {
   commitExistingTargetLink(
     command: CandidateExistingTargetLinkCommand,
@@ -105,11 +111,8 @@ function validateLink(input: CandidateExistingTargetLinkInput): string[] {
   if (new Set(input.claimAssets.map((row) => row.id)).size !== input.claimAssets.length) {
     issues.push('claim asset record IDs must be unique');
   }
-
-  const claimAssetSet = claimAssetSetSchema.safeParse(input.claimAssets.map((row) => row.value));
-  if (!claimAssetSet.success) {
-    issues.push(...claimAssetSet.error.issues.map((issue) => issue.message));
-  }
+  const assetSet = claimAssetSetSchema.safeParse(input.claimAssets.map((row) => row.value));
+  if (!assetSet.success) issues.push(...assetSet.error.issues.map((issue) => issue.message));
 
   const claim = input.claim.value;
   if (claim.claimStatus !== 'candidate' || claim.visibility !== 'hidden') {
@@ -151,7 +154,6 @@ function validateLink(input: CandidateExistingTargetLinkInput): string[] {
       issues.push('online Candidates require an online-service claim');
     }
   }
-
   if (claim.routeType === 'direct_wallet' && claim.processorId !== null) {
     issues.push('direct-wallet claims cannot reference a processor');
   }
@@ -160,6 +162,15 @@ function validateLink(input: CandidateExistingTargetLinkInput): string[] {
       issues.push('every claim asset must reference the new candidate claim');
     }
   }
+  issues.push(
+    ...validateExistingTargetProvenanceAssignments(input.provenanceAssignments, {
+      sourceRecordIds: input.sourceRecordIds,
+      targetEntityId: input.target.entityId,
+      targetLocationId: input.target.locationId,
+      claim: input.claim,
+      claimAssets: input.claimAssets,
+    }),
+  );
   return issues;
 }
 
@@ -170,6 +181,9 @@ function buildCommand(
   const sourceRecordIds = [...input.sourceRecordIds].sort();
   const expectedClaimIds = [...input.target.expectedClaimIds].sort();
   const claimAssets = [...input.claimAssets].sort((left, right) => left.id.localeCompare(right.id));
+  const provenanceAssignments = normalizePromotionProvenanceAssignments(
+    input.provenanceAssignments,
+  );
   const requestFingerprint = JSON.stringify(
     stable({
       operation: 'link_existing_target',
@@ -180,9 +194,9 @@ function buildCommand(
       target: { ...input.target, expectedClaimIds },
       sourceRecordIds,
       claimAssets,
+      ...(provenanceAssignments.length > 0 ? { provenanceAssignments } : {}),
     }),
   );
-
   return {
     requestId: context.requestId,
     actorId: context.actorId,
@@ -205,6 +219,7 @@ function buildCommand(
     claim: input.claim,
     claimAssets,
     sourceRecordIds,
+    provenanceAssignments,
     requestFingerprint,
   };
 }
@@ -217,28 +232,27 @@ export function createCandidateExistingTargetLinkService(
       context: CandidatePromotionMutationContext,
       input: CandidateExistingTargetLinkInput,
     ): Promise<CandidatePromotionReceipt> {
-      const contextResult = candidatePromotionMutationContextSchema.safeParse(context);
-      if (!contextResult.success || !context.capabilities.includes('candidate:promote')) {
+      const parsedContext = candidatePromotionMutationContextSchema.safeParse(context);
+      if (!parsedContext.success || !context.capabilities.includes('candidate:promote')) {
         throw new CandidatePromotionError(
           'unauthorized',
           'The actor is not authorized to link Candidates to canonical targets.',
-          contextResult.success
+          parsedContext.success
             ? []
-            : contextResult.error.issues.map(
+            : parsedContext.error.issues.map(
                 (issue) => `${issue.path.join('.')}: ${issue.message}`,
               ),
         );
       }
-
-      const inputResult = candidateExistingTargetLinkInputSchema.safeParse(input);
-      if (!inputResult.success) {
+      const parsedInput = candidateExistingTargetLinkInputSchema.safeParse(input);
+      if (!parsedInput.success) {
         throw new CandidatePromotionError(
           'invalid_promotion',
           'The existing-target link request is invalid.',
-          inputResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
+          parsedInput.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
         );
       }
-      const issues = validateLink(inputResult.data);
+      const issues = validateLink(parsedInput.data);
       if (issues.length > 0) {
         throw new CandidatePromotionError(
           'invalid_promotion',
@@ -246,10 +260,9 @@ export function createCandidateExistingTargetLinkService(
           issues,
         );
       }
-
       try {
         return await backend.commitExistingTargetLink(
-          buildCommand(contextResult.data, inputResult.data),
+          buildCommand(parsedContext.data, parsedInput.data),
         );
       } catch (error) {
         if (error instanceof CandidatePromotionError) throw error;

@@ -2,6 +2,12 @@ import { z } from 'zod';
 import { acceptanceClaimInputSchema } from '../../schemas/acceptance-claims';
 import { canonicalEntitySchema, canonicalLocationSchema } from '../../schemas/canonical-identity';
 import { claimAssetInputSchema, claimAssetSetSchema } from '../../schemas/claim-assets';
+import {
+  normalizePromotionProvenanceAssignments,
+  promotionProvenanceAssignmentsSchema,
+  validateNewTargetProvenanceAssignments,
+  type PromotionProvenanceAssignment,
+} from './provenance-plan';
 
 export const candidatePromotionCapabilityValues = ['candidate:promote'] as const;
 export const candidatePromotionCapabilitySchema = z.enum(candidatePromotionCapabilityValues);
@@ -31,6 +37,7 @@ export const candidatePromotionInputSchema = z
     claim: claimDraftSchema,
     claimAssets: z.array(claimAssetDraftSchema).min(1).max(100),
     sourceRecordIds: z.array(z.uuid()).min(1).max(100),
+    provenanceAssignments: promotionProvenanceAssignmentsSchema.optional(),
   })
   .strict();
 
@@ -52,6 +59,7 @@ export interface CandidatePromotionCommand {
   claim: CandidatePromotionInput['claim'];
   claimAssets: CandidatePromotionInput['claimAssets'];
   sourceRecordIds: string[];
+  provenanceAssignments: PromotionProvenanceAssignment[];
   canonicalPath: string;
   requestFingerprint: string;
 }
@@ -176,6 +184,16 @@ function validatePromotion(input: CandidatePromotionInput): string[] {
       issues.push('every claim asset must reference the promoted claim');
     }
   }
+
+  issues.push(
+    ...validateNewTargetProvenanceAssignments(input.provenanceAssignments, {
+      sourceRecordIds: input.sourceRecordIds,
+      entity: input.entity,
+      location: input.location,
+      claim: input.claim,
+      claimAssets: input.claimAssets,
+    }),
+  );
   return issues;
 }
 
@@ -185,6 +203,9 @@ function buildCommand(
 ): CandidatePromotionCommand {
   const sourceRecordIds = [...input.sourceRecordIds].sort();
   const claimAssets = [...input.claimAssets].sort((left, right) => left.id.localeCompare(right.id));
+  const provenanceAssignments = normalizePromotionProvenanceAssignments(
+    input.provenanceAssignments,
+  );
   const canonicalPath =
     input.expectedCandidateType === 'physical_place'
       ? `/place/${input.location?.value.slug ?? ''}`
@@ -197,6 +218,7 @@ function buildCommand(
       ...input,
       sourceRecordIds,
       claimAssets,
+      ...(provenanceAssignments.length > 0 ? { provenanceAssignments } : {}),
       canonicalPath,
     }),
   );
@@ -213,6 +235,7 @@ function buildCommand(
     claim: input.claim,
     claimAssets,
     sourceRecordIds,
+    provenanceAssignments,
     canonicalPath,
     requestFingerprint,
   };

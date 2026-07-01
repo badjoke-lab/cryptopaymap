@@ -17,6 +17,7 @@ import {
   type CandidatePromotionCommand,
   type CandidatePromotionReceipt,
 } from './candidate-promotion';
+import { expandPromotionProvenanceAssignments } from './provenance-plan';
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
@@ -283,18 +284,20 @@ export function createDrizzleCandidatePromotionBackend(
       if (command.location !== null) {
         subjects.push({ subjectType: 'location', subjectId: command.location.id });
       }
+      const provenanceRows =
+        command.provenanceAssignments.length > 0
+          ? expandPromotionProvenanceAssignments(command.provenanceAssignments, command.promotedAt)
+          : subjects.flatMap((subject) =>
+              command.sourceRecordIds.map((sourceRecordId) => ({
+                subjectType: subject.subjectType,
+                subjectId: subject.subjectId,
+                sourceRecordId,
+                provenanceRole: 'origin' as const,
+                effectiveFrom: command.promotedAt,
+              })),
+            );
       statements.push(
-        database.insert(provenanceLinks).values(
-          subjects.flatMap((subject) =>
-            command.sourceRecordIds.map((sourceRecordId) => ({
-              subjectType: subject.subjectType,
-              subjectId: subject.subjectId,
-              sourceRecordId,
-              provenanceRole: 'origin' as const,
-              effectiveFrom: command.promotedAt,
-            })),
-          ),
-        ),
+        database.insert(provenanceLinks).values(provenanceRows),
         database
           .update(legacyPlaceIds)
           .set({
