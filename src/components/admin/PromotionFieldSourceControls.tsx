@@ -52,8 +52,8 @@ export function PromotionFieldSourceControls({
         <div>
           <h2 className="m-0 text-xl font-semibold text-ink">Field source assignments</h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Choose which reviewed Candidate sources support each factual field. Every non-empty field
-            requires at least one source before promotion can be committed.
+            Choose which reviewed Candidate sources support each factual field. Every non-empty
+            field requires at least one source before promotion can be committed.
           </p>
         </div>
         <span className="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-medium text-muted">

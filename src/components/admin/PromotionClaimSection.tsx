@@ -40,14 +40,22 @@ export function ClaimSection({
       <div className="mt-5 grid gap-4 md:grid-cols-2">
         <label className="grid gap-2 text-sm font-semibold text-ink">
           Route type
-          <select name="routeType" defaultValue={defaults.routeType} className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+          <select
+            name="routeType"
+            defaultValue={defaults.routeType}
+            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+          >
             <option value="direct_wallet">Direct wallet</option>
             <option value="processor_checkout">Processor checkout</option>
           </select>
         </label>
         <label className="grid gap-2 text-sm font-semibold text-ink">
           Acceptance scope
-          <select name="acceptanceScope" defaultValue={defaults.acceptanceScope} className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+          <select
+            name="acceptanceScope"
+            defaultValue={defaults.acceptanceScope}
+            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+          >
             <option value="all_checkout">All checkout</option>
             <option value="selected_products">Selected products</option>
             <option value="new_purchase_only">New purchase only</option>
@@ -58,17 +66,32 @@ export function ClaimSection({
         </label>
         <label className="grid gap-2 text-sm font-semibold text-ink">
           Processor
-          <select name="processorId" defaultValue="" className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+          <select
+            name="processorId"
+            defaultValue=""
+            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+          >
             <option value="">None</option>
             {workspace.registries.processors.map((processor) => (
-              <option key={processor.id} value={processor.id}>{processor.name}</option>
+              <option key={processor.id} value={processor.id}>
+                {processor.name}
+              </option>
             ))}
           </select>
         </label>
-        <Field label="Instructions language" name="instructionsLanguage" defaultValue="en" required />
+        <Field
+          label="Instructions language"
+          name="instructionsLanguage"
+          defaultValue="en"
+          required
+        />
         <label className="grid gap-2 text-sm font-semibold text-ink">
           Merchant receives
-          <select name="merchantReceives" defaultValue="not_publicly_confirmed" className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+          <select
+            name="merchantReceives"
+            defaultValue="not_publicly_confirmed"
+            className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+          >
             <option value="crypto">Crypto</option>
             <option value="fiat">Fiat</option>
             <option value="crypto_or_fiat">Crypto or fiat</option>
@@ -80,10 +103,12 @@ export function ClaimSection({
         <TextArea label="How to pay" name="howToPay" defaultValue={defaults.howToPay} />
         <TextArea label="Restrictions" name="restrictions" defaultValue={defaults.restrictions} />
         <label className="flex items-center gap-3 text-sm font-medium text-ink">
-          <input className="size-5" type="checkbox" name="customerPaysCrypto" /> Customer pays crypto
+          <input className="size-5" type="checkbox" name="customerPaysCrypto" /> Customer pays
+          crypto
         </label>
         <label className="flex items-center gap-3 text-sm font-medium text-ink">
-          <input className="size-5" type="checkbox" name="merchantExplicitlyAcceptsCrypto" /> Merchant explicitly accepts crypto
+          <input className="size-5" type="checkbox" name="merchantExplicitlyAcceptsCrypto" />{' '}
+          Merchant explicitly accepts crypto
         </label>
       </div>
     </section>

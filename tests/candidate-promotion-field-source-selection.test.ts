@@ -103,9 +103,7 @@ describe('promotion field source selection', () => {
   });
 
   it('creates stable field keys for physical and asset rows', () => {
-    const keys = newTargetFieldDescriptors(true, ['asset-a', 'asset-b']).map(
-      (field) => field.key,
-    );
+    const keys = newTargetFieldDescriptors(true, ['asset-a', 'asset-b']).map((field) => field.key);
 
     expect(keys).toContain('location.latitude');
     expect(keys).toContain('asset:asset-a.assetId');

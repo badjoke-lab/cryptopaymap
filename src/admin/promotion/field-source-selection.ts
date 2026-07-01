@@ -65,7 +65,11 @@ const newTargetFields = {
   asset: ['assetId', 'networkId', 'paymentMethodId', 'contractAddress', 'notes'],
 } as const;
 
-function descriptor(subjectKey: string, group: string, fieldPath: string): PromotionFieldDescriptor {
+function descriptor(
+  subjectKey: string,
+  group: string,
+  fieldPath: string,
+): PromotionFieldDescriptor {
   return {
     key: `${subjectKey}.${fieldPath}`,
     label: `${group}: ${fieldLabels[fieldPath] ?? fieldPath}`,
@@ -96,7 +100,9 @@ export function parseFieldSourceSelections(raw: FormDataEntryValue | null) {
     return Object.fromEntries(
       Object.entries(parsed).map(([key, value]) => [
         key,
-        Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [],
+        Array.isArray(value)
+          ? value.filter((item): item is string => typeof item === 'string')
+          : [],
       ]),
     ) satisfies PromotionFieldSourceSelections;
   } catch {
@@ -160,7 +166,13 @@ export function buildNewTargetFieldProvenancePlan(
 ): NewTargetFieldPlanResult {
   const parts = [
     fieldAssignments(input.selections, 'entity', 'entity', input.entity, newTargetFields.entity),
-    fieldAssignments(input.selections, 'acceptance_claim', 'claim', input.claim, newTargetFields.claim),
+    fieldAssignments(
+      input.selections,
+      'acceptance_claim',
+      'claim',
+      input.claim,
+      newTargetFields.claim,
+    ),
     ...(input.location === null
       ? []
       : [

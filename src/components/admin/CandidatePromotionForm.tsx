@@ -93,7 +93,11 @@ export function CandidatePromotionForm({
   const defaultName = sourceSnapshot?.name ?? candidate.name;
   const defaultSlug = slugify(defaultName) || `candidate-${candidate.id.slice(0, 8)}`;
   const provenanceFields = useMemo(
-    () => newTargetFieldDescriptors(physicalCandidate, assetRows.map((row) => row.key)),
+    () =>
+      newTargetFieldDescriptors(
+        physicalCandidate,
+        assetRows.map((row) => row.key),
+      ),
     [assetRows, physicalCandidate],
   );
 
@@ -102,7 +106,8 @@ export function CandidatePromotionForm({
     setSubmitState({ status: 'submitting' });
     const form = new FormData(event.currentTarget);
     const routeType = text(form, 'routeType') as 'direct_wallet' | 'processor_checkout';
-    const processorId = routeType === 'processor_checkout' ? nullable(text(form, 'processorId')) : null;
+    const processorId =
+      routeType === 'processor_checkout' ? nullable(text(form, 'processorId')) : null;
 
     const entity = {
       id: draftIds.entityId,
@@ -257,20 +262,35 @@ export function CandidatePromotionForm({
     return (
       <section className="rounded-card border border-border bg-surface p-6 shadow-sm">
         <ShieldAlert className="size-6 text-brand-700" aria-hidden="true" />
-        <h2 className="mt-3 text-xl font-semibold text-ink">Candidate promoted to hidden canonical records</h2>
+        <h2 className="mt-3 text-xl font-semibold text-ink">
+          Candidate promoted to hidden canonical records
+        </h2>
         <p className="mt-2 text-sm text-muted">
-          {submitState.receipt.canonicalPath} was created with field-level origin provenance. Verification and publication remain separate.
+          {submitState.receipt.canonicalPath} was created with field-level origin provenance.
+          Verification and publication remain separate.
         </p>
-        <a className="mt-5 inline-flex text-sm font-semibold text-brand-700" href="/admin/candidates/">Return to Candidate queue</a>
+        <a
+          className="mt-5 inline-flex text-sm font-semibold text-brand-700"
+          href="/admin/candidates/"
+        >
+          Return to Candidate queue
+        </a>
       </section>
     );
   }
 
   return (
     <div>
-      <a className="text-sm font-semibold text-brand-700" href={`/admin/candidates/detail/?id=${encodeURIComponent(candidate.id)}`}>← Back to Candidate detail</a>
+      <a
+        className="text-sm font-semibold text-brand-700"
+        href={`/admin/candidates/detail/?id=${encodeURIComponent(candidate.id)}`}
+      >
+        ← Back to Candidate detail
+      </a>
       <section className="mt-5 rounded-card border border-border bg-surface p-5 shadow-sm">
-        <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">{humanize(candidate.candidateType)} · {humanize(candidate.status)}</p>
+        <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+          {humanize(candidate.candidateType)} · {humanize(candidate.status)}
+        </p>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink">{candidate.name}</h2>
         <p className="mt-2 break-all text-xs text-muted">Protected ID: {candidate.id}</p>
       </section>
@@ -280,13 +300,18 @@ export function CandidatePromotionForm({
           <AlertTriangle className="size-5" aria-hidden="true" />
           <h2 className="mt-3 text-lg font-semibold text-amber-950">Promotion is blocked</h2>
           <ul className="mt-3 grid gap-2 pl-5 text-sm text-amber-900">
-            {workspace.eligibilityIssues.map((issue) => <li key={issue}>{humanize(issue)}</li>)}
+            {workspace.eligibilityIssues.map((issue) => (
+              <li key={issue}>{humanize(issue)}</li>
+            ))}
           </ul>
         </section>
       ) : null}
 
       <form className="mt-8 grid gap-8" onSubmit={submit}>
-        <fieldset disabled={!workspace.eligible || submitState.status === 'submitting'} className="contents">
+        <fieldset
+          disabled={!workspace.eligible || submitState.status === 'submitting'}
+          className="contents"
+        >
           <EntitySection
             candidateType={candidate.candidateType}
             defaultName={defaultName}
@@ -295,7 +320,11 @@ export function CandidatePromotionForm({
             countryCode={sourceSnapshot?.countryCode ?? ''}
           />
           {physicalCandidate ? (
-            <LocationSection defaultName={physical?.name ?? defaultName} defaultSlug={defaultSlug} snapshot={physical} />
+            <LocationSection
+              defaultName={physical?.name ?? defaultName}
+              defaultSlug={defaultSlug}
+              snapshot={physical}
+            />
           ) : null}
           <ClaimSection
             workspace={workspace}
@@ -307,18 +336,33 @@ export function CandidatePromotionForm({
             }}
           />
           <AssetSection workspace={workspace} rows={assetRows} setRows={setAssetRows} />
-          <PromotionFieldSourceControls fields={provenanceFields} sources={workspace.detail.sources} />
+          <PromotionFieldSourceControls
+            fields={provenanceFields}
+            sources={workspace.detail.sources}
+          />
         </fieldset>
 
         {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
-          <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">{submitState.message}</p>
+          <p
+            className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+            role="alert"
+          >
+            {submitState.message}
+          </p>
         ) : null}
         <div className="flex flex-wrap gap-3">
-          <Button type="submit" disabled={!workspace.eligible || submitState.status === 'submitting'}>
-            {submitState.status === 'submitting' ? 'Committing promotion…' : 'Create hidden canonical records'}
+          <Button
+            type="submit"
+            disabled={!workspace.eligible || submitState.status === 'submitting'}
+          >
+            {submitState.status === 'submitting'
+              ? 'Committing promotion…'
+              : 'Create hidden canonical records'}
           </Button>
           {submitState.status === 'conflict' ? (
-            <Button type="button" variant="secondary" onClick={() => void reload()}>Reload current Candidate</Button>
+            <Button type="button" variant="secondary" onClick={() => void reload()}>
+              Reload current Candidate
+            </Button>
           ) : null}
         </div>
       </form>
