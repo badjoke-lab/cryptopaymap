@@ -50,11 +50,7 @@ function createAssetRow(): PromotionAssetRow {
   };
 }
 
-export function CandidateExistingTargetForm({
-  workspace,
-  selectedTarget,
-  onConflict,
-}: Props) {
+export function CandidateExistingTargetForm({ workspace, selectedTarget, onConflict }: Props) {
   const candidate = workspace.detail.candidate;
   const [claimId] = useState(() => crypto.randomUUID());
   const [assetRows, setAssetRows] = useState<PromotionAssetRow[]>(() => [createAssetRow()]);
@@ -86,8 +82,7 @@ export function CandidateExistingTargetForm({
         claimStatus: 'candidate',
         visibility: 'hidden',
         customerPaysCrypto: form.get('customerPaysCrypto') === 'on',
-        merchantExplicitlyAcceptsCrypto:
-          form.get('merchantExplicitlyAcceptsCrypto') === 'on',
+        merchantExplicitlyAcceptsCrypto: form.get('merchantExplicitlyAcceptsCrypto') === 'on',
         processorId,
         howToPay: nullable(text(form, 'howToPay')),
         instructionsLanguage: text(form, 'instructionsLanguage'),
@@ -203,7 +198,8 @@ export function CandidateExistingTargetForm({
       if (response.status === 409) {
         setSubmitState({
           status: 'conflict',
-          message: 'The Candidate or selected canonical target changed. Search again before retrying.',
+          message:
+            'The Candidate or selected canonical target changed. Search again before retrying.',
         });
         return;
       }
@@ -241,10 +237,13 @@ export function CandidateExistingTargetForm({
           Candidate linked to existing canonical target
         </h2>
         <p className="mt-2 text-sm text-muted">
-          {submitState.receipt.canonicalPath} received a new hidden candidate Claim. Existing identity
-          records were not rewritten.
+          {submitState.receipt.canonicalPath} received a new hidden candidate Claim. Existing
+          identity records were not rewritten.
         </p>
-        <a className="mt-5 inline-flex text-sm font-semibold text-brand-700" href="/admin/candidates/">
+        <a
+          className="mt-5 inline-flex text-sm font-semibold text-brand-700"
+          href="/admin/candidates/"
+        >
           Return to Candidate queue
         </a>
       </section>

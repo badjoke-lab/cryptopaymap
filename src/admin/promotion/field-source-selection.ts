@@ -111,9 +111,7 @@ export function existingTargetFieldDescriptors(
   return [
     ...fields.existingEntity.map((field) => descriptor('entity', 'Existing Entity', field)),
     ...(physical
-      ? fields.existingLocation.map((field) =>
-          descriptor('location', 'Existing Location', field),
-        )
+      ? fields.existingLocation.map((field) => descriptor('location', 'Existing Location', field))
       : []),
     ...fields.claim.map((field) => descriptor('claim', 'New Claim', field)),
     ...assetKeys.flatMap((key, index) =>
@@ -202,9 +200,7 @@ export interface NewTargetFieldPlanInput {
   claimAssets: readonly AssetDraft[];
 }
 
-export function buildNewTargetFieldProvenancePlan(
-  input: NewTargetFieldPlanInput,
-): FieldPlanResult {
+export function buildNewTargetFieldProvenancePlan(input: NewTargetFieldPlanInput): FieldPlanResult {
   return combine([
     fieldAssignments({
       selections: input.selections,

@@ -256,7 +256,8 @@ function ExistingTargetWorkspace({
         </p>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink">{candidate.name}</h2>
         <p className="mt-2 text-sm text-muted">
-          {humanize(candidate.candidateType)} · {workspace.detail.sources.length} exact source record
+          {humanize(candidate.candidateType)} · {workspace.detail.sources.length} exact source
+          record
           {workspace.detail.sources.length === 1 ? '' : 's'}
         </p>
       </section>

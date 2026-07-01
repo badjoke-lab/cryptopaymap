@@ -15,8 +15,7 @@ export function PromotionFieldSourceControls({
   fields,
   sources,
   title = 'Field source assignments',
-  description =
-    'Choose which reviewed Candidate sources support each factual field. Every non-empty field requires at least one source before promotion can be committed.',
+  description = 'Choose which reviewed Candidate sources support each factual field. Every non-empty field requires at least one source before promotion can be committed.',
   badge = 'Origin provenance',
 }: {
   fields: readonly PromotionFieldDescriptor[];
