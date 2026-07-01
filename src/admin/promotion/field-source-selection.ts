@@ -36,9 +36,10 @@ const fieldLabels: Record<string, string> = {
   notes: 'Notes',
 };
 
-const newTargetFields = {
-  entity: ['name', 'legalName', 'websiteUrl', 'countryCode'],
-  location: [
+const fields = {
+  newEntity: ['name', 'legalName', 'websiteUrl', 'countryCode'],
+  existingEntity: ['name', 'websiteUrl', 'countryCode'],
+  newLocation: [
     'name',
     'addressLine',
     'locality',
@@ -51,6 +52,17 @@ const newTargetFields = {
     'phone',
     'osmType',
     'osmId',
+  ],
+  existingLocation: [
+    'name',
+    'addressLine',
+    'locality',
+    'region',
+    'postalCode',
+    'countryCode',
+    'latitude',
+    'longitude',
+    'websiteUrl',
   ],
   claim: [
     'routeType',
@@ -81,13 +93,29 @@ export function newTargetFieldDescriptors(
   assetKeys: readonly string[],
 ): PromotionFieldDescriptor[] {
   return [
-    ...newTargetFields.entity.map((field) => descriptor('entity', 'Entity', field)),
+    ...fields.newEntity.map((field) => descriptor('entity', 'Entity', field)),
     ...(physical
-      ? newTargetFields.location.map((field) => descriptor('location', 'Location', field))
+      ? fields.newLocation.map((field) => descriptor('location', 'Location', field))
       : []),
-    ...newTargetFields.claim.map((field) => descriptor('claim', 'Claim', field)),
+    ...fields.claim.map((field) => descriptor('claim', 'Claim', field)),
     ...assetKeys.flatMap((key, index) =>
-      newTargetFields.asset.map((field) => descriptor(`asset:${key}`, `Asset ${index + 1}`, field)),
+      fields.asset.map((field) => descriptor(`asset:${key}`, `Asset ${index + 1}`, field)),
+    ),
+  ];
+}
+
+export function existingTargetFieldDescriptors(
+  physical: boolean,
+  assetKeys: readonly string[],
+): PromotionFieldDescriptor[] {
+  return [
+    ...fields.existingEntity.map((field) => descriptor('entity', 'Existing Entity', field)),
+    ...(physical
+      ? fields.existingLocation.map((field) => descriptor('location', 'Existing Location', field))
+      : []),
+    ...fields.claim.map((field) => descriptor('claim', 'New Claim', field)),
+    ...assetKeys.flatMap((key, index) =>
+      fields.asset.map((field) => descriptor(`asset:${key}`, `New Asset ${index + 1}`, field)),
     ),
   ];
 }
@@ -119,6 +147,51 @@ interface AssetDraft extends SubjectDraft {
   selectionKey: string;
 }
 
+export interface FieldPlanResult {
+  assignments: PromotionProvenanceAssignment[];
+  missingFields: string[];
+}
+
+interface AssignmentOptions {
+  selections: PromotionFieldSourceSelections;
+  subjectType: PromotionProvenanceAssignment['subjectType'];
+  subjectKey: string;
+  draft: SubjectDraft;
+  fieldPaths: readonly string[];
+  provenanceRole: PromotionProvenanceAssignment['provenanceRole'];
+  required: boolean;
+}
+
+function fieldAssignments(options: AssignmentOptions): FieldPlanResult {
+  const assignments: PromotionProvenanceAssignment[] = [];
+  const missingFields: string[] = [];
+  for (const fieldPath of options.fieldPaths) {
+    const fieldValue = options.draft.value[fieldPath];
+    if (fieldValue === null || fieldValue === undefined) continue;
+    const key = `${options.subjectKey}.${fieldPath}`;
+    const sourceRecordIds = [...new Set(options.selections[key] ?? [])].sort();
+    if (sourceRecordIds.length === 0) {
+      if (options.required) missingFields.push(fieldLabels[fieldPath] ?? fieldPath);
+      continue;
+    }
+    assignments.push({
+      subjectType: options.subjectType,
+      subjectId: options.draft.id,
+      fieldPath,
+      sourceRecordIds,
+      provenanceRole: options.provenanceRole,
+    });
+  }
+  return { assignments, missingFields };
+}
+
+function combine(parts: readonly FieldPlanResult[]): FieldPlanResult {
+  return {
+    assignments: parts.flatMap((part) => part.assignments),
+    missingFields: [...new Set(parts.flatMap((part) => part.missingFields))],
+  };
+}
+
 export interface NewTargetFieldPlanInput {
   selections: PromotionFieldSourceSelections;
   entity: SubjectDraft;
@@ -127,75 +200,117 @@ export interface NewTargetFieldPlanInput {
   claimAssets: readonly AssetDraft[];
 }
 
-export interface NewTargetFieldPlanResult {
-  assignments: PromotionProvenanceAssignment[];
-  missingFields: string[];
-}
-
-function fieldAssignments(
-  selections: PromotionFieldSourceSelections,
-  subjectType: PromotionProvenanceAssignment['subjectType'],
-  subjectKey: string,
-  draft: SubjectDraft,
-  fields: readonly string[],
-): NewTargetFieldPlanResult {
-  const assignments: PromotionProvenanceAssignment[] = [];
-  const missingFields: string[] = [];
-  for (const fieldPath of fields) {
-    const fieldValue = draft.value[fieldPath];
-    if (fieldValue === null || fieldValue === undefined) continue;
-    const key = `${subjectKey}.${fieldPath}`;
-    const sourceRecordIds = [...new Set(selections[key] ?? [])].sort();
-    if (sourceRecordIds.length === 0) {
-      missingFields.push(fieldLabels[fieldPath] ?? fieldPath);
-      continue;
-    }
-    assignments.push({
-      subjectType,
-      subjectId: draft.id,
-      fieldPath,
-      sourceRecordIds,
+export function buildNewTargetFieldProvenancePlan(input: NewTargetFieldPlanInput): FieldPlanResult {
+  return combine([
+    fieldAssignments({
+      selections: input.selections,
+      subjectType: 'entity',
+      subjectKey: 'entity',
+      draft: input.entity,
+      fieldPaths: fields.newEntity,
       provenanceRole: 'origin',
-    });
-  }
-  return { assignments, missingFields };
-}
-
-export function buildNewTargetFieldProvenancePlan(
-  input: NewTargetFieldPlanInput,
-): NewTargetFieldPlanResult {
-  const parts = [
-    fieldAssignments(input.selections, 'entity', 'entity', input.entity, newTargetFields.entity),
-    fieldAssignments(
-      input.selections,
-      'acceptance_claim',
-      'claim',
-      input.claim,
-      newTargetFields.claim,
-    ),
+      required: true,
+    }),
     ...(input.location === null
       ? []
       : [
-          fieldAssignments(
-            input.selections,
-            'location',
-            'location',
-            input.location,
-            newTargetFields.location,
-          ),
+          fieldAssignments({
+            selections: input.selections,
+            subjectType: 'location',
+            subjectKey: 'location',
+            draft: input.location,
+            fieldPaths: fields.newLocation,
+            provenanceRole: 'origin',
+            required: true,
+          }),
         ]),
+    fieldAssignments({
+      selections: input.selections,
+      subjectType: 'acceptance_claim',
+      subjectKey: 'claim',
+      draft: input.claim,
+      fieldPaths: fields.claim,
+      provenanceRole: 'origin',
+      required: true,
+    }),
     ...input.claimAssets.map((asset) =>
-      fieldAssignments(
-        input.selections,
-        'claim_asset',
-        `asset:${asset.selectionKey}`,
-        asset,
-        newTargetFields.asset,
-      ),
+      fieldAssignments({
+        selections: input.selections,
+        subjectType: 'claim_asset',
+        subjectKey: `asset:${asset.selectionKey}`,
+        draft: asset,
+        fieldPaths: fields.asset,
+        provenanceRole: 'origin',
+        required: true,
+      }),
     ),
-  ];
+  ]);
+}
+
+export interface ExistingTargetFieldPlanInput {
+  selections: PromotionFieldSourceSelections;
+  entity: SubjectDraft;
+  location: SubjectDraft | null;
+  claim: SubjectDraft;
+  claimAssets: readonly AssetDraft[];
+}
+
+export function buildExistingTargetFieldProvenancePlan(
+  input: ExistingTargetFieldPlanInput,
+): FieldPlanResult {
+  const result = combine([
+    fieldAssignments({
+      selections: input.selections,
+      subjectType: 'entity',
+      subjectKey: 'entity',
+      draft: input.entity,
+      fieldPaths: fields.existingEntity,
+      provenanceRole: 'attribution',
+      required: false,
+    }),
+    ...(input.location === null
+      ? []
+      : [
+          fieldAssignments({
+            selections: input.selections,
+            subjectType: 'location',
+            subjectKey: 'location',
+            draft: input.location,
+            fieldPaths: fields.existingLocation,
+            provenanceRole: 'attribution',
+            required: false,
+          }),
+        ]),
+    fieldAssignments({
+      selections: input.selections,
+      subjectType: 'acceptance_claim',
+      subjectKey: 'claim',
+      draft: input.claim,
+      fieldPaths: fields.claim,
+      provenanceRole: 'origin',
+      required: true,
+    }),
+    ...input.claimAssets.map((asset) =>
+      fieldAssignments({
+        selections: input.selections,
+        subjectType: 'claim_asset',
+        subjectKey: `asset:${asset.selectionKey}`,
+        draft: asset,
+        fieldPaths: fields.asset,
+        provenanceRole: 'origin',
+        required: true,
+      }),
+    ),
+  ]);
+  const hasIdentityAttribution = result.assignments.some(
+    (assignment) =>
+      (assignment.subjectType === 'entity' || assignment.subjectType === 'location') &&
+      assignment.provenanceRole === 'attribution',
+  );
   return {
-    assignments: parts.flatMap((part) => part.assignments),
-    missingFields: [...new Set(parts.flatMap((part) => part.missingFields))],
+    assignments: result.assignments,
+    missingFields: hasIdentityAttribution
+      ? result.missingFields
+      : ['Existing identity attribution', ...result.missingFields],
   };
 }

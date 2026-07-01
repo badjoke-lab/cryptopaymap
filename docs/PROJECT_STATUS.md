@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07H — reviewer-facing field source controls for new canonical targets.
-- Branch: `work/p307h`.
-- Pull request: #56.
+- P3-07I — reviewer-facing field source controls for existing canonical targets.
+- Branch: work/p307i.
+- Pull request: #57.
 
 ## Latest completed work
 
@@ -32,30 +32,30 @@ P3-07 — Claim editor and canonical promotion
 - P3-07E completed through pull request #53.
 - P3-07F completed through pull request #54.
 - P3-07G completed through pull request #55.
-- Both promotion paths accept explicit field-level provenance plans and persist field paths atomically.
+- P3-07H completed through pull request #56.
+- New-target promotion now requires reviewer field source assignments and submits normalized origin provenance.
 
-## P3-07H in progress
+## P3-07I in progress
 
-- display supported Entity, Location, Claim, and Claim Asset fields
-- allow reviewers to assign exact Candidate sources to each factual field
-- select the reviewed Candidate source set by default for newly displayed fields
-- keep stable draft and Claim Asset identities while editing
-- reject submission when a non-empty factual field has no source assignment
-- include normalized field provenance assignments in the protected promotion request
+- display source controls for existing Entity, optional Location, new Claim, and Claim Assets
+- assign Candidate sources to existing identity fields with attribution provenance
+- assign Candidate sources to new Claim and Claim Asset fields with origin provenance
+- require at least one existing identity attribution
+- require complete origin coverage for non-empty new-record fields
+- keep Claim and Claim Asset identities stable while editing
+- include normalized field provenance assignments in the protected existing-target request
 - validate the controls with builder, component payload, runtime, type, test, and build checks
 
 ## Deferred within P3-07
 
-- existing-target reviewer field source controls
 - final P3-07 integration and handoff audit
 - live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete P3-07H CI and merge pull request #56.
-2. Add existing-target field source controls.
-3. Complete the P3-07 integration and handoff audit.
-4. Advance to P3-08 Evidence review.
+1. Complete P3-07I CI and merge pull request #57.
+2. Complete the P3-07 integration and handoff audit.
+3. Advance to P3-08 Evidence review.
 
 ## Blocked
 
