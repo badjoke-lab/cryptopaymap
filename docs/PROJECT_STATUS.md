@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-01
+**Last verified:** 2026-07-02
 
 ## Current phase
 
@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07G — field-level Candidate promotion provenance contract and persistence.
-- Branch: `work/p307g`.
-- Pull request: #55.
+- P3-07H — reviewer-facing field source controls for new canonical targets.
+- Branch: `work/p307h`.
+- Pull request: #56.
 
 ## Latest completed work
 
@@ -31,30 +31,29 @@ P3-07 — Claim editor and canonical promotion
 - P3-07D completed through pull request #52.
 - P3-07E completed through pull request #53.
 - P3-07F completed through pull request #54.
-- Candidate reviewers can now choose between a new canonical target and an existing canonical target through protected, version-pinned workspaces.
+- P3-07G completed through pull request #55.
+- Both promotion paths accept explicit field-level provenance plans and persist field paths atomically.
 
-## P3-07G in progress
+## P3-07H in progress
 
-- define bounded field provenance assignments for Entity, Location, Claim, and Claim Asset fields
-- restrict assignments to the exact Candidate source set
-- require origin role for newly created canonical fields
-- separate existing identity attribution from new Claim origin
-- require complete supported-field coverage whenever an explicit plan is supplied
-- normalize assignments for deterministic request fingerprints
-- persist `field_path` rows inside the same atomic Drizzle/Neon transaction
-- preserve record-level provenance and prior replay fingerprints when no plan is supplied
-- add contract, runtime, persistence, formatting, type, test, and migration-drift checks
+- display supported Entity, Location, Claim, and Claim Asset fields
+- allow reviewers to assign exact Candidate sources to each factual field
+- select the reviewed Candidate source set by default for newly displayed fields
+- keep stable draft and Claim Asset identities while editing
+- reject submission when a non-empty factual field has no source assignment
+- include normalized field provenance assignments in the protected promotion request
+- validate the controls with builder, component payload, runtime, type, test, and build checks
 
 ## Deferred within P3-07
 
-- reviewer-facing field source controls
+- existing-target reviewer field source controls
 - final P3-07 integration and handoff audit
 - live Cloudflare Access and live database verification
 
 ## Next
 
-1. Complete P3-07G CI and merge pull request #55.
-2. Add reviewer-facing field source controls.
+1. Complete P3-07H CI and merge pull request #56.
+2. Add existing-target field source controls.
 3. Complete the P3-07 integration and handoff audit.
 4. Advance to P3-08 Evidence review.
 
