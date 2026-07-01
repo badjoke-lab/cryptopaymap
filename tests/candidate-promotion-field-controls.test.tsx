@@ -38,7 +38,7 @@ function workspace(): CandidatePromotionWorkspaceResponse {
           id: sourceId,
           relationship: 'origin',
           sourceName: 'Official announcement',
-          sourceType: 'official_website',
+          sourceType: 'official_site',
           sourceActive: true,
           sourceUrl: 'https://example.test/source',
           archiveUrl: null,
@@ -81,7 +81,7 @@ afterEach(() => {
 describe('Candidate promotion field source controls', () => {
   it('sends explicit field provenance assignments with the promotion request', async () => {
     const fetchMock = vi.fn(
-      async () =>
+      async (_input: RequestInfo | URL, _init?: RequestInit) =>
         new Response(
           JSON.stringify({
             requestId: '70000000-0000-4000-8000-000000000001',
@@ -120,8 +120,8 @@ describe('Candidate promotion field source controls', () => {
     fireEvent.submit(form as HTMLFormElement);
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
-    const [, request] = fetchMock.mock.calls[0] ?? [];
-    const body = JSON.parse(String((request as RequestInit | undefined)?.body)) as {
+    const request = fetchMock.mock.calls[0]?.[1];
+    const body = JSON.parse(String(request?.body)) as {
       provenanceAssignments: Array<{
         subjectType: string;
         fieldPath: string;
