@@ -27,9 +27,7 @@ export const promotionProvenanceAssignmentsSchema = z
   .array(promotionProvenanceAssignmentSchema)
   .max(500);
 
-export type PromotionProvenanceAssignment = z.infer<
-  typeof promotionProvenanceAssignmentSchema
->;
+export type PromotionProvenanceAssignment = z.infer<typeof promotionProvenanceAssignmentSchema>;
 
 const allowedFields = {
   entity: ['name', 'legalName', 'websiteUrl', 'countryCode'],
@@ -57,13 +55,7 @@ const allowedFields = {
     'merchantReceives',
     'restrictions',
   ],
-  claim_asset: [
-    'assetId',
-    'networkId',
-    'paymentMethodId',
-    'contractAddress',
-    'notes',
-  ],
+  claim_asset: ['assetId', 'networkId', 'paymentMethodId', 'contractAddress', 'notes'],
 } as const satisfies Record<
   (typeof promotionProvenanceSubjectTypeValues)[number],
   readonly string[]
@@ -129,7 +121,9 @@ function validateBase(
         `${assignment.subjectType}:${assignment.subjectId} is not part of the reviewed promotion draft`,
       );
     }
-    if (!(allowedFields[assignment.subjectType] as readonly string[]).includes(assignment.fieldPath)) {
+    if (
+      !(allowedFields[assignment.subjectType] as readonly string[]).includes(assignment.fieldPath)
+    ) {
       issues.push(
         `${assignment.subjectType}.${assignment.fieldPath} is not an allowed provenance field`,
       );
@@ -184,10 +178,7 @@ function validateRequiredCoverage(
   provenanceRole: PromotionProvenanceAssignment['provenanceRole'],
 ): string[] {
   return requiredFields(subjectType, subject.value)
-    .filter(
-      (fieldPath) =>
-        !hasCoverage(assignments, subjectType, subject.id, fieldPath, provenanceRole),
-    )
+    .filter((fieldPath) => !hasCoverage(assignments, subjectType, subject.id, fieldPath, provenanceRole))
     .map(
       (fieldPath) =>
         `${subjectType}.${fieldPath} requires at least one ${provenanceRole} source assignment`,
@@ -215,9 +206,7 @@ export function validateNewTargetProvenanceAssignments(
     issues.push(...validateRequiredCoverage(assignments, 'location', context.location, 'origin'));
   }
   for (const claimAsset of context.claimAssets) {
-    issues.push(
-      ...validateRequiredCoverage(assignments, 'claim_asset', claimAsset, 'origin'),
-    );
+    issues.push(...validateRequiredCoverage(assignments, 'claim_asset', claimAsset, 'origin'));
   }
   return [...new Set(issues)];
 }
@@ -245,11 +234,11 @@ export function validateExistingTargetProvenanceAssignments(
     issues.push('existing-target linking requires at least one identity-field attribution');
   }
 
-  issues.push(...validateRequiredCoverage(assignments, 'acceptance_claim', context.claim, 'origin'));
+  issues.push(
+    ...validateRequiredCoverage(assignments, 'acceptance_claim', context.claim, 'origin'),
+  );
   for (const claimAsset of context.claimAssets) {
-    issues.push(
-      ...validateRequiredCoverage(assignments, 'claim_asset', claimAsset, 'origin'),
-    );
+    issues.push(...validateRequiredCoverage(assignments, 'claim_asset', claimAsset, 'origin'));
   }
   return [...new Set(issues)];
 }
