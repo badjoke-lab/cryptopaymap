@@ -23,7 +23,6 @@ import { createDrizzlePromotionRegistryBackend } from '../../../../../src/admin/
 import {
   candidateExistingTargetLinkInputSchema,
   createCandidateExistingTargetLinkService,
-  type CandidateExistingTargetLinkInput,
 } from '../../../../../src/admin/promotion/existing-target-link';
 import {
   CandidatePromotionWorkspaceError,
