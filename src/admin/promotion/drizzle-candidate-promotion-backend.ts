@@ -286,10 +286,7 @@ export function createDrizzleCandidatePromotionBackend(
       }
       const provenanceRows =
         command.provenanceAssignments.length > 0
-          ? expandPromotionProvenanceAssignments(
-              command.provenanceAssignments,
-              command.promotedAt,
-            )
+          ? expandPromotionProvenanceAssignments(command.provenanceAssignments, command.promotedAt)
           : subjects.flatMap((subject) =>
               command.sourceRecordIds.map((sourceRecordId) => ({
                 subjectType: subject.subjectType,
