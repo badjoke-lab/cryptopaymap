@@ -14,20 +14,20 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       Every normalized value is explicit and every new record remains hidden
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      The editor rechecks the Candidate version and complete source set before one atomic commit. Verification, Evidence decisions, media decisions, and publication remain unavailable.
+      The editor rechecks the Candidate version and complete source set before one atomic commit. Every non-empty factual field requires an explicit Candidate source assignment. Verification, Evidence decisions, media decisions, and publication remain unavailable.
     </p>
   </section>
 
   <section class="mt-8" aria-labelledby="promotion-workspace-title">
     <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <p class="m-0 text-sm font-semibold text-brand-700">P3-07C</p>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-07H</p>
         <h2 id="promotion-workspace-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
           Hidden canonical editor
         </h2>
       </div>
       <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-        Explicit commit only
+        Field-level source assignment
       </span>
     </div>
     <CandidatePromotionEditor client:load />
