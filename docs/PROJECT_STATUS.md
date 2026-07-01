@@ -12,9 +12,9 @@ P3-07 — Claim editor and canonical promotion
 
 ## Active work
 
-- P3-07I — reviewer-facing field source controls for existing canonical targets.
-- Branch: work/p307i.
-- Pull request: #57.
+- P3-07J — final Candidate promotion integration and handoff audit.
+- Branch: work/p307j.
+- Pull request: #58.
 
 ## Latest completed work
 
@@ -33,29 +33,30 @@ P3-07 — Claim editor and canonical promotion
 - P3-07F completed through pull request #54.
 - P3-07G completed through pull request #55.
 - P3-07H completed through pull request #56.
-- New-target promotion now requires reviewer field source assignments and submits normalized origin provenance.
+- P3-07I completed through pull request #57.
+- Both reviewer promotion choices now submit explicit field-level provenance plans.
 
-## P3-07I in progress
+## P3-07J in progress
 
-- display source controls for existing Entity, optional Location, new Claim, and Claim Assets
-- assign Candidate sources to existing identity fields with attribution provenance
-- assign Candidate sources to new Claim and Claim Asset fields with origin provenance
-- require at least one existing identity attribution
-- require complete origin coverage for non-empty new-record fields
-- keep Claim and Claim Asset identities stable while editing
-- include normalized field provenance assignments in the protected existing-target request
-- validate the controls with builder, component payload, runtime, type, test, and build checks
+- audit new-target and existing-target service boundaries together
+- assert hidden candidate Claim status and visibility on both paths
+- assert exact Candidate source sets reach both transaction commands
+- assert new-target origin versus existing identity attribution role separation
+- reject Confirmed or public Claims before backend mutation
+- add a machine-executed cross-path runtime check
+- document repository completion and deferred live verification boundaries
 
-## Deferred within P3-07
+## Deferred after repository completion
 
-- final P3-07 integration and handoff audit
-- live Cloudflare Access and live database verification
+- live Cloudflare Access verification
+- live database transaction verification
+- production deployment verification
 
 ## Next
 
-1. Complete P3-07I CI and merge pull request #57.
-2. Complete the P3-07 integration and handoff audit.
-3. Advance to P3-08 Evidence review.
+1. Complete P3-07J CI and merge pull request #58.
+2. Mark P3-07 repository implementation complete.
+3. Advance to P3-08 Evidence review and verification decisions.
 
 ## Blocked
 
