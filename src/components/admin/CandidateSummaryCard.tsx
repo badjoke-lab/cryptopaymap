@@ -3,6 +3,7 @@ import type { CandidateQueueItem } from '../../admin/candidates/queue';
 export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
   const detailHref = '/admin/candidates/detail/?id=' + item.id;
   const promotionHref = '/admin/candidates/promotion/?id=' + item.id;
+  const existingTargetHref = '/admin/candidates/existing-target/?id=' + item.id;
   const promotionAvailable =
     ['physical_place', 'online_service'].includes(item.candidateType) &&
     ['new', 'triaged'].includes(item.status) &&
@@ -48,9 +49,14 @@ export function CandidateSummaryCard({ item }: { item: CandidateQueueItem }) {
         </div>
       </dl>
       {promotionAvailable ? (
-        <a className="mt-5 inline-flex text-sm font-semibold text-brand-700" href={promotionHref}>
-          Open promotion editor
-        </a>
+        <div className="mt-5 flex flex-wrap gap-4 text-sm font-semibold">
+          <a className="text-brand-700" href={promotionHref}>
+            Create new canonical target
+          </a>
+          <a className="text-brand-700" href={existingTargetHref}>
+            Link existing canonical target
+          </a>
+        </div>
       ) : null}
     </article>
   );
