@@ -16,6 +16,7 @@ import type {
   CandidateExistingTargetLinkBackend,
   CandidateExistingTargetLinkCommand,
 } from './existing-target-link';
+import { expandPromotionProvenanceAssignments } from './provenance-plan';
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
@@ -448,30 +449,37 @@ export function createDrizzleExistingTargetLinkBackend(
           subjectId: row.id,
         })),
       ];
+      const provenanceRows =
+        command.provenanceAssignments.length > 0
+          ? expandPromotionProvenanceAssignments(
+              command.provenanceAssignments,
+              command.linkedAt,
+            )
+          : [
+              ...identitySubjects.flatMap((subject) =>
+                command.sourceRecordIds.map((sourceRecordId) => ({
+                  subjectType: subject.subjectType,
+                  subjectId: subject.subjectId,
+                  sourceRecordId,
+                  provenanceRole: 'attribution' as const,
+                  effectiveFrom: command.linkedAt,
+                })),
+              ),
+              ...originSubjects.flatMap((subject) =>
+                command.sourceRecordIds.map((sourceRecordId) => ({
+                  subjectType: subject.subjectType,
+                  subjectId: subject.subjectId,
+                  sourceRecordId,
+                  provenanceRole: 'origin' as const,
+                  effectiveFrom: command.linkedAt,
+                })),
+              ),
+            ];
 
       statements.push(
         database
           .insert(provenanceLinks)
-          .values([
-            ...identitySubjects.flatMap((subject) =>
-              command.sourceRecordIds.map((sourceRecordId) => ({
-                subjectType: subject.subjectType,
-                subjectId: subject.subjectId,
-                sourceRecordId,
-                provenanceRole: 'attribution' as const,
-                effectiveFrom: command.linkedAt,
-              })),
-            ),
-            ...originSubjects.flatMap((subject) =>
-              command.sourceRecordIds.map((sourceRecordId) => ({
-                subjectType: subject.subjectType,
-                subjectId: subject.subjectId,
-                sourceRecordId,
-                provenanceRole: 'origin' as const,
-                effectiveFrom: command.linkedAt,
-              })),
-            ),
-          ])
+          .values(provenanceRows)
           .onConflictDoNothing(),
         database
           .update(legacyPlaceIds)
