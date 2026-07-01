@@ -162,7 +162,8 @@ export async function preflightExistingTargetLink(
     .where(eq(sourceCandidates.id, command.candidateId))
     .limit(1);
   const candidate = candidateRows[0];
-  if (!candidate) throw new CandidatePromotionError('not_found', 'The source Candidate was not found.');
+  if (!candidate)
+    throw new CandidatePromotionError('not_found', 'The source Candidate was not found.');
   if (
     candidate.candidateType !== command.expectedCandidateType ||
     candidate.updatedAt.getTime() !== command.expectedCandidateUpdatedAt.getTime() ||
@@ -194,7 +195,8 @@ export async function preflightExistingTargetLink(
     .where(eq(entities.id, command.target.entityId))
     .limit(1);
   const entity = entityRows[0];
-  if (!entity) throw new CandidatePromotionError('not_found', 'The canonical Entity target was not found.');
+  if (!entity)
+    throw new CandidatePromotionError('not_found', 'The canonical Entity target was not found.');
   const expectedType =
     command.expectedCandidateType === 'physical_place' ? 'merchant' : 'online_service';
   if (
@@ -208,7 +210,10 @@ export async function preflightExistingTargetLink(
 
   if (command.expectedCandidateType === 'physical_place') {
     if (command.target.locationId === null || command.target.expectedLocationUpdatedAt === null) {
-      throw new CandidatePromotionError('not_found', 'The canonical Location target was not found.');
+      throw new CandidatePromotionError(
+        'not_found',
+        'The canonical Location target was not found.',
+      );
     }
     const locationRows = await database
       .select({
@@ -222,7 +227,11 @@ export async function preflightExistingTargetLink(
       .where(eq(locations.id, command.target.locationId))
       .limit(1);
     const location = locationRows[0];
-    if (!location) throw new CandidatePromotionError('not_found', 'The canonical Location target was not found.');
+    if (!location)
+      throw new CandidatePromotionError(
+        'not_found',
+        'The canonical Location target was not found.',
+      );
     if (
       location.entityId !== command.target.entityId ||
       location.updatedAt.getTime() !== command.target.expectedLocationUpdatedAt.getTime() ||
@@ -256,7 +265,10 @@ export async function preflightExistingTargetLink(
       ),
     )
     .orderBy(acceptanceClaims.id);
-  if (JSON.stringify(claimRows.map((row) => row.id)) !== JSON.stringify(command.target.expectedClaimIds)) {
+  if (
+    JSON.stringify(claimRows.map((row) => row.id)) !==
+    JSON.stringify(command.target.expectedClaimIds)
+  ) {
     conflict('The canonical target Claim set changed before linking.');
   }
 }

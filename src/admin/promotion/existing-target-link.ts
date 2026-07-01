@@ -20,7 +20,10 @@ const targetSchema = z
     expectedEntityUpdatedAt: z.iso.datetime({ offset: true }),
     locationId: z.uuid().nullable(),
     expectedLocationUpdatedAt: z.iso.datetime({ offset: true }).nullable(),
-    expectedCanonicalPath: z.string().trim().regex(/^\/(place|service)\/[^/?#]+$/),
+    expectedCanonicalPath: z
+      .string()
+      .trim()
+      .regex(/^\/(place|service)\/[^/?#]+$/),
     expectedClaimIds: z.array(z.uuid()).max(100),
   })
   .strict();
@@ -67,7 +70,9 @@ export interface CandidateExistingTargetLinkCommand {
   requestFingerprint: string;
 }
 export interface CandidateExistingTargetLinkBackend {
-  commitExistingTargetLink(command: CandidateExistingTargetLinkCommand): Promise<CandidatePromotionReceipt>;
+  commitExistingTargetLink(
+    command: CandidateExistingTargetLinkCommand,
+  ): Promise<CandidatePromotionReceipt>;
 }
 
 function stable(value: unknown): unknown {
@@ -176,7 +181,9 @@ function buildCommand(
   const sourceRecordIds = [...input.sourceRecordIds].sort();
   const expectedClaimIds = [...input.target.expectedClaimIds].sort();
   const claimAssets = [...input.claimAssets].sort((left, right) => left.id.localeCompare(right.id));
-  const provenanceAssignments = normalizePromotionProvenanceAssignments(input.provenanceAssignments);
+  const provenanceAssignments = normalizePromotionProvenanceAssignments(
+    input.provenanceAssignments,
+  );
   const requestFingerprint = JSON.stringify(
     stable({
       operation: 'link_existing_target',

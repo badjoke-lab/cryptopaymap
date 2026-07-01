@@ -178,7 +178,9 @@ function validateRequiredCoverage(
   provenanceRole: PromotionProvenanceAssignment['provenanceRole'],
 ): string[] {
   return requiredFields(subjectType, subject.value)
-    .filter((fieldPath) => !hasCoverage(assignments, subjectType, subject.id, fieldPath, provenanceRole))
+    .filter(
+      (fieldPath) => !hasCoverage(assignments, subjectType, subject.id, fieldPath, provenanceRole),
+    )
     .map(
       (fieldPath) =>
         `${subjectType}.${fieldPath} requires at least one ${provenanceRole} source assignment`,
@@ -191,13 +193,11 @@ export function validateNewTargetProvenanceAssignments(
 ): string[] {
   if (assignments === undefined || assignments.length === 0) return [];
   const issues = validateBase(assignments, context.sourceRecordIds, subjectIds(context));
-
   for (const assignment of assignments) {
     if (assignment.provenanceRole !== 'origin') {
       issues.push('new canonical records only accept origin field provenance');
     }
   }
-
   issues.push(
     ...validateRequiredCoverage(assignments, 'entity', context.entity, 'origin'),
     ...validateRequiredCoverage(assignments, 'acceptance_claim', context.claim, 'origin'),
@@ -217,7 +217,6 @@ export function validateExistingTargetProvenanceAssignments(
 ): string[] {
   if (assignments === undefined || assignments.length === 0) return [];
   const issues = validateBase(assignments, context.sourceRecordIds, subjectIds(context));
-
   let identityAttributionCount = 0;
   for (const assignment of assignments) {
     if (assignment.subjectType === 'entity' || assignment.subjectType === 'location') {
@@ -233,7 +232,6 @@ export function validateExistingTargetProvenanceAssignments(
   if (identityAttributionCount === 0) {
     issues.push('existing-target linking requires at least one identity-field attribution');
   }
-
   issues.push(
     ...validateRequiredCoverage(assignments, 'acceptance_claim', context.claim, 'origin'),
   );
