@@ -13,6 +13,36 @@ import {
 } from './decision';
 import { InMemoryEvidenceReviewBackend } from './in-memory-backend';
 
+function durableEvidenceReviewStatus(
+  value: string,
+): EvidenceReviewDecisionReceipt['evidenceReviewStatus'] {
+  if (value === 'pending' || value === 'accepted' || value === 'rejected') return value;
+  throw new EvidenceReviewDecisionError(
+    'backend_failure',
+    'The durable Evidence review receipt contains an unsupported Evidence status.',
+  );
+}
+
+function durableVerificationEventType(
+  value: string | null,
+): EvidenceReviewDecisionReceipt['verificationEventType'] {
+  if (
+    value === null ||
+    value === 'confirmed' ||
+    value === 'reconfirmed' ||
+    value === 'restored' ||
+    value === 'marked_stale' ||
+    value === 'ended' ||
+    value === 'rejected'
+  ) {
+    return value;
+  }
+  throw new EvidenceReviewDecisionError(
+    'backend_failure',
+    'The durable Evidence review receipt contains an unsupported verification event.',
+  );
+}
+
 export async function readEvidenceReviewDecision(
   database: CryptoPayMapDatabase,
   requestId: string,
@@ -52,10 +82,10 @@ export function replayEvidenceReviewDecision(
     disposition: row.disposition,
     finding: row.finding,
     claimAction: row.claimAction,
-    evidenceReviewStatus: row.evidenceReviewStatus,
+    evidenceReviewStatus: durableEvidenceReviewStatus(row.evidenceReviewStatus),
     claimStatus: row.claimStatus,
     claimVisibility: row.claimVisibility,
-    verificationEventType: row.verificationEventType,
+    verificationEventType: durableVerificationEventType(row.verificationEventType),
     decidedAt: row.decidedAt.toISOString(),
     state: 'replayed',
   };
