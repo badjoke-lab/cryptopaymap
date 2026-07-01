@@ -76,9 +76,7 @@ export interface InMemoryEvidenceReviewBackendOptions {
 function cloneState(state: EvidenceReviewState): EvidenceReviewState {
   return {
     claims: new Map([...state.claims].map(([id, claim]) => [id, structuredClone(claim)])),
-    evidence: new Map(
-      [...state.evidence].map(([id, evidence]) => [id, structuredClone(evidence)]),
-    ),
+    evidence: new Map([...state.evidence].map(([id, evidence]) => [id, structuredClone(evidence)])),
     decisionsByRequest: new Map(
       [...state.decisionsByRequest].map(([id, decision]) => [id, structuredClone(decision)]),
     ),
@@ -261,7 +259,8 @@ export class InMemoryEvidenceReviewBackend implements EvidenceReviewDecisionBack
     if (claim === undefined || claim.deletedAt !== null) {
       throw new EvidenceReviewDecisionError('not_found', 'The Claim record was not found.');
     }
-    if (evidence.claimId !== claim.id) conflict('The Evidence no longer belongs to the reviewed Claim.');
+    if (evidence.claimId !== claim.id)
+      conflict('The Evidence no longer belongs to the reviewed Claim.');
     if (
       evidence.updatedAt !== command.expectedEvidenceUpdatedAt.toISOString() ||
       evidence.reviewStatus !== command.expectedEvidenceReviewStatus

@@ -30,9 +30,7 @@ const context: EvidenceReviewMutationContext = {
   capabilities: ['evidence:review'],
 };
 
-function claim(
-  status: 'candidate' | 'confirmed' | 'stale' | 'ended' | 'rejected' = 'candidate',
-) {
+function claim(status: 'candidate' | 'confirmed' | 'stale' | 'ended' | 'rejected' = 'candidate') {
   return {
     id: ids.claim,
     claimStatus: status,
@@ -91,9 +89,7 @@ function backend(options: Partial<InMemoryEvidenceReviewBackendOptions> = {}) {
   });
 }
 
-function input(
-  overrides: Partial<EvidenceReviewDecisionInput> = {},
-): EvidenceReviewDecisionInput {
+function input(overrides: Partial<EvidenceReviewDecisionInput> = {}): EvidenceReviewDecisionInput {
   return {
     evidenceId: ids.evidence,
     claimId: ids.claim,

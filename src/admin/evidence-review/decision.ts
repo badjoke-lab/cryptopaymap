@@ -123,7 +123,8 @@ export const evidenceReviewDecisionInputSchema = z
         context.addIssue({
           code: 'custom',
           path: ['claimAction'],
-          message: 'Contradicting Evidence may only stale, end, reject, or leave the Claim unchanged.',
+          message:
+            'Contradicting Evidence may only stale, end, reject, or leave the Claim unchanged.',
         });
       }
     }
