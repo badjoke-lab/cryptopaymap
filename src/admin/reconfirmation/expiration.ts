@@ -41,9 +41,7 @@ export const reconfirmationExpirationInputSchema = z
     }
   });
 
-export type ReconfirmationExpirationContext = z.infer<
-  typeof reconfirmationExpirationContextSchema
->;
+export type ReconfirmationExpirationContext = z.infer<typeof reconfirmationExpirationContextSchema>;
 export type ReconfirmationExpirationInput = z.infer<typeof reconfirmationExpirationInputSchema>;
 
 export interface ReconfirmationExpirationCommand {
@@ -138,9 +136,7 @@ function command(
   };
 }
 
-export function createReconfirmationExpirationService(
-  backend: ReconfirmationExpirationBackend,
-) {
+export function createReconfirmationExpirationService(backend: ReconfirmationExpirationBackend) {
   return {
     async expire(
       context: ReconfirmationExpirationContext,
