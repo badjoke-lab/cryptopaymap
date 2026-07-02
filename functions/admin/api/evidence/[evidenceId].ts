@@ -8,7 +8,7 @@ import {
 import {
   EvidenceReviewDecisionError,
   createEvidenceReviewDecisionService,
-  evidenceReviewDecisionInputSchema,
+  type EvidenceReviewDecisionInput,
   type EvidenceReviewDecisionReceipt,
   type EvidenceReviewMutationContext,
 } from '../../../../src/admin/evidence-review/decision';
@@ -36,11 +36,6 @@ interface EvidenceDetailPagesContext {
   data: Record<string, unknown>;
   waitUntil(promise: Promise<unknown>): void;
 }
-
-const evidenceReviewDecisionRequestSchema = evidenceReviewDecisionInputSchema.omit({
-  evidenceId: true,
-  decidedAt: true,
-});
 
 type DetailLoader = (
   context: EvidenceReviewReadContext,
@@ -107,21 +102,16 @@ async function writeDecisionToDatabase(
   environment: EvidenceDetailEnvironment,
   decidedAt: Date,
 ) {
-  const parsed = evidenceReviewDecisionRequestSchema.safeParse(body);
-  if (!parsed.success) {
-    throw new EvidenceReviewDecisionError(
-      'invalid_decision',
-      'The Evidence review request body is invalid.',
-      parsed.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
-    );
-  }
-  return createEvidenceReviewDecisionService(
-    createDrizzleEvidenceReviewBackend(createDatabase(databaseUrl(environment))),
-  ).decide(context, {
-    ...parsed.data,
+  const input = {
+    ...(body !== null && typeof body === 'object' && !Array.isArray(body)
+      ? (body as Record<string, unknown>)
+      : {}),
     evidenceId,
     decidedAt: decidedAt.toISOString(),
-  });
+  } as EvidenceReviewDecisionInput;
+  return createEvidenceReviewDecisionService(
+    createDrizzleEvidenceReviewBackend(createDatabase(databaseUrl(environment))),
+  ).decide(context, input);
 }
 
 function evidenceIdFromContext(pagesContext: EvidenceDetailPagesContext): string | null {
