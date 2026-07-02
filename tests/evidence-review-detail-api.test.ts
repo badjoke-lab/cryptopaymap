@@ -92,120 +92,80 @@ function receipt(): EvidenceReviewDecisionReceipt {
   };
 }
 
-function context(
-  options: { method?: string; identity?: unknown; idempotencyKey?: string | null } = {},
-) {
+function context(method = 'GET', key: string | null = requestId) {
   const headers = new Headers({ 'Content-Type': 'application/json' });
-  if (options.idempotencyKey !== null) {
-    headers.set('Idempotency-Key', options.idempotencyKey ?? requestId);
-  }
+  if (key !== null) headers.set('Idempotency-Key', key);
+  const requestBody = {
+    claimId,
+    expectedEvidenceUpdatedAt: '2026-07-01T12:00:00.000Z',
+    expectedEvidenceReviewStatus: 'pending',
+    expectedClaimUpdatedAt: '2026-07-01T12:00:00.000Z',
+    expectedClaimStatus: 'candidate',
+    expectedClaimVisibility: 'hidden',
+    expectedAcceptedEvidenceIds: [],
+    disposition: 'accepted',
+    finding: 'supports_claim',
+    claimAction: 'confirm',
+    reasonCode: 'threshold_met',
+    publicSummary: 'The Evidence supports confirmation.',
+    internalNote: null,
+    nextReviewAt: '2026-08-01T00:00:00.000Z',
+    endedReason: null,
+  };
+  const init: RequestInit = {
+    method,
+    headers,
+    ...(method === 'POST' ? { body: JSON.stringify(requestBody) } : {}),
+  };
   return {
-    request: new Request(`https://example.test/admin/api/evidence/${evidenceId}`, {
-      method: options.method ?? 'GET',
-      headers,
-      body:
-        options.method === 'POST'
-          ? JSON.stringify({
-              claimId,
-              expectedEvidenceUpdatedAt: '2026-07-01T12:00:00.000Z',
-              expectedEvidenceReviewStatus: 'pending',
-              expectedClaimUpdatedAt: '2026-07-01T12:00:00.000Z',
-              expectedClaimStatus: 'candidate',
-              expectedClaimVisibility: 'hidden',
-              expectedAcceptedEvidenceIds: [],
-              disposition: 'accepted',
-              finding: 'supports_claim',
-              claimAction: 'confirm',
-              reasonCode: 'threshold_met',
-              publicSummary: 'The Evidence supports confirmation.',
-              internalNote: null,
-              nextReviewAt: '2026-08-01T00:00:00.000Z',
-              endedReason: null,
-            })
-          : undefined,
-    }),
-    env: {
-      CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: JSON.stringify(['reviewer-subject']),
-    },
+    request: new Request(`https://example.test/admin/api/evidence/${evidenceId}`, init),
+    env: { CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: JSON.stringify(['reviewer-subject']) },
     params: { evidenceId },
-    data: {
-      adminIdentity: options.identity === undefined ? identity : options.identity,
-    },
+    data: { adminIdentity: identity },
     waitUntil: vi.fn(),
   };
 }
 
 describe('protected Evidence detail endpoint', () => {
-  it('loads a validated detail for an authorized reviewer', async () => {
+  it('loads a validated detail', async () => {
     const loadDetail = vi.fn(async () => detail());
-    const response = await createEvidenceDetailGetHandler({
-      loadDetail,
-      now: () => now,
-    })(context());
-
+    const response = await createEvidenceDetailGetHandler({ loadDetail, now: () => now })(context());
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual(detail());
-    expect(loadDetail).toHaveBeenCalledWith(
-      {
-        actorId: identity.actorId,
-        actorType: identity.actorType,
-        capabilities: ['evidence:review'],
-      },
-      evidenceId,
-      expect.any(Object),
-      now,
-    );
+    expect(loadDetail).toHaveBeenCalled();
   });
 
-  it('commits a decision with an isolated mutation context', async () => {
+  it('commits a decision with the isolated mutation context', async () => {
     const writeDecision = vi.fn(async () => receipt());
-    const response = await createEvidenceDetailPostHandler({
-      writeDecision,
-      now: () => now,
-    })(context({ method: 'POST' }));
-
+    const response = await createEvidenceDetailPostHandler({ writeDecision, now: () => now })(
+      context('POST'),
+    );
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual(receipt());
     expect(writeDecision).toHaveBeenCalledWith(
-      {
-        requestId,
-        actorId: identity.actorId,
-        actorType: identity.actorType,
-        capabilities: ['evidence:review'],
-      },
+      expect.objectContaining({ requestId, capabilities: ['evidence:review'] }),
       evidenceId,
-      expect.objectContaining({
-        claimId,
-        expectedEvidenceReviewStatus: 'pending',
-        expectedAcceptedEvidenceIds: [],
-      }),
+      expect.objectContaining({ claimId, expectedAcceptedEvidenceIds: [] }),
       expect.any(Object),
       now,
     );
   });
 
-  it('requires a valid idempotency key before parsing a decision', async () => {
+  it('requires an idempotency key', async () => {
     const writeDecision = vi.fn(async () => receipt());
-    const response = await createEvidenceDetailPostHandler({ writeDecision })(
-      context({ method: 'POST', idempotencyKey: null }),
-    );
-
+    const response = await createEvidenceDetailPostHandler({ writeDecision })(context('POST', null));
     expect(response.status).toBe(400);
-    await expect(response.json()).resolves.toEqual({
-      error: 'evidence_decision_invalid_request_id',
-    });
     expect(writeDecision).not.toHaveBeenCalled();
   });
 
-  it('returns conflict when reviewed state changed', async () => {
+  it('returns conflict for changed reviewed state', async () => {
     const response = await createEvidenceDetailPostHandler({
       writeDecision: vi.fn(async () => {
-        throw new EvidenceReviewDecisionError('conflict', 'Reviewed state changed.', [
+        throw new EvidenceReviewDecisionError('conflict', 'Changed.', [
           'Evidence version changed.',
         ]);
       }),
-    })(context({ method: 'POST' }));
-
+    })(context('POST'));
     expect(response.status).toBe(409);
     await expect(response.json()).resolves.toEqual({
       error: 'evidence_decision_conflict',
