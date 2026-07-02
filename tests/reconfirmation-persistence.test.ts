@@ -2,14 +2,12 @@ import { describe, expect, it, vi } from 'vitest';
 import { createDrizzleReconfirmationExpirationBackend } from '../src/admin/reconfirmation/drizzle-backend';
 import { createDrizzleReconfirmationQueueBackend } from '../src/admin/reconfirmation/drizzle-queue-backend';
 import { replayReconfirmationExpiration } from '../src/admin/reconfirmation/drizzle-state';
-import {
-  reconfirmationExpirations,
-  verificationEventTypeValues,
-} from '../src/db/schema';
+import type { ReconfirmationQueueItem } from '../src/admin/reconfirmation/queue';
 import {
   loadReconfirmationQueue,
   type ReconfirmationQueueBackend,
 } from '../src/admin/reconfirmation/workspace';
+import { reconfirmationExpirations, verificationEventTypeValues } from '../src/db/schema';
 
 const claimId = '10000000-0000-4000-8000-000000000001';
 const requestId = '20000000-0000-4000-8000-000000000001';
@@ -19,18 +17,10 @@ describe('reconfirmation persistence foundation', () => {
   it('exposes durable request, Claim guard, event, and replay columns', () => {
     expect(reconfirmationExpirations.requestId.name).toBe('request_id');
     expect(reconfirmationExpirations.claimId.name).toBe('claim_id');
-    expect(reconfirmationExpirations.expectedClaimUpdatedAt.name).toBe(
-      'expected_claim_updated_at',
-    );
-    expect(reconfirmationExpirations.expectedNextReviewAt.name).toBe(
-      'expected_next_review_at',
-    );
-    expect(reconfirmationExpirations.verificationEventId.name).toBe(
-      'verification_event_id',
-    );
-    expect(reconfirmationExpirations.requestFingerprint.name).toBe(
-      'request_fingerprint',
-    );
+    expect(reconfirmationExpirations.expectedClaimUpdatedAt.name).toBe('expected_claim_updated_at');
+    expect(reconfirmationExpirations.expectedNextReviewAt.name).toBe('expected_next_review_at');
+    expect(reconfirmationExpirations.verificationEventId.name).toBe('verification_event_id');
+    expect(reconfirmationExpirations.requestFingerprint.name).toBe('request_fingerprint');
   });
 
   it('exports the production expiration and queue backends', () => {
@@ -66,25 +56,21 @@ describe('reconfirmation persistence foundation', () => {
   });
 
   it('validates a bounded queue response from the persistence boundary', async () => {
+    const queueItem: ReconfirmationQueueItem = {
+      id: claimId,
+      claimStatus: 'confirmed',
+      visibility: 'public',
+      lastConfirmedAt: '2026-01-01T00:00:00.000Z',
+      nextReviewAt: '2026-07-01T00:00:00.000Z',
+      updatedAt: '2026-06-01T00:00:00.000Z',
+      queueReason: 'overdue',
+      recommendedAction: 'mark_stale',
+      dueAt: '2026-07-01T00:00:00.000Z',
+      daysUntilReview: -2,
+      priority: 0,
+    };
     const backend: ReconfirmationQueueBackend = {
-      loadQueue: vi.fn(async () => ({
-        items: [
-          {
-            id: claimId,
-            claimStatus: 'confirmed',
-            visibility: 'public',
-            lastConfirmedAt: '2026-01-01T00:00:00.000Z',
-            nextReviewAt: '2026-07-01T00:00:00.000Z',
-            updatedAt: '2026-06-01T00:00:00.000Z',
-            queueReason: 'overdue',
-            recommendedAction: 'mark_stale',
-            dueAt: '2026-07-01T00:00:00.000Z',
-            daysUntilReview: -2,
-            priority: 0,
-          },
-        ],
-        hasMore: false,
-      })),
+      loadQueue: vi.fn(async () => ({ items: [queueItem], hasMore: false })),
     };
 
     await expect(
