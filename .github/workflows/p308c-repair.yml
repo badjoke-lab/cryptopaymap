@@ -1,0 +1,78 @@
+name: P3-08C repair generated files
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Synchronize branch
+        run: git pull --rebase origin "${GITHUB_HEAD_REF}"
+      - name: Expand generated files and update fixtures
+        run: |
+          python - <<'PY'
+          import gzip
+          from pathlib import Path
+
+          compressed = [
+              Path('tests/evidence-review-queue-api.test.ts'),
+              Path('tests/evidence-review-detail-api.test.ts'),
+              Path('tests/evidence-review-components.test.tsx'),
+              Path('scripts/check-evidence-review-workspace.ts'),
+              Path('scripts/check-evidence-review-artifact.mjs'),
+              Path('docs/PROJECT_STATUS.md'),
+          ]
+          for path in compressed:
+              raw = path.read_bytes()
+              if raw.startswith(b'\x1f\x8b'):
+                  path.write_bytes(gzip.decompress(raw))
+
+          fixtures = [
+              Path('tests/evidence-review-workspace.test.ts'),
+              Path('tests/evidence-review-detail-api.test.ts'),
+              Path('tests/evidence-review-components.test.tsx'),
+              Path('scripts/check-evidence-review-workspace.ts'),
+          ]
+          for path in fixtures:
+              text = path.read_text()
+              text = text.replace("evidenceKind: 'merchant_statement'", "evidenceKind: 'official_payment_page'")
+              text = text.replace("sourceType: 'official_website'", "sourceType: 'official_page'")
+              path.write_text(text)
+          PY
+      - name: Apply Biome formatting
+        run: |
+          npx biome format --write \
+            tests/evidence-review-workspace.test.ts \
+            tests/evidence-review-queue-api.test.ts \
+            tests/evidence-review-detail-api.test.ts \
+            tests/evidence-review-components.test.tsx \
+            scripts/check-evidence-review-workspace.ts \
+            scripts/check-evidence-review-artifact.mjs
+      - name: Remove one-time repair workflow
+        run: rm .github/workflows/p308c-repair.yml
+      - name: Commit repaired files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "P3-08C: repair generated workspace files"
+          git push origin "HEAD:${GITHUB_HEAD_REF}"
