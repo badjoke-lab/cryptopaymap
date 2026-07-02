@@ -1,12 +1,18 @@
 name: P3-09B finalize persistence
 
 on:
+  push:
+    branches:
+      - work/p309b
   pull_request:
     branches:
       - main
 
 permissions:
   contents: write
+
+env:
+  TARGET_BRANCH: ${{ github.head_ref || github.ref_name }}
 
 jobs:
   finalize:
@@ -16,7 +22,7 @@ jobs:
       - name: Check out source branch
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.head_ref }}
+          ref: ${{ env.TARGET_BRANCH }}
           fetch-depth: 0
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -26,7 +32,7 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
       - name: Synchronize branch
-        run: git pull --rebase origin "${GITHUB_HEAD_REF}"
+        run: git pull --rebase origin "${TARGET_BRANCH}"
       - name: Restore persistence runtime check
         run: |
           echo 'aW1wb3J0IHsgY3JlYXRlRHJpenpsZVJlY29uZmlybWF0aW9uRXhwaXJhdGlvbkJhY2tlbmQgfSBmcm9tICcuLi9zcmMvYWRtaW4vcmVjb25maXJtYXRpb24vZHJpenpsZS1iYWNrZW5kJzsKaW1wb3J0IHsgY3JlYXRlRHJpenpsZVJlY29uZmlybWF0aW9uUXVldWVCYWNrZW5kIH0gZnJvbSAnLi4vc3JjL2FkbWluL3JlY29uZmlybWF0aW9uL2RyaXp6bGUtcXVldWUtYmFja2VuZCc7CmltcG9ydCB7IHJlY29uZmlybWF0aW9uRXhwaXJhdGlvbnMgfSBmcm9tICcuLi9zcmMvZGIvc2NoZW1hJzsKCmlmIChyZWNvbmZpcm1hdGlvbkV4cGlyYXRpb25zLnJlcXVlc3RJZC5uYW1lICE9PSAncmVxdWVzdF9pZCcpIHsKICB0aHJvdyBuZXcgRXJyb3IoJ01pc3NpbmcgZHVyYWJsZSByZXF1ZXN0IElELicpOwp9CmlmIChyZWNvbmZpcm1hdGlvbkV4cGlyYXRpb25zLnJlcXVlc3RGaW5nZXJwcmludC5uYW1lICE9PSAncmVxdWVzdF9maW5nZXJwcmludCcpIHsKICB0aHJvdyBuZXcgRXJyb3IoJ01pc3NpbmcgcmVwbGF5IGZpbmdlcnByaW50LicpOwp9CmlmICh0eXBlb2YgY3JlYXRlRHJpenpsZVJlY29uZmlybWF0aW9uRXhwaXJhdGlvbkJhY2tlbmQgIT09ICdmdW5jdGlvbicpIHsKICB0aHJvdyBuZXcgRXJyb3IoJ01pc3NpbmcgZHVyYWJsZSBiYWNrZW5kLicpOwp9CmlmICh0eXBlb2YgY3JlYXRlRHJpenpsZVJlY29uZmlybWF0aW9uUXVldWVCYWNrZW5kICE9PSAnZnVuY3Rpb24nKSB7CiAgdGhyb3cgbmV3IEVycm9yKCdNaXNzaW5nIHF1ZXVlIGJhY2tlbmQuJyk7Cn0KCmNvbnNvbGUubG9nKCdSZWNvbmZpcm1hdGlvbiBwZXJzaXN0ZW5jZSBjaGVja3MgcGFzc2VkLicpOwo=' | base64 --decode > scripts/check-reconfirmation-persistence.ts
@@ -76,8 +82,7 @@ P3-09B adds durable expiration receipts, Drizzle and Neon transaction guards, at
               raise SystemExit('Implementation plan handoff block was not found.')
           plan.write_text(text.replace(old, new, 1))
 
-          status = Path('docs/PROJECT_STATUS.md')
-          status.write_text('''# CryptoPayMap project status
+          Path('docs/PROJECT_STATUS.md').write_text('''# CryptoPayMap project status
 
 **Last verified:** 2026-07-03
 
@@ -93,7 +98,7 @@ P3-09 — Status transitions and reconfirmation queue
 
 - P3-09B — durable expiration persistence and bounded database queue.
 - Branch: `work/p309b`.
-- Pull request: active draft.
+- Pull request: #65.
 
 ## Latest completed work
 
@@ -162,4 +167,4 @@ The actual main branch, merged pull requests, and CI results are authoritative.
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "P3-09B: finalize durable reconfirmation persistence"
-          git push origin "HEAD:${GITHUB_HEAD_REF}"
+          git push origin "HEAD:${TARGET_BRANCH}"
