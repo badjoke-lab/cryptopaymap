@@ -3,6 +3,7 @@ import {
   loadEvidenceReviewQueue,
   parseEvidenceReviewQueueQuery,
   type EvidenceReviewDetailResponse,
+  type EvidenceReviewQueueItem,
   type EvidenceReviewReadContext,
   type EvidenceReviewWorkspaceBackend,
 } from '../src/admin/evidence-review/workspace';
@@ -69,9 +70,29 @@ const detail: EvidenceReviewDetailResponse = {
   },
 };
 
+const queueItem: EvidenceReviewQueueItem = {
+  id: detail.evidence.id,
+  claimId: detail.evidence.claimId,
+  claimStatus: detail.evidence.claimStatus,
+  claimVisibility: detail.evidence.claimVisibility,
+  evidenceKind: detail.evidence.evidenceKind,
+  evidenceClass: detail.evidence.evidenceClass,
+  sourceType: detail.evidence.sourceType,
+  originRole: detail.evidence.originRole,
+  polarity: detail.evidence.polarity,
+  reviewStatus: detail.evidence.reviewStatus,
+  visibility: detail.evidence.visibility,
+  sourceName: detail.evidence.sourceName,
+  sourceUrl: detail.evidence.sourceUrl,
+  observedAt: detail.evidence.observedAt,
+  publishedAt: detail.evidence.publishedAt,
+  summary: detail.evidence.summary,
+  updatedAt: detail.evidence.updatedAt,
+};
+
 const backend: EvidenceReviewWorkspaceBackend = {
   async loadQueue() {
-    return { items: [detail.evidence], hasMore: false };
+    return { items: [queueItem], hasMore: false };
   },
   async loadDetail() {
     return detail;
