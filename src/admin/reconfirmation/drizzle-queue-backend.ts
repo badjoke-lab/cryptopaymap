@@ -9,9 +9,7 @@ export function createDrizzleReconfirmationQueueBackend(
 ): ReconfirmationQueueBackend {
   return {
     async loadQueue(query, asOf) {
-      const dueSoonCutoff = new Date(
-        asOf.getTime() + query.dueSoonDays * 86_400_000,
-      );
+      const dueSoonCutoff = new Date(asOf.getTime() + query.dueSoonDays * 86_400_000);
       const priority = sql<number>`case
         when ${acceptanceClaims.claimStatus} = 'confirmed'
           and ${acceptanceClaims.nextReviewAt} is not null

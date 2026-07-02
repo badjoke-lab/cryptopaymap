@@ -1,10 +1,6 @@
 import { eq } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
-import {
-  acceptanceClaims,
-  reconfirmationExpirations,
-  verificationEvents,
-} from '../../db/schema';
+import { acceptanceClaims, reconfirmationExpirations, verificationEvents } from '../../db/schema';
 import {
   ReconfirmationExpirationError,
   type ReconfirmationExpirationBackend,
