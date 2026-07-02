@@ -105,12 +105,7 @@ const loadedQueue = await loadEvidenceReviewQueue(
   { reviewStatus: 'pending', limit: 25 },
   decidedAt,
 );
-const loadedDetail = await loadEvidenceReviewDetail(
-  context,
-  workspace,
-  evidenceId,
-  decidedAt,
-);
+const loadedDetail = await loadEvidenceReviewDetail(context, workspace, evidenceId, decidedAt);
 
 const store = new InMemoryEvidenceReviewBackend({
   claims: [
