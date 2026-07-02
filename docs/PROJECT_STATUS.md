@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-02
+**Last verified:** 2026-07-03
 
 ## Current phase
 
@@ -15,6 +15,7 @@ P3-09 — Status transitions and reconfirmation queue
 - P3-09A — reconfirmation queue policy and overdue review-window transition contract.
 - Branch: `work/p309a`.
 - Pull request: #64.
+- Status: final CI validation after formatting.
 
 ## Latest completed work
 
@@ -29,7 +30,7 @@ P3-09 — Status transitions and reconfirmation queue
 - P3-08 completed through pull request #63.
 - Closed draft pull request #61 was superseded by merged pull request #62 without losing implementation.
 
-## P3-09A in progress
+## P3-09A in final validation
 
 - classify overdue, missing-deadline, stale, and due-soon Claims without mutation
 - exclude Claims outside the reconfirmation queue boundary
