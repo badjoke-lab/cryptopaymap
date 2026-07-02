@@ -129,7 +129,9 @@ function context(method = 'GET', key: string | null = requestId) {
 describe('protected Evidence detail endpoint', () => {
   it('loads a validated detail', async () => {
     const loadDetail = vi.fn(async () => detail());
-    const response = await createEvidenceDetailGetHandler({ loadDetail, now: () => now })(context());
+    const response = await createEvidenceDetailGetHandler({ loadDetail, now: () => now })(
+      context(),
+    );
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual(detail());
     expect(loadDetail).toHaveBeenCalled();
@@ -153,7 +155,9 @@ describe('protected Evidence detail endpoint', () => {
 
   it('requires an idempotency key', async () => {
     const writeDecision = vi.fn(async () => receipt());
-    const response = await createEvidenceDetailPostHandler({ writeDecision })(context('POST', null));
+    const response = await createEvidenceDetailPostHandler({ writeDecision })(
+      context('POST', null),
+    );
     expect(response.status).toBe(400);
     expect(writeDecision).not.toHaveBeenCalled();
   });
