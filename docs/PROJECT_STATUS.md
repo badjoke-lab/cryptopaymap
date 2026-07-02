@@ -12,9 +12,9 @@ P3-08 — Evidence review and verification decisions
 
 ## Active work
 
-- P3-08C — protected Evidence review queue, detail workspace, and durable decision endpoint.
-- Branch: `work/p308c`.
-- Pull request: #61.
+- P3-08D — final Evidence review integration and handoff audit.
+- Branch: `work/p308d`.
+- Pull request: #63.
 
 ## Latest completed work
 
@@ -28,29 +28,30 @@ P3-08 — Evidence review and verification decisions
 - P3-07 completed through pull request #58.
 - P3-08A completed through pull request #59.
 - P3-08B completed through pull request #60.
-- Evidence review decisions now have isolated authorization, guarded actions, deterministic replay, durable audit records, rejected-event support, and atomic Drizzle persistence.
+- P3-08C completed through pull request #62. Closed draft pull request #61 was superseded without losing implementation.
+- Evidence review now has isolated authorization, guarded decisions, durable atomic persistence, protected queue and detail workspaces, and version-pinned mutation endpoints.
 
-## P3-08C in progress
+## P3-08D in progress
 
-- expose a bounded protected Evidence queue
-- expose one Evidence detail with its exact Claim version and accepted Evidence set
-- display the current Evidence threshold result
-- submit accepted, rejected, or held dispositions
-- submit explicit no-change, confirm, stale, end, or reject Claim actions
-- preserve Claim visibility
-- connect decisions to the P3-08B durable backend
-- validate queue, detail, authorization, API, component payload, runtime, build, and artifact boundaries
+- audit queue, detail, decision, replay, and conflict behavior together
+- assert exact Evidence and Claim versions reach the decision boundary
+- assert the complete accepted Evidence set remains fixed
+- assert Claim visibility remains unchanged
+- reject attempts to add visibility mutation fields
+- verify Evidence, Claim, verification event, and receipt state after commit
+- add a machine-executed cross-layer runtime check
+- document repository completion and live-verification deferrals
 
-## Deferred within P3-08
+## Deferred after repository completion
 
-- final P3-08 integration and handoff audit
 - live Cloudflare Access verification
 - live database transaction verification
+- production deployment verification
 
 ## Next
 
-1. Complete P3-08C CI and merge pull request #61.
-2. Complete the P3-08 integration and handoff audit.
+1. Complete P3-08D CI and merge pull request #63.
+2. Mark P3-08 repository implementation complete.
 3. Advance to P3-09 status transitions and reconfirmation queue.
 
 ## Blocked
