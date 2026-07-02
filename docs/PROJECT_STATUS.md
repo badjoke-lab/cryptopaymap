@@ -8,13 +8,13 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-08 — Evidence review and verification decisions
+P3-09 — Status transitions and reconfirmation queue
 
 ## Active work
 
-- P3-08D — final Evidence review integration and handoff audit.
-- Branch: `work/p308d`.
-- Pull request: #63.
+- P3-09A — reconfirmation queue policy and overdue review-window transition contract.
+- Branch: `work/p309a`.
+- Pull request: #64.
 
 ## Latest completed work
 
@@ -26,33 +26,33 @@ P3-08 — Evidence review and verification decisions
 - P3-05 completed through pull request #45.
 - P3-06 completed through pull requests #46 and #47.
 - P3-07 completed through pull request #58.
-- P3-08A completed through pull request #59.
-- P3-08B completed through pull request #60.
-- P3-08C completed through pull request #62. Closed draft pull request #61 was superseded without losing implementation.
-- Evidence review now has isolated authorization, guarded decisions, durable atomic persistence, protected queue and detail workspaces, and version-pinned mutation endpoints.
+- P3-08 completed through pull request #63.
+- Closed draft pull request #61 was superseded by merged pull request #62 without losing implementation.
 
-## P3-08D in progress
+## P3-09A in progress
 
-- audit queue, detail, decision, replay, and conflict behavior together
-- assert exact Evidence and Claim versions reach the decision boundary
-- assert the complete accepted Evidence set remains fixed
-- assert Claim visibility remains unchanged
-- reject attempts to add visibility mutation fields
-- verify Evidence, Claim, verification event, and receipt state after commit
-- add a machine-executed cross-layer runtime check
-- document repository completion and live-verification deferrals
+- classify overdue, missing-deadline, stale, and due-soon Claims without mutation
+- exclude Claims outside the reconfirmation queue boundary
+- keep queue recommendations separate from status mutation
+- require a system actor and exact Claim version, status, visibility, and deadline
+- transition only confirmed Claims with expired review windows to stale
+- preserve visibility and the expired review date
+- prove replay, conflict, early-execution rejection, and rollback behavior
+- add a machine-executed contract check
 
-## Deferred after repository completion
+## Deferred within P3-09
 
-- live Cloudflare Access verification
-- live database transaction verification
-- production deployment verification
+- durable expiration receipt and database transaction
+- bounded database reconfirmation queue
+- scheduled execution
+- protected reconfirmation workspace
+- live scheduler, Access, and database verification
 
 ## Next
 
-1. Complete P3-08D CI and merge pull request #63.
-2. Mark P3-08 repository implementation complete.
-3. Advance to P3-09 status transitions and reconfirmation queue.
+1. Complete P3-09A CI and merge pull request #64.
+2. Add durable persistence and the database queue in P3-09B.
+3. Add the protected reconfirmation workspace.
 
 ## Blocked
 
