@@ -1,0 +1,35 @@
+---
+import { EvidenceReviewQueue } from '../../components/admin/EvidenceReviewQueue';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Evidence review | CryptoPayMap Admin"
+  heading="Evidence review queue"
+  description="A protected queue for Evidence review."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="evidence-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Evidence review boundary</p>
+    <h2 id="evidence-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Exact review state
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Decisions use the reviewed Evidence version, Claim version, and accepted Evidence set. Claim visibility remains unchanged.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="evidence-queue-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-08C</p>
+        <h2 id="evidence-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Protected Evidence queue
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Version-pinned decisions
+      </span>
+    </div>
+    <EvidenceReviewQueue client:load />
+  </section>
+</AdminLayout>

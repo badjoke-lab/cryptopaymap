@@ -1,0 +1,49 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
+const pages = [
+  {
+    path: 'admin/evidence/index.html',
+    required: [
+      'Evidence review boundary',
+      'Exact review state',
+      'Protected Evidence queue',
+      'Version-pinned decisions',
+    ],
+  },
+  {
+    path: 'admin/evidence/detail/index.html',
+    required: [
+      'Decision boundary',
+      'Evidence, Claim, and accepted-set guards',
+      'Evidence review workspace',
+      'Atomic decision',
+    ],
+  },
+];
+
+for (const page of pages) {
+  const absolutePath = join('dist', page.path);
+  if (!existsSync(absolutePath)) {
+    throw new Error(`Missing Evidence review artifact: ${page.path}`);
+  }
+  const content = readFileSync(absolutePath, 'utf8');
+  for (const fragment of page.required) {
+    if (!content.includes(fragment)) {
+      throw new Error(`Missing Evidence review marker in ${page.path}: ${fragment}`);
+    }
+  }
+  for (const forbidden of [
+    'CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS',
+    'DATABASE_URL',
+    'requestFingerprint',
+    'internalNote',
+    'actorId',
+  ]) {
+    if (content.includes(forbidden)) {
+      throw new Error(`Private Evidence review marker found in ${page.path}: ${forbidden}`);
+    }
+  }
+}
+
+console.log('Evidence review artifact checks passed.');

@@ -12,9 +12,9 @@ P3-08 — Evidence review and verification decisions
 
 ## Active work
 
-- P3-08A — Evidence review authorization and atomic decision contract.
-- Branch: work/p308-tests.
-- Pull request: #59.
+- P3-08C — protected Evidence review queue, detail workspace, and durable decision endpoint.
+- Branch: `work/p308c`.
+- Pull request: #61.
 
 ## Latest completed work
 
@@ -26,33 +26,32 @@ P3-08 — Evidence review and verification decisions
 - P3-05 completed through pull request #45.
 - P3-06 completed through pull requests #46 and #47.
 - P3-07 completed through pull request #58.
-- Both Candidate promotion choices are hidden, source-pinned, atomic, and separated from verification and publication.
+- P3-08A completed through pull request #59.
+- P3-08B completed through pull request #60.
+- Evidence review decisions now have isolated authorization, guarded actions, deterministic replay, durable audit records, rejected-event support, and atomic Drizzle persistence.
 
-## P3-08A in progress
+## P3-08C in progress
 
-- define a separate `evidence:review` capability and subject allowlist
-- fix Evidence, Claim, and accepted-Evidence-set expectations in every decision
-- separate Evidence disposition, review finding, and explicit Claim action
-- require the existing Evidence threshold for confirmation
-- require accepted contradicting Evidence for stale, end, and reject actions
-- preserve Claim visibility during review decisions
-- provide deterministic request fingerprints and replay behavior
-- prove confirmation, hold, stale, conflict, invalid transition, and rollback behavior
-- add a machine-executed runtime contract check
+- expose a bounded protected Evidence queue
+- expose one Evidence detail with its exact Claim version and accepted Evidence set
+- display the current Evidence threshold result
+- submit accepted, rejected, or held dispositions
+- submit explicit no-change, confirm, stale, end, or reject Claim actions
+- preserve Claim visibility
+- connect decisions to the P3-08B durable backend
+- validate queue, detail, authorization, API, component payload, runtime, build, and artifact boundaries
 
 ## Deferred within P3-08
 
-- durable Evidence review decision table and migration
-- Drizzle and Neon atomic decision backend
-- rejected verification-event persistence representation
-- protected Evidence queue and reviewer workspace
-- live Cloudflare Access and database verification
+- final P3-08 integration and handoff audit
+- live Cloudflare Access verification
+- live database transaction verification
 
 ## Next
 
-1. Complete P3-08A CI and merge pull request #59.
-2. Add durable Evidence review persistence and migration in P3-08B.
-3. Add the protected Evidence review workspace.
+1. Complete P3-08C CI and merge pull request #61.
+2. Complete the P3-08 integration and handoff audit.
+3. Advance to P3-09 status transitions and reconfirmation queue.
 
 ## Blocked
 

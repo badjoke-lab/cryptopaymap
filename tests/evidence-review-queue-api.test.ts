@@ -1,0 +1,77 @@
+import { describe, expect, it, vi } from 'vitest';
+import { createEvidenceQueueHandler } from '../functions/admin/api/evidence';
+import type { EvidenceReviewQueueResponse } from '../src/admin/evidence-review/workspace';
+
+const identity = {
+  actorId: 'cloudflare-access:reviewer-subject',
+  actorType: 'human' as const,
+  subject: 'reviewer-subject',
+  email: 'reviewer@example.test',
+};
+const now = new Date('2026-07-02T00:00:00.000Z');
+
+function queue(): EvidenceReviewQueueResponse {
+  return {
+    generatedAt: now.toISOString(),
+    query: { reviewStatus: 'pending', limit: 25 },
+    items: [],
+    hasMore: false,
+  };
+}
+
+function context(overrides: { identity?: unknown; subjects?: string } = {}) {
+  return {
+    request: new Request('https://example.test/admin/api/evidence?reviewStatus=pending&limit=25'),
+    env: {
+      CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS:
+        overrides.subjects ?? JSON.stringify(['reviewer-subject']),
+    },
+    params: {},
+    data: {
+      adminIdentity: overrides.identity === undefined ? identity : overrides.identity,
+    },
+    waitUntil: vi.fn(),
+  };
+}
+
+describe('protected Evidence queue endpoint', () => {
+  it('returns a private bounded queue for an authorized reviewer', async () => {
+    const loadQueue = vi.fn(async () => queue());
+    const handler = createEvidenceQueueHandler({ loadQueue, now: () => now });
+
+    const response = await handler(context());
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get('cache-control')).toBe('private, no-store');
+    expect(response.headers.get('x-robots-tag')).toBe('noindex, nofollow, noarchive');
+    await expect(response.json()).resolves.toEqual(queue());
+    expect(loadQueue).toHaveBeenCalledWith(
+      {
+        actorId: identity.actorId,
+        actorType: identity.actorType,
+        capabilities: ['evidence:review'],
+      },
+      expect.any(URL),
+      expect.any(Object),
+      now,
+    );
+  });
+
+  it('denies missing identity before loading data', async () => {
+    const loadQueue = vi.fn(async () => queue());
+    const response = await createEvidenceQueueHandler({ loadQueue })(context({ identity: null }));
+
+    expect(response.status).toBe(403);
+    await expect(response.json()).resolves.toEqual({ error: 'evidence_queue_denied' });
+    expect(loadQueue).not.toHaveBeenCalled();
+  });
+
+  it('returns unavailable when Evidence review access is not configured', async () => {
+    const loadQueue = vi.fn(async () => queue());
+    const response = await createEvidenceQueueHandler({ loadQueue })(context({ subjects: '' }));
+
+    expect(response.status).toBe(503);
+    await expect(response.json()).resolves.toEqual({ error: 'evidence_queue_unavailable' });
+    expect(loadQueue).not.toHaveBeenCalled();
+  });
+});
