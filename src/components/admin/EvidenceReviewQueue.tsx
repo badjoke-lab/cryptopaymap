@@ -42,7 +42,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -149,7 +152,10 @@ export function EvidenceReviewQueue() {
 
   return (
     <div>
-      <form className="rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={submit}>
+      <form
+        className="rounded-card border border-border bg-surface p-5 shadow-sm"
+        onSubmit={submit}
+      >
         <div className="grid gap-4 md:grid-cols-3">
           <label className="grid gap-2 text-sm font-semibold text-ink">
             Review status

@@ -78,16 +78,16 @@ describe('Evidence review workspace contract', () => {
   it('parses bounded queue filters', () => {
     expect(
       parseEvidenceReviewQueueQuery(
-        new URL('https://example.test/admin/api/evidence?reviewStatus=pending&evidenceClass=a&limit=50'),
+        new URL(
+          'https://example.test/admin/api/evidence?reviewStatus=pending&evidenceClass=a&limit=50',
+        ),
       ),
     ).toEqual({ reviewStatus: 'pending', evidenceClass: 'a', limit: 50 });
   });
 
   it('rejects out-of-range queue limits', () => {
     expect(() =>
-      parseEvidenceReviewQueueQuery(
-        new URL('https://example.test/admin/api/evidence?limit=500'),
-      ),
+      parseEvidenceReviewQueueQuery(new URL('https://example.test/admin/api/evidence?limit=500')),
     ).toThrow(EvidenceReviewWorkspaceError);
   });
 
@@ -98,12 +98,7 @@ describe('Evidence review workspace contract', () => {
     };
 
     await expect(
-      loadEvidenceReviewQueue(
-        context,
-        backend,
-        { reviewStatus: 'pending', limit: 25 },
-        now,
-      ),
+      loadEvidenceReviewQueue(context, backend, { reviewStatus: 'pending', limit: 25 }, now),
     ).resolves.toEqual({
       generatedAt: now.toISOString(),
       query: { reviewStatus: 'pending', limit: 25 },
@@ -121,7 +116,9 @@ describe('Evidence review workspace contract', () => {
       loadDetail: vi.fn(async () => detail()),
     };
 
-    await expect(loadEvidenceReviewDetail(context, backend, 'not-a-uuid', now)).rejects.toMatchObject({
+    await expect(
+      loadEvidenceReviewDetail(context, backend, 'not-a-uuid', now),
+    ).rejects.toMatchObject({
       code: 'invalid_evidence_id',
     });
     expect(backend.loadDetail).not.toHaveBeenCalled();

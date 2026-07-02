@@ -41,7 +41,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -79,32 +82,35 @@ export function EvidenceReviewDetail() {
     setEvidenceId(new URLSearchParams(window.location.search).get('id'));
   }, []);
 
-  const load = useCallback(async (signal?: AbortSignal) => {
-    if (evidenceId === undefined) return;
-    if (!evidenceId) {
-      setState({ status: 'missing_id' });
-      return;
-    }
-    setState({ status: 'loading' });
-    try {
-      const response = await fetch(`/admin/api/evidence/${encodeURIComponent(evidenceId)}`, {
-        cache: 'no-store',
-        credentials: 'same-origin',
-        headers: { Accept: 'application/json' },
-        signal: signal ?? null,
-      });
-      if (response.status === 403) return setState({ status: 'denied' });
-      if (response.status === 404) return setState({ status: 'not_found' });
-      if (response.status === 400) return setState({ status: 'missing_id' });
-      if (response.status === 503) return setState({ status: 'unavailable' });
-      if (!response.ok) return setState({ status: 'error' });
-      const parsed = evidenceReviewDetailResponseSchema.safeParse(await response.json());
-      setState(parsed.success ? { status: 'ready', detail: parsed.data } : { status: 'error' });
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return;
-      setState({ status: 'error' });
-    }
-  }, [evidenceId]);
+  const load = useCallback(
+    async (signal?: AbortSignal) => {
+      if (evidenceId === undefined) return;
+      if (!evidenceId) {
+        setState({ status: 'missing_id' });
+        return;
+      }
+      setState({ status: 'loading' });
+      try {
+        const response = await fetch(`/admin/api/evidence/${encodeURIComponent(evidenceId)}`, {
+          cache: 'no-store',
+          credentials: 'same-origin',
+          headers: { Accept: 'application/json' },
+          signal: signal ?? null,
+        });
+        if (response.status === 403) return setState({ status: 'denied' });
+        if (response.status === 404) return setState({ status: 'not_found' });
+        if (response.status === 400) return setState({ status: 'missing_id' });
+        if (response.status === 503) return setState({ status: 'unavailable' });
+        if (!response.ok) return setState({ status: 'error' });
+        const parsed = evidenceReviewDetailResponseSchema.safeParse(await response.json());
+        setState(parsed.success ? { status: 'ready', detail: parsed.data } : { status: 'error' });
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setState({ status: 'error' });
+      }
+    },
+    [evidenceId],
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -123,10 +129,19 @@ export function EvidenceReviewDetail() {
   }
   if (state.status !== 'ready') {
     const copy = {
-      missing_id: ['Evidence identifier required', 'Return to the Evidence queue and choose a record.'],
-      denied: ['Evidence review access denied', 'This verified identity cannot read Evidence review data.'],
+      missing_id: [
+        'Evidence identifier required',
+        'Return to the Evidence queue and choose a record.',
+      ],
+      denied: [
+        'Evidence review access denied',
+        'This verified identity cannot read Evidence review data.',
+      ],
       not_found: ['Evidence not found', 'The requested Evidence record is unavailable or deleted.'],
-      unavailable: ['Evidence review unavailable', 'The protected service could not complete safely.'],
+      unavailable: [
+        'Evidence review unavailable',
+        'The protected service could not complete safely.',
+      ],
       error: ['Evidence response could not be verified', 'No unverified review data is displayed.'],
     } as const;
     const [title, description] = copy[state.status];
@@ -173,7 +188,9 @@ function EvidenceReviewWorkspace({
     evidence.polarity === 'contradicting' ? 'contradicts_claim' : 'supports_claim',
   );
   const [claimAction, setClaimAction] = useState<EvidenceReviewClaimAction>(
-    evidence.polarity === 'supporting' && claim.claimStatus !== 'confirmed' ? 'confirm' : 'no_change',
+    evidence.polarity === 'supporting' && claim.claimStatus !== 'confirmed'
+      ? 'confirm'
+      : 'no_change',
   );
   const [submitState, setSubmitState] = useState<SubmitState>({ status: 'idle' });
   const pending = evidence.reviewStatus === 'pending';
@@ -352,35 +369,65 @@ function EvidenceReviewWorkspace({
           ) : null}
         </div>
         <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
-          <div><dt className="font-semibold text-ink">Origin role</dt><dd className="mt-1 text-muted">{label(evidence.originRole)}</dd></div>
-          <div><dt className="font-semibold text-ink">Observed</dt><dd className="mt-1 text-muted">{evidence.observedAt ?? 'Not recorded'}</dd></div>
-          <div><dt className="font-semibold text-ink">Published</dt><dd className="mt-1 text-muted">{evidence.publishedAt ?? 'Not recorded'}</dd></div>
-          <div><dt className="font-semibold text-ink">Evidence version</dt><dd className="mt-1 text-muted">{evidence.updatedAt}</dd></div>
+          <div>
+            <dt className="font-semibold text-ink">Origin role</dt>
+            <dd className="mt-1 text-muted">{label(evidence.originRole)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Observed</dt>
+            <dd className="mt-1 text-muted">{evidence.observedAt ?? 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Published</dt>
+            <dd className="mt-1 text-muted">{evidence.publishedAt ?? 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Evidence version</dt>
+            <dd className="mt-1 text-muted">{evidence.updatedAt}</dd>
+          </div>
         </dl>
       </section>
 
       <section className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">Claim under review</p>
-            <h2 className="mt-2 text-xl font-semibold text-ink">{label(claim.claimStatus)} · {label(claim.routeType)}</h2>
+            <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+              Claim under review
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-ink">
+              {label(claim.claimStatus)} · {label(claim.routeType)}
+            </h2>
           </div>
           <span className="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-semibold text-muted">
             {label(claim.visibility)}
           </span>
         </div>
         <dl className="mt-5 grid gap-4 text-sm md:grid-cols-2">
-          <div><dt className="font-semibold text-ink">How to pay</dt><dd className="mt-1 text-muted">{claim.howToPay ?? 'Not recorded'}</dd></div>
-          <div><dt className="font-semibold text-ink">Merchant receives</dt><dd className="mt-1 text-muted">{label(claim.merchantReceives)}</dd></div>
-          <div><dt className="font-semibold text-ink">Acceptance scope</dt><dd className="mt-1 text-muted">{label(claim.acceptanceScope)}</dd></div>
-          <div><dt className="font-semibold text-ink">Claim version</dt><dd className="mt-1 text-muted">{claim.updatedAt}</dd></div>
+          <div>
+            <dt className="font-semibold text-ink">How to pay</dt>
+            <dd className="mt-1 text-muted">{claim.howToPay ?? 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Merchant receives</dt>
+            <dd className="mt-1 text-muted">{label(claim.merchantReceives)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Acceptance scope</dt>
+            <dd className="mt-1 text-muted">{label(claim.acceptanceScope)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Claim version</dt>
+            <dd className="mt-1 text-muted">{claim.updatedAt}</dd>
+          </div>
         </dl>
         <div className="mt-5 rounded-control border border-border bg-canvas p-4 text-sm">
           <p className="font-semibold text-ink">
             Accepted Evidence threshold: {detail.threshold.eligible ? 'Eligible' : 'Not eligible'}
           </p>
           <p className="mt-1 text-muted">
-            {detail.threshold.basis ? label(detail.threshold.basis) : 'No confirmation basis'} · {acceptedIds.length} accepted record{acceptedIds.length === 1 ? '' : 's'} before this decision
+            {detail.threshold.basis ? label(detail.threshold.basis) : 'No confirmation basis'} ·{' '}
+            {acceptedIds.length} accepted record{acceptedIds.length === 1 ? '' : 's'} before this
+            decision
           </p>
         </div>
       </section>
@@ -389,7 +436,8 @@ function EvidenceReviewWorkspace({
         <section className="rounded-card border border-brand-600 bg-brand-50 p-5 shadow-sm">
           <h2 className="text-xl font-semibold text-ink">Evidence decision</h2>
           <p className="mt-2 text-sm leading-6 text-muted">
-            The Evidence version, Claim version, visibility, status, and complete accepted Evidence set are fixed in this request. Claim visibility cannot be changed here.
+            The Evidence version, Claim version, visibility, status, and complete accepted Evidence
+            set are fixed in this request. Claim visibility cannot be changed here.
           </p>
         </section>
         <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
@@ -399,7 +447,9 @@ function EvidenceReviewWorkspace({
               <select
                 className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
                 value={disposition}
-                onChange={(event) => normalizeDisposition(event.target.value as EvidenceReviewDisposition)}
+                onChange={(event) =>
+                  normalizeDisposition(event.target.value as EvidenceReviewDisposition)
+                }
               >
                 <option value="accepted">Accepted</option>
                 <option value="rejected">Rejected</option>
@@ -425,11 +475,15 @@ function EvidenceReviewWorkspace({
                 className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
                 value={claimAction}
                 disabled={disposition !== 'accepted' || finding === 'insufficient'}
-                onChange={(event) => setClaimAction(event.target.value as EvidenceReviewClaimAction)}
+                onChange={(event) =>
+                  setClaimAction(event.target.value as EvidenceReviewClaimAction)
+                }
               >
                 <option value="no_change">No change</option>
                 {finding === 'supports_claim' ? <option value="confirm">Confirm</option> : null}
-                {finding === 'contradicts_claim' ? <option value="mark_stale">Mark stale</option> : null}
+                {finding === 'contradicts_claim' ? (
+                  <option value="mark_stale">Mark stale</option>
+                ) : null}
                 {finding === 'contradicts_claim' ? <option value="end">End</option> : null}
                 {finding === 'contradicts_claim' ? <option value="reject">Reject</option> : null}
               </select>
@@ -488,18 +542,27 @@ function EvidenceReviewWorkspace({
         </section>
 
         {!pending ? (
-          <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">
-            This Evidence is no longer pending. Reload the queue instead of submitting another decision.
+          <p
+            className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+            role="alert"
+          >
+            This Evidence is no longer pending. Reload the queue instead of submitting another
+            decision.
           </p>
         ) : null}
         {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
-          <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">
+          <p
+            className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+            role="alert"
+          >
             {submitState.message}
           </p>
         ) : null}
         <div className="flex flex-wrap gap-3">
           <Button type="submit" disabled={!pending || submitState.status === 'submitting'}>
-            {submitState.status === 'submitting' ? 'Committing decision…' : 'Commit Evidence decision'}
+            {submitState.status === 'submitting'
+              ? 'Committing decision…'
+              : 'Commit Evidence decision'}
           </Button>
           {submitState.status === 'conflict' ? (
             <Button type="button" variant="secondary" onClick={reload}>
