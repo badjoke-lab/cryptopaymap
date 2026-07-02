@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-01
+**Last updated:** 2026-07-02
 
 This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
 
@@ -81,8 +81,8 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-04 | Candidate queue | Completed | P3-01, P3-02 | #44 |
 | P3-05 | Candidate detail and provenance review | Completed | P3-04 | #45 |
 | P3-06 | Duplicate review and identity resolution | Completed | P3-05 | #46, #47 |
-| P3-07 | Claim editor and canonical promotion | In progress | P3-05, P3-06 | #48, #49, #51, #52, #53 active |
-| P3-08 | Evidence review and verification decisions | Planned | P3-07 | — |
+| P3-07 | Claim editor and canonical promotion | Completed | P3-05, P3-06 | #48, #49, #51–#58 |
+| P3-08 | Evidence review and verification decisions | Integration audit | P3-07 | #59, #60, #62, #63 active |
 | P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 | — |
 | P3-10 | Media review | Planned | P3-02, P2-10 | — |
 | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10 | — |
@@ -90,23 +90,29 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 
 ### Completed P3-07 deliveries
 
-P3-07A completed through pull request #48. It defines the separate Candidate promotion authorization and transaction contract, creates only hidden canonical records, preserves exact source provenance, resolves pending legacy mappings, proves replay and rollback behavior, and keeps verification and publication outside promotion.
+P3-07A through P3-07C established isolated promotion authorization, durable atomic new-target persistence, protected workspace reads, eligibility checks, and the hidden new-canonical-target editor.
 
-P3-07B completed through pull request #49. It adds the durable `candidate_promotion_decisions` audit record, reviewed migration set, and Drizzle/Neon atomic backend with Candidate and provenance guards, canonical insertion, legacy mapping resolution, durable replay, and conflict rollback.
+P3-07D through P3-07F established version-pinned existing-target linking, durable atomic persistence, protected target search, comparison, explicit selection, exact canonical-path checks, and exact existing Claim-set checks.
 
-P3-07C completed through pull request #51. It adds the protected promotion workspace, separate promotion allowlist, bounded Candidate and registry reads, explicit eligibility blocks, protected GET and POST endpoints, and the hidden new-canonical-target editor.
+P3-07G through P3-07I established the field-level provenance contract and reviewer controls for both paths, including origin and attribution role separation, stable draft identities, missing-source blocking, and protected request validation.
 
-P3-07D completed through pull request #52. It defines the alternative path for linking a Candidate to an existing canonical Entity or Location, fixes the reviewed target versions and Claim set, applies attribution provenance to reused identity records, and proves replay and rollback with an atomic in-memory backend.
+P3-07J completed the cross-path integration and handoff audit. P3-07 is repository-complete; live Access, database, and production verification remain deferred.
+
+### Completed P3-08 deliveries
+
+P3-08A established the isolated `evidence:review` authorization and strict decision contract, including Evidence disposition, finding, explicit Claim action, exact version and accepted-set guards, deterministic replay, threshold enforcement, and atomic reference behavior.
+
+P3-08B added durable `evidence_review_decisions` persistence, the rejected verification event, migration `0015_bored_lyja.sql`, transaction guards, atomic Drizzle and Neon persistence, and replayable audit receipts.
+
+P3-08C added the protected bounded Evidence queue, version-pinned detail workspace, accepted Evidence set and threshold display, protected GET and POST endpoints, reviewer decision UI, API and component tests, runtime checks, and protected artifact validation. Closed draft pull request #61 was superseded by merged pull request #62 without losing implementation.
 
 ### Current delivery
 
-P3-07E adds the durable Drizzle/Neon backend for existing-target linking. It rechecks the Candidate, source set, Entity, optional Location, canonical path, and existing Claim set inside one transaction, creates only the hidden candidate Claim and Claim Assets, preserves the attribution-versus-origin provenance boundary, resolves legacy mappings, updates Candidate links, and persists a replayable audit receipt.
+P3-08D performs the final cross-layer repository integration and handoff audit. It verifies the queue-to-detail-to-decision path, exact Evidence and Claim versions, the complete accepted Evidence set, Claim visibility preservation, strict rejection of visibility mutation fields, durable replay and conflict behavior, resulting Evidence and Claim state, verification events, runtime validation, and deferred live-verification boundaries.
 
-### Remaining P3-07 deliveries
+### Remaining P3-08 delivery
 
-- protected target search, comparison, and selection workspace
-- field-level provenance controls
-- final integration and handoff checks
+- merge the successful P3-08D integration audit and hand off to P3-09
 
 ## Phase 4 — Public core / MVP-A
 
