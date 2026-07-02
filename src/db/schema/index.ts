@@ -23,5 +23,6 @@ export * from './locations';
 export * from './media-legacy';
 export * from './networks';
 export * from './payment-registries';
+export * from './reconfirmation-expirations';
 export * from './source-provenance';
 export * from './verification-events';
