@@ -1,0 +1,35 @@
+---
+import { ExportReleaseQueue } from '../../components/admin/ExportReleaseQueue';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Export releases | CryptoPayMap Admin"
+  heading="Export release queue"
+  description="Review the current private public-data candidate and durable release decision history."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="export-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Public export boundary</p>
+    <h2 id="export-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Validate before release
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Candidate artifacts remain private. Every review reloads the server-controlled bundle, reruns the public allowlist, schema, leakage, manifest, hash, and version checks, and pins the exact snapshot digest.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="export-queue-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-11D</p>
+        <h2 id="export-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Protected release workspace
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Private candidate · durable history
+      </span>
+    </div>
+    <ExportReleaseQueue client:load />
+  </section>
+</AdminLayout>
