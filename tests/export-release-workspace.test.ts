@@ -78,9 +78,7 @@ describe('export release workspace', () => {
 
   it('rejects an unbounded queue query', () => {
     expect(() =>
-      parseExportReleaseQueueQuery(
-        new URL('https://example.test/admin/api/exports?limit=101'),
-      ),
+      parseExportReleaseQueueQuery(new URL('https://example.test/admin/api/exports?limit=101')),
     ).toThrow(ExportReleaseWorkspaceError);
   });
 
@@ -138,7 +136,13 @@ describe('export release workspace', () => {
   it('rejects an invalid or stale snapshot identity', async () => {
     const candidate = await prepareExportReleaseCandidate(artifacts);
     await expect(
-      loadExportReleaseDetail(context, source(), backend(candidate.snapshotDigest), 'invalid', asOf),
+      loadExportReleaseDetail(
+        context,
+        source(),
+        backend(candidate.snapshotDigest),
+        'invalid',
+        asOf,
+      ),
     ).rejects.toMatchObject({ code: 'invalid_digest' });
     await expect(
       loadExportReleaseDetail(

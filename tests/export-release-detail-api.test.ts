@@ -30,14 +30,15 @@ function detail(): ExportReleaseDetailResponse {
   };
 }
 
-function context(overrides: { identity?: unknown; actorIds?: string; digest?: string | null } = {}) {
+function context(
+  overrides: { identity?: unknown; actorIds?: string; digest?: string | null } = {},
+) {
   const value = overrides.digest === undefined ? digest : overrides.digest;
   const query = value === null ? '' : `?snapshotDigest=${value}`;
   return {
     request: new Request(`https://example.test/admin/api/export-detail${query}`),
     env: {
-      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
@@ -65,9 +66,7 @@ describe('protected export release detail endpoint', () => {
 
   it('rejects a missing snapshot digest before loading the candidate', async () => {
     const loadDetail = vi.fn(async () => detail());
-    const response = await createExportDetailGetHandler({ loadDetail })(
-      context({ digest: null }),
-    );
+    const response = await createExportDetailGetHandler({ loadDetail })(context({ digest: null }));
 
     expect(response.status).toBe(400);
     expect(loadDetail).not.toHaveBeenCalled();

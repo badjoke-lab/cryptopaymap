@@ -60,8 +60,7 @@ function context(
       ),
     }),
     env: {
-      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
@@ -124,9 +123,7 @@ describe('protected export release decision endpoint', () => {
 
   it('maps changed snapshots to a conflict', async () => {
     const writeDecision = vi.fn(async () => {
-      throw new ExportReleaseDecisionError('conflict', 'Snapshot changed.', [
-        'snapshotDigest',
-      ]);
+      throw new ExportReleaseDecisionError('conflict', 'Snapshot changed.', ['snapshotDigest']);
     });
     const response = await createExportDecisionPostHandler({ writeDecision })(context());
 

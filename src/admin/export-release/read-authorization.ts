@@ -1,8 +1,5 @@
 import type { AdminAccessIdentity } from '../access/identity';
-import {
-  ExportReleaseAuthorizationError,
-  type ExportReleaseActorPolicy,
-} from './authorization';
+import { ExportReleaseAuthorizationError, type ExportReleaseActorPolicy } from './authorization';
 import type { ExportReleaseReadContext } from './workspace';
 
 export function authorizeExportReleaseRead(

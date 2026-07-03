@@ -14,9 +14,7 @@ export interface ExportReleaseEnvironment extends ExportReleaseAuthorizationEnvi
   CPM_EXPORT_CANDIDATE_KEY?: string;
 }
 
-export function exportReleaseDatabase(
-  environment: ExportReleaseEnvironment,
-): CryptoPayMapDatabase {
+export function exportReleaseDatabase(environment: ExportReleaseEnvironment): CryptoPayMapDatabase {
   const result = requiredDatabaseEnvironmentSchema.safeParse({
     DATABASE_URL:
       typeof environment.DATABASE_URL === 'string' ? environment.DATABASE_URL : undefined,

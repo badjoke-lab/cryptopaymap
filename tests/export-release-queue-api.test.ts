@@ -24,8 +24,7 @@ function context(overrides: { identity?: unknown; actorIds?: string; url?: strin
   return {
     request: new Request(overrides.url ?? 'https://example.test/admin/api/exports?limit=25'),
     env: {
-      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {

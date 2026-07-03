@@ -51,7 +51,10 @@ export const exportCandidateKeySchema = z
   .min(1)
   .max(512)
   .regex(/^export-candidates\/[a-zA-Z0-9][a-zA-Z0-9._/-]*\.json$/)
-  .refine((value) => !value.includes('..'), 'Export candidate keys cannot contain parent segments.');
+  .refine(
+    (value) => !value.includes('..'),
+    'Export candidate keys cannot contain parent segments.',
+  );
 
 export function createR2ExportArtifactSource(
   bucket: ExportCandidateR2BucketLike,

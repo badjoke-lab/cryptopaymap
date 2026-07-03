@@ -6,7 +6,10 @@ import {
 } from '../src/admin/export-release/artifact-source';
 
 class FakeBucket implements ExportCandidateR2BucketLike {
-  constructor(private readonly value: unknown | null, private readonly invalidJson = false) {}
+  constructor(
+    private readonly value: unknown | null,
+    private readonly invalidJson = false,
+  ) {}
 
   async get() {
     if (this.value === null) return null;
@@ -44,14 +47,11 @@ describe('private export candidate source', () => {
   });
 
   it('rejects invalid or traversal candidate keys', () => {
+    expect(() => createR2ExportArtifactSource(new FakeBucket(null), '../current.json')).toThrow(
+      ExportArtifactSourceError,
+    );
     expect(() =>
-      createR2ExportArtifactSource(new FakeBucket(null), '../current.json'),
-    ).toThrow(ExportArtifactSourceError);
-    expect(() =>
-      createR2ExportArtifactSource(
-        new FakeBucket(null),
-        'export-candidates/../private.json',
-      ),
+      createR2ExportArtifactSource(new FakeBucket(null), 'export-candidates/../private.json'),
     ).toThrow(ExportArtifactSourceError);
   });
 
