@@ -6,9 +6,7 @@ type MediaReviewUiState = Pick<
   'reviewStatus' | 'purpose' | 'visibility'
 >;
 
-export function availableMediaReviewActions(
-  media: MediaReviewUiState,
-): MediaReviewAction[] {
+export function availableMediaReviewActions(media: MediaReviewUiState): MediaReviewAction[] {
   if (media.reviewStatus === 'pending') {
     if (['evidence', 'owner_verification'].includes(media.purpose)) {
       return ['approve_private', 'reject'];
