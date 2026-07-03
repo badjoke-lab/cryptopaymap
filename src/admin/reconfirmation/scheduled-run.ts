@@ -1,7 +1,4 @@
-import {
-  ReconfirmationExpirationError,
-  createReconfirmationExpirationService,
-} from './expiration';
+import { ReconfirmationExpirationError, createReconfirmationExpirationService } from './expiration';
 import {
   ScheduledReconfirmationError,
   scheduledReconfirmationBatchSchema,
@@ -28,10 +25,7 @@ export function createScheduledReconfirmationService(
       input: ScheduledReconfirmationInput,
     ): Promise<ScheduledReconfirmationRunReceipt> {
       const contextResult = scheduledReconfirmationContextSchema.safeParse(context);
-      if (
-        !contextResult.success ||
-        !contextResult.data.capabilities.includes('claim:expire')
-      ) {
+      if (!contextResult.success || !contextResult.data.capabilities.includes('claim:expire')) {
         throw new ScheduledReconfirmationError(
           'unauthorized',
           'The actor is not authorized to run scheduled reconfirmation.',
@@ -72,9 +66,7 @@ export function createScheduledReconfirmationService(
           'The expired Claim batch was invalid.',
           batchResult.success
             ? ['The backend returned more Claims than the requested limit.']
-            : batchResult.error.issues.map(
-                (issue) => `${issue.path.join('.')}: ${issue.message}`,
-              ),
+            : batchResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
         );
       }
       if (
