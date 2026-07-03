@@ -3,7 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { brotliDecompressSync } from 'node:zlib';
 
 const parts = await Promise.all(
-  Array.from({ length: 14 }, (_, index) =>
+  Array.from({ length: 53 }, (_, index) =>
     readFile(
       new URL(
         `../drizzle/snapshot-artifacts/0019_snapshot.json.br.hex.part${String(
