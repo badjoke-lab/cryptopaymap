@@ -74,10 +74,7 @@ function subjectCondition(subject: MediaReviewSubject) {
   }
 }
 
-export async function readMediaReviewDecision(
-  database: CryptoPayMapDatabase,
-  requestId: string,
-) {
+export async function readMediaReviewDecision(database: CryptoPayMapDatabase, requestId: string) {
   const rows = await database
     .select({
       requestId: mediaReviewDecisions.requestId,
@@ -231,7 +228,8 @@ export async function projectMediaReviewDecision(
       );
     }
     asset.reviewStatus = 'accepted';
-    asset.purpose = current.purpose === 'public_gallery_candidate' ? 'public_gallery' : current.purpose;
+    asset.purpose =
+      current.purpose === 'public_gallery_candidate' ? 'public_gallery' : current.purpose;
     asset.rightsStatus = rights.status;
     asset.visibility = 'public';
     asset.licenseId = rights.licenseId;
