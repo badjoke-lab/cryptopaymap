@@ -12,9 +12,9 @@ P3-10 — Media review
 
 ## Active work
 
-- P3-10B — durable Media review persistence
-- Branch: `work/p310b`
-- Pull request: #70
+- P3-10C — controlled Media storage-operation boundary
+- Branch: `work/p310c`
+- Pull request: not opened yet
 
 ## Latest completed work
 
@@ -24,25 +24,28 @@ P3-10 — Media review
 - P3-08 completed through pull request #63
 - P3-09 completed through pull request #67
 - P3-10A completed through pull request #69
+- P3-10B completed through pull request #70
 
-## P3-10B in progress
+## P3-10C in progress
 
-- durable decision receipts
-- exact asset and file-set expectations
-- active cover uniqueness
-- database transaction backend
-- replay and conflict handling
-- migration and validation
+- keep reviewed derivatives private until approval
+- deterministic private and public R2 object keys
+- MIME and content-hash verification
+- durable file scope and key transitions
+- replay-safe publication after durable approval
+- fail-closed revocation before restriction or supersession
+- Cloudflare R2 and in-memory adapters
+- publication, cleanup, revocation, and mismatch tests
 
 ## Next
 
-1. Merge pull request #70 after final validation.
-2. Start the Media storage-operation boundary.
-3. Add the protected Media review workspace.
+1. Complete P3-10C validation and merge its pull request.
+2. Add the protected Media queue and detail workspace.
+3. Add `/admin/media` reviewer UI.
 
 ## Blocked
 
-No repository blocker. Live service verification remains deferred.
+No repository blocker. Live R2, Access, database, and production verification remain deferred.
 
 ## Verification rule
 
