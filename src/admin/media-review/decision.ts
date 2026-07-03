@@ -134,10 +134,7 @@ function hasPublicFields(decision: MediaReviewDecisionShape): boolean {
   );
 }
 
-function validateFiles(
-  decision: MediaReviewDecisionShape,
-  context: MediaReviewRefinementContext,
-) {
+function validateFiles(decision: MediaReviewDecisionShape, context: MediaReviewRefinementContext) {
   const ids = decision.expectedFiles.map((file) => file.id);
   const variants = decision.expectedFiles.map((file) => file.variant);
   if (new Set(ids).size !== ids.length) {
@@ -202,7 +199,11 @@ function validatePublicRights(
     );
   }
   if (rights.licenseAttributionRequired === true && rights.attribution === null) {
-    addIssue(context, ['rightsDecision', 'attribution'], 'The selected license requires attribution.');
+    addIssue(
+      context,
+      ['rightsDecision', 'attribution'],
+      'The selected license requires attribution.',
+    );
   }
 }
 
