@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-03
+**Last updated:** 2026-07-04
 
 This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
 
@@ -84,8 +84,8 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-07 | Claim editor and canonical promotion | Completed | P3-05, P3-06 | #48, #49, #51–#58 |
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
-| P3-10 | Media review | Reviewer UI active | P3-02, P2-10 | #69–#72 complete; P3-10E active |
-| P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10 | — |
+| P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
+| P3-11 | Export controls and release workflow | Release contract active | P3-07 through P3-10 | #75 active |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
 ### Completed P3-07 deliveries
@@ -128,13 +128,22 @@ P3-10C added private staged derivatives, deterministic private and public R2 key
 
 P3-10D added the protected bounded Media queue, version-pinned detail and complete file-set workspace, isolated read authorization, queue and detail GET endpoints, and the idempotent storage-aware decision POST endpoint in pull request #72.
 
-### Current delivery
+P3-10E added `/admin/media`, protected private-file previews, the exact Media review detail workspace, state-aware decision controls, rights and privacy fields, component tests, and protected artifact validation in pull request #73.
 
-P3-10E adds `/admin/media`, protected private-file previews, the exact Media review detail workspace, state-aware decision controls, rights and privacy fields, component tests, and protected artifact validation.
+P3-10F completed the exact reviewer action matrix, unsupported-state rejection, queue-to-storage integration check, authorization and persistence audit, and repository handoff in pull request #74. P3-10 is repository-complete; live Access, R2, database, and production verification remain deferred.
 
-### Remaining P3-10 delivery
+### Current P3-11 delivery
 
-- final P3-10 integration audit and handoff to P3-11
+P3-11A establishes the isolated `export:release` authorization, internally prepared eligible or blocked release candidates, exact snapshot and release-metadata guards, approve and reject decisions, validation issue capture, deterministic replay, and the durable backend contract.
+
+### Remaining P3-11 deliveries
+
+- durable export release decision persistence
+- protected export queue and detail workspace
+- `/admin/exports` reviewer UI
+- controlled publication and release pointer switching
+- rollback and release history
+- final P3-11 integration audit and P3-12 handoff
 
 ## Phase 4 — Public core / MVP-A
 
