@@ -85,6 +85,16 @@ describe('protected Media detail endpoint', () => {
     );
   });
 
+  it('rejects a state outside the reviewer action matrix', async () => {
+    const unsupported = detail();
+    unsupported.media.purpose = 'public_gallery';
+    const loadDetail = vi.fn(async () => unsupported);
+    const response = await createMediaDetailGetHandler({ loadDetail })(context());
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({ error: 'media_detail_state_conflict' });
+  });
+
   it('rejects a missing Media identifier', async () => {
     const loadDetail = vi.fn(async () => detail());
     const requestContext = context();
