@@ -6,9 +6,10 @@ const parts = await Promise.all(
   Array.from({ length: 53 }, (_, index) =>
     readFile(
       new URL(
-        `../drizzle/snapshot-artifacts/0019_snapshot.json.br.hex.part${String(
-          index + 1,
-        ).padStart(2, '0')}`,
+        `../drizzle/snapshot-artifacts/0019_snapshot.json.br.hex.part${String(index + 1).padStart(
+          2,
+          '0',
+        )}`,
         import.meta.url,
       ),
       'utf8',
