@@ -56,7 +56,7 @@ async function cleanupPublishedObjects(
 async function publishObjects(
   storage: MediaStorageAdapter,
   operations: readonly MediaStorageOperation[],
-): Promise<string[]> {
+): Promise<void> {
   const published: string[] = [];
   try {
     for (const operation of operations) {
@@ -79,7 +79,6 @@ async function publishObjects(
       { cause: error },
     );
   }
-  return published;
 }
 
 async function revokeObjects(
@@ -116,13 +115,9 @@ export function createStorageAwareMediaReviewBackend(
       };
 
       if (command.action === 'approve_public') {
-        const published = await publishObjects(storage, plan.operations);
-        try {
-          return await decisionBackend.commitDecision(prepared);
-        } catch (error) {
-          await cleanupPublishedObjects(storage, published);
-          throw error;
-        }
+        const receipt = await decisionBackend.commitDecision(prepared);
+        await publishObjects(storage, plan.operations);
+        return receipt;
       }
 
       if (command.action === 'restrict' || command.action === 'supersede') {
