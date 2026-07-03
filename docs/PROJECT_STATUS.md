@@ -12,10 +12,9 @@ P3-09 — Status transitions and reconfirmation queue
 
 ## Active work
 
-- P3-09A — reconfirmation queue policy and overdue review-window transition contract.
-- Branch: `work/p309a`.
-- Pull request: #64.
-- Status: final CI validation after formatting.
+- P3-09C — protected reconfirmation queue, Claim detail workspace, and controlled expiration endpoint.
+- Branch: `work/p309c`.
+- Pull request: #66.
 
 ## Latest completed work
 
@@ -28,32 +27,29 @@ P3-09 — Status transitions and reconfirmation queue
 - P3-06 completed through pull requests #46 and #47.
 - P3-07 completed through pull request #58.
 - P3-08 completed through pull request #63.
-- Closed draft pull request #61 was superseded by merged pull request #62 without losing implementation.
+- P3-09A completed through pull request #64.
+- P3-09B completed through pull request #65.
 
-## P3-09A in final validation
+## P3-09C in progress
 
-- classify overdue, missing-deadline, stale, and due-soon Claims without mutation
-- exclude Claims outside the reconfirmation queue boundary
-- keep queue recommendations separate from status mutation
-- require a system actor and exact Claim version, status, visibility, and deadline
-- transition only confirmed Claims with expired review windows to stale
-- preserve visibility and the expired review date
-- prove replay, conflict, early-execution rejection, and rollback behavior
-- add a machine-executed contract check
+- add Rechecks-specific authorization and protected read context
+- expose a bounded reconfirmation queue API
+- expose version-pinned Claim detail context
+- add a controlled expiration POST using the durable P3-09B backend
+- add protected Rechecks queue and detail pages
+- add API, workspace, component, and runtime validation
 
 ## Deferred within P3-09
 
-- durable expiration receipt and database transaction
-- bounded database reconfirmation queue
-- scheduled execution
-- protected reconfirmation workspace
-- live scheduler, Access, and database verification
+- scheduled execution boundary
+- final P3-09 integration audit
+- live scheduler, Access, database, and production verification
 
 ## Next
 
-1. Complete P3-09A CI and merge pull request #64.
-2. Add durable persistence and the database queue in P3-09B.
-3. Add the protected reconfirmation workspace.
+1. Complete the protected Rechecks workspace in P3-09C.
+2. Add the scheduled execution boundary.
+3. Complete the P3-09 integration audit and hand off to P3-10.
 
 ## Blocked
 

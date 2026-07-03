@@ -1,0 +1,31 @@
+---
+import { ReconfirmationQueue } from '../../components/admin/ReconfirmationQueue';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Rechecks | CryptoPayMap Admin"
+  heading="Reconfirmation queue"
+  description="A protected queue for due, overdue, and stale Claims."
+>
+  <section
+    class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6"
+    aria-labelledby="rechecks-boundary-title"
+  >
+    <p class="m-0 text-sm font-semibold text-brand-800">Reconfirmation boundary</p>
+    <h2 id="rechecks-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Exact Claim and deadline state
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Queue recommendations do not mutate Claims. Expiration requires the exact confirmed Claim version, visibility, and stored review deadline.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="rechecks-queue-title">
+    <p class="m-0 text-sm font-semibold text-brand-700">P3-09C</p>
+    <h2 id="rechecks-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+      Protected Rechecks queue
+    </h2>
+    <div class="mt-5"><ReconfirmationQueue client:load /></div>
+  </section>
+</AdminLayout>
