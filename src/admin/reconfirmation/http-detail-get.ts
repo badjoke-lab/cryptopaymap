@@ -6,7 +6,12 @@ import {
   readReconfirmationAuthorizationPolicy,
 } from './authorization';
 import { createDrizzleProtectedReconfirmationWorkspaceBackend } from './drizzle-protected-workspace-backend';
-import { claimIdFromContext, databaseUrl, jsonResponse, type ReconfirmationPagesContext } from './http-common';
+import {
+  claimIdFromContext,
+  databaseUrl,
+  jsonResponse,
+  type ReconfirmationPagesContext,
+} from './http-common';
 import {
   ReconfirmationWorkspaceError,
   loadProtectedReconfirmationDetail,
@@ -62,9 +67,12 @@ export function createReconfirmationDetailGetHandler(
       return jsonResponse(200, await loadDetail(context, claimId, pagesContext.env, now()));
     } catch (error) {
       if (error instanceof ReconfirmationWorkspaceError) {
-        if (error.code === 'invalid_claim_id') return jsonResponse(400, { error: 'reconfirmation_detail_invalid_id' });
-        if (error.code === 'not_found') return jsonResponse(404, { error: 'reconfirmation_detail_not_found' });
-        if (error.code === 'unauthorized') return jsonResponse(403, { error: 'reconfirmation_detail_denied' });
+        if (error.code === 'invalid_claim_id')
+          return jsonResponse(400, { error: 'reconfirmation_detail_invalid_id' });
+        if (error.code === 'not_found')
+          return jsonResponse(404, { error: 'reconfirmation_detail_not_found' });
+        if (error.code === 'unauthorized')
+          return jsonResponse(403, { error: 'reconfirmation_detail_denied' });
       }
       return jsonResponse(503, { error: 'reconfirmation_detail_unavailable' });
     }
