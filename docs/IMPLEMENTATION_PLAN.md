@@ -85,7 +85,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
-| P3-11 | Export controls and release workflow | Reviewer UI active | P3-07 through P3-10 | #75–#77 complete; P3-11D active |
+| P3-11 | Export controls and release workflow | Activation active | P3-07 through P3-10 | #75–#78 complete; #79 active |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
 ### Completed P3-07 deliveries
@@ -140,14 +140,16 @@ P3-11B added durable `export_release_decisions` receipts, generated migration `0
 
 P3-11C added the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint in pull request #77.
 
+P3-11D added `/admin/exports`, the exact snapshot detail workspace, validation and artifact inventory, state-aware approve or reject controls, component tests, and protected artifact validation in pull request #78.
+
 ### Current P3-11 delivery
 
-P3-11D adds `/admin/exports`, the exact snapshot detail workspace, validation and artifact inventory, state-aware approve or reject controls, component tests, and protected artifact validation.
+P3-11E adds separate `export:publish` authorization, durable approved-decision and private-candidate revalidation, deterministic immutable release objects, exact object metadata checks, conditional ETag active-pointer switching, snapshot-level replay, and the protected activation endpoint.
 
 ### Remaining P3-11 deliveries
 
-- controlled publication and release pointer switching
-- rollback and release history
+- durable activation history and request-level replay records
+- rollback and release history operations
 - final P3-11 integration audit and P3-12 handoff
 
 ## Phase 4 — Public core / MVP-A
