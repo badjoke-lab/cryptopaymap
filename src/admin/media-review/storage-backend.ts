@@ -32,6 +32,16 @@ function assertSourceMatches(
   }
 }
 
+async function verifyPublishSources(
+  storage: MediaStorageAdapter,
+  operations: readonly MediaStorageOperation[],
+): Promise<void> {
+  for (const operation of operations) {
+    const source = await storage.inspectPrivateObject(operation.source.key);
+    assertSourceMatches(operation, source);
+  }
+}
+
 async function cleanupPublishedObjects(
   storage: MediaStorageAdapter,
   keys: readonly string[],
@@ -115,6 +125,7 @@ export function createStorageAwareMediaReviewBackend(
       };
 
       if (command.action === 'approve_public') {
+        await verifyPublishSources(storage, plan.operations);
         const receipt = await decisionBackend.commitDecision(prepared);
         await publishObjects(storage, plan.operations);
         return receipt;
