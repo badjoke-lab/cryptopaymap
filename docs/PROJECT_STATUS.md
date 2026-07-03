@@ -14,7 +14,7 @@ P3-11 — Export controls and release workflow
 
 - P3-11C — protected export queue, detail, and decision APIs
 - Branch: `work/p311c`
-- Pull request: not opened yet
+- Pull request: #77
 
 ## Latest completed work
 
@@ -40,7 +40,7 @@ P3-11 — Export controls and release workflow
 
 ## Next
 
-1. Complete P3-11C validation and merge its pull request.
+1. Complete P3-11C validation and merge pull request #77.
 2. Add `/admin/exports` reviewer UI.
 3. Add controlled publication and active release pointer switching.
 
