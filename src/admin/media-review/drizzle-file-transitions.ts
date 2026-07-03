@@ -5,9 +5,21 @@ import type { MediaReviewDecisionCommand } from './decision';
 import type { StoragePreparedMediaReviewCommand } from './storage-contract';
 
 export function buildMediaFileTransitionStatements(
-  _database: CryptoPayMapDatabase,
+  database: CryptoPayMapDatabase,
   command: MediaReviewDecisionCommand,
 ): unknown[] {
   const prepared = command as StoragePreparedMediaReviewCommand;
-  return prepared.fileTransitions ?? [];
+  return (prepared.fileTransitions ?? []).map((transition) =>
+    database
+      .update(mediaFiles)
+      .set({ storageScope: transition.toScope, storageKey: transition.toKey })
+      .where(
+        and(
+          eq(mediaFiles.id, transition.fileId),
+          eq(mediaFiles.mediaAssetId, command.mediaAssetId),
+          eq(mediaFiles.storageScope, transition.fromScope),
+          eq(mediaFiles.storageKey, transition.fromKey),
+        ),
+      ),
+  );
 }
