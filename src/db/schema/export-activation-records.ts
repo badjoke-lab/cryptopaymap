@@ -49,7 +49,10 @@ export const exportActivationRecords = pgTable(
     uniqueIndex('export_activation_records_dataset_unique').on(table.datasetVersion),
     index('export_activation_records_published_idx').on(table.publishedAt),
     index('export_activation_records_actor_idx').on(table.actorId, table.publishedAt),
-    check('export_activation_records_digest_shape', sql`${table.snapshotDigest} ~ '^[a-f0-9]{64}$'`),
+    check(
+      'export_activation_records_digest_shape',
+      sql`${table.snapshotDigest} ~ '^[a-f0-9]{64}$'`,
+    ),
     check(
       'export_activation_records_previous_digest_shape',
       sql`${table.previousSnapshotDigest} is null or ${table.previousSnapshotDigest} ~ '^[a-f0-9]{64}$'`,
@@ -62,7 +65,10 @@ export const exportActivationRecords = pgTable(
       'export_activation_records_artifact_count_range',
       sql`${table.artifactCount} between 1 and 100`,
     ),
-    check('export_activation_records_time_order', sql`${table.generatedAt} <= ${table.publishedAt}`),
+    check(
+      'export_activation_records_time_order',
+      sql`${table.generatedAt} <= ${table.publishedAt}`,
+    ),
     check('export_activation_records_actor_nonempty', sql`length(trim(${table.actorId})) > 0`),
     check('export_activation_records_reason_nonempty', sql`length(trim(${table.reasonCode})) > 0`),
     check(
