@@ -12,9 +12,9 @@ P3-10 — Media review
 
 ## Active work
 
-- P3-10E — `/admin/media` reviewer UI and protected file previews
-- Branch: `work/p310e`
-- Pull request: not opened yet
+- P3-10F — final Media review integration audit
+- Branch: `work/p310f`
+- Pull request: #74
 
 ## Latest completed work
 
@@ -27,22 +27,21 @@ P3-10 — Media review
 - P3-10B completed through pull request #70
 - P3-10C completed through pull request #71
 - P3-10D completed through pull request #72
+- P3-10E completed through pull request #73
 
-## P3-10E in progress
+## P3-10F in progress
 
-- `/admin/media` bounded reviewer queue
-- `/admin/media/detail` exact decision workspace
-- protected file preview by file ID
-- private R2 and database metadata revalidation
-- state-aware approve, reject, restrict, and supersede controls
-- public rights, privacy, alt-text, and derivative selection
-- component, preview API, runtime, and artifact validation
+- exact reviewer UI action matrix
+- queue, detail, approval, replay, publication, restriction, and revocation integration check
+- authorization, state, storage, persistence, preview, API, UI, and artifact audit
+- explicit live-verification deferrals
+- repository-complete handoff to P3-11
 
 ## Next
 
-1. Complete P3-10E validation and merge its pull request.
-2. Complete the final P3-10 integration audit.
-3. Hand off to P3-11 export controls and release workflow.
+1. Complete P3-10F validation and merge pull request #74.
+2. Start P3-11 export controls and release workflow.
+3. Keep live R2, Access, database, and production verification explicitly deferred.
 
 ## Blocked
 
