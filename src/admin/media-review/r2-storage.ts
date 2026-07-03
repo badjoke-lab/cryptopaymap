@@ -5,18 +5,18 @@ import {
   type MediaStorageExpectation,
 } from './storage-contract';
 
-interface R2HttpMetadataLike {
+export interface R2HttpMetadataLike {
   contentType?: string;
 }
 
-interface R2ObjectLike {
+export interface R2ObjectLike {
   key: string;
   size: number;
   httpMetadata?: R2HttpMetadataLike;
   customMetadata?: Record<string, string>;
 }
 
-interface R2ObjectBodyLike extends R2ObjectLike {
+export interface R2ObjectBodyLike extends R2ObjectLike {
   body: unknown;
 }
 
