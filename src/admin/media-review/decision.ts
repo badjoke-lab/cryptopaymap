@@ -219,13 +219,13 @@ function validatePublicDerivative(
   if (
     file === undefined ||
     file.variant !== expectedVariant ||
-    file.storageScope !== 'public' ||
+    file.storageScope !== 'private' ||
     !['image/jpeg', 'image/webp'].includes(file.mimeType)
   ) {
     addIssue(
       context,
       [path],
-      `The selected ${expectedVariant} must be a reviewed public JPEG or WebP derivative.`,
+      `The selected ${expectedVariant} must be a reviewed private JPEG or WebP derivative.`,
     );
   }
 }

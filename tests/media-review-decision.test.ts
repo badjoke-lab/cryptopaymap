@@ -37,8 +37,8 @@ function publicInput(): MediaReviewDecisionInput {
       {
         id: displayFileId,
         variant: 'display',
-        storageScope: 'public',
-        storageKey: 'media/public/display.webp',
+        storageScope: 'private',
+        storageKey: 'media/private/display.webp',
         mimeType: 'image/webp',
         contentHash: hash,
         width: 960,
@@ -47,8 +47,8 @@ function publicInput(): MediaReviewDecisionInput {
       {
         id: thumbnailFileId,
         variant: 'thumbnail',
-        storageScope: 'public',
-        storageKey: 'media/public/thumbnail.webp',
+        storageScope: 'private',
+        storageKey: 'media/private/thumbnail.webp',
         mimeType: 'image/webp',
         contentHash: hash,
         width: 160,
