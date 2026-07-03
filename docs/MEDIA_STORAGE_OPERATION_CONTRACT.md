@@ -36,9 +36,9 @@ The database and storage adapter must reject non-canonical keys.
 ## Public approval
 
 1. The decision contract requires private JPEG or WebP display derivatives.
-2. The database transaction changes the selected Media file rows from private keys to public keys and records the durable decision receipt.
-3. After a committed or replayed approval, the storage adapter verifies the private object MIME type and content hash.
-4. The adapter copies only the selected derivatives to their deterministic public keys.
+2. Before changing durable state, the storage adapter confirms that every selected private object exists and matches the expected MIME type and content hash.
+3. The database transaction changes the selected Media file rows from private keys to public keys and records the durable decision receipt.
+4. After a committed or replayed approval, the storage adapter verifies the private objects again and copies only the selected derivatives to their deterministic public keys.
 5. A failed publication returns an error and may be retried with the same request ID. The durable review decision is not duplicated.
 6. A partially completed publication is cleaned up before the error is returned.
 
@@ -77,10 +77,10 @@ The repository includes an in-memory adapter for tests and a Cloudflare R2-compa
 
 ## Failure behavior
 
-- missing private source: reject publication
-- MIME or content-hash mismatch: reject publication
+- missing private source: reject approval before durable state changes
+- MIME or content-hash mismatch: reject approval before durable state changes
 - database approval failure: do not publish
-- publication failure after durable approval: return an error; same request can replay and retry storage
+- publication failure after durable approval: return an error; the same request can replay and retry storage
 - partial publication failure: remove completed public copies
 - public revocation failure: do not commit restriction or supersession
 - unexpected adapter failure: fail closed and do not fabricate success
