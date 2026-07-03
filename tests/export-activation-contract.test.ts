@@ -97,10 +97,8 @@ function approvals(value: ApprovedExportRelease | null = approval) {
 describe('controlled export activation contract', () => {
   it('stages immutable artifacts before atomically activating the pointer', async () => {
     const target = new InMemoryExportPublicationTarget();
-    const receipt = await createExportPublicationService(
-      approvals(),
-      target,
-      async () => plan(),
+    const receipt = await createExportPublicationService(approvals(), target, async () =>
+      plan(),
     ).publish(context, input, {});
 
     expect(receipt).toMatchObject({
@@ -121,10 +119,8 @@ describe('controlled export activation contract', () => {
 
   it('replays an already active exact snapshot without staging again', async () => {
     const target = new InMemoryExportPublicationTarget({ activePointer: pointer() });
-    const receipt = await createExportPublicationService(
-      approvals(),
-      target,
-      async () => plan(),
+    const receipt = await createExportPublicationService(approvals(), target, async () =>
+      plan(),
     ).publish(context, input, {});
 
     expect(receipt.state).toBe('replayed');

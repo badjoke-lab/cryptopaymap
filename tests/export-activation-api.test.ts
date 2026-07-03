@@ -63,8 +63,7 @@ function context(
       ),
     }),
     env: {
-      CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
@@ -124,11 +123,9 @@ describe('controlled export activation endpoint', () => {
 
   it('maps approval, candidate, and pointer changes to a conflict', async () => {
     const activate = vi.fn(async () => {
-      throw new ExportPublicationError(
-        'pointer_conflict',
-        'The active release changed.',
-        ['expectedActiveSnapshotDigest'],
-      );
+      throw new ExportPublicationError('pointer_conflict', 'The active release changed.', [
+        'expectedActiveSnapshotDigest',
+      ]);
     });
     const response = await createExportActivationPostHandler({ activate })(context());
 

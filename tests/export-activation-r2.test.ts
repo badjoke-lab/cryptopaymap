@@ -153,9 +153,9 @@ describe('conditional R2 export activation', () => {
         sha256: 'c'.repeat(64),
       },
     });
-    await expect(createR2ExportPublicationTarget(bucket).stageRelease(plan())).rejects.toBeInstanceOf(
-      ExportPublicationError,
-    );
+    await expect(
+      createR2ExportPublicationTarget(bucket).stageRelease(plan()),
+    ).rejects.toBeInstanceOf(ExportPublicationError);
   });
 
   it('uses the pointer ETag as a compare-and-set guard', async () => {

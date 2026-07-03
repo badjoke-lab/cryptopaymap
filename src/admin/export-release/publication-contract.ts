@@ -222,15 +222,20 @@ function assertExactRelease(
 ): void {
   const issues: string[] = [];
   if (approval.requestId !== input.approvalRequestId) issues.push('approvalRequestId');
-  if (approval.snapshotDigest !== input.expectedSnapshotDigest) issues.push('approvalSnapshotDigest');
+  if (approval.snapshotDigest !== input.expectedSnapshotDigest)
+    issues.push('approvalSnapshotDigest');
   if (approval.artifactCount !== input.expectedArtifactCount) issues.push('approvalArtifactCount');
-  if (approval.datasetVersion !== input.expectedDatasetVersion) issues.push('approvalDatasetVersion');
+  if (approval.datasetVersion !== input.expectedDatasetVersion)
+    issues.push('approvalDatasetVersion');
   if (approval.schemaVersion !== input.expectedSchemaVersion) issues.push('approvalSchemaVersion');
   if (approval.generatedAt !== input.expectedGeneratedAt) issues.push('approvalGeneratedAt');
-  if (plan.pointer.snapshotDigest !== input.expectedSnapshotDigest) issues.push('candidateSnapshotDigest');
+  if (plan.pointer.snapshotDigest !== input.expectedSnapshotDigest)
+    issues.push('candidateSnapshotDigest');
   if (plan.objects.length !== input.expectedArtifactCount) issues.push('candidateArtifactCount');
-  if (plan.pointer.datasetVersion !== input.expectedDatasetVersion) issues.push('candidateDatasetVersion');
-  if (plan.pointer.schemaVersion !== input.expectedSchemaVersion) issues.push('candidateSchemaVersion');
+  if (plan.pointer.datasetVersion !== input.expectedDatasetVersion)
+    issues.push('candidateDatasetVersion');
+  if (plan.pointer.schemaVersion !== input.expectedSchemaVersion)
+    issues.push('candidateSchemaVersion');
   if (plan.pointer.generatedAt !== input.expectedGeneratedAt) issues.push('candidateGeneratedAt');
   if (issues.length > 0) {
     throw new ExportPublicationError(

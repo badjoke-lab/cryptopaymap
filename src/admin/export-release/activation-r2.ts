@@ -115,11 +115,7 @@ export function createR2ExportPublicationTarget(
           customMetadata: expectedMetadata(object, plan.pointer.snapshotDigest),
         });
         if (stored === null) {
-          assertObject(
-            await bucket.head(object.objectKey),
-            object,
-            plan.pointer.snapshotDigest,
-          );
+          assertObject(await bucket.head(object.objectKey), object, plan.pointer.snapshotDigest);
         } else {
           assertObject(stored, object, plan.pointer.snapshotDigest);
         }
