@@ -85,7 +85,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
-| P3-11 | Export controls and release workflow | Release contract active | P3-07 through P3-10 | #75 active |
+| P3-11 | Export controls and release workflow | Persistence active | P3-07 through P3-10 | #75 complete; #76 active |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
 ### Completed P3-07 deliveries
@@ -132,13 +132,16 @@ P3-10E added `/admin/media`, protected private-file previews, the exact Media re
 
 P3-10F completed the exact reviewer action matrix, unsupported-state rejection, queue-to-storage integration check, authorization and persistence audit, and repository handoff in pull request #74. P3-10 is repository-complete; live Access, R2, database, and production verification remain deferred.
 
+### Completed P3-11 deliveries
+
+P3-11A established the isolated `export:release` authorization, internally prepared eligible or blocked release candidates, exact snapshot and release-metadata guards, approve and reject decisions, validation issue capture, deterministic replay, and the durable backend contract in pull request #75.
+
 ### Current P3-11 delivery
 
-P3-11A establishes the isolated `export:release` authorization, internally prepared eligible or blocked release candidates, exact snapshot and release-metadata guards, approve and reject decisions, validation issue capture, deterministic replay, and the durable backend contract.
+P3-11B adds durable `export_release_decisions` receipts, generated migration `0018_clumsy_drax.sql`, request replay, approved snapshot and dataset-version uniqueness, candidate and action constraints, and database conflict classification.
 
 ### Remaining P3-11 deliveries
 
-- durable export release decision persistence
 - protected export queue and detail workspace
 - `/admin/exports` reviewer UI
 - controlled publication and release pointer switching
