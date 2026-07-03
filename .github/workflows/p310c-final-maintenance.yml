@@ -28,15 +28,12 @@ jobs:
         run: npm ci
       - name: Format repository
         run: npm run format
-      - name: Commit formatting
+      - name: Commit formatting and remove maintenance workflow
         shell: bash
         run: |
-          if git diff --quiet; then
-            echo "No formatting changes were generated."
-            exit 0
-          fi
+          git rm .github/workflows/p310c-final-maintenance.yml
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs scripts src tests
-          git commit -m "P3-10C: apply repository formatting"
+          git commit -m "P3-10C: apply final repository formatting"
           git push origin HEAD:work/p310c
