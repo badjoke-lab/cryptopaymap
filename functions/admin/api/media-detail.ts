@@ -6,6 +6,7 @@ import {
 } from '../../../src/admin/media-review/authorization';
 import { createDrizzleMediaReviewWorkspaceBackend } from '../../../src/admin/media-review/drizzle-workspace-backend';
 import { authorizeMediaReviewRead } from '../../../src/admin/media-review/read-authorization';
+import { isMediaReviewUiStateSupported } from '../../../src/admin/media-review/ui-actions';
 import {
   MediaReviewWorkspaceError,
   loadMediaReviewDetail,
@@ -111,10 +112,11 @@ export function createMediaDetailGetHandler(
     }
 
     try {
-      return jsonResponse(
-        200,
-        await detailLoader(context, mediaAssetId, pagesContext.env, now()),
-      );
+      const detail = await detailLoader(context, mediaAssetId, pagesContext.env, now());
+      if (!isMediaReviewUiStateSupported(detail.media)) {
+        return jsonResponse(409, { error: 'media_detail_state_conflict' });
+      }
+      return jsonResponse(200, detail);
     } catch (error) {
       if (error instanceof MediaReviewWorkspaceError) {
         if (error.code === 'invalid_media_id') {
