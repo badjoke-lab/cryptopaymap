@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-03
+**Last verified:** 2026-07-04
 
 ## Current phase
 
@@ -8,13 +8,13 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-10 — Media review
+P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-10F — final Media review integration audit
-- Branch: `work/p310f`
-- Pull request: #74
+- P3-11A — export release authorization and decision contract
+- Branch: `work/p311a`
+- Pull request: not opened yet
 
 ## Latest completed work
 
@@ -23,29 +23,28 @@ P3-10 — Media review
 - P3-07 completed through pull request #58
 - P3-08 completed through pull request #63
 - P3-09 completed through pull request #67
-- P3-10A completed through pull request #69
-- P3-10B completed through pull request #70
-- P3-10C completed through pull request #71
-- P3-10D completed through pull request #72
-- P3-10E completed through pull request #73
+- P3-10 completed through pull request #74
 
-## P3-10F in progress
+## P3-11A in progress
 
-- exact reviewer UI action matrix
-- queue, detail, approval, replay, publication, restriction, and revocation integration check
-- authorization, state, storage, persistence, preview, API, UI, and artifact audit
-- explicit live-verification deferrals
-- repository-complete handoff to P3-11
+- isolated `export:release` capability
+- explicit actor allowlist and idempotency key
+- internally prepared eligible or blocked release candidate
+- exact snapshot digest, artifact count, version, schema, and generated-time guards
+- approve and reject decision shapes
+- validation issue capture
+- deterministic request fingerprint and replay boundary
+- contract, authorization, and runtime tests
 
 ## Next
 
-1. Complete P3-10F validation and merge pull request #74.
-2. Start P3-11 export controls and release workflow.
-3. Keep live R2, Access, database, and production verification explicitly deferred.
+1. Complete P3-11A validation and merge its pull request.
+2. Add durable export release decision persistence.
+3. Add the protected export queue and release workspace.
 
 ## Blocked
 
-No repository blocker. Live R2, Access, database, and production verification remain deferred.
+No repository blocker. Live Access, database, public deployment, and production verification remain deferred.
 
 ## Verification rule
 
