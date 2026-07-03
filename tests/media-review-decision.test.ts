@@ -11,6 +11,7 @@ import {
   type MediaReviewDecisionCommand,
   type MediaReviewDecisionInput,
   type MediaReviewDecisionReceipt,
+  type MediaReviewMutationContext,
 } from '../src/admin/media-review/decision';
 
 const requestId = '10000000-0000-4000-8000-000000000001';
@@ -99,7 +100,8 @@ class ReplayBackend implements MediaReviewDecisionBackend {
       action: command.action,
       reviewStatus: command.action === 'reject' ? 'rejected' : 'accepted',
       purpose:
-        command.action === 'approve_public' && command.expectedPurpose === 'public_gallery_candidate'
+        command.action === 'approve_public' &&
+        command.expectedPurpose === 'public_gallery_candidate'
           ? 'public_gallery'
           : command.expectedPurpose,
       rightsStatus: command.rightsDecision?.status ?? command.expectedRightsStatus,
@@ -126,11 +128,11 @@ class ReplayBackend implements MediaReviewDecisionBackend {
   }
 }
 
-const context = {
+const context: MediaReviewMutationContext = {
   requestId,
   actorId: 'cloudflare-access:reviewer',
-  actorType: 'human' as const,
-  capabilities: ['media:review'] as const,
+  actorType: 'human',
+  capabilities: ['media:review'],
 };
 
 describe('media review decision contract', () => {
@@ -207,8 +209,10 @@ describe('media review decision contract', () => {
 
   it('rejects duplicate expected file variants', () => {
     const input = publicInput();
+    const secondFile = input.expectedFiles[1];
+    if (secondFile === undefined) throw new Error('Expected thumbnail fixture.');
     input.expectedFiles[1] = {
-      ...input.expectedFiles[1],
+      ...secondFile,
       variant: 'display',
     };
 
