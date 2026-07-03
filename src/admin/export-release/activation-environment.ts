@@ -9,9 +9,7 @@ export interface ExportActivationEnvironment
   CPM_EXPORT_PUBLIC_BUCKET?: ExportPublicationR2BucketLike;
 }
 
-export function exportPublicationTargetFromEnvironment(
-  environment: ExportActivationEnvironment,
-) {
+export function exportPublicationTargetFromEnvironment(environment: ExportActivationEnvironment) {
   if (environment.CPM_EXPORT_PUBLIC_BUCKET === undefined) {
     throw new Error('The public export release bucket is unavailable.');
   }
