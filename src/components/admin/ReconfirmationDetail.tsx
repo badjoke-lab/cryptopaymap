@@ -8,7 +8,8 @@ import { Button } from '../ui/Button';
 export function ReconfirmationDetail() {
   const [detail, setDetail] = useState<ProtectedReconfirmationDetailResponse | null>(null);
   const [message, setMessage] = useState('Loading Claim review…');
-  const claimId = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('id');
+  const claimId =
+    typeof window === 'undefined' ? null : new URLSearchParams(window.location.search).get('id');
 
   useEffect(() => {
     if (!claimId) return setMessage('Claim identifier required.');
@@ -73,23 +74,54 @@ export function ReconfirmationDetail() {
 
   return (
     <div>
-      <a className="text-sm font-semibold text-brand-700" href="/admin/rechecks/">← Rechecks queue</a>
+      <a className="text-sm font-semibold text-brand-700" href="/admin/rechecks/">
+        ← Rechecks queue
+      </a>
       <section className="mt-5 rounded-card border border-border bg-surface p-5 shadow-sm">
         <h2 className="text-2xl font-semibold text-ink">{claim.entityName}</h2>
         <p className="mt-2 text-sm text-muted">{claim.locationName ?? claim.entityType}</p>
-        <p className="mt-4 text-sm text-muted">Status: {claim.claimStatus} · Visibility: {claim.visibility}</p>
-        <p className="mt-2 text-sm text-muted">Review deadline: {claim.nextReviewAt ?? 'Missing'}</p>
+        <p className="mt-4 text-sm text-muted">
+          Status: {claim.claimStatus} · Visibility: {claim.visibility}
+        </p>
+        <p className="mt-2 text-sm text-muted">
+          Review deadline: {claim.nextReviewAt ?? 'Missing'}
+        </p>
         <h3 className="mt-5 text-lg font-semibold text-ink">How to pay</h3>
         <p className="mt-2 text-sm leading-6 text-muted">{claim.howToPay ?? 'Not recorded'}</p>
       </section>
       {canCommit ? (
-        <form className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={submit}>
+        <form
+          className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm"
+          onSubmit={submit}
+        >
           <h2 className="text-xl font-semibold text-ink">Mark Claim stale</h2>
-          <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">Public summary<textarea name="publicSummary" className="min-h-24 rounded-control border border-border bg-white p-3 font-normal" defaultValue="The review window expired before reconfirmation." /></label>
-          <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">Internal note<textarea name="internalNote" className="min-h-24 rounded-control border border-border bg-white p-3 font-normal" /></label>
-          <div className="mt-5 flex flex-wrap items-center gap-4"><Button type="submit">Mark Claim stale</Button>{message ? <p aria-live="polite" className="text-sm text-muted">{message}</p> : null}</div>
+          <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">
+            Public summary
+            <textarea
+              name="publicSummary"
+              className="min-h-24 rounded-control border border-border bg-white p-3 font-normal"
+              defaultValue="The review window expired before reconfirmation."
+            />
+          </label>
+          <label className="mt-4 grid gap-2 text-sm font-semibold text-ink">
+            Internal note
+            <textarea
+              name="internalNote"
+              className="min-h-24 rounded-control border border-border bg-white p-3 font-normal"
+            />
+          </label>
+          <div className="mt-5 flex flex-wrap items-center gap-4">
+            <Button type="submit">Mark Claim stale</Button>
+            {message ? (
+              <p aria-live="polite" className="text-sm text-muted">
+                {message}
+              </p>
+            ) : null}
+          </div>
         </form>
-      ) : <p className="mt-6">No stale transition is available for this Claim.</p>}
+      ) : (
+        <p className="mt-6">No stale transition is available for this Claim.</p>
+      )}
     </div>
   );
 }
