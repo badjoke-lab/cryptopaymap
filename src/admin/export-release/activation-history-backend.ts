@@ -36,7 +36,9 @@ export function createDrizzleExportActivationHistoryBackend(
       }
 
       try {
-        await database.insert(exportActivationRecords).values(exportActivationRecordValues(command));
+        await database
+          .insert(exportActivationRecords)
+          .values(exportActivationRecordValues(command));
       } catch (error) {
         const code = postgresActivationHistoryErrorCode(error);
         if (code === '23505') {
