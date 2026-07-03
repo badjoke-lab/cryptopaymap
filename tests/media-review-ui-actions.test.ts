@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { availableMediaReviewActions } from '../src/admin/media-review/ui-actions';
+import {
+  availableMediaReviewActions,
+  isMediaReviewUiStateSupported,
+} from '../src/admin/media-review/ui-actions';
 
 describe('Media reviewer UI action matrix', () => {
   it('keeps Evidence and owner proof on the private review path', () => {
@@ -25,13 +28,13 @@ describe('Media reviewer UI action matrix', () => {
       ).toEqual(['approve_public', 'reject']);
     }
 
-    expect(
-      availableMediaReviewActions({
-        reviewStatus: 'pending',
-        purpose: 'public_gallery',
-        visibility: 'private',
-      }),
-    ).toEqual(['reject']);
+    const unsupported = {
+      reviewStatus: 'pending' as const,
+      purpose: 'public_gallery' as const,
+      visibility: 'private' as const,
+    };
+    expect(isMediaReviewUiStateSupported(unsupported)).toBe(false);
+    expect(availableMediaReviewActions(unsupported)).toEqual([]);
   });
 
   it('offers restriction and supersession only for accepted display Media', () => {
