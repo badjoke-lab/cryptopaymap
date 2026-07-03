@@ -14,7 +14,7 @@ P3-11 — Export controls and release workflow
 
 - P3-11B — durable export release decision persistence
 - Branch: `work/p311b`
-- Pull request: not opened yet
+- Pull request: #76
 
 ## Latest completed work
 
@@ -31,15 +31,15 @@ P3-11 — Export controls and release workflow
 - durable `export_release_decisions` receipts
 - unique request identity
 - approved snapshot and dataset-version uniqueness
-- database action-shape and time-order constraints
+- database candidate, action, status, metadata, and time-order constraints
 - guarded first commit and deterministic replay
 - duplicate and constraint conflict classification
-- generated Drizzle migration and snapshot
+- generated Drizzle migration `0018_clumsy_drax.sql` and snapshot
 - persistence runtime and unit tests
 
 ## Next
 
-1. Complete P3-11B validation and merge its pull request.
+1. Complete P3-11B validation and merge pull request #76.
 2. Add the protected export queue and release workspace.
 3. Add `/admin/exports` reviewer UI and controlled publication operations.
 
