@@ -9,6 +9,7 @@ import {
   mediaReviewMutationContextSchema,
   mediaReviewRightsDecisionSchema,
 } from '../src/admin/media-review/decision';
+import { createDrizzleMediaReviewBackend } from '../src/admin/media-review/drizzle-backend';
 
 for (const value of [
   mediaReviewActorPolicySchema,
@@ -19,7 +20,11 @@ for (const value of [
 ]) {
   if (value === undefined) throw new Error('Media review schema is missing.');
 }
-for (const value of [authorizeMediaReview, createMediaReviewDecisionService]) {
+for (const value of [
+  authorizeMediaReview,
+  createMediaReviewDecisionService,
+  createDrizzleMediaReviewBackend,
+]) {
   if (typeof value !== 'function') throw new Error('Media review runtime export is missing.');
 }
 console.log('Media review decision checks passed.');

@@ -21,6 +21,7 @@ export * from './evidence-review-decisions';
 export * from './import-batches';
 export * from './locations';
 export * from './media-legacy';
+export * from './media-review-decisions';
 export * from './networks';
 export * from './payment-registries';
 export * from './reconfirmation-expirations';

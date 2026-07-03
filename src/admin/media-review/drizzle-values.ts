@@ -1,0 +1,46 @@
+import type { MediaReviewDecisionCommand } from './decision';
+import type { ProjectedMediaReviewDecision } from './drizzle-state';
+
+export function mediaReviewDecisionValues(
+  command: MediaReviewDecisionCommand,
+  projected: ProjectedMediaReviewDecision,
+) {
+  return {
+    id: crypto.randomUUID(),
+    requestId: command.requestId,
+    mediaAssetId: command.mediaAssetId,
+    action: command.action,
+    targetMatch: command.targetMatch,
+    privacyReview: command.privacyReview,
+    expectedMediaUpdatedAt: command.expectedMediaUpdatedAt,
+    expectedReviewStatus: command.expectedReviewStatus,
+    expectedPurpose: command.expectedPurpose,
+    expectedRightsStatus: command.expectedRightsStatus,
+    expectedVisibility: command.expectedVisibility,
+    expectedSubjectType: command.expectedSubject.type,
+    expectedSubjectId: command.expectedSubject.id,
+    expectedFiles: command.expectedFiles,
+    toReviewStatus: projected.asset.reviewStatus,
+    toPurpose: projected.asset.purpose,
+    toRightsStatus: projected.asset.rightsStatus,
+    toVisibility: projected.asset.visibility,
+    licenseId: projected.asset.licenseId,
+    rightsHolder: projected.asset.rightsHolder,
+    consentReference: projected.asset.consentReference,
+    attribution: projected.asset.attribution,
+    licenseAttributionRequired: command.rightsDecision?.licenseAttributionRequired ?? null,
+    altText: projected.asset.altText,
+    displayOrder: projected.asset.displayOrder,
+    publicDisplayFileId: command.publicDisplayFileId,
+    publicThumbnailFileId: command.publicThumbnailFileId,
+    publicFileIds: projected.receipt.publicFileIds,
+    publishedAt: projected.asset.publishedAt,
+    actorId: command.actorId,
+    actorType: command.actorType,
+    reasonCode: command.reasonCode,
+    publicSummary: command.publicSummary,
+    internalNote: command.internalNote,
+    decidedAt: command.decidedAt,
+    requestFingerprint: command.requestFingerprint,
+  };
+}
