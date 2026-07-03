@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-02
+**Last updated:** 2026-07-03
 
 This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
 
@@ -82,8 +82,8 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-05 | Candidate detail and provenance review | Completed | P3-04 | #45 |
 | P3-06 | Duplicate review and identity resolution | Completed | P3-05 | #46, #47 |
 | P3-07 | Claim editor and canonical promotion | Completed | P3-05, P3-06 | #48, #49, #51–#58 |
-| P3-08 | Evidence review and verification decisions | Integration audit | P3-07 | #59, #60, #62, #63 active |
-| P3-09 | Status transitions and reconfirmation queue | Planned | P3-07, P3-08 | — |
+| P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
+| P3-09 | Status transitions and reconfirmation queue | Final validation | P3-07, P3-08 | #64–#67 active |
 | P3-10 | Media review | Planned | P3-02, P2-10 | — |
 | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10 | — |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
@@ -106,13 +106,24 @@ P3-08B added durable `evidence_review_decisions` persistence, the rejected verif
 
 P3-08C added the protected bounded Evidence queue, version-pinned detail workspace, accepted Evidence set and threshold display, protected GET and POST endpoints, reviewer decision UI, API and component tests, runtime checks, and protected artifact validation. Closed draft pull request #61 was superseded by merged pull request #62 without losing implementation.
 
+P3-08D completed the final cross-layer repository integration and handoff audit in pull request #63. Live Access, database, and production verification remain deferred.
+
+### Completed P3-09 deliveries
+
+P3-09A established the bounded overdue, missing-deadline, stale, and due-soon queue contract; exact Claim version, status, visibility, and deadline expectations; system-only expiration capability; and replay, conflict, early-execution, and rollback behavior.
+
+P3-09B added durable `reconfirmation_expirations` receipts, migration `0016_high_pixie.sql`, atomic Claim and `marked_stale` event persistence, database guards, deterministic replay, and the bounded database queue.
+
+P3-09C added Rechecks-specific authorization, protected queue and detail APIs, version-pinned Claim context, the controlled expiration POST endpoint, `/admin/rechecks`, `/admin/rechecks/detail`, reviewer UI, and API, component, runtime, and artifact validation.
+
 ### Current delivery
 
-P3-08D performs the final cross-layer repository integration and handoff audit. It verifies the queue-to-detail-to-decision path, exact Evidence and Claim versions, the complete accepted Evidence set, Claim visibility preservation, strict rejection of visibility mutation fields, durable replay and conflict behavior, resulting Evidence and Claim state, verification events, runtime validation, and deferred live-verification boundaries.
+P3-09D adds the repository-side scheduled execution boundary and final P3-09 handoff. It derives stable run and per-Claim request IDs from the scheduled occurrence, loads only bounded overdue confirmed Claims, reuses the durable expiration backend, records per-Claim committed, replayed, conflict, not-found, and failed outcomes, rejects invalid or premature batches, and keeps the live Cloudflare cron trigger explicitly deferred.
 
-### Remaining P3-08 delivery
+### Remaining P3-09 delivery
 
-- merge the successful P3-08D integration audit and hand off to P3-09
+- complete pull request #67 validation and merge it
+- hand Phase 3 implementation to P3-10 Media review
 
 ## Phase 4 — Public core / MVP-A
 
