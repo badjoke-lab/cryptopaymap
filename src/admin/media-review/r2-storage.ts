@@ -43,11 +43,9 @@ function inspectedObject(object: R2ObjectLike): InspectedMediaStorageObject {
     !/^[a-f0-9]{64}$/.test(contentHash) ||
     object.size <= 0
   ) {
-    throw new MediaStorageError(
-      'source_mismatch',
-      'R2 Media metadata is incomplete or invalid.',
-      [object.key],
-    );
+    throw new MediaStorageError('source_mismatch', 'R2 Media metadata is incomplete or invalid.', [
+      object.key,
+    ]);
   }
   return {
     key: object.key,
@@ -70,7 +68,9 @@ export function createR2MediaStorageAdapter(
     async publishObject(sourceKey: string, destination: MediaStorageExpectation) {
       const source = await privateBucket.get(sourceKey);
       if (source === null) {
-        throw new MediaStorageError('source_missing', 'The private R2 object was not found.', [sourceKey]);
+        throw new MediaStorageError('source_missing', 'The private R2 object was not found.', [
+          sourceKey,
+        ]);
       }
       const inspected = inspectedObject(source);
       if (

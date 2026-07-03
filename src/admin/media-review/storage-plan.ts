@@ -124,7 +124,9 @@ export function buildMediaStoragePlan(command: MediaReviewDecisionCommand): Medi
   if (command.action === 'approve_public') {
     for (const file of selectedPublicFiles(command)) pairs.push(publishOperation(command, file));
   } else if (command.action === 'restrict' || command.action === 'supersede') {
-    for (const file of command.expectedFiles.filter((candidate) => candidate.storageScope === 'public')) {
+    for (const file of command.expectedFiles.filter(
+      (candidate) => candidate.storageScope === 'public',
+    )) {
       pairs.push(revokeOperation(command, file));
     }
   }

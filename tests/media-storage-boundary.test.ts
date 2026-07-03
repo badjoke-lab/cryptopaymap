@@ -143,7 +143,7 @@ describe('Media storage operation boundary', () => {
     );
   });
 
-  it('publishes verified derivatives before committing the decision', async () => {
+  it('publishes verified derivatives after committing the decision', async () => {
     const command = approvalCommand();
     const storage = new InMemoryMediaStorage({ privateObjects: privateObjects(command) });
     const commitDecision = vi.fn(async (prepared: MediaReviewDecisionCommand) => {
@@ -163,7 +163,7 @@ describe('Media storage operation boundary', () => {
     );
   });
 
-  it('removes published objects when the database decision fails', async () => {
+  it('does not publish objects when the database decision fails', async () => {
     const command = approvalCommand();
     const storage = new InMemoryMediaStorage({ privateObjects: privateObjects(command) });
     const backend = createStorageAwareMediaReviewBackend(
@@ -196,7 +196,7 @@ describe('Media storage operation boundary', () => {
     });
   });
 
-  it('commits restriction before revoking public objects', async () => {
+  it('revokes public objects before committing restriction', async () => {
     const command = restrictionCommand();
     const publicObjects = command.expectedFiles.map((file) => ({
       key: file.storageKey,
@@ -222,7 +222,7 @@ describe('Media storage operation boundary', () => {
     expect(storage.snapshot().publicObjects).toEqual([]);
   });
 
-  it('reports revocation failure after the safe database decision', async () => {
+  it('blocks the database decision when public revocation fails', async () => {
     const command = restrictionCommand();
     const failedKey = command.expectedFiles[0]?.storageKey;
     if (failedKey === undefined) throw new Error('Expected public object fixture.');
@@ -245,6 +245,6 @@ describe('Media storage operation boundary', () => {
     await expect(
       createStorageAwareMediaReviewBackend({ commitDecision }, storage).commitDecision(command),
     ).rejects.toBeInstanceOf(MediaStorageError);
-    expect(commitDecision).toHaveBeenCalledTimes(1);
+    expect(commitDecision).toHaveBeenCalledTimes(0);
   });
 });
