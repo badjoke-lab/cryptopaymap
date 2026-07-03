@@ -28,15 +28,13 @@ export const mediaReviewSubjectTypeValues = [
   'source_record',
 ] as const;
 
+const nullableUuidSchema = z.uuid().nullable();
 const reasonCodeSchema = z
   .string()
   .trim()
   .min(1)
   .max(96)
   .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/);
-const nullableNoteSchema = z.string().trim().min(1).max(2_000).nullable();
-const nullablePublicSummarySchema = z.string().trim().min(1).max(1_000).nullable();
-const nullableUuidSchema = z.uuid().nullable();
 
 export const mediaReviewMutationContextSchema = z
   .object({
@@ -87,7 +85,7 @@ export const mediaReviewRightsDecisionSchema = z
   })
   .strict();
 
-export const mediaReviewDecisionInputSchema = z
+const mediaReviewDecisionBaseSchema = z
   .object({
     mediaAssetId: z.uuid(),
     expectedMediaUpdatedAt: z.iso.datetime({ offset: true }),
@@ -108,202 +106,222 @@ export const mediaReviewDecisionInputSchema = z
     publicDisplayFileId: nullableUuidSchema,
     publicThumbnailFileId: nullableUuidSchema,
     reasonCode: reasonCodeSchema,
-    publicSummary: nullablePublicSummarySchema,
-    internalNote: nullableNoteSchema,
+    publicSummary: z.string().trim().min(1).max(1_000).nullable(),
+    internalNote: z.string().trim().min(1).max(2_000).nullable(),
   })
-  .strict()
-  .superRefine((decision, context) => {
+  .strict();
+
+type MediaReviewDecisionShape = z.infer<typeof mediaReviewDecisionBaseSchema>;
+type MediaReviewRefinementContext = Parameters<
+  Parameters<typeof mediaReviewDecisionBaseSchema.superRefine>[0]
+>[1];
+
+function addIssue(
+  context: MediaReviewRefinementContext,
+  path: (string | number)[],
+  message: string,
+) {
+  context.addIssue({ code: 'custom', path, message });
+}
+
+function hasPublicFields(decision: MediaReviewDecisionShape): boolean {
+  return (
+    decision.rightsDecision !== null ||
+    decision.altText !== null ||
+    decision.displayOrder !== null ||
+    decision.publicDisplayFileId !== null ||
+    decision.publicThumbnailFileId !== null
+  );
+}
+
+function validateFiles(
+  decision: MediaReviewDecisionShape,
+  context: MediaReviewRefinementContext,
+) {
+  const ids = decision.expectedFiles.map((file) => file.id);
+  const variants = decision.expectedFiles.map((file) => file.variant);
+  if (new Set(ids).size !== ids.length) {
+    addIssue(context, ['expectedFiles'], 'Expected media file IDs must be unique.');
+  }
+  if (new Set(variants).size !== variants.length) {
+    addIssue(context, ['expectedFiles'], 'Expected media file variants must be unique.');
+  }
+  if (
+    decision.expectedFiles.some(
+      (file) => file.variant === 'original' && file.storageScope === 'public',
+    )
+  ) {
+    addIssue(context, ['expectedFiles'], 'Original media files cannot use public storage.');
+  }
+}
+
+function validatePrivateApproval(
+  decision: MediaReviewDecisionShape,
+  context: MediaReviewRefinementContext,
+) {
+  if (
+    decision.expectedReviewStatus !== 'pending' ||
+    !['evidence', 'owner_verification'].includes(decision.expectedPurpose) ||
+    decision.expectedVisibility !== 'private' ||
+    decision.targetMatch !== 'confirmed' ||
+    decision.privacyReview === 'blocked' ||
+    hasPublicFields(decision)
+  ) {
+    addIssue(
+      context,
+      ['action'],
+      'Private approval requires pending private Evidence or owner proof and no public fields.',
+    );
+  }
+}
+
+function validatePublicRights(
+  decision: MediaReviewDecisionShape,
+  context: MediaReviewRefinementContext,
+) {
+  const rights = decision.rightsDecision;
+  if (
+    rights === null ||
+    !['submitted_with_permission', 'licensed', 'public_domain'].includes(rights.status)
+  ) {
+    addIssue(context, ['rightsDecision'], 'Public approval requires publishable rights.');
+    return;
+  }
+  if (rights.status === 'licensed' && rights.licenseId === null) {
+    addIssue(context, ['rightsDecision', 'licenseId'], 'Licensed media requires a license.');
+  }
+  if (
+    rights.status === 'submitted_with_permission' &&
+    rights.rightsHolder === null &&
+    rights.consentReference === null
+  ) {
+    addIssue(
+      context,
+      ['rightsDecision', 'consentReference'],
+      'Submitted media requires a rights holder or consent reference.',
+    );
+  }
+  if (rights.licenseAttributionRequired === true && rights.attribution === null) {
+    addIssue(context, ['rightsDecision', 'attribution'], 'The selected license requires attribution.');
+  }
+}
+
+function validatePublicDerivative(
+  decision: MediaReviewDecisionShape,
+  context: MediaReviewRefinementContext,
+  path: 'publicDisplayFileId' | 'publicThumbnailFileId',
+  expectedVariant: 'display' | 'thumbnail',
+) {
+  const id = decision[path];
+  if (id === null) return;
+  const file = decision.expectedFiles.find((candidate) => candidate.id === id);
+  if (
+    file === undefined ||
+    file.variant !== expectedVariant ||
+    file.storageScope !== 'public' ||
+    !['image/jpeg', 'image/webp'].includes(file.mimeType)
+  ) {
+    addIssue(
+      context,
+      [path],
+      `The selected ${expectedVariant} must be a reviewed public JPEG or WebP derivative.`,
+    );
+  }
+}
+
+function validatePublicApproval(
+  decision: MediaReviewDecisionShape,
+  context: MediaReviewRefinementContext,
+) {
+  if (
+    decision.expectedReviewStatus !== 'pending' ||
+    !['public_gallery_candidate', 'canonical_logo'].includes(decision.expectedPurpose) ||
+    decision.expectedVisibility !== 'private' ||
+    decision.targetMatch !== 'confirmed' ||
+    decision.privacyReview !== 'cleared'
+  ) {
+    addIssue(
+      context,
+      ['action'],
+      'Public approval requires pending private gallery or logo media cleared for its target.',
+    );
+  }
+  validatePublicRights(decision, context);
+  if (
+    decision.altText === null ||
+    decision.displayOrder === null ||
+    decision.publicDisplayFileId === null
+  ) {
+    addIssue(
+      context,
+      ['publicDisplayFileId'],
+      'Public approval requires alt text, display order, and a public display derivative.',
+    );
+  }
+  validatePublicDerivative(decision, context, 'publicDisplayFileId', 'display');
+  validatePublicDerivative(decision, context, 'publicThumbnailFileId', 'thumbnail');
+}
+
+function validateNonApprovalAction(
+  decision: MediaReviewDecisionShape,
+  context: MediaReviewRefinementContext,
+) {
+  if (hasPublicFields(decision)) {
+    addIssue(
+      context,
+      ['rightsDecision'],
+      'Reject, restrict, and supersede actions cannot change public media fields.',
+    );
+  }
+  if (decision.action === 'reject' && decision.expectedReviewStatus !== 'pending') {
+    addIssue(context, ['expectedReviewStatus'], 'Only pending media can be rejected.');
+  }
+  if (
+    decision.action === 'restrict' &&
+    (decision.expectedReviewStatus !== 'accepted' || decision.expectedVisibility !== 'public')
+  ) {
+    addIssue(context, ['action'], 'Only accepted public media can be restricted.');
+  }
+  if (
+    decision.action === 'supersede' &&
+    (decision.expectedReviewStatus !== 'accepted' ||
+      !['public', 'restricted'].includes(decision.expectedVisibility) ||
+      !['public_gallery', 'canonical_logo'].includes(decision.expectedPurpose))
+  ) {
+    addIssue(
+      context,
+      ['action'],
+      'Only accepted public or restricted gallery media can be superseded.',
+    );
+  }
+}
+
+export const mediaReviewDecisionInputSchema = mediaReviewDecisionBaseSchema.superRefine(
+  (decision, context) => {
     if (Date.parse(decision.decidedAt) < Date.parse(decision.expectedMediaUpdatedAt)) {
-      context.addIssue({
-        code: 'custom',
-        path: ['decidedAt'],
-        message: 'The media decision cannot precede the reviewed media version.',
-      });
+      addIssue(
+        context,
+        ['decidedAt'],
+        'The media decision cannot precede the reviewed media version.',
+      );
     }
     if (decision.publicSummary === null && decision.internalNote === null) {
-      context.addIssue({
-        code: 'custom',
-        path: ['internalNote'],
-        message: 'A media review decision requires a public summary or internal note.',
-      });
+      addIssue(
+        context,
+        ['internalNote'],
+        'A media review decision requires a public summary or internal note.',
+      );
     }
-
-    const fileIds = decision.expectedFiles.map((file) => file.id);
-    const variants = decision.expectedFiles.map((file) => file.variant);
-    if (new Set(fileIds).size !== fileIds.length) {
-      context.addIssue({
-        code: 'custom',
-        path: ['expectedFiles'],
-        message: 'Expected media file IDs must be unique.',
-      });
-    }
-    if (new Set(variants).size !== variants.length) {
-      context.addIssue({
-        code: 'custom',
-        path: ['expectedFiles'],
-        message: 'Expected media file variants must be unique.',
-      });
-    }
-    if (
-      decision.expectedFiles.some(
-        (file) => file.variant === 'original' && file.storageScope === 'public',
-      )
-    ) {
-      context.addIssue({
-        code: 'custom',
-        path: ['expectedFiles'],
-        message: 'Original media files cannot use public storage.',
-      });
-    }
-
-    const hasPublicFields =
-      decision.rightsDecision !== null ||
-      decision.altText !== null ||
-      decision.displayOrder !== null ||
-      decision.publicDisplayFileId !== null ||
-      decision.publicThumbnailFileId !== null;
-
+    validateFiles(decision, context);
     if (decision.action === 'approve_private') {
-      if (
-        decision.expectedReviewStatus !== 'pending' ||
-        !['evidence', 'owner_verification'].includes(decision.expectedPurpose) ||
-        decision.expectedVisibility !== 'private' ||
-        decision.targetMatch !== 'confirmed' ||
-        decision.privacyReview === 'blocked' ||
-        hasPublicFields
-      ) {
-        context.addIssue({
-          code: 'custom',
-          path: ['action'],
-          message:
-            'Private approval is limited to pending evidence or owner-verification media with a confirmed target and no public fields.',
-        });
-      }
-      return;
+      validatePrivateApproval(decision, context);
+    } else if (decision.action === 'approve_public') {
+      validatePublicApproval(decision, context);
+    } else {
+      validateNonApprovalAction(decision, context);
     }
-
-    if (decision.action === 'approve_public') {
-      if (
-        decision.expectedReviewStatus !== 'pending' ||
-        !['public_gallery_candidate', 'canonical_logo'].includes(decision.expectedPurpose) ||
-        decision.expectedVisibility !== 'private' ||
-        decision.targetMatch !== 'confirmed' ||
-        decision.privacyReview !== 'cleared'
-      ) {
-        context.addIssue({
-          code: 'custom',
-          path: ['action'],
-          message:
-            'Public approval requires pending private gallery or logo media with confirmed target and cleared privacy review.',
-        });
-      }
-      const rights = decision.rightsDecision;
-      if (
-        rights === null ||
-        !['submitted_with_permission', 'licensed', 'public_domain'].includes(rights.status)
-      ) {
-        context.addIssue({
-          code: 'custom',
-          path: ['rightsDecision'],
-          message: 'Public approval requires a publishable rights decision.',
-        });
-      } else {
-        if (rights.status === 'licensed' && rights.licenseId === null) {
-          context.addIssue({
-            code: 'custom',
-            path: ['rightsDecision', 'licenseId'],
-            message: 'Licensed public media requires a license record.',
-          });
-        }
-        if (
-          rights.status === 'submitted_with_permission' &&
-          rights.rightsHolder === null &&
-          rights.consentReference === null
-        ) {
-          context.addIssue({
-            code: 'custom',
-            path: ['rightsDecision', 'consentReference'],
-            message: 'Submitted public media requires a rights holder or consent reference.',
-          });
-        }
-        if (rights.licenseAttributionRequired === true && rights.attribution === null) {
-          context.addIssue({
-            code: 'custom',
-            path: ['rightsDecision', 'attribution'],
-            message: 'The selected license requires attribution.',
-          });
-        }
-      }
-      if (
-        decision.altText === null ||
-        decision.displayOrder === null ||
-        decision.publicDisplayFileId === null
-      ) {
-        context.addIssue({
-          code: 'custom',
-          path: ['publicDisplayFileId'],
-          message: 'Public approval requires alt text, display order, and a public display derivative.',
-        });
-      }
-      for (const [path, id, variant] of [
-        ['publicDisplayFileId', decision.publicDisplayFileId, 'display'],
-        ['publicThumbnailFileId', decision.publicThumbnailFileId, 'thumbnail'],
-      ] as const) {
-        if (id === null) continue;
-        const file = decision.expectedFiles.find((candidate) => candidate.id === id);
-        if (
-          file === undefined ||
-          file.variant !== variant ||
-          file.storageScope !== 'public' ||
-          !['image/jpeg', 'image/webp'].includes(file.mimeType)
-        ) {
-          context.addIssue({
-            code: 'custom',
-            path: [path],
-            message: `The selected ${variant} must be a reviewed public JPEG or WebP derivative.`,
-          });
-        }
-      }
-      return;
-    }
-
-    if (hasPublicFields) {
-      context.addIssue({
-        code: 'custom',
-        path: ['rightsDecision'],
-        message: 'Reject, restrict, and supersede actions cannot change public media fields.',
-      });
-    }
-    if (decision.action === 'reject' && decision.expectedReviewStatus !== 'pending') {
-      context.addIssue({
-        code: 'custom',
-        path: ['expectedReviewStatus'],
-        message: 'Only pending media can be rejected.',
-      });
-    }
-    if (decision.action === 'restrict') {
-      if (decision.expectedReviewStatus !== 'accepted' || decision.expectedVisibility !== 'public') {
-        context.addIssue({
-          code: 'custom',
-          path: ['action'],
-          message: 'Only accepted public media can be restricted.',
-        });
-      }
-    }
-    if (decision.action === 'supersede') {
-      if (
-        decision.expectedReviewStatus !== 'accepted' ||
-        !['public', 'restricted'].includes(decision.expectedVisibility) ||
-        !['public_gallery', 'canonical_logo'].includes(decision.expectedPurpose)
-      ) {
-        context.addIssue({
-          code: 'custom',
-          path: ['action'],
-          message: 'Only accepted public or restricted gallery media can be superseded.',
-        });
-      }
-    }
-  });
+  },
+);
 
 export type MediaReviewMutationContext = z.infer<typeof mediaReviewMutationContextSchema>;
 export type MediaReviewDecisionInput = z.infer<typeof mediaReviewDecisionInputSchema>;
