@@ -22,9 +22,6 @@ export function scheduledReconfirmationRunId(effectiveAt: string): Promise<strin
   return deterministicScheduledUuid(`cryptopaymap:reconfirmation:run:${effectiveAt}`);
 }
 
-export function scheduledReconfirmationRequestId(
-  runId: string,
-  claimId: string,
-): Promise<string> {
+export function scheduledReconfirmationRequestId(runId: string, claimId: string): Promise<string> {
   return deterministicScheduledUuid(`cryptopaymap:reconfirmation:claim:${runId}:${claimId}`);
 }
