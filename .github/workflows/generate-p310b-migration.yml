@@ -30,9 +30,15 @@ jobs:
         run: npm ci
       - name: Generate migration
         run: npm run db:generate
-      - name: Upload migration artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: p310b-migration
-          path: drizzle
-          if-no-files-found: error
+      - name: Commit migration artifacts
+        shell: bash
+        run: |
+          if git diff --quiet -- drizzle; then
+            echo "No migration changes were generated."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add drizzle
+          git commit -m "P3-10B: generate media review migration"
+          git push origin HEAD:work/p310b
