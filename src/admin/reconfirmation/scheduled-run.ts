@@ -1,16 +1,17 @@
-import { z } from 'zod';
 import {
   ReconfirmationExpirationError,
   createReconfirmationExpirationService,
 } from './expiration';
 import {
   ScheduledReconfirmationError,
+  scheduledReconfirmationBatchSchema,
   scheduledReconfirmationContextSchema,
   scheduledReconfirmationInputSchema,
   scheduledReconfirmationRunReceiptSchema,
   type ScheduledReconfirmationBackend,
   type ScheduledReconfirmationContext,
   type ScheduledReconfirmationInput,
+  type ScheduledReconfirmationOutcome,
   type ScheduledReconfirmationRunReceipt,
 } from './scheduled-contract';
 import { scheduledReconfirmationRequestId } from './scheduled-request-id';
@@ -27,7 +28,10 @@ export function createScheduledReconfirmationService(
       input: ScheduledReconfirmationInput,
     ): Promise<ScheduledReconfirmationRunReceipt> {
       const contextResult = scheduledReconfirmationContextSchema.safeParse(context);
-      if (!contextResult.success || !context.capabilities.includes('claim:expire')) {
+      if (
+        !contextResult.success ||
+        !contextResult.data.capabilities.includes('claim:expire')
+      ) {
         throw new ScheduledReconfirmationError(
           'unauthorized',
           'The actor is not authorized to run scheduled reconfirmation.',
@@ -38,6 +42,7 @@ export function createScheduledReconfirmationService(
               ),
         );
       }
+
       const inputResult = scheduledReconfirmationInputSchema.safeParse(input);
       if (!inputResult.success) {
         throw new ScheduledReconfirmationError(
@@ -48,9 +53,9 @@ export function createScheduledReconfirmationService(
       }
 
       const effectiveAt = new Date(inputResult.data.effectiveAt);
-      let batch: Awaited<ReturnType<ScheduledReconfirmationBackend['loadExpiredClaims']>>;
+      let loaded: unknown;
       try {
-        batch = await backend.loadExpiredClaims(effectiveAt, inputResult.data.limit);
+        loaded = await backend.loadExpiredClaims(effectiveAt, inputResult.data.limit);
       } catch (error) {
         throw new ScheduledReconfirmationError(
           'backend_failure',
@@ -60,11 +65,43 @@ export function createScheduledReconfirmationService(
         );
       }
 
-      const outcomes: z.infer<
-        typeof import('./scheduled-contract').scheduledReconfirmationOutcomeSchema
-      >[] = [];
-      for (const claim of batch.claims) {
-        const requestId = await requestIdFactory(contextResult.data.runId, claim.id);
+      const batchResult = scheduledReconfirmationBatchSchema.safeParse(loaded);
+      if (!batchResult.success || batchResult.data.claims.length > inputResult.data.limit) {
+        throw new ScheduledReconfirmationError(
+          'backend_failure',
+          'The expired Claim batch was invalid.',
+          batchResult.success
+            ? ['The backend returned more Claims than the requested limit.']
+            : batchResult.error.issues.map(
+                (issue) => `${issue.path.join('.')}: ${issue.message}`,
+              ),
+        );
+      }
+      if (
+        batchResult.data.claims.some(
+          (claim) => Date.parse(claim.nextReviewAt) > effectiveAt.getTime(),
+        )
+      ) {
+        throw new ScheduledReconfirmationError(
+          'backend_failure',
+          'The expired Claim batch included a Claim before its review deadline.',
+        );
+      }
+
+      const outcomes: ScheduledReconfirmationOutcome[] = [];
+      for (const claim of batchResult.data.claims) {
+        let requestId: string;
+        try {
+          requestId = await requestIdFactory(contextResult.data.runId, claim.id);
+        } catch (error) {
+          throw new ScheduledReconfirmationError(
+            'backend_failure',
+            'A stable scheduled request ID could not be derived.',
+            [],
+            { cause: error },
+          );
+        }
+
         try {
           const receipt = await expiration.expire(
             {
@@ -87,17 +124,18 @@ export function createScheduledReconfirmationService(
           );
           outcomes.push({ claimId: claim.id, requestId, state: receipt.state });
         } catch (error) {
-          if (error instanceof ReconfirmationExpirationError) {
-            if (error.code === 'conflict' || error.code === 'not_found') {
-              outcomes.push({ claimId: claim.id, requestId, state: error.code });
-              continue;
-            }
+          if (
+            error instanceof ReconfirmationExpirationError &&
+            (error.code === 'conflict' || error.code === 'not_found')
+          ) {
+            outcomes.push({ claimId: claim.id, requestId, state: error.code });
+            continue;
           }
           outcomes.push({ claimId: claim.id, requestId, state: 'failed' });
         }
       }
 
-      const count = (state: (typeof outcomes)[number]['state']) =>
+      const count = (state: ScheduledReconfirmationOutcome['state']) =>
         outcomes.filter((outcome) => outcome.state === state).length;
       return scheduledReconfirmationRunReceiptSchema.parse({
         runId: contextResult.data.runId,
@@ -108,7 +146,7 @@ export function createScheduledReconfirmationService(
         conflictCount: count('conflict'),
         notFoundCount: count('not_found'),
         failedCount: count('failed'),
-        hasMore: batch.hasMore,
+        hasMore: batchResult.data.hasMore,
         outcomes,
       });
     },
