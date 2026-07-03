@@ -127,7 +127,7 @@ describe('export release workspace', () => {
     expect(result.artifacts[0]).toMatchObject({
       path: '/version.json',
       mediaType: 'application/json',
-      recordCount: null,
+      recordCount: 1,
     });
     expect(result.artifacts[0]?.sha256).toMatch(/^[a-f0-9]{64}$/);
     expect(result.decisions).toEqual([decision(candidate.snapshotDigest)]);
