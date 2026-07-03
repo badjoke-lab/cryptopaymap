@@ -125,11 +125,10 @@ export function createStorageAwareMediaReviewBackend(
         }
       }
 
-      const receipt = await decisionBackend.commitDecision(prepared);
       if (command.action === 'restrict' || command.action === 'supersede') {
         await revokeObjects(storage, plan.operations);
       }
-      return receipt;
+      return decisionBackend.commitDecision(prepared);
     },
   };
 }
