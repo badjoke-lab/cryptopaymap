@@ -1,4 +1,11 @@
+import { createDrizzleExportActivationHistoryBackend } from './activation-history-backend';
+import {
+  exportPublicationTargetFromEnvironment,
+  type ExportActivationEnvironment,
+} from './activation-environment';
+import { createDurableExportPublicationService } from './activation-history';
 import { exportArtifactSourceFromEnvironment, exportReleaseDatabase } from './http-environment';
+import { createDrizzleApprovedExportReleaseBackend } from './publication-db';
 import {
   createExportPublicationService,
   ExportPublicationError,
@@ -6,11 +13,6 @@ import {
   type ExportPublicationMutationContext,
   type ExportPublicationReceipt,
 } from './publication-contract';
-import { createDrizzleApprovedExportReleaseBackend } from './publication-db';
-import {
-  exportPublicationTargetFromEnvironment,
-  type ExportActivationEnvironment,
-} from './activation-environment';
 
 export async function activateExportRelease(
   context: ExportPublicationMutationContext,
@@ -35,8 +37,12 @@ export async function activateExportRelease(
   }
 
   const database = exportReleaseDatabase(environment);
-  return createExportPublicationService(
+  const runner = createExportPublicationService(
     createDrizzleApprovedExportReleaseBackend(database),
     exportPublicationTargetFromEnvironment(environment),
+  );
+  return createDurableExportPublicationService(
+    createDrizzleExportActivationHistoryBackend(database),
+    runner,
   ).publish(context, input, artifacts);
 }
