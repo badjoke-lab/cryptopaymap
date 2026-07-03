@@ -8,13 +8,13 @@ Phase 3 — Administration and review
 
 ## Current implementation item
 
-P3-09 — Status transitions and reconfirmation queue
+P3-10 — Media review
 
 ## Active work
 
-- P3-09D — scheduled reconfirmation execution boundary and final P3-09 integration handoff.
-- Branch: `work/p309d`.
-- Pull request: #67.
+- P3-10A — media review authorization and decision contract.
+- Branch: `work/p310a`.
+- Pull request: not opened yet.
 
 ## Latest completed work
 
@@ -27,35 +27,35 @@ P3-09 — Status transitions and reconfirmation queue
 - P3-06 completed through pull requests #46 and #47.
 - P3-07 completed through pull request #58.
 - P3-08 completed through pull request #63.
-- P3-09A completed through pull request #64.
-- P3-09B completed through pull request #65.
-- P3-09C completed through pull request #66.
+- P3-09 completed through pull request #67.
 
-## P3-09D in progress
+## P3-10A in progress
 
-- derive stable run and request IDs for replayable scheduled occurrences
-- load only bounded, overdue, confirmed, non-deleted Claims from the database
-- reuse the durable P3-09B transition backend and exact Claim guards
-- continue across per-Claim replay, conflict, not-found, and failure outcomes
-- expose a non-HTTP scheduled execution boundary without enabling a live cron trigger
-- complete runtime, unit, integration, migration, build, and artifact validation
-- hand Phase 3 work to P3-10 after P3-09 repository completion
+- isolate the `media:review` mutation capability
+- pin exact Media asset and file-set versions
+- keep Evidence and owner-verification media private
+- require target, privacy, rights, alt text, display order, and derivative checks for public approval
+- define reject, urgent restrict, and supersede actions
+- enforce idempotency, replay, conflict, and fail-closed validation
+- add runtime and unit tests before persistence work
 
-## Deferred after P3-09
+## Deferred within P3-10
 
-- live Cloudflare scheduled trigger configuration
-- live Access, database, and production verification
-- automatic reconfirmed or ended transitions without reviewed Evidence
+- durable Media review decision receipts and database transaction backend
+- object-storage operations and signed review access
+- protected Media queue and detail APIs
+- `/admin/media` reviewer UI
+- final P3-10 integration audit
 
 ## Next
 
-1. Complete P3-09D validation and merge pull request #67.
-2. Start P3-10 Media review.
-3. Preserve live scheduler and production verification as explicit deployment work.
+1. Complete P3-10A validation and open its pull request.
+2. Add durable Media review persistence.
+3. Add the protected Media review workspace.
 
 ## Blocked
 
-No repository blocker. Live deployment and database verification remain deferred.
+No repository blocker. Live storage, Access, database, and production verification remain deferred.
 
 ## Verification rule
 
