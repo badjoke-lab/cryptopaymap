@@ -14,7 +14,7 @@ P3-10 — Media review
 
 - P3-10C — controlled Media storage-operation boundary
 - Branch: `work/p310c`
-- Pull request: not opened yet
+- Pull request: #71
 
 ## Latest completed work
 
@@ -39,7 +39,7 @@ P3-10 — Media review
 
 ## Next
 
-1. Complete P3-10C validation and merge its pull request.
+1. Complete P3-10C validation and merge pull request #71.
 2. Add the protected Media queue and detail workspace.
 3. Add `/admin/media` reviewer UI.
 
