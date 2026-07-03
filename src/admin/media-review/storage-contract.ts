@@ -4,14 +4,17 @@ import type { MediaReviewDecisionCommand, MediaReviewDecisionReceipt } from './d
 export const mediaStorageScopeSchema = z.enum(['private', 'public']);
 export const mediaStorageOperationTypeSchema = z.enum(['publish', 'revoke']);
 
-export const mediaStorageObjectSchema = z
+export const mediaStorageExpectationSchema = z
   .object({
     key: z.string().trim().min(1).max(1_024),
     mimeType: z.enum(['image/jpeg', 'image/webp']),
     contentHash: z.string().regex(/^[a-f0-9]{64}$/),
-    byteSize: z.number().int().positive(),
   })
   .strict();
+
+export const inspectedMediaStorageObjectSchema = mediaStorageExpectationSchema.extend({
+  byteSize: z.number().int().positive(),
+});
 
 export const mediaFileTransitionSchema = z
   .object({
@@ -27,8 +30,8 @@ export const mediaStorageOperationSchema = z
   .object({
     type: mediaStorageOperationTypeSchema,
     fileId: z.uuid(),
-    source: mediaStorageObjectSchema,
-    destination: mediaStorageObjectSchema,
+    source: mediaStorageExpectationSchema,
+    destination: mediaStorageExpectationSchema,
   })
   .strict();
 
@@ -41,7 +44,8 @@ export const mediaStoragePlanSchema = z
   })
   .strict();
 
-export type MediaStorageObject = z.infer<typeof mediaStorageObjectSchema>;
+export type MediaStorageExpectation = z.infer<typeof mediaStorageExpectationSchema>;
+export type InspectedMediaStorageObject = z.infer<typeof inspectedMediaStorageObjectSchema>;
 export type MediaFileTransition = z.infer<typeof mediaFileTransitionSchema>;
 export type MediaStorageOperation = z.infer<typeof mediaStorageOperationSchema>;
 export type MediaStoragePlan = z.infer<typeof mediaStoragePlanSchema>;
@@ -51,8 +55,8 @@ export type StoragePreparedMediaReviewCommand = MediaReviewDecisionCommand & {
 };
 
 export interface MediaStorageAdapter {
-  inspectPrivateObject(key: string): Promise<MediaStorageObject | null>;
-  publishObject(sourceKey: string, destination: MediaStorageObject): Promise<void>;
+  inspectPrivateObject(key: string): Promise<InspectedMediaStorageObject | null>;
+  publishObject(sourceKey: string, destination: MediaStorageExpectation): Promise<void>;
   revokePublicObject(key: string): Promise<void>;
 }
 
