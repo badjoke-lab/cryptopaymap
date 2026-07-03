@@ -12,9 +12,9 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11A — export release authorization and decision contract
-- Branch: `work/p311a`
-- Pull request: #75
+- P3-11B — durable export release decision persistence
+- Branch: `work/p311b`
+- Pull request: not opened yet
 
 ## Latest completed work
 
@@ -24,27 +24,28 @@ P3-11 — Export controls and release workflow
 - P3-08 completed through pull request #63
 - P3-09 completed through pull request #67
 - P3-10 completed through pull request #74
+- P3-11A completed through pull request #75
 
-## P3-11A in progress
+## P3-11B in progress
 
-- isolated `export:release` capability
-- explicit actor allowlist and idempotency key
-- internally prepared eligible or blocked release candidate
-- exact snapshot digest, artifact count, version, schema, and generated-time guards
-- approve and reject decision shapes
-- validation issue capture
-- deterministic request fingerprint and replay boundary
-- contract, authorization, and runtime tests
+- durable `export_release_decisions` receipts
+- unique request identity
+- approved snapshot and dataset-version uniqueness
+- database action-shape and time-order constraints
+- guarded first commit and deterministic replay
+- duplicate and constraint conflict classification
+- generated Drizzle migration and snapshot
+- persistence runtime and unit tests
 
 ## Next
 
-1. Complete P3-11A validation and merge pull request #75.
-2. Add durable export release decision persistence.
-3. Add the protected export queue and release workspace.
+1. Complete P3-11B validation and merge its pull request.
+2. Add the protected export queue and release workspace.
+3. Add `/admin/exports` reviewer UI and controlled publication operations.
 
 ## Blocked
 
-No repository blocker. Live Access, database, public deployment, and production verification remain deferred.
+No repository blocker. Live database migration, public deployment, and production verification remain deferred.
 
 ## Verification rule
 
