@@ -1,0 +1,11 @@
+---
+import { ReconfirmationDetail } from '../../../components/admin/ReconfirmationDetail';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+<AdminLayout title="Claim review | CryptoPayMap Admin" heading="Claim review" description="Protected Claim review workspace.">
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6">
+    <p class="m-0 text-sm font-semibold text-brand-800">Review boundary</p>
+    <h2 class="mt-1 text-xl font-semibold tracking-tight text-ink">Version-pinned Claim state</h2>
+  </section>
+  <div class="mt-8"><ReconfirmationDetail client:load /></div>
+</AdminLayout>
