@@ -48,7 +48,7 @@ export const exportReleaseDecisionSummarySchema = z
   })
   .strict();
 
-export const exportReleaseCandidateSummarySchema = exportReleaseCandidateSchema.extend({
+export const exportReleaseCandidateSummarySchema = exportReleaseCandidateSchema.safeExtend({
   validationIssueCount: z.number().int().min(0).max(500),
 });
 
