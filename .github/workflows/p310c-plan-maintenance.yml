@@ -1,1 +1,56 @@
 name: P3-10C plan maintenance
+
+on:
+  push:
+    branches:
+      - work/p310c
+    paths:
+      - .github/workflows/p310c-plan-maintenance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p310c
+          fetch-depth: 0
+      - name: Update implementation plan
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = path.read_text()
+          text = text.replace(
+              '| P3-10 | Media review | Persistence active | P3-02, P2-10 | #69 complete; P3-10B active |',
+              '| P3-10 | Media review | Storage boundary active | P3-02, P2-10 | #69 and #70 complete; P3-10C active |',
+          )
+          text = text.replace(
+              'P3-10A added the isolated `media:review` capability and strict Media decision contract in pull request #69. It pins the exact Media asset version, subject, rights and visibility state, and complete file set; separates private Evidence and owner-proof approval from gallery approval; and defines reject, restrict, supersede, replay, conflict, and fail-closed behavior.\n\n### Current delivery',
+              'P3-10A added the isolated `media:review` capability and strict Media decision contract in pull request #69. It pins the exact Media asset version, subject, rights and visibility state, and complete file set; separates private Evidence and owner-proof approval from gallery approval; and defines reject, restrict, supersede, replay, conflict, and fail-closed behavior.\n\nP3-10B added durable Media review decision receipts, migration `0017_glorious_toxin.sql`, exact asset and file-set guards, active-cover uniqueness, projected decision outcomes, guarded database writes, replay handling, and database conflict classification in pull request #70.\n\n### Current delivery',
+          )
+          text = text.replace(
+              'P3-10B adds durable Media review decision receipts, migration `0017_glorious_toxin.sql`, exact asset and file-set guards, active-cover uniqueness, projected decision outcomes, guarded database writes, replay handling, and database conflict classification.',
+              'P3-10C adds the controlled Media storage-operation boundary: private staged derivatives, deterministic private and public object keys, R2 metadata verification, durable file scope and key transitions, replay-safe publication after approval, and fail-closed revocation before restriction or supersession.',
+          )
+          text = text.replace('- controlled storage operation boundary\n', '')
+          path.write_text(text)
+          PY
+      - name: Commit plan update
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No plan changes were generated."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/IMPLEMENTATION_PLAN.md
+          git commit -m "P3-10C: synchronize implementation plan"
+          git push origin HEAD:work/p310c
