@@ -13,9 +13,7 @@ export async function writeStaleTransition(
   input: ReconfirmationExpirationInput,
   environment: ReconfirmationHttpEnvironment,
 ) {
-  return createReconfirmationExpirationService(
-    createDrizzleReconfirmationExpirationBackend(
-      createDatabase(databaseUrl(environment)),
-    ),
-  ).expire(context, { ...input, claimId });
+  const database = createDatabase(databaseUrl(environment));
+  const backend = createDrizzleReconfirmationExpirationBackend(database);
+  return createReconfirmationExpirationService(backend).expire(context, { ...input, claimId });
 }
