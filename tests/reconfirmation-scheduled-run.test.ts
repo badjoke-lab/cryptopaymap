@@ -48,17 +48,11 @@ describe('scheduled reconfirmation run', () => {
   it('derives stable run and request UUIDs', async () => {
     const scheduledRunId = await scheduledReconfirmationRunId(effectiveAt);
     expect(scheduledRunId).toBe(await scheduledReconfirmationRunId(effectiveAt));
-    expect(scheduledRunId).not.toBe(
-      await scheduledReconfirmationRunId('2026-07-03T01:00:00.000Z'),
-    );
+    expect(scheduledRunId).not.toBe(await scheduledReconfirmationRunId('2026-07-03T01:00:00.000Z'));
 
     const first = await scheduledReconfirmationRequestId(scheduledRunId, firstClaimId);
-    expect(first).toBe(
-      await scheduledReconfirmationRequestId(scheduledRunId, firstClaimId),
-    );
-    expect(first).not.toBe(
-      await scheduledReconfirmationRequestId(scheduledRunId, secondClaimId),
-    );
+    expect(first).toBe(await scheduledReconfirmationRequestId(scheduledRunId, firstClaimId));
+    expect(first).not.toBe(await scheduledReconfirmationRequestId(scheduledRunId, secondClaimId));
     expect(first).toMatch(/^[0-9a-f-]{36}$/);
   });
 
