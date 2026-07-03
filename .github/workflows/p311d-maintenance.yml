@@ -1,1 +1,103 @@
 name: P3-11D maintenance
+
+on:
+  push:
+    branches:
+      - work/p311d
+    paths:
+      - .github/workflows/p311d-maintenance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p311d
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Connect UI checks and synchronize plan
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          queue = Path('src/components/admin/ExportReleaseQueue.tsx')
+          text = queue.read_text()
+          text = text.replace(
+              "  type ExportReleaseDecisionSummary,\n} from '../../admin/export-release/workspace';",
+              "  type ExportReleaseDecisionSummary,\n  type ExportReleaseQueueResponse,\n} from '../../admin/export-release/workspace';",
+          )
+          text = text.replace(
+              "candidate: z.infer<typeof exportReleaseQueueResponseSchema>['currentCandidate'];",
+              "candidate: ExportReleaseQueueResponse['currentCandidate'];",
+          )
+          queue.write_text(text)
+
+          detail = Path('src/components/admin/ExportReleaseDetail.tsx')
+          text = detail.read_text()
+          text = text.replace(
+              'border border-success bg-success-soft',
+              'border border-confirmed bg-brand-50',
+          )
+          text = text.replace(
+              'border border-danger bg-danger-soft',
+              'border border-danger bg-surface',
+          )
+          detail.write_text(text)
+
+          page = Path('src/pages/admin/exports/detail.astro')
+          text = page.read_text()
+          text = text.replace(
+              'border border-warning bg-warning-soft',
+              'border border-stale bg-brand-50',
+          )
+          text = text.replace('text-warning-strong', 'text-stale')
+          page.write_text(text)
+
+          package = Path('package.json')
+          text = package.read_text()
+          text = text.replace(
+              'node scripts/check-media-review-artifact.mjs",',
+              'node scripts/check-media-review-artifact.mjs && node scripts/check-export-release-artifact.mjs",',
+          )
+          package.write_text(text)
+
+          plan = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = plan.read_text()
+          text = text.replace(
+              '| P3-11 | Export controls and release workflow | Protected workspace active | P3-07 through P3-10 | #75–#76 complete; P3-11C active |',
+              '| P3-11 | Export controls and release workflow | Reviewer UI active | P3-07 through P3-10 | #75–#77 complete; P3-11D active |',
+          )
+          text = text.replace(
+              'P3-11B added durable `export_release_decisions` receipts, generated migration `0018_clumsy_drax.sql`, request replay, approved snapshot and dataset-version uniqueness, candidate and action constraints, and database conflict classification in pull request #76.\n\n### Current P3-11 delivery',
+              'P3-11B added durable `export_release_decisions` receipts, generated migration `0018_clumsy_drax.sql`, request replay, approved snapshot and dataset-version uniqueness, candidate and action constraints, and database conflict classification in pull request #76.\n\nP3-11C added the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint in pull request #77.\n\n### Current P3-11 delivery',
+          )
+          text = text.replace(
+              'P3-11C adds the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint.',
+              'P3-11D adds `/admin/exports`, the exact snapshot detail workspace, validation and artifact inventory, state-aware approve or reject controls, component tests, and protected artifact validation.',
+          )
+          text = text.replace('- `/admin/exports` reviewer UI\n', '')
+          plan.write_text(text)
+          PY
+      - name: Format repository
+        run: npm run format
+      - name: Commit final delivery and remove workflow
+        shell: bash
+        run: |
+          git rm .github/workflows/p311d-maintenance.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs package.json scripts src tests
+          git commit -m "P3-11D: finalize export release reviewer UI"
+          git push origin HEAD:work/p311d
