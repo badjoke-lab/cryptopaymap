@@ -24,12 +24,15 @@ CREATE TABLE "export_release_decisions" (
 	CONSTRAINT "export_release_decisions_digest_shape" CHECK ("export_release_decisions"."snapshot_digest" ~ '^[a-f0-9]{64}$'),
 	CONSTRAINT "export_release_decisions_artifact_count_range" CHECK ("export_release_decisions"."artifact_count" between 1 and 100),
 	CONSTRAINT "export_release_decisions_validation_issues_array" CHECK (jsonb_typeof("export_release_decisions"."validation_issues") = 'array' and jsonb_array_length("export_release_decisions"."validation_issues") between 0 and 500),
+	CONSTRAINT "export_release_decisions_candidate_shape" CHECK (("export_release_decisions"."candidate_status" = 'eligible' and jsonb_array_length("export_release_decisions"."validation_issues") = 0) or ("export_release_decisions"."candidate_status" = 'blocked' and jsonb_array_length("export_release_decisions"."validation_issues") > 0)),
+	CONSTRAINT "export_release_decisions_dataset_version_nonempty" CHECK (length(trim("export_release_decisions"."dataset_version")) > 0),
+	CONSTRAINT "export_release_decisions_schema_version_nonempty" CHECK (length(trim("export_release_decisions"."schema_version")) > 0),
 	CONSTRAINT "export_release_decisions_actor_nonempty" CHECK (length(trim("export_release_decisions"."actor_id")) > 0),
 	CONSTRAINT "export_release_decisions_reason_nonempty" CHECK (length(trim("export_release_decisions"."reason_code")) > 0),
 	CONSTRAINT "export_release_decisions_fingerprint_nonempty" CHECK (length("export_release_decisions"."request_fingerprint") > 0),
 	CONSTRAINT "export_release_decisions_summary_required" CHECK ("export_release_decisions"."public_summary" is not null or "export_release_decisions"."internal_note" is not null),
 	CONSTRAINT "export_release_decisions_time_order" CHECK ("export_release_decisions"."generated_at" <= "export_release_decisions"."decided_at"),
-	CONSTRAINT "export_release_decisions_approve_shape" CHECK ("export_release_decisions"."action" <> 'approve' or ("export_release_decisions"."release_status" = 'approved' and "export_release_decisions"."candidate_status" = 'eligible' and jsonb_array_length("export_release_decisions"."validation_issues") = 0)),
+	CONSTRAINT "export_release_decisions_approve_shape" CHECK ("export_release_decisions"."action" <> 'approve' or ("export_release_decisions"."release_status" = 'approved' and "export_release_decisions"."candidate_status" = 'eligible')),
 	CONSTRAINT "export_release_decisions_reject_shape" CHECK ("export_release_decisions"."action" <> 'reject' or "export_release_decisions"."release_status" = 'rejected')
 );
 --> statement-breakpoint

@@ -1,5 +1,5 @@
 {
-  "id": "9a6c7c61-4f29-431b-b396-2eb86ca9c945",
+  "id": "34d13e40-035b-42c4-8859-b66a6c9f90d2",
   "prevId": "ef95136a-21b6-48ce-8eac-53002ff4d6b4",
   "version": "7",
   "dialect": "postgresql",
@@ -2751,6 +2751,18 @@
           "name": "export_release_decisions_validation_issues_array",
           "value": "jsonb_typeof(\"export_release_decisions\".\"validation_issues\") = 'array' and jsonb_array_length(\"export_release_decisions\".\"validation_issues\") between 0 and 500"
         },
+        "export_release_decisions_candidate_shape": {
+          "name": "export_release_decisions_candidate_shape",
+          "value": "(\"export_release_decisions\".\"candidate_status\" = 'eligible' and jsonb_array_length(\"export_release_decisions\".\"validation_issues\") = 0) or (\"export_release_decisions\".\"candidate_status\" = 'blocked' and jsonb_array_length(\"export_release_decisions\".\"validation_issues\") > 0)"
+        },
+        "export_release_decisions_dataset_version_nonempty": {
+          "name": "export_release_decisions_dataset_version_nonempty",
+          "value": "length(trim(\"export_release_decisions\".\"dataset_version\")) > 0"
+        },
+        "export_release_decisions_schema_version_nonempty": {
+          "name": "export_release_decisions_schema_version_nonempty",
+          "value": "length(trim(\"export_release_decisions\".\"schema_version\")) > 0"
+        },
         "export_release_decisions_actor_nonempty": {
           "name": "export_release_decisions_actor_nonempty",
           "value": "length(trim(\"export_release_decisions\".\"actor_id\")) > 0"
@@ -2773,7 +2785,7 @@
         },
         "export_release_decisions_approve_shape": {
           "name": "export_release_decisions_approve_shape",
-          "value": "\"export_release_decisions\".\"action\" <> 'approve' or (\"export_release_decisions\".\"release_status\" = 'approved' and \"export_release_decisions\".\"candidate_status\" = 'eligible' and jsonb_array_length(\"export_release_decisions\".\"validation_issues\") = 0)"
+          "value": "\"export_release_decisions\".\"action\" <> 'approve' or (\"export_release_decisions\".\"release_status\" = 'approved' and \"export_release_decisions\".\"candidate_status\" = 'eligible')"
         },
         "export_release_decisions_reject_shape": {
           "name": "export_release_decisions_reject_shape",
