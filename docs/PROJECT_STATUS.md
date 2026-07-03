@@ -14,7 +14,7 @@ P3-10 — Media review
 
 - P3-10B — durable Media review persistence
 - Branch: `work/p310b`
-- Pull request: not opened yet
+- Pull request: #70
 
 ## Latest completed work
 
@@ -36,9 +36,9 @@ P3-10 — Media review
 
 ## Next
 
-1. Validate migration `0017_glorious_toxin.sql`.
-2. Complete and merge P3-10B.
-3. Start the Media storage-operation boundary.
+1. Merge pull request #70 after final validation.
+2. Start the Media storage-operation boundary.
+3. Add the protected Media review workspace.
 
 ## Blocked
 
