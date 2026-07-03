@@ -68,6 +68,18 @@ export const exportReleaseDecisions = pgTable(
       'export_release_decisions_validation_issues_array',
       sql`jsonb_typeof(${table.validationIssues}) = 'array' and jsonb_array_length(${table.validationIssues}) between 0 and 500`,
     ),
+    check(
+      'export_release_decisions_candidate_shape',
+      sql`(${table.candidateStatus} = 'eligible' and jsonb_array_length(${table.validationIssues}) = 0) or (${table.candidateStatus} = 'blocked' and jsonb_array_length(${table.validationIssues}) > 0)`,
+    ),
+    check(
+      'export_release_decisions_dataset_version_nonempty',
+      sql`length(trim(${table.datasetVersion})) > 0`,
+    ),
+    check(
+      'export_release_decisions_schema_version_nonempty',
+      sql`length(trim(${table.schemaVersion})) > 0`,
+    ),
     check('export_release_decisions_actor_nonempty', sql`length(trim(${table.actorId})) > 0`),
     check('export_release_decisions_reason_nonempty', sql`length(trim(${table.reasonCode})) > 0`),
     check(
@@ -81,7 +93,7 @@ export const exportReleaseDecisions = pgTable(
     check('export_release_decisions_time_order', sql`${table.generatedAt} <= ${table.decidedAt}`),
     check(
       'export_release_decisions_approve_shape',
-      sql`${table.action} <> 'approve' or (${table.releaseStatus} = 'approved' and ${table.candidateStatus} = 'eligible' and jsonb_array_length(${table.validationIssues}) = 0)`,
+      sql`${table.action} <> 'approve' or (${table.releaseStatus} = 'approved' and ${table.candidateStatus} = 'eligible')`,
     ),
     check(
       'export_release_decisions_reject_shape',
