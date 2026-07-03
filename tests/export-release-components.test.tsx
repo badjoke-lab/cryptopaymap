@@ -80,7 +80,9 @@ describe('export release components', () => {
 
     render(<ExportReleaseQueue />);
 
-    expect(await screen.findByRole('heading', { name: 'Current release candidate' })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('heading', { name: 'Current release candidate' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('2026.07.04.1')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Review candidate' })).toHaveAttribute(
       'href',

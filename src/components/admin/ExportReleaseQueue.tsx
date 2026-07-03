@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from
 import {
   exportReleaseQueueResponseSchema,
   type ExportReleaseDecisionSummary,
+  type ExportReleaseQueueResponse,
 } from '../../admin/export-release/workspace';
 import { Button } from '../ui/Button';
 
@@ -10,7 +11,7 @@ type QueueState =
   | { status: 'loading' }
   | {
       status: 'ready';
-      candidate: z.infer<typeof exportReleaseQueueResponseSchema>['currentCandidate'];
+      candidate: ExportReleaseQueueResponse['currentCandidate'];
       decisions: ExportReleaseDecisionSummary[];
       hasMore: boolean;
     }
@@ -41,7 +42,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -76,7 +80,9 @@ function DecisionCard({ decision }: { decision: ExportReleaseDecisionSummary }) 
       <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
         <div>
           <dt className="font-semibold text-ink">Snapshot</dt>
-          <dd className="mt-1 font-mono text-xs text-muted">{shortDigest(decision.snapshotDigest)}</dd>
+          <dd className="mt-1 font-mono text-xs text-muted">
+            {shortDigest(decision.snapshotDigest)}
+          </dd>
         </div>
         <div>
           <dt className="font-semibold text-ink">Artifacts</dt>
@@ -91,7 +97,9 @@ function DecisionCard({ decision }: { decision: ExportReleaseDecisionSummary }) 
           <dd className="mt-1 text-muted">{decision.decidedAt}</dd>
         </div>
       </dl>
-      <p className="mt-4 text-sm text-muted">{decision.publicSummary ?? label(decision.reasonCode)}</p>
+      <p className="mt-4 text-sm text-muted">
+        {decision.publicSummary ?? label(decision.reasonCode)}
+      </p>
     </article>
   );
 }
@@ -143,7 +151,10 @@ export function ExportReleaseQueue() {
 
   return (
     <div>
-      <form className="rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={submit}>
+      <form
+        className="rounded-card border border-border bg-surface p-5 shadow-sm"
+        onSubmit={submit}
+      >
         <div className="flex flex-wrap items-end gap-4">
           <label className="grid min-w-56 gap-2 text-sm font-semibold text-ink">
             Release history status
@@ -201,7 +212,10 @@ export function ExportReleaseQueue() {
               <div className="flex flex-wrap items-end justify-between gap-3">
                 <div>
                   <p className="m-0 text-sm font-semibold text-brand-700">Private candidate</p>
-                  <h2 id="current-export-candidate-title" className="mt-1 text-2xl font-semibold text-ink">
+                  <h2
+                    id="current-export-candidate-title"
+                    className="mt-1 text-2xl font-semibold text-ink"
+                  >
                     Current release candidate
                   </h2>
                 </div>
@@ -234,10 +248,26 @@ export function ExportReleaseQueue() {
                     </a>
                   </div>
                   <dl className="mt-5 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
-                    <div><dt className="font-semibold text-ink">Snapshot</dt><dd className="mt-1 font-mono text-xs text-muted">{shortDigest(state.candidate.snapshotDigest)}</dd></div>
-                    <div><dt className="font-semibold text-ink">Artifacts</dt><dd className="mt-1 text-muted">{state.candidate.artifactCount}</dd></div>
-                    <div><dt className="font-semibold text-ink">Validation issues</dt><dd className="mt-1 text-muted">{state.candidate.validationIssueCount}</dd></div>
-                    <div><dt className="font-semibold text-ink">Generated</dt><dd className="mt-1 text-muted">{state.candidate.metadata?.generatedAt ?? 'Unavailable'}</dd></div>
+                    <div>
+                      <dt className="font-semibold text-ink">Snapshot</dt>
+                      <dd className="mt-1 font-mono text-xs text-muted">
+                        {shortDigest(state.candidate.snapshotDigest)}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold text-ink">Artifacts</dt>
+                      <dd className="mt-1 text-muted">{state.candidate.artifactCount}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold text-ink">Validation issues</dt>
+                      <dd className="mt-1 text-muted">{state.candidate.validationIssueCount}</dd>
+                    </div>
+                    <div>
+                      <dt className="font-semibold text-ink">Generated</dt>
+                      <dd className="mt-1 text-muted">
+                        {state.candidate.metadata?.generatedAt ?? 'Unavailable'}
+                      </dd>
+                    </div>
                   </dl>
                 </article>
               )}

@@ -42,7 +42,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -119,11 +122,26 @@ export function ExportReleaseDetail() {
 
   if (state.status !== 'ready') {
     const copy = {
-      missing_digest: ['Snapshot digest required', 'Return to the export queue and choose the current candidate.'],
-      denied: ['Export release access denied', 'This verified identity cannot read release candidates.'],
-      not_found: ['Release candidate not found', 'The private candidate changed or is no longer current.'],
-      unavailable: ['Release workspace unavailable', 'The private source or durable release service could not be verified.'],
-      error: ['Release response could not be verified', 'No unverified artifact information is displayed.'],
+      missing_digest: [
+        'Snapshot digest required',
+        'Return to the export queue and choose the current candidate.',
+      ],
+      denied: [
+        'Export release access denied',
+        'This verified identity cannot read release candidates.',
+      ],
+      not_found: [
+        'Release candidate not found',
+        'The private candidate changed or is no longer current.',
+      ],
+      unavailable: [
+        'Release workspace unavailable',
+        'The private source or durable release service could not be verified.',
+      ],
+      error: [
+        'Release response could not be verified',
+        'No unverified artifact information is displayed.',
+      ],
     } as const;
     const [title, description] = copy[state.status];
     return (
@@ -204,7 +222,10 @@ function ExportReleaseWorkspace({
         body: JSON.stringify(body),
       });
       if (response.status === 403) {
-        return setSubmitState({ status: 'denied', message: 'This identity cannot decide export releases.' });
+        return setSubmitState({
+          status: 'denied',
+          message: 'This identity cannot decide export releases.',
+        });
       }
       if (response.status === 400) {
         const result = (await response.json()) as { issues?: string[] };
@@ -216,11 +237,15 @@ function ExportReleaseWorkspace({
       if (response.status === 409) {
         return setSubmitState({
           status: 'conflict',
-          message: 'The candidate changed, is blocked, or conflicts with durable release state. Reload before retrying.',
+          message:
+            'The candidate changed, is blocked, or conflicts with durable release state. Reload before retrying.',
         });
       }
       if (!response.ok) {
-        return setSubmitState({ status: 'unavailable', message: 'The export release service is unavailable.' });
+        return setSubmitState({
+          status: 'unavailable',
+          message: 'The export release service is unavailable.',
+        });
       }
       const receipt = (await response.json()) as {
         releaseStatus: string;
@@ -232,7 +257,10 @@ function ExportReleaseWorkspace({
         message: `${receipt.datasetVersion} is ${label(receipt.releaseStatus)}. Receipt ${label(receipt.state)}.`,
       });
     } catch {
-      setSubmitState({ status: 'unavailable', message: 'The export release request could not be completed.' });
+      setSubmitState({
+        status: 'unavailable',
+        message: 'The export release request could not be completed.',
+      });
     }
   }
 
@@ -244,8 +272,12 @@ function ExportReleaseWorkspace({
         icon={<CheckCircle2 className="size-5" />}
         action={
           <div className="flex flex-wrap gap-4">
-            <Button variant="secondary" onClick={reload}>Reload durable state</Button>
-            <a className="self-center text-sm font-semibold text-brand-700" href="/admin/exports/">Return to export queue</a>
+            <Button variant="secondary" onClick={reload}>
+              Reload durable state
+            </Button>
+            <a className="self-center text-sm font-semibold text-brand-700" href="/admin/exports/">
+              Return to export queue
+            </a>
           </div>
         }
       />
@@ -254,7 +286,9 @@ function ExportReleaseWorkspace({
 
   return (
     <div>
-      <a className="text-sm font-semibold text-brand-700" href="/admin/exports/">← Export queue</a>
+      <a className="text-sm font-semibold text-brand-700" href="/admin/exports/">
+        ← Export queue
+      </a>
 
       <section className="mt-5 rounded-card border border-border bg-surface p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -271,32 +305,62 @@ function ExportReleaseWorkspace({
           </span>
         </div>
         <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
-          <div><dt className="font-semibold text-ink">Snapshot digest</dt><dd className="mt-1 font-mono text-xs text-muted">{shortDigest(candidate.snapshotDigest)}</dd></div>
-          <div><dt className="font-semibold text-ink">Schema</dt><dd className="mt-1 text-muted">{candidate.metadata?.schemaVersion ?? 'Unavailable'}</dd></div>
-          <div><dt className="font-semibold text-ink">Generated</dt><dd className="mt-1 text-muted">{candidate.metadata?.generatedAt ?? 'Unavailable'}</dd></div>
-          <div><dt className="font-semibold text-ink">History entries</dt><dd className="mt-1 text-muted">{detail.decisions.length}</dd></div>
+          <div>
+            <dt className="font-semibold text-ink">Snapshot digest</dt>
+            <dd className="mt-1 font-mono text-xs text-muted">
+              {shortDigest(candidate.snapshotDigest)}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Schema</dt>
+            <dd className="mt-1 text-muted">
+              {candidate.metadata?.schemaVersion ?? 'Unavailable'}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Generated</dt>
+            <dd className="mt-1 text-muted">{candidate.metadata?.generatedAt ?? 'Unavailable'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">History entries</dt>
+            <dd className="mt-1 text-muted">{detail.decisions.length}</dd>
+          </div>
         </dl>
       </section>
 
       <section className="mt-6" aria-labelledby="validation-issues-title">
-        <h2 id="validation-issues-title" className="text-2xl font-semibold text-ink">Validation result</h2>
+        <h2 id="validation-issues-title" className="text-2xl font-semibold text-ink">
+          Validation result
+        </h2>
         {candidate.validationIssues.length === 0 ? (
-          <p className="mt-4 rounded-card border border-success bg-success-soft p-4 text-sm text-ink">
+          <p className="mt-4 rounded-card border border-confirmed bg-brand-50 p-4 text-sm text-ink">
             The current artifact set passed the public export boundary.
           </p>
         ) : (
-          <ul className="mt-4 grid gap-2 rounded-card border border-danger bg-danger-soft p-5 text-sm text-ink">
-            {candidate.validationIssues.map((issue) => <li key={issue} className="break-words">{issue}</li>)}
+          <ul className="mt-4 grid gap-2 rounded-card border border-danger bg-surface p-5 text-sm text-ink">
+            {candidate.validationIssues.map((issue) => (
+              <li key={issue} className="break-words">
+                {issue}
+              </li>
+            ))}
           </ul>
         )}
       </section>
 
       <section className="mt-6" aria-labelledby="artifact-inventory-title">
-        <h2 id="artifact-inventory-title" className="text-2xl font-semibold text-ink">Artifact inventory</h2>
+        <h2 id="artifact-inventory-title" className="text-2xl font-semibold text-ink">
+          Artifact inventory
+        </h2>
         <div className="mt-4 overflow-x-auto rounded-card border border-border bg-surface shadow-sm">
           <table className="w-full min-w-[760px] border-collapse text-left text-sm">
             <thead className="bg-canvas text-ink">
-              <tr><th className="p-3">Path</th><th className="p-3">Type</th><th className="p-3">Records</th><th className="p-3">Bytes</th><th className="p-3">SHA-256</th></tr>
+              <tr>
+                <th className="p-3">Path</th>
+                <th className="p-3">Type</th>
+                <th className="p-3">Records</th>
+                <th className="p-3">Bytes</th>
+                <th className="p-3">SHA-256</th>
+              </tr>
             </thead>
             <tbody>
               {detail.artifacts.map((artifact) => (
@@ -305,7 +369,9 @@ function ExportReleaseWorkspace({
                   <td className="p-3 text-muted">{artifact.mediaType}</td>
                   <td className="p-3 text-muted">{artifact.recordCount ?? '—'}</td>
                   <td className="p-3 text-muted">{artifact.canonicalByteSize.toLocaleString()}</td>
-                  <td className="max-w-72 break-all p-3 font-mono text-xs text-muted">{artifact.sha256}</td>
+                  <td className="max-w-72 break-all p-3 font-mono text-xs text-muted">
+                    {artifact.sha256}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -322,7 +388,10 @@ function ExportReleaseWorkspace({
           />
         </div>
       ) : (
-        <form className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={submit}>
+        <form
+          className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm"
+          onSubmit={submit}
+        >
           <h2 className="text-2xl font-semibold text-ink">Release decision</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-ink">
@@ -332,7 +401,11 @@ function ExportReleaseWorkspace({
                 value={action}
                 onChange={(event) => setAction(event.target.value as ReleaseAction)}
               >
-                {availableActions.map((item) => <option key={item} value={item}>{label(item)}</option>)}
+                {availableActions.map((item) => (
+                  <option key={item} value={item}>
+                    {label(item)}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink">
@@ -348,21 +421,36 @@ function ExportReleaseWorkspace({
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
               Public summary
-              <textarea required name="publicSummary" rows={2} className="rounded-control border border-border px-3 py-2 font-normal" />
+              <textarea
+                required
+                name="publicSummary"
+                rows={2}
+                className="rounded-control border border-border px-3 py-2 font-normal"
+              />
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
               Internal note
-              <textarea name="internalNote" rows={3} className="rounded-control border border-border px-3 py-2 font-normal" />
+              <textarea
+                name="internalNote"
+                rows={3}
+                className="rounded-control border border-border px-3 py-2 font-normal"
+              />
             </label>
           </div>
           {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
-            <p className="mt-4 text-sm font-semibold text-danger" role="alert">{submitState.message}</p>
+            <p className="mt-4 text-sm font-semibold text-danger" role="alert">
+              {submitState.message}
+            </p>
           ) : null}
           <div className="mt-5 flex flex-wrap gap-3">
             <Button type="submit" disabled={submitState.status === 'submitting'}>
-              {submitState.status === 'submitting' ? 'Committing decision…' : 'Commit release decision'}
+              {submitState.status === 'submitting'
+                ? 'Committing decision…'
+                : 'Commit release decision'}
             </Button>
-            <Button type="button" variant="secondary" onClick={reload}>Reload exact candidate</Button>
+            <Button type="button" variant="secondary" onClick={reload}>
+              Reload exact candidate
+            </Button>
           </div>
         </form>
       )}
