@@ -14,7 +14,7 @@ P3-10 — Media review
 
 - P3-10D — protected Media queue, detail, and decision APIs
 - Branch: `work/p310d`
-- Pull request: not opened yet
+- Pull request: #72
 
 ## Latest completed work
 
@@ -39,7 +39,7 @@ P3-10 — Media review
 
 ## Next
 
-1. Complete P3-10D validation and merge its pull request.
+1. Complete P3-10D validation and merge pull request #72.
 2. Add `/admin/media` reviewer UI.
 3. Complete the P3-10 integration audit and handoff to P3-11.
 
