@@ -59,15 +59,11 @@ export const scheduledReconfirmationRunReceiptSchema = z
   })
   .strict();
 
-export type ScheduledReconfirmationContext = z.infer<
-  typeof scheduledReconfirmationContextSchema
->;
+export type ScheduledReconfirmationContext = z.infer<typeof scheduledReconfirmationContextSchema>;
 export type ScheduledReconfirmationInput = z.infer<typeof scheduledReconfirmationInputSchema>;
 export type ScheduledReconfirmationClaim = z.infer<typeof scheduledReconfirmationClaimSchema>;
 export type ScheduledReconfirmationBatch = z.infer<typeof scheduledReconfirmationBatchSchema>;
-export type ScheduledReconfirmationOutcome = z.infer<
-  typeof scheduledReconfirmationOutcomeSchema
->;
+export type ScheduledReconfirmationOutcome = z.infer<typeof scheduledReconfirmationOutcomeSchema>;
 export type ScheduledReconfirmationRunReceipt = z.infer<
   typeof scheduledReconfirmationRunReceiptSchema
 >;
@@ -76,10 +72,7 @@ export interface ScheduledReconfirmationBackend extends ReconfirmationExpiration
   loadExpiredClaims(effectiveAt: Date, limit: number): Promise<ScheduledReconfirmationBatch>;
 }
 
-export type ScheduledReconfirmationErrorCode =
-  | 'unauthorized'
-  | 'invalid_run'
-  | 'backend_failure';
+export type ScheduledReconfirmationErrorCode = 'unauthorized' | 'invalid_run' | 'backend_failure';
 
 export class ScheduledReconfirmationError extends Error {
   readonly code: ScheduledReconfirmationErrorCode;
