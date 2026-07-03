@@ -84,7 +84,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-07 | Claim editor and canonical promotion | Completed | P3-05, P3-06 | #48, #49, #51–#58 |
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
-| P3-10 | Media review | Protected workspace active | P3-02, P2-10 | #69–#71 complete; P3-10D active |
+| P3-10 | Media review | Reviewer UI active | P3-02, P2-10 | #69–#72 complete; P3-10E active |
 | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10 | — |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
@@ -126,13 +126,14 @@ P3-10B added durable Media review decision receipts, migration `0017_glorious_to
 
 P3-10C added private staged derivatives, deterministic private and public R2 keys, storage metadata preflight, durable file transitions, replay-safe publication after approval, fail-closed revocation, and R2 adapter boundaries in pull request #71.
 
+P3-10D added the protected bounded Media queue, version-pinned detail and complete file-set workspace, isolated read authorization, queue and detail GET endpoints, and the idempotent storage-aware decision POST endpoint in pull request #72.
+
 ### Current delivery
 
-P3-10D adds the protected bounded Media queue, version-pinned detail and complete file-set workspace, isolated read authorization, queue and detail GET endpoints, and the idempotent storage-aware decision POST endpoint.
+P3-10E adds `/admin/media`, protected private-file previews, the exact Media review detail workspace, state-aware decision controls, rights and privacy fields, component tests, and protected artifact validation.
 
 ### Remaining P3-10 delivery
 
-- `/admin/media` reviewer UI
 - final P3-10 integration audit and handoff to P3-11
 
 ## Phase 4 — Public core / MVP-A
