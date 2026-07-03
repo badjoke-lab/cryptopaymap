@@ -14,7 +14,7 @@ P3-11 — Export controls and release workflow
 
 - P3-11D — `/admin/exports` reviewer UI
 - Branch: `work/p311d`
-- Pull request: not opened yet
+- Pull request: #78
 
 ## Latest completed work
 
@@ -39,7 +39,7 @@ P3-11 — Export controls and release workflow
 
 ## Next
 
-1. Complete P3-11D validation and merge its pull request.
+1. Complete P3-11D validation and merge pull request #78.
 2. Add controlled publication and active release pointer switching.
 3. Add rollback and release history operations.
 
