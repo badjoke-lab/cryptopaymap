@@ -14,7 +14,7 @@ P3-10 — Media review
 
 - P3-10F — final Media review integration audit
 - Branch: `work/p310f`
-- Pull request: not opened yet
+- Pull request: #74
 
 ## Latest completed work
 
@@ -39,7 +39,7 @@ P3-10 — Media review
 
 ## Next
 
-1. Complete P3-10F validation and merge its pull request.
+1. Complete P3-10F validation and merge pull request #74.
 2. Start P3-11 export controls and release workflow.
 3. Keep live R2, Access, database, and production verification explicitly deferred.
 
