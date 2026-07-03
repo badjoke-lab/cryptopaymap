@@ -12,9 +12,9 @@ P3-10 — Media review
 
 ## Active work
 
-- P3-10C — controlled Media storage-operation boundary
-- Branch: `work/p310c`
-- Pull request: #71
+- P3-10D — protected Media queue, detail, and decision APIs
+- Branch: `work/p310d`
+- Pull request: not opened yet
 
 ## Latest completed work
 
@@ -25,23 +25,23 @@ P3-10 — Media review
 - P3-09 completed through pull request #67
 - P3-10A completed through pull request #69
 - P3-10B completed through pull request #70
+- P3-10C completed through pull request #71
 
-## P3-10C in progress
+## P3-10D in progress
 
-- keep reviewed derivatives private until approval
-- deterministic private and public R2 object keys
-- MIME and content-hash verification
-- durable file scope and key transitions
-- replay-safe publication after durable approval
-- fail-closed revocation before restriction or supersession
-- Cloudflare R2 and in-memory adapters
-- publication, cleanup, revocation, and mismatch tests
+- bounded private Media review queue
+- version-pinned Media detail and complete file set
+- isolated Media read authorization
+- protected queue and detail GET endpoints
+- protected idempotent decision POST endpoint
+- fail-closed database and R2 environment validation
+- API, workspace, and runtime validation
 
 ## Next
 
-1. Complete P3-10C validation and merge pull request #71.
-2. Add the protected Media queue and detail workspace.
-3. Add `/admin/media` reviewer UI.
+1. Complete P3-10D validation and merge its pull request.
+2. Add `/admin/media` reviewer UI.
+3. Complete the P3-10 integration audit and handoff to P3-11.
 
 ## Blocked
 
