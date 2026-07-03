@@ -14,7 +14,7 @@ P3-10 — Media review
 
 - P3-10A — media review authorization and decision contract.
 - Branch: `work/p310a`.
-- Pull request: not opened yet.
+- Pull request: #68.
 
 ## Latest completed work
 
@@ -49,7 +49,7 @@ P3-10 — Media review
 
 ## Next
 
-1. Complete P3-10A validation and open its pull request.
+1. Complete P3-10A validation and merge pull request #68.
 2. Add durable Media review persistence.
 3. Add the protected Media review workspace.
 
