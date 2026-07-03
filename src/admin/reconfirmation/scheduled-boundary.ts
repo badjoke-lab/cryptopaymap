@@ -53,9 +53,7 @@ export function createScheduledReconfirmationBoundary(
       throw new ScheduledReconfirmationError(
         'invalid_run',
         'The scheduled reconfirmation invocation was invalid.',
-        invocationResult.error.issues.map(
-          (issue) => `${issue.path.join('.')}: ${issue.message}`,
-        ),
+        invocationResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
       );
     }
 
