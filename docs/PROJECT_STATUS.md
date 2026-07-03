@@ -14,7 +14,7 @@ P3-11 — Export controls and release workflow
 
 - P3-11E — controlled export activation and active release pointer
 - Branch: `work/p311e`
-- Pull request: not opened yet
+- Pull request: #79
 
 ## Latest completed work
 
@@ -42,7 +42,7 @@ P3-11 — Export controls and release workflow
 
 ## Next
 
-1. Complete P3-11E validation and merge its pull request.
+1. Complete P3-11E validation and merge pull request #79.
 2. Add durable activation history and request-level replay records.
 3. Add rollback operations and complete the P3-11 integration audit.
 
