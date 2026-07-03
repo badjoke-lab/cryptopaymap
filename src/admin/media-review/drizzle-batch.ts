@@ -3,6 +3,7 @@ import type { CryptoPayMapDatabase } from '../../db/client';
 import { mediaAssets, mediaReviewDecisions } from '../../db/schema';
 import type { MediaReviewDecisionCommand } from './decision';
 import { mediaAssetUpdateValues } from './drizzle-asset-values';
+import { buildMediaFileTransitionStatements } from './drizzle-file-transitions';
 import { mediaReviewFileSetGuard } from './drizzle-file-guard';
 import { mediaReviewAssetGuard, mediaReviewCoverGuard } from './drizzle-guards';
 import type { ProjectedMediaReviewDecision } from './drizzle-state';
@@ -20,6 +21,7 @@ export function buildMediaReviewBatch(
   if (command.action === 'approve_public' && command.expectedRole === 'cover') {
     statements.push(mediaReviewCoverGuard(database, command));
   }
+  statements.push(...buildMediaFileTransitionStatements(database, command));
   statements.push(
     database
       .update(mediaAssets)
