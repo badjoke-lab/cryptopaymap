@@ -1,0 +1,35 @@
+---
+import { ExportReleaseDetail } from '../../../components/admin/ExportReleaseDetail';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Export release detail | CryptoPayMap Admin"
+  heading="Review export candidate"
+  description="Inspect the exact private snapshot, validation issues, artifact hashes, and durable history before deciding."
+>
+  <section class="rounded-card border border-warning bg-warning-soft p-5 sm:p-6" aria-labelledby="export-detail-warning-title">
+    <p class="m-0 text-sm font-semibold text-warning-strong">Release decision boundary</p>
+    <h2 id="export-detail-warning-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Approval does not deploy artifacts
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      This workspace records an exact approve or reject receipt. Public writes, active release switching, and rollback remain separate controlled operations.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="export-detail-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-11D</p>
+        <h2 id="export-detail-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Exact snapshot decision
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Server revalidation · idempotent receipt
+      </span>
+    </div>
+    <ExportReleaseDetail client:load />
+  </section>
+</AdminLayout>
