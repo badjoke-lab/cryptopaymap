@@ -40,7 +40,11 @@ class FakeR2Bucket implements R2BucketLike {
       customMetadata: Record<string, string>;
     },
   ) {
-    const size = value instanceof Uint8Array ? value.byteLength : 1;
+    const size = ArrayBuffer.isView(value)
+      ? value.byteLength
+      : value instanceof ArrayBuffer
+        ? value.byteLength
+        : 1;
     this.objects.set(key, {
       key,
       size,
