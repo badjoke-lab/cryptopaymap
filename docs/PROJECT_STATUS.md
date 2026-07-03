@@ -12,9 +12,9 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11B — durable export release decision persistence
-- Branch: `work/p311b`
-- Pull request: #76
+- P3-11C — protected export queue, detail, and decision APIs
+- Branch: `work/p311c`
+- Pull request: not opened yet
 
 ## Latest completed work
 
@@ -25,27 +25,28 @@ P3-11 — Export controls and release workflow
 - P3-09 completed through pull request #67
 - P3-10 completed through pull request #74
 - P3-11A completed through pull request #75
+- P3-11B completed through pull request #76
 
-## P3-11B in progress
+## P3-11C in progress
 
-- durable `export_release_decisions` receipts
-- unique request identity
-- approved snapshot and dataset-version uniqueness
-- database candidate, action, status, metadata, and time-order constraints
-- guarded first commit and deterministic replay
-- duplicate and constraint conflict classification
-- generated Drizzle migration `0018_clumsy_drax.sql` and snapshot
-- persistence runtime and unit tests
+- private R2 candidate bundle source
+- server-side candidate revalidation
+- bounded durable release history queue
+- exact current-snapshot detail and artifact summaries
+- protected queue and detail GET endpoints
+- protected idempotent approve and reject POST endpoint
+- fail-closed actor, database, and candidate binding validation
+- source, workspace, API, and runtime tests
 
 ## Next
 
-1. Complete P3-11B validation and merge pull request #76.
-2. Add the protected export queue and release workspace.
-3. Add `/admin/exports` reviewer UI and controlled publication operations.
+1. Complete P3-11C validation and merge its pull request.
+2. Add `/admin/exports` reviewer UI.
+3. Add controlled publication and active release pointer switching.
 
 ## Blocked
 
-No repository blocker. Live database migration, public deployment, and production verification remain deferred.
+No repository blocker. Live R2 candidate generation, database, deployment, and production verification remain deferred.
 
 ## Verification rule
 
