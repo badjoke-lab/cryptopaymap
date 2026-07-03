@@ -14,7 +14,7 @@ P3-11 — Export controls and release workflow
 
 - P3-11A — export release authorization and decision contract
 - Branch: `work/p311a`
-- Pull request: not opened yet
+- Pull request: #75
 
 ## Latest completed work
 
@@ -38,7 +38,7 @@ P3-11 — Export controls and release workflow
 
 ## Next
 
-1. Complete P3-11A validation and merge its pull request.
+1. Complete P3-11A validation and merge pull request #75.
 2. Add durable export release decision persistence.
 3. Add the protected export queue and release workspace.
 
