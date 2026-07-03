@@ -1,1 +1,32 @@
 name: Generate P3-10B migration
+
+on:
+  push:
+    branches:
+      - work/p310b
+    paths:
+      - src/db/schema/media-review-decisions.ts
+      - src/db/schema/index.ts
+      - .github/workflows/generate-p310b-migration.yml
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Generate migration
+        run: npm run db:generate
+      - name: Upload migration artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: p310b-migration
+          path: drizzle
+          if-no-files-found: error
