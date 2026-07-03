@@ -1,1 +1,62 @@
 name: P3-10C contract maintenance
+
+on:
+  push:
+    branches:
+      - work/p310c
+    paths:
+      - .github/workflows/p310c-contract-maintenance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p310c
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Update staged derivative contract
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          decision = Path('src/admin/media-review/decision.ts')
+          text = decision.read_text()
+          text = text.replace("file.storageScope !== 'public'", "file.storageScope !== 'private'")
+          text = text.replace(
+              'reviewed public JPEG or WebP derivative',
+              'reviewed private JPEG or WebP derivative',
+          )
+          decision.write_text(text)
+
+          test = Path('tests/media-review-decision.test.ts')
+          text = test.read_text()
+          text = text.replace("storageScope: 'public'", "storageScope: 'private'")
+          text = text.replace('media/public/', 'media/private/')
+          test.write_text(text)
+          PY
+          npm run format
+      - name: Commit contract correction
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No contract changes were generated."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/admin/media-review/decision.ts tests/media-review-decision.test.ts
+          git commit -m "P3-10C: require private staged derivatives"
+          git push origin HEAD:work/p310c
