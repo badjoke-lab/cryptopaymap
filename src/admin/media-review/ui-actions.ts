@@ -6,7 +6,19 @@ type MediaReviewUiState = Pick<
   'reviewStatus' | 'purpose' | 'visibility'
 >;
 
+export function isMediaReviewUiStateSupported(media: MediaReviewUiState): boolean {
+  if (media.reviewStatus !== 'pending') return true;
+  return [
+    'evidence',
+    'owner_verification',
+    'public_gallery_candidate',
+    'canonical_logo',
+  ].includes(media.purpose);
+}
+
 export function availableMediaReviewActions(media: MediaReviewUiState): MediaReviewAction[] {
+  if (!isMediaReviewUiStateSupported(media)) return [];
+
   if (media.reviewStatus === 'pending') {
     if (['evidence', 'owner_verification'].includes(media.purpose)) {
       return ['approve_private', 'reject'];
@@ -14,7 +26,7 @@ export function availableMediaReviewActions(media: MediaReviewUiState): MediaRev
     if (['public_gallery_candidate', 'canonical_logo'].includes(media.purpose)) {
       return ['approve_public', 'reject'];
     }
-    return ['reject'];
+    return [];
   }
 
   if (
