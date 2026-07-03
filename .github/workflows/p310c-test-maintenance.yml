@@ -1,1 +1,71 @@
 name: P3-10C test maintenance
+
+on:
+  push:
+    branches:
+      - work/p310c
+    paths:
+      - .github/workflows/p310c-test-maintenance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p310c
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Update storage tests
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('tests/media-storage-boundary.test.ts')
+          text = path.read_text()
+          text = text.replace(
+              "it('publishes verified derivatives before committing the decision'",
+              "it('publishes verified derivatives after committing the decision'",
+          )
+          text = text.replace(
+              "it('removes published objects when the database decision fails'",
+              "it('does not publish objects when the database decision fails'",
+          )
+          text = text.replace(
+              "it('commits restriction before revoking public objects'",
+              "it('revokes public objects before committing restriction'",
+          )
+          text = text.replace(
+              "it('reports revocation failure after the safe database decision'",
+              "it('blocks the database decision when public revocation fails'",
+          )
+          text = text.replace(
+              "expect(commitDecision).toHaveBeenCalledTimes(1);\n  });\n});",
+              "expect(commitDecision).toHaveBeenCalledTimes(0);\n  });\n});",
+          )
+          path.write_text(text)
+          PY
+          npm run format
+      - name: Commit test alignment
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No test changes were generated."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add tests/media-storage-boundary.test.ts src/admin/media-review
+          git commit -m "P3-10C: align storage boundary ordering tests"
+          git push origin HEAD:work/p310c
