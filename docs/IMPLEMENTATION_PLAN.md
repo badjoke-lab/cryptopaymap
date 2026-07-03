@@ -85,7 +85,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
-| P3-11 | Export controls and release workflow | Persistence active | P3-07 through P3-10 | #75 complete; #76 active |
+| P3-11 | Export controls and release workflow | Protected workspace active | P3-07 through P3-10 | #75–#76 complete; P3-11C active |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
 ### Completed P3-07 deliveries
@@ -136,13 +136,14 @@ P3-10F completed the exact reviewer action matrix, unsupported-state rejection, 
 
 P3-11A established the isolated `export:release` authorization, internally prepared eligible or blocked release candidates, exact snapshot and release-metadata guards, approve and reject decisions, validation issue capture, deterministic replay, and the durable backend contract in pull request #75.
 
+P3-11B added durable `export_release_decisions` receipts, generated migration `0018_clumsy_drax.sql`, request replay, approved snapshot and dataset-version uniqueness, candidate and action constraints, and database conflict classification in pull request #76.
+
 ### Current P3-11 delivery
 
-P3-11B adds durable `export_release_decisions` receipts, generated migration `0018_clumsy_drax.sql`, request replay, approved snapshot and dataset-version uniqueness, candidate and action constraints, and database conflict classification.
+P3-11C adds the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint.
 
 ### Remaining P3-11 deliveries
 
-- protected export queue and detail workspace
 - `/admin/exports` reviewer UI
 - controlled publication and release pointer switching
 - rollback and release history
