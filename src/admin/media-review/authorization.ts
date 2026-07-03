@@ -50,10 +50,7 @@ function parseActorIds(value: string | undefined): Set<string> {
   }
   const result = z.array(z.string().trim().min(1).max(200)).max(100).safeParse(parsed);
   if (!result.success) {
-    throw new MediaReviewAuthorizationError(
-      'configuration',
-      'Media review actor IDs are invalid.',
-    );
+    throw new MediaReviewAuthorizationError('configuration', 'Media review actor IDs are invalid.');
   }
   return new Set(result.data);
 }

@@ -25,8 +25,7 @@ function context(overrides: { identity?: unknown; actorIds?: string; url?: strin
       overrides.url ?? 'https://example.test/admin/api/media?reviewStatus=pending&limit=25',
     ),
     env: {
-      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {

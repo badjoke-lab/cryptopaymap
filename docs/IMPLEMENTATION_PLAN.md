@@ -84,7 +84,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-07 | Claim editor and canonical promotion | Completed | P3-05, P3-06 | #48, #49, #51–#58 |
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
-| P3-10 | Media review | Storage boundary active | P3-02, P2-10 | #69 and #70 complete; P3-10C active |
+| P3-10 | Media review | Protected workspace active | P3-02, P2-10 | #69–#71 complete; P3-10D active |
 | P3-11 | Export controls and release workflow | Planned | P3-07 through P3-10 | — |
 | P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
 
@@ -124,13 +124,14 @@ P3-10A added the isolated `media:review` capability and strict Media decision co
 
 P3-10B added durable Media review decision receipts, migration `0017_glorious_toxin.sql`, exact asset and file-set guards, active-cover uniqueness, projected decision outcomes, guarded database writes, replay handling, and database conflict classification in pull request #70.
 
+P3-10C added private staged derivatives, deterministic private and public R2 keys, storage metadata preflight, durable file transitions, replay-safe publication after approval, fail-closed revocation, and R2 adapter boundaries in pull request #71.
+
 ### Current delivery
 
-P3-10C adds the controlled Media storage-operation boundary: private staged derivatives, deterministic private and public object keys, R2 metadata verification, durable file scope and key transitions, replay-safe publication after approval, and fail-closed revocation before restriction or supersession.
+P3-10D adds the protected bounded Media queue, version-pinned detail and complete file-set workspace, isolated read authorization, queue and detail GET endpoints, and the idempotent storage-aware decision POST endpoint.
 
 ### Remaining P3-10 delivery
 
-- protected Media queue and detail workspace
 - `/admin/media` reviewer UI
 - final P3-10 integration audit and handoff to P3-11
 

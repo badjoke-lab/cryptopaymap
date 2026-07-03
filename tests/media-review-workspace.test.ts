@@ -45,7 +45,9 @@ function detail(): MediaReviewDetailResponse {
   };
 }
 
-function backend(overrides: Partial<MediaReviewWorkspaceBackend> = {}): MediaReviewWorkspaceBackend {
+function backend(
+  overrides: Partial<MediaReviewWorkspaceBackend> = {},
+): MediaReviewWorkspaceBackend {
   return {
     loadQueue: async () => ({ items: [], hasMore: false }),
     loadDetail: async () => detail(),
@@ -103,12 +105,7 @@ describe('Media review workspace contract', () => {
 
   it('returns not found without fabricating a Media record', async () => {
     await expect(
-      loadMediaReviewDetail(
-        context,
-        backend({ loadDetail: async () => null }),
-        mediaAssetId,
-        asOf,
-      ),
+      loadMediaReviewDetail(context, backend({ loadDetail: async () => null }), mediaAssetId, asOf),
     ).rejects.toMatchObject({ code: 'not_found' });
   });
 

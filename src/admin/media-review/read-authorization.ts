@@ -1,8 +1,5 @@
 import type { AdminAccessIdentity } from '../access/identity';
-import {
-  MediaReviewAuthorizationError,
-  type MediaReviewActorPolicy,
-} from './authorization';
+import { MediaReviewAuthorizationError, type MediaReviewActorPolicy } from './authorization';
 import type { MediaReviewReadContext } from './workspace';
 
 export function authorizeMediaReviewRead(

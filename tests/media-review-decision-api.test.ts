@@ -52,8 +52,7 @@ function context(
       body: JSON.stringify(overrides.body ?? { action: 'approve_private' }),
     }),
     env: {
-      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {

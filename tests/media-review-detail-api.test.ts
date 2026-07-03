@@ -59,8 +59,7 @@ function context(overrides: { identity?: unknown; actorIds?: string; id?: string
   return {
     request: new Request(`https://example.test/admin/api/media-detail?mediaAssetId=${id}`),
     env: {
-      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
