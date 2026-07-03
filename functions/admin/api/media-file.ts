@@ -1,4 +1,5 @@
 import { and, eq, isNull } from 'drizzle-orm';
+import { z } from 'zod';
 import { withAdminSecurityHeaders } from '../../../src/admin/access/config';
 import {
   MediaReviewAuthorizationError,
@@ -26,6 +27,19 @@ interface MediaFilePagesContext {
   waitUntil(promise: Promise<unknown>): void;
 }
 
+export type MediaFileLoadResult =
+  | { status: 'ready'; body: BodyInit; mimeType: string; byteSize: number }
+  | { status: 'not_found' | 'unsupported' | 'conflict' | 'unavailable' };
+
+type MediaFileLoader = (
+  fileId: string,
+  environment: MediaFileEnvironment,
+) => Promise<MediaFileLoadResult>;
+
+export interface MediaFileHandlerDependencies {
+  loadFile?: MediaFileLoader;
+}
+
 function jsonResponse(status: number, body: unknown): Response {
   return withAdminSecurityHeaders(
     new Response(JSON.stringify(body), {
@@ -43,7 +57,69 @@ function databaseUrl(environment: MediaFileEnvironment): string | null {
   return result.success ? result.data.DATABASE_URL : null;
 }
 
-export function createMediaFileGetHandler() {
+async function loadMediaFile(
+  fileId: string,
+  environment: MediaFileEnvironment,
+): Promise<MediaFileLoadResult> {
+  const url = databaseUrl(environment);
+  if (url === null) return { status: 'unavailable' };
+
+  try {
+    const rows = await createDatabase(url)
+      .select({
+        storageScope: mediaFiles.storageScope,
+        storageKey: mediaFiles.storageKey,
+        mimeType: mediaFiles.mimeType,
+        byteSize: mediaFiles.byteSize,
+        contentHash: mediaFiles.contentHash,
+      })
+      .from(mediaFiles)
+      .innerJoin(mediaAssets, eq(mediaFiles.mediaAssetId, mediaAssets.id))
+      .where(and(eq(mediaFiles.id, fileId), isNull(mediaAssets.deletedAt)))
+      .limit(1);
+    const row = rows[0];
+    if (row === undefined) return { status: 'not_found' };
+
+    const allowedMimeTypes = new Set([
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'image/heic',
+      'image/heif',
+    ]);
+    if (!allowedMimeTypes.has(row.mimeType)) return { status: 'unsupported' };
+
+    const bucket =
+      row.storageScope === 'public'
+        ? environment.CPM_MEDIA_PUBLIC_BUCKET
+        : environment.CPM_MEDIA_PRIVATE_BUCKET;
+    if (bucket === undefined) return { status: 'unavailable' };
+
+    const object = await bucket.get(row.storageKey);
+    if (object === null) return { status: 'not_found' };
+    if (
+      object.key !== row.storageKey ||
+      object.size !== row.byteSize ||
+      object.httpMetadata?.contentType !== row.mimeType ||
+      object.customMetadata?.contentHash !== row.contentHash
+    ) {
+      return { status: 'conflict' };
+    }
+    return {
+      status: 'ready',
+      body: object.body as BodyInit,
+      mimeType: row.mimeType,
+      byteSize: row.byteSize,
+    };
+  } catch {
+    return { status: 'unavailable' };
+  }
+}
+
+export function createMediaFileGetHandler(
+  dependencies: MediaFileHandlerDependencies = {},
+) {
+  const loader = dependencies.loadFile ?? loadMediaFile;
   return async (pagesContext: MediaFilePagesContext): Promise<Response> => {
     try {
       authorizeMediaReviewRead(
@@ -61,67 +137,35 @@ export function createMediaFileGetHandler() {
     }
 
     const fileId = new URL(pagesContext.request.url).searchParams.get('fileId');
-    const url = databaseUrl(pagesContext.env);
-    if (fileId === null) return jsonResponse(400, { error: 'media_file_invalid_id' });
-    if (url === null) return jsonResponse(503, { error: 'media_file_unavailable' });
+    if (!z.uuid().safeParse(fileId).success) {
+      return jsonResponse(400, { error: 'media_file_invalid_id' });
+    }
 
-    const rows = await createDatabase(url)
-      .select({
-        storageScope: mediaFiles.storageScope,
-        storageKey: mediaFiles.storageKey,
-        mimeType: mediaFiles.mimeType,
-        byteSize: mediaFiles.byteSize,
-        contentHash: mediaFiles.contentHash,
-      })
-      .from(mediaFiles)
-      .innerJoin(mediaAssets, eq(mediaFiles.mediaAssetId, mediaAssets.id))
-      .where(and(eq(mediaFiles.id, fileId), isNull(mediaAssets.deletedAt)))
-      .limit(1);
-    const row = rows[0];
-    if (row === undefined) return jsonResponse(404, { error: 'media_file_not_found' });
-
-    const allowedMimeTypes = new Set([
-      'image/jpeg',
-      'image/png',
-      'image/webp',
-      'image/heic',
-      'image/heif',
-    ]);
-    if (!allowedMimeTypes.has(row.mimeType)) {
+    const result = await loader(fileId as string, pagesContext.env);
+    if (result.status === 'not_found') {
+      return jsonResponse(404, { error: 'media_file_not_found' });
+    }
+    if (result.status === 'unsupported') {
       return jsonResponse(415, { error: 'media_file_unsupported' });
     }
-
-    const bucket =
-      row.storageScope === 'public'
-        ? pagesContext.env.CPM_MEDIA_PUBLIC_BUCKET
-        : pagesContext.env.CPM_MEDIA_PRIVATE_BUCKET;
-    if (bucket === undefined) return jsonResponse(503, { error: 'media_file_unavailable' });
-
-    try {
-      const object = await bucket.get(row.storageKey);
-      if (object === null) return jsonResponse(404, { error: 'media_file_not_found' });
-      if (
-        object.key !== row.storageKey ||
-        object.size !== row.byteSize ||
-        object.httpMetadata?.contentType !== row.mimeType ||
-        object.customMetadata?.contentHash !== row.contentHash
-      ) {
-        return jsonResponse(409, { error: 'media_file_conflict' });
-      }
-      return withAdminSecurityHeaders(
-        new Response(object.body as BodyInit, {
-          status: 200,
-          headers: {
-            'Content-Type': row.mimeType,
-            'Content-Length': String(row.byteSize),
-            'Content-Disposition': 'inline',
-            'X-Content-Type-Options': 'nosniff',
-          },
-        }),
-      );
-    } catch {
+    if (result.status === 'conflict') {
+      return jsonResponse(409, { error: 'media_file_conflict' });
+    }
+    if (result.status === 'unavailable') {
       return jsonResponse(503, { error: 'media_file_unavailable' });
     }
+
+    return withAdminSecurityHeaders(
+      new Response(result.body, {
+        status: 200,
+        headers: {
+          'Content-Type': result.mimeType,
+          'Content-Length': String(result.byteSize),
+          'Content-Disposition': 'inline',
+          'X-Content-Type-Options': 'nosniff',
+        },
+      }),
+    );
   };
 }
 
