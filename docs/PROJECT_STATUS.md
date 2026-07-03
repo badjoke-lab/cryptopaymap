@@ -12,9 +12,9 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11E — controlled export activation and active release pointer
-- Branch: `work/p311e`
-- Pull request: #79
+- P3-11F — durable activation history and request-level replay records
+- Branch: `work/p311f`
+- Pull request: #80
 
 ## Latest completed work
 
@@ -28,27 +28,29 @@ P3-11 — Export controls and release workflow
 - P3-11B completed through pull request #76
 - P3-11C completed through pull request #77
 - P3-11D completed through pull request #78
+- P3-11E completed through pull request #79
 
-## P3-11E in progress
+## P3-11F in progress
 
-- isolated `export:publish` capability and actor allowlist
-- durable approved-decision lookup
-- complete private candidate revalidation
-- deterministic immutable release object keys
-- exact object metadata verification
-- conditional ETag compare-and-set pointer switch
-- protected activation POST endpoint
-- contract, R2, authorization, API, and runtime tests
+- durable `export_activation_records` table
+- generated migration `0019_overrated_rumiko_fujikawa.sql`
+- generated snapshot materialization from verified encoded chunks
+- request-level activation fingerprint
+- successful-activation-only durable history write
+- same-request replay and different-content conflict handling
+- snapshot and dataset double-record protection
+- activation writer integration
+- activation history runtime and unit tests
 
 ## Next
 
-1. Complete P3-11E validation and merge pull request #79.
-2. Add durable activation history and request-level replay records.
-3. Add rollback operations and complete the P3-11 integration audit.
+1. Complete P3-11F validation and merge pull request #80.
+2. Add rollback operations and release history reads.
+3. Complete the final P3-11 integration audit and P3-12 handoff.
 
 ## Blocked
 
-No repository blocker. Live candidate generation, R2 activation, public serving, database, and production verification remain deferred.
+No repository blocker. Live candidate generation, R2 activation, public serving, database migration, and production verification remain deferred.
 
 ## Verification rule
 
