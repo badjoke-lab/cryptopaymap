@@ -12,9 +12,9 @@ P3-09 — Status transitions and reconfirmation queue
 
 ## Active work
 
-- P3-09C — protected reconfirmation queue, Claim detail workspace, and controlled expiration endpoint.
-- Branch: `work/p309c`.
-- Pull request: #66.
+- P3-09D — scheduled reconfirmation execution boundary and final P3-09 integration handoff.
+- Branch: `work/p309d`.
+- Pull request: #67.
 
 ## Latest completed work
 
@@ -29,27 +29,29 @@ P3-09 — Status transitions and reconfirmation queue
 - P3-08 completed through pull request #63.
 - P3-09A completed through pull request #64.
 - P3-09B completed through pull request #65.
+- P3-09C completed through pull request #66.
 
-## P3-09C in progress
+## P3-09D in progress
 
-- add Rechecks-specific authorization and protected read context
-- expose a bounded reconfirmation queue API
-- expose version-pinned Claim detail context
-- add a controlled expiration POST using the durable P3-09B backend
-- add protected Rechecks queue and detail pages
-- add API, workspace, component, and runtime validation
+- derive stable run and request IDs for replayable scheduled occurrences
+- load only bounded, overdue, confirmed, non-deleted Claims from the database
+- reuse the durable P3-09B transition backend and exact Claim guards
+- continue across per-Claim replay, conflict, not-found, and failure outcomes
+- expose a non-HTTP scheduled execution boundary without enabling a live cron trigger
+- complete runtime, unit, integration, migration, build, and artifact validation
+- hand Phase 3 work to P3-10 after P3-09 repository completion
 
-## Deferred within P3-09
+## Deferred after P3-09
 
-- scheduled execution boundary
-- final P3-09 integration audit
-- live scheduler, Access, database, and production verification
+- live Cloudflare scheduled trigger configuration
+- live Access, database, and production verification
+- automatic reconfirmed or ended transitions without reviewed Evidence
 
 ## Next
 
-1. Complete the protected Rechecks workspace in P3-09C.
-2. Add the scheduled execution boundary.
-3. Complete the P3-09 integration audit and hand off to P3-10.
+1. Complete P3-09D validation and merge pull request #67.
+2. Start P3-10 Media review.
+3. Preserve live scheduler and production verification as explicit deployment work.
 
 ## Blocked
 
