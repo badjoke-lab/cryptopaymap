@@ -14,7 +14,7 @@ P3-09 — Status transitions and reconfirmation queue
 
 - P3-09C — protected reconfirmation queue, Claim detail workspace, and controlled expiration endpoint.
 - Branch: `work/p309c`.
-- Pull request: pending.
+- Pull request: #66.
 
 ## Latest completed work
 
