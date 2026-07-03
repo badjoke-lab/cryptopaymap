@@ -29,7 +29,10 @@ interface MediaFilePagesContext {
 
 export type MediaFileLoadResult =
   | { status: 'ready'; body: BodyInit; mimeType: string; byteSize: number }
-  | { status: 'not_found' | 'unsupported' | 'conflict' | 'unavailable' };
+  | { status: 'not_found' }
+  | { status: 'unsupported' }
+  | { status: 'conflict' }
+  | { status: 'unavailable' };
 
 type MediaFileLoader = (
   fileId: string,
@@ -137,11 +140,12 @@ export function createMediaFileGetHandler(
     }
 
     const fileId = new URL(pagesContext.request.url).searchParams.get('fileId');
-    if (!z.uuid().safeParse(fileId).success) {
+    const parsedFileId = z.uuid().safeParse(fileId);
+    if (!parsedFileId.success) {
       return jsonResponse(400, { error: 'media_file_invalid_id' });
     }
 
-    const result = await loader(fileId as string, pagesContext.env);
+    const result = await loader(parsedFileId.data, pagesContext.env);
     if (result.status === 'not_found') {
       return jsonResponse(404, { error: 'media_file_not_found' });
     }
