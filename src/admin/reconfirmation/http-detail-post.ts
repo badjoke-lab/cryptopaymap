@@ -5,15 +5,12 @@ import {
 } from './authorization';
 import {
   ReconfirmationExpirationError,
+  type ReconfirmationExpirationContext,
   type ReconfirmationExpirationInput,
   type ReconfirmationExpirationReceipt,
 } from './expiration';
 import { readProtectedAdminIdentity } from '../dashboard/identity-context';
-import {
-  claimIdFromContext,
-  jsonResponse,
-  type ReconfirmationPagesContext,
-} from './http-common';
+import { claimIdFromContext, jsonResponse, type ReconfirmationPagesContext } from './http-common';
 import { writeStaleTransition } from './stale-transition-writer';
 
 export interface ReconfirmationDetailPostDependencies {
@@ -28,7 +25,7 @@ export function createReconfirmationDetailPostHandler(
   const now = dependencies.now ?? (() => new Date());
 
   return async (pagesContext: ReconfirmationPagesContext): Promise<Response> => {
-    let context;
+    let context: ReconfirmationExpirationContext;
     try {
       context = authorizeReconfirmationExpiration(
         readProtectedAdminIdentity(pagesContext.data.adminIdentity),
