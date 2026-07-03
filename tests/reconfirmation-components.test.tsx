@@ -73,16 +73,17 @@ describe('Rechecks components', () => {
   it('renders a validated queue item', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () =>
-        new Response(
-          JSON.stringify({
-            generatedAt: now,
-            query: { dueSoonDays: 30, limit: 50 },
-            items: [queueItem],
-            hasMore: false,
-          }),
-          { status: 200 },
-        ),
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              generatedAt: now,
+              query: { dueSoonDays: 30, limit: 50 },
+              items: [queueItem],
+              hasMore: false,
+            }),
+            { status: 200 },
+          ),
       ),
     );
     render(<ReconfirmationQueue />);
