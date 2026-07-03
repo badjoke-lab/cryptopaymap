@@ -12,9 +12,9 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11C — protected export queue, detail, and decision APIs
-- Branch: `work/p311c`
-- Pull request: #77
+- P3-11D — `/admin/exports` reviewer UI
+- Branch: `work/p311d`
+- Pull request: not opened yet
 
 ## Latest completed work
 
@@ -26,27 +26,26 @@ P3-11 — Export controls and release workflow
 - P3-10 completed through pull request #74
 - P3-11A completed through pull request #75
 - P3-11B completed through pull request #76
+- P3-11C completed through pull request #77
 
-## P3-11C in progress
+## P3-11D in progress
 
-- private R2 candidate bundle source
-- server-side candidate revalidation
-- bounded durable release history queue
-- exact current-snapshot detail and artifact summaries
-- protected queue and detail GET endpoints
-- protected idempotent approve and reject POST endpoint
-- fail-closed actor, database, and candidate binding validation
-- source, workspace, API, and runtime tests
+- `/admin/exports` private candidate and durable history queue
+- `/admin/exports/detail` exact snapshot workspace
+- validation issue and artifact hash inventory
+- state-aware approve and reject controls
+- exact expected snapshot metadata submission
+- component and protected artifact validation
 
 ## Next
 
-1. Complete P3-11C validation and merge pull request #77.
-2. Add `/admin/exports` reviewer UI.
-3. Add controlled publication and active release pointer switching.
+1. Complete P3-11D validation and merge its pull request.
+2. Add controlled publication and active release pointer switching.
+3. Add rollback and release history operations.
 
 ## Blocked
 
-No repository blocker. Live R2 candidate generation, database, deployment, and production verification remain deferred.
+No repository blocker. Live candidate generation, public deployment, and production verification remain deferred.
 
 ## Verification rule
 
