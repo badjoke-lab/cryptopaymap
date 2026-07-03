@@ -1,0 +1,35 @@
+---
+import { MediaReviewQueue } from '../../components/admin/MediaReviewQueue';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Media review | CryptoPayMap Admin"
+  heading="Media review queue"
+  description="A protected queue for private Evidence, owner-verification, gallery, logo, and restricted Media review."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="media-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Media review boundary</p>
+    <h2 id="media-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Private until reviewed
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Original and staged files remain private. Public approval requires exact file versions, target and privacy review, publishable rights, alt text, and approved display derivatives.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="media-queue-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-10E</p>
+        <h2 id="media-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Protected Media queue
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Version-pinned files and storage state
+      </span>
+    </div>
+    <MediaReviewQueue client:load />
+  </section>
+</AdminLayout>
