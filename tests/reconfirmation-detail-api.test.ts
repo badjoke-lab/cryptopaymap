@@ -26,11 +26,14 @@ function context(request: Request) {
 
 describe('protected Claim review API', () => {
   it('loads one Claim with a read capability', async () => {
-    const loadDetail = vi.fn(async () => ({
-      generatedAt: now.toISOString(),
-      queueItem: null,
-      claim: { id: claimId },
-    }) as never);
+    const loadDetail = vi.fn(
+      async () =>
+        ({
+          generatedAt: now.toISOString(),
+          queueItem: null,
+          claim: { id: claimId },
+        }) as never,
+    );
     const response = await createReconfirmationDetailGetHandler({
       loadDetail,
       now: () => now,
