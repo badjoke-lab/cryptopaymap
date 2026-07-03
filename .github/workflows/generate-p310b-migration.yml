@@ -9,6 +9,9 @@ on:
       - src/db/schema/index.ts
       - .github/workflows/generate-p310b-migration.yml
 
+permissions:
+  contents: write
+
 jobs:
   generate:
     runs-on: ubuntu-latest
