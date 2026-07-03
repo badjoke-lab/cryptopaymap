@@ -1,10 +1,11 @@
 import type { CryptoPayMapDatabase } from '../../db/client';
 import type { MediaReviewDecisionBackend } from './decision';
-
-export const mediaReviewBackendReady = true;
+import { executeMediaReviewWrite } from './drizzle-write';
 
 export function createDrizzleMediaReviewBackend(
-  _database: CryptoPayMapDatabase,
+  database: CryptoPayMapDatabase,
 ): MediaReviewDecisionBackend {
-  throw new Error('Not implemented.');
+  return {
+    commitDecision: (command) => executeMediaReviewWrite(database, command),
+  };
 }
