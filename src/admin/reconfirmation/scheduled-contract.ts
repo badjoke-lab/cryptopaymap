@@ -29,6 +29,13 @@ export const scheduledReconfirmationClaimSchema = z
   })
   .strict();
 
+export const scheduledReconfirmationBatchSchema = z
+  .object({
+    claims: z.array(scheduledReconfirmationClaimSchema).max(50),
+    hasMore: z.boolean(),
+  })
+  .strict();
+
 export const scheduledReconfirmationOutcomeSchema = z
   .object({
     claimId: z.uuid(),
@@ -57,15 +64,16 @@ export type ScheduledReconfirmationContext = z.infer<
 >;
 export type ScheduledReconfirmationInput = z.infer<typeof scheduledReconfirmationInputSchema>;
 export type ScheduledReconfirmationClaim = z.infer<typeof scheduledReconfirmationClaimSchema>;
+export type ScheduledReconfirmationBatch = z.infer<typeof scheduledReconfirmationBatchSchema>;
+export type ScheduledReconfirmationOutcome = z.infer<
+  typeof scheduledReconfirmationOutcomeSchema
+>;
 export type ScheduledReconfirmationRunReceipt = z.infer<
   typeof scheduledReconfirmationRunReceiptSchema
 >;
 
 export interface ScheduledReconfirmationBackend extends ReconfirmationExpirationBackend {
-  loadExpiredClaims(
-    effectiveAt: Date,
-    limit: number,
-  ): Promise<{ claims: ScheduledReconfirmationClaim[]; hasMore: boolean }>;
+  loadExpiredClaims(effectiveAt: Date, limit: number): Promise<ScheduledReconfirmationBatch>;
 }
 
 export type ScheduledReconfirmationErrorCode =
