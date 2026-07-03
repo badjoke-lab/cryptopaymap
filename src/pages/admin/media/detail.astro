@@ -1,0 +1,35 @@
+---
+import { MediaReviewDetail } from '../../../components/admin/MediaReviewDetail';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Media review detail | CryptoPayMap Admin"
+  heading="Review Media"
+  description="Inspect protected files, privacy and rights metadata, then commit a version-pinned Media decision."
+>
+  <section class="rounded-card border border-warning bg-warning-soft p-5 sm:p-6" aria-labelledby="media-detail-warning-title">
+    <p class="m-0 text-sm font-semibold text-warning-strong">Protected visual review</p>
+    <h2 id="media-detail-warning-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Do not copy private review files
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Review faces, number plates, QR codes, receipts, wallet details, target accuracy, and rights. Only approved derivatives may move to public storage.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="media-detail-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-10E</p>
+        <h2 id="media-detail-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Exact Media decision workspace
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Protected preview · no-store
+      </span>
+    </div>
+    <MediaReviewDetail client:load />
+  </section>
+</AdminLayout>
