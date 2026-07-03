@@ -2,6 +2,16 @@ import { z } from 'zod';
 import type { AdminAccessIdentity } from '../access/identity';
 import type { MediaReviewMutationContext } from './decision';
 
+export const mediaReviewAuthorizationEnvironmentSchema = z
+  .object({
+    CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: z.string().optional(),
+  })
+  .passthrough();
+
+export type MediaReviewAuthorizationEnvironment = z.infer<
+  typeof mediaReviewAuthorizationEnvironmentSchema
+>;
+
 export const mediaReviewActorPolicySchema = z
   .object({
     configured: z.boolean(),
@@ -25,6 +35,38 @@ export class MediaReviewAuthorizationError extends Error {
     this.name = 'MediaReviewAuthorizationError';
     this.code = code;
   }
+}
+
+function parseActorIds(value: string | undefined): Set<string> {
+  if (value === undefined || value.trim().length === 0) return new Set();
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(value);
+  } catch {
+    throw new MediaReviewAuthorizationError(
+      'configuration',
+      'Media review actor IDs must be a JSON array.',
+    );
+  }
+  const result = z.array(z.string().trim().min(1).max(200)).max(100).safeParse(parsed);
+  if (!result.success) {
+    throw new MediaReviewAuthorizationError('configuration', 'Media review actor IDs are invalid.');
+  }
+  return new Set(result.data);
+}
+
+export function readMediaReviewAuthorizationPolicy(
+  environment: MediaReviewAuthorizationEnvironment,
+): MediaReviewActorPolicy {
+  const result = mediaReviewAuthorizationEnvironmentSchema.safeParse(environment);
+  if (!result.success) {
+    throw new MediaReviewAuthorizationError(
+      'configuration',
+      'Media review authorization environment is invalid.',
+    );
+  }
+  const allowedActorIds = parseActorIds(result.data.CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS);
+  return { configured: allowedActorIds.size > 0, allowedActorIds };
 }
 
 export function authorizeMediaReview(
