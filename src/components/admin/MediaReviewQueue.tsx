@@ -81,9 +81,7 @@ function QueueCard({ item }: { item: MediaReviewQueueItem }) {
             <span>·</span>
             <span>{label(item.subject.type)}</span>
           </div>
-          <h3 className="mt-3 text-lg font-semibold text-ink">
-            {label(item.reviewStatus)} Media
-          </h3>
+          <h3 className="mt-3 text-lg font-semibold text-ink">{label(item.reviewStatus)} Media</h3>
           <dl className="mt-4 grid gap-3 text-sm sm:grid-cols-2 lg:grid-cols-4">
             <div>
               <dt className="font-semibold text-ink">Rights</dt>
@@ -102,9 +100,7 @@ function QueueCard({ item }: { item: MediaReviewQueueItem }) {
               <dd className="mt-1 break-words text-muted">{item.updatedAt}</dd>
             </div>
           </dl>
-          <p className="mt-4 break-all text-xs text-muted">
-            Subject: {item.subject.id}
-          </p>
+          <p className="mt-4 break-all text-xs text-muted">Subject: {item.subject.id}</p>
         </div>
         <a
           className="inline-flex min-h-11 items-center justify-center rounded-control border border-border bg-white px-4 text-sm font-semibold text-brand-700"

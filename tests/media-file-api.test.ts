@@ -18,8 +18,7 @@ function context(overrides: { identity?: unknown; actorIds?: string; id?: string
   return {
     request: new Request(`https://example.test/admin/api/media-file${query}`),
     env: {
-      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
@@ -31,12 +30,14 @@ function context(overrides: { identity?: unknown; actorIds?: string; id?: string
 
 describe('protected Media file preview endpoint', () => {
   it('returns verified bytes with private no-store headers', async () => {
-    const loadFile = vi.fn(async (): Promise<MediaFileLoadResult> => ({
-      status: 'ready',
-      body: new Uint8Array([1, 2, 3]),
-      mimeType: 'image/webp',
-      byteSize: 3,
-    }));
+    const loadFile = vi.fn(
+      async (): Promise<MediaFileLoadResult> => ({
+        status: 'ready',
+        body: new Uint8Array([1, 2, 3]),
+        mimeType: 'image/webp',
+        byteSize: 3,
+      }),
+    );
     const response = await createMediaFileGetHandler({ loadFile })(context());
 
     expect(response.status).toBe(200);

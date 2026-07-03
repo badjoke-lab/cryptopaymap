@@ -144,7 +144,10 @@ export function MediaReviewDetail() {
   if (state.status !== 'ready') {
     const copy = {
       missing_id: ['Media identifier required', 'Return to the Media queue and choose a record.'],
-      denied: ['Media review access denied', 'This verified identity cannot read Media review data.'],
+      denied: [
+        'Media review access denied',
+        'This verified identity cannot read Media review data.',
+      ],
       not_found: ['Media not found', 'The requested Media asset is unavailable or deleted.'],
       unavailable: ['Media review unavailable', 'The protected service could not complete safely.'],
       error: ['Media response could not be verified', 'No unverified review data is displayed.'],
@@ -198,12 +201,26 @@ function MediaFileCard({ file }: { file: MediaReviewDetailResponse['files'][numb
       <div className="p-4">
         <h3 className="font-semibold text-ink">{label(file.variant)}</h3>
         <dl className="mt-3 grid gap-2 text-xs text-muted">
-          <div className="flex justify-between gap-4"><dt>Scope</dt><dd>{label(file.storageScope)}</dd></div>
-          <div className="flex justify-between gap-4"><dt>MIME</dt><dd>{file.mimeType}</dd></div>
-          <div className="flex justify-between gap-4"><dt>Size</dt><dd>{file.byteSize.toLocaleString()} bytes</dd></div>
-          <div className="flex justify-between gap-4"><dt>Dimensions</dt><dd>{file.width && file.height ? `${file.width} × ${file.height}` : 'Not recorded'}</dd></div>
+          <div className="flex justify-between gap-4">
+            <dt>Scope</dt>
+            <dd>{label(file.storageScope)}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt>MIME</dt>
+            <dd>{file.mimeType}</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt>Size</dt>
+            <dd>{file.byteSize.toLocaleString()} bytes</dd>
+          </div>
+          <div className="flex justify-between gap-4">
+            <dt>Dimensions</dt>
+            <dd>{file.width && file.height ? `${file.width} × ${file.height}` : 'Not recorded'}</dd>
+          </div>
         </dl>
-        <p className="mt-3 break-all font-mono text-[0.7rem] leading-5 text-muted">{file.contentHash}</p>
+        <p className="mt-3 break-all font-mono text-[0.7rem] leading-5 text-muted">
+          {file.contentHash}
+        </p>
       </div>
     </article>
   );
@@ -336,8 +353,12 @@ function MediaReviewWorkspace({
         icon={<CheckCircle2 className="size-5" />}
         action={
           <div className="flex flex-wrap gap-4">
-            <Button variant="secondary" onClick={reload}>Reload committed state</Button>
-            <a className="self-center text-sm font-semibold text-brand-700" href="/admin/media/">Return to Media queue</a>
+            <Button variant="secondary" onClick={reload}>
+              Reload committed state
+            </Button>
+            <a className="self-center text-sm font-semibold text-brand-700" href="/admin/media/">
+              Return to Media queue
+            </a>
           </div>
         }
       />
@@ -346,7 +367,9 @@ function MediaReviewWorkspace({
 
   return (
     <div>
-      <a className="text-sm font-semibold text-brand-700" href="/admin/media/">← Media queue</a>
+      <a className="text-sm font-semibold text-brand-700" href="/admin/media/">
+        ← Media queue
+      </a>
 
       <section className="mt-5 rounded-card border border-border bg-surface p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
@@ -361,18 +384,39 @@ function MediaReviewWorkspace({
           </span>
         </div>
         <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
-          <div><dt className="font-semibold text-ink">Subject</dt><dd className="mt-1 break-all text-muted">{label(detail.media.subject.type)} · {detail.media.subject.id}</dd></div>
-          <div><dt className="font-semibold text-ink">Rights</dt><dd className="mt-1 text-muted">{label(detail.media.rightsStatus)}</dd></div>
-          <div><dt className="font-semibold text-ink">Files</dt><dd className="mt-1 text-muted">{detail.files.length}</dd></div>
-          <div><dt className="font-semibold text-ink">Updated</dt><dd className="mt-1 text-muted">{detail.media.updatedAt}</dd></div>
+          <div>
+            <dt className="font-semibold text-ink">Subject</dt>
+            <dd className="mt-1 break-all text-muted">
+              {label(detail.media.subject.type)} · {detail.media.subject.id}
+            </dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Rights</dt>
+            <dd className="mt-1 text-muted">{label(detail.media.rightsStatus)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Files</dt>
+            <dd className="mt-1 text-muted">{detail.files.length}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Updated</dt>
+            <dd className="mt-1 text-muted">{detail.media.updatedAt}</dd>
+          </div>
         </dl>
       </section>
 
       <section className="mt-6" aria-labelledby="media-files-title">
-        <h2 id="media-files-title" className="text-2xl font-semibold text-ink">Protected file previews</h2>
-        <p className="mt-2 text-sm leading-6 text-muted">Review faces, plates, QR codes, receipts, wallet details, target accuracy, and publication rights before deciding.</p>
+        <h2 id="media-files-title" className="text-2xl font-semibold text-ink">
+          Protected file previews
+        </h2>
+        <p className="mt-2 text-sm leading-6 text-muted">
+          Review faces, plates, QR codes, receipts, wallet details, target accuracy, and publication
+          rights before deciding.
+        </p>
         <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {detail.files.map((file) => <MediaFileCard key={file.id} file={file} />)}
+          {detail.files.map((file) => (
+            <MediaFileCard key={file.id} file={file} />
+          ))}
         </div>
       </section>
 
@@ -385,7 +429,10 @@ function MediaReviewWorkspace({
           />
         </div>
       ) : (
-        <form className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={submit}>
+        <form
+          className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm"
+          onSubmit={submit}
+        >
           <h2 className="text-2xl font-semibold text-ink">Decision</h2>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
             <label className="grid gap-2 text-sm font-semibold text-ink">
@@ -395,12 +442,20 @@ function MediaReviewWorkspace({
                 value={action}
                 onChange={(event) => setAction(event.target.value as MediaReviewAction)}
               >
-                {actions.map((item) => <option key={item} value={item}>{label(item)}</option>)}
+                {actions.map((item) => (
+                  <option key={item} value={item}>
+                    {label(item)}
+                  </option>
+                ))}
               </select>
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Target match
-              <select name="targetMatch" defaultValue="confirmed" className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+              <select
+                name="targetMatch"
+                defaultValue="confirmed"
+                className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+              >
                 <option value="confirmed">Confirmed</option>
                 <option value="uncertain">Uncertain</option>
                 <option value="wrong_target">Wrong target</option>
@@ -408,7 +463,11 @@ function MediaReviewWorkspace({
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Privacy review
-              <select name="privacyReview" defaultValue={publicApproval ? 'cleared' : 'private_only'} className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+              <select
+                name="privacyReview"
+                defaultValue={publicApproval ? 'cleared' : 'private_only'}
+                className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+              >
                 <option value="cleared">Cleared</option>
                 <option value="private_only">Private only</option>
                 <option value="blocked">Blocked</option>
@@ -422,39 +481,150 @@ function MediaReviewWorkspace({
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <label className="grid gap-2 text-sm font-semibold text-ink">
                   Rights status
-                  <select name="rightsStatus" defaultValue="submitted_with_permission" className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal">
+                  <select
+                    name="rightsStatus"
+                    defaultValue="submitted_with_permission"
+                    className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  >
                     <option value="submitted_with_permission">Submitted with permission</option>
                     <option value="licensed">Licensed</option>
                     <option value="public_domain">Public domain</option>
                   </select>
                 </label>
-                <label className="grid gap-2 text-sm font-semibold text-ink">Rights holder<input name="rightsHolder" className="min-h-11 rounded-control border border-border px-3 py-2 font-normal" /></label>
-                <label className="grid gap-2 text-sm font-semibold text-ink">Consent reference<input name="consentReference" className="min-h-11 rounded-control border border-border px-3 py-2 font-normal" /></label>
-                <label className="grid gap-2 text-sm font-semibold text-ink">License ID<input name="licenseId" className="min-h-11 rounded-control border border-border px-3 py-2 font-normal" /></label>
-                <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">Attribution<textarea name="attribution" rows={2} className="rounded-control border border-border px-3 py-2 font-normal" /></label>
-                <label className="flex min-h-11 items-center gap-3 text-sm font-semibold text-ink"><input type="checkbox" name="licenseAttributionRequired" /> Attribution is required by the license</label>
-                <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">Public alt text<textarea required name="altText" defaultValue={detail.media.altText ?? ''} rows={2} className="rounded-control border border-border px-3 py-2 font-normal" /></label>
-                <label className="grid gap-2 text-sm font-semibold text-ink">Display order<input required name="displayOrder" type="number" min="0" defaultValue={detail.media.displayOrder} className="min-h-11 rounded-control border border-border px-3 py-2 font-normal" /></label>
-                <label className="grid gap-2 text-sm font-semibold text-ink">Display derivative<select required name="publicDisplayFileId" defaultValue={displayFiles[0]?.id ?? ''} className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"><option value="">Choose display file</option>{displayFiles.map((file) => <option key={file.id} value={file.id}>{file.width} × {file.height} · {file.mimeType}</option>)}</select></label>
-                <label className="grid gap-2 text-sm font-semibold text-ink">Thumbnail derivative<select name="publicThumbnailFileId" defaultValue={thumbnailFiles[0]?.id ?? ''} className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"><option value="">No thumbnail</option>{thumbnailFiles.map((file) => <option key={file.id} value={file.id}>{file.width} × {file.height} · {file.mimeType}</option>)}</select></label>
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  Rights holder
+                  <input
+                    name="rightsHolder"
+                    className="min-h-11 rounded-control border border-border px-3 py-2 font-normal"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  Consent reference
+                  <input
+                    name="consentReference"
+                    className="min-h-11 rounded-control border border-border px-3 py-2 font-normal"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  License ID
+                  <input
+                    name="licenseId"
+                    className="min-h-11 rounded-control border border-border px-3 py-2 font-normal"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
+                  Attribution
+                  <textarea
+                    name="attribution"
+                    rows={2}
+                    className="rounded-control border border-border px-3 py-2 font-normal"
+                  />
+                </label>
+                <label className="flex min-h-11 items-center gap-3 text-sm font-semibold text-ink">
+                  <input type="checkbox" name="licenseAttributionRequired" /> Attribution is
+                  required by the license
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
+                  Public alt text
+                  <textarea
+                    required
+                    name="altText"
+                    defaultValue={detail.media.altText ?? ''}
+                    rows={2}
+                    className="rounded-control border border-border px-3 py-2 font-normal"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  Display order
+                  <input
+                    required
+                    name="displayOrder"
+                    type="number"
+                    min="0"
+                    defaultValue={detail.media.displayOrder}
+                    className="min-h-11 rounded-control border border-border px-3 py-2 font-normal"
+                  />
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  Display derivative
+                  <select
+                    required
+                    name="publicDisplayFileId"
+                    defaultValue={displayFiles[0]?.id ?? ''}
+                    className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  >
+                    <option value="">Choose display file</option>
+                    {displayFiles.map((file) => (
+                      <option key={file.id} value={file.id}>
+                        {file.width} × {file.height} · {file.mimeType}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="grid gap-2 text-sm font-semibold text-ink">
+                  Thumbnail derivative
+                  <select
+                    name="publicThumbnailFileId"
+                    defaultValue={thumbnailFiles[0]?.id ?? ''}
+                    className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  >
+                    <option value="">No thumbnail</option>
+                    {thumbnailFiles.map((file) => (
+                      <option key={file.id} value={file.id}>
+                        {file.width} × {file.height} · {file.mimeType}
+                      </option>
+                    ))}
+                  </select>
+                </label>
               </div>
             </div>
           ) : null}
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <label className="grid gap-2 text-sm font-semibold text-ink">Reason code<input required name="reasonCode" key={action} defaultValue={reasonFor(action)} pattern="[a-z0-9]+(?:_[a-z0-9]+)*" className="min-h-11 rounded-control border border-border px-3 py-2 font-normal" /></label>
-            <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">Public summary<textarea required name="publicSummary" rows={2} className="rounded-control border border-border px-3 py-2 font-normal" /></label>
-            <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">Internal note<textarea name="internalNote" rows={3} className="rounded-control border border-border px-3 py-2 font-normal" /></label>
+            <label className="grid gap-2 text-sm font-semibold text-ink">
+              Reason code
+              <input
+                required
+                name="reasonCode"
+                key={action}
+                defaultValue={reasonFor(action)}
+                pattern="[a-z0-9]+(?:_[a-z0-9]+)*"
+                className="min-h-11 rounded-control border border-border px-3 py-2 font-normal"
+              />
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
+              Public summary
+              <textarea
+                required
+                name="publicSummary"
+                rows={2}
+                className="rounded-control border border-border px-3 py-2 font-normal"
+              />
+            </label>
+            <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
+              Internal note
+              <textarea
+                name="internalNote"
+                rows={3}
+                className="rounded-control border border-border px-3 py-2 font-normal"
+              />
+            </label>
           </div>
 
           {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
-            <p className="mt-4 text-sm font-semibold text-danger" role="alert">{submitState.message}</p>
+            <p className="mt-4 text-sm font-semibold text-danger" role="alert">
+              {submitState.message}
+            </p>
           ) : null}
           <div className="mt-5 flex flex-wrap gap-3">
             <Button type="submit" disabled={submitState.status === 'submitting'}>
-              {submitState.status === 'submitting' ? 'Committing decision…' : 'Commit Media decision'}
+              {submitState.status === 'submitting'
+                ? 'Committing decision…'
+                : 'Commit Media decision'}
             </Button>
-            <Button type="button" variant="secondary" onClick={reload}>Reload exact state</Button>
+            <Button type="button" variant="secondary" onClick={reload}>
+              Reload exact state
+            </Button>
           </div>
         </form>
       )}
