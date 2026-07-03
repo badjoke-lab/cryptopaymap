@@ -1,4 +1,7 @@
-import { authorizeMediaReview, mediaReviewActorPolicySchema } from '../src/admin/media-review/authorization';
+import {
+  authorizeMediaReview,
+  mediaReviewActorPolicySchema,
+} from '../src/admin/media-review/authorization';
 import {
   createMediaReviewDecisionService,
   mediaReviewDecisionInputSchema,
