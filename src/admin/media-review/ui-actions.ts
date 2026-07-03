@@ -8,12 +8,9 @@ type MediaReviewUiState = Pick<
 
 export function isMediaReviewUiStateSupported(media: MediaReviewUiState): boolean {
   if (media.reviewStatus !== 'pending') return true;
-  return [
-    'evidence',
-    'owner_verification',
-    'public_gallery_candidate',
-    'canonical_logo',
-  ].includes(media.purpose);
+  return ['evidence', 'owner_verification', 'public_gallery_candidate', 'canonical_logo'].includes(
+    media.purpose,
+  );
 }
 
 export function availableMediaReviewActions(media: MediaReviewUiState): MediaReviewAction[] {
