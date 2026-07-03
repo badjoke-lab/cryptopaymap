@@ -32,8 +32,16 @@ function backend(items: ExportReleaseHistoryItem[]): ExportReleaseHistoryBackend
 
 describe('release history read model', () => {
   it('parses bounded history queries', () => {
-    expect(parseExportReleaseHistoryQuery(new URL('https://example.test/admin/api/export-history?limit=50'))).toEqual({ limit: 50 });
-    expect(() => parseExportReleaseHistoryQuery(new URL('https://example.test/admin/api/export-history?limit=101'))).toThrow(ExportReleaseHistoryError);
+    expect(
+      parseExportReleaseHistoryQuery(
+        new URL('https://example.test/admin/api/export-history?limit=50'),
+      ),
+    ).toEqual({ limit: 50 });
+    expect(() =>
+      parseExportReleaseHistoryQuery(
+        new URL('https://example.test/admin/api/export-history?limit=101'),
+      ),
+    ).toThrow(ExportReleaseHistoryError);
   });
 
   it('marks the newest entry as the current snapshot', async () => {
