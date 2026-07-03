@@ -1,1 +1,529 @@
 name: P3-11E maintenance
+
+on:
+  push:
+    branches:
+      - work/p311e
+    paths:
+      - .github/workflows/p311e-maintenance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p311e
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Harden activation contract and synchronize delivery
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          contract = Path('src/admin/export-release/publication-contract.ts')
+          text = contract.read_text()
+          text = text.replace(
+              "const reasonCodeSchema = z\n  .string()\n  .trim()\n  .min(1)\n  .max(96)\n  .regex(/^[a-z0-9]+(?:_[a-z0-9]+)*$/);\n\n",
+              "",
+          )
+          text = text.replace(
+              "    publishedAt: z.iso.datetime({ offset: true }),\n    reasonCode: reasonCodeSchema,\n    internalNote: z.string().trim().min(1).max(2_000).nullable(),\n",
+              "    publishedAt: z.iso.datetime({ offset: true }),\n",
+          )
+          text = text.replace(
+              "    publishedAt: z.iso.datetime({ offset: true }),\n    releasePrefix: z.string().min(1).max(512),\n",
+              "    publishedAt: z.iso.datetime({ offset: true }),\n    activationFingerprint: sha256Schema,\n    releasePrefix: z.string().min(1).max(512),\n",
+          )
+          marker = "function releaseObjectKey(snapshotDigest: string, path: string): string {\n  return `export-releases/by-snapshot/${snapshotDigest}/${path.replace(/^\\//, '')}`;\n}\n\n"
+          fingerprint = """function releaseObjectKey(snapshotDigest: string, path: string): string {
+  return `export-releases/by-snapshot/${snapshotDigest}/${path.replace(/^\//, '')}`;
+}
+
+export async function exportPublicationFingerprint(
+  context: ExportPublicationMutationContext,
+  input: ExportPublicationInput,
+): Promise<string> {
+  const { publishedAt: _publishedAt, ...stableInput } = input;
+  return hashPublicArtifact({
+    requestId: context.requestId,
+    actorId: context.actorId,
+    actorType: context.actorType,
+    input: stableInput,
+  });
+}
+
+function pointerIdentity(pointer: ActiveExportReleasePointer): unknown {
+  const { publishedAt: _publishedAt, ...identity } = pointer;
+  return identity;
+}
+
+"""
+          if marker not in text:
+            raise SystemExit('releaseObjectKey marker not found')
+          text = text.replace(marker, fingerprint)
+          text = text.replace(
+              "  publishedAt: string,\n): Promise<ExportPublicationPlan> {",
+              "  publishedAt: string,\n  activationFingerprint: string,\n): Promise<ExportPublicationPlan> {",
+          )
+          text = text.replace(
+              "    publishedAt,\n    releasePrefix,\n",
+              "    publishedAt,\n    activationFingerprint,\n    releasePrefix,\n",
+          )
+          text = text.replace(
+              "  if (approval.generatedAt !== input.expectedGeneratedAt) issues.push('approvalGeneratedAt');\n",
+              "  if (approval.generatedAt !== input.expectedGeneratedAt) issues.push('approvalGeneratedAt');\n  if (Date.parse(approval.decidedAt) > Date.parse(input.publishedAt)) {\n    issues.push('approvalDecidedAt');\n  }\n",
+          )
+          text = text.replace(
+              "    publishedAt: string,\n  ) => Promise<ExportPublicationPlan> = buildExportPublicationPlan,",
+              "    publishedAt: string,\n    activationFingerprint: string,\n  ) => Promise<ExportPublicationPlan> = buildExportPublicationPlan,",
+          )
+          text = text.replace(
+              "      let plan: ExportPublicationPlan;\n      try {\n        plan = await buildPlan(artifacts, inputResult.data.publishedAt);",
+              "      const activationFingerprint = await exportPublicationFingerprint(\n        contextResult.data,\n        inputResult.data,\n      );\n      let plan: ExportPublicationPlan;\n      try {\n        plan = await buildPlan(\n          artifacts,\n          inputResult.data.publishedAt,\n          activationFingerprint,\n        );\n        plan = {\n          ...plan,\n          pointer: activeExportReleasePointerSchema.parse({\n            ...plan.pointer,\n            activationFingerprint,\n          }),\n        };",
+          )
+          old_replay = """      if (active?.pointer.snapshotDigest === plan.pointer.snapshotDigest) {
+        return {
+          requestId: contextResult.data.requestId,
+          approvalRequestId: approvalResult.data.requestId,
+          snapshotDigest: plan.pointer.snapshotDigest,
+          datasetVersion: plan.pointer.datasetVersion,
+          schemaVersion: plan.pointer.schemaVersion,
+          generatedAt: plan.pointer.generatedAt,
+          publishedAt: active.pointer.publishedAt,
+          previousSnapshotDigest: inputResult.data.expectedActiveSnapshotDigest,
+          pointerKey: plan.pointerKey,
+          releasePrefix: plan.releasePrefix,
+          artifactCount: plan.objects.length,
+          state: 'replayed',
+        };
+      }
+"""
+          new_replay = """      if (active?.pointer.snapshotDigest === plan.pointer.snapshotDigest) {
+        if (active.pointer.activationFingerprint !== activationFingerprint) {
+          throw new ExportPublicationError(
+            'pointer_conflict',
+            'The active snapshot was activated by a different request.',
+            ['activationFingerprint'],
+          );
+        }
+        if (
+          canonicalPublicJson(pointerIdentity(active.pointer)) !==
+          canonicalPublicJson(pointerIdentity(plan.pointer))
+        ) {
+          throw new ExportPublicationError(
+            'pointer_conflict',
+            'The active export pointer does not match the validated publication plan.',
+            ['activePointer'],
+          );
+        }
+        return {
+          requestId: contextResult.data.requestId,
+          approvalRequestId: approvalResult.data.requestId,
+          snapshotDigest: plan.pointer.snapshotDigest,
+          datasetVersion: plan.pointer.datasetVersion,
+          schemaVersion: plan.pointer.schemaVersion,
+          generatedAt: plan.pointer.generatedAt,
+          publishedAt: active.pointer.publishedAt,
+          previousSnapshotDigest: inputResult.data.expectedActiveSnapshotDigest,
+          pointerKey: plan.pointerKey,
+          releasePrefix: plan.releasePrefix,
+          artifactCount: plan.objects.length,
+          state: 'replayed',
+        };
+      }
+"""
+          if old_replay not in text:
+            raise SystemExit('replay block not found')
+          text = text.replace(old_replay, new_replay)
+          contract.write_text(text)
+
+          r2 = Path('src/admin/export-release/activation-r2.ts')
+          text = r2.read_text()
+          text = text.replace(
+              "          schemaVersion: pointer.schemaVersion,\n",
+              "          schemaVersion: pointer.schemaVersion,\n          activationFingerprint: pointer.activationFingerprint,\n",
+          )
+          r2.write_text(text)
+
+          contract_test = Path('tests/export-activation-contract.test.ts')
+          text = contract_test.read_text()
+          text = text.replace(
+              "  createExportPublicationService,\n",
+              "  createExportPublicationService,\n  exportPublicationFingerprint,\n",
+          )
+          text = text.replace(
+              "  reasonCode: 'activate_approved_release',\n  internalNote: null,\n",
+              "",
+          )
+          text = text.replace(
+              "function pointer(digest = snapshotDigest): ActiveExportReleasePointer {",
+              "function pointer(\n  digest = snapshotDigest,\n  activationFingerprint = '0'.repeat(64),\n): ActiveExportReleasePointer {",
+          )
+          text = text.replace(
+              "    publishedAt,\n    releasePrefix,\n",
+              "    publishedAt,\n    activationFingerprint,\n    releasePrefix,\n",
+          )
+          text = text.replace(
+              "  it('replays an already active exact snapshot without staging again', async () => {\n    const target = new InMemoryExportPublicationTarget({ activePointer: pointer() });",
+              "  it('replays an already active exact snapshot without staging again', async () => {\n    const fingerprint = await exportPublicationFingerprint(context, input);\n    const target = new InMemoryExportPublicationTarget({\n      activePointer: pointer(snapshotDigest, fingerprint),\n    });",
+          )
+          contract_test.write_text(text)
+
+          r2_test = Path('tests/export-activation-r2.test.ts')
+          text = r2_test.read_text()
+          text = text.replace(
+              "    publishedAt: '2026-07-04T02:00:00.000Z',\n    releasePrefix,\n",
+              "    publishedAt: '2026-07-04T02:00:00.000Z',\n    activationFingerprint: 'd'.repeat(64),\n    releasePrefix,\n",
+          )
+          r2_test.write_text(text)
+
+          api_test = Path('tests/export-activation-api.test.ts')
+          text = api_test.read_text().replace(
+              "          reasonCode: 'activate_approved_release',\n          internalNote: null,\n",
+              "",
+          )
+          api_test.write_text(text)
+
+          auth_test = Path('tests/export-activation-authorization.test.ts')
+          auth_test.write_text("""import { describe, expect, it } from 'vitest';
+import {
+  authorizeExportPublication,
+  readExportPublicationAuthorizationPolicy,
+} from '../src/admin/export-release/publication-authorization';
+
+const identity = {
+  actorId: 'cloudflare-access:release-activator',
+  actorType: 'human' as const,
+  subject: 'release-activator',
+  email: 'activator@example.test',
+};
+const requestId = '10000000-0000-4000-8000-000000000001';
+
+describe('export activation authorization', () => {
+  it('authorizes an allowlisted identity', () => {
+    const policy = readExportPublicationAuthorizationPolicy({
+      CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: JSON.stringify([identity.actorId]),
+    });
+    expect(authorizeExportPublication(identity, policy, requestId)).toEqual({
+      requestId,
+      actorId: identity.actorId,
+      actorType: identity.actorType,
+      capabilities: ['export:publish'],
+    });
+  });
+
+  it('fails closed without configuration', () => {
+    const policy = readExportPublicationAuthorizationPolicy({});
+    expect(() => authorizeExportPublication(identity, policy, requestId)).toThrow();
+  });
+
+  it('rejects an identity outside the allowlist', () => {
+    const policy = readExportPublicationAuthorizationPolicy({
+      CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: JSON.stringify(['another-actor']),
+    });
+    expect(() => authorizeExportPublication(identity, policy, requestId)).toThrowError(
+      expect.objectContaining({ code: 'not_authorized' }),
+    );
+  });
+
+  it('requires an idempotency UUID', () => {
+    const policy = readExportPublicationAuthorizationPolicy({
+      CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: JSON.stringify([identity.actorId]),
+    });
+    expect(() => authorizeExportPublication(identity, policy, null)).toThrowError(
+      expect.objectContaining({ code: 'invalid_request_id' }),
+    );
+  });
+});
+""")
+
+          runtime = Path('scripts/check-export-activation.ts')
+          runtime.write_text("""import { createR2ExportPublicationTarget } from '../src/admin/export-release/activation-r2';
+import { InMemoryExportPublicationTarget } from '../src/admin/export-release/in-memory-activation';
+import {
+  authorizeExportPublication,
+  exportPublicationActorPolicySchema,
+  readExportPublicationAuthorizationPolicy,
+} from '../src/admin/export-release/publication-authorization';
+import {
+  activeExportReleasePointerSchema,
+  createExportPublicationService,
+  exportPublicationInputSchema,
+  exportPublicationMutationContextSchema,
+  type ExportPublicationPlan,
+} from '../src/admin/export-release/publication-contract';
+import { createDrizzleApprovedExportReleaseBackend } from '../src/admin/export-release/publication-db';
+
+for (const schema of [
+  exportPublicationActorPolicySchema,
+  exportPublicationMutationContextSchema,
+  exportPublicationInputSchema,
+  activeExportReleasePointerSchema,
+]) {
+  if (schema === undefined) throw new Error('Export activation schema is missing.');
+}
+for (const runtimeExport of [
+  authorizeExportPublication,
+  readExportPublicationAuthorizationPolicy,
+  createExportPublicationService,
+  createR2ExportPublicationTarget,
+  createDrizzleApprovedExportReleaseBackend,
+]) {
+  if (typeof runtimeExport !== 'function') {
+    throw new Error('Export activation runtime export is missing.');
+  }
+}
+
+const requestId = '10000000-0000-4000-8000-000000000001';
+const approvalRequestId = '10000000-0000-4000-8000-000000000002';
+const snapshotDigest = 'a'.repeat(64);
+const generatedAt = '2026-07-04T00:00:00.000Z';
+const publishedAt = '2026-07-04T02:00:00.000Z';
+const releasePrefix = `export-releases/by-snapshot/${snapshotDigest}/`;
+const plan: ExportPublicationPlan = {
+  pointerKey: 'export-releases/active.json',
+  releasePrefix,
+  pointer: {
+    formatVersion: '1',
+    snapshotDigest,
+    datasetVersion: '2026.07.04.1',
+    schemaVersion: '1.0.0',
+    generatedAt,
+    publishedAt,
+    activationFingerprint: '0'.repeat(64),
+    releasePrefix,
+    files: [
+      {
+        path: '/version.json',
+        objectKey: `${releasePrefix}version.json`,
+        mediaType: 'application/json',
+        sha256: 'b'.repeat(64),
+        canonicalByteSize: 12,
+      },
+    ],
+  },
+  objects: [
+    {
+      path: '/version.json',
+      objectKey: `${releasePrefix}version.json`,
+      mediaType: 'application/json',
+      sha256: 'b'.repeat(64),
+      canonicalByteSize: 12,
+      body: '{"ok":true}\\n',
+    },
+  ],
+};
+const target = new InMemoryExportPublicationTarget();
+const service = createExportPublicationService(
+  {
+    loadApprovedRelease: async () => ({
+      requestId: approvalRequestId,
+      action: 'approve',
+      releaseStatus: 'approved',
+      snapshotDigest,
+      artifactCount: 1,
+      datasetVersion: '2026.07.04.1',
+      schemaVersion: '1.0.0',
+      generatedAt,
+      decidedAt: '2026-07-04T01:00:00.000Z',
+    }),
+  },
+  target,
+  async () => plan,
+);
+const receipt = await service.publish(
+  {
+    requestId,
+    actorId: 'system:export-activation-check',
+    actorType: 'system',
+    capabilities: ['export:publish'],
+  },
+  {
+    approvalRequestId,
+    expectedSnapshotDigest: snapshotDigest,
+    expectedArtifactCount: 1,
+    expectedDatasetVersion: '2026.07.04.1',
+    expectedSchemaVersion: '1.0.0',
+    expectedGeneratedAt: generatedAt,
+    expectedActiveSnapshotDigest: null,
+    publishedAt,
+  },
+  {},
+);
+if (
+  receipt.state !== 'published' ||
+  target.snapshot().pointer?.pointer.snapshotDigest !== snapshotDigest
+) {
+  throw new Error('Export activation runtime checks produced an invalid result.');
+}
+console.log('Export activation checks passed.');
+""")
+
+          docs = Path('docs/EXPORT_RELEASE_ACTIVATION.md')
+          docs.write_text("""# Export release activation
+
+**Implementation item:** P3-11E  
+**Status:** Active
+
+## Purpose
+
+This contract activates a previously approved public export snapshot without allowing an approval receipt, private candidate, or active release pointer to change silently between review and activation.
+
+Release activation remains separate from the approve or reject decision.
+
+## Authorization
+
+Activation uses the isolated capability `export:publish` and the independent actor allowlist `CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS`. A reviewer authorized for `export:release` is not automatically authorized to activate a release. Every request requires an `Idempotency-Key` UUID.
+
+## Exact inputs
+
+The protected request pins the approved decision request ID, snapshot digest, artifact count, dataset version, schema version, generation time, and expected currently active snapshot digest. The server supplies the activation time. The client never submits artifact bodies, object keys, validation results, or pointer content.
+
+## Revalidation
+
+Before writing public objects, the service reloads the durable approved decision and private candidate bundle, reruns the full public export boundary, rebuilds canonical JSON, recomputes artifact hashes and the complete snapshot digest, and compares all approval and candidate expectations.
+
+## Immutable release objects
+
+Artifacts use the deterministic prefix `export-releases/by-snapshot/{snapshotDigest}/`. Existing objects are reused only when key, size, media type, snapshot digest, artifact path, and SHA-256 metadata match exactly. Mismatched immutable objects are never overwritten.
+
+A partial staging failure leaves the active pointer unchanged. A retry may safely fill missing immutable objects.
+
+## Active pointer
+
+The active release is selected only by `export-releases/active.json`. The pointer contains release versions, generation and activation times, immutable prefix, one-way activation fingerprint, and the complete artifact inventory.
+
+The pointer is written only after every immutable object is verified.
+
+## Conditional activation
+
+The R2 adapter reads the active pointer ETag and uses a conditional `put` operation. The first release requires the pointer to be absent. A replacement requires the ETag read before staging to remain current. A failed condition returns a pointer conflict rather than overwriting another activation.
+
+## Activation fingerprint
+
+The public pointer stores a one-way fingerprint derived from the idempotency request ID, actor identity and type, and exact activation expectations. The server-generated activation time is excluded so an exact retry can recover after a timeout. The actor identity and request ID themselves are not written into the pointer body.
+
+An exact retry returns `replayed`. A different request attempting to reuse the already active snapshot returns a conflict.
+
+## Endpoint
+
+`POST /admin/api/export-activate` validates the separate publication policy, loads the server-controlled candidate, checks the durable approval, stages immutable objects, and conditionally switches the pointer.
+
+## Receipt
+
+A successful operation returns the request and approval IDs, snapshot and release versions, generation and activation times, previous active snapshot, pointer key, release prefix, artifact count, and `published` or `replayed` state.
+
+The operation receipt is not yet durable publication history. Durable activation history and rollback are the next delivery.
+
+## Explicit exclusions
+
+P3-11E does not add durable activation history, rollback, release history UI, automatic candidate generation, root-path materialization, inactive release cleanup, or live Access, R2, database, and production verification.
+""")
+
+          package = Path('package.json')
+          text = package.read_text()
+          text = text.replace(
+              'tsx scripts/check-export-release-workspace.ts",',
+              'tsx scripts/check-export-release-workspace.ts && tsx scripts/check-export-activation.ts",',
+          )
+          package.write_text(text)
+
+          status = Path('docs/PROJECT_STATUS.md')
+          status.write_text("""# CryptoPayMap project status
+
+**Last verified:** 2026-07-04
+
+## Current phase
+
+Phase 3 — Administration and review
+
+## Current implementation item
+
+P3-11 — Export controls and release workflow
+
+## Active work
+
+- P3-11E — controlled export activation and active release pointer
+- Branch: `work/p311e`
+- Pull request: not opened yet
+
+## Latest completed work
+
+- Phase 2 completed through pull request #40
+- P3-01 through P3-06 completed through pull request #47
+- P3-07 completed through pull request #58
+- P3-08 completed through pull request #63
+- P3-09 completed through pull request #67
+- P3-10 completed through pull request #74
+- P3-11A completed through pull request #75
+- P3-11B completed through pull request #76
+- P3-11C completed through pull request #77
+- P3-11D completed through pull request #78
+
+## P3-11E in progress
+
+- isolated `export:publish` capability and actor allowlist
+- durable approved-decision lookup
+- complete private candidate revalidation
+- deterministic immutable release object keys
+- exact object metadata verification
+- active pointer activation fingerprint
+- conditional ETag compare-and-set pointer switch
+- protected activation POST endpoint
+- contract, R2, authorization, API, and runtime tests
+
+## Next
+
+1. Complete P3-11E validation and merge its pull request.
+2. Add durable activation history and rollback operations.
+3. Complete the final P3-11 integration audit and P3-12 handoff.
+
+## Blocked
+
+No repository blocker. Live candidate generation, R2 activation, public serving, database, and production verification remain deferred.
+
+## Verification rule
+
+The actual main branch, merged pull requests, and CI results are authoritative.
+""")
+
+          plan = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = plan.read_text()
+          text = text.replace(
+              '| P3-11 | Export controls and release workflow | Reviewer UI active | P3-07 through P3-10 | #75–#77 complete; P3-11D active |',
+              '| P3-11 | Export controls and release workflow | Activation active | P3-07 through P3-10 | #75–#78 complete; P3-11E active |',
+          )
+          text = text.replace(
+              'P3-11C added the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint in pull request #77.\n\n### Current P3-11 delivery',
+              'P3-11C added the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint in pull request #77.\n\nP3-11D added `/admin/exports`, the exact snapshot detail workspace, validation and artifact inventory, state-aware approve or reject controls, component tests, and protected artifact validation in pull request #78.\n\n### Current P3-11 delivery',
+          )
+          text = text.replace(
+              'P3-11D adds `/admin/exports`, the exact snapshot detail workspace, validation and artifact inventory, state-aware approve or reject controls, component tests, and protected artifact validation.',
+              'P3-11E adds separate publication authorization, approved-decision and private-candidate revalidation, immutable release objects, activation fingerprints, conditional ETag pointer switching, and the protected activation endpoint.',
+          )
+          text = text.replace('- controlled publication and release pointer switching\n', '')
+          plan.write_text(text)
+          PY
+      - name: Format repository
+        run: npm run format
+      - name: Commit final delivery and remove workflow
+        shell: bash
+        run: |
+          git rm .github/workflows/p311e-maintenance.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs functions package.json scripts src tests
+          git commit -m "P3-11E: finalize controlled export activation"
+          git push origin HEAD:work/p311e
