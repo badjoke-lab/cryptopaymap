@@ -4,10 +4,13 @@ import {
   type MediaReviewDecisionCommand,
   type MediaReviewDecisionReceipt,
 } from './decision';
+import { buildMediaReviewBatch } from './drizzle-batch';
 import {
+  projectMediaReviewDecision,
   readMediaReviewDecision,
   replayMediaReviewDecision,
 } from './drizzle-state';
+import { runMediaReviewBatch } from './run-batch';
 
 export async function executeMediaReviewWrite(
   database: CryptoPayMapDatabase,
@@ -23,5 +26,8 @@ export async function executeMediaReviewWrite(
     }
     return replayMediaReviewDecision(existing);
   }
-  throw new Error('Not implemented.');
+  const projected = await projectMediaReviewDecision(database, command);
+  const statements = buildMediaReviewBatch(database, command, projected);
+  await runMediaReviewBatch(database, statements);
+  return projected.receipt;
 }
