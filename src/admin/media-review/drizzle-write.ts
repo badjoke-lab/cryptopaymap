@@ -1,12 +1,27 @@
 import type { CryptoPayMapDatabase } from '../../db/client';
-import type {
-  MediaReviewDecisionCommand,
-  MediaReviewDecisionReceipt,
+import {
+  MediaReviewDecisionError,
+  type MediaReviewDecisionCommand,
+  type MediaReviewDecisionReceipt,
 } from './decision';
+import {
+  readMediaReviewDecision,
+  replayMediaReviewDecision,
+} from './drizzle-state';
 
 export async function executeMediaReviewWrite(
-  _database: CryptoPayMapDatabase,
-  _command: MediaReviewDecisionCommand,
+  database: CryptoPayMapDatabase,
+  command: MediaReviewDecisionCommand,
 ): Promise<MediaReviewDecisionReceipt> {
+  const existing = await readMediaReviewDecision(database, command.requestId);
+  if (existing !== null) {
+    if (existing.requestFingerprint !== command.requestFingerprint) {
+      throw new MediaReviewDecisionError(
+        'conflict',
+        'The Media review request ID was reused with different content.',
+      );
+    }
+    return replayMediaReviewDecision(existing);
+  }
   throw new Error('Not implemented.');
 }
