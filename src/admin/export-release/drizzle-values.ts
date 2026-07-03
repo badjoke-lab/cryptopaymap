@@ -1,8 +1,5 @@
 import type { NewExportReleaseDecision } from '../../db/schema';
-import type {
-  ExportReleaseDecisionCommand,
-  ExportReleaseDecisionReceipt,
-} from './decision';
+import type { ExportReleaseDecisionCommand, ExportReleaseDecisionReceipt } from './decision';
 
 export function exportReleaseDecisionValues(
   command: ExportReleaseDecisionCommand,

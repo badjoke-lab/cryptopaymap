@@ -18,14 +18,8 @@ export const exportReleaseActionValues = ['approve', 'reject'] as const;
 export const exportReleaseStatusValues = ['approved', 'rejected'] as const;
 export const exportReleaseCandidateStatusValues = ['eligible', 'blocked'] as const;
 
-export const exportReleaseActionEnum = pgEnum(
-  'export_release_action',
-  exportReleaseActionValues,
-);
-export const exportReleaseStatusEnum = pgEnum(
-  'export_release_status',
-  exportReleaseStatusValues,
-);
+export const exportReleaseActionEnum = pgEnum('export_release_action', exportReleaseActionValues);
+export const exportReleaseStatusEnum = pgEnum('export_release_status', exportReleaseStatusValues);
 export const exportReleaseCandidateStatusEnum = pgEnum(
   'export_release_candidate_status',
   exportReleaseCandidateStatusValues,
@@ -65,10 +59,7 @@ export const exportReleaseDecisions = pgTable(
     index('export_release_decisions_decided_idx').on(table.decidedAt),
     index('export_release_decisions_actor_idx').on(table.actorId, table.decidedAt),
     index('export_release_decisions_status_idx').on(table.releaseStatus, table.decidedAt),
-    check(
-      'export_release_decisions_digest_shape',
-      sql`${table.snapshotDigest} ~ '^[a-f0-9]{64}$'`,
-    ),
+    check('export_release_decisions_digest_shape', sql`${table.snapshotDigest} ~ '^[a-f0-9]{64}$'`),
     check(
       'export_release_decisions_artifact_count_range',
       sql`${table.artifactCount} between 1 and 100`,
@@ -87,10 +78,7 @@ export const exportReleaseDecisions = pgTable(
       'export_release_decisions_summary_required',
       sql`${table.publicSummary} is not null or ${table.internalNote} is not null`,
     ),
-    check(
-      'export_release_decisions_time_order',
-      sql`${table.generatedAt} <= ${table.decidedAt}`,
-    ),
+    check('export_release_decisions_time_order', sql`${table.generatedAt} <= ${table.decidedAt}`),
     check(
       'export_release_decisions_approve_shape',
       sql`${table.action} <> 'approve' or (${table.releaseStatus} = 'approved' and ${table.candidateStatus} = 'eligible' and jsonb_array_length(${table.validationIssues}) = 0)`,
