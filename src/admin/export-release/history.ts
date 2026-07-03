@@ -41,7 +41,9 @@ export const exportReleaseHistoryResponseSchema = z
 
 export type ExportReleaseHistoryQuery = z.infer<typeof exportReleaseHistoryQuerySchema>;
 export type ExportReleaseHistoryItem = z.infer<typeof exportReleaseHistoryItemSchema>;
-export type ExportReleaseHistoryResponse = z.infer<typeof exportReleaseHistoryResponseSchema>;
+export type ExportReleaseHistoryResponse = z.infer<
+  typeof exportReleaseHistoryResponseSchema
+>;
 
 export interface ExportReleaseHistoryBackend {
   loadReleaseHistory(
@@ -52,7 +54,10 @@ export interface ExportReleaseHistoryBackend {
 export class ExportReleaseHistoryError extends Error {
   readonly code: 'unauthorized' | 'invalid_query' | 'backend_failure';
 
-  constructor(code: 'unauthorized' | 'invalid_query' | 'backend_failure', message: string) {
+  constructor(
+    code: 'unauthorized' | 'invalid_query' | 'backend_failure',
+    message: string,
+  ) {
     super(message);
     this.name = 'ExportReleaseHistoryError';
     this.code = code;
@@ -64,7 +69,10 @@ export function parseExportReleaseHistoryQuery(url: URL): ExportReleaseHistoryQu
     limit: url.searchParams.get('limit') ?? undefined,
   });
   if (!result.success) {
-    throw new ExportReleaseHistoryError('invalid_query', 'The release history query is invalid.');
+    throw new ExportReleaseHistoryError(
+      'invalid_query',
+      'The release history query is invalid.',
+    );
   }
   return result.data;
 }
@@ -76,7 +84,10 @@ export async function loadExportReleaseHistory(
   asOf: Date,
 ): Promise<ExportReleaseHistoryResponse> {
   if (!context.capabilities.includes('export:release')) {
-    throw new ExportReleaseHistoryError('unauthorized', 'The actor cannot read release history.');
+    throw new ExportReleaseHistoryError(
+      'unauthorized',
+      'The actor cannot read release history.',
+    );
   }
   try {
     const history = await backend.loadReleaseHistory(query);
@@ -93,6 +104,9 @@ export async function loadExportReleaseHistory(
     });
   } catch (error) {
     if (error instanceof ExportReleaseHistoryError) throw error;
-    throw new ExportReleaseHistoryError('backend_failure', 'The release history could not be loaded.');
+    throw new ExportReleaseHistoryError(
+      'backend_failure',
+      'The release history could not be loaded.',
+    );
   }
 }
