@@ -6,6 +6,10 @@ import {
 } from './decision';
 import { buildMediaReviewBatch } from './drizzle-batch';
 import {
+  isMediaReviewConflictCode,
+  postgresMediaReviewErrorCode,
+} from './drizzle-errors';
+import {
   projectMediaReviewDecision,
   readMediaReviewDecision,
   replayMediaReviewDecision,
@@ -26,8 +30,27 @@ export async function executeMediaReviewWrite(
     }
     return replayMediaReviewDecision(existing);
   }
+
   const projected = await projectMediaReviewDecision(database, command);
-  const statements = buildMediaReviewBatch(database, command, projected);
-  await runMediaReviewBatch(database, statements);
+  try {
+    await runMediaReviewBatch(database, buildMediaReviewBatch(database, command, projected));
+  } catch (error) {
+    const code = postgresMediaReviewErrorCode(error);
+    if (code === '23505') {
+      const replay = await readMediaReviewDecision(database, command.requestId);
+      if (replay?.requestFingerprint === command.requestFingerprint) {
+        return replayMediaReviewDecision(replay);
+      }
+    }
+    if (isMediaReviewConflictCode(code)) {
+      throw new MediaReviewDecisionError(
+        'conflict',
+        'The Media review conflicted with current private state.',
+        code === null ? [] : [`The database rejected the atomic batch with code ${code}.`],
+        { cause: error },
+      );
+    }
+    throw error;
+  }
   return projected.receipt;
 }
