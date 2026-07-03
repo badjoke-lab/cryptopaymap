@@ -1,1 +1,62 @@
 name: P3-10D maintenance
+
+on:
+  push:
+    branches:
+      - work/p310d
+    paths:
+      - .github/workflows/p310d-maintenance.yml
+
+permissions:
+  contents: write
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: work/p310d
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Synchronize implementation plan
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = path.read_text()
+          text = text.replace(
+              '| P3-10 | Media review | Storage boundary active | P3-02, P2-10 | #69 and #70 complete; P3-10C active |',
+              '| P3-10 | Media review | Protected workspace active | P3-02, P2-10 | #69–#71 complete; P3-10D active |',
+          )
+          text = text.replace(
+              'P3-10B added durable Media review decision receipts, migration `0017_glorious_toxin.sql`, exact asset and file-set guards, active-cover uniqueness, projected decision outcomes, guarded database writes, replay handling, and database conflict classification in pull request #70.\n\n### Current delivery',
+              'P3-10B added durable Media review decision receipts, migration `0017_glorious_toxin.sql`, exact asset and file-set guards, active-cover uniqueness, projected decision outcomes, guarded database writes, replay handling, and database conflict classification in pull request #70.\n\nP3-10C added private staged derivatives, deterministic private and public R2 keys, storage metadata preflight, durable file transitions, replay-safe publication after approval, fail-closed revocation, and R2 adapter boundaries in pull request #71.\n\n### Current delivery',
+          )
+          text = text.replace(
+              'P3-10C adds the controlled Media storage-operation boundary: private staged derivatives, deterministic private and public object keys, R2 metadata verification, durable file scope and key transitions, replay-safe publication after approval, and fail-closed revocation before restriction or supersession.',
+              'P3-10D adds the protected bounded Media queue, version-pinned detail and complete file-set workspace, isolated read authorization, queue and detail GET endpoints, and the idempotent storage-aware decision POST endpoint.',
+          )
+          text = text.replace('- protected Media queue and detail workspace\n', '')
+          path.write_text(text)
+          PY
+      - name: Format repository
+        run: npm run format
+      - name: Commit final delivery and remove workflow
+        shell: bash
+        run: |
+          git rm .github/workflows/p310d-maintenance.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs functions scripts src tests
+          git commit -m "P3-10D: finalize protected Media workspace"
+          git push origin HEAD:work/p310d
