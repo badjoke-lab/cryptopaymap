@@ -51,7 +51,10 @@ afterEach(() => {
 
 describe('AuditHistoryView', () => {
   it('loads and renders normalized audit events', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse(history([firstItem]))));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse(history([firstItem]))),
+    );
 
     render(<AuditHistoryView />);
 
@@ -61,7 +64,11 @@ describe('AuditHistoryView', () => {
   });
 
   it('applies bounded domain and actor filters', async () => {
-    const fetchMock = vi.fn(async () => jsonResponse(history([])));
+    const requestUrls: string[] = [];
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      requestUrls.push(String(input));
+      return jsonResponse(history([]));
+    });
     vi.stubGlobal('fetch', fetchMock);
     render(<AuditHistoryView />);
     await screen.findByText('No audit events match this filter');
@@ -73,17 +80,22 @@ describe('AuditHistoryView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Apply filters' }));
 
     await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
-    const requestUrl = String(fetchMock.mock.calls[1]?.[0]);
+    const requestUrl = requestUrls[1] ?? '';
     expect(requestUrl).toContain('domain=export');
     expect(requestUrl).toContain('actorId=cloudflare-access%3Apublisher');
     expect(requestUrl).toContain('limit=50');
   });
 
   it('loads older events with the stable audit cursor', async () => {
-    const fetchMock = vi
-      .fn()
-      .mockResolvedValueOnce(jsonResponse(history([firstItem], true)))
-      .mockResolvedValueOnce(jsonResponse(history([secondItem], false)));
+    const requestUrls: string[] = [];
+    let requestCount = 0;
+    const fetchMock = vi.fn(async (input: RequestInfo | URL) => {
+      requestUrls.push(String(input));
+      requestCount += 1;
+      return requestCount === 1
+        ? jsonResponse(history([firstItem], true))
+        : jsonResponse(history([secondItem], false));
+    });
     vi.stubGlobal('fetch', fetchMock);
     render(<AuditHistoryView />);
 
@@ -91,13 +103,16 @@ describe('AuditHistoryView', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Load older events' }));
 
     expect(await screen.findByText('Approve Release')).toBeInTheDocument();
-    const requestUrl = String(fetchMock.mock.calls[1]?.[0]);
+    const requestUrl = requestUrls[1] ?? '';
     expect(requestUrl).toContain(`before=${encodeURIComponent(firstItem.occurredAt)}`);
     expect(requestUrl).toContain(`beforeId=${encodeURIComponent(firstItem.id)}`);
   });
 
   it('shows access denied without rendering history cards', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => jsonResponse({ error: 'audit_history_denied' }, 403)));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => jsonResponse({ error: 'audit_history_denied' }, 403)),
+    );
     render(<AuditHistoryView />);
 
     expect(await screen.findByText('Audit history access denied')).toBeInTheDocument();
