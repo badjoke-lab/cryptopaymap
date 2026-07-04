@@ -86,7 +86,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
 | P3-11 | Export controls and release workflow | Repository completed; live verification deferred | P3-07 through P3-10 | #75–#87 |
-| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | P3-12A active |
+| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | #88, #89; P3-12C active |
 
 ### Completed P3-07 deliveries
 
@@ -114,13 +114,18 @@ P3-11I through P3-11L established restore preparation, pointer inventory and exe
 
 P3-11M aligned restore readiness with the implemented execution workflow, added readiness-to-execution runtime verification, completed the repository integration audit, documented deferred live verification, and handed off to P3-12 in pull request #87.
 
+### Completed P3-12 deliveries
+
+P3-12A defined the protected normalized audit-history read contract across candidate, Evidence, reconfirmation, Media, and export administration. It added bounded filters, stable cursor semantics, deterministic ordering, source-domain validation, target metadata, and privacy leakage boundaries in pull request #88.
+
+P3-12B added metadata-only source normalizers, bounded concurrent aggregation, source-domain validation, duplicate identity rejection, defensive filtering, deterministic cross-source ordering, and fail-closed source handling in pull request #89.
+
 ### Current P3-12 delivery
 
-P3-12A defines the protected normalized audit-history read contract across candidate, Evidence, reconfirmation, Media, and export administration. It adds bounded filters, stable cursor semantics, deterministic ordering, source-domain validation, target metadata, and privacy leakage boundaries without duplicating authoritative domain writes.
+P3-12C connects bounded audit history sources to the existing durable Phase 3 tables. It pushes actor, time-range, target, and stable cursor filters into source queries, preserves source ordering compatible with the global cursor, and excludes restore execution from the Drizzle registry until a corresponding table exists.
 
 ### Remaining P3-12 deliveries
 
-- bounded aggregation over authoritative durable Phase 3 decision and event sources
 - protected audit history API and administration surface
 - final cross-domain Phase 3 integration audit and Phase 4 handoff
 
