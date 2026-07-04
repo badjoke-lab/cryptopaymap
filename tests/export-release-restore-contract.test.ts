@@ -68,15 +68,15 @@ describe('export release restore contract', () => {
     });
   });
 
-  it('blocks execution even when inventory exists until the execution boundary is implemented', async () => {
+  it('marks a validated restore with durable pointer inventory ready for execution', async () => {
     await expect(
       createExportRestoreService(backend({ target: snapshot(targetDigest, true) })).prepareRestore(
         context,
         input,
       ),
     ).resolves.toMatchObject({
-      state: 'blocked_restore_execution_unavailable',
-      issues: ['restoreExecutionUnavailable'],
+      state: 'ready_for_execution',
+      issues: [],
     });
   });
 
