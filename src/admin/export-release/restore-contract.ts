@@ -129,7 +129,10 @@ export function createExportRestoreService(backend: ExportRestoreBackend) {
         throw new ExportRestoreError('active_not_found', 'No active export release exists.');
       }
       if (target === null) {
-        throw new ExportRestoreError('target_not_found', 'The target export release was not found.');
+        throw new ExportRestoreError(
+          'target_not_found',
+          'The target export release was not found.',
+        );
       }
       if (active.snapshotDigest !== inputResult.data.expectedActiveSnapshotDigest) {
         throw new ExportRestoreError(
