@@ -12,9 +12,9 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11F — durable activation history and request-level replay records
-- Branch: `work/p311f`
-- Pull request: #80
+- P3-11H — export release history database backend and protected API
+- Branch: `work/p311h`
+- Pull request: pending
 
 ## Latest completed work
 
@@ -29,23 +29,21 @@ P3-11 — Export controls and release workflow
 - P3-11C completed through pull request #77
 - P3-11D completed through pull request #78
 - P3-11E completed through pull request #79
+- P3-11F completed through pull request #80
+- P3-11G read model completed through pull request #81
 
-## P3-11F in progress
+## P3-11H in progress
 
-- durable `export_activation_records` table
-- generated migration `0019_overrated_rumiko_fujikawa.sql`
-- generated snapshot materialization from verified encoded chunks
-- request-level activation fingerprint
-- successful-activation-only durable history write
-- same-request replay and different-content conflict handling
-- snapshot and dataset double-record protection
-- activation writer integration
-- activation history runtime and unit tests
+- Drizzle export release history backend over durable activation records
+- protected `GET /admin/api/export-history` endpoint
+- bounded release history query execution
+- current snapshot marking from the newest durable activation
+- API, backend, and runtime tests
 
 ## Next
 
-1. Complete P3-11F validation and merge pull request #80.
-2. Add rollback operations and release history reads.
+1. Complete P3-11H validation and merge the pull request.
+2. Add rollback operation contract and execution guardrails.
 3. Complete the final P3-11 integration audit and P3-12 handoff.
 
 ## Blocked
