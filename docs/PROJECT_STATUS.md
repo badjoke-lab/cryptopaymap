@@ -12,8 +12,8 @@ P3-12 — Audit history and Phase 3 integration audit
 
 ## Active work
 
-- P3-12D — protected audit history API
-- Branch: `work/audit-history-api`
+- P3-12E — Audit administration surface
+- Branch: `work/audit-history-ui`
 - Pull request: pending
 
 ## Latest completed work
@@ -28,23 +28,25 @@ P3-12 — Audit history and Phase 3 integration audit
 - P3-12A normalized audit history read contract completed through pull request #88
 - P3-12B bounded audit history aggregation completed through pull request #89
 - P3-12C durable audit history source adapters completed through pull request #92
+- P3-12D protected audit history API completed through pull request #93
 - export restore replay preflight hardening completed through pull request #91
 
-## P3-12D in progress
+## P3-12E in progress
 
-- isolated audit history reader allowlist
-- `audit:read` context issuance from protected Access identity
-- fail-closed authorization configuration handling
-- database environment boundary
-- protected `GET /admin/api/audit-history` route
-- 200, 400, 403, and 503 response mapping
-- route runtime and API tests
+- `/admin/audit` protected administration page
+- read-only normalized audit history client view
+- domain, actor, target, and time-range filters
+- stable cursor load-more behavior
+- loading, denied, invalid-query, unavailable, and empty states
+- metadata-only event cards and state transitions
+- component tests
+- built artifact and private-marker checks
 
 ## Next
 
-1. Complete P3-12D validation and merge the pull request.
-2. Add the Audit administration surface.
-3. Complete the final Phase 3 cross-domain integration audit and hand off to Phase 4.
+1. Complete P3-12E validation and merge the pull request.
+2. Complete the final Phase 3 cross-domain integration audit.
+3. Hand off to Phase 4 public core work.
 
 ## Blocked
 
