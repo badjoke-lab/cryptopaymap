@@ -37,16 +37,11 @@ function history(): AuditHistoryResponse {
   };
 }
 
-function context(
-  overrides: { identity?: unknown; actorIds?: string; url?: string } = {},
-) {
+function context(overrides: { identity?: unknown; actorIds?: string; url?: string } = {}) {
   return {
-    request: new Request(
-      overrides.url ?? 'https://example.test/admin/api/audit-history',
-    ),
+    request: new Request(overrides.url ?? 'https://example.test/admin/api/audit-history'),
     env: {
-      CPM_ADMIN_AUDIT_READ_ACTOR_IDS:
-        overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_AUDIT_READ_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
@@ -91,9 +86,7 @@ describe('audit history endpoint', () => {
 
   it('fails closed when the audit reader allowlist is not configured', async () => {
     const loadHistory = vi.fn(async () => history());
-    const response = await createAuditHistoryHandler({ loadHistory })(
-      context({ actorIds: '' }),
-    );
+    const response = await createAuditHistoryHandler({ loadHistory })(context({ actorIds: '' }));
 
     expect(response.status).toBe(503);
     await expect(response.json()).resolves.toEqual({ error: 'audit_history_unavailable' });
