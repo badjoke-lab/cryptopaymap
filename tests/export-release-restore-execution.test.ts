@@ -47,7 +47,7 @@ const pointerSwitches: ExportRestorePointerSwitchReceipt[] = [
   {
     pointerKey: 'export-releases/active.json',
     previousEtag: 'etag-active-before',
-    newEtag: 'etag-active-after',
+    newEtag: 'etag-target-manifest',
     switchedAt: input.restoredAt,
   },
 ];
@@ -152,6 +152,17 @@ describe('export restore execution record contract', () => {
         pointerSwitches: [{ ...pointerSwitches[0], pointerKey: 'export-releases/other.json' }],
       }),
     ).rejects.toMatchObject({ code: 'pointer_mismatch' });
+  });
+
+  it('requires switch ETags to match the target object ETags', async () => {
+    await expect(
+      createExportRestoreExecutionService(backend().backend).recordExecution({
+        context,
+        input,
+        inventory,
+        pointerSwitches: [{ ...pointerSwitches[0], newEtag: 'etag-wrong-target' }],
+      }),
+    ).rejects.toMatchObject({ code: 'target_etag_mismatch' });
   });
 
   it('rejects inventory that does not match the expected active snapshot', async () => {
