@@ -1,4 +1,3 @@
-import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import type { ExportPublicationMutationContext } from './publication-contract';
 
@@ -153,13 +152,18 @@ function canonicalJson(value: unknown): string {
   return JSON.stringify(value);
 }
 
-export function exportRestoreInventoryFingerprint(
-  inventory: ExportRestorePointerInventory,
-): string {
-  return createHash('sha256').update(canonicalJson(inventory)).digest('hex');
+async function sha256Hex(value: string): Promise<string> {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
-export function exportRestoreRequestFingerprint(input: {
+export async function exportRestoreInventoryFingerprint(
+  inventory: ExportRestorePointerInventory,
+): Promise<string> {
+  return sha256Hex(canonicalJson(inventory));
+}
+
+export async function exportRestoreRequestFingerprint(input: {
   requestId: string;
   actorId: string;
   targetSnapshotDigest: string;
@@ -167,8 +171,8 @@ export function exportRestoreRequestFingerprint(input: {
   restoredAt: string;
   reasonCode: string;
   inventoryFingerprint: string;
-}): string {
-  return createHash('sha256').update(canonicalJson(input)).digest('hex');
+}): Promise<string> {
+  return sha256Hex(canonicalJson(input));
 }
 
 function assertExecutionAuthorization(context: ExportPublicationMutationContext): void {
@@ -228,7 +232,9 @@ export function createExportRestoreExecutionService(backend: ExportRestoreExecut
           inventoryResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
         );
       }
-      const switchResult = z.array(exportRestorePointerSwitchReceiptSchema).safeParse(args.pointerSwitches);
+      const switchResult = z
+        .array(exportRestorePointerSwitchReceiptSchema)
+        .safeParse(args.pointerSwitches);
       if (!switchResult.success) {
         throw new ExportRestoreExecutionError(
           'invalid_switch_receipt',
@@ -236,7 +242,10 @@ export function createExportRestoreExecutionService(backend: ExportRestoreExecut
           switchResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
         );
       }
-      if (inventoryResult.data.previousActiveSnapshotDigest !== args.input.expectedActiveSnapshotDigest) {
+      if (
+        inventoryResult.data.previousActiveSnapshotDigest !==
+        args.input.expectedActiveSnapshotDigest
+      ) {
         throw new ExportRestoreExecutionError(
           'active_mismatch',
           'The restore inventory does not match the expected active snapshot.',
@@ -245,8 +254,8 @@ export function createExportRestoreExecutionService(backend: ExportRestoreExecut
       }
       assertSwitchesMatchInventory(inventoryResult.data, switchResult.data);
 
-      const inventoryFingerprint = exportRestoreInventoryFingerprint(inventoryResult.data);
-      const requestFingerprint = exportRestoreRequestFingerprint({
+      const inventoryFingerprint = await exportRestoreInventoryFingerprint(inventoryResult.data);
+      const requestFingerprint = await exportRestoreRequestFingerprint({
         requestId: args.context.requestId,
         actorId: args.context.actorId,
         targetSnapshotDigest: args.input.targetSnapshotDigest,
