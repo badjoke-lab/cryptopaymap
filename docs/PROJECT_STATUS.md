@@ -12,8 +12,8 @@ P3-12 — Audit history and Phase 3 integration audit
 
 ## Active work
 
-- P3-12B — bounded audit history aggregation and source normalization
-- Branch: `work/audit-history-aggregation`
+- P3-12C — durable audit history Drizzle sources
+- Branch: `work/audit-history-adapters`
 - Pull request: pending
 
 ## Latest completed work
@@ -26,24 +26,27 @@ P3-12 — Audit history and Phase 3 integration audit
 - P3-10 completed through pull request #74
 - P3-11 completed through pull request #87
 - P3-12A normalized audit history read contract completed through pull request #88
+- P3-12B bounded audit history aggregation completed through pull request #89
+- export restore replay preflight hardening completed through pull request #91
 
-## P3-12B in progress
+## P3-12C in progress
 
-- source-specific normalizers for durable Phase 3 decision and event records
-- metadata-only normalized audit items
-- concurrent bounded source loading
-- source-domain consistency checks
-- duplicate event identity rejection
-- actor, target, time-range, and cursor defense filters
-- deterministic cross-source merge ordering
-- source failure fail-closed behavior
+- read-only Drizzle source for candidate duplicate decisions
+- read-only Drizzle source for candidate promotion decisions
+- read-only Drizzle source for Evidence review decisions
+- read-only Drizzle source for reconfirmation expirations
+- read-only Drizzle source for Media review decisions
+- read-only Drizzle sources for export release decisions and activations
+- bounded `sourceLimit + 1` database reads
+- deterministic source ordering
+- composed Drizzle audit history backend
 - runtime and unit verification
 
 ## Next
 
-1. Complete P3-12B validation and merge the pull request.
-2. Connect bounded source adapters to durable repository tables.
-3. Add protected audit history API and administration surface.
+1. Complete P3-12C validation and merge the pull request.
+2. Add the protected audit history API route.
+3. Add the Audit administration surface.
 4. Complete the final Phase 3 cross-domain integration audit and hand off to Phase 4.
 
 ## Blocked
