@@ -1,52 +1,58 @@
 # Export release restore workflow
 
-**Implementation item:** P3-11L  
+**Implementation item:** P3-11L hardening  
 **Status:** Active
 
 ## Purpose
 
-This slice connects the restore pointer-switch boundary to the restore execution-record boundary.
+This workflow connects pointer switching to restore execution recording.
 
-A successful workflow now has one controlled sequence:
+The workflow sequence is:
 
 1. authorize the publication-capable actor
-2. validate the restore request and pointer inventory relationship
-3. inspect an existing request record for replay
+2. validate request and inventory relationships
+3. calculate the request fingerprint and check for replay or conflict
 4. validate target release objects and conditionally switch pointers
-5. persist the completed restore execution record with the exact switch receipts
+5. persist the completed execution record with switch receipts
 
 ## Pre-mutation validation
 
-Before any object-store mutation, the workflow verifies:
+Before object-store mutation, the workflow verifies:
 
 - `export:publish` authority
 - request input shape
 - pointer inventory shape
-- requested target snapshot equals the inventory target snapshot
-- expected active snapshot equals the inventory previous-active snapshot
+- target snapshot agreement
+- expected active snapshot agreement
+- request fingerprint agreement with any existing execution record
 
-Invalid requests fail before pointer replacement.
+The fingerprint includes actor ID, actor type, target snapshot, expected active snapshot, restore time, reason code, internal note, and inventory fingerprint.
+
+Invalid requests and request-ID conflicts fail before pointer replacement.
 
 ## Replay behavior
 
-The workflow checks the request ID before pointer switching.
+The workflow checks for an existing matching execution before pointer switching.
 
-When a matching execution record already exists, its pointer-switch receipts are passed through the existing execution-record replay validation and no pointer is switched again.
+A matching request ID and fingerprint returns the completed record directly. Target objects are not inspected and pointers are not switched again.
 
-A mismatched request using an existing request ID fails as replay validation failure.
+A reused request ID with different content fails with `replay_validation_failed` before object-store mutation.
+
+The execution service checks the record again after pointer switching to guard concurrent requests.
 
 ## Failure boundary
 
 Pointer-switch failure does not write a completed execution record.
 
-If pointer switching succeeds but durable execution-record persistence fails, the workflow raises `execution_record_failed_after_switch` and carries the validated pointer-switch receipts on the error. This makes the post-mutation persistence failure explicit for operator reconciliation instead of reporting the restore as completed.
+When pointer switching succeeds but record persistence fails, the workflow raises `execution_record_failed_after_switch` and includes validated switch receipts for reconciliation.
+
+Object storage and database persistence are separate operations. The workflow records partial-success evidence explicitly instead of reporting completion.
 
 ## Explicit exclusions
 
-P3-11L does not add:
+This hardening does not add:
 
 - a concrete Cloudflare R2 adapter
 - restore execution database tables
 - public restore controls
 - live production verification
-- the final P3-11 integration audit
