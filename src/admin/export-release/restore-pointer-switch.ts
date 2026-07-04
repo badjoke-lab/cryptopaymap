@@ -25,9 +25,7 @@ export const exportRestoreInspectedObjectSchema = z
   })
   .strict();
 
-export type ExportRestorePointerExpectation = z.infer<
-  typeof exportRestorePointerExpectationSchema
->;
+export type ExportRestorePointerExpectation = z.infer<typeof exportRestorePointerExpectationSchema>;
 export type ExportRestoreInspectedObject = z.infer<typeof exportRestoreInspectedObjectSchema>;
 
 export interface ExportRestorePointerSwitchAdapter {
