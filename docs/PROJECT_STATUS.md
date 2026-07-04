@@ -12,8 +12,8 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11J — export release restore execution record boundary
-- Branch: `work/p311j`
+- P3-11K — export release restore pointer switch boundary
+- Branch: `work/p311k`
 - Pull request: pending
 
 ## Latest completed work
@@ -33,27 +33,27 @@ P3-11 — Export controls and release workflow
 - P3-11G release history read model completed through pull request #81
 - P3-11H release history backend and API completed through pull request #82
 - P3-11I restore operation contract completed through pull request #83
+- P3-11J restore execution record boundary completed through pull request #84
 
-## P3-11J in progress
+## P3-11K in progress
 
-- restore pointer inventory schema
-- restore pointer switch receipt schema
-- restore execution record schema
-- inventory fingerprint and request fingerprint
-- replay and request conflict behavior
-- inventory active pointer guard
-- pointer count, pointer key, and target ETag guardrails
-- restore execution runtime and unit tests
+- restore pointer expectation schema
+- target object inspection schema
+- object-store adapter boundary
+- target object preflight verification
+- conditional pointer replacement arguments
+- pointer switch receipt validation
+- restore switch runtime and unit tests
 
 ## Next
 
-1. Complete P3-11J validation and merge the pull request.
-2. Add object-store pointer switch execution.
+1. Complete P3-11K validation and merge the pull request.
+2. Wire restore pointer switching to the restore execution record flow.
 3. Complete the final P3-11 integration audit and P3-12 handoff.
 
 ## Blocked
 
-No repository blocker. Live candidate generation, R2 activation, restore pointer switching, public serving, database migration, and production verification remain deferred.
+No repository blocker. Live candidate generation, R2 activation, public serving, database migration, and production verification remain deferred.
 
 ## Verification rule
 
