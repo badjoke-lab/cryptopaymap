@@ -2,6 +2,7 @@ import { z } from 'zod';
 import type { ExportPublicationMutationContext } from './publication-contract';
 import {
   createExportRestoreExecutionService,
+  ExportRestoreExecutionError,
   exportRestorePointerInventorySchema,
   type ExportRestoreExecutionBackend,
   type ExportRestoreExecutionInput,
@@ -138,35 +139,30 @@ export function createExportRestoreWorkflow(dependencies: {
 
       let existing: ExportRestoreExecutionRecord | null;
       try {
-        existing = await dependencies.executionBackend.readRestoreRecord(args.context.requestId);
+        existing = await executionService.findReplay({
+          context: args.context,
+          input: validated.input,
+          inventory: validated.inventory,
+        });
       } catch (error) {
+        if (error instanceof ExportRestoreExecutionError && error.code === 'backend_failure') {
+          throw new ExportRestoreWorkflowError(
+            'restore_record_read_failed',
+            'The restore workflow could not inspect an existing execution record.',
+            [],
+            [],
+            { cause: error },
+          );
+        }
         throw new ExportRestoreWorkflowError(
-          'restore_record_read_failed',
-          'The restore workflow could not inspect an existing execution record.',
+          'replay_validation_failed',
+          'The restore replay request does not match the existing execution record.',
           [],
           [],
           { cause: error },
         );
       }
-
-      if (existing !== null) {
-        try {
-          return await executionService.recordExecution({
-            context: args.context,
-            input: validated.input,
-            inventory: validated.inventory,
-            pointerSwitches: existing.pointerSwitches,
-          });
-        } catch (error) {
-          throw new ExportRestoreWorkflowError(
-            'replay_validation_failed',
-            'The existing restore execution record does not match this replay request.',
-            [],
-            existing.pointerSwitches,
-            { cause: error },
-          );
-        }
-      }
+      if (existing !== null) return existing;
 
       let pointerSwitches: ExportRestorePointerSwitchReceipt[];
       try {

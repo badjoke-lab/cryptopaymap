@@ -143,6 +143,30 @@ describe('export restore workflow', () => {
     expect(replayDatabase.writes).toEqual([]);
   });
 
+  it('rejects conflicting replay content before switching pointers', async () => {
+    const firstDatabase = executionBackend();
+    const firstObjects = pointerAdapter();
+    const existing = await createExportRestoreWorkflow({
+      executionBackend: firstDatabase.backend,
+      pointerSwitchAdapter: firstObjects.adapter,
+    }).execute(workflowArgs());
+
+    const replayDatabase = executionBackend({ existing });
+    const replayObjects = pointerAdapter();
+    await expect(
+      createExportRestoreWorkflow({
+        executionBackend: replayDatabase.backend,
+        pointerSwitchAdapter: replayObjects.adapter,
+      }).execute({
+        ...workflowArgs(),
+        input: { ...input, internalNote: 'Different restore note.' },
+      }),
+    ).rejects.toMatchObject({ code: 'replay_validation_failed' });
+
+    expect(replayObjects.replacePointer).not.toHaveBeenCalled();
+    expect(replayDatabase.writes).toEqual([]);
+  });
+
   it('fails closed before object-store mutation for unauthorized actors', async () => {
     const database = executionBackend();
     const objects = pointerAdapter();

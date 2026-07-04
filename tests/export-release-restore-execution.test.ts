@@ -93,6 +93,22 @@ describe('export restore execution record contract', () => {
     expect(state.writes).toEqual([record]);
   });
 
+  it('finds an identical completed replay before pointer switching', async () => {
+    const first = backend();
+    const record = await createExportRestoreExecutionService(first.backend).recordExecution({
+      context,
+      input,
+      inventory,
+      pointerSwitches,
+    });
+    const replay = backend(record);
+
+    await expect(
+      createExportRestoreExecutionService(replay.backend).findReplay({ context, input, inventory }),
+    ).resolves.toEqual(record);
+    expect(replay.writes).toEqual([]);
+  });
+
   it('replays an identical restore request without writing again', async () => {
     const first = backend();
     const record = await createExportRestoreExecutionService(first.backend).recordExecution({
@@ -114,7 +130,25 @@ describe('export restore execution record contract', () => {
     expect(replay.writes).toEqual([]);
   });
 
-  it('rejects request ID reuse with different content', async () => {
+  it('rejects request ID reuse when an internal note changes', async () => {
+    const first = backend();
+    const record = await createExportRestoreExecutionService(first.backend).recordExecution({
+      context,
+      input,
+      inventory,
+      pointerSwitches,
+    });
+
+    await expect(
+      createExportRestoreExecutionService(backend(record).backend).findReplay({
+        context,
+        input: { ...input, internalNote: 'Different restore note.' },
+        inventory,
+      }),
+    ).rejects.toMatchObject({ code: 'request_conflict' });
+  });
+
+  it('rejects request ID reuse with a different reason code', async () => {
     const first = backend();
     const record = await createExportRestoreExecutionService(first.backend).recordExecution({
       context,
@@ -144,6 +178,16 @@ describe('export restore execution record contract', () => {
     ).rejects.toMatchObject({ code: 'unauthorized' });
   });
 
+  it('requires the requested target snapshot to match the inventory', async () => {
+    await expect(
+      createExportRestoreExecutionService(backend().backend).findReplay({
+        context,
+        input: { ...input, targetSnapshotDigest: 'd'.repeat(64) },
+        inventory,
+      }),
+    ).rejects.toMatchObject({ code: 'target_snapshot_mismatch' });
+  });
+
   it('requires pointer switches to match the pointer inventory', async () => {
     await expect(
       createExportRestoreExecutionService(backend().backend).recordExecution({
@@ -164,6 +208,17 @@ describe('export restore execution record contract', () => {
         pointerSwitches: [{ ...pointerSwitch, newEtag: 'etag-wrong-target' }],
       }),
     ).rejects.toMatchObject({ code: 'target_etag_mismatch' });
+  });
+
+  it('requires switch receipt time to match the restore time', async () => {
+    await expect(
+      createExportRestoreExecutionService(backend().backend).recordExecution({
+        context,
+        input,
+        inventory,
+        pointerSwitches: [{ ...pointerSwitch, switchedAt: '2026-07-04T05:01:00.000Z' }],
+      }),
+    ).rejects.toMatchObject({ code: 'switch_time_mismatch' });
   });
 
   it('rejects inventory that does not match the expected active snapshot', async () => {
