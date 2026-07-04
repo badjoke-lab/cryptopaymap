@@ -57,6 +57,13 @@ export const exportRestorePointerInventorySchema = z
         });
       }
     }
+    if (!keys.has(inventory.activePointerKey)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['activePointerKey'],
+        message: 'Pointer inventory must include the active pointer key.',
+      });
+    }
   });
 
 export const exportRestorePointerSwitchReceiptSchema = z
@@ -114,6 +121,7 @@ export type ExportRestoreExecutionErrorCode =
   | 'active_mismatch'
   | 'switch_count_mismatch'
   | 'pointer_mismatch'
+  | 'target_etag_mismatch'
   | 'request_conflict'
   | 'backend_failure';
 
@@ -183,12 +191,20 @@ function assertSwitchesMatchInventory(
       ['pointerSwitches'],
     );
   }
-  const pointerKeys = new Set(inventory.items.map((item) => item.pointerKey));
+  const inventoryItems = new Map(inventory.items.map((item) => [item.pointerKey, item]));
   for (const pointerSwitch of pointerSwitches) {
-    if (!pointerKeys.has(pointerSwitch.pointerKey)) {
+    const item = inventoryItems.get(pointerSwitch.pointerKey);
+    if (item === undefined) {
       throw new ExportRestoreExecutionError(
         'pointer_mismatch',
         'The restore pointer switch receipt is not part of the target inventory.',
+        [pointerSwitch.pointerKey],
+      );
+    }
+    if (pointerSwitch.newEtag !== item.targetEtag) {
+      throw new ExportRestoreExecutionError(
+        'target_etag_mismatch',
+        'The restore pointer switch receipt does not match the target object ETag.',
         [pointerSwitch.pointerKey],
       );
     }
