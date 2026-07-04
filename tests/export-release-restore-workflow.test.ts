@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { ExportPublicationMutationContext } from '../src/admin/export-release/publication-contract';
-import {
-  type ExportRestoreExecutionBackend,
-  type ExportRestoreExecutionInput,
-  type ExportRestoreExecutionRecord,
-  type ExportRestorePointerInventory,
+import type {
+  ExportRestoreExecutionBackend,
+  ExportRestoreExecutionInput,
+  ExportRestoreExecutionRecord,
+  ExportRestorePointerInventory,
 } from '../src/admin/export-release/restore-execution';
 import type {
   ExportRestoreInspectedObject,
@@ -32,38 +32,36 @@ const input: ExportRestoreExecutionInput = {
   reasonCode: 'restore_previous_release',
   internalNote: 'Restore previous release after verification.',
 };
+const inventoryItem = {
+  pointerKey: 'export-releases/active.json',
+  targetObjectKey: `export-releases/by-snapshot/${targetDigest}/manifest.json`,
+  targetSha256: artifactDigest,
+  targetEtag: 'etag-target-manifest',
+  contentType: 'application/json',
+  sizeBytes: 512,
+} as const;
 const inventory: ExportRestorePointerInventory = {
   targetSnapshotDigest: targetDigest,
   previousActiveSnapshotDigest: activeDigest,
   targetDatasetVersion: '2026.07.03.1',
   targetReleasePrefix: `export-releases/by-snapshot/${targetDigest}/`,
   activePointerKey: 'export-releases/active.json',
-  items: [
-    {
-      pointerKey: 'export-releases/active.json',
-      targetObjectKey: `export-releases/by-snapshot/${targetDigest}/manifest.json`,
-      targetSha256: artifactDigest,
-      targetEtag: 'etag-target-manifest',
-      contentType: 'application/json',
-      sizeBytes: 512,
-    },
-  ],
+  items: [inventoryItem],
 };
 const targetObject: ExportRestoreInspectedObject = {
-  key: inventory.items[0]!.targetObjectKey,
-  etag: inventory.items[0]!.targetEtag,
-  sha256: inventory.items[0]!.targetSha256,
-  contentType: inventory.items[0]!.contentType,
-  sizeBytes: inventory.items[0]!.sizeBytes,
+  key: inventoryItem.targetObjectKey,
+  etag: inventoryItem.targetEtag,
+  sha256: inventoryItem.targetSha256,
+  contentType: inventoryItem.contentType,
+  sizeBytes: inventoryItem.sizeBytes,
 };
 const pointerExpectations = [
   { pointerKey: 'export-releases/active.json', expectedCurrentEtag: 'etag-active-before' },
 ];
 
-function executionBackend(options: {
-  existing?: ExportRestoreExecutionRecord | null;
-  failWrite?: boolean;
-} = {}) {
+function executionBackend(
+  options: { existing?: ExportRestoreExecutionRecord | null; failWrite?: boolean } = {},
+) {
   let current = options.existing ?? null;
   const writes: ExportRestoreExecutionRecord[] = [];
   const backend: ExportRestoreExecutionBackend = {
