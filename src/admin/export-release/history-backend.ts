@@ -58,10 +58,7 @@ export function createDrizzleExportReleaseHistoryBackend(
       const rows = await database
         .select(selection)
         .from(exportActivationRecords)
-        .orderBy(
-          desc(exportActivationRecords.publishedAt),
-          desc(exportActivationRecords.createdAt),
-        )
+        .orderBy(desc(exportActivationRecords.publishedAt), desc(exportActivationRecords.createdAt))
         .limit(query.limit + 1);
       return {
         items: rows.slice(0, query.limit).map(toHistoryItem),
