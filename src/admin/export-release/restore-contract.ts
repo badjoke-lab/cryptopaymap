@@ -50,10 +50,30 @@ export const exportRestoreReceiptSchema = z
     previousActiveSnapshotDigest: sha256Schema,
     restoredAt: z.iso.datetime({ offset: true }),
     reasonCode: reasonCodeSchema,
-    state: z.enum(['blocked_missing_pointer_inventory', 'blocked_restore_execution_unavailable']),
-    issues: z.array(z.string().trim().min(1)).min(1).max(20),
+    state: z.enum([
+      'blocked_missing_pointer_inventory',
+      'blocked_restore_execution_unavailable',
+      'ready_for_execution',
+    ]),
+    issues: z.array(z.string().trim().min(1)).max(20),
   })
-  .strict();
+  .strict()
+  .superRefine((receipt, context) => {
+    if (receipt.state === 'ready_for_execution' && receipt.issues.length > 0) {
+      context.addIssue({
+        code: 'custom',
+        path: ['issues'],
+        message: 'A restore that is ready for execution cannot contain blocking issues.',
+      });
+    }
+    if (receipt.state !== 'ready_for_execution' && receipt.issues.length === 0) {
+      context.addIssue({
+        code: 'custom',
+        path: ['issues'],
+        message: 'A blocked restore receipt requires at least one issue.',
+      });
+    }
+  });
 
 export type ExportRestoreInput = z.infer<typeof exportRestoreInputSchema>;
 export type ExportRestoreSnapshot = z.infer<typeof exportRestoreSnapshotSchema>;
@@ -161,8 +181,8 @@ export function createExportRestoreService(backend: ExportRestoreBackend) {
         previousActiveSnapshotDigest: active.snapshotDigest,
         restoredAt: inputResult.data.restoredAt,
         reasonCode: inputResult.data.reasonCode,
-        state: 'blocked_restore_execution_unavailable',
-        issues: ['restoreExecutionUnavailable'],
+        state: 'ready_for_execution',
+        issues: [],
       });
     },
   };

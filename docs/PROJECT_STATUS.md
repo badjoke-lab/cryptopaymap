@@ -12,8 +12,8 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11L — export restore pointer switch and execution-record integration
-- Branch: `work/p311l`
+- P3-11M — final export release integration audit and P3-12 handoff
+- Branch: `work/p311m`
 - Pull request: pending
 
 ## Latest completed work
@@ -35,25 +35,26 @@ P3-11 — Export controls and release workflow
 - P3-11I restore operation contract completed through pull request #83
 - P3-11J restore execution record boundary completed through pull request #84
 - P3-11K restore pointer switch boundary completed through pull request #85
+- P3-11L restore workflow integration completed through pull request #86
 
-## P3-11L in progress
+## P3-11M in progress
 
-- pre-mutation restore request and inventory validation
-- request-level replay check before pointer switching
-- pointer switch and execution-record composition
-- no-repeat pointer switching for completed request replays
-- explicit post-switch persistence failure boundary with switch receipts
-- restore workflow runtime and unit tests
+- restore readiness state aligned with the implemented execution workflow
+- readiness-to-execution integration runtime check
+- complete release and restore boundary audit
+- automated verification inventory
+- deferred live-verification inventory
+- P3-12 handoff contract
 
 ## Next
 
-1. Complete P3-11L validation and merge the pull request.
-2. Complete the final P3-11 integration audit and handoff.
+1. Complete P3-11M validation and merge the pull request.
+2. Mark P3-11 repository-complete in project tracking.
 3. Begin P3-12 audit history and Phase 3 integration audit.
 
 ## Blocked
 
-No repository blocker. Live candidate generation, R2 activation, public serving, database migration, and production verification remain deferred.
+No repository blocker. Live candidate generation, R2 activation, public serving, database migration, concrete restore persistence deployment, and production verification remain deferred.
 
 ## Verification rule
 
