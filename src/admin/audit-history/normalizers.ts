@@ -173,9 +173,7 @@ export function exportRestoreExecutionAuditItem(
     actorType: row.actorType,
     requestId: row.requestId,
     target: { type: 'export_snapshot', id: row.restoredSnapshotDigest },
-    secondaryTargets: [
-      { type: 'export_snapshot', id: row.previousActiveSnapshotDigest },
-    ],
+    secondaryTargets: [{ type: 'export_snapshot', id: row.previousActiveSnapshotDigest }],
     reasonCode: row.reasonCode,
     summary: null,
     transition: null,

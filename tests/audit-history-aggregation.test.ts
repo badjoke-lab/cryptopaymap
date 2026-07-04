@@ -53,7 +53,10 @@ describe('audit history aggregation', () => {
       }),
     ]);
 
-    const result = await createAggregatedAuditHistoryBackend([candidate, exported]).loadAuditHistory({
+    const result = await createAggregatedAuditHistoryBackend([
+      candidate,
+      exported,
+    ]).loadAuditHistory({
       limit: 25,
     });
 
