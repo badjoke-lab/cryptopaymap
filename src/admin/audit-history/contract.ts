@@ -79,7 +79,11 @@ export const auditHistoryQuerySchema = z
         message: 'Audit pagination requires both before and beforeId.',
       });
     }
-    if (query.from !== undefined && query.to !== undefined && Date.parse(query.from) > Date.parse(query.to)) {
+    if (
+      query.from !== undefined &&
+      query.to !== undefined &&
+      Date.parse(query.from) > Date.parse(query.to)
+    ) {
       context.addIssue({
         code: 'custom',
         path: ['from'],
@@ -162,5 +166,7 @@ export type AuditHistoryItem = z.infer<typeof auditHistoryItemSchema>;
 export type AuditHistoryResponse = z.infer<typeof auditHistoryResponseSchema>;
 
 export interface AuditHistoryBackend {
-  loadAuditHistory(query: AuditHistoryQuery): Promise<{ items: AuditHistoryItem[]; hasMore: boolean }>;
+  loadAuditHistory(
+    query: AuditHistoryQuery,
+  ): Promise<{ items: AuditHistoryItem[]; hasMore: boolean }>;
 }

@@ -120,12 +120,9 @@ export async function loadAuditHistory(
     loaded = await backend.loadAuditHistory(queryResult.data);
   } catch (error) {
     if (error instanceof AuditHistoryError) throw error;
-    throw new AuditHistoryError(
-      'backend_failure',
-      'The audit history could not be loaded.',
-      [],
-      { cause: error },
-    );
+    throw new AuditHistoryError('backend_failure', 'The audit history could not be loaded.', [], {
+      cause: error,
+    });
   }
 
   const itemsResult = z.array(auditHistoryItemSchema).safeParse(loaded.items);

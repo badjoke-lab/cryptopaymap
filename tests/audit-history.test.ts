@@ -44,9 +44,7 @@ const evidenceItem: AuditHistoryItem = {
   actorType: 'human',
   requestId: '10000000-0000-4000-8000-000000000001',
   target: { type: 'evidence', id: '30000000-0000-4000-8000-000000000001' },
-  secondaryTargets: [
-    { type: 'acceptance_claim', id: '40000000-0000-4000-8000-000000000001' },
-  ],
+  secondaryTargets: [{ type: 'acceptance_claim', id: '40000000-0000-4000-8000-000000000001' }],
   reasonCode: 'evidence_supported_claim',
   summary: null,
   transition: { fromState: 'candidate', toState: 'confirmed' },
@@ -111,9 +109,9 @@ describe('audit history contract', () => {
   });
 
   it('rejects source kinds assigned to the wrong domain', () => {
-    expect(
-      auditHistoryItemSchema.safeParse({ ...exportItem, domain: 'media' }).success,
-    ).toBe(false);
+    expect(auditHistoryItemSchema.safeParse({ ...exportItem, domain: 'media' }).success).toBe(
+      false,
+    );
   });
 
   it('rejects backend results outside deterministic descending order', async () => {
