@@ -18,9 +18,7 @@ export class AuditHistoryEnvironmentError extends Error {
   }
 }
 
-export function auditHistoryDatabase(
-  environment: AuditHistoryEnvironment,
-): CryptoPayMapDatabase {
+export function auditHistoryDatabase(environment: AuditHistoryEnvironment): CryptoPayMapDatabase {
   const result = requiredDatabaseEnvironmentSchema.safeParse({
     DATABASE_URL:
       typeof environment.DATABASE_URL === 'string' ? environment.DATABASE_URL : undefined,
