@@ -11,29 +11,28 @@ const activeDigest = 'a'.repeat(64);
 const targetDigest = 'b'.repeat(64);
 const artifactDigest = 'c'.repeat(64);
 const switchedAt = '2026-07-04T06:00:00.000Z';
+const inventoryItem = {
+  pointerKey: 'export-releases/active.json',
+  targetObjectKey: `export-releases/by-snapshot/${targetDigest}/manifest.json`,
+  targetSha256: artifactDigest,
+  targetEtag: 'etag-target-manifest',
+  contentType: 'application/json',
+  sizeBytes: 512,
+} as const;
 const inventory: ExportRestorePointerInventory = {
   targetSnapshotDigest: targetDigest,
   previousActiveSnapshotDigest: activeDigest,
   targetDatasetVersion: '2026.07.03.1',
   targetReleasePrefix: `export-releases/by-snapshot/${targetDigest}/`,
   activePointerKey: 'export-releases/active.json',
-  items: [
-    {
-      pointerKey: 'export-releases/active.json',
-      targetObjectKey: `export-releases/by-snapshot/${targetDigest}/manifest.json`,
-      targetSha256: artifactDigest,
-      targetEtag: 'etag-target-manifest',
-      contentType: 'application/json',
-      sizeBytes: 512,
-    },
-  ],
+  items: [inventoryItem],
 };
 const targetObject: ExportRestoreInspectedObject = {
-  key: inventory.items[0].targetObjectKey,
-  etag: inventory.items[0].targetEtag,
-  sha256: inventory.items[0].targetSha256,
-  contentType: inventory.items[0].contentType,
-  sizeBytes: inventory.items[0].sizeBytes,
+  key: inventoryItem.targetObjectKey,
+  etag: inventoryItem.targetEtag,
+  sha256: inventoryItem.targetSha256,
+  contentType: inventoryItem.contentType,
+  sizeBytes: inventoryItem.sizeBytes,
 };
 
 function adapter(overrides: Partial<{ target: ExportRestoreInspectedObject | null }> = {}) {
@@ -74,7 +73,7 @@ describe('export restore pointer switch boundary', () => {
     ]);
     expect(fake.replacePointer).toHaveBeenCalledWith({
       pointerKey: 'export-releases/active.json',
-      targetObjectKey: inventory.items[0].targetObjectKey,
+      targetObjectKey: inventoryItem.targetObjectKey,
       expectedCurrentEtag: 'etag-active-before',
       targetEtag: 'etag-target-manifest',
       switchedAt,
