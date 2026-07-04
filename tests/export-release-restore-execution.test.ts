@@ -51,6 +51,7 @@ const pointerSwitches: ExportRestorePointerSwitchReceipt[] = [
     switchedAt: input.restoredAt,
   },
 ];
+const pointerSwitch = pointerSwitches[0] as ExportRestorePointerSwitchReceipt;
 
 function backend(existing: ExportRestoreExecutionRecord | null = null): {
   backend: ExportRestoreExecutionBackend;
@@ -149,7 +150,7 @@ describe('export restore execution record contract', () => {
         context,
         input,
         inventory,
-        pointerSwitches: [{ ...pointerSwitches[0], pointerKey: 'export-releases/other.json' }],
+        pointerSwitches: [{ ...pointerSwitch, pointerKey: 'export-releases/other.json' }],
       }),
     ).rejects.toMatchObject({ code: 'pointer_mismatch' });
   });
@@ -160,7 +161,7 @@ describe('export restore execution record contract', () => {
         context,
         input,
         inventory,
-        pointerSwitches: [{ ...pointerSwitches[0], newEtag: 'etag-wrong-target' }],
+        pointerSwitches: [{ ...pointerSwitch, newEtag: 'etag-wrong-target' }],
       }),
     ).rejects.toMatchObject({ code: 'target_etag_mismatch' });
   });
