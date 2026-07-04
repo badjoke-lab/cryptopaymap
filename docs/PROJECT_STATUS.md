@@ -39,9 +39,11 @@ P3-11 — Export controls and release workflow
 ## P3-11L in progress
 
 - pre-mutation restore request and inventory validation
-- request-level replay check before pointer switching
+- request fingerprint replay and conflict preflight before pointer switching
+- actor type and internal note coverage in request fingerprints
 - pointer switch and execution-record composition
 - no-repeat pointer switching for completed request replays
+- second execution-record lookup after switching as a concurrent request guard
 - explicit post-switch persistence failure boundary with switch receipts
 - restore workflow runtime and unit tests
 
