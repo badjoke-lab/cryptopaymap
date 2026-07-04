@@ -12,8 +12,8 @@ P3-11 — Export controls and release workflow
 
 ## Active work
 
-- P3-11H — export release history database backend and protected API
-- Branch: `work/p311h`
+- P3-11I — export release restore operation contract
+- Branch: `work/p311i`
 - Pull request: pending
 
 ## Latest completed work
@@ -30,25 +30,28 @@ P3-11 — Export controls and release workflow
 - P3-11D completed through pull request #78
 - P3-11E completed through pull request #79
 - P3-11F completed through pull request #80
-- P3-11G read model completed through pull request #81
+- P3-11G release history read model completed through pull request #81
+- P3-11H release history backend and API completed through pull request #82
 
-## P3-11H in progress
+## P3-11I in progress
 
-- Drizzle export release history backend over durable activation records
-- protected `GET /admin/api/export-history` endpoint
-- bounded release history query execution
-- current snapshot marking from the newest durable activation
-- API, backend, and runtime tests
+- export release restore request schema
+- active and target snapshot guards
+- `export:publish` restore authorization boundary
+- active snapshot race detection
+- target snapshot existence check
+- explicit blockers for missing pointer inventory and unavailable execution boundary
+- restore runtime and unit tests
 
 ## Next
 
-1. Complete P3-11H validation and merge the pull request.
-2. Add rollback operation contract and execution guardrails.
+1. Complete P3-11I validation and merge the pull request.
+2. Add durable restore execution records and pointer-switch execution.
 3. Complete the final P3-11 integration audit and P3-12 handoff.
 
 ## Blocked
 
-No repository blocker. Live candidate generation, R2 activation, public serving, database migration, and production verification remain deferred.
+No repository blocker. Live candidate generation, R2 activation, restore execution, public serving, database migration, and production verification remain deferred.
 
 ## Verification rule
 
