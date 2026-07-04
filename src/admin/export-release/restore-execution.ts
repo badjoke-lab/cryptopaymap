@@ -118,9 +118,11 @@ export type ExportRestoreExecutionErrorCode =
   | 'invalid_inventory'
   | 'invalid_switch_receipt'
   | 'active_mismatch'
+  | 'target_snapshot_mismatch'
   | 'switch_count_mismatch'
   | 'pointer_mismatch'
   | 'target_etag_mismatch'
+  | 'switch_time_mismatch'
   | 'request_conflict'
   | 'backend_failure';
 
@@ -139,6 +141,12 @@ export class ExportRestoreExecutionError extends Error {
     this.code = code;
     this.issues = issues;
   }
+}
+
+interface PreparedRestoreExecutionIdentity {
+  inventory: ExportRestorePointerInventory;
+  inventoryFingerprint: string;
+  requestFingerprint: string;
 }
 
 function canonicalJson(value: unknown): string {
@@ -166,10 +174,12 @@ export async function exportRestoreInventoryFingerprint(
 export async function exportRestoreRequestFingerprint(input: {
   requestId: string;
   actorId: string;
+  actorType: 'human' | 'system';
   targetSnapshotDigest: string;
   expectedActiveSnapshotDigest: string;
   restoredAt: string;
   reasonCode: string;
+  internalNote: string | null;
   inventoryFingerprint: string;
 }): Promise<string> {
   return sha256Hex(canonicalJson(input));
@@ -184,9 +194,60 @@ function assertExecutionAuthorization(context: ExportPublicationMutationContext)
   }
 }
 
+async function prepareExecutionIdentity(args: {
+  context: ExportPublicationMutationContext;
+  input: ExportRestoreExecutionInput;
+  inventory: ExportRestorePointerInventory;
+}): Promise<PreparedRestoreExecutionIdentity> {
+  assertExecutionAuthorization(args.context);
+  const inventoryResult = exportRestorePointerInventorySchema.safeParse(args.inventory);
+  if (!inventoryResult.success) {
+    throw new ExportRestoreExecutionError(
+      'invalid_inventory',
+      'The restore pointer inventory is invalid.',
+      inventoryResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
+    );
+  }
+  if (
+    inventoryResult.data.previousActiveSnapshotDigest !== args.input.expectedActiveSnapshotDigest
+  ) {
+    throw new ExportRestoreExecutionError(
+      'active_mismatch',
+      'The restore inventory does not match the expected active snapshot.',
+      ['expectedActiveSnapshotDigest'],
+    );
+  }
+  if (inventoryResult.data.targetSnapshotDigest !== args.input.targetSnapshotDigest) {
+    throw new ExportRestoreExecutionError(
+      'target_snapshot_mismatch',
+      'The restore inventory does not match the requested target snapshot.',
+      ['targetSnapshotDigest'],
+    );
+  }
+
+  const inventoryFingerprint = await exportRestoreInventoryFingerprint(inventoryResult.data);
+  const requestFingerprint = await exportRestoreRequestFingerprint({
+    requestId: args.context.requestId,
+    actorId: args.context.actorId,
+    actorType: args.context.actorType,
+    targetSnapshotDigest: args.input.targetSnapshotDigest,
+    expectedActiveSnapshotDigest: args.input.expectedActiveSnapshotDigest,
+    restoredAt: args.input.restoredAt,
+    reasonCode: args.input.reasonCode,
+    internalNote: args.input.internalNote,
+    inventoryFingerprint,
+  });
+  return {
+    inventory: inventoryResult.data,
+    inventoryFingerprint,
+    requestFingerprint,
+  };
+}
+
 function assertSwitchesMatchInventory(
   inventory: ExportRestorePointerInventory,
   pointerSwitches: ExportRestorePointerSwitchReceipt[],
+  restoredAt: string,
 ): void {
   if (pointerSwitches.length !== inventory.items.length) {
     throw new ExportRestoreExecutionError(
@@ -212,26 +273,64 @@ function assertSwitchesMatchInventory(
         [pointerSwitch.pointerKey],
       );
     }
+    if (pointerSwitch.switchedAt !== restoredAt) {
+      throw new ExportRestoreExecutionError(
+        'switch_time_mismatch',
+        'The restore pointer switch receipt time does not match the restore operation time.',
+        [pointerSwitch.pointerKey],
+      );
+    }
   }
+}
+
+async function readExistingExecution(
+  backend: ExportRestoreExecutionBackend,
+  requestId: string,
+  requestFingerprint: string,
+): Promise<ExportRestoreExecutionRecord | null> {
+  let existing: ExportRestoreExecutionRecord | null;
+  try {
+    existing = await backend.readRestoreRecord(requestId);
+  } catch (error) {
+    throw new ExportRestoreExecutionError(
+      'backend_failure',
+      'The restore execution record could not be read.',
+      [],
+      { cause: error },
+    );
+  }
+  if (existing !== null && existing.requestFingerprint !== requestFingerprint) {
+    throw new ExportRestoreExecutionError(
+      'request_conflict',
+      'The restore request ID was reused with different content.',
+      ['requestFingerprint'],
+    );
+  }
+  return existing;
 }
 
 export function createExportRestoreExecutionService(backend: ExportRestoreExecutionBackend) {
   return {
+    async findReplay(args: {
+      context: ExportPublicationMutationContext;
+      input: ExportRestoreExecutionInput;
+      inventory: ExportRestorePointerInventory;
+    }): Promise<ExportRestoreExecutionRecord | null> {
+      const identity = await prepareExecutionIdentity(args);
+      return readExistingExecution(
+        backend,
+        args.context.requestId,
+        identity.requestFingerprint,
+      );
+    },
+
     async recordExecution(args: {
       context: ExportPublicationMutationContext;
       input: ExportRestoreExecutionInput;
       inventory: ExportRestorePointerInventory;
       pointerSwitches: ExportRestorePointerSwitchReceipt[];
     }): Promise<ExportRestoreExecutionRecord> {
-      assertExecutionAuthorization(args.context);
-      const inventoryResult = exportRestorePointerInventorySchema.safeParse(args.inventory);
-      if (!inventoryResult.success) {
-        throw new ExportRestoreExecutionError(
-          'invalid_inventory',
-          'The restore pointer inventory is invalid.',
-          inventoryResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
-        );
-      }
+      const identity = await prepareExecutionIdentity(args);
       const switchResult = z
         .array(exportRestorePointerSwitchReceiptSchema)
         .safeParse(args.pointerSwitches);
@@ -242,62 +341,27 @@ export function createExportRestoreExecutionService(backend: ExportRestoreExecut
           switchResult.error.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`),
         );
       }
-      if (
-        inventoryResult.data.previousActiveSnapshotDigest !==
-        args.input.expectedActiveSnapshotDigest
-      ) {
-        throw new ExportRestoreExecutionError(
-          'active_mismatch',
-          'The restore inventory does not match the expected active snapshot.',
-          ['expectedActiveSnapshotDigest'],
-        );
-      }
-      assertSwitchesMatchInventory(inventoryResult.data, switchResult.data);
+      assertSwitchesMatchInventory(identity.inventory, switchResult.data, args.input.restoredAt);
 
-      const inventoryFingerprint = await exportRestoreInventoryFingerprint(inventoryResult.data);
-      const requestFingerprint = await exportRestoreRequestFingerprint({
-        requestId: args.context.requestId,
-        actorId: args.context.actorId,
-        targetSnapshotDigest: args.input.targetSnapshotDigest,
-        expectedActiveSnapshotDigest: args.input.expectedActiveSnapshotDigest,
-        restoredAt: args.input.restoredAt,
-        reasonCode: args.input.reasonCode,
-        inventoryFingerprint,
-      });
-      let existing: ExportRestoreExecutionRecord | null;
-      try {
-        existing = await backend.readRestoreRecord(args.context.requestId);
-      } catch (error) {
-        throw new ExportRestoreExecutionError(
-          'backend_failure',
-          'The restore execution record could not be read.',
-          [],
-          { cause: error },
-        );
-      }
-      if (existing !== null) {
-        if (existing.requestFingerprint !== requestFingerprint) {
-          throw new ExportRestoreExecutionError(
-            'request_conflict',
-            'The restore request ID was reused with different content.',
-            ['requestFingerprint'],
-          );
-        }
-        return existing;
-      }
+      const existing = await readExistingExecution(
+        backend,
+        args.context.requestId,
+        identity.requestFingerprint,
+      );
+      if (existing !== null) return existing;
 
       const record = exportRestoreExecutionRecordSchema.parse({
         requestId: args.context.requestId,
         actorId: args.context.actorId,
         actorType: args.context.actorType,
-        previousActiveSnapshotDigest: inventoryResult.data.previousActiveSnapshotDigest,
-        restoredSnapshotDigest: inventoryResult.data.targetSnapshotDigest,
-        restoredDatasetVersion: inventoryResult.data.targetDatasetVersion,
+        previousActiveSnapshotDigest: identity.inventory.previousActiveSnapshotDigest,
+        restoredSnapshotDigest: identity.inventory.targetSnapshotDigest,
+        restoredDatasetVersion: identity.inventory.targetDatasetVersion,
         reasonCode: args.input.reasonCode,
         internalNote: args.input.internalNote,
         restoredAt: args.input.restoredAt,
-        inventoryFingerprint,
-        requestFingerprint,
+        inventoryFingerprint: identity.inventoryFingerprint,
+        requestFingerprint: identity.requestFingerprint,
         pointerSwitches: switchResult.data,
       });
       try {
