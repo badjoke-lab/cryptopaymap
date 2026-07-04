@@ -50,7 +50,7 @@ export const exportRestoreReceiptSchema = z
     previousActiveSnapshotDigest: sha256Schema,
     restoredAt: z.iso.datetime({ offset: true }),
     reasonCode: reasonCodeSchema,
-    state: z.enum(['blocked_missing_pointer_inventory']),
+    state: z.enum(['blocked_missing_pointer_inventory', 'blocked_restore_execution_unavailable']),
     issues: z.array(z.string().trim().min(1)).min(1).max(20),
   })
   .strict();
@@ -158,8 +158,8 @@ export function createExportRestoreService(backend: ExportRestoreBackend) {
         previousActiveSnapshotDigest: active.snapshotDigest,
         restoredAt: inputResult.data.restoredAt,
         reasonCode: inputResult.data.reasonCode,
-        state: 'blocked_missing_pointer_inventory',
-        issues: ['restoreExecutionNotImplemented'],
+        state: 'blocked_restore_execution_unavailable',
+        issues: ['restoreExecutionUnavailable'],
       });
     },
   };
