@@ -46,7 +46,8 @@ function context(overrides: { identity?: unknown; actorIds?: string; url?: strin
   return {
     request: new Request(overrides.url ?? 'https://example.test/admin/api/export-history'),
     env: {
-      CPM_ADMIN_EXPORT_ACTOR_IDS: overrides.actorIds ?? JSON.stringify([identity.actorId]),
+      CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS:
+        overrides.actorIds ?? JSON.stringify([identity.actorId]),
     },
     params: {},
     data: {
@@ -59,9 +60,7 @@ function context(overrides: { identity?: unknown; actorIds?: string; url?: strin
 describe('export release history endpoint', () => {
   it('returns protected release history for an authorized reader', async () => {
     const loadHistory = vi.fn(async () => history());
-    const response = await createExportHistoryHandler({ loadHistory, now: () => now })(
-      context(),
-    );
+    const response = await createExportHistoryHandler({ loadHistory, now: () => now })(context());
 
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual(history());
