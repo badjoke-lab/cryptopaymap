@@ -45,14 +45,18 @@ function backend(
   }> = {},
 ): ExportRestoreBackend {
   return {
-    loadActiveSnapshot: async () => overrides.active ?? snapshot(activeDigest),
-    loadSnapshot: async () => overrides.target ?? snapshot(targetDigest),
+    loadActiveSnapshot: async () =>
+      Object.hasOwn(overrides, 'active') ? (overrides.active ?? null) : snapshot(activeDigest),
+    loadSnapshot: async () =>
+      Object.hasOwn(overrides, 'target') ? (overrides.target ?? null) : snapshot(targetDigest),
   };
 }
 
 describe('export release restore contract', () => {
   it('blocks restore preparation when the target pointer inventory is not durable yet', async () => {
-    await expect(createExportRestoreService(backend()).prepareRestore(context, input)).resolves.toEqual({
+    await expect(
+      createExportRestoreService(backend()).prepareRestore(context, input),
+    ).resolves.toEqual({
       requestId: context.requestId,
       actorId: context.actorId,
       targetSnapshotDigest: targetDigest,
@@ -66,9 +70,10 @@ describe('export release restore contract', () => {
 
   it('blocks execution even when inventory exists until the execution boundary is implemented', async () => {
     await expect(
-      createExportRestoreService(
-        backend({ target: snapshot(targetDigest, true) }),
-      ).prepareRestore(context, input),
+      createExportRestoreService(backend({ target: snapshot(targetDigest, true) })).prepareRestore(
+        context,
+        input,
+      ),
     ).resolves.toMatchObject({
       state: 'blocked_restore_execution_unavailable',
       issues: ['restoreExecutionUnavailable'],
