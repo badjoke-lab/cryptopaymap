@@ -85,72 +85,44 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
-| P3-11 | Export controls and release workflow | Activation active | P3-07 through P3-10 | #75–#78 complete; #79 active |
-| P3-12 | Audit history and Phase 3 integration audit | Planned | P3-01 through P3-11 | — |
+| P3-11 | Export controls and release workflow | Repository completed; live verification deferred | P3-07 through P3-10 | #75–#87 |
+| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | P3-12A active |
 
 ### Completed P3-07 deliveries
 
-P3-07A through P3-07C established isolated promotion authorization, durable atomic new-target persistence, protected workspace reads, eligibility checks, and the hidden new-canonical-target editor.
-
-P3-07D through P3-07F established version-pinned existing-target linking, durable atomic persistence, protected target search, comparison, explicit selection, exact canonical-path checks, and exact existing Claim-set checks.
-
-P3-07G through P3-07I established the field-level provenance contract and reviewer controls for both paths, including origin and attribution role separation, stable draft identities, missing-source blocking, and protected request validation.
-
-P3-07J completed the cross-path integration and handoff audit. P3-07 is repository-complete; live Access, database, and production verification remain deferred.
+P3-07 established isolated promotion authorization, durable atomic promotion and existing-target linking, protected workspaces, exact candidate and Claim-set guards, target search and selection, field-level provenance, reviewer controls, and cross-path integration. P3-07 is repository-complete; live Access, database, and production verification remain deferred.
 
 ### Completed P3-08 deliveries
 
-P3-08A established the isolated `evidence:review` authorization and strict decision contract, including Evidence disposition, finding, explicit Claim action, exact version and accepted-set guards, deterministic replay, threshold enforcement, and atomic reference behavior.
-
-P3-08B added durable `evidence_review_decisions` persistence, the rejected verification event, migration `0015_bored_lyja.sql`, transaction guards, atomic Drizzle and Neon persistence, and replayable audit receipts.
-
-P3-08C added the protected bounded Evidence queue, version-pinned detail workspace, accepted Evidence set and threshold display, protected GET and POST endpoints, reviewer decision UI, API and component tests, runtime checks, and protected artifact validation. Closed draft pull request #61 was superseded by merged pull request #62 without losing implementation.
-
-P3-08D completed the final cross-layer repository integration and handoff audit in pull request #63. Live Access, database, and production verification remain deferred.
+P3-08 established Evidence review authorization, strict decision contracts, durable decision persistence, Claim transitions and verification events, protected queue and detail workspaces, reviewer UI, API behavior, threshold enforcement, replay and conflict handling, and a final cross-layer audit. Live Access, database, and production verification remain deferred.
 
 ### Completed P3-09 deliveries
 
-P3-09A established the bounded overdue, missing-deadline, stale, and due-soon queue contract; exact Claim version, status, visibility, and deadline expectations; system-only expiration capability; and replay, conflict, early-execution, and rollback behavior.
-
-P3-09B added durable `reconfirmation_expirations` receipts, migration `0016_high_pixie.sql`, atomic Claim and `marked_stale` event persistence, database guards, deterministic replay, and the bounded database queue.
-
-P3-09C added Rechecks-specific authorization, protected queue and detail APIs, version-pinned Claim context, the controlled expiration POST endpoint, `/admin/rechecks`, `/admin/rechecks/detail`, reviewer UI, and API, component, runtime, and artifact validation.
-
-P3-09D added stable scheduled run and request IDs, bounded overdue Claim selection, replay-aware scheduled execution, the non-HTTP execution boundary, and the final P3-09 integration handoff in pull request #67. Live scheduler configuration remains deferred.
+P3-09 established bounded reconfirmation queues, exact Claim guards, durable expiration receipts, atomic stale transitions, protected Rechecks APIs and UI, scheduled-run identity and replay behavior, and the final handoff audit. Live scheduler configuration remains deferred.
 
 ### Completed P3-10 deliveries
 
-P3-10A added the isolated `media:review` capability and strict Media decision contract in pull request #69. It pins the exact Media asset version, subject, rights and visibility state, and complete file set; separates private Evidence and owner-proof approval from gallery approval; and defines reject, restrict, supersede, replay, conflict, and fail-closed behavior.
-
-P3-10B added durable Media review decision receipts, migration `0017_glorious_toxin.sql`, exact asset and file-set guards, active-cover uniqueness, projected decision outcomes, guarded database writes, replay handling, and database conflict classification in pull request #70.
-
-P3-10C added private staged derivatives, deterministic private and public R2 keys, storage metadata preflight, durable file transitions, replay-safe publication after approval, fail-closed revocation, and R2 adapter boundaries in pull request #71.
-
-P3-10D added the protected bounded Media queue, version-pinned detail and complete file-set workspace, isolated read authorization, queue and detail GET endpoints, and the idempotent storage-aware decision POST endpoint in pull request #72.
-
-P3-10E added `/admin/media`, protected private-file previews, the exact Media review detail workspace, state-aware decision controls, rights and privacy fields, component tests, and protected artifact validation in pull request #73.
-
-P3-10F completed the exact reviewer action matrix, unsupported-state rejection, queue-to-storage integration check, authorization and persistence audit, and repository handoff in pull request #74. P3-10 is repository-complete; live Access, R2, database, and production verification remain deferred.
+P3-10 established isolated Media review authorization, strict Media decision contracts, durable receipts, exact file-set guards, deterministic private and public storage plans, R2 adapter boundaries, protected queue, detail and preview routes, reviewer UI, publication and revocation behavior, replay safety, and the final Media integration audit. Live Access, R2, database, and production verification remain deferred.
 
 ### Completed P3-11 deliveries
 
-P3-11A established the isolated `export:release` authorization, internally prepared eligible or blocked release candidates, exact snapshot and release-metadata guards, approve and reject decisions, validation issue capture, deterministic replay, and the durable backend contract in pull request #75.
+P3-11A through P3-11D established release-decision authorization, exact candidate and snapshot guards, durable release decisions, protected release queue and detail workspaces, reviewer actions, and private candidate revalidation.
 
-P3-11B added durable `export_release_decisions` receipts, generated migration `0018_clumsy_drax.sql`, request replay, approved snapshot and dataset-version uniqueness, candidate and action constraints, and database conflict classification in pull request #76.
+P3-11E through P3-11H established separate publication authorization, immutable release-object staging, exact metadata checks, conditional active-pointer activation, durable activation history, request replay and conflicts, bounded release-history reads, and the protected history API.
 
-P3-11C added the private R2 candidate source, server-side revalidation, bounded release history, exact artifact detail, protected queue and detail GET endpoints, and the idempotent approve or reject POST endpoint in pull request #77.
+P3-11I through P3-11L established restore preparation, pointer inventory and execution-record contracts, target-object preflight, conditional pointer switching, switch-receipt validation, replay-safe workflow composition, and explicit post-switch persistence failure handling.
 
-P3-11D added `/admin/exports`, the exact snapshot detail workspace, validation and artifact inventory, state-aware approve or reject controls, component tests, and protected artifact validation in pull request #78.
+P3-11M aligned restore readiness with the implemented execution workflow, added readiness-to-execution runtime verification, completed the repository integration audit, documented deferred live verification, and handed off to P3-12 in pull request #87.
 
-### Current P3-11 delivery
+### Current P3-12 delivery
 
-P3-11E adds separate `export:publish` authorization, durable approved-decision and private-candidate revalidation, deterministic immutable release objects, exact object metadata checks, conditional ETag active-pointer switching, snapshot-level replay, and the protected activation endpoint.
+P3-12A defines the protected normalized audit-history read contract across candidate, Evidence, reconfirmation, Media, and export administration. It adds bounded filters, stable cursor semantics, deterministic ordering, source-domain validation, target metadata, and privacy leakage boundaries without duplicating authoritative domain writes.
 
-### Remaining P3-11 deliveries
+### Remaining P3-12 deliveries
 
-- durable activation history and request-level replay records
-- rollback and release history operations
-- final P3-11 integration audit and P3-12 handoff
+- bounded aggregation over authoritative durable Phase 3 decision and event sources
+- protected audit history API and administration surface
+- final cross-domain Phase 3 integration audit and Phase 4 handoff
 
 ## Phase 4 — Public core / MVP-A
 
