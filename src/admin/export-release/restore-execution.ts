@@ -317,11 +317,7 @@ export function createExportRestoreExecutionService(backend: ExportRestoreExecut
       inventory: ExportRestorePointerInventory;
     }): Promise<ExportRestoreExecutionRecord | null> {
       const identity = await prepareExecutionIdentity(args);
-      return readExistingExecution(
-        backend,
-        args.context.requestId,
-        identity.requestFingerprint,
-      );
+      return readExistingExecution(backend, args.context.requestId, identity.requestFingerprint);
     },
 
     async recordExecution(args: {
