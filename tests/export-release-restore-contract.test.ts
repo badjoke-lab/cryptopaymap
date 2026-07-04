@@ -24,10 +24,7 @@ const input: ExportRestoreInput = {
   internalNote: null,
 };
 
-function snapshot(
-  snapshotDigest: string,
-  hasPointerInventory = false,
-): ExportRestoreSnapshot {
+function snapshot(snapshotDigest: string, hasPointerInventory = false): ExportRestoreSnapshot {
   return {
     snapshotDigest,
     datasetVersion: snapshotDigest === activeDigest ? '2026.07.04.1' : '2026.07.03.1',
@@ -41,7 +38,12 @@ function snapshot(
   };
 }
 
-function backend(overrides: Partial<{ active: ExportRestoreSnapshot | null; target: ExportRestoreSnapshot | null }> = {}): ExportRestoreBackend {
+function backend(
+  overrides: Partial<{
+    active: ExportRestoreSnapshot | null;
+    target: ExportRestoreSnapshot | null;
+  }> = {},
+): ExportRestoreBackend {
   return {
     loadActiveSnapshot: async () => overrides.active ?? snapshot(activeDigest),
     loadSnapshot: async () => overrides.target ?? snapshot(targetDigest),
@@ -62,12 +64,20 @@ describe('export release restore contract', () => {
     });
   });
 
+  it('blocks execution even when inventory exists until the execution boundary is implemented', async () => {
+    await expect(
+      createExportRestoreService(
+        backend({ target: snapshot(targetDigest, true) }),
+      ).prepareRestore(context, input),
+    ).resolves.toMatchObject({
+      state: 'blocked_restore_execution_unavailable',
+      issues: ['restoreExecutionUnavailable'],
+    });
+  });
+
   it('requires export publication authority', async () => {
     await expect(
-      createExportRestoreService(backend()).prepareRestore(
-        { ...context, capabilities: [] },
-        input,
-      ),
+      createExportRestoreService(backend()).prepareRestore({ ...context, capabilities: [] }, input),
     ).rejects.toMatchObject({ code: 'unauthorized' });
   });
 
