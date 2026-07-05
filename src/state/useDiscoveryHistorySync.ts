@@ -25,7 +25,9 @@ export function useDiscoveryHistorySync(): DiscoveryHistoryControls {
       actions.setBottomSheet(snapshot.uiState.bottomSheet);
       actions.setListScrollOffset(snapshot.uiState.listScrollOffset);
       actions.setFilterPanelOpen(snapshot.uiState.filterPanelOpen);
+      actions.setActiveBounds(snapshot.uiState.activeBounds);
       actions.setPendingViewport(null);
+      actions.setPendingBounds(null);
     }
 
     restoreFromHistory();
@@ -46,6 +48,7 @@ export function useDiscoveryHistorySync(): DiscoveryHistoryControls {
           bottomSheet: current.bottomSheet,
           listScrollOffset: current.listScrollOffset,
           filterPanelOpen: current.filterPanelOpen,
+          activeBounds: current.activeBounds,
         },
         mode,
       );
@@ -60,11 +63,13 @@ export function useDiscoveryHistorySync(): DiscoveryHistoryControls {
         bottomSheet: patch.bottomSheet ?? current.bottomSheet,
         listScrollOffset: patch.listScrollOffset ?? current.listScrollOffset,
         filterPanelOpen: patch.filterPanelOpen ?? current.filterPanelOpen,
+        activeBounds: patch.activeBounds ?? current.activeBounds,
       };
 
       if (patch.bottomSheet !== undefined) current.setBottomSheet(patch.bottomSheet);
       if (patch.listScrollOffset !== undefined) current.setListScrollOffset(patch.listScrollOffset);
       if (patch.filterPanelOpen !== undefined) current.setFilterPanelOpen(patch.filterPanelOpen);
+      if (patch.activeBounds !== undefined) current.setActiveBounds(patch.activeBounds);
 
       writeDiscoveryHistory(current.urlState, nextUiState, 'replace');
     },
