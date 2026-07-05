@@ -1,60 +1,47 @@
 ---
-import { StateBoundaryDemo } from '../components/StateBoundaryDemo';
-import { UIFoundationDemo } from '../components/UIFoundationDemo';
+import { getCollection } from 'astro:content';
+import PublicHome from '../components/public/PublicHome.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { buildPublicHomeModel } from '../public/home';
+import { publicOnlineServiceSchema, publicPlaceSchema } from '../schemas/public-exports';
+
+const placeEntries = await getCollection('publicPlaces');
+const serviceEntries = await getCollection('publicOnlineServices');
+const roadmapEntries = await getCollection('roadmap');
+const changelogEntries = await getCollection('changelog');
+
+const places = placeEntries.map((entry) =>
+  publicPlaceSchema.parse((entry.data as { place: unknown }).place),
+);
+const services = serviceEntries.map((entry) =>
+  publicOnlineServiceSchema.parse((entry.data as { service: unknown }).service),
+);
+const model = buildPublicHomeModel(places, services);
+const roadmapEntry = roadmapEntries
+  .filter((entry) => entry.data.section === 'now')
+  .sort((left, right) => left.data.order - right.data.order)[0];
+const latestReleaseEntry = changelogEntries
+  .filter((entry) => !entry.data.draft)
+  .sort((left, right) => Date.parse(right.data.publishedAt) - Date.parse(left.data.publishedAt))[0];
+const roadmap = roadmapEntry
+  ? {
+      title: roadmapEntry.data.title,
+      outcome: roadmapEntry.data.outcome,
+      status: roadmapEntry.data.status,
+    }
+  : null;
+const latestRelease = latestReleaseEntry
+  ? {
+      version: latestReleaseEntry.data.version,
+      summary: latestReleaseEntry.data.summary,
+      publishedAt: latestReleaseEntry.data.publishedAt,
+    }
+  : null;
 ---
 
-<BaseLayout title="CryptoPayMap">
-  <div class="safe-area-inline page-container py-12 sm:py-16 lg:py-24">
-    <section class="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_22rem] lg:gap-16">
-      <div class="max-w-3xl">
-        <p class="m-0 text-sm font-semibold uppercase tracking-[0.12em] text-brand-700">CryptoPayMap</p>
-        <h1 class="mt-4 text-4xl font-semibold leading-[0.98] tracking-[-0.045em] text-ink sm:text-6xl lg:text-7xl">
-          Where crypto actually works at checkout.
-        </h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 text-muted sm:text-xl">
-          A verified discovery service for physical places and online services where customers can pay from a
-          cryptocurrency wallet.
-        </p>
-
-        <div class="mt-8 flex flex-wrap gap-3">
-          <a
-            class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white no-underline transition-colors hover:bg-brand-700"
-            href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/PROJECT_STATUS.md"
-          >
-            Project status
-          </a>
-          <a
-            class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control border border-border bg-surface px-5 py-2.5 font-semibold text-ink no-underline transition-colors hover:bg-brand-50"
-            href="https://github.com/badjoke-lab/cryptopaymap/blob/main/docs/ROADMAP.md"
-          >
-            Public roadmap
-          </a>
-        </div>
-      </div>
-
-      <aside class="rounded-card border border-border bg-surface p-5 shadow-panel sm:p-6" aria-labelledby="shell-contract-title">
-        <p class="m-0 text-sm font-semibold text-brand-700">Foundation status</p>
-        <h2 id="shell-contract-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
-          Shared before feature-specific
-        </h2>
-        <ul class="mt-4 grid gap-3 text-sm leading-6 text-muted">
-          <li>Semantic design and status tokens</li>
-          <li>Responsive shell and safe areas</li>
-          <li>Accessible UI primitives</li>
-          <li>Reduced-motion-aware feedback</li>
-          <li>Separated query, UI, URL, and local state</li>
-          <li>Reusable across public and admin surfaces</li>
-        </ul>
-      </aside>
-    </section>
-
-    <div class="mt-12 lg:mt-16">
-      <UIFoundationDemo client:load />
-    </div>
-
-    <div class="mt-16 border-t border-border pt-12 lg:mt-24 lg:pt-16">
-      <StateBoundaryDemo client:load />
-    </div>
-  </div>
+<BaseLayout
+  title="CryptoPayMap"
+  description="Find reviewed physical places and online services where cryptocurrency can be used at checkout."
+>
+  <PublicHome model={model} roadmap={roadmap} latestRelease={latestRelease} />
 </BaseLayout>
