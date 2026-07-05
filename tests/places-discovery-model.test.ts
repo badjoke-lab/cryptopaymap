@@ -79,10 +79,12 @@ describe('Places discovery public model', () => {
   });
 
   it('derives deterministic public facets and counts without duplicate values per Place', () => {
-    const facets = buildPublicPlaceFilterFacets([
-      pins[0] ? { ...pins[0], assetSlugs: ['bitcoin', 'bitcoin'] } : pins[0],
-      ...pins.slice(1),
-    ].filter((pin): pin is PublicPlacePin => pin !== undefined));
+    const facets = buildPublicPlaceFilterFacets(
+      [
+        pins[0] ? { ...pins[0], assetSlugs: ['bitcoin', 'bitcoin'] } : pins[0],
+        ...pins.slice(1),
+      ].filter((pin): pin is PublicPlacePin => pin !== undefined),
+    );
 
     expect(facets.assets).toEqual([
       { value: 'bitcoin', count: 2 },
