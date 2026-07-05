@@ -1,10 +1,7 @@
 import { List, LocateFixed, Map, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
-import {
-  filterPublicPlacePins,
-  type PublicPlacePin,
-} from '../../public/places-discovery';
+import { filterPublicPlacePins, type PublicPlacePin } from '../../public/places-discovery';
 import { createDiscoveryStore, type DiscoveryStoreApi } from '../../state/discovery-store';
 import {
   defaultDiscoveryUrlState,
@@ -106,7 +103,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               Places
             </h1>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted sm:text-base">
-              Search reviewed public records by payment details. Candidate records are never shown here.
+              Search reviewed public records by payment details. Candidate records are never shown
+              here.
             </p>
           </div>
           <span className="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
@@ -141,7 +139,10 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               Filters
             </button>
 
-            <div className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden" aria-label="View mode">
+            <div
+              className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden"
+              aria-label="View mode"
+            >
               <button
                 className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
                   urlState.view === 'map' ? 'bg-brand-600 text-white' : 'text-muted'
@@ -167,7 +168,10 @@ export function PlacesApp({ pins }: PlacesAppProps) {
         </div>
 
         {filterPanelOpen ? (
-          <section className="mt-3 rounded-card border border-border bg-surface p-4 shadow-sm" aria-label="Place filters">
+          <section
+            className="mt-3 rounded-card border border-border bg-surface p-4 shadow-sm"
+            aria-label="Place filters"
+          >
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="m-0 text-sm font-semibold text-ink">Public status</p>
@@ -188,7 +192,9 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                           const statuses = active
                             ? urlState.statuses.filter((value) => value !== status)
                             : [...urlState.statuses, status];
-                          patchUrlState({ statuses: statuses.length > 0 ? statuses : ['confirmed'] });
+                          patchUrlState({
+                            statuses: statuses.length > 0 ? statuses : ['confirmed'],
+                          });
                         }}
                       >
                         {formatLabel(status)}
@@ -222,7 +228,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               </span>
               <h2 className="mt-4 text-xl font-semibold text-ink">Map discovery surface</h2>
               <p className="mt-2 max-w-md text-sm leading-6 text-muted">
-                The shell keeps map, list, filters, selection, and URL state coordinated while map rendering is added separately.
+                The shell keeps map, list, filters, selection, and URL state coordinated while map
+                rendering is added separately.
               </p>
               {pendingViewport ? (
                 <button
@@ -292,7 +299,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               <div className="p-6 text-center">
                 <h3 className="text-lg font-semibold text-ink">No public places match</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">
-                  Candidate records are not used as substitutes. Clear filters or suggest a place for review.
+                  Candidate records are not used as substitutes. Clear filters or suggest a place
+                  for review.
                 </p>
                 <div className="mt-5 flex flex-wrap justify-center gap-3">
                   <button
