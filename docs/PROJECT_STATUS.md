@@ -14,7 +14,7 @@ P4-02 — PlacesApp shell
 
 - P4-02A — coordinated PlacesApp public shell
 - Branch: `work/places-app-shell`
-- Pull request: pending
+- Pull request: #97
 
 ## Latest completed work
 
@@ -48,7 +48,7 @@ P4-02 — PlacesApp shell
 
 ## Next
 
-1. Validate and merge P4-02A.
+1. Validate and merge pull request #97.
 2. Add MapLibre rendering against the coordinated shell.
 3. Add the production result-list and pin/list synchronization layers.
 
