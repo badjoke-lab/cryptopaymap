@@ -135,8 +135,8 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
 | P4-01 | Place detail | Completed | Phase 3 | #96 |
-| P4-02 | PlacesApp shell | In progress | P4-01 | P4-02A pending |
-| P4-03 | MapLibre map | Planned | P4-02 | — |
+| P4-02 | PlacesApp shell | Completed | P4-01 | #97 |
+| P4-03 | MapLibre map | In progress | P4-02 | #98, #99 |
 | P4-04 | Result list | Planned | P4-02 | — |
 | P4-05 | Pin and list synchronization | Planned | P4-03, P4-04 | — |
 | P4-06 | Filters and bounded result updates | Planned | P4-02 | — |
@@ -155,9 +155,15 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 
 P4-01A established the first public Place detail boundary in pull request #96. It reads only validated published `places.json` records through the build-time content layer, generates canonical `/place/{slug}` paths from those public records, derives a status-aware detail view model, renders payment assets, networks, routes, methods, instructions, restrictions, freshness, Evidence, and approved public Media, and covers the model and privacy boundary with tests.
 
-### Current P4-02 delivery
+### Completed P4-02 delivery
 
-P4-02A establishes the coordinated PlacesApp public shell. It loads only validated public Place pins, connects existing Discovery URL state and isolated Zustand UI state, coordinates map/list mode, public result selection, selected-place detail navigation, search and status filtering, and explicit empty states that never substitute Candidate records.
+P4-02A established the coordinated PlacesApp public shell in pull request #97. It loads only validated public Place pins, connects existing Discovery URL state and isolated Zustand UI state, coordinates map/list mode, public result selection, selected-place detail navigation, search and status filtering, and explicit empty states that never substitute Candidate records.
+
+### P4-03 deliveries
+
+P4-03A established deterministic public Place point-feature conversion, stable feature identity and selection state, and normalized camera contracts aligned with the public URL boundary in pull request #98.
+
+P4-03B adds the MapLibre renderer to the coordinated PlacesApp shell in pull request #99. It registers the public GeoJSON source, clustered and point layers, marker selection and cluster expansion behavior, camera and pending viewport coordination, Search this area behavior, resize handling, fallback states, and renderer component tests.
 
 ## Phase 5 — Public submissions / MVP-B
 
