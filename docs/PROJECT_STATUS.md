@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-07 — URL state and browser-back restoration
+P4-08 — Mobile bottom sheet
 
 ## Active work
 
-- P4-07A — Places browser history restoration
-- Branch: `work/discovery-history-restoration`
-- Pull request: #105
+- P4-08A — mobile selected Place sheet lifecycle
+- Branch: `work/mobile-place-sheet`
+- Pull request: #106
 
 ## Latest completed work
 
@@ -28,24 +28,25 @@ P4-07 — URL state and browser-back restoration
 - P4-05A pin and list synchronization completed through pull request #102
 - P4-06A public Place facet filters completed through pull request #103
 - P4-06B bounded viewport result updates completed through pull request #104
+- P4-07A Places browser history restoration completed through pull request #105
 
-## P4-07A in progress
+## P4-08A in progress
 
-- explicit push and replace history modes
-- search typing uses replaceState without excessive history entries
-- discrete discovery changes create browser history entries
-- popstate restores URL-owned discovery state without push echo
-- validated session UI history snapshot
-- active map bounds restoration
-- bottom-sheet, filter-panel, and result-list scroll restoration state
-- result-list scroll DOM synchronization
-- history and restoration tests
+- dedicated mobile selected Place sheet
+- closed, peek, and expanded lifecycle states
+- selection opens the sheet in peek state
+- peek payment summary with status, asset, and last-confirmed date
+- expanded location, network, and payment-route context
+- payment detail and report actions
+- safe-area-aware fixed mobile layout
+- desktop selected panel separation
+- PlacesApp lifecycle coverage
 
 ## Next
 
-1. Validate and merge pull request #105.
-2. Implement the mobile bottom sheet lifecycle.
-3. Continue Online Services public discovery and detail work.
+1. Validate and merge pull request #106.
+2. Continue Online Services public discovery and detail work.
+3. Continue Home, Stats, Updates, Roadmap, and Changelog public surfaces.
 
 ## Blocked
 

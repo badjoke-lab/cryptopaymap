@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlacesApp } from '../src/components/places/PlacesApp';
 import type { PublicPlacePin } from '../src/public/places-discovery';
@@ -60,6 +60,35 @@ describe('PlacesApp shell', () => {
       '/place/example-coffee-tokyo',
     );
     await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
+  });
+
+  it('moves the mobile selected Place sheet through peek, expanded, and closed states', async () => {
+    render(<PlacesApp pins={pins} />);
+    fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
+
+    const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
+    const sheetQueries = within(sheet);
+    expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
+    expect(sheetQueries.getByText(/Last confirmed Jun 20, 2026/)).toBeInTheDocument();
+
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'More payment information' }));
+    await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'expanded'));
+    expect(sheetQueries.getByText('Lightning')).toBeInTheDocument();
+    expect(sheetQueries.getByText('Direct Wallet')).toBeInTheDocument();
+    expect(sheetQueries.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
+      'href',
+      '/place/example-coffee-tokyo',
+    );
+
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'Show less' }));
+    await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'peek'));
+
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'Close selected place' }));
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('region', { name: 'Selected place: Example Coffee' }),
+      ).not.toBeInTheDocument(),
+    );
   });
 
   it('filters public results with URL-owned facets and clears hidden selection', async () => {

@@ -20,6 +20,7 @@ import {
   type DiscoveryUrlState,
 } from '../../state/discovery-url';
 import { filterPinsByMapBounds } from './map-data';
+import { MobilePlaceSheet } from './MobilePlaceSheet';
 import { PlaceFilterPanel } from './PlaceFilterPanel';
 import { PlaceResultList } from './PlaceResultList';
 import { PlacesMap } from './PlacesMap';
@@ -270,7 +271,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             ) : null}
 
             {selected ? (
-              <aside className="absolute inset-x-3 bottom-3 z-10 rounded-card border border-border bg-surface p-4 shadow-panel sm:inset-x-auto sm:left-4 sm:w-80">
+              <aside className="absolute inset-x-3 bottom-3 z-10 hidden rounded-card border border-border bg-surface p-4 shadow-panel sm:inset-x-auto sm:left-4 sm:w-80 lg:block">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
@@ -311,6 +312,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             />
           </div>
         </div>
+
+        <MobilePlaceSheet place={selected} state={bottomSheet} onStateChange={setBottomSheet} />
       </div>
     </section>
   );
