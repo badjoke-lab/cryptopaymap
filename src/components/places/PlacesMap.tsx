@@ -23,7 +23,7 @@ interface PlacesMapProps {
   committedViewport: DiscoveryViewport | null;
   onSelectPlace: (placeSlug: string) => void;
   onViewportChange: (viewport: DiscoveryViewport) => void;
-  onBoundsChange: (bounds: PlaceMapBounds) => void;
+  onBoundsChange?: (bounds: PlaceMapBounds) => void;
   styleUrl?: string;
 }
 
@@ -193,7 +193,7 @@ export function PlacesMap({
           if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
             const visibleBounds = map.getBounds();
             viewportRef.current(nextViewport);
-            boundsRef.current(
+            boundsRef.current?.(
               normalizeMapBounds({
                 west: visibleBounds.getWest(),
                 south: visibleBounds.getSouth(),
