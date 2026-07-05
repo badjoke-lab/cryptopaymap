@@ -6,6 +6,7 @@ import { buildPlaceDetailModel, type PublicPlace } from './place-detail';
 
 export interface HomeBrowseItem {
   value: string;
+  label: string;
   count: number;
 }
 
@@ -33,8 +34,26 @@ function countValues(values: readonly string[]): HomeBrowseItem[] {
   for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
 
   return [...counts.entries()]
-    .map(([value, count]) => ({ value, count }))
+    .map(([value, count]) => ({ value, label: value, count }))
     .sort((left, right) => right.count - left.count || left.value.localeCompare(right.value));
+}
+
+function countAssets(
+  values: readonly { assetSlug: string; assetSymbol: string }[],
+): HomeBrowseItem[] {
+  const counts = new Map<string, HomeBrowseItem>();
+  for (const asset of values) {
+    const current = counts.get(asset.assetSlug);
+    counts.set(asset.assetSlug, {
+      value: asset.assetSlug,
+      label: asset.assetSymbol,
+      count: (current?.count ?? 0) + 1,
+    });
+  }
+
+  return [...counts.values()].sort(
+    (left, right) => right.count - left.count || left.value.localeCompare(right.value),
+  );
 }
 
 export function buildPublicHomeModel(
@@ -73,9 +92,9 @@ export function buildPublicHomeModel(
     confirmedPhysicalCount: confirmedPlaces.length,
     confirmedOnlineCount: confirmedServices.length,
     recentRecords,
-    assets: countValues([
-      ...confirmedPlaces.flatMap((model) => model.assetSymbols),
-      ...confirmedServices.flatMap((model) => model.assetSymbols),
+    assets: countAssets([
+      ...confirmedPlaces.flatMap((model) => model.payments),
+      ...confirmedServices.flatMap((model) => model.payments),
     ]).slice(0, 8),
     networks: countValues([
       ...confirmedPlaces.flatMap((model) => model.networkSlugs),
