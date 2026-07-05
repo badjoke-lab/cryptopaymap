@@ -40,7 +40,10 @@ export function PlaceResultList({
 
   useEffect(() => {
     if (!selectedPlace) return;
-    itemRefs.current.get(selectedPlace)?.scrollIntoView({
+    const item = itemRefs.current.get(selectedPlace);
+    if (!item || typeof item.scrollIntoView !== 'function') return;
+
+    item.scrollIntoView({
       block: 'nearest',
       behavior: reducedMotionPreferred() ? 'auto' : 'smooth',
     });
