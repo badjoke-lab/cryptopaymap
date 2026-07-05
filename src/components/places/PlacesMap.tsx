@@ -1,3 +1,4 @@
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import type { GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
 import type { PublicPlacePin } from '../../public/places-discovery';
@@ -52,6 +53,7 @@ export function PlacesMap({
   const mapRef = useRef<MapLibreMap | null>(null);
   const selectRef = useRef(onSelectPlace);
   const viewportRef = useRef(onViewportChange);
+  const committedViewportRef = useRef(committedViewport);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>('loading');
   const featureCollection = useMemo(
     () => buildPlaceMapFeatureCollection(pins, selectedPlace),
@@ -60,6 +62,7 @@ export function PlacesMap({
 
   selectRef.current = onSelectPlace;
   viewportRef.current = onViewportChange;
+  committedViewportRef.current = committedViewport;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -79,7 +82,7 @@ export function PlacesMap({
         const maplibregl = await import('maplibre-gl');
         if (!active || !containerRef.current) return;
 
-        const camera = initialCamera(pins, committedViewport);
+        const camera = initialCamera(pins, committedViewportRef.current);
         map = new maplibregl.Map({
           container: containerRef.current,
           style: styleUrl,
@@ -155,7 +158,8 @@ export function PlacesMap({
             if (typeof clusterId !== 'number') return;
             const source = map.getSource(sourceId) as GeoJSONSource;
             const zoom = await source.getClusterExpansionZoom(clusterId);
-            const coordinates = feature?.geometry.type === 'Point' ? feature.geometry.coordinates : null;
+            const coordinates =
+              feature?.geometry.type === 'Point' ? feature.geometry.coordinates : null;
             if (!coordinates) return;
             map.easeTo({ center: [coordinates[0], coordinates[1]], zoom });
           });
@@ -172,13 +176,14 @@ export function PlacesMap({
         map.on('moveend', () => {
           if (!map) return;
           const center = map.getCenter();
-          viewportRef.current(
-            normalizeMapViewport({
-              latitude: center.lat,
-              longitude: center.lng,
-              zoom: map.getZoom(),
-            }),
-          );
+          const nextViewport = normalizeMapViewport({
+            latitude: center.lat,
+            longitude: center.lng,
+            zoom: map.getZoom(),
+          });
+          if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
+            viewportRef.current(nextViewport);
+          }
         });
         map.on('error', () => setRuntimeState('error'));
 
