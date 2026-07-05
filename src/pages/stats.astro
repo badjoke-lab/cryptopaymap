@@ -1,14 +1,15 @@
 ---
-import { readFile } from 'node:fs/promises';
+import { getEntry } from 'astro:content';
 import StatsOverview from '../components/public/StatsOverview.astro';
 import StatsQuality from '../components/public/StatsQuality.astro';
 import StatsRankings from '../components/public/StatsRankings.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { buildPublicStatsViewModel, parsePublicStatsDocument } from '../public/stats';
 
-const statsUrl = new URL('../../public/data/stats.json', import.meta.url);
-const statsDocument = JSON.parse(await readFile(statsUrl, 'utf-8')) as unknown;
-const model = buildPublicStatsViewModel(parsePublicStatsDocument(statsDocument));
+const statsEntry = await getEntry('publicStats', 'stats');
+if (!statsEntry) throw new Error('Public Stats artifact is unavailable.');
+const stats = parsePublicStatsDocument((statsEntry.data as { stats: unknown }).stats);
+const model = buildPublicStatsViewModel(stats);
 ---
 
 <BaseLayout
