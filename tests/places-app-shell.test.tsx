@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlacesApp } from '../src/components/places/PlacesApp';
 import type { PublicPlacePin } from '../src/public/places-discovery';
@@ -67,22 +67,23 @@ describe('PlacesApp shell', () => {
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
 
     const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
+    const sheetQueries = within(sheet);
     expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
-    expect(screen.getByText(/Last confirmed Jun 20, 2026/)).toBeInTheDocument();
+    expect(sheetQueries.getByText(/Last confirmed Jun 20, 2026/)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: 'More payment information' }));
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'More payment information' }));
     await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'expanded'));
-    expect(screen.getByText('Lightning')).toBeInTheDocument();
-    expect(screen.getByText('Direct Wallet')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
+    expect(sheetQueries.getByText('Lightning')).toBeInTheDocument();
+    expect(sheetQueries.getByText('Direct Wallet')).toBeInTheDocument();
+    expect(sheetQueries.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
       'href',
       '/place/example-coffee-tokyo',
     );
 
-    fireEvent.click(screen.getByRole('button', { name: 'Show less' }));
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'Show less' }));
     await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'peek'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Close selected place' }));
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'Close selected place' }));
     await waitFor(() =>
       expect(
         screen.queryByRole('region', { name: 'Selected place: Example Coffee' }),
