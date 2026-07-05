@@ -54,15 +54,19 @@ export function PlacesMap({
   const selectRef = useRef(onSelectPlace);
   const viewportRef = useRef(onViewportChange);
   const committedViewportRef = useRef(committedViewport);
+  const pinsRef = useRef(pins);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>('loading');
   const featureCollection = useMemo(
     () => buildPlaceMapFeatureCollection(pins, selectedPlace),
     [pins, selectedPlace],
   );
+  const featureCollectionRef = useRef(featureCollection);
 
   selectRef.current = onSelectPlace;
   viewportRef.current = onViewportChange;
   committedViewportRef.current = committedViewport;
+  pinsRef.current = pins;
+  featureCollectionRef.current = featureCollection;
 
   useEffect(() => {
     const container = containerRef.current;
@@ -82,7 +86,7 @@ export function PlacesMap({
         const maplibregl = await import('maplibre-gl');
         if (!active || !containerRef.current) return;
 
-        const camera = initialCamera(pins, committedViewportRef.current);
+        const camera = initialCamera(pinsRef.current, committedViewportRef.current);
         map = new maplibregl.Map({
           container: containerRef.current,
           style: styleUrl,
@@ -90,7 +94,6 @@ export function PlacesMap({
           zoom: camera.zoom,
           minZoom: 1,
           maxZoom: 22,
-          attributionControl: true,
         });
         mapRef.current = map;
         map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
@@ -99,7 +102,7 @@ export function PlacesMap({
           if (!map) return;
           map.addSource(sourceId, {
             type: 'geojson',
-            data: featureCollection,
+            data: featureCollectionRef.current,
             cluster: true,
             clusterMaxZoom: 14,
             clusterRadius: 48,
@@ -227,7 +230,12 @@ export function PlacesMap({
 
   return (
     <div className="relative min-h-[38rem] w-full">
-      <div ref={containerRef} className="absolute inset-0" aria-label="Interactive places map" />
+      <div
+        ref={containerRef}
+        className="absolute inset-0"
+        role="region"
+        aria-label="Interactive places map"
+      />
       {runtimeState === 'loading' ? (
         <div className="absolute inset-0 flex items-center justify-center bg-brand-50/90 text-sm font-semibold text-muted">
           Loading map…
