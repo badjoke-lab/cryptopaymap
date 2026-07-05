@@ -1,3 +1,60 @@
 ---
+import type { PublicHomeModel } from '../../public/home';
+
+interface Props {
+  services: PublicHomeModel['onlineHighlights'];
+}
+
+const { services } = Astro.props;
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(value));
 ---
-<div></div>
+
+<section class="safe-area-inline page-container py-10 sm:py-12" aria-labelledby="home-online-title">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <p class="m-0 text-sm font-semibold text-brand-700">Online checkout</p>
+      <h2 id="home-online-title" class="mt-1 text-3xl font-semibold tracking-tight text-ink">
+        Online Service highlights
+      </h2>
+    </div>
+    <a class="font-semibold text-brand-700" href="/online">Browse all services</a>
+  </div>
+
+  {
+    services.length > 0 ? (
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+        {services.map((service) => (
+          <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+            <p class="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              {formatLabel(service.categorySlug)}
+            </p>
+            <h3 class="mt-2 text-xl font-semibold text-ink">
+              <a class="text-inherit no-underline hover:text-brand-700" href={`/service/${service.slug}`}>
+                {service.name}
+              </a>
+            </h3>
+            <p class="mt-3 text-sm text-muted">{service.assetSymbols.join(', ')}</p>
+            <p class="mt-4 text-xs text-muted">Last confirmed {formatDate(service.lastConfirmedAt)}</p>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="mt-6 rounded-card border border-border bg-surface p-6">
+        <p class="m-0 text-sm leading-6 text-muted">
+          Reviewed Online Services will appear here after publication. Unverified candidates remain private.
+        </p>
+      </div>
+    )
+  }
+</section>
