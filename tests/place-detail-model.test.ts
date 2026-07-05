@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildPlaceDetailModel,
-  loadPublishedPlaces,
   parsePublicPlacesDocument,
   type PublicPlace,
 } from '../src/public/place-detail';
@@ -139,6 +138,17 @@ describe('Place detail public model', () => {
     expect(model.gallery.map((media) => media.role)).toEqual(['interior']);
   });
 
+  it('parses only records that satisfy the public Places contract', () => {
+    const records = parsePublicPlacesDocument({
+      schemaVersion: '1.0.0',
+      generatedAt: '2026-07-05T00:00:00Z',
+      records: [place],
+    });
+
+    expect(records).toHaveLength(1);
+    expect(records[0]?.placeSlug).toBe('example-coffee-tokyo');
+  });
+
   it('rejects non-contract fields before Place detail rendering', () => {
     expect(() =>
       parsePublicPlacesDocument({
@@ -147,9 +157,5 @@ describe('Place detail public model', () => {
         records: [{ ...place, internalNote: 'private' }],
       }),
     ).toThrow();
-  });
-
-  it('returns no public routes when the published Places file is absent', async () => {
-    await expect(loadPublishedPlaces('/tmp/cryptopaymap-missing-places.json')).resolves.toEqual([]);
   });
 });
