@@ -14,7 +14,7 @@ const model = buildPublicStatsViewModel(stats);
 
 <BaseLayout
   title="Stats | CryptoPayMap"
-  description="Explore CryptoPayMap public dataset counts, payment routes, asset and network distribution, quality coverage, freshness, and public record changes."
+  description="Explore CryptoPayMap public dataset counts, payment routes, asset and network distribution, quality coverage, and freshness."
 >
   <main class="safe-area-inline page-container py-8 sm:py-12 lg:py-16">
     <header class="max-w-3xl">
@@ -23,7 +23,6 @@ const model = buildPublicStatsViewModel(stats);
       <p class="mt-4 text-base leading-7 text-muted">
         Stats describe the validated CryptoPayMap public dataset. They are not estimates of worldwide cryptocurrency adoption or merchant acceptance.
       </p>
-      <p class="mt-2 text-sm text-muted">Generated {model.stats.generatedAt}</p>
     </header>
 
     <div class="mt-10 grid gap-12">
