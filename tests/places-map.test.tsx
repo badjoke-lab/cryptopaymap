@@ -97,7 +97,11 @@ class MockMap {
     this.removed = true;
   }
 
-  async trigger(event: string, payload: Record<string, unknown> = {}, layerId: string | null = null) {
+  async trigger(
+    event: string,
+    payload: Record<string, unknown> = {},
+    layerId: string | null = null,
+  ) {
     const handlers = this.handlers.filter(
       (registration) => registration.event === event && registration.layerId === layerId,
     );
