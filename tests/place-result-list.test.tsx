@@ -53,6 +53,8 @@ describe('PlaceResultList', () => {
       <PlaceResultList
         pins={pins}
         selectedPlace={null}
+        scrollOffset={0}
+        onScrollOffsetChange={vi.fn()}
         onSelectPlace={vi.fn()}
         onClearFilters={vi.fn()}
       />,
@@ -74,6 +76,8 @@ describe('PlaceResultList', () => {
       <PlaceResultList
         pins={pins}
         selectedPlace="example-coffee-tokyo"
+        scrollOffset={0}
+        onScrollOffsetChange={vi.fn()}
         onSelectPlace={onSelectPlace}
         onClearFilters={vi.fn()}
       />,
@@ -95,6 +99,8 @@ describe('PlaceResultList', () => {
       <PlaceResultList
         pins={pins}
         selectedPlace={null}
+        scrollOffset={0}
+        onScrollOffsetChange={vi.fn()}
         onSelectPlace={vi.fn()}
         onClearFilters={vi.fn()}
       />,
@@ -104,6 +110,8 @@ describe('PlaceResultList', () => {
       <PlaceResultList
         pins={pins}
         selectedPlace="example-market-osaka"
+        scrollOffset={0}
+        onScrollOffsetChange={vi.fn()}
         onSelectPlace={vi.fn()}
         onClearFilters={vi.fn()}
       />,
@@ -112,12 +120,35 @@ describe('PlaceResultList', () => {
     expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', behavior: 'auto' });
   });
 
+  it('restores and reports the result-list scroll offset', () => {
+    const onScrollOffsetChange = vi.fn();
+    render(
+      <PlaceResultList
+        pins={pins}
+        selectedPlace={null}
+        scrollOffset={240}
+        onScrollOffsetChange={onScrollOffsetChange}
+        onSelectPlace={vi.fn()}
+        onClearFilters={vi.fn()}
+      />,
+    );
+
+    const list = screen.getByRole('list', { name: 'Place results' });
+    expect(list.scrollTop).toBe(240);
+
+    list.scrollTop = 360;
+    fireEvent.scroll(list);
+    expect(onScrollOffsetChange).toHaveBeenCalledWith(360);
+  });
+
   it('preserves the Candidate-free empty state and actions', () => {
     const onClearFilters = vi.fn();
     render(
       <PlaceResultList
         pins={[]}
         selectedPlace={null}
+        scrollOffset={0}
+        onScrollOffsetChange={vi.fn()}
         onSelectPlace={vi.fn()}
         onClearFilters={onClearFilters}
       />,
