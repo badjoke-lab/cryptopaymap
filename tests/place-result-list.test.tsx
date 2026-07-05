@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlaceResultList } from '../src/components/places/PlaceResultList';
 import type { PublicPlacePin } from '../src/public/places-discovery';
 
@@ -36,6 +36,14 @@ const pins: PublicPlacePin[] = [
     thumbnail: null,
   },
 ];
+
+const scrollIntoView = vi.fn();
+
+beforeEach(() => {
+  scrollIntoView.mockReset();
+  HTMLElement.prototype.scrollIntoView = scrollIntoView;
+  window.matchMedia = vi.fn().mockReturnValue({ matches: true });
+});
 
 afterEach(cleanup);
 
@@ -80,6 +88,28 @@ describe('PlaceResultList', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Select Example Market on map' }));
     expect(onSelectPlace).toHaveBeenCalledWith('example-market-osaka');
+  });
+
+  it('keeps the selected card visible when map selection changes', () => {
+    const { rerender } = render(
+      <PlaceResultList
+        pins={pins}
+        selectedPlace={null}
+        onSelectPlace={vi.fn()}
+        onClearFilters={vi.fn()}
+      />,
+    );
+
+    rerender(
+      <PlaceResultList
+        pins={pins}
+        selectedPlace="example-market-osaka"
+        onSelectPlace={vi.fn()}
+        onClearFilters={vi.fn()}
+      />,
+    );
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ block: 'nearest', behavior: 'auto' });
   });
 
   it('preserves the Candidate-free empty state and actions', () => {
