@@ -12,9 +12,9 @@ P4-03 — MapLibre map
 
 ## Active work
 
-- P4-03A — map source and camera contract foundation
-- Branch: `work/map-geojson-foundation`
-- Pull request: #98
+- P4-03B — MapLibre renderer and PlacesApp integration
+- Branch: `work/maplibre-renderer-final`
+- Pull request: #100
 
 ## Latest completed work
 
@@ -34,25 +34,30 @@ P4-03 — MapLibre map
 - Phase 3 repository work completed with explicit live-verification deferrals
 - P4-01A public Place detail foundation completed through pull request #96
 - P4-02A coordinated PlacesApp public shell completed through pull request #97
+- P4-03A map source and camera contracts completed through pull request #98
 
-## P4-03A in progress
+## P4-03B in progress
 
-- deterministic public Place pin to point-feature conversion
-- stable feature identity by public Place slug
-- selected Place marker property
-- map camera normalization aligned with public URL limits
-- camera change detection after normalization
-- unit coverage for source and camera contracts
+- MapLibre GL JS renderer dependency and generated lockfile
+- public GeoJSON source registration
+- clustered and unclustered public Place layers
+- selected, confirmed, and stale marker states
+- point selection and cluster expansion interaction
+- renderer move events to pending viewport state
+- committed viewport synchronization
+- Search this area integration
+- WebGL unsupported and map error fallbacks
+- renderer component tests
 
 ## Next
 
-1. Validate and merge pull request #98.
-2. Add the MapLibre renderer against the fixed source and camera contracts.
-3. Connect renderer move events to pending viewport and Search this area behavior.
+1. Validate and merge pull request #100.
+2. Complete production result-list behavior and pin/list synchronization.
+3. Extend public filters and bounded result updates.
 
 ## Blocked
 
-No repository blocker. MapLibre renderer dependency is not yet present in the lockfile and will be added as a separate reviewed implementation step. Live candidate generation, R2 activation, public serving, database migration, restore persistence deployment, and production verification remain deferred.
+No repository blocker. Live candidate generation, R2 activation, public serving, database migration, restore persistence deployment, and production verification remain deferred.
 
 ## Verification rule
 

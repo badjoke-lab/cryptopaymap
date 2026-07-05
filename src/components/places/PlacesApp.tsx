@@ -1,4 +1,4 @@
-import { List, LocateFixed, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
+import { List, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { filterPublicPlacePins, type PublicPlacePin } from '../../public/places-discovery';
@@ -8,6 +8,7 @@ import {
   parseDiscoveryUrlState,
   serializeDiscoveryUrlState,
 } from '../../state/discovery-url';
+import { PlacesMap } from './PlacesMap';
 
 interface PlacesAppProps {
   pins: PublicPlacePin[];
@@ -91,6 +92,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
       selectedPlace: null,
     });
     setBottomSheet('closed');
+    setPendingViewport(null);
   }
 
   return (
@@ -219,42 +221,29 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             className={`${urlState.view === 'list' ? 'hidden' : 'block'} relative overflow-hidden rounded-card border border-border bg-brand-50 lg:block`}
             aria-label="Map results"
           >
-            <div className="absolute inset-0 opacity-30" aria-hidden="true">
-              <div className="h-full w-full bg-[linear-gradient(to_right,#0f766e1a_1px,transparent_1px),linear-gradient(to_bottom,#0f766e1a_1px,transparent_1px)] bg-[size:48px_48px]" />
-            </div>
-            <div className="relative flex min-h-[38rem] flex-col items-center justify-center p-6 text-center">
-              <span className="flex size-14 items-center justify-center rounded-full bg-surface text-brand-700 shadow-panel">
-                <MapIcon className="size-7" aria-hidden="true" />
-              </span>
-              <h2 className="mt-4 text-xl font-semibold text-ink">Map discovery surface</h2>
-              <p className="mt-2 max-w-md text-sm leading-6 text-muted">
-                The shell keeps map, list, filters, selection, and URL state coordinated while map
-                rendering is added separately.
-              </p>
-              {pendingViewport ? (
-                <button
-                  className="motion-feedback mt-5 min-h-11 rounded-control bg-brand-600 px-4 py-2 font-semibold text-white hover:bg-brand-700"
-                  type="button"
-                  onClick={() => {
-                    patchUrlState({ viewport: pendingViewport });
-                    setPendingViewport(null);
-                  }}
-                >
-                  Search this area
-                </button>
-              ) : (
-                <button
-                  className="mt-5 inline-flex min-h-11 cursor-not-allowed items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-muted"
-                  type="button"
-                  disabled
-                >
-                  <LocateFixed className="size-4" aria-hidden="true" /> Search this area
-                </button>
-              )}
-            </div>
+            <PlacesMap
+              pins={results}
+              selectedPlace={urlState.selectedPlace}
+              committedViewport={urlState.viewport}
+              onSelectPlace={selectPlace}
+              onViewportChange={setPendingViewport}
+            />
+
+            {pendingViewport ? (
+              <button
+                className="motion-feedback absolute left-1/2 top-3 z-10 min-h-11 -translate-x-1/2 rounded-control bg-brand-600 px-4 py-2 font-semibold text-white shadow-panel hover:bg-brand-700"
+                type="button"
+                onClick={() => {
+                  patchUrlState({ viewport: pendingViewport });
+                  setPendingViewport(null);
+                }}
+              >
+                Search this area
+              </button>
+            ) : null}
 
             {selected ? (
-              <aside className="absolute inset-x-3 bottom-3 rounded-card border border-border bg-surface p-4 shadow-panel sm:inset-x-auto sm:left-4 sm:w-80">
+              <aside className="absolute inset-x-3 bottom-3 z-10 rounded-card border border-border bg-surface p-4 shadow-panel sm:inset-x-auto sm:left-4 sm:w-80">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
