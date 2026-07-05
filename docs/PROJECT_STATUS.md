@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-09 — Online Services discovery and detail
+P4-10 — Home
 
 ## Active work
 
-- P4-09A — Online Services public discovery and detail
-- Branch: `work/online-services-public`
-- Pull request: #107
+- P4-10A — public Home discovery surface
+- Branch: `work/public-home`
+- Pull request: #108
 
 ## Latest completed work
 
@@ -30,24 +30,27 @@ P4-09 — Online Services discovery and detail
 - P4-06B bounded viewport result updates completed through pull request #104
 - P4-07A Places browser history restoration completed through pull request #105
 - P4-08A mobile selected Place sheet completed through pull request #106
+- P4-09A Online Services discovery and detail completed through pull request #107
 
-## P4-09A in progress
+## P4-10A in progress
 
-- schema-validated public Online Services model
-- Online Services content collection
-- public `online-services.json` artifact boundary
-- `/online` public index
-- `/service/{slug}` static detail routes
-- payment assets, networks, methods, processors, and acceptance scopes
-- How to pay, restrictions, Evidence, and freshness presentation
-- Candidate-free empty public state
-- model aggregation and private-field rejection tests
+- public Places search and map entry
+- Online Services discovery entry
+- Confirmed physical and online counts from validated public collections
+- recently confirmed public records
+- browse by asset, network, and region
+- Online Service highlights
+- Methodology and Contribute guidance
+- Roadmap and Changelog teasers
+- Support disclosure
+- explicit zero-data states without Candidate substitution
+- public Home model tests
 
 ## Next
 
-1. Validate and merge pull request #107.
-2. Build the public Home surface from existing public exports.
-3. Continue Stats, Updates, Roadmap, and Changelog public surfaces.
+1. Validate and merge pull request #108.
+2. Build the public Stats surface from validated stats exports.
+3. Continue Updates, Roadmap, Changelog, and trust/legal public surfaces.
 
 ## Blocked
 
