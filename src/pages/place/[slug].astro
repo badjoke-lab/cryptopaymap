@@ -1,18 +1,19 @@
 ---
+import { getCollection } from 'astro:content';
 import PlaceDetail from '../../components/public/PlaceDetail.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import {
-  buildPlaceDetailModel,
-  loadPublishedPlaces,
-  type PublicPlace,
-} from '../../public/place-detail';
+import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
+import { publicPlaceSchema } from '../../schemas/public-exports';
 
 export async function getStaticPaths() {
-  const places = await loadPublishedPlaces();
-  return places.map((place) => ({
-    params: { slug: place.placeSlug },
-    props: { place },
-  }));
+  const entries = await getCollection('publicPlaces');
+  return entries.map((entry) => {
+    const place = publicPlaceSchema.parse((entry.data as { place: unknown }).place);
+    return {
+      params: { slug: place.placeSlug },
+      props: { place },
+    };
+  });
 }
 
 interface Props {
