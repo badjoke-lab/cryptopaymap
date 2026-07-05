@@ -86,7 +86,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
 | P3-11 | Export controls and release workflow | Repository completed; live verification deferred | P3-07 through P3-10 | #75–#87 |
-| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | #88, #89, #92, #93, #94 |
+| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | #88, #89, #92–#95 |
 
 ### Completed P3-07 deliveries
 
@@ -124,13 +124,16 @@ P3-12C connected bounded audit history sources to the existing durable Phase 3 t
 
 P3-12D added the protected audit history API, isolated audit read authorization, fail-closed environment handling, bounded response mapping, runtime checks, and API tests in pull request #93.
 
+P3-12E added the protected `/admin/audit` administration surface, metadata-only history cards, domain, actor, target, and time filters, stable cursor loading, explicit loading and failure states, component tests, and built-artifact leakage checks in pull request #94.
+
 ### Current P3-12 delivery
 
-P3-12E adds the protected `/admin/audit` administration surface, metadata-only history cards, domain, actor, target, and time filters, stable cursor loading, explicit loading and failure states, component tests, and built-artifact leakage checks in pull request #94.
+P3-12F completes the final repository-level Phase 3 cross-domain integration audit. It verifies deterministic history ordering, bounded pagination, domain and target filtering, stable cursor continuation, isolated audit-read authorization, rejection of source items carrying non-contract fields, deferred live-verification boundaries, and the Phase 4 public-core handoff in pull request #95.
 
 ### Remaining P3-12 deliveries
 
-- final cross-domain Phase 3 integration audit and Phase 4 handoff
+- validate and merge the P3-12F audit
+- hand off repository work to Phase 4 public core / MVP-A
 
 ## Phase 4 — Public core / MVP-A
 
