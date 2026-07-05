@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-04
+**Last verified:** 2026-07-05
 
 ## Current phase
 
@@ -14,7 +14,7 @@ P3-12 — Audit history and Phase 3 integration audit
 
 - P3-12E — Audit administration surface
 - Branch: `work/audit-history-ui`
-- Pull request: pending
+- Pull request: #94
 
 ## Latest completed work
 
@@ -44,7 +44,7 @@ P3-12 — Audit history and Phase 3 integration audit
 
 ## Next
 
-1. Complete P3-12E validation and merge the pull request.
+1. Merge P3-12E after successful validation.
 2. Complete the final Phase 3 cross-domain integration audit.
 3. Hand off to Phase 4 public core work.
 
