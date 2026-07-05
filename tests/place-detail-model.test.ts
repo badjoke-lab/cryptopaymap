@@ -70,6 +70,7 @@ const place: PublicPlace = {
       ...confirmedClaim,
       claimKey: 'example-coffee-old-btc',
       status: 'stale',
+      firstConfirmedAt: '2026-04-01T00:00:00Z',
       lastConfirmedAt: '2026-05-01T00:00:00Z',
       paymentAssets: [
         ...confirmedClaim.paymentAssets,
