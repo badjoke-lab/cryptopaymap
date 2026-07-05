@@ -1,7 +1,4 @@
-import type {
-  BottomSheetState,
-  DiscoveryMapBounds,
-} from './discovery-store';
+import type { BottomSheetState, DiscoveryMapBounds } from './discovery-store';
 import {
   parseDiscoveryUrlState,
   serializeDiscoveryUrlState,
