@@ -1,0 +1,47 @@
+name: Staging review validation
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/staging-review-*.yml'
+      - 'config/staging-review/**'
+      - 'scripts/staging-review-data.ts'
+      - 'scripts/materialize-staging-review-data.ts'
+      - 'scripts/prepare-staging-review-artifact.mjs'
+      - 'scripts/check-staging-review-artifact.mjs'
+      - 'tests/staging-review-data.test.ts'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'src/**'
+      - 'public/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Build staging review artifact
+        run: npm run staging:review:build
+
+      - name: Upload staging review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-review-artifact
+          path: dist
+          if-no-files-found: error
+          retention-days: 7
