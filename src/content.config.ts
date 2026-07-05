@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { parsePublicOnlineServicesDocument } from './public/online-services';
 import { parsePublicPlacePinsDocument } from './public/places-discovery';
 import { parsePublicPlacesDocument } from './public/place-detail';
 
@@ -63,4 +64,20 @@ const publicPlacePins = defineCollection({
   }),
 });
 
-export const collections = { roadmap, changelog, publicPlaces, publicPlacePins };
+const publicOnlineServices = defineCollection({
+  loader: file('public/data/online-services.json', {
+    parser: (text) =>
+      parsePublicOnlineServicesDocument(JSON.parse(text) as unknown).map((service) => ({
+        id: service.serviceSlug,
+        service,
+      })),
+  }),
+});
+
+export const collections = {
+  roadmap,
+  changelog,
+  publicPlaces,
+  publicPlacePins,
+  publicOnlineServices,
+};
