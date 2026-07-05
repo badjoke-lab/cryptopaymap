@@ -24,11 +24,7 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
-export function MobilePlaceSheet({
-  place,
-  state,
-  onStateChange,
-}: MobilePlaceSheetProps) {
+export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceSheetProps) {
   if (!place || state === 'closed') return null;
 
   const expanded = state === 'expanded';
