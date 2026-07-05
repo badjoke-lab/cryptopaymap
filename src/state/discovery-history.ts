@@ -1,4 +1,4 @@
-import type { BottomSheetState } from './discovery-store';
+import type { BottomSheetState, DiscoveryMapBounds } from './discovery-store';
 import {
   parseDiscoveryUrlState,
   serializeDiscoveryUrlState,
@@ -9,6 +9,7 @@ export interface DiscoveryHistoryUiState {
   bottomSheet: BottomSheetState;
   listScrollOffset: number;
   filterPanelOpen: boolean;
+  activeBounds: DiscoveryMapBounds | null;
 }
 
 export interface DiscoveryHistorySnapshot {
@@ -22,12 +23,30 @@ const defaultHistoryUiState: DiscoveryHistoryUiState = {
   bottomSheet: 'closed',
   listScrollOffset: 0,
   filterPanelOpen: false,
+  activeBounds: null,
 };
 
 const bottomSheetStates = new Set<BottomSheetState>(['closed', 'peek', 'expanded']);
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function finiteNumber(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
+function parseBounds(value: unknown): DiscoveryMapBounds | null {
+  if (value === null) return null;
+  if (!isRecord(value)) return null;
+
+  const west = finiteNumber(value.west);
+  const south = finiteNumber(value.south);
+  const east = finiteNumber(value.east);
+  const north = finiteNumber(value.north);
+  if (west === null || south === null || east === null || north === null) return null;
+
+  return { west, south, east, north };
 }
 
 function parseHistoryUiState(value: unknown): DiscoveryHistoryUiState {
@@ -45,7 +64,12 @@ function parseHistoryUiState(value: unknown): DiscoveryHistoryUiState {
       ? value.filterPanelOpen
       : defaultHistoryUiState.filterPanelOpen;
 
-  return { bottomSheet, listScrollOffset, filterPanelOpen };
+  return {
+    bottomSheet,
+    listScrollOffset,
+    filterPanelOpen,
+    activeBounds: parseBounds(value.activeBounds),
+  };
 }
 
 function readExistingHistoryState(value: unknown): Record<string, unknown> {
@@ -89,6 +113,7 @@ export function writeDiscoveryHistory(
       bottomSheet: uiState.bottomSheet,
       listScrollOffset: Math.max(0, uiState.listScrollOffset),
       filterPanelOpen: uiState.filterPanelOpen,
+      activeBounds: uiState.activeBounds ? { ...uiState.activeBounds } : null,
     },
   };
 

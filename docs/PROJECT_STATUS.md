@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-06 — Filters and bounded result updates
+P4-07 — URL state and browser-back restoration
 
 ## Active work
 
-- P4-06B — bounded viewport result updates
-- Branch: `work/bounded-viewport-results`
-- Pull request: #104
+- P4-07A — Places browser history restoration
+- Branch: `work/discovery-history-restoration`
+- Pull request: #105
 
 ## Latest completed work
 
@@ -27,24 +27,25 @@ P4-06 — Filters and bounded result updates
 - P4-04A production Place result list completed through pull request #101
 - P4-05A pin and list synchronization completed through pull request #102
 - P4-06A public Place facet filters completed through pull request #103
+- P4-06B bounded viewport result updates completed through pull request #104
 
-## P4-06B in progress
+## P4-07A in progress
 
-- visible map bounds contract and normalization
-- ordinary and international-date-line bounds filtering
-- pending versus active bounds state
-- MapLibre moveend capture of pending viewport and visible bounds
-- explicit Search this area commit boundary
-- selected Place clearing when committed bounds change
-- URL center and zoom commit at the same boundary
-- optional bounds callback compatibility
-- bounds model and store lifecycle tests
+- explicit push and replace history modes
+- search typing uses replaceState without excessive history entries
+- discrete discovery changes create browser history entries
+- popstate restores URL-owned discovery state without push echo
+- validated session UI history snapshot
+- active map bounds restoration
+- bottom-sheet, filter-panel, and result-list scroll restoration state
+- result-list scroll DOM synchronization
+- history and restoration tests
 
 ## Next
 
-1. Validate and merge pull request #104.
-2. Complete URL-state and browser-back restoration behavior.
-3. Implement the mobile bottom sheet lifecycle.
+1. Validate and merge pull request #105.
+2. Implement the mobile bottom sheet lifecycle.
+3. Continue Online Services public discovery and detail work.
 
 ## Blocked
 
