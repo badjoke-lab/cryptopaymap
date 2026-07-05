@@ -59,13 +59,11 @@ describe('Places map data contract', () => {
   it('compares camera state after public normalization', () => {
     expect(
       mapViewportChanged(
-        { latitude: 35.6812361, longitude: 139.7671251, zoom: 12.345 },
-        { latitude: 35.6812362, longitude: 139.7671252, zoom: 12.3449 },
+        { latitude: 35.6812361, longitude: 139.7671251, zoom: 12.3441 },
+        { latitude: 35.6812362, longitude: 139.7671252, zoom: 12.3442 },
       ),
     ).toBe(false);
 
-    expect(mapViewportChanged(null, { latitude: 35.68, longitude: 139.77, zoom: 12 })).toBe(
-      true,
-    );
+    expect(mapViewportChanged(null, { latitude: 35.68, longitude: 139.77, zoom: 12 })).toBe(true);
   });
 });
