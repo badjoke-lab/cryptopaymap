@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import type { PublicPlacePin } from '../../public/places-discovery';
 
 interface PlaceResultListProps {
@@ -23,12 +24,28 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
+function reducedMotionPreferred(): boolean {
+  return typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : true;
+}
+
 export function PlaceResultList({
   pins,
   selectedPlace,
   onSelectPlace,
   onClearFilters,
 }: PlaceResultListProps) {
+  const itemRefs = useRef(new Map<string, HTMLLIElement>());
+
+  useEffect(() => {
+    if (!selectedPlace) return;
+    itemRefs.current.get(selectedPlace)?.scrollIntoView({
+      block: 'nearest',
+      behavior: reducedMotionPreferred() ? 'auto' : 'smooth',
+    });
+  }, [selectedPlace]);
+
   return (
     <section
       className="min-h-0 rounded-card border border-border bg-surface"
@@ -78,7 +95,15 @@ export function PlaceResultList({
             const location = [pin.locality, pin.countryCode].filter(Boolean).join(', ');
 
             return (
-              <li key={pin.placeSlug} data-place-slug={pin.placeSlug} data-selected={isSelected}>
+              <li
+                key={pin.placeSlug}
+                ref={(element) => {
+                  if (element) itemRefs.current.set(pin.placeSlug, element);
+                  else itemRefs.current.delete(pin.placeSlug);
+                }}
+                data-place-slug={pin.placeSlug}
+                data-selected={isSelected}
+              >
                 <article
                   className={`grid gap-4 rounded-card border p-4 motion-safe:transition-[border-color,background-color,transform] motion-safe:duration-fast ${
                     isSelected
