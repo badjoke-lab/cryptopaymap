@@ -62,6 +62,34 @@ describe('PlacesApp shell', () => {
     await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
   });
 
+  it('moves the mobile selected Place sheet through peek, expanded, and closed states', async () => {
+    render(<PlacesApp pins={pins} />);
+    fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
+
+    const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
+    expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
+    expect(screen.getByText(/Last confirmed Jun 20, 2026/)).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'More payment information' }));
+    await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'expanded'));
+    expect(screen.getByText('Lightning')).toBeInTheDocument();
+    expect(screen.getByText('Direct Wallet')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
+      'href',
+      '/place/example-coffee-tokyo',
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: 'Show less' }));
+    await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'peek'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close selected place' }));
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('region', { name: 'Selected place: Example Coffee' }),
+      ).not.toBeInTheDocument(),
+    );
+  });
+
   it('filters public results with URL-owned facets and clears hidden selection', async () => {
     render(<PlacesApp pins={pins} />);
 
