@@ -14,7 +14,7 @@ P4-03 — MapLibre map
 
 - P4-03A — map source and camera contract foundation
 - Branch: `work/map-geojson-foundation`
-- Pull request: pending
+- Pull request: #98
 
 ## Latest completed work
 
@@ -46,7 +46,7 @@ P4-03 — MapLibre map
 
 ## Next
 
-1. Validate and merge P4-03A.
+1. Validate and merge pull request #98.
 2. Add the MapLibre renderer against the fixed source and camera contracts.
 3. Connect renderer move events to pending viewport and Search this area behavior.
 
