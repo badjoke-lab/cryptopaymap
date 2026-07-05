@@ -12,6 +12,7 @@ import {
   parseDiscoveryUrlState,
   serializeDiscoveryUrlState,
 } from '../../state/discovery-url';
+import { filterPinsByMapBounds } from './map-data';
 import { PlaceFilterPanel } from './PlaceFilterPanel';
 import { PlaceResultList } from './PlaceResultList';
 import { PlacesMap } from './PlacesMap';
@@ -32,11 +33,15 @@ export function PlacesApp({ pins }: PlacesAppProps) {
   const urlState = useStore(store, (state) => state.urlState);
   const filterPanelOpen = useStore(store, (state) => state.filterPanelOpen);
   const pendingViewport = useStore(store, (state) => state.pendingViewport);
+  const pendingBounds = useStore(store, (state) => state.pendingBounds);
+  const activeBounds = useStore(store, (state) => state.activeBounds);
   const patchUrlState = useStore(store, (state) => state.patchUrlState);
   const setUrlState = useStore(store, (state) => state.setUrlState);
   const setBottomSheet = useStore(store, (state) => state.setBottomSheet);
   const setFilterPanelOpen = useStore(store, (state) => state.setFilterPanelOpen);
   const setPendingViewport = useStore(store, (state) => state.setPendingViewport);
+  const setPendingBounds = useStore(store, (state) => state.setPendingBounds);
+  const setActiveBounds = useStore(store, (state) => state.setActiveBounds);
   const [urlReady, setUrlReady] = useState(false);
 
   useEffect(() => {
@@ -56,11 +61,12 @@ export function PlacesApp({ pins }: PlacesAppProps) {
   }, [urlReady, urlState]);
 
   const facets = useMemo(() => buildPublicPlaceFilterFacets(pins), [pins]);
-  const results = useMemo(() => filterPublicPlacePins(pins, urlState), [pins, urlState]);
-  const selected =
-    results.find((pin) => pin.placeSlug === urlState.selectedPlace) ??
-    pins.find((pin) => pin.placeSlug === urlState.selectedPlace) ??
-    null;
+  const filteredResults = useMemo(() => filterPublicPlacePins(pins, urlState), [pins, urlState]);
+  const results = useMemo(
+    () => filterPinsByMapBounds(filteredResults, activeBounds),
+    [activeBounds, filteredResults],
+  );
+  const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
 
   function selectPlace(placeSlug: string) {
     patchUrlState({ selectedPlace: placeSlug });
@@ -84,6 +90,17 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     });
     setBottomSheet('closed');
     setPendingViewport(null);
+    setPendingBounds(null);
+  }
+
+  function searchPendingArea() {
+    if (!pendingViewport || !pendingBounds) return;
+
+    setActiveBounds(pendingBounds);
+    patchUrlState({ viewport: pendingViewport, selectedPlace: null });
+    setPendingViewport(null);
+    setPendingBounds(null);
+    setBottomSheet('closed');
   }
 
   return (
@@ -182,16 +199,14 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               committedViewport={urlState.viewport}
               onSelectPlace={selectPlace}
               onViewportChange={setPendingViewport}
+              onBoundsChange={setPendingBounds}
             />
 
-            {pendingViewport ? (
+            {pendingViewport && pendingBounds ? (
               <button
                 className="motion-feedback absolute left-1/2 top-3 z-10 min-h-11 -translate-x-1/2 rounded-control bg-brand-600 px-4 py-2 font-semibold text-white shadow-panel hover:bg-brand-700"
                 type="button"
-                onClick={() => {
-                  patchUrlState({ viewport: pendingViewport });
-                  setPendingViewport(null);
-                }}
+                onClick={searchPendingArea}
               >
                 Search this area
               </button>

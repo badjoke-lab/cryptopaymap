@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildPlaceMapFeatureCollection,
+  filterPinsByMapBounds,
   mapViewportChanged,
+  normalizeMapBounds,
   normalizeMapViewport,
 } from '../src/components/places/map-data';
 import type { PublicPlacePin } from '../src/public/places-discovery';
@@ -48,6 +50,41 @@ describe('Places map data contract', () => {
     expect(source.features[0]?.geometry.coordinates).toEqual([139.767125, 35.681236]);
     expect(source.features[1]?.properties.selected).toBe(true);
     expect(source.features[0]?.properties.selected).toBe(false);
+  });
+
+  it('normalizes and applies visible map bounds', () => {
+    expect(
+      normalizeMapBounds({ west: -190.123456, south: -95, east: 190.123456, north: 95 }),
+    ).toEqual({ west: -180, south: -90, east: 180, north: 90 });
+
+    expect(
+      filterPinsByMapBounds(pins, {
+        west: 138,
+        south: 35,
+        east: 141,
+        north: 36,
+      }).map((pin) => pin.placeSlug),
+    ).toEqual(['example-coffee-tokyo']);
+  });
+
+  it('supports visible bounds that cross the international date line', () => {
+    const basePin = pins[0];
+    if (!basePin) throw new Error('Expected the map test fixture to include a base pin.');
+
+    const dateLinePins: PublicPlacePin[] = [
+      { ...basePin, placeSlug: 'east-date-line', longitude: 179.5, latitude: 10 },
+      { ...basePin, placeSlug: 'west-date-line', longitude: -179.5, latitude: 10 },
+      { ...basePin, placeSlug: 'outside-date-line', longitude: 0, latitude: 10 },
+    ];
+
+    expect(
+      filterPinsByMapBounds(dateLinePins, {
+        west: 170,
+        south: 0,
+        east: -170,
+        north: 20,
+      }).map((pin) => pin.placeSlug),
+    ).toEqual(['east-date-line', 'west-date-line']);
   });
 
   it('normalizes map camera state to the public URL boundary', () => {

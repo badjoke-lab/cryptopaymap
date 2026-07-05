@@ -21,12 +21,15 @@ describe('discovery UI store', () => {
     expect(second.getState().listScrollOffset).toBe(0);
   });
 
-  it('clamps negative scroll offsets and resets ephemeral state', () => {
+  it('clamps scroll offsets and resets only ephemeral map movement state', () => {
+    const activeBounds = { west: 138, south: 35, east: 141, north: 36 };
     const store = createDiscoveryStore({
       bottomSheet: 'peek',
       listScrollOffset: 240,
       filterPanelOpen: true,
       pendingViewport: { latitude: 35.68, longitude: 139.76, zoom: 13 },
+      pendingBounds: { west: 139, south: 35.5, east: 140, north: 36 },
+      activeBounds,
     });
 
     store.getState().setListScrollOffset(-50);
@@ -36,5 +39,21 @@ describe('discovery UI store', () => {
     expect(store.getState().bottomSheet).toBe('closed');
     expect(store.getState().filterPanelOpen).toBe(false);
     expect(store.getState().pendingViewport).toBeNull();
+    expect(store.getState().pendingBounds).toBeNull();
+    expect(store.getState().activeBounds).toEqual(activeBounds);
+  });
+
+  it('clones pending and active bounds at the store boundary', () => {
+    const store = createDiscoveryStore();
+    const pending = { west: 139, south: 35, east: 140, north: 36 };
+    const active = { west: 138, south: 34, east: 141, north: 37 };
+
+    store.getState().setPendingBounds(pending);
+    store.getState().setActiveBounds(active);
+    pending.west = 0;
+    active.west = 0;
+
+    expect(store.getState().pendingBounds?.west).toBe(139);
+    expect(store.getState().activeBounds?.west).toBe(138);
   });
 });
