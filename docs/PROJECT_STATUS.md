@@ -12,9 +12,9 @@ P3-12 — Audit history and Phase 3 integration audit
 
 ## Active work
 
-- P3-12E — Audit administration surface
-- Branch: `work/audit-history-ui`
-- Pull request: #94
+- P3-12F — final cross-domain Phase 3 integration audit and Phase 4 handoff
+- Branch: `work/phase3-integration-audit`
+- Pull request: pending
 
 ## Latest completed work
 
@@ -29,24 +29,25 @@ P3-12 — Audit history and Phase 3 integration audit
 - P3-12B bounded audit history aggregation completed through pull request #89
 - P3-12C durable audit history source adapters completed through pull request #92
 - P3-12D protected audit history API completed through pull request #93
+- P3-12E Audit administration surface completed through pull request #94
 - export restore replay preflight hardening completed through pull request #91
 
-## P3-12E in progress
+## P3-12F in progress
 
-- `/admin/audit` protected administration page
-- read-only normalized audit history client view
-- domain, actor, target, and time-range filters
-- stable cursor load-more behavior
-- loading, denied, invalid-query, unavailable, and empty states
-- metadata-only event cards and state transitions
-- component tests
-- built artifact and private-marker checks
+- final Phase 3 administration boundary audit
+- cross-domain audit history integration check
+- deterministic ordering and bounded pagination verification
+- domain, target, and stable-cursor verification
+- audit-read authorization verification
+- private payload rejection verification
+- deferred live-verification inventory
+- Phase 4 public-core handoff requirements
 
 ## Next
 
-1. Merge P3-12E after successful validation.
-2. Complete the final Phase 3 cross-domain integration audit.
-3. Hand off to Phase 4 public core work.
+1. Complete P3-12F validation and merge the integration-audit pull request.
+2. Mark Phase 3 repository work complete with explicit live-verification deferrals.
+3. Begin Phase 4 public core / MVP-A work from current main.
 
 ## Blocked
 
