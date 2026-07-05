@@ -6,11 +6,18 @@ import {
   filterPublicPlacePins,
   type PublicPlacePin,
 } from '../../public/places-discovery';
+import {
+  readDiscoveryHistoryFromWindow,
+  readDiscoveryHistorySnapshot,
+  writeDiscoveryHistory,
+  type DiscoveryHistoryMode,
+} from '../../state/discovery-history';
 import { createDiscoveryStore, type DiscoveryStoreApi } from '../../state/discovery-store';
 import {
   defaultDiscoveryUrlState,
-  parseDiscoveryUrlState,
+  mergeDiscoveryUrlState,
   serializeDiscoveryUrlState,
+  type DiscoveryUrlState,
 } from '../../state/discovery-url';
 import { filterPinsByMapBounds } from './map-data';
 import { PlaceFilterPanel } from './PlaceFilterPanel';
@@ -25,40 +32,87 @@ function createPlacesStore(): DiscoveryStoreApi {
   return createDiscoveryStore({ urlState: defaultDiscoveryUrlState });
 }
 
+function serializedState(state: DiscoveryUrlState): string {
+  return serializeDiscoveryUrlState(state).toString();
+}
+
 export function PlacesApp({ pins }: PlacesAppProps) {
   const storeRef = useRef<DiscoveryStoreApi | null>(null);
   if (storeRef.current === null) storeRef.current = createPlacesStore();
   const store = storeRef.current;
 
   const urlState = useStore(store, (state) => state.urlState);
+  const bottomSheet = useStore(store, (state) => state.bottomSheet);
+  const listScrollOffset = useStore(store, (state) => state.listScrollOffset);
   const filterPanelOpen = useStore(store, (state) => state.filterPanelOpen);
   const pendingViewport = useStore(store, (state) => state.pendingViewport);
   const pendingBounds = useStore(store, (state) => state.pendingBounds);
   const activeBounds = useStore(store, (state) => state.activeBounds);
-  const patchUrlState = useStore(store, (state) => state.patchUrlState);
   const setUrlState = useStore(store, (state) => state.setUrlState);
   const setBottomSheet = useStore(store, (state) => state.setBottomSheet);
+  const setListScrollOffset = useStore(store, (state) => state.setListScrollOffset);
   const setFilterPanelOpen = useStore(store, (state) => state.setFilterPanelOpen);
   const setPendingViewport = useStore(store, (state) => state.setPendingViewport);
   const setPendingBounds = useStore(store, (state) => state.setPendingBounds);
   const setActiveBounds = useStore(store, (state) => state.setActiveBounds);
+  const historyModeRef = useRef<DiscoveryHistoryMode>('replace');
   const [urlReady, setUrlReady] = useState(false);
 
+  function patchDiscoveryUrlState(
+    patch: Partial<DiscoveryUrlState>,
+    mode: DiscoveryHistoryMode = 'push',
+  ) {
+    const current = store.getState().urlState;
+    const next = mergeDiscoveryUrlState(current, patch);
+    if (serializedState(current) === serializedState(next)) return;
+
+    historyModeRef.current = mode;
+    setUrlState(next);
+  }
+
   useEffect(() => {
-    setUrlState(parseDiscoveryUrlState(window.location.search));
+    const initial = readDiscoveryHistoryFromWindow();
+    setUrlState(initial.urlState);
+    setBottomSheet(initial.uiState.bottomSheet);
+    setListScrollOffset(initial.uiState.listScrollOffset);
+    setFilterPanelOpen(initial.uiState.filterPanelOpen);
+    setActiveBounds(initial.uiState.activeBounds);
     setUrlReady(true);
 
-    const onPopState = () => setUrlState(parseDiscoveryUrlState(window.location.search));
+    const onPopState = (event: PopStateEvent) => {
+      const restored = readDiscoveryHistorySnapshot(window.location.search, event.state);
+      historyModeRef.current = 'replace';
+      setUrlState(restored.urlState);
+      setBottomSheet(restored.uiState.bottomSheet);
+      setListScrollOffset(restored.uiState.listScrollOffset);
+      setFilterPanelOpen(restored.uiState.filterPanelOpen);
+      setActiveBounds(restored.uiState.activeBounds);
+      setPendingViewport(null);
+      setPendingBounds(null);
+    };
+
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
-  }, [setUrlState]);
+  }, [
+    setActiveBounds,
+    setBottomSheet,
+    setFilterPanelOpen,
+    setListScrollOffset,
+    setPendingBounds,
+    setPendingViewport,
+    setUrlState,
+  ]);
 
   useEffect(() => {
     if (!urlReady) return;
-    const query = serializeDiscoveryUrlState(urlState).toString();
-    const nextUrl = query ? `${window.location.pathname}?${query}` : window.location.pathname;
-    window.history.replaceState(window.history.state, '', nextUrl);
-  }, [urlReady, urlState]);
+    const mode = historyModeRef.current;
+    historyModeRef.current = 'replace';
+    writeDiscoveryHistory(
+      urlState,
+      { bottomSheet, listScrollOffset, filterPanelOpen, activeBounds },
+      mode,
+    );
+  }, [activeBounds, bottomSheet, filterPanelOpen, listScrollOffset, urlReady, urlState]);
 
   const facets = useMemo(() => buildPublicPlaceFilterFacets(pins), [pins]);
   const filteredResults = useMemo(() => filterPublicPlacePins(pins, urlState), [pins, urlState]);
@@ -69,17 +123,17 @@ export function PlacesApp({ pins }: PlacesAppProps) {
   const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
 
   function selectPlace(placeSlug: string) {
-    patchUrlState({ selectedPlace: placeSlug });
+    patchDiscoveryUrlState({ selectedPlace: placeSlug });
     setBottomSheet('peek');
   }
 
   function clearSelection() {
-    patchUrlState({ selectedPlace: null });
+    patchDiscoveryUrlState({ selectedPlace: null });
     setBottomSheet('closed');
   }
 
   function clearFilters() {
-    patchUrlState({
+    patchDiscoveryUrlState({
       search: '',
       assets: [],
       networks: [],
@@ -97,7 +151,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     if (!pendingViewport || !pendingBounds) return;
 
     setActiveBounds(pendingBounds);
-    patchUrlState({ viewport: pendingViewport, selectedPlace: null });
+    patchDiscoveryUrlState({ viewport: pendingViewport, selectedPlace: null });
     setPendingViewport(null);
     setPendingBounds(null);
     setBottomSheet('closed');
@@ -134,7 +188,10 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               type="search"
               value={urlState.search}
               onChange={(event) =>
-                patchUrlState({ search: event.target.value, selectedPlace: null })
+                patchDiscoveryUrlState(
+                  { search: event.target.value, selectedPlace: null },
+                  'replace',
+                )
               }
               placeholder="Search name, category, city, or country"
             />
@@ -161,7 +218,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                 }`}
                 type="button"
                 aria-pressed={urlState.view === 'map'}
-                onClick={() => patchUrlState({ view: 'map' })}
+                onClick={() => patchDiscoveryUrlState({ view: 'map' })}
               >
                 <MapIcon className="size-4" aria-hidden="true" /> Map
               </button>
@@ -171,7 +228,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                 }`}
                 type="button"
                 aria-pressed={urlState.view === 'list'}
-                onClick={() => patchUrlState({ view: 'list' })}
+                onClick={() => patchDiscoveryUrlState({ view: 'list' })}
               >
                 <List className="size-4" aria-hidden="true" /> List
               </button>
@@ -183,7 +240,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
           <PlaceFilterPanel
             facets={facets}
             state={urlState}
-            onPatch={patchUrlState}
+            onPatch={(patch) => patchDiscoveryUrlState(patch)}
             onClear={clearFilters}
           />
         ) : null}
@@ -247,6 +304,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             <PlaceResultList
               pins={results}
               selectedPlace={urlState.selectedPlace}
+              scrollOffset={listScrollOffset}
+              onScrollOffsetChange={setListScrollOffset}
               onSelectPlace={selectPlace}
               onClearFilters={clearFilters}
             />
