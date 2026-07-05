@@ -134,8 +134,8 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
-| P4-01 | Place detail | In progress | Phase 3 | P4-01A pending |
-| P4-02 | PlacesApp shell | Planned | P4-01 | — |
+| P4-01 | Place detail | Completed | Phase 3 | #96 |
+| P4-02 | PlacesApp shell | In progress | P4-01 | P4-02A pending |
 | P4-03 | MapLibre map | Planned | P4-02 | — |
 | P4-04 | Result list | Planned | P4-02 | — |
 | P4-05 | Pin and list synchronization | Planned | P4-03, P4-04 | — |
@@ -151,9 +151,13 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-15 | Public media integration | Planned | P3-10, P4-01 | — |
 | P4-16 | MVP-A integration and quality audit | Planned | P4-01 through P4-15 | — |
 
-### Current P4-01 delivery
+### Completed P4-01 delivery
 
-P4-01A establishes the first public Place detail boundary. It reads only validated published `places.json` records, generates canonical `/place/{slug}` paths from those public records, derives a status-aware detail view model, renders payment assets, networks, routes, methods, instructions, restrictions, freshness, Evidence, and approved public Media, and covers the model and privacy boundary with tests.
+P4-01A established the first public Place detail boundary in pull request #96. It reads only validated published `places.json` records through the build-time content layer, generates canonical `/place/{slug}` paths from those public records, derives a status-aware detail view model, renders payment assets, networks, routes, methods, instructions, restrictions, freshness, Evidence, and approved public Media, and covers the model and privacy boundary with tests.
+
+### Current P4-02 delivery
+
+P4-02A establishes the coordinated PlacesApp public shell. It loads only validated public Place pins, connects existing Discovery URL state and isolated Zustand UI state, coordinates map/list mode, public result selection, selected-place detail navigation, search and status filtering, and explicit empty states that never substitute Candidate records.
 
 ## Phase 5 — Public submissions / MVP-B
 
