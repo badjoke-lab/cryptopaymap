@@ -73,7 +73,7 @@ describe('PlaceResultList', () => {
 
     const selectedButton = screen.getByRole('button', { name: 'Select Example Coffee on map' });
     expect(selectedButton).toHaveAttribute('aria-pressed', 'true');
-    expect(screen.getByRole('link', { name: 'Payment details', exact: true })).toHaveAttribute(
+    expect(screen.getAllByRole('link', { name: 'Payment details', exact: true })[0]).toHaveAttribute(
       'href',
       '/place/example-coffee-tokyo',
     );
