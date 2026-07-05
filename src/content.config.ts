@@ -4,6 +4,7 @@ import { z } from 'astro/zod';
 import { parsePublicOnlineServicesDocument } from './public/online-services';
 import { parsePublicPlacePinsDocument } from './public/places-discovery';
 import { parsePublicPlacesDocument } from './public/place-detail';
+import { parsePublicStatsDocument } from './public/stats';
 
 const roadmap = defineCollection({
   loader: file('content/roadmap.yml'),
@@ -74,10 +75,22 @@ const publicOnlineServices = defineCollection({
   }),
 });
 
+const publicStats = defineCollection({
+  loader: file('public/data/stats.json', {
+    parser: (text) => [
+      {
+        id: 'stats',
+        stats: parsePublicStatsDocument(JSON.parse(text) as unknown),
+      },
+    ],
+  }),
+});
+
 export const collections = {
   roadmap,
   changelog,
   publicPlaces,
   publicPlacePins,
   publicOnlineServices,
+  publicStats,
 };

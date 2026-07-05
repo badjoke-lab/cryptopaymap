@@ -1,0 +1,51 @@
+---
+import type { PublicStats } from '../../public/stats';
+
+interface Props {
+  stats: PublicStats;
+}
+
+const { stats } = Astro.props;
+const overview = [
+  ['Confirmed physical places', stats.confirmedPhysicalPlaces],
+  ['Confirmed online services', stats.confirmedOnlineServices],
+  ['Countries', stats.countries],
+  ['Cities', stats.cities],
+  ['Stale records', stats.staleRecords],
+  ['Ended records', stats.endedRecords],
+] as const;
+---
+
+<section aria-labelledby="stats-overview-title">
+  <p class="m-0 text-sm font-semibold text-brand-700">Dataset overview</p>
+  <h2 id="stats-overview-title" class="mt-1 text-3xl font-semibold tracking-tight text-ink">
+    Current public records
+  </h2>
+  <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+    These figures describe CryptoPayMap’s validated public dataset, not worldwide cryptocurrency adoption.
+  </p>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {
+      overview.map(([label, value]) => (
+        <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+          <p class="m-0 text-sm font-medium text-muted">{label}</p>
+          <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{value}</p>
+        </article>
+      ))
+    }
+  </div>
+
+  <div class="mt-8 grid gap-4 sm:grid-cols-2">
+    <article class="rounded-card border border-border bg-brand-50 p-5">
+      <p class="m-0 text-sm font-semibold text-brand-700">Direct wallet claims</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{stats.directWalletClaims}</p>
+      <p class="mt-2 text-sm leading-6 text-muted">Customer pays a merchant-controlled wallet or invoice route directly.</p>
+    </article>
+    <article class="rounded-card border border-border bg-brand-50 p-5">
+      <p class="m-0 text-sm font-semibold text-brand-700">Processor checkout claims</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{stats.processorCheckoutClaims}</p>
+      <p class="mt-2 text-sm leading-6 text-muted">Customer pays through a verified cryptocurrency checkout processor route.</p>
+    </article>
+  </div>
+</section>

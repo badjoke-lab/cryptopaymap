@@ -1,0 +1,18 @@
+{
+  "confirmedPhysicalPlaces": 0,
+  "confirmedOnlineServices": 0,
+  "countries": 0,
+  "cities": 0,
+  "staleRecords": 0,
+  "endedRecords": 0,
+  "directWalletClaims": 0,
+  "processorCheckoutClaims": 0,
+  "howToPayCoverage": 0,
+  "networkSpecifiedRate": 0,
+  "evidenceBackedRate": 0,
+  "reconfirmedWithin90Days": 0,
+  "reconfirmedWithin180Days": 0,
+  "staleRate": 0,
+  "topAssets": [],
+  "topNetworks": []
+}
