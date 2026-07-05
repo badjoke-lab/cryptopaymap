@@ -4,17 +4,17 @@
 
 ## Current phase
 
-Phase 3 — Administration and review
+Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P3-12 — Audit history and Phase 3 integration audit
+P4-01 — Place detail
 
 ## Active work
 
-- P3-12F — final cross-domain Phase 3 integration audit and Phase 4 handoff
-- Branch: `work/phase3-integration-audit`
-- Pull request: #95
+- P4-01A — public Place detail foundation
+- Branch: `work/p4-place-detail-foundation`
+- Pull request: pending
 
 ## Latest completed work
 
@@ -30,24 +30,25 @@ P3-12 — Audit history and Phase 3 integration audit
 - P3-12C durable audit history source adapters completed through pull request #92
 - P3-12D protected audit history API completed through pull request #93
 - P3-12E Audit administration surface completed through pull request #94
-- export restore replay preflight hardening completed through pull request #91
+- P3-12F Phase 3 cross-domain integration audit completed through pull request #95
+- Phase 3 repository work completed with explicit live-verification deferrals
 
-## P3-12F in progress
+## P4-01A in progress
 
-- final Phase 3 administration boundary audit
-- cross-domain audit history integration check
-- deterministic ordering and bounded pagination verification
-- domain, target, and stable-cursor verification
-- audit-read authorization verification
-- private payload rejection verification
-- deferred live-verification inventory
-- Phase 4 public-core handoff requirements
+- strict published Places read boundary
+- static `/place/{slug}` path generation from reviewed public records only
+- Place detail view model
+- status-aware public detail surface
+- accepted assets, networks, routes, methods, instructions, restrictions, and freshness
+- public Evidence links and approved public Media only
+- contribution and nearby-place navigation
+- model and privacy-boundary tests
 
 ## Next
 
-1. Complete P3-12F validation and merge pull request #95.
-2. Mark Phase 3 repository work complete with explicit live-verification deferrals.
-3. Begin Phase 4 public core / MVP-A work from current main.
+1. Validate and merge P4-01A.
+2. Extend Place detail history and map context as public data contracts become available.
+3. Continue with the PlacesApp public discovery shell.
 
 ## Blocked
 
