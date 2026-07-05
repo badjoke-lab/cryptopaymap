@@ -1,25 +1,23 @@
 import { List, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
-import { filterPublicPlacePins, type PublicPlacePin } from '../../public/places-discovery';
+import {
+  buildPublicPlaceFilterFacets,
+  filterPublicPlacePins,
+  type PublicPlacePin,
+} from '../../public/places-discovery';
 import { createDiscoveryStore, type DiscoveryStoreApi } from '../../state/discovery-store';
 import {
   defaultDiscoveryUrlState,
   parseDiscoveryUrlState,
   serializeDiscoveryUrlState,
 } from '../../state/discovery-url';
+import { PlaceFilterPanel } from './PlaceFilterPanel';
 import { PlaceResultList } from './PlaceResultList';
 import { PlacesMap } from './PlacesMap';
 
 interface PlacesAppProps {
   pins: PublicPlacePin[];
-}
-
-function formatLabel(value: string): string {
-  return value
-    .split('_')
-    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
-    .join(' ');
 }
 
 function createPlacesStore(): DiscoveryStoreApi {
@@ -57,6 +55,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     window.history.replaceState(window.history.state, '', nextUrl);
   }, [urlReady, urlState]);
 
+  const facets = useMemo(() => buildPublicPlaceFilterFacets(pins), [pins]);
   const results = useMemo(() => filterPublicPlacePins(pins, urlState), [pins, urlState]);
   const selected =
     results.find((pin) => pin.placeSlug === urlState.selectedPlace) ??
@@ -117,7 +116,9 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               className="min-h-12 w-full rounded-control border border-border bg-surface pl-11 pr-4 text-ink shadow-sm"
               type="search"
               value={urlState.search}
-              onChange={(event) => patchUrlState({ search: event.target.value })}
+              onChange={(event) =>
+                patchUrlState({ search: event.target.value, selectedPlace: null })
+              }
               placeholder="Search name, category, city, or country"
             />
           </label>
@@ -162,50 +163,12 @@ export function PlacesApp({ pins }: PlacesAppProps) {
         </div>
 
         {filterPanelOpen ? (
-          <section
-            className="mt-3 rounded-card border border-border bg-surface p-4 shadow-sm"
-            aria-label="Place filters"
-          >
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="m-0 text-sm font-semibold text-ink">Public status</p>
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {(['confirmed', 'stale'] as const).map((status) => {
-                    const active = urlState.statuses.includes(status);
-                    return (
-                      <button
-                        key={status}
-                        className={`motion-feedback min-h-10 rounded-pill border px-3 py-1.5 text-sm font-semibold ${
-                          active
-                            ? 'border-brand-600 bg-brand-50 text-brand-800'
-                            : 'border-border bg-surface text-muted'
-                        }`}
-                        type="button"
-                        aria-pressed={active}
-                        onClick={() => {
-                          const statuses = active
-                            ? urlState.statuses.filter((value) => value !== status)
-                            : [...urlState.statuses, status];
-                          patchUrlState({
-                            statuses: statuses.length > 0 ? statuses : ['confirmed'],
-                          });
-                        }}
-                      >
-                        {formatLabel(status)}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-              <button
-                className="motion-feedback min-h-10 rounded-control px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"
-                type="button"
-                onClick={clearFilters}
-              >
-                Clear filters
-              </button>
-            </div>
-          </section>
+          <PlaceFilterPanel
+            facets={facets}
+            state={urlState}
+            onPatch={patchUrlState}
+            onClear={clearFilters}
+          />
         ) : null}
 
         <div className="mt-5 grid min-h-[38rem] gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
