@@ -11,14 +11,18 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -33,6 +37,8 @@ jobs:
         run: npm run staging:review:build
 
       - name: Verify Cloudflare deployment credentials
+        id: credentials
+        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -41,7 +47,53 @@ jobs:
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing CLOUDFLARE_ACCOUNT_ID"; exit 1; }
 
       - name: Deploy staging review to Cloudflare Pages
+        id: deploy
+        if: steps.credentials.outcome == 'success'
+        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch review
+        run: |
+          set -o pipefail
+          npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch review 2>&1 | tee deployment-output.log
+
+      - name: Write deployment receipt
+        if: always()
+        env:
+          CREDENTIALS_OUTCOME: ${{ steps.credentials.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          DEPLOY_COMMIT: ${{ github.sha }}
+        run: |
+          node <<'NODE'
+          const { existsSync, readFileSync, writeFileSync } = require('node:fs');
+          const credentials = process.env.CREDENTIALS_OUTCOME;
+          const deploy = process.env.DEPLOY_OUTCOME;
+          const status = credentials !== 'success' ? 'missing_credentials' : deploy === 'success' ? 'deployed' : 'deploy_failed';
+          const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
+          const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
+          const receipt = {
+            status,
+            commit: process.env.DEPLOY_COMMIT,
+            url: urls.at(-1) ?? null,
+            generatedAt: new Date().toISOString(),
+          };
+          writeFileSync('config/staging-review/deployment-receipt.json', `${JSON.stringify(receipt, null, 2)}\n`);
+          NODE
+
+      - name: Publish deployment receipt
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add config/staging-review/deployment-receipt.json
+          git commit -m "STG-01: record staging deployment result"
+          git push origin HEAD:staging-review
+
+      - name: Enforce successful deployment
+        if: always()
+        env:
+          CREDENTIALS_OUTCOME: ${{ steps.credentials.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+        run: |
+          test "$CREDENTIALS_OUTCOME" = "success" || exit 1
+          test "$DEPLOY_OUTCOME" = "success" || exit 1
