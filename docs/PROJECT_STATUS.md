@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-03 — MapLibre map
+P4-04 — Result list
 
 ## Active work
 
-- P4-03B — MapLibre renderer and PlacesApp integration
-- Branch: `work/maplibre-renderer-final`
-- Pull request: #100
+- P4-04A — production Place result list
+- Branch: `work/place-result-list`
+- Pull request: #101
 
 ## Latest completed work
 
@@ -35,24 +35,23 @@ P4-03 — MapLibre map
 - P4-01A public Place detail foundation completed through pull request #96
 - P4-02A coordinated PlacesApp public shell completed through pull request #97
 - P4-03A map source and camera contracts completed through pull request #98
+- P4-03B MapLibre renderer completed through pull request #100
 
-## P4-03B in progress
+## P4-04A in progress
 
-- MapLibre GL JS renderer dependency and generated lockfile
-- public GeoJSON source registration
-- clustered and unclustered public Place layers
-- selected, confirmed, and stale marker states
-- point selection and cluster expansion interaction
-- renderer move events to pending viewport state
-- committed viewport synchronization
-- Search this area integration
-- WebGL unsupported and map error fallbacks
-- renderer component tests
+- independent production Place result list component
+- public thumbnail or category fallback
+- Confirmed and Stale status presentation
+- asset, network, route, and freshness summaries
+- separate map-selection and detail-navigation actions
+- Candidate-free empty state
+- stable public Place slug hooks for next pin/list synchronization step
+- result-list component tests
 
 ## Next
 
-1. Validate and merge pull request #100.
-2. Complete production result-list behavior and pin/list synchronization.
+1. Validate and merge pull request #101.
+2. Implement pin/list synchronization and selected-card visibility behavior.
 3. Extend public filters and bounded result updates.
 
 ## Blocked
