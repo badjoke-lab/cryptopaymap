@@ -4,6 +4,8 @@ import type { PublicPlacePin } from '../../public/places-discovery';
 interface PlaceResultListProps {
   pins: PublicPlacePin[];
   selectedPlace: string | null;
+  scrollOffset: number;
+  onScrollOffsetChange: (offset: number) => void;
   onSelectPlace: (placeSlug: string) => void;
   onClearFilters: () => void;
 }
@@ -33,10 +35,19 @@ function reducedMotionPreferred(): boolean {
 export function PlaceResultList({
   pins,
   selectedPlace,
+  scrollOffset,
+  onScrollOffsetChange,
   onSelectPlace,
   onClearFilters,
 }: PlaceResultListProps) {
+  const listRef = useRef<HTMLUListElement | null>(null);
   const itemRefs = useRef(new Map<string, HTMLLIElement>());
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list || Math.abs(list.scrollTop - scrollOffset) < 1) return;
+    list.scrollTop = scrollOffset;
+  }, [scrollOffset]);
 
   useEffect(() => {
     if (!selectedPlace) return;
@@ -92,7 +103,12 @@ export function PlaceResultList({
           </div>
         </div>
       ) : (
-        <ul className="m-0 max-h-[42rem] list-none overflow-y-auto p-3" aria-label="Place results">
+        <ul
+          ref={listRef}
+          className="m-0 max-h-[42rem] list-none overflow-y-auto p-3"
+          aria-label="Place results"
+          onScroll={(event) => onScrollOffsetChange(event.currentTarget.scrollTop)}
+        >
           {pins.map((pin) => {
             const isSelected = pin.placeSlug === selectedPlace;
             const location = [pin.locality, pin.countryCode].filter(Boolean).join(', ');
