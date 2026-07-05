@@ -1,4 +1,4 @@
-import { List, LocateFixed, Map, Search, SlidersHorizontal, X } from 'lucide-react';
+import { List, LocateFixed, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
 import { filterPublicPlacePins, type PublicPlacePin } from '../../public/places-discovery';
@@ -141,6 +141,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
 
             <div
               className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden"
+              role="group"
               aria-label="View mode"
             >
               <button
@@ -151,7 +152,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                 aria-pressed={urlState.view === 'map'}
                 onClick={() => patchUrlState({ view: 'map' })}
               >
-                <Map className="size-4" aria-hidden="true" /> Map
+                <MapIcon className="size-4" aria-hidden="true" /> Map
               </button>
               <button
                 className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
@@ -224,7 +225,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             </div>
             <div className="relative flex min-h-[38rem] flex-col items-center justify-center p-6 text-center">
               <span className="flex size-14 items-center justify-center rounded-full bg-surface text-brand-700 shadow-panel">
-                <Map className="size-7" aria-hidden="true" />
+                <MapIcon className="size-7" aria-hidden="true" />
               </span>
               <h2 className="mt-4 text-xl font-semibold text-ink">Map discovery surface</h2>
               <p className="mt-2 max-w-md text-sm leading-6 text-muted">
@@ -319,45 +320,45 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                 </div>
               </div>
             ) : (
-              <div className="max-h-[42rem] overflow-y-auto p-3" role="list">
+              <ul className="m-0 max-h-[42rem] list-none overflow-y-auto p-3">
                 {results.map((pin) => {
                   const isSelected = pin.placeSlug === urlState.selectedPlace;
                   return (
-                    <article
-                      key={pin.placeSlug}
-                      className={`rounded-card border p-4 ${
-                        isSelected ? 'border-brand-600 bg-brand-50' : 'border-border bg-surface'
-                      }`}
-                      role="listitem"
-                    >
-                      <button
-                        className="w-full min-h-11 text-left"
-                        type="button"
-                        aria-pressed={isSelected}
-                        onClick={() => selectPlace(pin.placeSlug)}
+                    <li key={pin.placeSlug}>
+                      <article
+                        className={`rounded-card border p-4 ${
+                          isSelected ? 'border-brand-600 bg-brand-50' : 'border-border bg-surface'
+                        }`}
                       >
-                        <span className="block text-base font-semibold text-ink">{pin.name}</span>
-                        <span className="mt-1 block text-sm text-muted">
-                          {[pin.locality, pin.countryCode].filter(Boolean).join(', ')}
-                        </span>
-                        <span className="mt-3 flex flex-wrap gap-2">
-                          {pin.assetSlugs.map((asset) => (
-                            <span
-                              key={asset}
-                              className="rounded-pill border border-border bg-canvas px-2.5 py-1 text-xs font-semibold text-muted"
-                            >
-                              {asset.toUpperCase()}
-                            </span>
-                          ))}
-                        </span>
-                        <span className="mt-3 block text-xs text-muted">
-                          Last confirmed {formatDate(pin.lastConfirmedAt)}
-                        </span>
-                      </button>
-                    </article>
+                        <button
+                          className="w-full min-h-11 text-left"
+                          type="button"
+                          aria-pressed={isSelected}
+                          onClick={() => selectPlace(pin.placeSlug)}
+                        >
+                          <span className="block text-base font-semibold text-ink">{pin.name}</span>
+                          <span className="mt-1 block text-sm text-muted">
+                            {[pin.locality, pin.countryCode].filter(Boolean).join(', ')}
+                          </span>
+                          <span className="mt-3 flex flex-wrap gap-2">
+                            {pin.assetSlugs.map((asset) => (
+                              <span
+                                key={asset}
+                                className="rounded-pill border border-border bg-canvas px-2.5 py-1 text-xs font-semibold text-muted"
+                              >
+                                {asset.toUpperCase()}
+                              </span>
+                            ))}
+                          </span>
+                          <span className="mt-3 block text-xs text-muted">
+                            Last confirmed {formatDate(pin.lastConfirmedAt)}
+                          </span>
+                        </button>
+                      </article>
+                    </li>
                   );
                 })}
-              </div>
+              </ul>
             )}
           </section>
         </div>
