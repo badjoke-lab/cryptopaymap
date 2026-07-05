@@ -1,0 +1,38 @@
+name: Format staging review files
+
+on:
+  push:
+    branches:
+      - work/staging-review-environment
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/staging-review-environment
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Format bounded staging files
+        run: npx biome format --write scripts/staging-review-data.ts tests/staging-review-data.test.ts
+
+      - name: Commit formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add scripts/staging-review-data.ts tests/staging-review-data.test.ts
+          git diff --cached --quiet && exit 0
+          git commit -m "STG-01: format staging review data"
+          git push origin HEAD:work/staging-review-environment
