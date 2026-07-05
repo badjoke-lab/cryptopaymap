@@ -29,7 +29,7 @@ const place = {
       ],
     },
   ],
-} as PublicPlace;
+} as unknown as PublicPlace;
 
 const service = {
   serviceSlug: 'example-vpn',
@@ -55,7 +55,7 @@ const service = {
       ],
     },
   ],
-} as PublicOnlineService;
+} as unknown as PublicOnlineService;
 
 describe('public Home model', () => {
   it('counts only confirmed public records and orders recent records by freshness', () => {

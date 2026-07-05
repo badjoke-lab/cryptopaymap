@@ -1,7 +1,4 @@
-import {
-  buildOnlineServiceDetailModel,
-  type PublicOnlineService,
-} from './online-services';
+import { buildOnlineServiceDetailModel, type PublicOnlineService } from './online-services';
 import { buildPlaceDetailModel, type PublicPlace } from './place-detail';
 
 export interface HomeBrowseItem {
