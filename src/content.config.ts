@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { parsePublicPlacesDocument } from './public/place-detail';
 
 const roadmap = defineCollection({
   loader: file('content/roadmap.yml'),
@@ -41,4 +42,14 @@ const changelog = defineCollection({
   }),
 });
 
-export const collections = { roadmap, changelog };
+const publicPlaces = defineCollection({
+  loader: file('public/data/places.json', {
+    parser: (text) =>
+      parsePublicPlacesDocument(JSON.parse(text) as unknown).map((place) => ({
+        id: place.placeSlug,
+        place,
+      })),
+  }),
+});
+
+export const collections = { roadmap, changelog, publicPlaces };

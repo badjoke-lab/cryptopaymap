@@ -71,7 +71,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 
 ## Phase 3 — Administration and review
 
-**Status:** In progress
+**Status:** Repository completed; live verification deferred
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -86,7 +86,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
 | P3-11 | Export controls and release workflow | Repository completed; live verification deferred | P3-07 through P3-10 | #75–#87 |
-| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | #88, #89, #92–#95 |
+| P3-12 | Audit history and Phase 3 integration audit | Completed | P3-01 through P3-11 | #88, #89, #92–#95 |
 
 ### Completed P3-07 deliveries
 
@@ -126,20 +126,34 @@ P3-12D added the protected audit history API, isolated audit read authorization,
 
 P3-12E added the protected `/admin/audit` administration surface, metadata-only history cards, domain, actor, target, and time filters, stable cursor loading, explicit loading and failure states, component tests, and built-artifact leakage checks in pull request #94.
 
-### Current P3-12 delivery
-
-P3-12F completes the final repository-level Phase 3 cross-domain integration audit. It verifies deterministic history ordering, bounded pagination, domain and target filtering, stable cursor continuation, isolated audit-read authorization, rejection of source items carrying non-contract fields, deferred live-verification boundaries, and the Phase 4 public-core handoff in pull request #95.
-
-### Remaining P3-12 deliveries
-
-- validate and merge the P3-12F audit
-- hand off repository work to Phase 4 public core / MVP-A
+P3-12F completed the final repository-level Phase 3 cross-domain integration audit in pull request #95. It verified deterministic history ordering, bounded pagination, domain and target filtering, stable cursor continuation, isolated audit-read authorization, rejection of source items carrying non-contract fields, explicit deferred live-verification boundaries, and the Phase 4 handoff.
 
 ## Phase 4 — Public core / MVP-A
 
-**Status:** Planned
+**Status:** In progress
 
-Place details, coordinated map and list discovery, filters, URL restoration, mobile sheets, online-service discovery, Home, Stats, Updates, trust pages, and administrator-managed media.
+| ID | Item | Status | Depends on | Pull request |
+|---|---|---|---|---|
+| P4-01 | Place detail | In progress | Phase 3 | P4-01A pending |
+| P4-02 | PlacesApp shell | Planned | P4-01 | — |
+| P4-03 | MapLibre map | Planned | P4-02 | — |
+| P4-04 | Result list | Planned | P4-02 | — |
+| P4-05 | Pin and list synchronization | Planned | P4-03, P4-04 | — |
+| P4-06 | Filters and bounded result updates | Planned | P4-02 | — |
+| P4-07 | URL state and back restoration | Planned | P4-05, P4-06 | — |
+| P4-08 | Mobile bottom sheet | Planned | P4-05 | — |
+| P4-09 | Online Services discovery and detail | Planned | public data layer | — |
+| P4-10 | Home | Planned | public discovery surfaces | — |
+| P4-11 | Stats | Planned | public stats export | — |
+| P4-12 | Updates | Planned | public updates export | — |
+| P4-13 | Public Roadmap and Changelog release surfaces | Planned | content loaders | — |
+| P4-14 | Trust, data, legal, and sustainability pages | Planned | public specifications | — |
+| P4-15 | Public media integration | Planned | P3-10, P4-01 | — |
+| P4-16 | MVP-A integration and quality audit | Planned | P4-01 through P4-15 | — |
+
+### Current P4-01 delivery
+
+P4-01A establishes the first public Place detail boundary. It reads only validated published `places.json` records, generates canonical `/place/{slug}` paths from those public records, derives a status-aware detail view model, renders payment assets, networks, routes, methods, instructions, restrictions, freshness, Evidence, and approved public Media, and covers the model and privacy boundary with tests.
 
 ## Phase 5 — Public submissions / MVP-B
 

@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content';
+import PlaceDetail from '../../components/public/PlaceDetail.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
+import { publicPlaceSchema } from '../../schemas/public-exports';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('publicPlaces');
+  return entries.map((entry) => {
+    const place = publicPlaceSchema.parse((entry.data as { place: unknown }).place);
+    return {
+      params: { slug: place.placeSlug },
+      props: { place },
+    };
+  });
+}
+
+interface Props {
+  place: PublicPlace;
+}
+
+const { place } = Astro.props;
+const model = buildPlaceDetailModel(place);
+const description = `${place.name}: verified cryptocurrency payment information, networks, payment instructions, evidence, and freshness.`;
+---
+
+<BaseLayout title={`${place.name} | CryptoPayMap`} description={description}>
+  <PlaceDetail model={model} />
+</BaseLayout>
