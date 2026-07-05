@@ -17,7 +17,7 @@ export interface PublicStatsViewModel {
 function buildDisplayEntries(entries: readonly PublicStatRankingEntry[]): PublicStatDisplayEntry[] {
   return [...entries]
     .filter((entry) => entry.count >= 3)
-    .sort((left, right) => right.count - left.count || left.slug.localeCompare(right.slug))
+    .sort((left, right) => right.count - left.count || left.key.localeCompare(right.key))
     .map((entry, index) => ({
       ...entry,
       rank: entry.count >= 5 ? index + 1 : null,
