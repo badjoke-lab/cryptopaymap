@@ -19,6 +19,13 @@ export interface PlaceMapFeatureCollection {
   }>;
 }
 
+export interface PlaceMapBounds {
+  west: number;
+  south: number;
+  east: number;
+  north: number;
+}
+
 function clamp(value: number, minimum: number, maximum: number): number {
   return Math.min(maximum, Math.max(minimum, value));
 }
@@ -49,6 +56,34 @@ export function buildPlaceMapFeatureCollection(
       },
     })),
   };
+}
+
+export function normalizeMapBounds(bounds: PlaceMapBounds): PlaceMapBounds {
+  return {
+    west: round(clamp(bounds.west, -180, 180), 5),
+    south: round(clamp(bounds.south, -90, 90), 5),
+    east: round(clamp(bounds.east, -180, 180), 5),
+    north: round(clamp(bounds.north, -90, 90), 5),
+  };
+}
+
+export function pinIsInsideMapBounds(pin: PublicPlacePin, bounds: PlaceMapBounds): boolean {
+  const normalized = normalizeMapBounds(bounds);
+  const insideLatitude =
+    pin.latitude >= normalized.south && pin.latitude <= normalized.north;
+  const insideLongitude =
+    normalized.west <= normalized.east
+      ? pin.longitude >= normalized.west && pin.longitude <= normalized.east
+      : pin.longitude >= normalized.west || pin.longitude <= normalized.east;
+
+  return insideLatitude && insideLongitude;
+}
+
+export function filterPinsByMapBounds(
+  pins: readonly PublicPlacePin[],
+  bounds: PlaceMapBounds | null,
+): PublicPlacePin[] {
+  return bounds ? pins.filter((pin) => pinIsInsideMapBounds(pin, bounds)) : [...pins];
 }
 
 export function normalizeMapViewport(viewport: DiscoveryViewport): DiscoveryViewport {
