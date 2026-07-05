@@ -1,8 +1,5 @@
 import type { z } from 'zod';
-import {
-  type publicPlacePinSchema,
-  publicPlacePinsFileSchema,
-} from '../schemas/public-exports';
+import { type publicPlacePinSchema, publicPlacePinsFileSchema } from '../schemas/public-exports';
 import type { DiscoveryUrlState } from '../state/discovery-url';
 
 export type PublicPlacePin = z.infer<typeof publicPlacePinSchema>;
