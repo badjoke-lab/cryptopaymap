@@ -8,6 +8,7 @@ import {
   parseDiscoveryUrlState,
   serializeDiscoveryUrlState,
 } from '../../state/discovery-url';
+import { PlaceResultList } from './PlaceResultList';
 import { PlacesMap } from './PlacesMap';
 
 interface PlacesAppProps {
@@ -19,15 +20,6 @@ function formatLabel(value: string): string {
     .split('_')
     .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
     .join(' ');
-}
-
-function formatDate(value: string): string {
-  return new Intl.DateTimeFormat('en', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(value));
 }
 
 function createPlacesStore(): DiscoveryStoreApi {
@@ -273,82 +265,14 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             ) : null}
           </section>
 
-          <section
-            className={`${urlState.view === 'map' ? 'hidden' : 'block'} min-h-0 rounded-card border border-border bg-surface lg:block`}
-            aria-labelledby="places-results-title"
-          >
-            <div className="border-b border-border p-4">
-              <h2 id="places-results-title" className="m-0 text-lg font-semibold text-ink">
-                Public results
-              </h2>
-              <p className="mt-1 text-sm text-muted">Confirmed records are shown by default.</p>
-            </div>
-
-            {results.length === 0 ? (
-              <div className="p-6 text-center">
-                <h3 className="text-lg font-semibold text-ink">No public places match</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">
-                  Candidate records are not used as substitutes. Clear filters or suggest a place
-                  for review.
-                </p>
-                <div className="mt-5 flex flex-wrap justify-center gap-3">
-                  <button
-                    className="motion-feedback min-h-11 rounded-control border border-border px-4 py-2 font-semibold text-ink hover:bg-brand-50"
-                    type="button"
-                    onClick={clearFilters}
-                  >
-                    Clear filters
-                  </button>
-                  <a
-                    className="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
-                    href="/suggest"
-                  >
-                    Suggest a place
-                  </a>
-                </div>
-              </div>
-            ) : (
-              <ul className="m-0 max-h-[42rem] list-none overflow-y-auto p-3">
-                {results.map((pin) => {
-                  const isSelected = pin.placeSlug === urlState.selectedPlace;
-                  return (
-                    <li key={pin.placeSlug}>
-                      <article
-                        className={`rounded-card border p-4 ${
-                          isSelected ? 'border-brand-600 bg-brand-50' : 'border-border bg-surface'
-                        }`}
-                      >
-                        <button
-                          className="w-full min-h-11 text-left"
-                          type="button"
-                          aria-pressed={isSelected}
-                          onClick={() => selectPlace(pin.placeSlug)}
-                        >
-                          <span className="block text-base font-semibold text-ink">{pin.name}</span>
-                          <span className="mt-1 block text-sm text-muted">
-                            {[pin.locality, pin.countryCode].filter(Boolean).join(', ')}
-                          </span>
-                          <span className="mt-3 flex flex-wrap gap-2">
-                            {pin.assetSlugs.map((asset) => (
-                              <span
-                                key={asset}
-                                className="rounded-pill border border-border bg-canvas px-2.5 py-1 text-xs font-semibold text-muted"
-                              >
-                                {asset.toUpperCase()}
-                              </span>
-                            ))}
-                          </span>
-                          <span className="mt-3 block text-xs text-muted">
-                            Last confirmed {formatDate(pin.lastConfirmedAt)}
-                          </span>
-                        </button>
-                      </article>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </section>
+          <div className={urlState.view === 'map' ? 'hidden lg:block' : 'block'}>
+            <PlaceResultList
+              pins={results}
+              selectedPlace={urlState.selectedPlace}
+              onSelectPlace={selectPlace}
+              onClearFilters={clearFilters}
+            />
+          </div>
         </div>
       </div>
     </section>
