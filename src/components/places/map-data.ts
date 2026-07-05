@@ -69,8 +69,7 @@ export function normalizeMapBounds(bounds: PlaceMapBounds): PlaceMapBounds {
 
 export function pinIsInsideMapBounds(pin: PublicPlacePin, bounds: PlaceMapBounds): boolean {
   const normalized = normalizeMapBounds(bounds);
-  const insideLatitude =
-    pin.latitude >= normalized.south && pin.latitude <= normalized.north;
+  const insideLatitude = pin.latitude >= normalized.south && pin.latitude <= normalized.north;
   const insideLongitude =
     normalized.west <= normalized.east
       ? pin.longitude >= normalized.west && pin.longitude <= normalized.east
