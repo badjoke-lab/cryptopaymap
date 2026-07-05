@@ -14,7 +14,7 @@ P4-01 — Place detail
 
 - P4-01A — public Place detail foundation
 - Branch: `work/p4-place-detail-foundation`
-- Pull request: pending
+- Pull request: #96
 
 ## Latest completed work
 
@@ -46,7 +46,7 @@ P4-01 — Place detail
 
 ## Next
 
-1. Validate and merge P4-01A.
+1. Validate and merge pull request #96.
 2. Extend Place detail history and map context as public data contracts become available.
 3. Continue with the PlacesApp public discovery shell.
 
