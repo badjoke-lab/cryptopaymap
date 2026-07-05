@@ -10,9 +10,9 @@ describe('staging review data', () => {
     expect(data.onlineServices.records).toHaveLength(9);
     expect(data.places.records.some((place) => place.claims[0]?.status === 'stale')).toBe(true);
     expect(data.places.records.some((place) => place.claims[0]?.status === 'ended')).toBe(true);
-    expect(data.onlineServices.records.some((service) => service.claims[0]?.status === 'ended')).toBe(
-      true,
-    );
+    expect(
+      data.onlineServices.records.some((service) => service.claims[0]?.status === 'ended'),
+    ).toBe(true);
     expect(
       data.places.records.some((place) => place.claims[0]?.routeType === 'processor_checkout'),
     ).toBe(true);
