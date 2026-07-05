@@ -1,0 +1,63 @@
+---
+import type { PublicHomeModel } from '../../public/home';
+
+interface Props {
+  model: PublicHomeModel;
+}
+
+const { model } = Astro.props;
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+---
+
+<section class="border-y border-border bg-surface">
+  <div class="safe-area-inline page-container grid gap-8 py-10 sm:py-12 lg:grid-cols-3">
+    <section aria-labelledby="home-assets-title">
+      <h2 id="home-assets-title" class="m-0 text-2xl font-semibold text-ink">Browse by asset</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {model.assets.map((item) => (
+          <a
+            class="motion-feedback inline-flex min-h-10 items-center rounded-pill border border-border px-3 py-1.5 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+            href={`/places?asset=${encodeURIComponent(item.value)}`}
+          >
+            {item.label} <span class="ml-1 font-normal text-muted">{item.count}</span>
+          </a>
+        ))}
+        {model.assets.length === 0 ? <p class="m-0 text-sm text-muted">Available with confirmed records.</p> : null}
+      </div>
+    </section>
+
+    <section aria-labelledby="home-networks-title">
+      <h2 id="home-networks-title" class="m-0 text-2xl font-semibold text-ink">Browse by network</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {model.networks.map((item) => (
+          <a
+            class="motion-feedback inline-flex min-h-10 items-center rounded-pill border border-border px-3 py-1.5 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+            href={`/places?network=${encodeURIComponent(item.value)}`}
+          >
+            {formatLabel(item.label)} <span class="ml-1 font-normal text-muted">{item.count}</span>
+          </a>
+        ))}
+        {model.networks.length === 0 ? <p class="m-0 text-sm text-muted">Available with confirmed records.</p> : null}
+      </div>
+    </section>
+
+    <section aria-labelledby="home-regions-title">
+      <h2 id="home-regions-title" class="m-0 text-2xl font-semibold text-ink">Browse by region</h2>
+      <div class="mt-4 flex flex-wrap gap-2">
+        {model.regions.map((item) => (
+          <a
+            class="motion-feedback inline-flex min-h-10 items-center rounded-pill border border-border px-3 py-1.5 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+            href={`/places?q=${encodeURIComponent(item.value)}`}
+          >
+            {item.label} <span class="ml-1 font-normal text-muted">{item.count}</span>
+          </a>
+        ))}
+        {model.regions.length === 0 ? <p class="m-0 text-sm text-muted">Available with confirmed records.</p> : null}
+      </div>
+    </section>
+  </div>
+</section>

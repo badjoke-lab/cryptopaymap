@@ -1,0 +1,94 @@
+---
+interface RoadmapTeaser {
+  title: string;
+  outcome: string;
+  status: string;
+}
+
+interface ReleaseTeaser {
+  version: string;
+  summary: string;
+  publishedAt: string;
+}
+
+interface Props {
+  roadmap: RoadmapTeaser | null;
+  latestRelease: ReleaseTeaser | null;
+}
+
+const { roadmap, latestRelease } = Astro.props;
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+---
+
+<section class="safe-area-inline page-container grid gap-6 py-10 sm:py-12 lg:grid-cols-2">
+  <article class="rounded-card border border-border bg-brand-50 p-6">
+    <p class="m-0 text-sm font-semibold text-brand-700">Methodology</p>
+    <h2 class="mt-1 text-2xl font-semibold text-ink">Verification before visibility</h2>
+    <p class="mt-3 text-sm leading-6 text-muted">
+      CryptoPayMap separates private candidates from public records, requires structured payment context, and keeps confirmation dates and Evidence attached to published acceptance claims.
+    </p>
+    <a class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/methodology">
+      How verification works
+    </a>
+  </article>
+
+  <article class="rounded-card border border-border bg-surface p-6 shadow-sm">
+    <p class="m-0 text-sm font-semibold text-brand-700">Contribute</p>
+    <h2 class="mt-1 text-2xl font-semibold text-ink">Help improve the public record</h2>
+    <p class="mt-3 text-sm leading-6 text-muted">
+      Suggest a place or service, report a problem, or share a payment confirmation. Submissions are reviewed before they can change public data.
+    </p>
+    <a class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/contribute">
+      Contribution options
+    </a>
+  </article>
+</section>
+
+<section class="safe-area-inline page-container grid gap-6 py-10 sm:py-12 lg:grid-cols-2">
+  <article class="rounded-card border border-border bg-surface p-6 shadow-sm">
+    <p class="m-0 text-sm font-semibold text-brand-700">Roadmap</p>
+    <h2 class="mt-1 text-2xl font-semibold text-ink">{roadmap?.title ?? 'Public capability roadmap'}</h2>
+    <p class="mt-3 text-sm leading-6 text-muted">
+      {roadmap?.outcome ?? 'See what capabilities are being established, planned, or explored.'}
+    </p>
+    {roadmap ? <span class="mt-4 inline-flex rounded-pill bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-800">{formatLabel(roadmap.status)}</span> : null}
+    <div>
+      <a class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/roadmap">
+        View the Roadmap
+      </a>
+    </div>
+  </article>
+
+  <article class="rounded-card border border-border bg-surface p-6 shadow-sm">
+    <p class="m-0 text-sm font-semibold text-brand-700">Changelog</p>
+    <h2 class="mt-1 text-2xl font-semibold text-ink">
+      {latestRelease ? `Release ${latestRelease.version}` : 'Published product changes'}
+    </h2>
+    <p class="mt-3 text-sm leading-6 text-muted">
+      {latestRelease?.summary ?? 'Released product, interface, policy, and data-contract changes are recorded separately from individual record updates.'}
+    </p>
+    {latestRelease ? <p class="mt-3 text-xs text-muted">Published {latestRelease.publishedAt}</p> : null}
+    <a class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/changelog">
+      View the Changelog
+    </a>
+  </article>
+</section>
+
+<section class="safe-area-inline page-container pb-12 pt-6 sm:pb-16">
+  <div class="rounded-card border border-border bg-surface p-6 text-center shadow-sm">
+    <h2 class="m-0 text-2xl font-semibold text-ink">Support the public dataset</h2>
+    <p class="mx-auto mt-3 max-w-2xl text-sm leading-6 text-muted">
+      Support helps maintain verification, reconfirmation, public data exports, and the discovery experience without changing verification status or ranking.
+    </p>
+    <a
+      class="motion-feedback mt-5 inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50"
+      href="/support"
+    >
+      Support CryptoPayMap
+    </a>
+  </div>
+</section>
