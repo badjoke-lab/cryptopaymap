@@ -68,10 +68,13 @@ describe('Places map data contract', () => {
   });
 
   it('supports visible bounds that cross the international date line', () => {
+    const basePin = pins[0];
+    if (!basePin) throw new Error('Expected the map test fixture to include a base pin.');
+
     const dateLinePins: PublicPlacePin[] = [
-      { ...pins[0], placeSlug: 'east-date-line', longitude: 179.5, latitude: 10 },
-      { ...pins[0], placeSlug: 'west-date-line', longitude: -179.5, latitude: 10 },
-      { ...pins[0], placeSlug: 'outside-date-line', longitude: 0, latitude: 10 },
+      { ...basePin, placeSlug: 'east-date-line', longitude: 179.5, latitude: 10 },
+      { ...basePin, placeSlug: 'west-date-line', longitude: -179.5, latitude: 10 },
+      { ...basePin, placeSlug: 'outside-date-line', longitude: 0, latitude: 10 },
     ];
 
     expect(
