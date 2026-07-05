@@ -1,3 +1,36 @@
 ---
+import type { PublicHomeModel } from '../../public/home';
+import HomeBrowse from './HomeBrowse.astro';
+import HomeDataOverview from './HomeDataOverview.astro';
+import HomeEditorial from './HomeEditorial.astro';
+import HomeHero from './HomeHero.astro';
+import HomeOnlineHighlights from './HomeOnlineHighlights.astro';
+
+interface RoadmapTeaser {
+  title: string;
+  outcome: string;
+  status: string;
+}
+
+interface ReleaseTeaser {
+  version: string;
+  summary: string;
+  publishedAt: string;
+}
+
+interface Props {
+  model: PublicHomeModel;
+  roadmap: RoadmapTeaser | null;
+  latestRelease: ReleaseTeaser | null;
+}
+
+const { model, roadmap, latestRelease } = Astro.props;
 ---
-<div></div>
+
+<main>
+  <HomeHero />
+  <HomeDataOverview model={model} />
+  <HomeBrowse model={model} />
+  <HomeOnlineHighlights services={model.onlineHighlights} />
+  <HomeEditorial roadmap={roadmap} latestRelease={latestRelease} />
+</main>
