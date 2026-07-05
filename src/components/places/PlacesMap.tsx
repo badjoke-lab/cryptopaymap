@@ -191,16 +191,18 @@ export function PlacesMap({
             zoom: map.getZoom(),
           });
           if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
-            const visibleBounds = map.getBounds();
             viewportRef.current(nextViewport);
-            boundsRef.current?.(
-              normalizeMapBounds({
-                west: visibleBounds.getWest(),
-                south: visibleBounds.getSouth(),
-                east: visibleBounds.getEast(),
-                north: visibleBounds.getNorth(),
-              }),
-            );
+            if (boundsRef.current) {
+              const visibleBounds = map.getBounds();
+              boundsRef.current(
+                normalizeMapBounds({
+                  west: visibleBounds.getWest(),
+                  south: visibleBounds.getSouth(),
+                  east: visibleBounds.getEast(),
+                  north: visibleBounds.getNorth(),
+                }),
+              );
+            }
           }
         });
         map.on('error', () => setRuntimeState('error'));
