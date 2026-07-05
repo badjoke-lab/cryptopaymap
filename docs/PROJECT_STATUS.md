@@ -14,7 +14,7 @@ P4-03 — MapLibre map
 
 - P4-03B — MapLibre renderer and PlacesApp integration
 - Branch: `work/maplibre-renderer`
-- Pull request: pending
+- Pull request: #99
 
 ## Latest completed work
 
@@ -51,7 +51,7 @@ P4-03 — MapLibre map
 
 ## Next
 
-1. Validate and merge P4-03B.
+1. Validate and merge pull request #99.
 2. Complete production result-list behavior and pin/list synchronization.
 3. Extend public filters and bounded result updates.
 
