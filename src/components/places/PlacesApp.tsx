@@ -139,9 +139,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               Filters
             </button>
 
-            <div
+            <fieldset
               className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden"
-              role="group"
               aria-label="View mode"
             >
               <button
@@ -164,7 +163,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               >
                 <List className="size-4" aria-hidden="true" /> List
               </button>
-            </div>
+            </fieldset>
           </div>
         </div>
 
