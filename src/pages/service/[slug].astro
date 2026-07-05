@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import OnlineServiceDetail from '../../components/public/OnlineServiceDetail.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  buildOnlineServiceDetailModel,
+  type PublicOnlineService,
+} from '../../public/online-services';
+import { publicOnlineServiceSchema } from '../../schemas/public-exports';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('publicOnlineServices');
+  return entries.map((entry) => {
+    const service = publicOnlineServiceSchema.parse((entry.data as { service: unknown }).service);
+    return {
+      params: { slug: service.serviceSlug },
+      props: { service },
+    };
+  });
+}
+
+interface Props {
+  service: PublicOnlineService;
+}
+
+const { service } = Astro.props;
+const model = buildOnlineServiceDetailModel(service);
+const description = `${service.name}: verified cryptocurrency checkout information, networks, payment instructions, evidence, restrictions, and freshness.`;
+---
+
+<BaseLayout title={`${service.name} | CryptoPayMap`} description={description}>
+  <OnlineServiceDetail model={model} />
+</BaseLayout>
