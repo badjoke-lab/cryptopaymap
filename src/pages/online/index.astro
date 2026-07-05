@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import OnlineServicesIndex from '../../components/public/OnlineServicesIndex.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { buildOnlineServiceCardModel } from '../../public/online-services';
+import { publicOnlineServiceSchema } from '../../schemas/public-exports';
+
+const entries = await getCollection('publicOnlineServices');
+const services = entries
+  .map((entry) => publicOnlineServiceSchema.parse((entry.data as { service: unknown }).service))
+  .map(buildOnlineServiceCardModel)
+  .sort((left, right) => left.name.localeCompare(right.name));
+---
+
+<BaseLayout
+  title="Online Services | CryptoPayMap"
+  description="Browse reviewed online services with verified cryptocurrency checkout routes, networks, payment instructions, evidence, and freshness."
+>
+  <OnlineServicesIndex services={services} />
+</BaseLayout>

@@ -1,0 +1,124 @@
+---
+import type { OnlineServiceCardModel } from '../../public/online-services';
+
+interface Props {
+  services: OnlineServiceCardModel[];
+}
+
+const { services } = Astro.props;
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(value));
+---
+
+<main class="safe-area-inline page-container py-8 sm:py-12 lg:py-16">
+  <header class="max-w-3xl">
+    <p class="m-0 text-sm font-semibold text-brand-700">Verified online checkout</p>
+    <h1 class="mt-2 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">
+      Online Services
+    </h1>
+    <p class="mt-4 text-base leading-7 text-muted">
+      Browse reviewed services where cryptocurrency can be used in the service’s own checkout or invoice flow.
+    </p>
+  </header>
+
+  <section class="mt-8" aria-labelledby="online-services-results-title">
+    <div class="flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <h2 id="online-services-results-title" class="m-0 text-2xl font-semibold text-ink">
+          Public services
+        </h2>
+        <p class="mt-1 text-sm text-muted">Candidate records are never shown as public results.</p>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
+        {services.length} {services.length === 1 ? 'service' : 'services'}
+      </span>
+    </div>
+
+    {
+      services.length === 0 ? (
+        <div class="mt-5 rounded-card border border-border bg-surface p-8 text-center shadow-sm">
+          <h3 class="m-0 text-xl font-semibold text-ink">No public online services yet</h3>
+          <p class="mx-auto mt-2 max-w-xl text-sm leading-6 text-muted">
+            Reviewed online-service records will appear here after they pass the public verification and export boundary.
+          </p>
+          <a
+            class="motion-feedback mt-5 inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
+            href="/suggest"
+          >
+            Suggest a service
+          </a>
+        </div>
+      ) : (
+        <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {services.map((service) => (
+            <article class="flex h-full flex-col rounded-card border border-border bg-surface p-5 shadow-sm">
+              <div class="flex flex-wrap items-center justify-between gap-2">
+                <span
+                  class:list={[
+                    'rounded-pill px-2.5 py-1 text-xs font-semibold',
+                    service.status === 'confirmed'
+                      ? 'bg-confirmed/10 text-confirmed'
+                      : service.status === 'stale'
+                        ? 'bg-stale/10 text-stale'
+                        : 'bg-ended/10 text-ended',
+                  ]}
+                >
+                  {formatLabel(service.status)}
+                </span>
+                <span class="text-xs font-semibold text-muted">{formatLabel(service.categorySlug)}</span>
+              </div>
+
+              <h3 class="mt-4 text-xl font-semibold text-ink">
+                <a class="text-inherit no-underline hover:text-brand-700" href={`/service/${service.serviceSlug}`}>
+                  {service.name}
+                </a>
+              </h3>
+              <p class="mt-1 text-sm text-muted">
+                {service.countryCode ? `Region: ${service.countryCode}` : 'Global or service-defined availability'}
+              </p>
+
+              <dl class="mt-5 grid gap-3 text-sm">
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Assets</dt>
+                  <dd class="mt-1 font-medium text-ink">{service.assetSymbols.join(', ')}</dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Networks</dt>
+                  <dd class="mt-1 font-medium text-ink">
+                    {service.networkSlugs.map(formatLabel).join(', ')}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Availability</dt>
+                  <dd class="mt-1 font-medium text-ink">
+                    {service.acceptanceScopes.map(formatLabel).join(', ')}
+                  </dd>
+                </div>
+              </dl>
+
+              <div class="mt-auto border-t border-border pt-4">
+                <p class="m-0 text-xs text-muted">Last confirmed {formatDate(service.lastConfirmedAt)}</p>
+                <a
+                  class="motion-feedback mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700"
+                  href={`/service/${service.serviceSlug}`}
+                >
+                  View payment details
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      )
+    }
+  </section>
+</main>

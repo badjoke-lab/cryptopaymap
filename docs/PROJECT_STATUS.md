@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-08 — Mobile bottom sheet
+P4-09 — Online Services discovery and detail
 
 ## Active work
 
-- P4-08A — mobile selected Place sheet lifecycle
-- Branch: `work/mobile-place-sheet`
-- Pull request: #106
+- P4-09A — Online Services public discovery and detail
+- Branch: `work/online-services-public`
+- Pull request: #107
 
 ## Latest completed work
 
@@ -29,24 +29,25 @@ P4-08 — Mobile bottom sheet
 - P4-06A public Place facet filters completed through pull request #103
 - P4-06B bounded viewport result updates completed through pull request #104
 - P4-07A Places browser history restoration completed through pull request #105
+- P4-08A mobile selected Place sheet completed through pull request #106
 
-## P4-08A in progress
+## P4-09A in progress
 
-- dedicated mobile selected Place sheet
-- closed, peek, and expanded lifecycle states
-- selection opens the sheet in peek state
-- peek payment summary with status, asset, and last-confirmed date
-- expanded location, network, and payment-route context
-- payment detail and report actions
-- safe-area-aware fixed mobile layout
-- desktop selected panel separation
-- PlacesApp lifecycle coverage
+- schema-validated public Online Services model
+- Online Services content collection
+- public `online-services.json` artifact boundary
+- `/online` public index
+- `/service/{slug}` static detail routes
+- payment assets, networks, methods, processors, and acceptance scopes
+- How to pay, restrictions, Evidence, and freshness presentation
+- Candidate-free empty public state
+- model aggregation and private-field rejection tests
 
 ## Next
 
-1. Validate and merge pull request #106.
-2. Continue Online Services public discovery and detail work.
-3. Continue Home, Stats, Updates, Roadmap, and Changelog public surfaces.
+1. Validate and merge pull request #107.
+2. Build the public Home surface from existing public exports.
+3. Continue Stats, Updates, Roadmap, and Changelog public surfaces.
 
 ## Blocked
 
