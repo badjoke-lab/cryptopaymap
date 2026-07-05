@@ -14,7 +14,7 @@ P3-12 — Audit history and Phase 3 integration audit
 
 - P3-12F — final cross-domain Phase 3 integration audit and Phase 4 handoff
 - Branch: `work/phase3-integration-audit`
-- Pull request: pending
+- Pull request: #95
 
 ## Latest completed work
 
@@ -45,7 +45,7 @@ P3-12 — Audit history and Phase 3 integration audit
 
 ## Next
 
-1. Complete P3-12F validation and merge the integration-audit pull request.
+1. Complete P3-12F validation and merge pull request #95.
 2. Mark Phase 3 repository work complete with explicit live-verification deferrals.
 3. Begin Phase 4 public core / MVP-A work from current main.
 
