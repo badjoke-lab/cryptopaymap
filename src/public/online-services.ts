@@ -111,9 +111,7 @@ export function buildOnlineServiceDetailModel(
   };
 }
 
-export function buildOnlineServiceCardModel(
-  service: PublicOnlineService,
-): OnlineServiceCardModel {
+export function buildOnlineServiceCardModel(service: PublicOnlineService): OnlineServiceCardModel {
   const detail = buildOnlineServiceDetailModel(service);
   return {
     serviceSlug: service.serviceSlug,
