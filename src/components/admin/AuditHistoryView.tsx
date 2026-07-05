@@ -132,12 +132,15 @@ function AuditItemCard({ item }: { item: AuditHistoryItem }) {
         <div>
           <dt className="font-semibold text-ink">Primary target</dt>
           <dd className="mt-1 text-muted">
-            {label(item.target.type)} · <span className="break-all font-mono text-xs">{item.target.id}</span>
+            {label(item.target.type)} ·{' '}
+            <span className="break-all font-mono text-xs">{item.target.id}</span>
           </dd>
         </div>
         <div>
           <dt className="font-semibold text-ink">Reason</dt>
-          <dd className="mt-1 text-muted">{item.reasonCode ? label(item.reasonCode) : 'Not recorded'}</dd>
+          <dd className="mt-1 text-muted">
+            {item.reasonCode ? label(item.reasonCode) : 'Not recorded'}
+          </dd>
         </div>
       </dl>
 
@@ -151,7 +154,8 @@ function AuditItemCard({ item }: { item: AuditHistoryItem }) {
 
       {item.secondaryTargets.length > 0 ? (
         <p className="mt-4 text-xs text-muted">
-          Secondary targets: {item.secondaryTargets.map((target) => `${label(target.type)} ${target.id}`).join(' · ')}
+          Secondary targets:{' '}
+          {item.secondaryTargets.map((target) => `${label(target.type)} ${target.id}`).join(' · ')}
         </p>
       ) : null}
     </article>
@@ -167,7 +171,11 @@ export function AuditHistoryView() {
   const load = useCallback(
     async (
       activeFilters: Filters,
-      options: { append?: boolean; cursor?: { before: string; beforeId: string }; signal?: AbortSignal } = {},
+      options: {
+        append?: boolean;
+        cursor?: { before: string; beforeId: string };
+        signal?: AbortSignal;
+      } = {},
     ) => {
       const append = options.append === true;
       if (append) setLoadingOlder(true);
@@ -235,7 +243,10 @@ export function AuditHistoryView() {
 
   return (
     <div>
-      <form className="rounded-card border border-border bg-surface p-5 shadow-sm" onSubmit={submit}>
+      <form
+        className="rounded-card border border-border bg-surface p-5 shadow-sm"
+        onSubmit={submit}
+      >
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <label className="grid gap-2 text-sm font-semibold text-ink">
             Domain
@@ -243,12 +254,17 @@ export function AuditHistoryView() {
               className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
               value={draftFilters.domain}
               onChange={(event) =>
-                setDraftFilters((current) => ({ ...current, domain: event.target.value as DomainFilter }))
+                setDraftFilters((current) => ({
+                  ...current,
+                  domain: event.target.value as DomainFilter,
+                }))
               }
             >
               <option value="">All domains</option>
               {auditHistoryDomainValues.map((domain) => (
-                <option key={domain} value={domain}>{label(domain)}</option>
+                <option key={domain} value={domain}>
+                  {label(domain)}
+                </option>
               ))}
             </select>
           </label>
@@ -258,7 +274,9 @@ export function AuditHistoryView() {
             <input
               className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
               value={draftFilters.actorId}
-              onChange={(event) => setDraftFilters((current) => ({ ...current, actorId: event.target.value }))}
+              onChange={(event) =>
+                setDraftFilters((current) => ({ ...current, actorId: event.target.value }))
+              }
               placeholder="cloudflare-access:…"
             />
           </label>
@@ -277,7 +295,9 @@ export function AuditHistoryView() {
             >
               <option value="">Any target type</option>
               {auditHistoryTargetTypeValues.map((targetType) => (
-                <option key={targetType} value={targetType}>{label(targetType)}</option>
+                <option key={targetType} value={targetType}>
+                  {label(targetType)}
+                </option>
               ))}
             </select>
           </label>
@@ -287,7 +307,9 @@ export function AuditHistoryView() {
             <input
               className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
               value={draftFilters.targetId}
-              onChange={(event) => setDraftFilters((current) => ({ ...current, targetId: event.target.value }))}
+              onChange={(event) =>
+                setDraftFilters((current) => ({ ...current, targetId: event.target.value }))
+              }
               placeholder="Exact target identifier"
             />
           </label>
@@ -298,7 +320,9 @@ export function AuditHistoryView() {
               type="datetime-local"
               className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
               value={draftFilters.from}
-              onChange={(event) => setDraftFilters((current) => ({ ...current, from: event.target.value }))}
+              onChange={(event) =>
+                setDraftFilters((current) => ({ ...current, from: event.target.value }))
+              }
             />
           </label>
 
@@ -308,13 +332,17 @@ export function AuditHistoryView() {
               type="datetime-local"
               className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
               value={draftFilters.to}
-              onChange={(event) => setDraftFilters((current) => ({ ...current, to: event.target.value }))}
+              onChange={(event) =>
+                setDraftFilters((current) => ({ ...current, to: event.target.value }))
+              }
             />
           </label>
         </div>
         <div className="mt-5 flex flex-wrap gap-3">
           <Button type="submit">Apply filters</Button>
-          <Button type="button" variant="secondary" onClick={reset}>Reset</Button>
+          <Button type="button" variant="secondary" onClick={reset}>
+            Reset
+          </Button>
         </div>
       </form>
 
@@ -338,7 +366,11 @@ export function AuditHistoryView() {
             title="Audit history filter rejected"
             description="Check the time range, target filter, and bounded cursor inputs before retrying."
             icon={<AlertTriangle className="size-5" />}
-            action={<Button variant="secondary" onClick={reset}>Reset filters</Button>}
+            action={
+              <Button variant="secondary" onClick={reset}>
+                Reset filters
+              </Button>
+            }
           />
         ) : null}
         {state.status === 'unavailable' || state.status === 'error' ? (
@@ -346,15 +378,26 @@ export function AuditHistoryView() {
             title="Audit history unavailable"
             description="The protected service could not return a complete verified history response."
             icon={<AlertTriangle className="size-5" />}
-            action={<Button variant="secondary" onClick={() => void load(filters)}>Retry history</Button>}
+            action={
+              <Button variant="secondary" onClick={() => void load(filters)}>
+                Retry history
+              </Button>
+            }
           />
         ) : null}
         {state.status === 'ready' ? (
           <section aria-labelledby="audit-history-results-title">
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <p className="m-0 text-sm font-semibold text-brand-700">Normalized durable history</p>
-                <h2 id="audit-history-results-title" className="mt-1 text-2xl font-semibold text-ink">Audit events</h2>
+                <p className="m-0 text-sm font-semibold text-brand-700">
+                  Normalized durable history
+                </p>
+                <h2
+                  id="audit-history-results-title"
+                  className="mt-1 text-2xl font-semibold text-ink"
+                >
+                  Audit events
+                </h2>
               </div>
               <span className="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
                 {state.items.length} loaded{state.hasMore ? ' · more available' : ''}
@@ -369,12 +412,16 @@ export function AuditHistoryView() {
               />
             ) : (
               <div className="mt-4 grid gap-4">
-                {state.items.map((item) => <AuditItemCard key={item.id} item={item} />)}
+                {state.items.map((item) => (
+                  <AuditItemCard key={item.id} item={item} />
+                ))}
               </div>
             )}
 
             <div className="mt-5 flex flex-wrap items-center justify-between gap-3 text-xs text-muted">
-              <span className="inline-flex items-center gap-2"><Clock3 className="size-4" aria-hidden="true" /> Generated {state.generatedAt}</span>
+              <span className="inline-flex items-center gap-2">
+                <Clock3 className="size-4" aria-hidden="true" /> Generated {state.generatedAt}
+              </span>
               {state.hasMore ? (
                 <Button variant="secondary" onClick={loadOlder} disabled={loadingOlder}>
                   {loadingOlder ? 'Loading older events…' : 'Load older events'}
