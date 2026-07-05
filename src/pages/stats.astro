@@ -1,0 +1,53 @@
+---
+import { readFile } from 'node:fs/promises';
+import StatsOverview from '../components/public/StatsOverview.astro';
+import StatsQuality from '../components/public/StatsQuality.astro';
+import StatsRankings from '../components/public/StatsRankings.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { buildPublicStatsViewModel, parsePublicStatsDocument } from '../public/stats';
+
+const statsUrl = new URL('../../public/data/stats.json', import.meta.url);
+const statsDocument = JSON.parse(await readFile(statsUrl, 'utf-8')) as unknown;
+const model = buildPublicStatsViewModel(parsePublicStatsDocument(statsDocument));
+---
+
+<BaseLayout
+  title="Stats | CryptoPayMap"
+  description="Explore CryptoPayMap public dataset counts, payment routes, asset and network distribution, quality coverage, freshness, and public record changes."
+>
+  <main class="safe-area-inline page-container py-8 sm:py-12 lg:py-16">
+    <header class="max-w-3xl">
+      <p class="m-0 text-sm font-semibold text-brand-700">Public dataset metrics</p>
+      <h1 class="mt-2 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">Stats</h1>
+      <p class="mt-4 text-base leading-7 text-muted">
+        Stats describe the validated CryptoPayMap public dataset. They are not estimates of worldwide cryptocurrency adoption or merchant acceptance.
+      </p>
+      <p class="mt-2 text-sm text-muted">Generated {model.stats.generatedAt}</p>
+    </header>
+
+    <div class="mt-10 grid gap-12">
+      <StatsOverview stats={model.stats} />
+
+      <section aria-labelledby="stats-distribution-title">
+        <p class="m-0 text-sm font-semibold text-brand-700">Distribution</p>
+        <h2 id="stats-distribution-title" class="mt-1 text-3xl font-semibold tracking-tight text-ink">
+          Assets and networks in public claims
+        </h2>
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+          <StatsRankings
+            title="Top assets"
+            description="Entries appear only after the minimum public-record threshold is met. Rank numbers require the ranking threshold."
+            entries={model.topAssets}
+          />
+          <StatsRankings
+            title="Top networks"
+            description="Network distribution is based only on published claim payment combinations with explicit networks."
+            entries={model.topNetworks}
+          />
+        </div>
+      </section>
+
+      <StatsQuality stats={model.stats} />
+    </div>
+  </main>
+</BaseLayout>
