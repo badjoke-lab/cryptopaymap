@@ -152,11 +152,11 @@ afterEach(() => {
 });
 
 describe('PlacesMap renderer', () => {
-  it('registers the public source and layers, selects markers, and reports moved viewport', async () => {
+  it('registers public layers, synchronizes selection, and reports moved viewport', async () => {
     const onSelectPlace = vi.fn();
     const onViewportChange = vi.fn();
 
-    render(
+    const { rerender } = render(
       <PlacesMap
         pins={pins}
         selectedPlace={null}
@@ -180,6 +180,27 @@ describe('PlacesMap renderer', () => {
       'public-place-cluster-count',
       'public-place-points',
     ]);
+
+    const source = map.sources.get('public-places');
+    if (!source) throw new Error('Public Place source was not registered.');
+
+    rerender(
+      <PlacesMap
+        pins={pins}
+        selectedPlace="example-coffee-tokyo"
+        committedViewport={null}
+        onSelectPlace={onSelectPlace}
+        onViewportChange={onViewportChange}
+        styleUrl="/test-style.json"
+      />,
+    );
+
+    await waitFor(() => {
+      const data = source.data as {
+        features: Array<{ properties: { selected: boolean } }>;
+      };
+      expect(data.features[0]?.properties.selected).toBe(true);
+    });
 
     await act(async () =>
       map.trigger(
