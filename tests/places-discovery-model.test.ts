@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  buildPublicPlaceFilterFacets,
   filterPublicPlacePins,
   parsePublicPlacePinsDocument,
   type PublicPlacePin,
@@ -37,12 +38,30 @@ const pins: PublicPlacePin[] = [
     lastConfirmedAt: '2026-01-15T00:00:00Z',
     thumbnail: null,
   },
+  {
+    placeSlug: 'second-bitcoin-cafe',
+    name: 'Second Bitcoin Cafe',
+    categorySlug: 'cafe',
+    countryCode: 'JP',
+    locality: 'Kyoto',
+    latitude: 35.0116,
+    longitude: 135.7681,
+    status: 'confirmed',
+    assetSlugs: ['bitcoin'],
+    networkSlugs: ['lightning'],
+    routeTypes: ['direct_wallet'],
+    lastConfirmedAt: '2026-06-25T00:00:00Z',
+    thumbnail: null,
+  },
 ];
 
 describe('Places discovery public model', () => {
   it('keeps Confirmed as the default public result set', () => {
     const results = filterPublicPlacePins(pins, defaultDiscoveryUrlState);
-    expect(results.map((pin) => pin.placeSlug)).toEqual(['example-coffee-tokyo']);
+    expect(results.map((pin) => pin.placeSlug)).toEqual([
+      'example-coffee-tokyo',
+      'second-bitcoin-cafe',
+    ]);
   });
 
   it('combines public search and facet filters', () => {
@@ -57,6 +76,28 @@ describe('Places discovery public model', () => {
     });
 
     expect(results.map((pin) => pin.placeSlug)).toEqual(['example-market-osaka']);
+  });
+
+  it('derives deterministic public facets and counts without duplicate values per Place', () => {
+    const facets = buildPublicPlaceFilterFacets(
+      [
+        pins[0] ? { ...pins[0], assetSlugs: ['bitcoin', 'bitcoin'] } : pins[0],
+        ...pins.slice(1),
+      ].filter((pin): pin is PublicPlacePin => pin !== undefined),
+    );
+
+    expect(facets.assets).toEqual([
+      { value: 'bitcoin', count: 2 },
+      { value: 'usdc', count: 1 },
+    ]);
+    expect(facets.categories).toEqual([
+      { value: 'cafe', count: 2 },
+      { value: 'grocery', count: 1 },
+    ]);
+    expect(facets.statuses).toEqual([
+      { value: 'confirmed', count: 2 },
+      { value: 'stale', count: 1 },
+    ]);
   });
 
   it('rejects private or non-contract fields in published pin input', () => {

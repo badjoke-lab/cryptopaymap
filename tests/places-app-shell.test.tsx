@@ -20,6 +20,21 @@ const pins: PublicPlacePin[] = [
     lastConfirmedAt: '2026-06-20T00:00:00Z',
     thumbnail: null,
   },
+  {
+    placeSlug: 'example-market-osaka',
+    name: 'Example Market',
+    categorySlug: 'grocery',
+    countryCode: 'JP',
+    locality: 'Osaka',
+    latitude: 34.6937,
+    longitude: 135.5023,
+    status: 'stale',
+    assetSlugs: ['usdc'],
+    networkSlugs: ['base'],
+    routeTypes: ['processor_checkout'],
+    lastConfirmedAt: '2026-01-15T00:00:00Z',
+    thumbnail: null,
+  },
 ];
 
 beforeEach(() => {
@@ -36,7 +51,7 @@ describe('PlacesApp shell', () => {
     render(<PlacesApp pins={pins} />);
 
     expect(await screen.findByText('Example Coffee')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: /Example Coffee/ }));
+    fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
 
     expect(screen.getByText('Selected place')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'View payment details' })).toHaveAttribute(
@@ -44,6 +59,30 @@ describe('PlacesApp shell', () => {
       '/place/example-coffee-tokyo',
     );
     await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
+  });
+
+  it('filters public results with URL-owned facets and clears hidden selection', async () => {
+    render(<PlacesApp pins={pins} />);
+
+    fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
+    await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Filters' }));
+    expect(screen.getByRole('button', { name: 'Bitcoin (1)' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Usdc (1)' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Stale (1)' })).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Stale (1)' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Usdc (1)' }));
+
+    expect(await screen.findByText('Example Market')).toBeInTheDocument();
+    expect(screen.queryByText('Example Coffee')).not.toBeInTheDocument();
+    expect(screen.queryByText('Selected place')).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(window.location.search).toContain('asset=usdc');
+      expect(window.location.search).toContain('status=confirmed%2Cstale');
+      expect(window.location.search).not.toContain('place=');
+    });
   });
 
   it('never substitutes private candidates when public filters return no results', async () => {
