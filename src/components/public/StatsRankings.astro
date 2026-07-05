@@ -1,0 +1,45 @@
+---
+import type { PublicStatDisplayEntry } from '../../public/stats';
+
+interface Props {
+  title: string;
+  description: string;
+  entries: PublicStatDisplayEntry[];
+}
+
+const { title, description, entries } = Astro.props;
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+---
+
+<section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+  <h2 class="m-0 text-2xl font-semibold tracking-tight text-ink">{title}</h2>
+  <p class="mt-2 text-sm leading-6 text-muted">{description}</p>
+
+  {
+    entries.length === 0 ? (
+      <p class="mt-5 rounded-control bg-canvas p-4 text-sm leading-6 text-muted">
+        Public ranking data will appear after the minimum record threshold is met.
+      </p>
+    ) : (
+      <ol class="mt-5 grid list-none gap-3 p-0">
+        {entries.map((entry) => (
+          <li class="flex items-center justify-between gap-4 rounded-control border border-border p-4">
+            <div class="flex min-w-0 items-center gap-3">
+              {entry.rank ? (
+                <span class="flex size-8 shrink-0 items-center justify-center rounded-pill bg-brand-50 text-sm font-semibold text-brand-800">
+                  {entry.rank}
+                </span>
+              ) : null}
+              <span class="truncate font-semibold text-ink">{formatLabel(entry.slug)}</span>
+            </div>
+            <span class="shrink-0 text-sm font-semibold text-muted">{entry.count}</span>
+          </li>
+        ))}
+      </ol>
+    )
+  }
+</section>
