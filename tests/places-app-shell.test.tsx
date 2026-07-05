@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { PlacesApp } from '../src/components/places/PlacesApp';
 import type { PublicPlacePin } from '../src/public/places-discovery';
 
@@ -43,6 +43,7 @@ beforeEach(() => {
 
 afterEach(() => {
   cleanup();
+  vi.restoreAllMocks();
   window.history.replaceState({}, '', '/');
 });
 
@@ -83,6 +84,49 @@ describe('PlacesApp shell', () => {
       expect(window.location.search).toContain('status=confirmed%2Cstale');
       expect(window.location.search).not.toContain('place=');
     });
+  });
+
+  it('replaces search typing but pushes explicit discovery selection', async () => {
+    const pushState = vi.spyOn(window.history, 'pushState');
+    render(<PlacesApp pins={pins} />);
+
+    const search = screen.getByRole('searchbox', { name: 'Search places' });
+    fireEvent.change(search, { target: { value: 'coffee' } });
+    await waitFor(() => expect(window.location.search).toContain('q=coffee'));
+    expect(pushState).not.toHaveBeenCalled();
+
+    fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
+    await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
+    expect(pushState).toHaveBeenCalledTimes(1);
+  });
+
+  it('restores URL and UI state from popstate without adding a history entry', async () => {
+    const pushState = vi.spyOn(window.history, 'pushState');
+    render(<PlacesApp pins={pins} />);
+    await screen.findByText('Example Coffee');
+
+    const restoredState = {
+      cpmDiscovery: {
+        bottomSheet: 'peek',
+        listScrollOffset: 180,
+        filterPanelOpen: true,
+        activeBounds: null,
+      },
+    };
+    window.history.replaceState(
+      restoredState,
+      '',
+      '/places?q=coffee&place=example-coffee-tokyo&view=list',
+    );
+    window.dispatchEvent(new PopStateEvent('popstate', { state: restoredState }));
+
+    await waitFor(() =>
+      expect(screen.getByRole('searchbox', { name: 'Search places' })).toHaveValue('coffee'),
+    );
+    expect(screen.getByRole('button', { name: 'List' })).toHaveAttribute('aria-pressed', 'true');
+    expect(screen.getByText('Selected place')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Bitcoin (1)' })).toBeInTheDocument();
+    expect(pushState).not.toHaveBeenCalled();
   });
 
   it('never substitutes private candidates when public filters return no results', async () => {
