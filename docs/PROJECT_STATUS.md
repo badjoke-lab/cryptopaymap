@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-02 — PlacesApp shell
+P4-03 — MapLibre map
 
 ## Active work
 
-- P4-02A — coordinated PlacesApp public shell
-- Branch: `work/places-app-shell`
-- Pull request: #97
+- P4-03A — map source and camera contract foundation
+- Branch: `work/map-geojson-foundation`
+- Pull request: #98
 
 ## Latest completed work
 
@@ -33,28 +33,26 @@ P4-02 — PlacesApp shell
 - P3-12F Phase 3 cross-domain integration audit completed through pull request #95
 - Phase 3 repository work completed with explicit live-verification deferrals
 - P4-01A public Place detail foundation completed through pull request #96
+- P4-02A coordinated PlacesApp public shell completed through pull request #97
 
-## P4-02A in progress
+## P4-03A in progress
 
-- validated public Place pins collection
-- coordinated map/list application shell
-- existing Discovery URL-state restoration and canonical serialization
-- existing isolated Zustand discovery store integration
-- public search and status filtering
-- selected Place coordination and detail navigation
-- mobile map/list mode control
-- empty state without Candidate substitution
-- discovery model and component tests
+- deterministic public Place pin to point-feature conversion
+- stable feature identity by public Place slug
+- selected Place marker property
+- map camera normalization aligned with public URL limits
+- camera change detection after normalization
+- unit coverage for source and camera contracts
 
 ## Next
 
-1. Validate and merge pull request #97.
-2. Add MapLibre rendering against the coordinated shell.
-3. Add the production result-list and pin/list synchronization layers.
+1. Validate and merge pull request #98.
+2. Add the MapLibre renderer against the fixed source and camera contracts.
+3. Connect renderer move events to pending viewport and Search this area behavior.
 
 ## Blocked
 
-No repository blocker. Live candidate generation, R2 activation, public serving, database migration, restore persistence deployment, and production verification remain deferred.
+No repository blocker. MapLibre renderer dependency is not yet present in the lockfile and will be added as a separate reviewed implementation step. Live candidate generation, R2 activation, public serving, database migration, restore persistence deployment, and production verification remain deferred.
 
 ## Verification rule
 
