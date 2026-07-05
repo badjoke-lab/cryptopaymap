@@ -6,7 +6,9 @@ import type { DiscoveryViewport } from '../../state/discovery-url';
 import {
   buildPlaceMapFeatureCollection,
   mapViewportChanged,
+  normalizeMapBounds,
   normalizeMapViewport,
+  type PlaceMapBounds,
 } from './map-data';
 
 const sourceId = 'public-places';
@@ -21,6 +23,7 @@ interface PlacesMapProps {
   committedViewport: DiscoveryViewport | null;
   onSelectPlace: (placeSlug: string) => void;
   onViewportChange: (viewport: DiscoveryViewport) => void;
+  onBoundsChange: (bounds: PlaceMapBounds) => void;
   styleUrl?: string;
 }
 
@@ -47,12 +50,14 @@ export function PlacesMap({
   committedViewport,
   onSelectPlace,
   onViewportChange,
+  onBoundsChange,
   styleUrl = defaultStyleUrl,
 }: PlacesMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const selectRef = useRef(onSelectPlace);
   const viewportRef = useRef(onViewportChange);
+  const boundsRef = useRef(onBoundsChange);
   const committedViewportRef = useRef(committedViewport);
   const pinsRef = useRef(pins);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>('loading');
@@ -64,6 +69,7 @@ export function PlacesMap({
 
   selectRef.current = onSelectPlace;
   viewportRef.current = onViewportChange;
+  boundsRef.current = onBoundsChange;
   committedViewportRef.current = committedViewport;
   pinsRef.current = pins;
   featureCollectionRef.current = featureCollection;
@@ -185,7 +191,16 @@ export function PlacesMap({
             zoom: map.getZoom(),
           });
           if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
+            const visibleBounds = map.getBounds();
             viewportRef.current(nextViewport);
+            boundsRef.current(
+              normalizeMapBounds({
+                west: visibleBounds.getWest(),
+                south: visibleBounds.getSouth(),
+                east: visibleBounds.getEast(),
+                north: visibleBounds.getNorth(),
+              }),
+            );
           }
         });
         map.on('error', () => setRuntimeState('error'));
