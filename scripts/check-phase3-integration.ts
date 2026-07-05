@@ -97,6 +97,11 @@ const items = [
   },
 ] satisfies AuditHistoryItem[];
 
+const cursorItem = items[1];
+if (cursorItem === undefined) {
+  throw new Error('Phase 3 integration fixture is missing the cursor item.');
+}
+
 const sources: AuditHistorySource[] = [
   'candidate',
   'evidence',
@@ -145,10 +150,7 @@ const claimHistory = await loadAuditHistory(
   { targetType: 'acceptance_claim', targetId: claimId, limit: 10 },
   asOf,
 );
-if (
-  claimHistory.items.map((item) => item.domain).join(',') !==
-  'candidate,evidence,reconfirmation'
-) {
+if (claimHistory.items.map((item) => item.domain).join(',') !== 'candidate,evidence,reconfirmation') {
   throw new Error('Phase 3 target history did not preserve cross-domain Claim relationships.');
 }
 
@@ -156,8 +158,8 @@ const cursorPage = await loadAuditHistory(
   context,
   backend,
   {
-    before: items[1].occurredAt,
-    beforeId: items[1].id,
+    before: cursorItem.occurredAt,
+    beforeId: cursorItem.id,
     limit: 10,
   },
   asOf,
