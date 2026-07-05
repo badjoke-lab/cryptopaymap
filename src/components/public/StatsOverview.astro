@@ -7,12 +7,12 @@ interface Props {
 
 const { stats } = Astro.props;
 const overview = [
-  ['Confirmed physical places', stats.counts.confirmedPhysicalPlaces],
-  ['Confirmed online services', stats.counts.confirmedOnlineServices],
-  ['Countries', stats.counts.countries],
-  ['Cities', stats.counts.cities],
-  ['Stale records', stats.counts.staleRecords],
-  ['Ended records', stats.counts.endedRecords],
+  ['Confirmed physical places', stats.confirmedPhysicalPlaces],
+  ['Confirmed online services', stats.confirmedOnlineServices],
+  ['Countries', stats.countries],
+  ['Cities', stats.cities],
+  ['Stale records', stats.staleRecords],
+  ['Ended records', stats.endedRecords],
 ] as const;
 ---
 
@@ -39,12 +39,12 @@ const overview = [
   <div class="mt-8 grid gap-4 sm:grid-cols-2">
     <article class="rounded-card border border-border bg-brand-50 p-5">
       <p class="m-0 text-sm font-semibold text-brand-700">Direct wallet claims</p>
-      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{stats.counts.directWalletClaims}</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{stats.directWalletClaims}</p>
       <p class="mt-2 text-sm leading-6 text-muted">Customer pays a merchant-controlled wallet or invoice route directly.</p>
     </article>
     <article class="rounded-card border border-border bg-brand-50 p-5">
       <p class="m-0 text-sm font-semibold text-brand-700">Processor checkout claims</p>
-      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{stats.counts.processorCheckoutClaims}</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{stats.processorCheckoutClaims}</p>
       <p class="mt-2 text-sm leading-6 text-muted">Customer pays through a verified cryptocurrency checkout processor route.</p>
     </article>
   </div>
