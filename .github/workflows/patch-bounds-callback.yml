@@ -1,0 +1,42 @@
+name: Patch bounds callback
+
+on:
+  push:
+    branches:
+      - work/bounded-viewport-results
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/bounded-viewport-results
+          fetch-depth: 0
+
+      - name: Apply callback compatibility patch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/components/places/PlacesMap.tsx')
+          text = path.read_text()
+          text = text.replace(
+              '  onBoundsChange: (bounds: PlaceMapBounds) => void;',
+              '  onBoundsChange?: (bounds: PlaceMapBounds) => void;',
+              1,
+          )
+          text = text.replace('            boundsRef.current(\n', '            boundsRef.current?.(\n', 1)
+          path.write_text(text)
+          PY
+
+      - name: Commit source patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/places/PlacesMap.tsx
+          git commit -m "P4-06B: keep bounds callback backward compatible"
+          git push origin HEAD:work/bounded-viewport-results
