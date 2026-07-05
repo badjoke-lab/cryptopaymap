@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-01 — Place detail
+P4-02 — PlacesApp shell
 
 ## Active work
 
-- P4-01A — public Place detail foundation
-- Branch: `work/p4-place-detail-foundation`
-- Pull request: #96
+- P4-02A — coordinated PlacesApp public shell
+- Branch: `work/places-app-shell`
+- Pull request: #97
 
 ## Latest completed work
 
@@ -32,23 +32,25 @@ P4-01 — Place detail
 - P3-12E Audit administration surface completed through pull request #94
 - P3-12F Phase 3 cross-domain integration audit completed through pull request #95
 - Phase 3 repository work completed with explicit live-verification deferrals
+- P4-01A public Place detail foundation completed through pull request #96
 
-## P4-01A in progress
+## P4-02A in progress
 
-- strict published Places read boundary
-- static `/place/{slug}` path generation from reviewed public records only
-- Place detail view model
-- status-aware public detail surface
-- accepted assets, networks, routes, methods, instructions, restrictions, and freshness
-- public Evidence links and approved public Media only
-- contribution and nearby-place navigation
-- model and privacy-boundary tests
+- validated public Place pins collection
+- coordinated map/list application shell
+- existing Discovery URL-state restoration and canonical serialization
+- existing isolated Zustand discovery store integration
+- public search and status filtering
+- selected Place coordination and detail navigation
+- mobile map/list mode control
+- empty state without Candidate substitution
+- discovery model and component tests
 
 ## Next
 
-1. Validate and merge pull request #96.
-2. Extend Place detail history and map context as public data contracts become available.
-3. Continue with the PlacesApp public discovery shell.
+1. Validate and merge pull request #97.
+2. Add MapLibre rendering against the coordinated shell.
+3. Add the production result-list and pin/list synchronization layers.
 
 ## Blocked
 

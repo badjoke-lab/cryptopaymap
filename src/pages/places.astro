@@ -1,0 +1,18 @@
+---
+import { getCollection } from 'astro:content';
+import { PlacesApp } from '../components/places/PlacesApp';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { publicPlacePinSchema } from '../schemas/public-exports';
+
+const entries = await getCollection('publicPlacePins');
+const pins = entries.map((entry) =>
+  publicPlacePinSchema.parse((entry.data as { pin: unknown }).pin),
+);
+---
+
+<BaseLayout
+  title="Places | CryptoPayMap"
+  description="Find reviewed physical places where cryptocurrency payment is accepted at checkout."
+>
+  <PlacesApp pins={pins} client:load />
+</BaseLayout>
