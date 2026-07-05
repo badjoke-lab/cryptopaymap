@@ -150,7 +150,9 @@ const claimHistory = await loadAuditHistory(
   { targetType: 'acceptance_claim', targetId: claimId, limit: 10 },
   asOf,
 );
-if (claimHistory.items.map((item) => item.domain).join(',') !== 'candidate,evidence,reconfirmation') {
+if (
+  claimHistory.items.map((item) => item.domain).join(',') !== 'candidate,evidence,reconfirmation'
+) {
   throw new Error('Phase 3 target history did not preserve cross-domain Claim relationships.');
 }
 
