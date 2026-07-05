@@ -1,0 +1,93 @@
+---
+import type { PublicHomeModel } from '../../public/home';
+
+interface Props {
+  model: PublicHomeModel;
+}
+
+const { model } = Astro.props;
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(value));
+const recordHref = (record: PublicHomeModel['recentRecords'][number]) =>
+  record.kind === 'place' ? `/place/${record.slug}` : `/service/${record.slug}`;
+---
+
+<section class="safe-area-inline page-container py-10 sm:py-12" aria-labelledby="home-public-data-title">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <p class="m-0 text-sm font-semibold text-brand-700">Public dataset</p>
+      <h2 id="home-public-data-title" class="mt-1 text-3xl font-semibold tracking-tight text-ink">
+        Reviewed records available now
+      </h2>
+    </div>
+    <a class="font-semibold text-brand-700" href="/stats">View Stats</a>
+  </div>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2">
+    <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+      <p class="m-0 text-sm font-medium text-muted">Confirmed physical places</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{model.confirmedPhysicalCount}</p>
+      <a class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/places">
+        Explore places
+      </a>
+    </article>
+    <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+      <p class="m-0 text-sm font-medium text-muted">Confirmed online services</p>
+      <p class="mt-2 text-4xl font-semibold tracking-tight text-ink">{model.confirmedOnlineCount}</p>
+      <a class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/online">
+        Explore services
+      </a>
+    </article>
+  </div>
+</section>
+
+<section class="safe-area-inline page-container py-10 sm:py-12" aria-labelledby="home-recent-title">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <p class="m-0 text-sm font-semibold text-brand-700">Recently confirmed</p>
+      <h2 id="home-recent-title" class="mt-1 text-3xl font-semibold tracking-tight text-ink">
+        Fresh public records
+      </h2>
+    </div>
+    <a class="font-semibold text-brand-700" href="/updates">View Updates</a>
+  </div>
+
+  {
+    model.recentRecords.length === 0 ? (
+      <div class="mt-6 rounded-card border border-border bg-surface p-6 text-center shadow-sm">
+        <h3 class="m-0 text-xl font-semibold text-ink">No confirmed records are published yet</h3>
+        <p class="mx-auto mt-2 max-w-xl text-sm leading-6 text-muted">
+          Candidate records are not shown as substitutes. Reviewed records will appear here after they pass the public export boundary.
+        </p>
+      </div>
+    ) : (
+      <div class="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {model.recentRecords.map((record) => (
+          <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="rounded-pill bg-brand-50 px-2.5 py-1 text-xs font-semibold text-brand-800">
+                {formatLabel(record.kind)}
+              </span>
+              <span class="text-xs font-medium text-muted">{formatDate(record.lastConfirmedAt)}</span>
+            </div>
+            <h3 class="mt-4 text-xl font-semibold text-ink">
+              <a class="text-inherit no-underline hover:text-brand-700" href={recordHref(record)}>{record.name}</a>
+            </h3>
+            <p class="mt-1 text-sm text-muted">{formatLabel(record.categorySlug)}</p>
+            <p class="mt-4 text-sm font-medium text-ink">{record.assetSymbols.join(', ')}</p>
+          </article>
+        ))}
+      </div>
+    )
+  }
+</section>
