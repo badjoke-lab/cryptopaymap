@@ -1,0 +1,35 @@
+---
+import { AuditHistoryView } from '../../components/admin/AuditHistoryView';
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout
+  title="Audit history | CryptoPayMap Admin"
+  heading="Audit history"
+  description="Inspect normalized metadata-only administrative history across candidate, Evidence, reconfirmation, Media, and export workflows."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="audit-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Protected read boundary</p>
+    <h2 id="audit-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      History without private payload leakage
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      This workspace reads normalized event metadata from authoritative Phase 3 decision and event tables. Internal notes, private Evidence bodies, private Media storage keys, administrator email addresses, and arbitrary source payloads are not part of the audit response.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="audit-workspace-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P3-12E</p>
+        <h2 id="audit-workspace-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Cross-domain audit workspace
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Read only · metadata only
+      </span>
+    </div>
+    <AuditHistoryView client:load />
+  </section>
+</AdminLayout>

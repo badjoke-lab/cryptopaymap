@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-04
+**Last updated:** 2026-07-05
 
 This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
 
@@ -86,7 +86,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
 | P3-11 | Export controls and release workflow | Repository completed; live verification deferred | P3-07 through P3-10 | #75–#87 |
-| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | #88, #89; P3-12C active |
+| P3-12 | Audit history and Phase 3 integration audit | In progress | P3-01 through P3-11 | #88, #89, #92, #93, #94 |
 
 ### Completed P3-07 deliveries
 
@@ -120,13 +120,16 @@ P3-12A defined the protected normalized audit-history read contract across candi
 
 P3-12B added metadata-only source normalizers, bounded concurrent aggregation, source-domain validation, duplicate identity rejection, defensive filtering, deterministic cross-source ordering, and fail-closed source handling in pull request #89.
 
+P3-12C connected bounded audit history sources to the existing durable Phase 3 tables in pull request #92. It pushes actor, time-range, target, and stable cursor filters into source queries, preserves source ordering compatible with the global cursor, and excludes restore execution from the Drizzle registry until a corresponding table exists.
+
+P3-12D added the protected audit history API, isolated audit read authorization, fail-closed environment handling, bounded response mapping, runtime checks, and API tests in pull request #93.
+
 ### Current P3-12 delivery
 
-P3-12C connects bounded audit history sources to the existing durable Phase 3 tables. It pushes actor, time-range, target, and stable cursor filters into source queries, preserves source ordering compatible with the global cursor, and excludes restore execution from the Drizzle registry until a corresponding table exists.
+P3-12E adds the protected `/admin/audit` administration surface, metadata-only history cards, domain, actor, target, and time filters, stable cursor loading, explicit loading and failure states, component tests, and built-artifact leakage checks in pull request #94.
 
 ### Remaining P3-12 deliveries
 
-- protected audit history API and administration surface
 - final cross-domain Phase 3 integration audit and Phase 4 handoff
 
 ## Phase 4 — Public core / MVP-A
