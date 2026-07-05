@@ -1,10 +1,5 @@
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
 import { z } from 'zod';
-import {
-  publicPlaceSchema,
-  publicPlacesFileSchema,
-} from '../schemas/public-exports';
+import { publicPlaceSchema, publicPlacesFileSchema } from '../schemas/public-exports';
 
 export type PublicPlace = z.infer<typeof publicPlaceSchema>;
 export type PublicPlaceClaim = PublicPlace['claims'][number];
@@ -66,16 +61,18 @@ export function buildPlaceDetailModel(place: PublicPlace): PlaceDetailModel {
   });
 
   const payments = claims.flatMap((claim) =>
-    claim.paymentAssets.map((payment): PlaceDetailPayment => ({
-      assetSlug: payment.assetSlug,
-      assetSymbol: payment.assetSymbol,
-      networkSlug: payment.networkSlug,
-      paymentMethod: payment.paymentMethod,
-      routeType: claim.routeType,
-      processorSlug: claim.processorSlug,
-      isPrimary: payment.isPrimary,
-      notes: payment.notes,
-    })),
+    claim.paymentAssets.map(
+      (payment): PlaceDetailPayment => ({
+        assetSlug: payment.assetSlug,
+        assetSymbol: payment.assetSymbol,
+        networkSlug: payment.networkSlug,
+        paymentMethod: payment.paymentMethod,
+        routeType: claim.routeType,
+        processorSlug: claim.processorSlug,
+        isPrimary: payment.isPrimary,
+        notes: payment.notes,
+      }),
+    ),
   );
 
   const cover = place.media.find((media) => media.role === 'cover') ?? null;
@@ -102,23 +99,4 @@ export function buildPlaceDetailModel(place: PublicPlace): PlaceDetailModel {
 
 export function parsePublicPlacesDocument(value: unknown): PublicPlace[] {
   return publicPlacesFileSchema.parse(value).records;
-}
-
-export async function loadPublishedPlaces(
-  filePath = resolve(process.cwd(), 'public/data/places.json'),
-): Promise<PublicPlace[]> {
-  try {
-    const source = await readFile(filePath, 'utf8');
-    return parsePublicPlacesDocument(JSON.parse(source) as unknown);
-  } catch (error) {
-    if (
-      error !== null &&
-      typeof error === 'object' &&
-      'code' in error &&
-      error.code === 'ENOENT'
-    ) {
-      return [];
-    }
-    throw error;
-  }
 }
