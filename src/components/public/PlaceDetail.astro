@@ -1,0 +1,310 @@
+---
+import type { PlaceDetailModel } from '../../public/place-detail';
+
+interface Props {
+  model: PlaceDetailModel;
+}
+
+const { model } = Astro.props;
+const { place, status, claims, payments, cover, gallery } = model;
+
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+
+const formatDate = (value: string | null) =>
+  value === null
+    ? null
+    : new Intl.DateTimeFormat('en', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        timeZone: 'UTC',
+      }).format(new Date(value));
+
+const statusClass = {
+  confirmed: 'border-confirmed/30 bg-confirmed/10 text-confirmed',
+  stale: 'border-stale/30 bg-stale/10 text-stale',
+  ended: 'border-ended/30 bg-ended/10 text-ended',
+}[status];
+---
+
+<article class="safe-area-inline page-container py-8 sm:py-12 lg:py-16">
+  <nav class="text-sm text-muted" aria-label="Breadcrumb">
+    <a class="font-medium text-brand-700 no-underline hover:underline" href="/places">Places</a>
+    <span aria-hidden="true"> / </span>
+    <span aria-current="page">{place.name}</span>
+  </nav>
+
+  <header class="mt-5 overflow-hidden rounded-card border border-border bg-surface shadow-panel">
+    {
+      cover ? (
+        <img
+          class="aspect-[16/7] w-full object-cover"
+          src={cover.url}
+          alt={cover.altText}
+          width={cover.width}
+          height={cover.height}
+        />
+      ) : (
+        <div class="flex aspect-[16/7] items-center justify-center bg-brand-50 px-6 text-center">
+          <div>
+            <p class="m-0 text-sm font-semibold uppercase tracking-[0.1em] text-brand-700">
+              {formatLabel(place.categorySlug)}
+            </p>
+            <p class="mt-2 text-lg font-medium text-muted">No public photo yet</p>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="grid gap-6 p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+      <div>
+        <div class="flex flex-wrap items-center gap-3">
+          <span class:list={['rounded-pill border px-3 py-1 text-xs font-semibold', statusClass]}>
+            {formatLabel(status)}
+          </span>
+          <span class="text-sm font-medium text-muted">{formatLabel(place.categorySlug)}</span>
+        </div>
+        <h1 class="mt-3 text-3xl font-semibold tracking-[-0.035em] text-ink sm:text-5xl">{place.name}</h1>
+        <p class="mt-3 max-w-3xl text-base leading-7 text-muted">{model.address}</p>
+      </div>
+
+      <div class="flex flex-wrap gap-3 lg:max-w-72 lg:justify-end">
+        {
+          place.websiteUrl ? (
+            <a
+              class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50"
+              href={place.websiteUrl}
+              rel="external noopener"
+            >
+              Official website
+            </a>
+          ) : null
+        }
+        <a
+          class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
+          href={`/places?selected=${encodeURIComponent(place.placeSlug)}`}
+        >
+          View nearby
+        </a>
+      </div>
+    </div>
+  </header>
+
+  {
+    status !== 'confirmed' ? (
+      <section
+        class:list={[
+          'mt-6 rounded-card border p-5 sm:p-6',
+          status === 'stale' ? 'border-stale/30 bg-stale/10' : 'border-ended/30 bg-ended/10',
+        ]}
+        aria-labelledby="status-warning-title"
+      >
+        <h2 id="status-warning-title" class="m-0 text-xl font-semibold text-ink">
+          {status === 'stale' ? 'Verify before attempting payment' : 'This payment option has ended'}
+        </h2>
+        <p class="mt-2 max-w-3xl text-sm leading-6 text-muted">
+          {status === 'stale'
+            ? 'This record was previously confirmed, but its current availability needs reconfirmation. Historical payment instructions are shown with their claim status.'
+            : 'Reliable evidence indicates that the listed acceptance has ended. Payment instructions remain visible for historical context only.'}
+        </p>
+      </section>
+    ) : null
+  }
+
+  <div class="mt-8 grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+    <div class="grid gap-8">
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6" aria-labelledby="payment-summary-title">
+        <p class="m-0 text-sm font-semibold text-brand-700">Payment summary</p>
+        <h2 id="payment-summary-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          What you can pay with
+        </h2>
+
+        <dl class="mt-5 grid gap-4 sm:grid-cols-2">
+          <div class="rounded-control bg-canvas p-4">
+            <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Assets</dt>
+            <dd class="mt-2 text-base font-semibold text-ink">{model.assetSymbols.join(', ')}</dd>
+          </div>
+          <div class="rounded-control bg-canvas p-4">
+            <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Networks</dt>
+            <dd class="mt-2 text-base font-semibold text-ink">
+              {model.networkSlugs.map(formatLabel).join(', ')}
+            </dd>
+          </div>
+          <div class="rounded-control bg-canvas p-4">
+            <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Last confirmed</dt>
+            <dd class="mt-2 text-base font-semibold text-ink">{formatDate(model.lastConfirmedAt)}</dd>
+          </div>
+          <div class="rounded-control bg-canvas p-4">
+            <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Payment combinations</dt>
+            <dd class="mt-2 text-base font-semibold text-ink">{payments.length}</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section aria-labelledby="claims-title">
+        <p class="m-0 text-sm font-semibold text-brand-700">How to pay</p>
+        <h2 id="claims-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">Verified payment routes</h2>
+        <div class="mt-5 grid gap-5">
+          {
+            claims.map((claim) => (
+              <article class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+                <div class="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <p class="m-0 text-sm font-semibold text-brand-700">{formatLabel(claim.routeType)}</p>
+                    <h3 class="mt-1 text-xl font-semibold text-ink">{claim.howToPay}</h3>
+                  </div>
+                  <span class="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-semibold text-muted">
+                    {formatLabel(claim.status)}
+                  </span>
+                </div>
+
+                <dl class="mt-5 grid gap-4 sm:grid-cols-2">
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Merchant receives</dt>
+                    <dd class="mt-1 text-sm font-medium text-ink">{formatLabel(claim.merchantReceives)}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Processor</dt>
+                    <dd class="mt-1 text-sm font-medium text-ink">
+                      {claim.processorSlug ? formatLabel(claim.processorSlug) : 'Direct payment'}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Last confirmed</dt>
+                    <dd class="mt-1 text-sm font-medium text-ink">{formatDate(claim.lastConfirmedAt)}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.08em] text-muted">Next review</dt>
+                    <dd class="mt-1 text-sm font-medium text-ink">{formatDate(claim.nextReviewAt) ?? 'Not scheduled'}</dd>
+                  </div>
+                </dl>
+
+                {claim.restrictions ? (
+                  <div class="mt-5 rounded-control border border-border bg-canvas p-4">
+                    <p class="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-muted">Restrictions</p>
+                    <p class="mt-2 text-sm leading-6 text-ink">{claim.restrictions}</p>
+                  </div>
+                ) : null}
+
+                <div class="mt-5 overflow-x-auto">
+                  <table class="w-full min-w-[36rem] border-collapse text-left text-sm">
+                    <caption class="sr-only">Accepted payment combinations for this route</caption>
+                    <thead>
+                      <tr class="border-b border-border text-xs uppercase tracking-[0.06em] text-muted">
+                        <th class="px-2 py-3 font-semibold">Asset</th>
+                        <th class="px-2 py-3 font-semibold">Network</th>
+                        <th class="px-2 py-3 font-semibold">Method</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {claim.paymentAssets.map((payment) => (
+                        <tr class="border-b border-border/70 last:border-0">
+                          <td class="px-2 py-3 font-semibold text-ink">{payment.assetSymbol}</td>
+                          <td class="px-2 py-3 text-muted">{formatLabel(payment.networkSlug)}</td>
+                          <td class="px-2 py-3 text-muted">{formatLabel(payment.paymentMethod)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section aria-labelledby="evidence-title">
+        <p class="m-0 text-sm font-semibold text-brand-700">Evidence</p>
+        <h2 id="evidence-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">Why this listing is published</h2>
+        <div class="mt-5 grid gap-4">
+          {
+            claims.flatMap((claim) =>
+              claim.evidence.map((evidence) => (
+                <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+                  <div class="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    <span>{formatLabel(evidence.evidenceClass)}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{formatLabel(evidence.kind)}</span>
+                  </div>
+                  <p class="mt-3 text-sm leading-6 text-ink">{evidence.summary}</p>
+                  <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-sm text-muted">
+                    {evidence.sourceName ? <span>{evidence.sourceName}</span> : null}
+                    {evidence.observedAt ? <span>Observed {formatDate(evidence.observedAt)}</span> : null}
+                  </div>
+                  <div class="mt-4 flex flex-wrap gap-3">
+                    {evidence.sourceUrl ? (
+                      <a class="font-semibold text-brand-700" href={evidence.sourceUrl} rel="external noopener">
+                        Source
+                      </a>
+                    ) : null}
+                    {evidence.archiveUrl ? (
+                      <a class="font-semibold text-brand-700" href={evidence.archiveUrl} rel="external noopener">
+                        Archive
+                      </a>
+                    ) : null}
+                  </div>
+                </article>
+              )),
+            )
+          }
+        </div>
+      </section>
+
+      {
+        gallery.length > 0 ? (
+          <section aria-labelledby="gallery-title">
+            <p class="m-0 text-sm font-semibold text-brand-700">Gallery</p>
+            <h2 id="gallery-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">Approved public media</h2>
+            <div class="mt-5 grid gap-4 sm:grid-cols-2">
+              {gallery.map((media) => (
+                <figure class="m-0 overflow-hidden rounded-card border border-border bg-surface shadow-sm">
+                  <img
+                    class="aspect-[4/3] w-full object-cover"
+                    src={media.url}
+                    alt={media.altText}
+                    width={media.width}
+                    height={media.height}
+                    loading="lazy"
+                  />
+                  {media.attribution ? <figcaption class="p-3 text-xs text-muted">{media.attribution}</figcaption> : null}
+                </figure>
+              ))}
+            </div>
+          </section>
+        ) : null
+      }
+    </div>
+
+    <aside class="grid gap-5 lg:sticky lg:top-24">
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm" aria-labelledby="record-freshness-title">
+        <h2 id="record-freshness-title" class="m-0 text-lg font-semibold text-ink">Record freshness</h2>
+        <dl class="mt-4 grid gap-4 text-sm">
+          {claims.map((claim) => (
+            <div class="border-b border-border pb-4 last:border-0 last:pb-0">
+              <dt class="font-semibold text-ink">{formatLabel(claim.status)} claim</dt>
+              <dd class="mt-1 text-muted">First confirmed {formatDate(claim.firstConfirmedAt)}</dd>
+              <dd class="mt-1 text-muted">Last confirmed {formatDate(claim.lastConfirmedAt)}</dd>
+              {claim.endedAt ? <dd class="mt-1 text-muted">Ended {formatDate(claim.endedAt)}</dd> : null}
+              {claim.endedReason ? <dd class="mt-2 leading-5 text-muted">{claim.endedReason}</dd> : null}
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm" aria-labelledby="contribute-title">
+        <h2 id="contribute-title" class="m-0 text-lg font-semibold text-ink">Help keep this accurate</h2>
+        <p class="mt-2 text-sm leading-6 text-muted">Reports are reviewed before they change the public record.</p>
+        <nav class="mt-4 grid gap-2" aria-label="Contribute to this place">
+          <a class="min-h-11 rounded-control px-3 py-2.5 font-semibold text-brand-700 hover:bg-brand-50" href={`/payment-report?place=${encodeURIComponent(place.placeSlug)}`}>I paid here</a>
+          <a class="min-h-11 rounded-control px-3 py-2.5 font-semibold text-brand-700 hover:bg-brand-50" href={`/report?place=${encodeURIComponent(place.placeSlug)}`}>Report a problem</a>
+          <a class="min-h-11 rounded-control px-3 py-2.5 font-semibold text-brand-700 hover:bg-brand-50" href={`/claim?place=${encodeURIComponent(place.placeSlug)}`}>Claim this business</a>
+          <a class="min-h-11 rounded-control px-3 py-2.5 font-semibold text-brand-700 hover:bg-brand-50" href={`/photos?place=${encodeURIComponent(place.placeSlug)}`}>Add photos</a>
+        </nav>
+      </section>
+    </aside>
+  </div>
+</article>
