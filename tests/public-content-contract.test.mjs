@@ -25,13 +25,17 @@ describe('public content contract', () => {
     expect(roadmap).toContain('section: exploring');
   });
 
-  it('renders both collections through public pages', () => {
+  it('renders both collections through explicit public release models', () => {
     const roadmapPage = readRepositoryFile('src/pages/roadmap.astro');
     const changelogPage = readRepositoryFile('src/pages/changelog.astro');
+    const releaseModel = readRepositoryFile('src/public/release-surfaces.ts');
 
     expect(roadmapPage).toContain("getCollection('roadmap')");
-    expect(changelogPage).toContain("getCollection('changelog'");
-    expect(changelogPage).toContain('data.draft !== true');
+    expect(roadmapPage).toContain('buildPublicRoadmapSections');
+    expect(changelogPage).toContain("getCollection('changelog')");
+    expect(changelogPage).toContain('buildPublishedChangelogIndex');
     expect(changelogPage).toContain('await render(entry)');
+    expect(releaseModel).toContain("entry.status === 'completed' && !entry.release");
+    expect(releaseModel).toContain('published = entries.filter((entry) => !entry.draft)');
   });
 });

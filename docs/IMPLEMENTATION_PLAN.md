@@ -145,8 +145,8 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-09 | Online Services discovery and detail | Completed | public data layer | #107 |
 | P4-10 | Home | Completed | public discovery surfaces | #108 |
 | P4-11 | Stats | Completed | public stats export | #109 |
-| P4-12 | Updates | In progress | public updates export | #115 |
-| P4-13 | Public Roadmap and Changelog release surfaces | Planned | content loaders | — |
+| P4-12 | Updates | Completed | public updates export | #115 |
+| P4-13 | Public Roadmap and Changelog release surfaces | In progress | content loaders | #116 |
 | P4-14 | Trust, data, legal, and sustainability pages | Planned | public specifications | — |
 | P4-15 | Public media integration | Planned | P3-10, P4-01 | — |
 | P4-16 | MVP-A integration and quality audit | Planned | P4-01 through P4-15 | — |
