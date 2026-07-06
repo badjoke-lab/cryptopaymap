@@ -1,0 +1,49 @@
+name: Format public Updates changes
+
+on:
+  push:
+    branches:
+      - work/public-updates
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/public-updates
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format P4-12A files
+        run: |
+          npx biome format --write \
+            docs/IMPLEMENTATION_PLAN.md \
+            docs/PROJECT_STATUS.md \
+            public/data/updates.json \
+            scripts/materialize-staging-review-data.mjs \
+            scripts/staging-review-updates.ts \
+            src/components/public/UpdatesTimeline.astro \
+            src/content.config.ts \
+            src/pages/updates.astro \
+            src/public/updates.ts \
+            tests/staging-review-updates.test.ts \
+            tests/updates-model.test.ts
+      - name: Commit formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/IMPLEMENTATION_PLAN.md docs/PROJECT_STATUS.md public/data/updates.json scripts/materialize-staging-review-data.mjs scripts/staging-review-updates.ts src/components/public/UpdatesTimeline.astro src/content.config.ts src/pages/updates.astro src/public/updates.ts tests/staging-review-updates.test.ts tests/updates-model.test.ts
+          if git diff --cached --quiet; then
+            echo "No formatting changes required."
+            exit 0
+          fi
+          git commit -m "P4-12A: format Updates changes"
+          git push origin HEAD:work/public-updates
