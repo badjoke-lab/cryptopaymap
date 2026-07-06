@@ -1,0 +1,47 @@
+---
+interface PublicMediaItem {
+  role: string;
+  url: string;
+  width: number;
+  height: number;
+  altText: string;
+  attribution: string | null;
+  licenseSlug: string | null;
+}
+
+interface Props {
+  cover: PublicMediaItem | null;
+  placeholderLabel: string;
+}
+
+const { cover, placeholderLabel } = Astro.props;
+---
+
+{
+  cover ? (
+    <figure class="m-0 bg-canvas">
+      <img
+        class="aspect-[16/9] w-full object-cover sm:aspect-[16/7]"
+        src={cover.url}
+        alt={cover.altText}
+        width={cover.width}
+        height={cover.height}
+        fetchpriority="high"
+      />
+      {cover.attribution ? (
+        <figcaption class="border-t border-border px-4 py-2 text-xs leading-5 text-muted">
+          {cover.attribution}
+        </figcaption>
+      ) : null}
+    </figure>
+  ) : (
+    <div class="flex aspect-[16/9] items-center justify-center bg-brand-50 px-6 text-center sm:aspect-[16/7]">
+      <div>
+        <p class="m-0 text-sm font-semibold uppercase tracking-[0.1em] text-brand-700">
+          {placeholderLabel}
+        </p>
+        <p class="mt-2 text-lg font-medium text-muted">No approved public photo yet</p>
+      </div>
+    </div>
+  )
+}
