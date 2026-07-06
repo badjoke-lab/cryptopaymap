@@ -1,0 +1,86 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const contributionPaths = [
+  {
+    href: '/suggest',
+    title: 'Suggest a place or service',
+    description: 'Propose a new physical Place or Online Service for review.',
+  },
+  {
+    href: '/payment-report',
+    title: 'Report a payment attempt',
+    description: 'Share a successful or failed payment attempt for an existing public record.',
+  },
+  {
+    href: '/report',
+    title: 'Report a problem',
+    description: 'Flag closure, ended acceptance, incorrect payment details, duplicates, or other public-record issues.',
+  },
+  {
+    href: '/claim',
+    title: 'Claim a business or service',
+    description: 'Start the future verified-owner information and correction workflow.',
+  },
+  {
+    href: '/photos',
+    title: 'Contribute photos',
+    description: 'Provide future public-gallery candidates under explicit rights and privacy review.',
+  },
+];
+---
+
+<BaseLayout
+  title="Contribute | CryptoPayMap"
+  description="Contribution paths for suggesting records, reporting payment attempts or problems, owner claims, and approved public media."
+>
+  <main class="safe-area-inline page-container py-8 sm:py-12 lg:py-16">
+    <header class="max-w-3xl">
+      <p class="m-0 text-sm font-semibold text-brand-700">Contribute</p>
+      <h1 class="mt-2 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">
+        Help improve verified payment records
+      </h1>
+      <p class="mt-4 text-base leading-7 text-muted">
+        CryptoPayMap is designed to review suggested records, payment reports, corrections, owner claims, and public-media candidates before any approved change reaches the canonical public dataset.
+      </p>
+    </header>
+
+    <section class="mt-8 rounded-card border border-border bg-brand-50 p-5 sm:p-6" aria-labelledby="contribution-availability-title">
+      <h2 id="contribution-availability-title" class="m-0 text-2xl font-semibold text-ink">
+        Public submission intake is not open on this build
+      </h2>
+      <p class="mt-3 max-w-3xl text-base leading-7 text-muted">
+        The stable contribution URLs are available for navigation and review, but they do not yet send or store submissions. Submission intake will be activated only with review, privacy, abuse-prevention, status-tracking, and canonical-update safeguards.
+      </p>
+    </section>
+
+    <section class="mt-8" aria-labelledby="contribution-paths-title">
+      <h2 id="contribution-paths-title" class="text-2xl font-semibold text-ink">Contribution paths</h2>
+      <div class="mt-5 grid gap-4 md:grid-cols-2">
+        {
+          contributionPaths.map((item) => (
+            <article class="flex h-full flex-col rounded-card border border-border bg-surface p-5 shadow-sm">
+              <h3 class="m-0 text-xl font-semibold text-ink">{item.title}</h3>
+              <p class="mt-2 text-sm leading-6 text-muted">{item.description}</p>
+              <a class="mt-auto inline-flex min-h-11 items-center pt-4 font-semibold text-brand-700 no-underline hover:underline" href={item.href}>
+                View route status
+              </a>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <div class="mt-8 flex flex-wrap gap-3 border-t border-border pt-6">
+      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/places">
+        Browse verified Places
+      </a>
+      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/online">
+        Browse Online Services
+      </a>
+      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/methodology">
+        Read the methodology
+      </a>
+    </div>
+  </main>
+</BaseLayout>
