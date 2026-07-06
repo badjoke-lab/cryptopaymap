@@ -115,6 +115,22 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     );
   }, [activeBounds, bottomSheet, filterPanelOpen, listScrollOffset, urlReady, urlState]);
 
+  useEffect(() => {
+    if (!filterPanelOpen || !window.matchMedia('(max-width: 1023px)').matches) return;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setFilterPanelOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [filterPanelOpen, setFilterPanelOpen]);
+
   const facets = useMemo(() => buildPublicPlaceFilterFacets(pins), [pins]);
   const filteredResults = useMemo(() => filterPublicPlacePins(pins, urlState), [pins, urlState]);
   const results = useMemo(
@@ -122,6 +138,14 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     [activeBounds, filteredResults],
   );
   const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
+  const activeFilterCount =
+    urlState.assets.length +
+    urlState.networks.length +
+    urlState.categories.length +
+    urlState.routes.length +
+    (urlState.statuses.length === 1 && urlState.statuses[0] === 'confirmed'
+      ? 0
+      : urlState.statuses.length);
 
   function selectPlace(placeSlug: string) {
     patchDiscoveryUrlState({ selectedPlace: placeSlug });
@@ -159,15 +183,25 @@ export function PlacesApp({ pins }: PlacesAppProps) {
   }
 
   return (
-    <section className="min-h-[calc(100svh-8rem)] bg-canvas" aria-label="Places discovery">
-      <div className="safe-area-inline page-container py-5 sm:py-7">
-        <div className="flex flex-wrap items-end justify-between gap-4">
+    <section className="min-h-[calc(100svh-3.5rem)] bg-canvas" aria-label="Places discovery">
+      <div className="safe-area-inline page-container py-3 lg:py-7">
+        <div className="flex items-center justify-between gap-3 lg:hidden">
+          <div>
+            <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+              Verified places
+            </p>
+            <h1 className="mt-0.5 text-2xl font-semibold tracking-[-0.035em] text-ink">Places</h1>
+          </div>
+          <span className="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
+            {results.length} {results.length === 1 ? 'place' : 'places'}
+          </span>
+        </div>
+
+        <div className="hidden items-end justify-between gap-4 lg:flex">
           <div>
             <p className="m-0 text-sm font-semibold text-brand-700">Verified physical places</p>
-            <h1 className="mt-1 text-3xl font-semibold tracking-[-0.035em] text-ink sm:text-4xl">
-              Places
-            </h1>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-muted sm:text-base">
+            <h1 className="mt-1 text-4xl font-semibold tracking-[-0.035em] text-ink">Places</h1>
+            <p className="mt-2 max-w-2xl text-base leading-6 text-muted">
               Search reviewed public records by payment details. Candidate records are never shown
               here.
             </p>
@@ -177,7 +211,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
           </span>
         </div>
 
-        <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <div className="mt-3 grid gap-2 lg:mt-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-3">
           <label className="relative block">
             <span className="sr-only">Search places</span>
             <Search
@@ -194,11 +228,11 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                   'replace',
                 )
               }
-              placeholder="Search name, category, city, or country"
+              placeholder="Search place, category, city, or country"
             />
           </label>
 
-          <div className="flex flex-wrap gap-2">
+          <div className="flex items-center justify-between gap-2 lg:justify-start">
             <button
               className="motion-feedback inline-flex min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink hover:bg-brand-50"
               type="button"
@@ -207,6 +241,11 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             >
               <SlidersHorizontal className="size-4" aria-hidden="true" />
               Filters
+              {activeFilterCount > 0 ? (
+                <span className="rounded-pill bg-brand-50 px-2 py-0.5 text-xs text-brand-800">
+                  {activeFilterCount}
+                </span>
+              ) : null}
             </button>
 
             <fieldset
@@ -243,10 +282,11 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             state={urlState}
             onPatch={(patch) => patchDiscoveryUrlState(patch)}
             onClear={clearFilters}
+            onClose={() => setFilterPanelOpen(false)}
           />
         ) : null}
 
-        <div className="mt-5 grid min-h-[38rem] gap-4 lg:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
+        <div className="mt-3 grid gap-4 lg:mt-5 lg:min-h-[38rem] lg:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
           <section
             className={`${urlState.view === 'list' ? 'hidden' : 'block'} relative overflow-hidden rounded-card border border-border bg-brand-50 lg:block`}
             aria-label="Map results"
@@ -262,7 +302,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
 
             {pendingViewport && pendingBounds ? (
               <button
-                className="motion-feedback absolute left-1/2 top-3 z-10 min-h-11 -translate-x-1/2 rounded-control bg-brand-600 px-4 py-2 font-semibold text-white shadow-panel hover:bg-brand-700"
+                className="motion-feedback absolute left-1/2 top-2 z-10 min-h-10 -translate-x-1/2 rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-panel hover:bg-brand-700 lg:top-3 lg:min-h-11 lg:px-4 lg:text-base"
                 type="button"
                 onClick={searchPendingArea}
               >
@@ -271,7 +311,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
             ) : null}
 
             {selected ? (
-              <aside className="absolute inset-x-3 bottom-3 z-10 hidden rounded-card border border-border bg-surface p-4 shadow-panel sm:inset-x-auto sm:left-4 sm:w-80 lg:block">
+              <aside className="absolute bottom-3 left-4 z-10 hidden w-80 rounded-card border border-border bg-surface p-4 shadow-panel lg:block">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">

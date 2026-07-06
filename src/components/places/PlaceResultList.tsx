@@ -105,7 +105,7 @@ export function PlaceResultList({
       ) : (
         <ul
           ref={listRef}
-          className="m-0 max-h-[42rem] list-none overflow-y-auto p-3"
+          className="m-0 list-none p-3 lg:max-h-[42rem] lg:overflow-y-auto"
           aria-label="Place results"
           onScroll={(event) => onScrollOffsetChange(event.currentTarget.scrollTop)}
         >

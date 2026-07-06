@@ -1,3 +1,4 @@
+import { X } from 'lucide-react';
 import type {
   PublicPlaceFilterFacet,
   PublicPlaceFilterFacets,
@@ -13,6 +14,7 @@ interface PlaceFilterPanelProps {
   state: DiscoveryUrlState;
   onPatch: (patch: Partial<DiscoveryUrlState>) => void;
   onClear: () => void;
+  onClose: () => void;
 }
 
 interface FilterGroupProps {
@@ -63,7 +65,13 @@ function FilterGroup({ legend, options, selected, onToggle }: FilterGroupProps) 
   );
 }
 
-export function PlaceFilterPanel({ facets, state, onPatch, onClear }: PlaceFilterPanelProps) {
+export function PlaceFilterPanel({
+  facets,
+  state,
+  onPatch,
+  onClear,
+  onClose,
+}: PlaceFilterPanelProps) {
   const activeCount =
     state.assets.length +
     state.networks.length +
@@ -72,74 +80,93 @@ export function PlaceFilterPanel({ facets, state, onPatch, onClear }: PlaceFilte
     (state.statuses.length === 1 && state.statuses[0] === 'confirmed' ? 0 : state.statuses.length);
 
   return (
-    <section
-      className="mt-3 rounded-card border border-border bg-surface p-4 shadow-sm"
-      aria-label="Place filters"
-    >
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border pb-4">
-        <div>
-          <h2 className="m-0 text-base font-semibold text-ink">Filter public places</h2>
-          <p className="mt-1 text-sm text-muted">
-            {activeCount === 0
-              ? 'Confirmed status is the default.'
-              : `${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
-          </p>
-        </div>
-        <button
-          className="motion-feedback min-h-10 rounded-control px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"
-          type="button"
-          onClick={onClear}
-        >
-          Clear filters
-        </button>
-      </div>
+    <div className="fixed inset-0 z-50 lg:static lg:z-auto">
+      <button
+        className="absolute inset-0 bg-ink/30 lg:hidden"
+        type="button"
+        aria-label="Close filters"
+        onClick={onClose}
+      />
 
-      <div className="mt-4 grid gap-5 lg:grid-cols-2">
-        <FilterGroup
-          legend="Assets"
-          options={facets.assets}
-          selected={state.assets}
-          onToggle={(value) =>
-            onPatch({ assets: toggleValue(state.assets, value), selectedPlace: null })
-          }
-        />
-        <FilterGroup
-          legend="Networks"
-          options={facets.networks}
-          selected={state.networks}
-          onToggle={(value) =>
-            onPatch({ networks: toggleValue(state.networks, value), selectedPlace: null })
-          }
-        />
-        <FilterGroup
-          legend="Categories"
-          options={facets.categories}
-          selected={state.categories}
-          onToggle={(value) =>
-            onPatch({ categories: toggleValue(state.categories, value), selectedPlace: null })
-          }
-        />
-        <FilterGroup
-          legend="Payment routes"
-          options={facets.routes}
-          selected={state.routes}
-          onToggle={(value) =>
-            onPatch({
-              routes: toggleValue(state.routes, value) as DiscoveryRouteFilter[],
-              selectedPlace: null,
-            })
-          }
-        />
-        <FilterGroup
-          legend="Public status"
-          options={facets.statuses}
-          selected={state.statuses}
-          onToggle={(value) => {
-            const next = toggleValue(state.statuses, value) as DiscoveryStatusFilter[];
-            onPatch({ statuses: next.length > 0 ? next : ['confirmed'], selectedPlace: null });
-          }}
-        />
-      </div>
-    </section>
+      <section
+        className="absolute inset-x-0 bottom-0 max-h-[82svh] overflow-y-auto rounded-t-card border-x border-t border-border bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-panel lg:relative lg:inset-auto lg:mt-3 lg:max-h-none lg:overflow-visible lg:rounded-card lg:border lg:pb-4 lg:shadow-sm"
+        aria-label="Place filters"
+      >
+        <div className="flex items-start justify-between gap-3 border-b border-border pb-4">
+          <div>
+            <h2 className="m-0 text-base font-semibold text-ink">Filter public places</h2>
+            <p className="mt-1 text-sm text-muted">
+              {activeCount === 0
+                ? 'Confirmed status is the default.'
+                : `${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
+            </p>
+          </div>
+          <div className="flex items-center gap-1">
+            <button
+              className="motion-feedback min-h-10 rounded-control px-3 py-2 text-sm font-semibold text-brand-700 hover:bg-brand-50"
+              type="button"
+              onClick={onClear}
+            >
+              Clear
+            </button>
+            <button
+              className="motion-feedback flex size-10 items-center justify-center rounded-control text-muted hover:bg-canvas lg:hidden"
+              type="button"
+              aria-label="Close filters"
+              onClick={onClose}
+            >
+              <X className="size-5" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-5 lg:grid-cols-2">
+          <FilterGroup
+            legend="Assets"
+            options={facets.assets}
+            selected={state.assets}
+            onToggle={(value) =>
+              onPatch({ assets: toggleValue(state.assets, value), selectedPlace: null })
+            }
+          />
+          <FilterGroup
+            legend="Networks"
+            options={facets.networks}
+            selected={state.networks}
+            onToggle={(value) =>
+              onPatch({ networks: toggleValue(state.networks, value), selectedPlace: null })
+            }
+          />
+          <FilterGroup
+            legend="Categories"
+            options={facets.categories}
+            selected={state.categories}
+            onToggle={(value) =>
+              onPatch({ categories: toggleValue(state.categories, value), selectedPlace: null })
+            }
+          />
+          <FilterGroup
+            legend="Payment routes"
+            options={facets.routes}
+            selected={state.routes}
+            onToggle={(value) =>
+              onPatch({
+                routes: toggleValue(state.routes, value) as DiscoveryRouteFilter[],
+                selectedPlace: null,
+              })
+            }
+          />
+          <FilterGroup
+            legend="Public status"
+            options={facets.statuses}
+            selected={state.statuses}
+            onToggle={(value) => {
+              const next = toggleValue(state.statuses, value) as DiscoveryStatusFilter[];
+              onPatch({ statuses: next.length > 0 ? next : ['confirmed'], selectedPlace: null });
+            }}
+          />
+        </div>
+      </section>
+    </div>
   );
 }

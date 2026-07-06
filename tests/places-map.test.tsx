@@ -152,7 +152,7 @@ afterEach(() => {
 });
 
 describe('PlacesMap renderer', () => {
-  it('registers public layers, synchronizes selection, and reports moved viewport', async () => {
+  it('registers public layers, synchronizes selection, and reports user-moved viewport', async () => {
     const onSelectPlace = vi.fn();
     const onViewportChange = vi.fn();
 
@@ -211,8 +211,12 @@ describe('PlacesMap renderer', () => {
     );
     expect(onSelectPlace).toHaveBeenCalledWith('example-coffee-tokyo');
 
+    await act(async () => map.trigger('moveend'));
+    expect(onViewportChange).not.toHaveBeenCalled();
+
     map.center = { lat: 34.6937, lng: 135.5023 };
     map.zoom = 10.25;
+    await act(async () => map.trigger('dragstart', { originalEvent: {} }));
     await act(async () => map.trigger('moveend'));
     expect(onViewportChange).toHaveBeenCalledWith({
       latitude: 34.6937,
