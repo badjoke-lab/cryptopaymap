@@ -152,7 +152,7 @@ afterEach(() => {
 });
 
 describe('PlacesMap renderer', () => {
-  it('registers public layers, synchronizes selection, and reports user-moved viewport', async () => {
+  it('registers public layers, synchronizes selection and camera, and reports user-moved viewport', async () => {
     const onSelectPlace = vi.fn();
     const onViewportChange = vi.fn();
 
@@ -184,6 +184,8 @@ describe('PlacesMap renderer', () => {
     const source = map.sources.get('public-places');
     if (!source) throw new Error('Public Place source was not registered.');
 
+    map.center = { lat: 34.6937, lng: 135.5023 };
+
     rerender(
       <PlacesMap
         pins={pins}
@@ -200,6 +202,7 @@ describe('PlacesMap renderer', () => {
         features: Array<{ properties: { selected: boolean } }>;
       };
       expect(data.features[0]?.properties.selected).toBe(true);
+      expect(map.center).toEqual({ lat: 35.681236, lng: 139.767125 });
     });
 
     await act(async () =>
