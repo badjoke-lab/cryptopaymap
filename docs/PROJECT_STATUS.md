@@ -14,7 +14,7 @@ P4-16 — MVP-A integration and quality audit
 
 - P4-16A — staging acceptance coverage
 - Branch: `work/p4-16-staging-acceptance`
-- Pull request: pending
+- Pull request: #120
 
 ## Latest completed work
 
