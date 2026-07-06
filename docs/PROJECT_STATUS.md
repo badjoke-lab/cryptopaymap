@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-12 — Updates
+P4-13 — Public Roadmap and Changelog release surfaces
 
 ## Active work
 
-- P4-12A — public Updates record-change surface
-- Branch: `work/public-updates`
-- Pull request: #115
+- P4-13A — public Roadmap and Changelog release surfaces
+- Branch: `work/public-release-surfaces`
+- Pull request: #116
 
 ## Latest completed work
 
@@ -34,25 +34,25 @@ P4-12 — Updates
 - URL-review staging environment and deploy receipts completed through pull requests #110 and #111
 - Mobile staging map loading and container sizing fixes completed through pull requests #112 and #113
 - Responsive mobile and desktop interaction boundaries completed through pull request #114
+- P4-12 Updates record-change surface completed through pull request #115
 
-## P4-12A in progress
+## P4-13A in progress
 
-- validated public `updates.json` artifact
-- Updates content collection
-- deterministic descending chronology and month grouping
-- public `/updates` surface
-- explicit zero-update state
-- direct links to corresponding Place and Online Service records
-- synthetic staging Updates feed covering all six public update types
-- model and staging-feed tests
+- deterministic Roadmap section and entry model
+- Completed Roadmap items require Changelog release references
+- stable Roadmap-to-Changelog release anchors
+- public Changelog draft isolation
+- published release ordering and duplicate-version rejection
+- explicit Changelog empty state
+- Roadmap note and release-link rendering
+- release-surface model tests and public content contract checks
 
 ## Next
 
-1. Validate and merge pull request #115.
-2. Build P4-13 public Roadmap and Changelog release surfaces.
-3. Continue P4-14 trust, data, legal, and sustainability pages.
-4. Integrate public Media in P4-15.
-5. Run the P4-16 MVP-A integration and quality audit, including responsive and staging acceptance checks.
+1. Validate and merge pull request #116.
+2. Continue P4-14 trust, data, legal, and sustainability pages.
+3. Integrate public Media in P4-15.
+4. Run the P4-16 MVP-A integration and quality audit, including responsive and staging acceptance checks.
 
 ## Blocked
 
