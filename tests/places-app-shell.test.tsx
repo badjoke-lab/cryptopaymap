@@ -49,13 +49,13 @@ afterEach(() => {
 
 describe('PlacesApp shell', () => {
   it('renders reviewed public results and coordinates selection with the URL', async () => {
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
 
     expect(await screen.findByText('Example Coffee')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
 
     expect(screen.getByText('Selected place')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'View payment details' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
       'href',
       '/place/example-coffee-tokyo',
     );
@@ -64,7 +64,7 @@ describe('PlacesApp shell', () => {
 
   it('switches list selection back to Map view and commits the selected Place', async () => {
     window.history.replaceState({}, '', '/places?view=list');
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
 
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'List' })).toHaveAttribute('aria-pressed', 'true'),
@@ -79,7 +79,7 @@ describe('PlacesApp shell', () => {
   });
 
   it('moves the mobile selected Place sheet through peek, expanded, and closed states', async () => {
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
 
     const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
@@ -108,7 +108,7 @@ describe('PlacesApp shell', () => {
   });
 
   it('filters public results with URL-owned facets and clears hidden selection', async () => {
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
 
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
     await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
@@ -133,7 +133,7 @@ describe('PlacesApp shell', () => {
 
   it('replaces search typing but pushes explicit discovery selection', async () => {
     const pushState = vi.spyOn(window.history, 'pushState');
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
 
     const search = screen.getByRole('searchbox', { name: 'Search places' });
     fireEvent.change(search, { target: { value: 'coffee' } });
@@ -147,7 +147,7 @@ describe('PlacesApp shell', () => {
 
   it('restores URL and UI state from popstate without adding a history entry', async () => {
     const pushState = vi.spyOn(window.history, 'pushState');
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
     await screen.findByText('Example Coffee');
 
     const restoredState = {
@@ -175,7 +175,7 @@ describe('PlacesApp shell', () => {
   });
 
   it('never substitutes private candidates when public filters return no results', async () => {
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
 
     const search = screen.getByRole('searchbox', { name: 'Search places' });
     fireEvent.change(search, { target: { value: 'missing place' } });
@@ -189,7 +189,7 @@ describe('PlacesApp shell', () => {
 
   it('restores public URL state on initial client load', async () => {
     window.history.replaceState({}, '', '/places?q=coffee&view=list');
-    render(<PlacesApp pins={pins} />);
+    render(<PlacesApp pins={pins} places={[]} />);
 
     await waitFor(() =>
       expect(screen.getByRole('searchbox', { name: 'Search places' })).toHaveValue('coffee'),
