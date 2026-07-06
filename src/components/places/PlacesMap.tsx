@@ -15,7 +15,9 @@ const sourceId = 'public-places';
 const clusterLayerId = 'public-place-clusters';
 const clusterCountLayerId = 'public-place-cluster-count';
 const pointLayerId = 'public-place-points';
-const defaultStyleUrl = 'https://tiles.openfreemap.org/styles/liberty';
+const configuredStyleUrl = import.meta.env.PUBLIC_MAP_STYLE_URL?.trim();
+const defaultStyleUrl = configuredStyleUrl || 'https://tiles.openfreemap.org/styles/liberty';
+const mapLoadTimeoutMs = 12_000;
 
 interface PlacesMapProps {
   pins: PublicPlacePin[];
@@ -84,8 +86,41 @@ export function PlacesMap({
     }
 
     let active = true;
+    let loaded = false;
     let map: MapLibreMap | null = null;
     let observer: ResizeObserver | null = null;
+    let loadTimeout: number | null = null;
+
+    function clearLoadTimeout() {
+      if (loadTimeout !== null) {
+        window.clearTimeout(loadTimeout);
+        loadTimeout = null;
+      }
+    }
+
+    function reportMovedViewport() {
+      if (!map || !loaded) return;
+      const center = map.getCenter();
+      const nextViewport = normalizeMapViewport({
+        latitude: center.lat,
+        longitude: center.lng,
+        zoom: map.getZoom(),
+      });
+      if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
+        viewportRef.current(nextViewport);
+        if (boundsRef.current) {
+          const visibleBounds = map.getBounds();
+          boundsRef.current(
+            normalizeMapBounds({
+              west: visibleBounds.getWest(),
+              south: visibleBounds.getSouth(),
+              east: visibleBounds.getEast(),
+              north: visibleBounds.getNorth(),
+            }),
+          );
+        }
+      }
+    }
 
     async function initialize() {
       try {
@@ -104,8 +139,14 @@ export function PlacesMap({
         mapRef.current = map;
         map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
 
+        loadTimeout = window.setTimeout(() => {
+          if (!loaded && active) setRuntimeState('error');
+        }, mapLoadTimeoutMs);
+
         map.on('load', () => {
           if (!map) return;
+          loaded = true;
+          clearLoadTimeout();
           map.addSource(sourceId, {
             type: 'geojson',
             data: featureCollectionRef.current,
@@ -178,38 +219,22 @@ export function PlacesMap({
           map.on('mouseleave', pointLayerId, () => {
             if (map) map.getCanvas().style.cursor = '';
           });
+          map.on('moveend', reportMovedViewport);
 
           setRuntimeState('ready');
         });
 
-        map.on('moveend', () => {
-          if (!map) return;
-          const center = map.getCenter();
-          const nextViewport = normalizeMapViewport({
-            latitude: center.lat,
-            longitude: center.lng,
-            zoom: map.getZoom(),
-          });
-          if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
-            viewportRef.current(nextViewport);
-            if (boundsRef.current) {
-              const visibleBounds = map.getBounds();
-              boundsRef.current(
-                normalizeMapBounds({
-                  west: visibleBounds.getWest(),
-                  south: visibleBounds.getSouth(),
-                  east: visibleBounds.getEast(),
-                  north: visibleBounds.getNorth(),
-                }),
-              );
-            }
+        map.on('error', () => {
+          if (!loaded && active) {
+            clearLoadTimeout();
+            setRuntimeState('error');
           }
         });
-        map.on('error', () => setRuntimeState('error'));
 
         observer = new ResizeObserver(() => map?.resize());
         observer.observe(containerRef.current);
       } catch {
+        clearLoadTimeout();
         if (active) setRuntimeState('error');
       }
     }
@@ -218,6 +243,7 @@ export function PlacesMap({
 
     return () => {
       active = false;
+      clearLoadTimeout();
       observer?.disconnect();
       map?.remove();
       mapRef.current = null;
