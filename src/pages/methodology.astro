@@ -1,0 +1,121 @@
+---
+import TrustPageShell from '../components/public/TrustPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Methodology | CryptoPayMap"
+  description="How CryptoPayMap verifies acceptance claims, classifies evidence, handles freshness, and separates confirmed, stale, ended, and private candidate records."
+>
+  <TrustPageShell
+    eyebrow="Verification"
+    title="Methodology"
+    description="CryptoPayMap publishes reviewed claims about where and how cryptocurrency can be used at checkout. The process is designed around a practical question: can a customer reasonably understand and attempt this payment route now?"
+  >
+    <div class="grid gap-9">
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">What a confirmed record must explain</h2>
+        <div class="mt-4 grid gap-3 sm:grid-cols-2">
+          {
+            [
+              'Identifiable business, place, or online service',
+              'Applicable location or service scope',
+              'Accepted asset and explicit network',
+              'Direct-wallet or processor-checkout route',
+              'Specific payment method',
+              'Usable How to pay instructions',
+              'Evidence meeting the published threshold',
+              'Last confirmation date',
+            ].map((item) => (
+              <div class="rounded-card border border-border bg-surface p-4 text-sm leading-6 text-muted">
+                {item}
+              </div>
+            ))
+          }
+        </div>
+        <p class="mt-4 text-base leading-7 text-muted">
+          The network is not inferred from the asset symbol alone. A direct-wallet claim with an unknown network cannot be confirmed.
+        </p>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Evidence classes</h2>
+        <div class="mt-5 grid gap-5 lg:grid-cols-3">
+          <article>
+            <p class="m-0 text-sm font-semibold uppercase tracking-[0.08em] text-brand-700">Class A · Strong</p>
+            <ul class="mt-3 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>Live checkout or payment flow observed</li>
+              <li>Current official merchant or service payment page</li>
+              <li>Verified business representative with reviewed details</li>
+              <li>Dated real-payment proof with sufficient route details</li>
+            </ul>
+          </article>
+          <article>
+            <p class="m-0 text-sm font-semibold uppercase tracking-[0.08em] text-brand-700">Class B · Medium</p>
+            <ul class="mt-3 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>Recent official social statement</li>
+              <li>Current processor case study or merchant listing</li>
+              <li>Recent dated OpenStreetMap observation</li>
+              <li>Recent independent user report with useful detail</li>
+            </ul>
+          </article>
+          <article>
+            <p class="m-0 text-sm font-semibold uppercase tracking-[0.08em] text-brand-700">Class C · Weak</p>
+            <ul class="mt-3 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>Undated directory or map listing</li>
+              <li>Old article or generic announcement</li>
+              <li>Search-result snippet</li>
+              <li>Platform capability without merchant-specific activation</li>
+            </ul>
+          </article>
+        </div>
+        <div class="mt-6 rounded-control bg-brand-50 p-4 text-sm leading-6 text-ink">
+          Class C can help discover candidates, but it is never sufficient by itself for confirmation. Confirmation requires one Class A source, or two independent Class B sources where one is merchant or processor-side and the other is independent user, field, or recent dated observation evidence.
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">States and freshness</h2>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ink">Candidate</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">Private review material. Candidates may be incomplete or conflicting and never appear in public discovery or counts.</p>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-confirmed">Confirmed</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">The claim met the published payment-detail and evidence requirements at its last confirmation date. Confirmed is not a guarantee of future availability.</p>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-stale">Stale</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">A previously confirmed record passed its reconfirmation window or has unresolved recent contradiction. Stale records are excluded from default discovery.</p>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ended">Ended</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">Reliable evidence shows the acceptance route, relevant business, location, service, or applicable option ended. Ended records may remain as public history.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Contradiction and scope</h2>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+          <li>Evidence must apply to the listed location, region, product, plan, or service scope.</li>
+          <li>A brand-level announcement is not automatically applied to every branch.</li>
+          <li>Newer contradictory evidence can outweigh older supporting evidence.</li>
+          <li>Processor capability alone does not prove that a merchant enabled the route.</li>
+          <li>Private proof may support a public conclusion without the original receipt, transaction URL, ownership proof, or personal information being published.</li>
+          <li>Missing required information fails closed: it prevents confirmation instead of being filled by assumption.</li>
+        </ul>
+      </section>
+
+      <div class="flex flex-wrap gap-3 border-t border-border pt-6">
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/places">
+          Browse confirmed Places
+        </a>
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/sources-and-licenses">
+          Sources and licenses
+        </a>
+      </div>
+    </div>
+  </TrustPageShell>
+</BaseLayout>

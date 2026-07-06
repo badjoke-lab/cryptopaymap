@@ -1,0 +1,93 @@
+---
+import TrustPageShell from '../components/public/TrustPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About | CryptoPayMap"
+  description="What CryptoPayMap is, what it publishes, and how its discovery, data, verification, and change surfaces fit together."
+>
+  <TrustPageShell
+    eyebrow="Project"
+    title="About CryptoPayMap"
+    description="CryptoPayMap is a verification-focused discovery service for physical places and online services where a customer can attempt cryptocurrency payment at checkout."
+  >
+    <div class="grid gap-8">
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">What the product is for</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          A useful listing should answer practical payment questions before a customer attempts a purchase: which asset is accepted, which network is required, whether the payment is direct or processor-assisted, how the checkout works, what evidence supports the record, and when it was last confirmed.
+        </p>
+        <p class="mt-3 text-base leading-7 text-muted">
+          CryptoPayMap is not a generic directory of businesses described as “crypto friendly.” Public discovery is built from reviewed records with explicit payment details and status.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Two discovery surfaces</h2>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ink">Places</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">
+              Physical locations use a coordinated map and list. Confirmed records are shown by default, with filters for payment details and an explicit Search this area action after map movement.
+            </p>
+            <a class="mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/places">
+              Browse Places
+            </a>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ink">Online Services</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">
+              Online acceptance is presented separately because checkout scope, products, renewals, regions, and processor routes differ from physical-location acceptance.
+            </p>
+            <a class="mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/online">
+              Browse Online Services
+            </a>
+          </article>
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Public information has separate roles</h2>
+        <dl class="mt-5 grid gap-4 sm:grid-cols-2">
+          <div>
+            <dt class="font-semibold text-ink">Stats</dt>
+            <dd class="mt-1 text-sm leading-6 text-muted">Describes the current published dataset and its quality and coverage.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-ink">Updates</dt>
+            <dd class="mt-1 text-sm leading-6 text-muted">Shows reviewed changes to public acceptance records.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-ink">Roadmap</dt>
+            <dd class="mt-1 text-sm leading-6 text-muted">Describes future product capabilities using Now, Next, Later, and Exploring.</dd>
+          </div>
+          <div>
+            <dt class="font-semibold text-ink">Changelog</dt>
+            <dd class="mt-1 text-sm leading-6 text-muted">Records released product, interface, policy, and public data-contract changes.</dd>
+          </div>
+        </dl>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Integrity boundaries</h2>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+          <li>Candidate records remain private and do not appear in public maps, search, or Stats.</li>
+          <li>Verification status is independent from sponsorship, advertising, payment, or partnership relationships.</li>
+          <li>User submissions do not update canonical public records automatically.</li>
+          <li>Public exports exclude private review material, restricted evidence, and personal information.</li>
+          <li>Map interaction always has a list-based alternative.</li>
+        </ul>
+      </section>
+
+      <div class="flex flex-wrap gap-3 border-t border-border pt-6">
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/methodology">
+          Read the methodology
+        </a>
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/data">
+          Explore public data
+        </a>
+      </div>
+    </div>
+  </TrustPageShell>
+</BaseLayout>

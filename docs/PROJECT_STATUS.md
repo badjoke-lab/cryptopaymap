@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-13 — Public Roadmap and Changelog release surfaces
+P4-14 — Trust, data, legal, and sustainability pages
 
 ## Active work
 
-- P4-13A — public Roadmap and Changelog release surfaces
-- Branch: `work/public-release-surfaces`
-- Pull request: #116
+- P4-14A — public trust and data pages
+- Branch: `work/public-trust-data-pages`
+- Pull request: #117
 
 ## Latest completed work
 
@@ -35,22 +35,23 @@ P4-13 — Public Roadmap and Changelog release surfaces
 - Mobile staging map loading and container sizing fixes completed through pull requests #112 and #113
 - Responsive mobile and desktop interaction boundaries completed through pull request #114
 - P4-12 Updates record-change surface completed through pull request #115
+- P4-13 Roadmap and Changelog release surfaces completed through pull request #116
 
-## P4-13A in progress
+## P4-14A in progress
 
-- deterministic Roadmap section and entry model
-- Completed Roadmap items require Changelog release references
-- stable Roadmap-to-Changelog release anchors
-- public Changelog draft isolation
-- published release ordering and duplicate-version rejection
-- explicit Changelog empty state
-- Roadmap note and release-link rendering
-- release-surface model tests and public content contract checks
+- shared public trust-page shell and navigation
+- About page
+- Methodology page
+- Sources and Licenses page
+- Data page
+- verification, Candidate privacy, provenance, and licensing boundaries
+- current live artifact links separated from schema-defined future exports
+- public-page contract tests and internal-information leakage guards
 
 ## Next
 
-1. Validate and merge pull request #116.
-2. Continue P4-14 trust, data, legal, and sustainability pages.
+1. Validate and merge pull request #117.
+2. Build P4-14B privacy, terms, disclaimer, contact, support, and partners pages.
 3. Integrate public Media in P4-15.
 4. Run the P4-16 MVP-A integration and quality audit, including responsive and staging acceptance checks.
 
