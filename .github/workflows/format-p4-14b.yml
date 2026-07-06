@@ -1,0 +1,49 @@
+name: Format P4-14B changes
+
+on:
+  push:
+    branches:
+      - work/public-legal-sustainability-pages
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/public-legal-sustainability-pages
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format P4-14B files
+        run: |
+          npx biome format --write \
+            docs/IMPLEMENTATION_PLAN.md \
+            docs/PROJECT_STATUS.md \
+            src/components/SiteFooter.astro \
+            src/components/public/PolicyPageShell.astro \
+            src/pages/contact.astro \
+            src/pages/disclaimer.astro \
+            src/pages/partners.astro \
+            src/pages/privacy.astro \
+            src/pages/support.astro \
+            src/pages/terms.astro \
+            tests/legal-sustainability-pages-contract.test.mjs
+      - name: Commit formatting
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/IMPLEMENTATION_PLAN.md docs/PROJECT_STATUS.md src/components/SiteFooter.astro src/components/public/PolicyPageShell.astro src/pages/contact.astro src/pages/disclaimer.astro src/pages/partners.astro src/pages/privacy.astro src/pages/support.astro src/pages/terms.astro tests/legal-sustainability-pages-contract.test.mjs
+          if git diff --cached --quiet; then
+            echo "No formatting changes required."
+            exit 0
+          fi
+          git commit -m "P4-14B: format legal and sustainability pages"
+          git push origin HEAD:work/public-legal-sustainability-pages
