@@ -83,8 +83,7 @@ export function PlaceResultList({
         <div className="p-6 text-center">
           <h3 className="text-lg font-semibold text-ink">No public places match</h3>
           <p className="mt-2 text-sm leading-6 text-muted">
-            Candidate records are not used as substitutes. Clear filters or suggest a place for
-            review.
+            Candidate records are not used as substitutes. Clear filters or broaden the search area.
           </p>
           <div className="mt-5 flex flex-wrap justify-center gap-3">
             <button
@@ -94,12 +93,6 @@ export function PlaceResultList({
             >
               Clear filters
             </button>
-            <a
-              className="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
-              href="/suggest"
-            >
-              Suggest a place
-            </a>
           </div>
         </div>
       ) : (

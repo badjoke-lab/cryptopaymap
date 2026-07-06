@@ -111,19 +111,16 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
               Open the full record for payment instructions, evidence, restrictions, and history.
             </p>
 
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-4">
               <a
-                className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white no-underline hover:bg-brand-700"
+                className="motion-feedback inline-flex min-h-11 w-full items-center justify-center rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white no-underline hover:bg-brand-700"
                 href={`/place/${place.placeSlug}`}
               >
                 Payment details
               </a>
-              <a
-                className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
-                href="/report"
-              >
-                Report a problem
-              </a>
+              <p className="mt-3 text-center text-xs leading-5 text-muted">
+                Reporting and contribution tools will open with the reviewed submission workflow.
+              </p>
             </div>
           </div>
         ) : (
