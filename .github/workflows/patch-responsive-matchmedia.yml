@@ -1,0 +1,42 @@
+name: Patch responsive matchMedia guard
+
+on:
+  push:
+    branches:
+      - work/mobile-desktop-separation
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/mobile-desktop-separation
+          fetch-depth: 0
+      - name: Patch matchMedia guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/components/places/PlacesApp.tsx')
+          text = path.read_text()
+          old = "if (!filterPanelOpen || !window.matchMedia('(max-width: 1023px)').matches) return;"
+          new = """const mobileViewport =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(max-width: 1023px)').matches;
+    if (!filterPanelOpen || !mobileViewport) return;"""
+          if old not in text:
+              raise SystemExit('expected matchMedia guard not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
+      - run: npx biome format --write src/components/places/PlacesApp.tsx
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/places/PlacesApp.tsx
+          git commit -m "UX-01: guard responsive matchMedia usage"
+          git push origin HEAD:work/mobile-desktop-separation
