@@ -45,13 +45,20 @@ export function MobilePlaceSheet({
 
   const expanded = state === 'expanded';
   const primaryClaim = detailModel?.claims[0] ?? null;
-  const location = detailModel?.address || [place.locality, place.countryCode].filter(Boolean).join(', ');
+  const location =
+    detailModel?.address || [place.locality, place.countryCode].filter(Boolean).join(', ');
   const networks = detailModel?.networkSlugs ?? place.networkSlugs;
   const routes = detailModel
     ? [...new Set(detailModel.claims.map((claim) => claim.routeType))]
     : place.routeTypes;
   const processors = detailModel
-    ? [...new Set(detailModel.claims.map((claim) => claim.processorSlug).filter(Boolean))]
+    ? [
+        ...new Set(
+          detailModel.claims
+            .map((claim) => claim.processorSlug)
+            .filter((processor): processor is string => processor !== null),
+        ),
+      ]
     : [];
   const assets = detailModel?.assetSymbols ?? place.assetSlugs.map(formatLabel);
   const lastConfirmedAt = detailModel?.lastConfirmedAt ?? place.lastConfirmedAt;
@@ -144,7 +151,10 @@ export function MobilePlaceSheet({
         {expanded ? (
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
             {primaryClaim?.howToPay ? (
-              <section className="rounded-card border border-border bg-canvas p-4" aria-label="How to pay">
+              <section
+                className="rounded-card border border-border bg-canvas p-4"
+                aria-label="How to pay"
+              >
                 <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
                 <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
               </section>
@@ -169,9 +179,7 @@ export function MobilePlaceSheet({
                 <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
                   Payment routes
                 </dt>
-                <dd className="mt-1 font-medium text-ink">
-                  {routes.map(formatLabel).join(', ')}
-                </dd>
+                <dd className="mt-1 font-medium text-ink">{routes.map(formatLabel).join(', ')}</dd>
               </div>
               {processors.length > 0 ? (
                 <div>
