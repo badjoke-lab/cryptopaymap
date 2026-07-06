@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  buildPublicUpdatesViewModel,
-  parsePublicUpdatesDocument,
-} from '../src/public/updates';
+import { buildPublicUpdatesViewModel, parsePublicUpdatesDocument } from '../src/public/updates';
 
 const document = {
   schemaVersion: '1.0.0',
