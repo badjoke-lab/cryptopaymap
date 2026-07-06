@@ -1,0 +1,52 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+}
+
+const { eyebrow, title, description } = Astro.props;
+const pathname = Astro.url.pathname;
+const trustLinks = [
+  { href: '/about', label: 'About' },
+  { href: '/methodology', label: 'Methodology' },
+  { href: '/sources-and-licenses', label: 'Sources & Licenses' },
+  { href: '/data', label: 'Data' },
+];
+---
+
+<div class="safe-area-inline page-container py-10 sm:py-14 lg:py-18">
+  <header class="max-w-3xl">
+    <p class="m-0 text-sm font-semibold uppercase tracking-[0.12em] text-brand-700">{eyebrow}</p>
+    <h1 class="mt-3 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">{title}</h1>
+    <p class="mt-4 text-lg leading-8 text-muted">{description}</p>
+  </header>
+
+  <nav class="mt-7 border-y border-border py-3" aria-label="Trust and data pages">
+    <ul class="flex flex-wrap gap-2">
+      {
+        trustLinks.map((item) => {
+          const active = pathname === item.href;
+          return (
+            <li>
+              <a
+                class:list={[
+                  'motion-feedback inline-flex min-h-11 items-center rounded-control px-3 py-2 text-sm font-semibold no-underline',
+                  active ? 'bg-brand-50 text-brand-800' : 'text-muted hover:bg-canvas hover:text-ink',
+                ]}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </nav>
+
+  <div class="mt-9 max-w-4xl">
+    <slot />
+  </div>
+</div>
