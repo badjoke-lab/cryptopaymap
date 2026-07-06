@@ -14,7 +14,7 @@ P4-15 — Public media integration
 
 - P4-15A — public Media presentation integration
 - Branch: `work/p4-15-public-media`
-- Pull request: pending
+- Pull request: #119
 
 ## Latest completed work
 
