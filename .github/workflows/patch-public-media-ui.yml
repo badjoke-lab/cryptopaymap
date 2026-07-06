@@ -1,0 +1,112 @@
+name: Patch public media UI integration
+
+on:
+  push:
+    branches:
+      - work/public-media-integration
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/public-media-integration
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Patch Online cards and Place detail media UI
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          online = Path('src/components/public/OnlineServicesIndex.astro')
+          text = online.read_text()
+          old = '<article class="flex h-full flex-col rounded-card border border-border bg-surface p-5 shadow-sm">\n              <div class="flex flex-wrap items-center justify-between gap-2">'
+          new = '''<article class="flex h-full flex-col overflow-hidden rounded-card border border-border bg-surface shadow-sm">
+              {service.cover ? (
+                <img
+                  class="aspect-[16/8] w-full object-cover"
+                  src={service.cover.url}
+                  alt={service.cover.altText}
+                  width={service.cover.width}
+                  height={service.cover.height}
+                  loading="lazy"
+                />
+              ) : (
+                <div class="flex aspect-[16/8] items-center justify-center bg-brand-50 px-4 text-center text-sm font-semibold text-brand-700">
+                  {formatLabel(service.categorySlug)}
+                </div>
+              )}
+              <div class="flex flex-1 flex-col p-5">
+              <div class="flex flex-wrap items-center justify-between gap-2">'''
+          if old not in text:
+              raise SystemExit('Online card opening anchor not found')
+          text = text.replace(old, new, 1)
+          old = '''              <div class="mt-auto border-t border-border pt-4">
+                <p class="m-0 text-xs text-muted">Last confirmed {formatDate(service.lastConfirmedAt)}</p>
+                <a
+                  class="motion-feedback mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700"
+                  href={`/service/${service.serviceSlug}`}
+                >
+                  View payment details
+                </a>
+              </div>
+            </article>'''
+          new = '''              <div class="mt-auto border-t border-border pt-4">
+                <p class="m-0 text-xs text-muted">Last confirmed {formatDate(service.lastConfirmedAt)}</p>
+                <a
+                  class="motion-feedback mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700"
+                  href={`/service/${service.serviceSlug}`}
+                >
+                  View payment details
+                </a>
+              </div>
+              </div>
+            </article>'''
+          if old not in text:
+              raise SystemExit('Online card closing anchor not found')
+          online.write_text(text.replace(old, new, 1))
+
+          place = Path('src/components/public/PlaceDetail.astro')
+          text = place.read_text()
+          import_anchor = "import type { PlaceDetailModel } from '../../public/place-detail';\n"
+          import_replacement = import_anchor + "import PublicMediaGallery from './PublicMediaGallery.astro';\nimport PublicMediaHero from './PublicMediaHero.astro';\n"
+          if import_anchor not in text:
+              raise SystemExit('Place import anchor not found')
+          text = text.replace(import_anchor, import_replacement, 1)
+
+          hero_start = text.index('    {\n      cover ? (', text.index('<header class="mt-5'))
+          hero_end = text.index('    <div class="grid gap-6 p-5', hero_start)
+          hero = '    <PublicMediaHero cover={cover} placeholderLabel={formatLabel(place.categorySlug)} />\n\n'
+          text = text[:hero_start] + hero + text[hero_end:]
+
+          gallery_start = text.index('      {\n        gallery.length > 0 ? (')
+          gallery_end = text.index('      }\n    </div>', gallery_start) + len('      }\n')
+          gallery = '      <PublicMediaGallery media={gallery} />\n'
+          text = text[:gallery_start] + gallery + text[gallery_end:]
+          place.write_text(text)
+          PY
+      - name: Format media UI files
+        run: |
+          npx biome format --write \
+            src/components/public/OnlineServicesIndex.astro \
+            src/components/public/PlaceDetail.astro \
+            src/components/public/PublicMediaGallery.astro \
+            src/components/public/PublicMediaHero.astro \
+            src/components/public/OnlineServiceDetail.astro \
+            src/public/online-services.ts
+      - name: Commit UI integration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/public/OnlineServicesIndex.astro src/components/public/PlaceDetail.astro src/components/public/PublicMediaGallery.astro src/components/public/PublicMediaHero.astro src/components/public/OnlineServiceDetail.astro src/public/online-services.ts
+          git commit -m "P4-15A: integrate public media presentation"
+          git push origin HEAD:work/public-media-integration
