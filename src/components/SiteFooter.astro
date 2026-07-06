@@ -7,9 +7,11 @@ const links = [
   { href: '/changelog', label: 'Changelog' },
   { href: '/privacy', label: 'Privacy' },
 ];
+
+const isPlacesDiscovery = Astro.url.pathname === '/places';
 ---
 
-<footer class="border-t border-border bg-surface">
+<footer class:list={['border-t border-border bg-surface', isPlacesDiscovery ? 'hidden lg:block' : null]}>
   <div class="safe-area-inline page-container flex flex-col gap-4 py-6 text-sm text-muted md:flex-row md:items-center md:justify-between">
     <p class="m-0">CryptoPayMap · Verified crypto payment discovery</p>
     <nav aria-label="Footer">
