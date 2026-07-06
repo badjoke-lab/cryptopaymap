@@ -39,7 +39,9 @@ describe('public trust and data page contract', () => {
     expect(methodology).toContain('Class A · Strong');
     expect(methodology).toContain('Class B · Medium');
     expect(methodology).toContain('Class C · Weak');
-    expect(methodology).toContain('direct-wallet claim with an unknown network cannot be confirmed');
+    expect(methodology).toContain(
+      'direct-wallet claim with an unknown network cannot be confirmed',
+    );
     expect(methodology).toContain('Candidate');
     expect(methodology).toContain('never appear in public discovery or counts');
   });
