@@ -1,3 +1,4 @@
 {
-  "purpose": "trigger P4-16B list and map integration patch"
+  "purpose": "trigger P4-16B list and map integration patch",
+  "retry": 2
 }
