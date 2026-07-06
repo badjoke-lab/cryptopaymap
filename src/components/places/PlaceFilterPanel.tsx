@@ -127,10 +127,14 @@ export function PlaceFilterPanel({
         </div>
 
         {resultCount === 0 ? (
-          <section className="mt-4 rounded-card border border-border bg-canvas p-4" aria-label="No matching places guidance">
+          <section
+            className="mt-4 rounded-card border border-border bg-canvas p-4"
+            aria-label="No matching places guidance"
+          >
             <h3 className="m-0 text-sm font-semibold text-ink">No public places match</h3>
             <p className="mt-2 text-sm leading-6 text-muted">
-              Candidate records are not used as substitutes. Try a wider area or another public discovery path.
+              Candidate records are not used as substitutes. Try a wider area or another public
+              discovery path.
             </p>
             <div className="mt-3 flex flex-wrap gap-2">
               <button
