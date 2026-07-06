@@ -23,7 +23,9 @@ interface PlacesMapProps {
   pins: PublicPlacePin[];
   selectedPlace: string | null;
   committedViewport: DiscoveryViewport | null;
+  focusViewport?: DiscoveryViewport | null;
   onSelectPlace: (placeSlug: string) => void;
+  onClearSelection?: () => void;
   onViewportChange: (viewport: DiscoveryViewport) => void;
   onBoundsChange?: (bounds: PlaceMapBounds) => void;
   styleUrl?: string;
@@ -50,7 +52,9 @@ export function PlacesMap({
   pins,
   selectedPlace,
   committedViewport,
+  focusViewport = null,
   onSelectPlace,
+  onClearSelection,
   onViewportChange,
   onBoundsChange,
   styleUrl = defaultStyleUrl,
@@ -58,10 +62,13 @@ export function PlacesMap({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const selectRef = useRef(onSelectPlace);
+  const clearSelectionRef = useRef(onClearSelection);
   const viewportRef = useRef(onViewportChange);
   const boundsRef = useRef(onBoundsChange);
   const committedViewportRef = useRef(committedViewport);
   const pinsRef = useRef(pins);
+  const selectedPlaceRef = useRef(selectedPlace);
+  const focusMovePendingRef = useRef(false);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>('loading');
   const featureCollection = useMemo(
     () => buildPlaceMapFeatureCollection(pins, selectedPlace),
@@ -70,10 +77,12 @@ export function PlacesMap({
   const featureCollectionRef = useRef(featureCollection);
 
   selectRef.current = onSelectPlace;
+  clearSelectionRef.current = onClearSelection;
   viewportRef.current = onViewportChange;
   boundsRef.current = onBoundsChange;
   committedViewportRef.current = committedViewport;
   pinsRef.current = pins;
+  selectedPlaceRef.current = selectedPlace;
   featureCollectionRef.current = featureCollection;
 
   useEffect(() => {
@@ -100,8 +109,10 @@ export function PlacesMap({
     }
 
     function reportMovedViewport() {
-      if (!map || !loaded || !userViewportChangePending) return;
+      const pendingFocusMove = focusMovePendingRef.current;
+      if (!map || !loaded || (!userViewportChangePending && !pendingFocusMove)) return;
       userViewportChangePending = false;
+      focusMovePendingRef.current = false;
       const center = map.getCenter();
       const nextViewport = normalizeMapViewport({
         latitude: center.lat,
@@ -216,6 +227,13 @@ export function PlacesMap({
             if (!coordinates) return;
             map.easeTo({ center: [coordinates[0], coordinates[1]], zoom });
           });
+          map.on('click', (event) => {
+            if (!map || !selectedPlaceRef.current) return;
+            const interactiveFeatures = map.queryRenderedFeatures(event.point, {
+              layers: [pointLayerId, clusterLayerId],
+            });
+            if (interactiveFeatures.length === 0) clearSelectionRef.current?.();
+          });
           map.on('mouseenter', pointLayerId, () => {
             if (map) map.getCanvas().style.cursor = 'pointer';
           });
@@ -283,6 +301,17 @@ export function PlacesMap({
 
   useEffect(() => {
     const map = mapRef.current;
+    if (!map || runtimeState !== 'ready' || !focusViewport) return;
+    const normalized = normalizeMapViewport(focusViewport);
+    focusMovePendingRef.current = true;
+    map.easeTo({
+      center: [normalized.longitude, normalized.latitude],
+      zoom: normalized.zoom,
+    });
+  }, [focusViewport, runtimeState]);
+
+  useEffect(() => {
+    const map = mapRef.current;
     if (!map || runtimeState !== 'ready' || !selectedPlace) return;
     const selectedPin = pins.find((pin) => pin.placeSlug === selectedPlace);
     if (!selectedPin) return;
@@ -299,7 +328,7 @@ export function PlacesMap({
   }, [pins, runtimeState, selectedPlace]);
 
   return (
-    <div className="relative h-[58svh] min-h-[28rem] max-h-[42rem] w-full lg:h-auto lg:max-h-none lg:min-h-[38rem]">
+    <div className="relative h-[calc(100dvh-13rem)] min-h-[28rem] w-full lg:h-auto lg:min-h-[38rem]">
       <section className="absolute inset-0" aria-label="Interactive places map">
         <div ref={containerRef} className="h-full w-full" />
       </section>
