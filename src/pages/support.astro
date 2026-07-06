@@ -1,0 +1,75 @@
+---
+import PolicyPageShell from '../components/public/PolicyPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Support | CryptoPayMap"
+  description="How voluntary support relates to CryptoPayMap operation and the rule that support never purchases verification, ranking, favorable review, or suppression of evidence."
+>
+  <PolicyPageShell
+    eyebrow="Sustainability"
+    title="Support CryptoPayMap"
+    description="Support is voluntary. It helps sustain the project but does not change verification, ranking, review decisions, public history, or data policy."
+  >
+    <div class="grid gap-9">
+      <section class="rounded-card border border-border bg-brand-50 p-5 shadow-sm sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Verification cannot be purchased</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Support, sponsorship, advertising, and partnership relationships are kept separate from the verification process. Providing support does not create confirmed status or preferential treatment.
+        </p>
+        <div class="mt-5 grid gap-3 sm:grid-cols-2">
+          {
+            [
+              'No confirmed status',
+              'No faster favorable review',
+              'No ranking advantage',
+              'No suppression of negative evidence',
+              'No special treatment in Stats',
+              'No exemption from source, rights, privacy, or verification policy',
+            ].map((item) => (
+              <div class="rounded-control border border-brand-200 bg-surface p-4 text-sm font-semibold text-ink">
+                {item}
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Current support methods</h2>
+        <div class="mt-4 rounded-card border border-border bg-surface p-5 sm:p-6">
+          <p class="m-0 text-base leading-7 text-muted">
+            No support payment method is currently published on this page. When an official method is enabled, it will be shown here with its provider, destination, and applicable disclosure. Do not send funds to an address or payment link copied from an unofficial post or third-party account.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">What support is for</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Voluntary support can help maintain public discovery, verification workflows, reconfirmation, data publication, accessibility, infrastructure, and project documentation. It does not buy a listing outcome or change the evidence threshold.
+        </p>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Corrections stay independent</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Supporters, non-supporters, partners, and listed businesses use the same factual correction and review rules. Accurate public history is not removed because of a financial relationship, while valid privacy, rights, legal, and factual correction requests remain reviewable under the applicable policy.
+        </p>
+        <a class="mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/methodology">
+          Read the verification methodology
+        </a>
+      </section>
+
+      <div class="flex flex-wrap gap-3 border-t border-border pt-6">
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/partners">
+          Partnership principles
+        </a>
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/about">
+          About the project
+        </a>
+      </div>
+    </div>
+  </PolicyPageShell>
+</BaseLayout>
