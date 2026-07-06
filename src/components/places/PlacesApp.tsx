@@ -1,6 +1,7 @@
-import { List, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
+import { List, Map as MapIcon, Search, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
+import type { PublicPlace } from '../../public/place-detail';
 import {
   buildPublicPlaceFilterFacets,
   filterPublicPlacePins,
@@ -19,6 +20,7 @@ import {
   serializeDiscoveryUrlState,
   type DiscoveryUrlState,
 } from '../../state/discovery-url';
+import { DesktopSelectedPlacePanel } from './DesktopSelectedPlacePanel';
 import { filterPinsByMapBounds } from './map-data';
 import { MobilePlaceSheet } from './MobilePlaceSheet';
 import { PlaceFilterPanel } from './PlaceFilterPanel';
@@ -27,6 +29,7 @@ import { PlacesMap } from './PlacesMap';
 
 interface PlacesAppProps {
   pins: PublicPlacePin[];
+  places: PublicPlace[];
 }
 
 function createPlacesStore(): DiscoveryStoreApi {
@@ -37,7 +40,7 @@ function serializedState(state: DiscoveryUrlState): string {
   return serializeDiscoveryUrlState(state).toString();
 }
 
-export function PlacesApp({ pins }: PlacesAppProps) {
+export function PlacesApp({ pins, places }: PlacesAppProps) {
   const storeRef = useRef<DiscoveryStoreApi | null>(null);
   if (storeRef.current === null) storeRef.current = createPlacesStore();
   const store = storeRef.current;
@@ -138,6 +141,11 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     [activeBounds, filteredResults],
   );
   const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
+  const placesBySlug = useMemo(
+    () => new Map(places.map((place) => [place.placeSlug, place])),
+    [places],
+  );
+  const selectedDetail = selected ? placesBySlug.get(selected.placeSlug) ?? null : null;
   const activeFilterCount =
     urlState.assets.length +
     urlState.networks.length +
@@ -309,39 +317,11 @@ export function PlacesApp({ pins }: PlacesAppProps) {
                 Search this area
               </button>
             ) : null}
-
-            {selected ? (
-              <aside className="absolute bottom-3 left-4 z-10 hidden w-80 rounded-card border border-border bg-surface p-4 shadow-panel lg:block">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
-                      Selected place
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold text-ink">{selected.name}</h3>
-                  </div>
-                  <button
-                    className="motion-feedback flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas"
-                    type="button"
-                    aria-label="Clear selected place"
-                    onClick={clearSelection}
-                  >
-                    <X className="size-5" aria-hidden="true" />
-                  </button>
-                </div>
-                <p className="mt-2 text-sm text-muted">
-                  {selected.assetSlugs.join(', ')} · {selected.networkSlugs.join(', ')}
-                </p>
-                <a
-                  className="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700"
-                  href={`/place/${selected.placeSlug}`}
-                >
-                  View payment details
-                </a>
-              </aside>
-            ) : null}
           </section>
 
-          <div className={urlState.view === 'map' ? 'hidden lg:block' : 'block'}>
+          <div
+            className={`${urlState.view === 'map' ? 'hidden lg:block' : 'block'} relative min-h-0`}
+          >
             <PlaceResultList
               pins={results}
               selectedPlace={urlState.selectedPlace}
@@ -350,6 +330,15 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               onSelectPlace={selectPlace}
               onClearFilters={clearFilters}
             />
+            {selected ? (
+              <div className="absolute inset-0 z-10 hidden bg-canvas lg:block">
+                <DesktopSelectedPlacePanel
+                  pin={selected}
+                  place={selectedDetail}
+                  onClear={clearSelection}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
 
