@@ -1,0 +1,43 @@
+name: Sync P4-16 plan
+
+on:
+  push:
+    branches:
+      - work/p4-16-staging-acceptance
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/p4-16-staging-acceptance
+          fetch-depth: 0
+      - name: Sync implementation plan
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = path.read_text()
+          text = text.replace(
+              '| P4-15 | Public media integration | In progress | P3-10, P4-01 | #119 |',
+              '| P4-15 | Public media integration | Completed | P3-10, P4-01 | #119 |',
+          )
+          text = text.replace(
+              '| P4-16 | MVP-A integration and quality audit | Planned | P4-01 through P4-15 | — |',
+              '| P4-16 | MVP-A integration and quality audit | In progress | P4-01 through P4-15 | #120 |',
+          )
+          path.write_text(text)
+          PY
+      - run: npx biome format --write docs/IMPLEMENTATION_PLAN.md
+      - name: Commit sync
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/IMPLEMENTATION_PLAN.md
+          git commit -m "P4-16A: sync implementation plan"
+          git push origin HEAD:work/p4-16-staging-acceptance
