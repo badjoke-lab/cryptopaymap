@@ -36,6 +36,7 @@ class MockMap {
   center = { lat: 35.681236, lng: 139.767125 };
   zoom = 11;
   canvas = { style: { cursor: '' } };
+  renderedFeatures: Array<Record<string, unknown>> = [];
   removed = false;
 
   constructor(options: Record<string, unknown>) {
@@ -76,12 +77,21 @@ class MockMap {
     return this.zoom;
   }
 
+  getBounds() {
+    return {
+      getWest: () => this.center.lng - 0.25,
+      getSouth: () => this.center.lat - 0.25,
+      getEast: () => this.center.lng + 0.25,
+      getNorth: () => this.center.lat + 0.25,
+    };
+  }
+
   getCanvas() {
     return this.canvas;
   }
 
   queryRenderedFeatures() {
-    return [];
+    return this.renderedFeatures;
   }
 
   easeTo(options: { center?: [number, number]; zoom?: number }) {
@@ -225,6 +235,83 @@ describe('PlacesMap renderer', () => {
       latitude: 34.6937,
       longitude: 135.5023,
       zoom: 10.25,
+    });
+  });
+
+  it('clears selection only when empty map canvas is clicked', async () => {
+    const onClearSelection = vi.fn();
+    render(
+      <PlacesMap
+        pins={pins}
+        selectedPlace="example-coffee-tokyo"
+        committedViewport={null}
+        onSelectPlace={vi.fn()}
+        onClearSelection={onClearSelection}
+        onViewportChange={vi.fn()}
+        styleUrl="/test-style.json"
+      />,
+    );
+
+    await waitFor(() => expect(MockMap.latest).not.toBeNull());
+    const map = MockMap.latest;
+    if (!map) throw new Error('Map renderer did not initialize.');
+    await act(async () => map.trigger('load'));
+
+    map.renderedFeatures = [{ properties: { placeSlug: 'example-coffee-tokyo' } }];
+    await act(async () => map.trigger('click', { point: { x: 1, y: 1 } }));
+    expect(onClearSelection).not.toHaveBeenCalled();
+
+    map.renderedFeatures = [];
+    await act(async () => map.trigger('click', { point: { x: 20, y: 20 } }));
+    expect(onClearSelection).toHaveBeenCalledTimes(1);
+  });
+
+  it('reports an ephemeral focus viewport as pending map state', async () => {
+    const onViewportChange = vi.fn();
+    const onBoundsChange = vi.fn();
+    const { rerender } = render(
+      <PlacesMap
+        pins={pins}
+        selectedPlace={null}
+        committedViewport={null}
+        onSelectPlace={vi.fn()}
+        onViewportChange={onViewportChange}
+        onBoundsChange={onBoundsChange}
+        styleUrl="/test-style.json"
+      />,
+    );
+
+    await waitFor(() => expect(MockMap.latest).not.toBeNull());
+    const map = MockMap.latest;
+    if (!map) throw new Error('Map renderer did not initialize.');
+    await act(async () => map.trigger('load'));
+
+    rerender(
+      <PlacesMap
+        pins={pins}
+        selectedPlace={null}
+        committedViewport={null}
+        focusViewport={{ latitude: 35.7, longitude: 139.7, zoom: 14 }}
+        onSelectPlace={vi.fn()}
+        onViewportChange={onViewportChange}
+        onBoundsChange={onBoundsChange}
+        styleUrl="/test-style.json"
+      />,
+    );
+
+    await waitFor(() => expect(map.center).toEqual({ lat: 35.7, lng: 139.7 }));
+    await act(async () => map.trigger('moveend'));
+
+    expect(onViewportChange).toHaveBeenCalledWith({
+      latitude: 35.7,
+      longitude: 139.7,
+      zoom: 14,
+    });
+    expect(onBoundsChange).toHaveBeenCalledWith({
+      west: 139.45,
+      south: 35.45,
+      east: 139.95,
+      north: 35.95,
     });
   });
 
