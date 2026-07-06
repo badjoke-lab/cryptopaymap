@@ -20,7 +20,14 @@ describe('public legal and sustainability page contract', () => {
   it('provides shared policy navigation for all six routes', () => {
     const shell = readRepositoryFile('src/components/public/PolicyPageShell.astro');
 
-    for (const route of ['/privacy', '/terms', '/disclaimer', '/contact', '/support', '/partners']) {
+    for (const route of [
+      '/privacy',
+      '/terms',
+      '/disclaimer',
+      '/contact',
+      '/support',
+      '/partners',
+    ]) {
       expect(shell).toContain(`href: '${route}'`);
     }
   });
@@ -44,7 +51,9 @@ describe('public legal and sustainability page contract', () => {
     expect(terms).toContain('does not automatically authorize public gallery display');
     expect(terms).toContain('non-exclusive, worldwide, royalty-free permission');
     expect(terms).toContain('The contributor retains ownership');
-    expect(terms).toContain('Publication decisions are based on the verification and source policies');
+    expect(terms).toContain(
+      'Publication decisions are based on the verification and source policies',
+    );
   });
 
   it('states freshness, coverage, transaction, and non-advisory limitations', () => {
@@ -61,8 +70,12 @@ describe('public legal and sustainability page contract', () => {
 
     expect(contact).toContain('https://github.com/badjoke-lab/cryptopaymap/issues');
     expect(contact).toContain('Do not post receipts, wallet addresses, transaction URLs');
-    expect(contact).toContain('The project will publish a private contact method before private contribution intake opens');
-    expect(contact).toContain('Available when the corresponding public submission workflow is enabled');
+    expect(contact).toContain(
+      'The project will publish a private contact method before private contribution intake opens',
+    );
+    expect(contact).toContain(
+      'Available when the corresponding public submission workflow is enabled',
+    );
   });
 
   it('keeps support and partnerships independent from verification', () => {
@@ -80,7 +93,14 @@ describe('public legal and sustainability page contract', () => {
   it('exposes the completed policy and sustainability routes from the footer', () => {
     const footer = readRepositoryFile('src/components/SiteFooter.astro');
 
-    for (const route of ['/privacy', '/terms', '/disclaimer', '/contact', '/support', '/partners']) {
+    for (const route of [
+      '/privacy',
+      '/terms',
+      '/disclaimer',
+      '/contact',
+      '/support',
+      '/partners',
+    ]) {
       expect(footer).toContain(`href: '${route}'`);
     }
   });
