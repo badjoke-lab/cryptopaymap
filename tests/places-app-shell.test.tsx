@@ -54,8 +54,11 @@ describe('PlacesApp shell', () => {
     expect(await screen.findByText('Example Coffee')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
 
-    expect(screen.getByText('Selected place')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
+    const selectedPanel = screen.getByRole('complementary', {
+      name: 'Selected place details: Example Coffee',
+    });
+    expect(within(selectedPanel).getByText('Selected place')).toBeInTheDocument();
+    expect(within(selectedPanel).getByRole('link', { name: 'Payment details' })).toHaveAttribute(
       'href',
       '/place/example-coffee-tokyo',
     );
@@ -113,7 +116,10 @@ describe('PlacesApp shell', () => {
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
     await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
 
-    fireEvent.click(screen.getByRole('button', { name: 'Filters' }));
+    const filtersButtons = screen.getAllByRole('button', { name: 'Filters' });
+    const filtersButton = filtersButtons[0];
+    if (!filtersButton) throw new Error('Filters control was not rendered.');
+    fireEvent.click(filtersButton);
     expect(screen.getByRole('button', { name: 'Bitcoin (1)' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Usdc (1)' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Stale (1)' })).toBeInTheDocument();
