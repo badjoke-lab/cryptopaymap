@@ -24,18 +24,20 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
-export function DesktopSelectedPlacePanel({
-  pin,
-  place,
-  onClear,
-}: DesktopSelectedPlacePanelProps) {
+export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelectedPlacePanelProps) {
   const detail = place ? buildPlaceDetailModel(place) : null;
   const primaryClaim = detail?.claims[0] ?? null;
   const routeTypes = detail
     ? [...new Set(detail.claims.map((claim) => claim.routeType))]
     : pin.routeTypes;
   const processors = detail
-    ? [...new Set(detail.claims.map((claim) => claim.processorSlug).filter(Boolean))]
+    ? [
+        ...new Set(
+          detail.claims
+            .map((claim) => claim.processorSlug)
+            .filter((processor): processor is string => processor !== null),
+        ),
+      ]
     : [];
 
   return (
@@ -50,7 +52,8 @@ export function DesktopSelectedPlacePanel({
           </p>
           <h2 className="mt-1 text-xl font-semibold text-ink">{pin.name}</h2>
           <p className="mt-1 text-sm text-muted">
-            {formatLabel(pin.categorySlug)} · {[pin.locality, pin.countryCode].filter(Boolean).join(', ')}
+            {formatLabel(pin.categorySlug)} ·{' '}
+            {[pin.locality, pin.countryCode].filter(Boolean).join(', ')}
           </p>
         </div>
         <button
@@ -101,17 +104,23 @@ export function DesktopSelectedPlacePanel({
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Networks</dt>
+            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Networks
+            </dt>
             <dd className="mt-1 font-medium text-ink">
               {(detail?.networkSlugs ?? pin.networkSlugs).map(formatLabel).join(', ')}
             </dd>
           </div>
           <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Payment route</dt>
+            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Payment route
+            </dt>
             <dd className="mt-1 font-medium text-ink">{routeTypes.map(formatLabel).join(', ')}</dd>
           </div>
           <div>
-            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Merchant receives</dt>
+            <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Merchant receives
+            </dt>
             <dd className="mt-1 font-medium text-ink">
               {primaryClaim ? formatLabel(primaryClaim.merchantReceives) : 'Not publicly confirmed'}
             </dd>
@@ -120,12 +129,19 @@ export function DesktopSelectedPlacePanel({
 
         {processors.length > 0 ? (
           <div className="mt-4">
-            <p className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">Processor</p>
-            <p className="mt-1 text-sm font-medium text-ink">{processors.map(formatLabel).join(', ')}</p>
+            <p className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Processor
+            </p>
+            <p className="mt-1 text-sm font-medium text-ink">
+              {processors.map(formatLabel).join(', ')}
+            </p>
           </div>
         ) : null}
 
-        <section className="mt-5 rounded-card border border-border bg-canvas p-4" aria-label="How to pay">
+        <section
+          className="mt-5 rounded-card border border-border bg-canvas p-4"
+          aria-label="How to pay"
+        >
           <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
           <p className="mt-2 text-sm leading-6 text-muted">
             {primaryClaim?.howToPay ?? 'Open the full record for verified payment instructions.'}
