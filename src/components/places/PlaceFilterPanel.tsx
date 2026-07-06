@@ -12,8 +12,10 @@ import type {
 interface PlaceFilterPanelProps {
   facets: PublicPlaceFilterFacets;
   state: DiscoveryUrlState;
+  resultCount: number;
   onPatch: (patch: Partial<DiscoveryUrlState>) => void;
   onClear: () => void;
+  onWidenArea: () => void;
   onClose: () => void;
 }
 
@@ -68,8 +70,10 @@ function FilterGroup({ legend, options, selected, onToggle }: FilterGroupProps) 
 export function PlaceFilterPanel({
   facets,
   state,
+  resultCount,
   onPatch,
   onClear,
+  onWidenArea,
   onClose,
 }: PlaceFilterPanelProps) {
   const activeCount =
@@ -78,6 +82,7 @@ export function PlaceFilterPanel({
     state.categories.length +
     state.routes.length +
     (state.statuses.length === 1 && state.statuses[0] === 'confirmed' ? 0 : state.statuses.length);
+  const staleIncluded = state.statuses.includes('stale');
 
   return (
     <div className="fixed inset-0 z-50 lg:static lg:z-auto">
@@ -95,10 +100,11 @@ export function PlaceFilterPanel({
         <div className="flex items-start justify-between gap-3 border-b border-border pb-4">
           <div>
             <h2 className="m-0 text-base font-semibold text-ink">Filter public places</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm text-muted" aria-live="polite">
+              {resultCount} {resultCount === 1 ? 'place' : 'places'} match
               {activeCount === 0
-                ? 'Confirmed status is the default.'
-                : `${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
+                ? '. Confirmed status is the default.'
+                : ` · ${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
             </p>
           </div>
           <div className="flex items-center gap-1">
@@ -119,6 +125,50 @@ export function PlaceFilterPanel({
             </button>
           </div>
         </div>
+
+        {resultCount === 0 ? (
+          <section className="mt-4 rounded-card border border-border bg-canvas p-4" aria-label="No matching places guidance">
+            <h3 className="m-0 text-sm font-semibold text-ink">No public places match</h3>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Candidate records are not used as substitutes. Try a wider area or another public discovery path.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                className="motion-feedback min-h-10 rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink hover:bg-brand-50"
+                type="button"
+                onClick={onWidenArea}
+              >
+                Widen area
+              </button>
+              {!staleIncluded ? (
+                <button
+                  className="motion-feedback min-h-10 rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink hover:bg-brand-50"
+                  type="button"
+                  onClick={() =>
+                    onPatch({
+                      statuses: [...state.statuses, 'stale'],
+                      selectedPlace: null,
+                    })
+                  }
+                >
+                  Include Stale
+                </button>
+              ) : null}
+              <a
+                className="motion-feedback inline-flex min-h-10 items-center rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                href="/online"
+              >
+                Online Services
+              </a>
+              <a
+                className="motion-feedback inline-flex min-h-10 items-center rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                href="/suggest"
+              >
+                Suggest a Place
+              </a>
+            </div>
+          </section>
+        ) : null}
 
         <div className="mt-4 grid gap-5 lg:grid-cols-2">
           <FilterGroup
