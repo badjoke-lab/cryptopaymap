@@ -41,6 +41,7 @@ export interface OnlineServiceCardModel {
   assetSymbols: string[];
   networkSlugs: string[];
   acceptanceScopes: PublicOnlineClaim['acceptanceScope'][];
+  cover: PublicOnlineService['media'][number] | null;
   lastConfirmedAt: string;
 }
 
@@ -122,6 +123,7 @@ export function buildOnlineServiceCardModel(service: PublicOnlineService): Onlin
     assetSymbols: detail.assetSymbols,
     networkSlugs: detail.networkSlugs,
     acceptanceScopes: detail.acceptanceScopes,
+    cover: detail.cover,
     lastConfirmedAt: detail.lastConfirmedAt,
   };
 }
