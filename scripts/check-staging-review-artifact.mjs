@@ -66,6 +66,58 @@ for (const path of [
   }
 }
 
+const representativeRoutes = [
+  'index.html',
+  'places/index.html',
+  'place/staging-coffee-tokyo/index.html',
+  'online/index.html',
+  'service/staging-vpn/index.html',
+  'stats/index.html',
+  'updates/index.html',
+  'roadmap/index.html',
+  'changelog/index.html',
+  'about/index.html',
+  'methodology/index.html',
+  'data/index.html',
+  'privacy/index.html',
+  'terms/index.html',
+  'disclaimer/index.html',
+  'contact/index.html',
+  'support/index.html',
+  'partners/index.html',
+];
+
+for (const route of representativeRoutes) {
+  const html = await readText(route);
+  if (!html.includes('<!DOCTYPE html>') && !html.includes('<!doctype html>')) {
+    throw new Error(`Staging route did not produce an HTML document: ${route}`);
+  }
+}
+
+const placeDetailHtml = await readText('place/staging-coffee-tokyo/index.html');
+if (
+  !placeDetailHtml.includes('/staging-review/media/place-cover.webp') ||
+  !placeDetailHtml.includes('/staging-review/media/place-gallery.webp')
+) {
+  throw new Error('Staging Place detail does not expose both cover and gallery Media fixtures.');
+}
+
+const onlineIndexHtml = await readText('online/index.html');
+if (
+  !onlineIndexHtml.includes('/staging-review/media/service-cover.webp') ||
+  !onlineIndexHtml.includes('No approved public image')
+) {
+  throw new Error('Staging Online index must exercise Media and no-Media card states.');
+}
+
+const serviceDetailHtml = await readText('service/staging-vpn/index.html');
+if (
+  !serviceDetailHtml.includes('/staging-review/media/service-cover.webp') ||
+  !serviceDetailHtml.includes('/staging-review/media/service-gallery.webp')
+) {
+  throw new Error('Staging Online detail does not expose both cover and gallery Media fixtures.');
+}
+
 console.log(
-  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, with public Media coverage.`,
+  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${representativeRoutes.length} representative routes, with public Media coverage.`,
 );
