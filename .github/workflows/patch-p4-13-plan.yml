@@ -1,0 +1,42 @@
+name: Patch P4-13 implementation status
+
+on:
+  push:
+    branches:
+      - work/public-release-surfaces
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/public-release-surfaces
+          fetch-depth: 0
+      - name: Patch Phase 4 table
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/IMPLEMENTATION_PLAN.md')
+          text = path.read_text()
+          replacements = {
+            '| P4-12 | Updates | In progress | public updates export | #115 |': '| P4-12 | Updates | Completed | public updates export | #115 |',
+            '| P4-13 | Public Roadmap and Changelog release surfaces | Planned | content loaders | — |': '| P4-13 | Public Roadmap and Changelog release surfaces | In progress | content loaders | #116 |',
+          }
+          for old, new in replacements.items():
+              if old not in text:
+                  raise SystemExit(f'Expected plan text not found: {old}')
+              text = text.replace(old, new, 1)
+          path.write_text(text)
+          PY
+      - name: Commit plan status
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/IMPLEMENTATION_PLAN.md
+          git commit -m "P4-13A: advance Phase 4 implementation status"
+          git push origin HEAD:work/public-release-surfaces
