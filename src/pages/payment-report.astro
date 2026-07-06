@@ -1,0 +1,16 @@
+---
+import ContributionRoutePlaceholder from '../components/public/ContributionRoutePlaceholder.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Report a payment attempt | CryptoPayMap"
+  description="Status of the future CryptoPayMap payment-attempt reporting workflow."
+>
+  <ContributionRoutePlaceholder
+    eyebrow="Payment report"
+    title="Report a payment attempt"
+    description="This route is reserved for reporting a successful or failed cryptocurrency payment attempt for an existing public record."
+    futureCapability="The future workflow will capture the target record, attempt date, success or failure, asset, network, route, payment method, instructions observed, and optional evidence without asking for unnecessary wallet or transaction-identifying data."
+  />
+</BaseLayout>
