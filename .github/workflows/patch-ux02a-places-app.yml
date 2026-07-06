@@ -1,0 +1,107 @@
+name: Patch UX-02A PlacesApp
+
+on:
+  push:
+    branches:
+      - work/places-ux-contract-correction
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: work/places-ux-contract-correction
+          fetch-depth: 0
+      - name: Patch PlacesApp detail workspace
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('src/components/places/PlacesApp.tsx')
+          text = path.read_text()
+
+          text = text.replace(
+            "import { List, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';",
+            "import { List, Map as MapIcon, Search, SlidersHorizontal } from 'lucide-react';",
+            1,
+          )
+          text = text.replace(
+            "import { filterPinsByMapBounds } from './map-data';",
+            "import type { PublicPlace } from '../../public/place-detail';\nimport { filterPinsByMapBounds } from './map-data';\nimport { DesktopSelectedPlacePanel } from './DesktopSelectedPlacePanel';",
+            1,
+          )
+          text = text.replace(
+            "interface PlacesAppProps {\n  pins: PublicPlacePin[];\n}",
+            "interface PlacesAppProps {\n  pins: PublicPlacePin[];\n  places: PublicPlace[];\n}",
+            1,
+          )
+          text = text.replace(
+            "export function PlacesApp({ pins }: PlacesAppProps) {",
+            "export function PlacesApp({ pins, places }: PlacesAppProps) {",
+            1,
+          )
+          anchor = """  const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
+  const activeFilterCount ="""
+          replacement = """  const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
+  const placesBySlug = useMemo(
+    () => new Map(places.map((place) => [place.placeSlug, place])),
+    [places],
+  );
+  const selectedDetail = selected ? placesBySlug.get(selected.placeSlug) ?? null : null;
+  const activeFilterCount ="""
+          if anchor not in text:
+            raise SystemExit('selected anchor not found')
+          text = text.replace(anchor, replacement, 1)
+
+          start = text.index("\n            {selected ? (\n              <aside className=\"absolute bottom-3 left-4")
+          end_marker = "\n            ) : null}\n          </section>"
+          end = text.index(end_marker, start) + len("\n            ) : null}")
+          text = text[:start] + text[end:]
+
+          old = """          <div className={urlState.view === 'map' ? 'hidden lg:block' : 'block'}>
+            <PlaceResultList
+              pins={results}
+              selectedPlace={urlState.selectedPlace}
+              scrollOffset={listScrollOffset}
+              onScrollOffsetChange={setListScrollOffset}
+              onSelectPlace={selectPlace}
+              onClearFilters={clearFilters}
+            />
+          </div>"""
+          new = """          <div className={`${urlState.view === 'map' ? 'hidden lg:block' : 'block'} relative min-h-0`}>
+            <PlaceResultList
+              pins={results}
+              selectedPlace={urlState.selectedPlace}
+              scrollOffset={listScrollOffset}
+              onScrollOffsetChange={setListScrollOffset}
+              onSelectPlace={selectPlace}
+              onClearFilters={clearFilters}
+            />
+            {selected ? (
+              <div className="absolute inset-0 z-10 hidden bg-canvas lg:block">
+                <DesktopSelectedPlacePanel
+                  pin={selected}
+                  place={selectedDetail}
+                  onClear={clearSelection}
+                />
+              </div>
+            ) : null}
+          </div>"""
+          if old not in text:
+            raise SystemExit('right workspace anchor not found')
+          text = text.replace(old, new, 1)
+
+          path.write_text(text)
+          PY
+      - run: npx biome format --write src/components/places/PlacesApp.tsx
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/places/PlacesApp.tsx
+          git commit -m "UX-02A: use desktop result or selected Place workspace"
+          git push origin HEAD:work/places-ux-contract-correction
