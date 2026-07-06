@@ -1,0 +1,45 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  futureCapability: string;
+}
+
+const { eyebrow, title, description, futureCapability } = Astro.props;
+---
+
+<section class="safe-area-inline page-container py-8 sm:py-12 lg:py-16">
+  <div class="mx-auto max-w-3xl">
+    <header>
+      <p class="m-0 text-sm font-semibold text-brand-700">{eyebrow}</p>
+      <h1 class="mt-2 text-4xl font-semibold tracking-[-0.04em] text-ink sm:text-5xl">{title}</h1>
+      <p class="mt-4 text-base leading-7 text-muted">{description}</p>
+    </header>
+
+    <section class="mt-8 rounded-card border border-border bg-surface p-5 shadow-sm sm:p-7" aria-labelledby="submission-status-title">
+      <p class="m-0 text-sm font-semibold text-brand-700">Current availability</p>
+      <h2 id="submission-status-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+        Submission intake is not open on this build
+      </h2>
+      <p class="mt-3 text-base leading-7 text-muted">
+        {futureCapability} The public URL is reserved now so links remain stable, but this page does not send, store, or pretend to accept a submission.
+      </p>
+      <p class="mt-3 text-sm leading-6 text-muted">
+        Public submission workflows will only become active after their review, privacy, anti-abuse, status-tracking, and canonical-update boundaries are implemented together.
+      </p>
+    </section>
+
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/contribute">
+        Contribution overview
+      </a>
+      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/methodology">
+        Read the methodology
+      </a>
+      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/places">
+        Browse verified Places
+      </a>
+    </div>
+  </div>
+</section>
