@@ -150,7 +150,7 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
     () => new Map(places.map((place) => [place.placeSlug, place])),
     [places],
   );
-  const selectedDetail = selected ? placesBySlug.get(selected.placeSlug) ?? null : null;
+  const selectedDetail = selected ? (placesBySlug.get(selected.placeSlug) ?? null) : null;
   const activeFilterCount =
     urlState.assets.length +
     urlState.networks.length +
@@ -185,6 +185,13 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
     setBottomSheet('closed');
     setPendingViewport(null);
     setPendingBounds(null);
+  }
+
+  function widenArea() {
+    setActiveBounds(null);
+    setPendingViewport(null);
+    setPendingBounds(null);
+    setFocusViewport(null);
   }
 
   function searchPendingArea() {
@@ -247,7 +254,8 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
             <p className="m-0 text-sm font-semibold text-brand-700">Verified physical places</p>
             <h1 className="mt-1 text-4xl font-semibold tracking-[-0.035em] text-ink">Places</h1>
             <p className="mt-2 max-w-2xl text-base leading-6 text-muted">
-              Search reviewed public records by payment details. Candidate records are never shown here.
+              Search reviewed public records by payment details. Candidate records are never shown
+              here.
             </p>
           </div>
           <span className="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
@@ -258,12 +266,20 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
         <div className="mt-3 grid gap-2 lg:mt-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-3">
           <label className="relative block">
             <span className="sr-only">Search places</span>
-            <Search className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted" aria-hidden="true" />
+            <Search
+              className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted"
+              aria-hidden="true"
+            />
             <input
               className="min-h-12 w-full rounded-control border border-border bg-surface pl-11 pr-4 text-ink shadow-sm"
               type="search"
               value={urlState.search}
-              onChange={(event) => patchDiscoveryUrlState({ search: event.target.value, selectedPlace: null }, 'replace')}
+              onChange={(event) =>
+                patchDiscoveryUrlState(
+                  { search: event.target.value, selectedPlace: null },
+                  'replace',
+                )
+              }
               placeholder="Search place, category, city, or country"
             />
           </label>
@@ -285,11 +301,20 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
               onClick={() => setFilterPanelOpen(!filterPanelOpen)}
             >
               <SlidersHorizontal className="size-4" aria-hidden="true" /> Filters
-              {activeFilterCount > 0 ? <span className="rounded-pill bg-brand-50 px-2 py-0.5 text-xs text-brand-800">{activeFilterCount}</span> : null}
+              {activeFilterCount > 0 ? (
+                <span className="rounded-pill bg-brand-50 px-2 py-0.5 text-xs text-brand-800">
+                  {activeFilterCount}
+                </span>
+              ) : null}
             </button>
-            <fieldset className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden" aria-label="View mode">
+            <fieldset
+              className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden"
+              aria-label="View mode"
+            >
               <button
-                className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${urlState.view === 'map' ? 'bg-brand-600 text-white' : 'text-muted'}`}
+                className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
+                  urlState.view === 'map' ? 'bg-brand-600 text-white' : 'text-muted'
+                }`}
                 type="button"
                 aria-pressed={urlState.view === 'map'}
                 onClick={() => patchDiscoveryUrlState({ view: 'map' })}
@@ -297,7 +322,9 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
                 <MapIcon className="size-4" aria-hidden="true" /> Map
               </button>
               <button
-                className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${urlState.view === 'list' ? 'bg-brand-600 text-white' : 'text-muted'}`}
+                className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
+                  urlState.view === 'list' ? 'bg-brand-600 text-white' : 'text-muted'
+                }`}
                 type="button"
                 aria-pressed={urlState.view === 'list'}
                 onClick={() => patchDiscoveryUrlState({ view: 'list' })}
@@ -308,14 +335,20 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
           </div>
         </div>
 
-        {locationMessage ? <p className="mt-2 text-sm text-error" role="status">{locationMessage}</p> : null}
+        {locationMessage ? (
+          <p className="mt-2 text-sm text-error" role="status">
+            {locationMessage}
+          </p>
+        ) : null}
 
         {filterPanelOpen ? (
           <PlaceFilterPanel
             facets={facets}
             state={urlState}
+            resultCount={results.length}
             onPatch={(patch) => patchDiscoveryUrlState(patch)}
             onClear={clearFilters}
+            onWidenArea={widenArea}
             onClose={() => setFilterPanelOpen(false)}
           />
         ) : null}
@@ -343,7 +376,8 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
                 disabled={isLocating}
                 onClick={locateCurrentUser}
               >
-                <Crosshair className="size-4" aria-hidden="true" /> {isLocating ? 'Locating…' : 'Locate'}
+                <Crosshair className="size-4" aria-hidden="true" />{' '}
+                {isLocating ? 'Locating…' : 'Locate'}
               </button>
               <button
                 className="pointer-events-auto motion-feedback inline-flex min-h-11 items-center gap-1.5 rounded-control border border-border bg-surface/95 px-3 text-sm font-semibold text-ink shadow-sm backdrop-blur"
@@ -369,7 +403,9 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
             ) : null}
           </section>
 
-          <div className={`${urlState.view === 'map' ? 'hidden lg:block' : 'block'} relative min-h-0`}>
+          <div
+            className={`${urlState.view === 'map' ? 'hidden lg:block' : 'block'} relative min-h-0`}
+          >
             <PlaceResultList
               pins={results}
               selectedPlace={urlState.selectedPlace}
@@ -380,7 +416,11 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
             />
             {selected ? (
               <div className="absolute inset-0 z-10 hidden bg-canvas lg:block">
-                <DesktopSelectedPlacePanel pin={selected} place={selectedDetail} onClear={clearSelection} />
+                <DesktopSelectedPlacePanel
+                  pin={selected}
+                  place={selectedDetail}
+                  onClear={clearSelection}
+                />
               </div>
             ) : null}
           </div>
