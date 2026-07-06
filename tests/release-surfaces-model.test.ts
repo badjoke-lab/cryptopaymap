@@ -84,6 +84,18 @@ describe('public Roadmap and Changelog models', () => {
     expect(sections[1]?.description).toContain('not implementation commitments');
   });
 
+  it('requires Completed Roadmap entries to reference a Changelog release', () => {
+    const completedWithoutRelease = {
+      ...roadmapEntries[1],
+      id: 'missing-release',
+      release: undefined,
+    } as PublicRoadmapEntry;
+
+    expect(() => buildPublicRoadmapSections([completedWithoutRelease])).toThrow(
+      /requires a Changelog release/,
+    );
+  });
+
   it('removes draft Changelog entries and sorts published releases newest first', () => {
     const published = buildPublishedChangelogIndex(changelogEntries);
 
@@ -92,6 +104,17 @@ describe('public Roadmap and Changelog models', () => {
       'release-0-2-0',
       'release-0-1-0',
     ]);
+  });
+
+  it('rejects duplicate published Changelog versions', () => {
+    const duplicate = {
+      ...changelogEntries[0],
+      id: 'release-duplicate',
+    };
+
+    expect(() => buildPublishedChangelogIndex([...changelogEntries, duplicate])).toThrow(
+      /versions must be unique/,
+    );
   });
 
   it('uses stable release anchors for Roadmap links', () => {
