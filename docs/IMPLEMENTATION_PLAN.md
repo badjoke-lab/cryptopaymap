@@ -148,8 +148,8 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-12 | Updates | Completed | public updates export | #115 |
 | P4-13 | Public Roadmap and Changelog release surfaces | Completed | content loaders | #116 |
 | P4-14 | Trust, data, legal, and sustainability pages | Completed | public specifications | #117, #118 |
-| P4-15 | Public media integration | In progress | P3-10, P4-01 | #119 |
-| P4-16 | MVP-A integration and quality audit | Planned | P4-01 through P4-15 | — |
+| P4-15 | Public media integration | Completed | P3-10, P4-01 | #119 |
+| P4-16 | MVP-A integration and quality audit | In progress | P4-01 through P4-15 | #120 |
 
 ### Completed P4-01 delivery
 

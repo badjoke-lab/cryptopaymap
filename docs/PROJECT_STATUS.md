@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-15 — Public media integration
+P4-16 — MVP-A integration and quality audit
 
 ## Active work
 
-- P4-15A — public Media presentation integration
-- Branch: `work/p4-15-public-media`
-- Pull request: #119
+- P4-16A — staging acceptance coverage
+- Branch: `work/p4-16-staging-acceptance`
+- Pull request: #120
 
 ## Latest completed work
 
@@ -37,22 +37,23 @@ P4-15 — Public media integration
 - P4-12 Updates record-change surface completed through pull request #115
 - P4-13 Roadmap and Changelog release surfaces completed through pull request #116
 - P4-14 trust, data, legal, and sustainability pages completed through pull requests #117 and #118
+- P4-15 public Media integration completed through pull request #119
 
-## P4-15A in progress
+## P4-16A in progress
 
-- public Online Service cover media on result cards
-- Online Service detail cover media
-- shared Place and Online Service gallery presentation
-- attribution and license presentation
-- mobile horizontal gallery browsing
-- desktop gallery grid
-- approved-public media model coverage
+- synthetic staging Media fixtures
+- Place cover, gallery, and pin thumbnail acceptance coverage
+- Online Service cover and gallery acceptance coverage
+- Media and no-Media card states
+- representative public route artifact checks
+- staging-only noindex and synthetic-data safeguards retained
 
 ## Next
 
-1. Validate and merge P4-15A.
-2. Run P4-16 MVP-A integration and quality audit.
-3. Repeat responsive and staging acceptance checks across the complete MVP-A surface.
+1. Validate and merge P4-16A.
+2. Audit responsive navigation, Places Map/List/Filters/sheet restoration, and long-content overflow.
+3. Audit all MVP-A public routes on mobile and desktop staging views.
+4. Close remaining P4-16 integration defects before declaring Phase 4 repository work complete.
 
 ## Blocked
 
