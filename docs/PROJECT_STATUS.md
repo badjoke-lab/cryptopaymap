@@ -12,9 +12,9 @@ P4-16 — MVP-A integration and quality audit
 
 ## Active work
 
-- P4-16A — staging acceptance coverage
-- Branch: `work/p4-16-staging-acceptance`
-- Pull request: #120
+- P4-16B — mobile List and Map synchronization
+- Branch: `work/p4-16-list-map-integration`
+- Pull request: #121
 
 ## Latest completed work
 
@@ -38,21 +38,21 @@ P4-16 — MVP-A integration and quality audit
 - P4-13 Roadmap and Changelog release surfaces completed through pull request #116
 - P4-14 trust, data, legal, and sustainability pages completed through pull requests #117 and #118
 - P4-15 public Media integration completed through pull request #119
+- P4-16A staging acceptance coverage completed through pull request #120
 
-## P4-16A in progress
+## P4-16B in progress
 
-- synthetic staging Media fixtures
-- Place cover, gallery, and pin thumbnail acceptance coverage
-- Online Service cover and gallery acceptance coverage
-- Media and no-Media card states
-- representative public route artifact checks
-- staging-only noindex and synthetic-data safeguards retained
+- mobile List selection returns discovery to Map view
+- selected Place remains URL-owned and opens the mobile sheet
+- Map camera pans to the selected Place while preserving zoom
+- programmatic selection movement does not create Search this area state
+- integration tests cover List-to-Map and selected camera behavior
 
 ## Next
 
-1. Validate and merge P4-16A.
-2. Audit responsive navigation, Places Map/List/Filters/sheet restoration, and long-content overflow.
-3. Audit all MVP-A public routes on mobile and desktop staging views.
+1. Validate and merge P4-16B.
+2. Remove dead links to the planned Phase 5 submission URLs without prematurely implementing submission forms.
+3. Audit responsive navigation, Places Filters and sheet restoration, long-content overflow, and all MVP-A public routes.
 4. Close remaining P4-16 integration defects before declaring Phase 4 repository work complete.
 
 ## Blocked
