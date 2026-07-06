@@ -1,0 +1,72 @@
+---
+import PolicyPageShell from '../components/public/PolicyPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Partners | CryptoPayMap"
+  description="CryptoPayMap partnership categories, disclosure principles, provenance requirements, and verification independence."
+>
+  <PolicyPageShell
+    eyebrow="Partnerships"
+    title="Partnership principles"
+    description="CryptoPayMap may collaborate on data, payment integrations, regional verification, sponsorship, research, and tooling while keeping commercial relationships separate from verification status."
+  >
+    <div class="grid gap-9">
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Possible collaboration categories</h2>
+        <div class="mt-4 grid gap-4 md:grid-cols-2">
+          {
+            [
+              ['Data collaboration', 'Structured source sharing, change signals, provenance improvements, or public data interoperability.'],
+              ['Processor integration', 'Clearer checkout-route descriptions, merchant-specific integration evidence, and accurate payment-method documentation.'],
+              ['Regional verification', 'Locally informed review support while preserving evidence thresholds, scope checks, and auditability.'],
+              ['Research and tooling', 'Methods, open tooling, quality checks, or public-interest research that improves data accuracy and maintainability.'],
+              ['Sponsorship', 'Disclosed support that is visibly separated from confirmation status, ranking, review priority, and factual conclusions.'],
+            ].map(([title, description]) => (
+              <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+                <h3 class="m-0 text-lg font-semibold text-ink">{title}</h3>
+                <p class="mt-2 text-sm leading-6 text-muted">{description}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Verification remains independent</h2>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+          <li>A partner cannot purchase confirmed status.</li>
+          <li>Partner-provided data remains subject to identity, scope, provenance, freshness, evidence, and conflict review.</li>
+          <li>A processor relationship does not prove that every merchant enabled cryptocurrency checkout.</li>
+          <li>A business relationship does not suppress negative evidence or accurate public history.</li>
+          <li>Partnership status does not create ranking advantage or special treatment in public Stats.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Disclosure</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Partnerships are disclosed where relevant to the user, source relationship, or presentation. Sponsored presentation, if introduced, is visibly labeled and separated from confirmed acceptance status and organic ranking.
+        </p>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Data supplied by a partner</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          A partner can be an important source without becoming the final authority on every public claim. Submitted records retain provenance and are checked for the applicable merchant, branch, product, region, date, route, asset, network, and payment method. Conflicting evidence is reviewed rather than hidden.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Partnership contact</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          A dedicated private partnership contact method is not yet published. Public, non-sensitive project proposals may be raised through the project contact path. Do not place confidential commercial information or personal data in a public repository issue.
+        </p>
+        <a class="mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/contact">
+          Contact guidance
+        </a>
+      </section>
+    </div>
+  </PolicyPageShell>
+</BaseLayout>
