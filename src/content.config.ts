@@ -5,6 +5,7 @@ import { parsePublicOnlineServicesDocument } from './public/online-services';
 import { parsePublicPlacePinsDocument } from './public/places-discovery';
 import { parsePublicPlacesDocument } from './public/place-detail';
 import { parsePublicStatsDocument } from './public/stats';
+import { parsePublicUpdatesDocument } from './public/updates';
 
 const roadmap = defineCollection({
   loader: file('content/roadmap.yml'),
@@ -86,6 +87,16 @@ const publicStats = defineCollection({
   }),
 });
 
+const publicUpdates = defineCollection({
+  loader: file('public/data/updates.json', {
+    parser: (text) =>
+      parsePublicUpdatesDocument(JSON.parse(text) as unknown).map((update) => ({
+        id: update.updateKey,
+        update,
+      })),
+  }),
+});
+
 export const collections = {
   roadmap,
   changelog,
@@ -93,4 +104,5 @@ export const collections = {
   publicPlacePins,
   publicOnlineServices,
   publicStats,
+  publicUpdates,
 };
