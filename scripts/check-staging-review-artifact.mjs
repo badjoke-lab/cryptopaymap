@@ -51,7 +51,9 @@ const serviceWithMedia = services.records.find((record) => record.media.length >
 const pinWithThumbnail = pins.records.find((record) => record.thumbnail !== null);
 
 if (!placeWithMedia || !serviceWithMedia || !pinWithThumbnail) {
-  throw new Error('Staging review must exercise Place, Online Service, and pin Media presentation.');
+  throw new Error(
+    'Staging review must exercise Place, Online Service, and pin Media presentation.',
+  );
 }
 
 for (const path of [
