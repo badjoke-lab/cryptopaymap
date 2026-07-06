@@ -1,0 +1,99 @@
+---
+interface PublicMediaItem {
+  role: string;
+  url: string;
+  width: number;
+  height: number;
+  altText: string;
+  attribution: string | null;
+  licenseSlug: string | null;
+}
+
+interface Props {
+  media: PublicMediaItem[];
+  heading?: string;
+}
+
+const { media, heading = 'Approved public media' } = Astro.props;
+const featured = media.slice(0, 4);
+const remaining = media.slice(4);
+---
+
+{
+  media.length > 0 ? (
+    <section aria-labelledby="public-media-gallery-title">
+      <p class="m-0 text-sm font-semibold text-brand-700">Gallery</p>
+      <div class="mt-1 flex flex-wrap items-end justify-between gap-3">
+        <h2 id="public-media-gallery-title" class="m-0 text-2xl font-semibold tracking-tight text-ink">
+          {heading}
+        </h2>
+        <span class="text-xs font-semibold text-muted">
+          {media.length} {media.length === 1 ? 'image' : 'images'}
+        </span>
+      </div>
+
+      <div class="mt-5 flex snap-x snap-mandatory gap-3 overflow-x-auto pb-3 sm:hidden">
+        {media.map((item) => (
+          <figure class="m-0 w-[86%] shrink-0 snap-center overflow-hidden rounded-card border border-border bg-surface shadow-sm">
+            <img
+              class="aspect-[4/3] w-full object-cover"
+              src={item.url}
+              alt={item.altText}
+              width={item.width}
+              height={item.height}
+              loading="lazy"
+            />
+            {item.attribution ? (
+              <figcaption class="p-3 text-xs leading-5 text-muted">{item.attribution}</figcaption>
+            ) : null}
+          </figure>
+        ))}
+      </div>
+
+      <div class="mt-5 hidden sm:block">
+        <div class="grid gap-4 sm:grid-cols-2">
+          {featured.map((item) => (
+            <figure class="m-0 overflow-hidden rounded-card border border-border bg-surface shadow-sm">
+              <img
+                class="aspect-[4/3] w-full object-cover"
+                src={item.url}
+                alt={item.altText}
+                width={item.width}
+                height={item.height}
+                loading="lazy"
+              />
+              {item.attribution ? (
+                <figcaption class="p-3 text-xs leading-5 text-muted">{item.attribution}</figcaption>
+              ) : null}
+            </figure>
+          ))}
+        </div>
+
+        {remaining.length > 0 ? (
+          <details class="mt-4 rounded-card border border-border bg-surface p-4">
+            <summary class="motion-feedback flex min-h-11 cursor-pointer items-center font-semibold text-brand-700">
+              View all {media.length} gallery images
+            </summary>
+            <div class="mt-4 grid gap-4 sm:grid-cols-2">
+              {remaining.map((item) => (
+                <figure class="m-0 overflow-hidden rounded-card border border-border bg-canvas">
+                  <img
+                    class="aspect-[4/3] w-full object-cover"
+                    src={item.url}
+                    alt={item.altText}
+                    width={item.width}
+                    height={item.height}
+                    loading="lazy"
+                  />
+                  {item.attribution ? (
+                    <figcaption class="p-3 text-xs leading-5 text-muted">{item.attribution}</figcaption>
+                  ) : null}
+                </figure>
+              ))}
+            </div>
+          </details>
+        ) : null}
+      </div>
+    </section>
+  ) : null
+}
