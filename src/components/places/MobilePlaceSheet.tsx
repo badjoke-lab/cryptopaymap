@@ -1,12 +1,18 @@
 import { ChevronDown, ChevronUp, X } from 'lucide-react';
+import { useMemo, useRef } from 'react';
+import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import type { PublicPlacePin } from '../../public/places-discovery';
 import type { BottomSheetState } from '../../state/discovery-store';
 
 interface MobilePlaceSheetProps {
   place: PublicPlacePin | null;
+  detail?: PublicPlace | null;
   state: BottomSheetState;
   onStateChange: (state: BottomSheetState) => void;
+  onClose?: () => void;
 }
+
+const swipeThreshold = 48;
 
 function formatLabel(value: string): string {
   return value
@@ -24,22 +30,79 @@ function formatDate(value: string): string {
   }).format(new Date(value));
 }
 
-export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceSheetProps) {
+export function MobilePlaceSheet({
+  place,
+  detail = null,
+  state,
+  onStateChange,
+  onClose,
+}: MobilePlaceSheetProps) {
+  const touchStartY = useRef<number | null>(null);
+  const touchCurrentY = useRef<number | null>(null);
+  const detailModel = useMemo(() => (detail ? buildPlaceDetailModel(detail) : null), [detail]);
+
   if (!place || state === 'closed') return null;
 
   const expanded = state === 'expanded';
-  const location = [place.locality, place.countryCode].filter(Boolean).join(', ');
+  const primaryClaim = detailModel?.claims[0] ?? null;
+  const location = detailModel?.address || [place.locality, place.countryCode].filter(Boolean).join(', ');
+  const networks = detailModel?.networkSlugs ?? place.networkSlugs;
+  const routes = detailModel
+    ? [...new Set(detailModel.claims.map((claim) => claim.routeType))]
+    : place.routeTypes;
+  const processors = detailModel
+    ? [...new Set(detailModel.claims.map((claim) => claim.processorSlug).filter(Boolean))]
+    : [];
+  const assets = detailModel?.assetSymbols ?? place.assetSlugs.map(formatLabel);
+  const lastConfirmedAt = detailModel?.lastConfirmedAt ?? place.lastConfirmedAt;
+
+  function closeSheet() {
+    if (onClose) onClose();
+    else onStateChange('closed');
+  }
+
+  function handleTouchStart(event: React.TouchEvent<HTMLElement>) {
+    const touch = event.touches[0];
+    if (!touch) return;
+    touchStartY.current = touch.clientY;
+    touchCurrentY.current = touch.clientY;
+  }
+
+  function handleTouchMove(event: React.TouchEvent<HTMLElement>) {
+    const touch = event.touches[0];
+    if (!touch || touchStartY.current === null) return;
+    touchCurrentY.current = touch.clientY;
+  }
+
+  function handleTouchEnd() {
+    if (touchStartY.current === null || touchCurrentY.current === null) return;
+    const deltaY = touchCurrentY.current - touchStartY.current;
+
+    if (deltaY < -swipeThreshold) {
+      onStateChange('expanded');
+    } else if (deltaY > swipeThreshold && expanded) {
+      onStateChange('peek');
+    }
+
+    touchStartY.current = null;
+    touchCurrentY.current = null;
+  }
 
   return (
     <section
-      className={`fixed inset-x-0 bottom-0 z-40 rounded-t-card border-x border-t border-border bg-surface shadow-panel lg:hidden ${
-        expanded ? 'max-h-[78svh]' : 'max-h-48'
+      className={`fixed inset-x-0 bottom-0 z-40 flex flex-col rounded-t-card border-x border-t border-border bg-surface shadow-panel transition-[height] duration-normal motion-reduce:transition-none lg:hidden ${
+        expanded ? 'h-[88dvh]' : 'h-[35dvh] min-h-52'
       }`}
       aria-label={`Selected place: ${place.name}`}
       data-sheet-state={state}
     >
-      <div className="pb-[env(safe-area-inset-bottom)]">
-        <div className="relative border-b border-border px-4 pb-3 pt-2">
+      <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom)]">
+        <div
+          className="relative shrink-0 touch-pan-x border-b border-border px-4 pb-3 pt-2"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+        >
           <button
             className="motion-feedback mx-auto flex min-h-11 w-full items-center justify-center"
             type="button"
@@ -53,7 +116,7 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
             className="motion-feedback absolute right-2 top-2 flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas"
             type="button"
             aria-label="Close selected place"
-            onClick={() => onStateChange('closed')}
+            onClick={closeSheet}
           >
             <X className="size-5" aria-hidden="true" />
           </button>
@@ -70,19 +133,24 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
                 {formatLabel(place.status)}
               </span>
               <span className="text-xs font-medium text-muted">
-                Last confirmed {formatDate(place.lastConfirmedAt)}
+                Last confirmed {formatDate(lastConfirmedAt)}
               </span>
             </div>
             <h2 className="mt-2 text-lg font-semibold text-ink">{place.name}</h2>
-            <p className="mt-1 text-sm text-muted">
-              {place.assetSlugs.map(formatLabel).join(', ')}
-            </p>
+            <p className="mt-1 text-sm text-muted">{assets.join(', ')}</p>
           </div>
         </div>
 
         {expanded ? (
-          <div className="max-h-[52svh] overflow-y-auto px-4 py-4">
-            <dl className="grid gap-4 text-sm">
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+            {primaryClaim?.howToPay ? (
+              <section className="rounded-card border border-border bg-canvas p-4" aria-label="How to pay">
+                <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
+                <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
+              </section>
+            ) : null}
+
+            <dl className="mt-4 grid gap-4 text-sm">
               <div>
                 <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
                   Location
@@ -94,7 +162,7 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
                   Networks
                 </dt>
                 <dd className="mt-1 font-medium text-ink">
-                  {place.networkSlugs.map(formatLabel).join(', ')}
+                  {networks.map(formatLabel).join(', ')}
                 </dd>
               </div>
               <div>
@@ -102,16 +170,32 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
                   Payment routes
                 </dt>
                 <dd className="mt-1 font-medium text-ink">
-                  {place.routeTypes.map(formatLabel).join(', ')}
+                  {routes.map(formatLabel).join(', ')}
+                </dd>
+              </div>
+              {processors.length > 0 ? (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Processor
+                  </dt>
+                  <dd className="mt-1 font-medium text-ink">
+                    {processors.map(formatLabel).join(', ')}
+                  </dd>
+                </div>
+              ) : null}
+              <div>
+                <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  Merchant receives
+                </dt>
+                <dd className="mt-1 font-medium text-ink">
+                  {primaryClaim
+                    ? formatLabel(primaryClaim.merchantReceives)
+                    : 'Not publicly confirmed'}
                 </dd>
               </div>
             </dl>
 
-            <p className="mt-5 text-sm leading-6 text-muted">
-              Open the full record for payment instructions, evidence, restrictions, and history.
-            </p>
-
-            <div className="mt-4 grid grid-cols-2 gap-2">
+            <div className="mt-5 grid grid-cols-2 gap-2">
               <a
                 className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white no-underline hover:bg-brand-700"
                 href={`/place/${place.placeSlug}`}
@@ -119,8 +203,8 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
                 Payment details
               </a>
               <a
-                className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
-                href="/report"
+                className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control border border-border px-3 py-2 text-center text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                href={`/report?place=${encodeURIComponent(place.placeSlug)}`}
               >
                 Report a problem
               </a>
@@ -128,7 +212,7 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
           </div>
         ) : (
           <button
-            className="motion-feedback flex min-h-11 w-full items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-brand-700"
+            className="motion-feedback flex min-h-11 w-full shrink-0 items-center justify-center gap-2 px-4 py-2 text-sm font-semibold text-brand-700"
             type="button"
             onClick={() => onStateChange('expanded')}
           >
@@ -139,7 +223,7 @@ export function MobilePlaceSheet({ place, state, onStateChange }: MobilePlaceShe
 
         {expanded ? (
           <button
-            className="motion-feedback flex min-h-11 w-full items-center justify-center gap-2 border-t border-border px-4 py-2 text-sm font-semibold text-muted"
+            className="motion-feedback flex min-h-11 w-full shrink-0 items-center justify-center gap-2 border-t border-border px-4 py-2 text-sm font-semibold text-muted"
             type="button"
             onClick={() => onStateChange('peek')}
           >
