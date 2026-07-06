@@ -1,0 +1,76 @@
+---
+import PolicyPageShell from '../components/public/PolicyPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Disclaimer | CryptoPayMap"
+  description="Important limitations of CryptoPayMap payment-acceptance information, freshness, availability, and non-advisory status."
+>
+  <PolicyPageShell
+    eyebrow="Important limitations"
+    title="Disclaimer"
+    description="CryptoPayMap reduces uncertainty about cryptocurrency payment acceptance, but a reviewed record is not a guarantee that a payment will succeed in every future transaction."
+  >
+    <div class="grid gap-9">
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Verify before relying on a payment route</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Businesses, branches, products, checkout providers, supported assets, networks, restrictions, and payment instructions can change after the last confirmation date. Check the record status and last confirmed date, and verify important details with the business or service before making a special trip, reservation, purchase, or time-sensitive payment decision.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">What status means</h2>
+        <div class="mt-4 grid gap-4 md:grid-cols-3">
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-confirmed">Confirmed</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">The record met the published verification requirements at its last confirmation date. It is not a promise of future availability.</p>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-stale">Stale</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">The record needs fresh confirmation or has unresolved contradictory evidence. It is excluded from default active discovery.</p>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ended">Ended</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">Reviewed evidence shows that the listed route, option, location, business, or service ended. The record may remain as history.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">No financial, investment, tax, or legal advice</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          CryptoPayMap provides factual discovery and verification information about payment acceptance. It does not recommend purchasing, holding, selling, or using any particular cryptocurrency, network, wallet, business, service, processor, or financial product. Nothing on the site is financial, investment, tax, accounting, or legal advice.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Transactions remain between the parties involved</h2>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+          <li>CryptoPayMap is not the merchant, service provider, wallet provider, exchange, or payment processor for listed transactions.</li>
+          <li>CryptoPayMap does not custody customer funds or guarantee merchant performance, refunds, delivery, exchange rates, fees, network confirmation time, or processor availability.</li>
+          <li>Cryptocurrency transactions may be irreversible. Verify recipient, asset, network, amount, invoice, and checkout instructions before authorizing a payment.</li>
+          <li>Regional law, sanctions, eligibility, taxes, age limits, account requirements, and service terms may affect whether a listed service can be used by a particular person.</li>
+        </ul>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Coverage is not universal</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Public Stats describe the CryptoPayMap published dataset, not the entire global cryptocurrency-payment market. Absence from CryptoPayMap does not prove that a business does not accept cryptocurrency, and presence in a private candidate source does not make a business publicly confirmed.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Report problems</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Records can be challenged and corrected through the applicable structured contribution paths as they become available. Public project issues can also be reported through the Contact page, but private receipts, wallet addresses, ownership proof, status secrets, or personal information must not be posted in a public issue.
+        </p>
+        <a class="mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700" href="/contact">
+          Contact and correction guidance
+        </a>
+      </section>
+    </div>
+  </PolicyPageShell>
+</BaseLayout>

@@ -12,9 +12,9 @@ P4-14 — Trust, data, legal, and sustainability pages
 
 ## Active work
 
-- P4-14A — public trust and data pages
-- Branch: `work/public-trust-data-pages`
-- Pull request: #117
+- P4-14B — public legal and sustainability pages
+- Branch: `work/public-legal-sustainability-pages`
+- Pull request: #118
 
 ## Latest completed work
 
@@ -36,24 +36,27 @@ P4-14 — Trust, data, legal, and sustainability pages
 - Responsive mobile and desktop interaction boundaries completed through pull request #114
 - P4-12 Updates record-change surface completed through pull request #115
 - P4-13 Roadmap and Changelog release surfaces completed through pull request #116
+- P4-14A public trust and data pages completed through pull request #117
 
-## P4-14A in progress
+## P4-14B in progress
 
-- shared public trust-page shell and navigation
-- About page
-- Methodology page
-- Sources and Licenses page
-- Data page
-- verification, Candidate privacy, provenance, and licensing boundaries
-- current live artifact links separated from schema-defined future exports
-- public-page contract tests and internal-information leakage guards
+- shared policy-page shell and navigation
+- Privacy page
+- Terms page
+- Disclaimer page
+- Contact page
+- Support page
+- Partners page
+- privacy minimization, geolocation, restricted-evidence, retention, and deletion explanations
+- contribution review and media-rights boundaries
+- support and partnership independence from verification and ranking
+- footer navigation and public-page contract tests
 
 ## Next
 
-1. Validate and merge pull request #117.
-2. Build P4-14B privacy, terms, disclaimer, contact, support, and partners pages.
-3. Integrate public Media in P4-15.
-4. Run the P4-16 MVP-A integration and quality audit, including responsive and staging acceptance checks.
+1. Validate and merge pull request #118.
+2. Integrate public Media in P4-15.
+3. Run the P4-16 MVP-A integration and quality audit, including responsive and staging acceptance checks.
 
 ## Blocked
 

@@ -1,0 +1,80 @@
+---
+import PolicyPageShell from '../components/public/PolicyPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const repositoryIssuesUrl = 'https://github.com/badjoke-lab/cryptopaymap/issues';
+---
+
+<BaseLayout
+  title="Contact | CryptoPayMap"
+  description="How to contact CryptoPayMap about public project issues, record corrections, privacy and rights matters, payment reports, and business claims."
+>
+  <PolicyPageShell
+    eyebrow="Contact"
+    title="Contact and correction paths"
+    description="Use the channel that matches the issue. Public project discussion and private evidence have different handling requirements."
+  >
+    <div class="grid gap-9">
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Public project issues</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Reproducible site bugs, broken public routes, accessibility problems, and other non-sensitive project issues can be reported through the public repository issue tracker.
+        </p>
+        <a
+          class="mt-4 inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
+          href={repositoryIssuesUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Open the public issue tracker
+        </a>
+        <div class="mt-4 rounded-control bg-brand-50 p-4 text-sm leading-6 text-ink">
+          Do not post receipts, wallet addresses, transaction URLs, ownership proof, private correspondence, personal information, status secrets, signed URLs, or security-sensitive details in a public issue.
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Structured record and contribution paths</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          CryptoPayMap defines separate workflows for factual corrections and contributions. These routes are introduced with the public submissions phase so that private evidence can be separated from public discussion and reviewed before any canonical change.
+        </p>
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
+          {
+            [
+              ['Suggest', 'Suggest a new place or online service for review.', '/suggest'],
+              ['Payment report', 'Report a successful or failed payment attempt.', '/payment-report'],
+              ['Problem report', 'Report ended acceptance, closure, wrong instructions, wrong address, duplicate records, rights issues, or privacy concerns.', '/report'],
+              ['Business claim', 'Start verification of a business or service relationship.', '/claim'],
+              ['Photos', 'Submit rights-cleared public-gallery candidates for an existing record.', '/photos'],
+            ].map(([title, description, path]) => (
+              <article class="rounded-card border border-border bg-surface p-5">
+                <h3 class="m-0 text-lg font-semibold text-ink">{title}</h3>
+                <p class="mt-2 text-sm leading-6 text-muted">{description}</p>
+                <code class="mt-3 block text-sm text-brand-700">{path}</code>
+                <p class="mt-2 text-xs leading-5 text-muted">Available when the corresponding public submission workflow is enabled.</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Urgent privacy, rights, or safety exposure</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          A credible privacy, rights, or safety report can cause the affected public material to be restricted or removed while review continues. Until the structured private report path is enabled, do not place sensitive evidence in the public issue tracker. The project will publish a private contact method before private contribution intake opens.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">What happens after a structured report</h2>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+          <li>The report is validated and separated from canonical public data.</li>
+          <li>The target, issue type, evidence, and possible status or visibility impact are reviewed.</li>
+          <li>A single ordinary failure report does not automatically end a confirmed claim.</li>
+          <li>Valid factual, privacy, rights, and legal correction requests are handled independently from business relationships or support.</li>
+          <li>No public change is announced until the resulting publication succeeds.</li>
+        </ul>
+      </section>
+    </div>
+  </PolicyPageShell>
+</BaseLayout>

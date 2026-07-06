@@ -1,0 +1,132 @@
+---
+import PolicyPageShell from '../components/public/PolicyPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Privacy | CryptoPayMap"
+  description="How CryptoPayMap minimizes personal data, separates private evidence from public records, handles geolocation and analytics, and applies retention and deletion rules."
+>
+  <PolicyPageShell
+    eyebrow="Privacy"
+    title="Privacy"
+    description="CryptoPayMap is designed to publish reviewed payment-acceptance facts without turning private evidence, submission contacts, or precise user activity into public data."
+  >
+    <div class="grid gap-9">
+      <section class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Public browsing</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Ordinary browsing is served with the minimum delivery and aggregate analytics data needed to operate and protect the service. The MVP does not create a persistent user profile for ordinary public browsing.
+        </p>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Search analytics, where used, are limited to structured demand signals such as canonical country, city, asset, network, category, result-count bucket, and date. Raw coordinates, exact current location, full free-text queries, persistent device identifiers, private submission references, and status secrets are not retained for analytics.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Location access</h2>
+        <div class="mt-4 rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+          <ul class="grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+            <li>Browser geolocation is requested only after a user action.</li>
+            <li>Manual search remains available without location access.</li>
+            <li>Precise location history is not stored as a browsing profile.</li>
+            <li>Exact current location is not included in analytics.</li>
+            <li>A submission includes a business location only when the submitter intentionally identifies that public place.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">What contribution workflows may collect</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          When public contribution intake is enabled, a submission may contain factual business and payment details, evidence URLs, optional contact information, private payment evidence, media, relationship disclosure, or ownership-verification material. Each category has a separate purpose, visibility, retention, and deletion path.
+        </p>
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ink">We do not ask ordinary payment reports for</h3>
+            <ul class="mt-3 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>legal name;</li>
+              <li>payment amount;</li>
+              <li>wallet address;</li>
+              <li>private key or seed phrase;</li>
+              <li>full transaction history;</li>
+              <li>government identity document;</li>
+              <li>unrelated account credentials.</li>
+            </ul>
+          </article>
+          <article class="rounded-card border border-border bg-surface p-5">
+            <h3 class="m-0 text-lg font-semibold text-ink">Submitters should remove unnecessary</h3>
+            <ul class="mt-3 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>personal names and addresses;</li>
+              <li>wallet identifiers and balances;</li>
+              <li>unrelated transaction history;</li>
+              <li>private order details;</li>
+              <li>device and account information.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Private evidence stays private</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Receipts, private transaction URLs, wallet addresses supplied as evidence, ownership-verification material, private correspondence, quarantine originals, signed private URLs, submission contacts, and status secrets are restricted data. A private item may support a reviewed public conclusion without the original material being published.
+        </p>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Public exports use explicit allowlisted projections and targeted leakage checks. They reject contact fields, IP addresses, private transaction URLs, receipt data, ownership proof, internal notes, private storage keys, audit payloads, and private queue state.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Media retention</h2>
+        <div class="mt-4 overflow-x-auto rounded-card border border-border bg-surface">
+          <table class="w-full min-w-[42rem] border-collapse text-left text-sm">
+            <thead>
+              <tr class="border-b border-border text-ink">
+                <th class="px-4 py-3 font-semibold">Category</th>
+                <th class="px-4 py-3 font-semibold">Initial retention rule</th>
+              </tr>
+            </thead>
+            <tbody class="text-muted">
+              <tr class="border-b border-border">
+                <td class="px-4 py-4 font-semibold text-ink">Rejected or duplicate upload</td>
+                <td class="px-4 py-4">Delete the object 30 days after submission closure.</td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-4 font-semibold text-ink">Private evidence media</td>
+                <td class="px-4 py-4">Delete 180 days after final resolution unless a documented review, dispute, security, or legal basis requires longer retention.</td>
+              </tr>
+              <tr class="border-b border-border">
+                <td class="px-4 py-4 font-semibold text-ink">Owner-verification proof</td>
+                <td class="px-4 py-4">Delete 90 days after completion, rejection, expiry, or revocation unless a documented basis requires longer retention.</td>
+              </tr>
+              <tr>
+                <td class="px-4 py-4 font-semibold text-ink">Approved public media</td>
+                <td class="px-4 py-4">Retain while published and review again when removal, replacement, rights expiry, or record retirement requires it.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-3 text-sm leading-6 text-muted">
+          After object deletion, limited non-reconstructive audit metadata such as a content hash, decision, reason code, deletion timestamp, and target relationship may remain where lawful and necessary for audit or duplicate control.
+        </p>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Purpose limitation</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Data collected for verification, abuse prevention, rights review, security, or contact is not repurposed into advertising profiles or sold as personal data. Temporary restricted data receives bounded retention and reviewable deletion handling.
+        </p>
+      </section>
+
+      <div class="flex flex-wrap gap-3 border-t border-border pt-6">
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/contact">
+          Contact and correction paths
+        </a>
+        <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/data">
+          Public data boundary
+        </a>
+      </div>
+    </div>
+  </PolicyPageShell>
+</BaseLayout>
