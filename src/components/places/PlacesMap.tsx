@@ -281,6 +281,23 @@ export function PlacesMap({
     });
   }, [committedViewport]);
 
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || runtimeState !== 'ready' || !selectedPlace) return;
+    const selectedPin = pins.find((pin) => pin.placeSlug === selectedPlace);
+    if (!selectedPin) return;
+
+    const current = map.getCenter();
+    if (
+      Math.abs(current.lat - selectedPin.latitude) < 0.000001 &&
+      Math.abs(current.lng - selectedPin.longitude) < 0.000001
+    ) {
+      return;
+    }
+
+    map.easeTo({ center: [selectedPin.longitude, selectedPin.latitude] });
+  }, [pins, runtimeState, selectedPlace]);
+
   return (
     <div className="relative h-[58svh] min-h-[28rem] max-h-[42rem] w-full lg:h-auto lg:max-h-none lg:min-h-[38rem]">
       <section className="absolute inset-0" aria-label="Interactive places map">

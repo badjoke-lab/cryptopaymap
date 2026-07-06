@@ -62,6 +62,22 @@ describe('PlacesApp shell', () => {
     await waitFor(() => expect(window.location.search).toContain('place=example-coffee-tokyo'));
   });
 
+  it('switches list selection back to Map view and commits the selected Place', async () => {
+    window.history.replaceState({}, '', '/places?view=list');
+    render(<PlacesApp pins={pins} />);
+
+    await waitFor(() =>
+      expect(screen.getByRole('button', { name: 'List' })).toHaveAttribute('aria-pressed', 'true'),
+    );
+    fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: 'Map' })).toHaveAttribute('aria-pressed', 'true');
+      expect(window.location.search).toContain('place=example-coffee-tokyo');
+      expect(window.location.search).not.toContain('view=list');
+    });
+  });
+
   it('moves the mobile selected Place sheet through peek, expanded, and closed states', async () => {
     render(<PlacesApp pins={pins} />);
     fireEvent.click(screen.getByRole('button', { name: /Select Example Coffee on map/ }));
