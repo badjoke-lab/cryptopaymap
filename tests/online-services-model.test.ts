@@ -60,7 +60,28 @@ const service: PublicOnlineService = {
       ],
     },
   ],
-  media: [],
+  media: [
+    {
+      role: 'cover',
+      url: 'https://media.example.com/example-vpn-cover.webp',
+      mimeType: 'image/webp',
+      width: 1600,
+      height: 900,
+      altText: 'Example VPN product dashboard',
+      attribution: 'Example VPN',
+      licenseSlug: null,
+    },
+    {
+      role: 'gallery',
+      url: 'https://media.example.com/example-vpn-checkout.webp',
+      mimeType: 'image/webp',
+      width: 960,
+      height: 720,
+      altText: 'Example VPN cryptocurrency checkout screen',
+      attribution: 'Example VPN',
+      licenseSlug: null,
+    },
+  ],
   provenance: [
     {
       sourceName: 'Example VPN',
@@ -73,7 +94,7 @@ const service: PublicOnlineService = {
 };
 
 describe('Online Services public model', () => {
-  it('builds a status-aware payment detail model', () => {
+  it('builds a status-aware payment detail model with public media separation', () => {
     const model = buildOnlineServiceDetailModel(service);
 
     expect(model.status).toBe('confirmed');
@@ -81,10 +102,12 @@ describe('Online Services public model', () => {
     expect(model.networkSlugs).toEqual(['bitcoin']);
     expect(model.processorSlugs).toEqual(['example-processor']);
     expect(model.acceptanceScopes).toEqual(['all_checkout']);
+    expect(model.cover?.role).toBe('cover');
+    expect(model.gallery.map((media) => media.role)).toEqual(['gallery']);
     expect(model.lastConfirmedAt).toBe('2026-06-20T00:00:00Z');
   });
 
-  it('builds a compact public card model', () => {
+  it('builds a compact public card model with approved cover media', () => {
     expect(buildOnlineServiceCardModel(service)).toMatchObject({
       serviceSlug: 'example-vpn',
       name: 'Example VPN',
@@ -93,6 +116,10 @@ describe('Online Services public model', () => {
       assetSymbols: ['BTC'],
       networkSlugs: ['bitcoin'],
       acceptanceScopes: ['all_checkout'],
+      cover: {
+        role: 'cover',
+        url: 'https://media.example.com/example-vpn-cover.webp',
+      },
     });
   });
 
