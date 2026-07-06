@@ -100,10 +100,7 @@ describe('public Roadmap and Changelog models', () => {
     const published = buildPublishedChangelogIndex(changelogEntries);
 
     expect(published.map((entry) => entry.id)).toEqual(['release-current', 'release-old']);
-    expect(published.map((entry) => entry.anchor)).toEqual([
-      'release-0-2-0',
-      'release-0-1-0',
-    ]);
+    expect(published.map((entry) => entry.anchor)).toEqual(['release-0-2-0', 'release-0-1-0']);
   });
 
   it('rejects duplicate published Changelog versions', () => {
@@ -118,8 +115,6 @@ describe('public Roadmap and Changelog models', () => {
   });
 
   it('uses stable release anchors for Roadmap links', () => {
-    expect(changelogReleaseHref('0.12.0-beta 1')).toBe(
-      '/changelog#release-0-12-0-beta-1',
-    );
+    expect(changelogReleaseHref('0.12.0-beta 1')).toBe('/changelog#release-0-12-0-beta-1');
   });
 });

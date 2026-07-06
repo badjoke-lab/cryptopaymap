@@ -65,7 +65,10 @@ export const roadmapStatusLabels: Record<RoadmapStatus, string> = {
 };
 
 export function changelogReleaseAnchor(version: string): string {
-  return `release-${version.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+  return `release-${version
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')}`;
 }
 
 export function changelogReleaseHref(version: string): string {
