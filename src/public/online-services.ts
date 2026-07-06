@@ -7,6 +7,7 @@ import {
 export type PublicOnlineService = z.infer<typeof publicOnlineServiceSchema>;
 export type PublicOnlineClaim = PublicOnlineService['claims'][number];
 export type PublicOnlineStatus = PublicOnlineClaim['status'];
+export type PublicOnlineMedia = PublicOnlineService['media'][number];
 
 export interface OnlineServicePayment {
   assetSlug: string;
@@ -27,8 +28,8 @@ export interface OnlineServiceDetailModel {
   networkSlugs: string[];
   processorSlugs: string[];
   acceptanceScopes: PublicOnlineClaim['acceptanceScope'][];
-  cover: PublicOnlineService['media'][number] | null;
-  gallery: PublicOnlineService['media'];
+  cover: PublicOnlineMedia | null;
+  gallery: PublicOnlineMedia[];
   lastConfirmedAt: string;
 }
 
@@ -41,6 +42,7 @@ export interface OnlineServiceCardModel {
   assetSymbols: string[];
   networkSlugs: string[];
   acceptanceScopes: PublicOnlineClaim['acceptanceScope'][];
+  cover: PublicOnlineMedia | null;
   lastConfirmedAt: string;
 }
 
@@ -122,6 +124,7 @@ export function buildOnlineServiceCardModel(service: PublicOnlineService): Onlin
     assetSymbols: detail.assetSymbols,
     networkSlugs: detail.networkSlugs,
     acceptanceScopes: detail.acceptanceScopes,
+    cover: detail.cover,
     lastConfirmedAt: detail.lastConfirmedAt,
   };
 }
