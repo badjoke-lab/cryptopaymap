@@ -42,7 +42,7 @@ P4-15 — Public media integration
 
 - public Online Service cover media on result cards
 - Online Service detail cover media
-- approved public gallery presentation
+- shared Place and Online Service gallery presentation
 - attribution and license presentation
 - mobile horizontal gallery browsing
 - desktop gallery grid
