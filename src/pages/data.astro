@@ -1,0 +1,144 @@
+---
+import TrustPageShell from '../components/public/TrustPageShell.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const availableFiles = [
+  {
+    path: '/data/place-pins.json',
+    label: 'Place pins',
+    description: 'Compact public projection used by Places map and list discovery.',
+  },
+  {
+    path: '/data/places.json',
+    label: 'Places',
+    description: 'Published physical-place records with reviewed acceptance claims and public provenance.',
+  },
+  {
+    path: '/data/online-services.json',
+    label: 'Online Services',
+    description: 'Published online-service records with reviewed checkout scope and payment details.',
+  },
+  {
+    path: '/data/stats.json',
+    label: 'Stats',
+    description: 'Aggregates derived from the current published dataset.',
+  },
+  {
+    path: '/data/updates.json',
+    label: 'Updates',
+    description: 'Structured changes to published acceptance records.',
+  },
+];
+---
+
+<BaseLayout
+  title="Data | CryptoPayMap"
+  description="CryptoPayMap public data files, publication boundaries, schema contracts, versioning, provenance, and reuse guidance."
+>
+  <TrustPageShell
+    eyebrow="Machine-readable public layer"
+    title="Public Data"
+    description="CryptoPayMap publishes reviewed public projections for discovery and reuse. Operational review data is not exposed as a public database or API."
+  >
+    <div class="grid gap-9">
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Available now</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          These files are part of the current public build. They are validated against explicit schemas before publication.
+        </p>
+        <div class="mt-5 grid gap-4 md:grid-cols-2">
+          {
+            availableFiles.map((file) => (
+              <article class="rounded-card border border-border bg-surface p-5 shadow-sm">
+                <h3 class="m-0 text-lg font-semibold text-ink">{file.label}</h3>
+                <code class="mt-2 block break-all text-sm text-brand-700">{file.path}</code>
+                <p class="mt-3 text-sm leading-6 text-muted">{file.description}</p>
+                <a
+                  class="mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700 underline-offset-4 hover:underline"
+                  href={file.path}
+                >
+                  Open JSON
+                </a>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-brand-50 p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Publication boundary</h2>
+        <div class="mt-4 grid gap-5 md:grid-cols-2">
+          <div>
+            <h3 class="m-0 text-base font-semibold text-ink">Public projections may include</h3>
+            <ul class="mt-2 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>published confirmed, stale, or ended acceptance records;</li>
+              <li>approved public place and service details;</li>
+              <li>public evidence summaries and source links;</li>
+              <li>public verification history and status;</li>
+              <li>approved public media derivatives;</li>
+              <li>registries, aggregates, and record updates.</li>
+            </ul>
+          </div>
+          <div>
+            <h3 class="m-0 text-base font-semibold text-ink">Public projections exclude</h3>
+            <ul class="mt-2 grid list-disc gap-2 pl-5 text-sm leading-6 text-muted">
+              <li>private candidates and review queues;</li>
+              <li>internal notes and reviewer-only decisions;</li>
+              <li>submission contacts and ownership proof;</li>
+              <li>private receipts, transaction URLs, and evidence originals;</li>
+              <li>quarantine media and signed private URLs;</li>
+              <li>credentials, tokens, and infrastructure secrets.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Schema-defined export family</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          The publication schema defines a wider canonical export family so additional projections can be activated without inventing incompatible formats. A schema-defined path is not represented as available until the corresponding artifact is actually published.
+        </p>
+        <div class="mt-4 grid gap-2 rounded-card border border-border bg-surface p-5 text-sm text-muted sm:grid-cols-2">
+          <code>/data/locations-osm.json</code>
+          <code>/data/acceptance-claims.json</code>
+          <code>/data/place-pins.json</code>
+          <code>/data/places.json</code>
+          <code>/data/places.geojson</code>
+          <code>/data/online-services.json</code>
+          <code>/data/stats.json</code>
+          <code>/data/updates.json</code>
+          <code>/data/assets.json</code>
+          <code>/data/networks.json</code>
+          <code>/data/manifest.json</code>
+          <code>/version.json</code>
+        </div>
+      </section>
+
+      <section class="rounded-card border border-border bg-surface p-5 sm:p-6">
+        <h2 class="m-0 text-2xl font-semibold text-ink">Validation and versioning</h2>
+        <ul class="mt-4 grid list-disc gap-2 pl-5 text-base leading-7 text-muted">
+          <li>Public files use explicit schema versions and generated timestamps.</li>
+          <li>Publication validates a purpose-built public projection instead of serializing operational tables directly.</li>
+          <li>A failed export or invalid build does not replace the last valid public state.</li>
+          <li>Candidate data remains private even when it originated from a public source.</li>
+          <li>Combined convenience exports retain applicable provenance and component-license notices.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2 class="text-2xl font-semibold text-ink">Reuse and attribution</h2>
+        <p class="mt-3 text-base leading-7 text-muted">
+          Reuse depends on the component involved. OpenStreetMap-derived location data, CryptoPayMap-originated acceptance data, project-authored explanatory text, and media have separate license treatments. Review the Sources and Licenses page before reuse.
+        </p>
+        <div class="mt-5 flex flex-wrap gap-3">
+          <a class="motion-feedback inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href="/sources-and-licenses">
+            Read license boundaries
+          </a>
+          <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/methodology">
+            Read verification methodology
+          </a>
+        </div>
+      </section>
+    </div>
+  </TrustPageShell>
+</BaseLayout>
