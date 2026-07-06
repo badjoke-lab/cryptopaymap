@@ -75,6 +75,12 @@ export function changelogReleaseHref(version: string): string {
 export function buildPublicRoadmapSections(
   entries: readonly PublicRoadmapEntry[],
 ): PublicRoadmapSection[] {
+  for (const entry of entries) {
+    if (entry.status === 'completed' && !entry.release) {
+      throw new Error(`Completed Roadmap entry requires a Changelog release: ${entry.id}`);
+    }
+  }
+
   return roadmapSectionOrder
     .map((key) => ({
       key,
@@ -94,8 +100,17 @@ export function buildPublicRoadmapSections(
 export function buildPublishedChangelogIndex(
   entries: readonly PublicChangelogEntry[],
 ): PublishedChangelogEntry[] {
-  return entries
-    .filter((entry) => !entry.draft)
+  const published = entries.filter((entry) => !entry.draft);
+  const versions = new Set<string>();
+
+  for (const entry of published) {
+    if (versions.has(entry.version)) {
+      throw new Error(`Published Changelog versions must be unique: ${entry.version}`);
+    }
+    versions.add(entry.version);
+  }
+
+  return published
     .sort(
       (left, right) =>
         right.publishedAt.localeCompare(left.publishedAt) ||
