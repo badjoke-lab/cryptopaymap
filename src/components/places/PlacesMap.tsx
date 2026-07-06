@@ -87,6 +87,7 @@ export function PlacesMap({
 
     let active = true;
     let loaded = false;
+    let userViewportChangePending = false;
     let map: MapLibreMap | null = null;
     let observer: ResizeObserver | null = null;
     let loadTimeout: number | null = null;
@@ -99,7 +100,8 @@ export function PlacesMap({
     }
 
     function reportMovedViewport() {
-      if (!map || !loaded) return;
+      if (!map || !loaded || !userViewportChangePending) return;
+      userViewportChangePending = false;
       const center = map.getCenter();
       const nextViewport = normalizeMapViewport({
         latitude: center.lat,
@@ -203,6 +205,7 @@ export function PlacesMap({
           });
           map.on('click', clusterLayerId, async (event) => {
             if (!map) return;
+            userViewportChangePending = true;
             const feature = map.queryRenderedFeatures(event.point, { layers: [clusterLayerId] })[0];
             const clusterId = feature?.properties?.cluster_id;
             if (typeof clusterId !== 'number') return;
@@ -219,6 +222,13 @@ export function PlacesMap({
           map.on('mouseleave', pointLayerId, () => {
             if (map) map.getCanvas().style.cursor = '';
           });
+          const markUserViewportChange = (event: { originalEvent?: unknown }) => {
+            if (event.originalEvent) userViewportChangePending = true;
+          };
+          map.on('dragstart', markUserViewportChange);
+          map.on('zoomstart', markUserViewportChange);
+          map.on('rotatestart', markUserViewportChange);
+          map.on('pitchstart', markUserViewportChange);
           map.on('moveend', reportMovedViewport);
 
           setRuntimeState('ready');
@@ -272,7 +282,7 @@ export function PlacesMap({
   }, [committedViewport]);
 
   return (
-    <div className="relative min-h-[38rem] w-full">
+    <div className="relative h-[58svh] min-h-[28rem] max-h-[42rem] w-full lg:h-auto lg:max-h-none lg:min-h-[38rem]">
       <section className="absolute inset-0" aria-label="Interactive places map">
         <div ref={containerRef} className="h-full w-full" />
       </section>
