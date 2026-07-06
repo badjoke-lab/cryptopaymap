@@ -4,6 +4,10 @@ async function readText(path) {
   return readFile(new URL(`../dist/${path}`, import.meta.url), 'utf8');
 }
 
+async function readBinary(path) {
+  return readFile(new URL(`../dist/${path}`, import.meta.url));
+}
+
 const marker = JSON.parse(await readText('staging-review.json'));
 if (marker.environment !== 'staging-review' || marker.syntheticData !== true) {
   throw new Error('Staging review marker is missing or invalid.');
@@ -42,6 +46,26 @@ for (const record of [...places.records, ...services.records]) {
   }
 }
 
+const placeWithMedia = places.records.find((record) => record.media.length >= 2);
+const serviceWithMedia = services.records.find((record) => record.media.length >= 2);
+const pinWithThumbnail = pins.records.find((record) => record.thumbnail !== null);
+
+if (!placeWithMedia || !serviceWithMedia || !pinWithThumbnail) {
+  throw new Error('Staging review must exercise Place, Online Service, and pin Media presentation.');
+}
+
+for (const path of [
+  'staging-review/media/place-cover.webp',
+  'staging-review/media/place-gallery.webp',
+  'staging-review/media/service-cover.webp',
+  'staging-review/media/service-gallery.webp',
+]) {
+  const file = await readBinary(path);
+  if (file.length < 100 || file.subarray(0, 4).toString('ascii') !== 'RIFF') {
+    throw new Error(`Invalid staging Media fixture: ${path}`);
+  }
+}
+
 console.log(
-  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services.`,
+  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, with public Media coverage.`,
 );
