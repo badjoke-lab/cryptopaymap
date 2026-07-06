@@ -148,7 +148,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
       : urlState.statuses.length);
 
   function selectPlace(placeSlug: string) {
-    patchDiscoveryUrlState({ selectedPlace: placeSlug });
+    patchDiscoveryUrlState({ selectedPlace: placeSlug, view: 'map' });
     setBottomSheet('peek');
   }
 
