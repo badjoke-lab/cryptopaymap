@@ -1,12 +1,13 @@
 ---
 import type { OnlineServiceDetailModel } from '../../public/online-services';
+import PublicMediaGallery from './PublicMediaGallery.astro';
 
 interface Props {
   model: OnlineServiceDetailModel;
 }
 
 const { model } = Astro.props;
-const { service, status, claims } = model;
+const { service, status, claims, cover, gallery } = model;
 const formatLabel = (value: string) =>
   value
     .split('_')
@@ -28,23 +29,54 @@ const formatDate = (value: string) =>
     <span aria-current="page">{service.name}</span>
   </nav>
 
-  <header class="mt-5 rounded-card border border-border bg-surface p-5 shadow-panel sm:p-7">
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-semibold text-muted">
-        {formatLabel(status)}
-      </span>
-      <span class="text-sm font-medium text-muted">{formatLabel(service.categorySlug)}</span>
-    </div>
-    <div class="mt-3 grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-      <div>
-        <h1 class="m-0 text-3xl font-semibold tracking-[-0.035em] text-ink sm:text-5xl">{service.name}</h1>
-        <p class="mt-3 max-w-3xl text-base leading-7 text-muted">
-          {service.countryCode ? `Region: ${service.countryCode}` : 'Global or service-defined availability'}
-        </p>
+  <header class="mt-5 overflow-hidden rounded-card border border-border bg-surface shadow-panel">
+    {
+      cover ? (
+        <div class="bg-canvas">
+          <img
+            class="aspect-[16/7] w-full object-cover"
+            src={cover.url}
+            alt={cover.altText}
+            width={cover.width}
+            height={cover.height}
+            decoding="async"
+          />
+          {(cover.attribution || cover.licenseSlug) ? (
+            <p class="m-0 border-t border-border px-4 py-2 text-xs text-muted">
+              {cover.attribution ?? ''}{cover.attribution && cover.licenseSlug ? ' · ' : ''}{cover.licenseSlug ? `License: ${cover.licenseSlug}` : ''}
+            </p>
+          ) : null}
+        </div>
+      ) : (
+        <div class="flex aspect-[16/7] items-center justify-center bg-brand-50 px-6 text-center">
+          <div>
+            <p class="m-0 text-sm font-semibold uppercase tracking-[0.1em] text-brand-700">
+              {formatLabel(service.categorySlug)}
+            </p>
+            <p class="mt-2 text-lg font-medium text-muted">No approved public image</p>
+          </div>
+        </div>
+      )
+    }
+
+    <div class="p-5 sm:p-7">
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-semibold text-muted">
+          {formatLabel(status)}
+        </span>
+        <span class="text-sm font-medium text-muted">{formatLabel(service.categorySlug)}</span>
       </div>
-      <a class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href={service.websiteUrl} rel="external noopener">
-        Open official website
-      </a>
+      <div class="mt-3 grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+        <div>
+          <h1 class="m-0 text-3xl font-semibold tracking-[-0.035em] text-ink sm:text-5xl">{service.name}</h1>
+          <p class="mt-3 max-w-3xl text-base leading-7 text-muted">
+            {service.countryCode ? `Region: ${service.countryCode}` : 'Global or service-defined availability'}
+          </p>
+        </div>
+        <a class="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700" href={service.websiteUrl} rel="external noopener">
+          Open official website
+        </a>
+      </div>
     </div>
   </header>
 
@@ -97,6 +129,10 @@ const formatDate = (value: string) =>
       ))) }
     </div>
   </section>
+
+  <div class="mt-8">
+    <PublicMediaGallery media={gallery} title="Approved service media" />
+  </div>
 
   <div class="mt-8 flex flex-wrap gap-3 border-t border-border pt-6">
     <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 font-semibold text-ink no-underline hover:bg-brand-50" href="/payment-report">I paid here</a>

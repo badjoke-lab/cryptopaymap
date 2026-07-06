@@ -8,13 +8,13 @@ Phase 4 — Public core / MVP-A
 
 ## Current implementation item
 
-P4-14 — Trust, data, legal, and sustainability pages
+P4-15 — Public media integration
 
 ## Active work
 
-- P4-14B — public legal and sustainability pages
-- Branch: `work/public-legal-sustainability-pages`
-- Pull request: #118
+- P4-15A — public Media presentation integration
+- Branch: `work/p4-15-public-media`
+- Pull request: #119
 
 ## Latest completed work
 
@@ -36,27 +36,23 @@ P4-14 — Trust, data, legal, and sustainability pages
 - Responsive mobile and desktop interaction boundaries completed through pull request #114
 - P4-12 Updates record-change surface completed through pull request #115
 - P4-13 Roadmap and Changelog release surfaces completed through pull request #116
-- P4-14A public trust and data pages completed through pull request #117
+- P4-14 trust, data, legal, and sustainability pages completed through pull requests #117 and #118
 
-## P4-14B in progress
+## P4-15A in progress
 
-- shared policy-page shell and navigation
-- Privacy page
-- Terms page
-- Disclaimer page
-- Contact page
-- Support page
-- Partners page
-- privacy minimization, geolocation, restricted-evidence, retention, and deletion explanations
-- contribution review and media-rights boundaries
-- support and partnership independence from verification and ranking
-- footer navigation and public-page contract tests
+- public Online Service cover media on result cards
+- Online Service detail cover media
+- shared Place and Online Service gallery presentation
+- attribution and license presentation
+- mobile horizontal gallery browsing
+- desktop gallery grid
+- approved-public media model coverage
 
 ## Next
 
-1. Validate and merge pull request #118.
-2. Integrate public Media in P4-15.
-3. Run the P4-16 MVP-A integration and quality audit, including responsive and staging acceptance checks.
+1. Validate and merge P4-15A.
+2. Run P4-16 MVP-A integration and quality audit.
+3. Repeat responsive and staging acceptance checks across the complete MVP-A surface.
 
 ## Blocked
 

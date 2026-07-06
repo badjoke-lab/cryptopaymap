@@ -61,59 +61,84 @@ const formatDate = (value: string) =>
       ) : (
         <div class="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {services.map((service) => (
-            <article class="flex h-full flex-col rounded-card border border-border bg-surface p-5 shadow-sm">
-              <div class="flex flex-wrap items-center justify-between gap-2">
-                <span
-                  class:list={[
-                    'rounded-pill px-2.5 py-1 text-xs font-semibold',
-                    service.status === 'confirmed'
-                      ? 'bg-confirmed/10 text-confirmed'
-                      : service.status === 'stale'
-                        ? 'bg-stale/10 text-stale'
-                        : 'bg-ended/10 text-ended',
-                  ]}
-                >
-                  {formatLabel(service.status)}
-                </span>
-                <span class="text-xs font-semibold text-muted">{formatLabel(service.categorySlug)}</span>
-              </div>
+            <article class="flex h-full flex-col overflow-hidden rounded-card border border-border bg-surface shadow-sm">
+              <a class="block bg-brand-50 no-underline" href={`/service/${service.serviceSlug}`}>
+                {service.cover ? (
+                  <img
+                    class="aspect-[16/9] w-full object-cover"
+                    src={service.cover.url}
+                    alt={service.cover.altText}
+                    width={service.cover.width}
+                    height={service.cover.height}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                ) : (
+                  <div class="flex aspect-[16/9] items-center justify-center px-5 text-center">
+                    <div>
+                      <p class="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+                        {formatLabel(service.categorySlug)}
+                      </p>
+                      <p class="mt-2 text-sm font-medium text-muted">No approved public image</p>
+                    </div>
+                  </div>
+                )}
+              </a>
 
-              <h3 class="mt-4 text-xl font-semibold text-ink">
-                <a class="text-inherit no-underline hover:text-brand-700" href={`/service/${service.serviceSlug}`}>
-                  {service.name}
-                </a>
-              </h3>
-              <p class="mt-1 text-sm text-muted">
-                {service.countryCode ? `Region: ${service.countryCode}` : 'Global or service-defined availability'}
-              </p>
+              <div class="flex flex-1 flex-col p-5">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span
+                    class:list={[
+                      'rounded-pill px-2.5 py-1 text-xs font-semibold',
+                      service.status === 'confirmed'
+                        ? 'bg-confirmed/10 text-confirmed'
+                        : service.status === 'stale'
+                          ? 'bg-stale/10 text-stale'
+                          : 'bg-ended/10 text-ended',
+                    ]}
+                  >
+                    {formatLabel(service.status)}
+                  </span>
+                  <span class="text-xs font-semibold text-muted">{formatLabel(service.categorySlug)}</span>
+                </div>
 
-              <dl class="mt-5 grid gap-3 text-sm">
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Assets</dt>
-                  <dd class="mt-1 font-medium text-ink">{service.assetSymbols.join(', ')}</dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Networks</dt>
-                  <dd class="mt-1 font-medium text-ink">
-                    {service.networkSlugs.map(formatLabel).join(', ')}
-                  </dd>
-                </div>
-                <div>
-                  <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Availability</dt>
-                  <dd class="mt-1 font-medium text-ink">
-                    {service.acceptanceScopes.map(formatLabel).join(', ')}
-                  </dd>
-                </div>
-              </dl>
+                <h3 class="mt-4 text-xl font-semibold text-ink">
+                  <a class="text-inherit no-underline hover:text-brand-700" href={`/service/${service.serviceSlug}`}>
+                    {service.name}
+                  </a>
+                </h3>
+                <p class="mt-1 text-sm text-muted">
+                  {service.countryCode ? `Region: ${service.countryCode}` : 'Global or service-defined availability'}
+                </p>
 
-              <div class="mt-auto border-t border-border pt-4">
-                <p class="m-0 text-xs text-muted">Last confirmed {formatDate(service.lastConfirmedAt)}</p>
-                <a
-                  class="motion-feedback mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700"
-                  href={`/service/${service.serviceSlug}`}
-                >
-                  View payment details
-                </a>
+                <dl class="mt-5 grid gap-3 text-sm">
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Assets</dt>
+                    <dd class="mt-1 font-medium text-ink">{service.assetSymbols.join(', ')}</dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Networks</dt>
+                    <dd class="mt-1 font-medium text-ink">
+                      {service.networkSlugs.map(formatLabel).join(', ')}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt class="text-xs font-semibold uppercase tracking-[0.06em] text-muted">Availability</dt>
+                    <dd class="mt-1 font-medium text-ink">
+                      {service.acceptanceScopes.map(formatLabel).join(', ')}
+                    </dd>
+                  </div>
+                </dl>
+
+                <div class="mt-auto border-t border-border pt-4">
+                  <p class="m-0 text-xs text-muted">Last confirmed {formatDate(service.lastConfirmedAt)}</p>
+                  <a
+                    class="motion-feedback mt-3 inline-flex min-h-11 items-center font-semibold text-brand-700"
+                    href={`/service/${service.serviceSlug}`}
+                  >
+                    View payment details
+                  </a>
+                </div>
               </div>
             </article>
           ))}

@@ -1,0 +1,61 @@
+---
+interface PublicMediaItem {
+  role: string;
+  url: string;
+  mimeType: 'image/jpeg' | 'image/webp';
+  width: number;
+  height: number;
+  altText: string;
+  attribution: string | null;
+  licenseSlug: string | null;
+}
+
+interface Props {
+  media: PublicMediaItem[];
+  title?: string;
+}
+
+const { media, title = 'Approved public media' } = Astro.props;
+---
+
+{
+  media.length > 0 ? (
+    <section aria-labelledby="public-media-gallery-title">
+      <div class="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <p class="m-0 text-sm font-semibold text-brand-700">Gallery</p>
+          <h2 id="public-media-gallery-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+            {title}
+          </h2>
+        </div>
+        <span class="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
+          {media.length} {media.length === 1 ? 'image' : 'images'}
+        </span>
+      </div>
+
+      <div class="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:grid sm:snap-none sm:overflow-visible sm:pb-0 sm:grid-cols-2 lg:grid-cols-3">
+        {media.map((item) => (
+          <figure class="m-0 min-w-[82%] snap-center overflow-hidden rounded-card border border-border bg-surface shadow-sm sm:min-w-0">
+            <a href={item.url} target="_blank" rel="noreferrer" class="block bg-canvas">
+              <img
+                class="aspect-[4/3] w-full object-cover"
+                src={item.url}
+                alt={item.altText}
+                width={item.width}
+                height={item.height}
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            {(item.attribution || item.licenseSlug) ? (
+              <figcaption class="grid gap-1 p-3 text-xs leading-5 text-muted">
+                {item.attribution ? <span>{item.attribution}</span> : null}
+                {item.licenseSlug ? <span>License: {item.licenseSlug}</span> : null}
+              </figcaption>
+            ) : null}
+          </figure>
+        ))}
+      </div>
+    </section>
+  ) : null
+}
