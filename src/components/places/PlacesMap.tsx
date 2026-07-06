@@ -274,7 +274,7 @@ export function PlacesMap({
   return (
     <div className="relative min-h-[38rem] w-full">
       <section className="absolute inset-0" aria-label="Interactive places map">
-        <div ref={containerRef} className="absolute inset-0" />
+        <div ref={containerRef} className="h-full w-full" />
       </section>
       {runtimeState === 'loading' ? (
         <div className="absolute inset-0 flex items-center justify-center bg-brand-50/90 text-sm font-semibold text-muted">
