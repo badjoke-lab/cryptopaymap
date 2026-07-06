@@ -85,11 +85,17 @@ describe('public Roadmap and Changelog models', () => {
   });
 
   it('requires Completed Roadmap entries to reference a Changelog release', () => {
-    const completedWithoutRelease = {
-      ...roadmapEntries[1],
+    const completedWithoutRelease: PublicRoadmapEntry = {
       id: 'missing-release',
-      release: undefined,
-    } as PublicRoadmapEntry;
+      section: 'now',
+      order: 20,
+      title: 'Missing release',
+      status: 'completed',
+      lastUpdated: '2026-07-02',
+      outcome: 'A completed item without release metadata.',
+      includes: ['Discovery'],
+      dependsOn: ['Public data'],
+    };
 
     expect(() => buildPublicRoadmapSections([completedWithoutRelease])).toThrow(
       /requires a Changelog release/,
@@ -104,8 +110,8 @@ describe('public Roadmap and Changelog models', () => {
   });
 
   it('rejects duplicate published Changelog versions', () => {
-    const duplicate = {
-      ...changelogEntries[0],
+    const duplicate: PublicChangelogEntry = {
+      ...changelogEntries[0]!,
       id: 'release-duplicate',
     };
 
