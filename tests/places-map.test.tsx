@@ -32,15 +32,22 @@ class MockMap {
   readonly handlers: HandlerRegistration[] = [];
   readonly layers: Array<Record<string, unknown>> = [];
   readonly sources = new Map<string, MockGeoJsonSource>();
+  readonly images = new Map<string, unknown>();
+  readonly filters = new Map<string, unknown>();
   readonly options: Record<string, unknown>;
-  center = { lat: 35.681236, lng: 139.767125 };
-  zoom = 11;
+  center = { lat: 20, lng: 0 };
+  zoom = 2;
   canvas = { style: { cursor: '' } };
   renderedFeatures: Array<Record<string, unknown>> = [];
   removed = false;
 
   constructor(options: Record<string, unknown>) {
     this.options = options;
+    const center = options.center;
+    if (Array.isArray(center) && center.length >= 2) {
+      this.center = { lng: Number(center[0]), lat: Number(center[1]) };
+    }
+    if (typeof options.zoom === 'number') this.zoom = options.zoom;
     MockMap.latest = this;
   }
 
@@ -57,12 +64,20 @@ class MockMap {
     return this;
   }
 
+  addImage(id: string, image: unknown) {
+    this.images.set(id, image);
+  }
+
   addSource(id: string, source: { data: unknown }) {
     this.sources.set(id, new MockGeoJsonSource(source.data));
   }
 
   addLayer(layer: Record<string, unknown>) {
     this.layers.push(layer);
+  }
+
+  setFilter(layerId: string, filter: unknown) {
+    this.filters.set(layerId, filter);
   }
 
   getSource(id: string) {
@@ -162,7 +177,66 @@ afterEach(() => {
 });
 
 describe('PlacesMap renderer', () => {
-  it('registers public layers, synchronizes selection and camera, and reports user-moved viewport', async () => {
+  it('uses a stable broad default camera and street-map style instead of the first pin', async () => {
+    render(
+      <PlacesMap
+        pins={pins}
+        selectedPlace={null}
+        committedViewport={null}
+        onSelectPlace={vi.fn()}
+        onViewportChange={vi.fn()}
+      />,
+    );
+
+    await waitFor(() => expect(MockMap.latest).not.toBeNull());
+    const map = MockMap.latest;
+    if (!map) throw new Error('Map renderer did not initialize.');
+
+    expect(map.options.center).toEqual([0, 20]);
+    expect(map.options.zoom).toBe(2);
+    expect(map.options.style).toBe('https://tiles.openfreemap.org/styles/bright');
+  });
+
+  it('uses bounded Place focus for an initial selected Place and lets committed viewport win', async () => {
+    const firstRender = render(
+      <PlacesMap
+        pins={pins}
+        selectedPlace="example-coffee-tokyo"
+        committedViewport={null}
+        onSelectPlace={vi.fn()}
+        onViewportChange={vi.fn()}
+        styleUrl="/test-style.json"
+      />,
+    );
+
+    await waitFor(() => expect(MockMap.latest).not.toBeNull());
+    let map = MockMap.latest;
+    if (!map) throw new Error('Map renderer did not initialize.');
+    expect(map.options.center).toEqual([139.767125, 35.681236]);
+    expect(map.options.zoom).toBe(13);
+
+    firstRender.unmount();
+    MockMap.latest = null;
+
+    render(
+      <PlacesMap
+        pins={pins}
+        selectedPlace="example-coffee-tokyo"
+        committedViewport={{ latitude: 51.5074, longitude: -0.1278, zoom: 8.5 }}
+        onSelectPlace={vi.fn()}
+        onViewportChange={vi.fn()}
+        styleUrl="/test-style.json"
+      />,
+    );
+
+    await waitFor(() => expect(MockMap.latest).not.toBeNull());
+    map = MockMap.latest;
+    if (!map) throw new Error('Map renderer did not initialize.');
+    expect(map.options.center).toEqual([-0.1278, 51.5074]);
+    expect(map.options.zoom).toBe(8.5);
+  });
+
+  it('registers cluster circles and single-Place pin symbols, synchronizes selection, and reports user movement', async () => {
     const onSelectPlace = vi.fn();
     const onViewportChange = vi.fn();
 
@@ -189,7 +263,30 @@ describe('PlacesMap renderer', () => {
       'public-place-clusters',
       'public-place-cluster-count',
       'public-place-points',
+      'public-place-point-hover',
     ]);
+
+    expect(map.layers.find((layer) => layer.id === 'public-place-clusters')?.type).toBe('circle');
+    const pointLayer = map.layers.find((layer) => layer.id === 'public-place-points');
+    expect(pointLayer?.type).toBe('symbol');
+    expect(pointLayer?.layout).toMatchObject({
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    });
+    expect([...map.images.keys()]).toEqual([
+      'place-pin-confirmed',
+      'place-pin-stale',
+      'place-pin-selected-confirmed',
+      'place-pin-selected-stale',
+    ]);
+
+    const confirmedPin = map.images.get('place-pin-confirmed') as
+      | { width: number; height: number; data: Uint8Array }
+      | undefined;
+    expect(confirmedPin?.width).toBe(64);
+    expect(confirmedPin?.height).toBe(80);
+    expect(confirmedPin?.data.some((value) => value !== 0)).toBe(true);
 
     const source = map.sources.get('public-places');
     if (!source) throw new Error('Public Place source was not registered.');
@@ -223,6 +320,28 @@ describe('PlacesMap renderer', () => {
       ),
     );
     expect(onSelectPlace).toHaveBeenCalledWith('example-coffee-tokyo');
+
+    await act(async () =>
+      map.trigger(
+        'mouseenter',
+        { features: [{ properties: { placeSlug: 'example-coffee-tokyo' } }] },
+        'public-place-points',
+      ),
+    );
+    expect(map.canvas.style.cursor).toBe('pointer');
+    expect(map.filters.get('public-place-point-hover')).toEqual([
+      '==',
+      ['get', 'placeSlug'],
+      'example-coffee-tokyo',
+    ]);
+
+    await act(async () => map.trigger('mouseleave', {}, 'public-place-points'));
+    expect(map.canvas.style.cursor).toBe('');
+    expect(map.filters.get('public-place-point-hover')).toEqual([
+      '==',
+      ['get', 'placeSlug'],
+      '',
+    ]);
 
     await act(async () => map.trigger('moveend'));
     expect(onViewportChange).not.toHaveBeenCalled();
