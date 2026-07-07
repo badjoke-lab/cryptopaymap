@@ -132,7 +132,7 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 
 ## Phase 4 — Public core / MVP-A
 
-**Status:** In progress
+**Status:** Repository branch completed; pull request #122 draft review pending
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -151,13 +151,13 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-13 | Public Roadmap and Changelog release surfaces | Completed | content loaders | #116 |
 | P4-14 | Trust, data, legal, and sustainability pages | Completed | public specifications | #117, #118 |
 | P4-15 | Public media integration | Completed; selected-surface recovery completed by P4-17E/F | P3-10, P4-01 | #119, #122 |
-| P4-16 | MVP-A integration and quality audit | In progress; Places recovery under final validation | P4-01 through P4-15 | #120, #121, #122 |
+| P4-16 | MVP-A integration and quality audit | Completed | P4-01 through P4-15 | #120, #121, #122 |
 | P4-17A | Places contract and tracking correction | Completed | P4-16 findings | #122 |
 | P4-17B | Map presentation foundation recovery | Completed | P4-17A | #122 |
 | P4-17C | Place information and public projection recovery | Completed | P4-17A | #122 |
 | P4-17D | Desktop selected panel and mobile sheet recovery | Completed | P4-17B, P4-17C | #122 |
 | P4-17E | Gallery, image enlargement, and external navigation | Completed | P4-17C, P4-17D | #122 |
-| P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | In progress | P4-17B through P4-17E | #122 |
+| P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | Completed | P4-17B through P4-17E | #122 |
 
 ### Completed P4-01 delivery
 
@@ -201,7 +201,7 @@ P4-17 resolves the complete 17-point set in dependency order:
 16. deterministic selection semantics;
 17. durable acceptance and regression coverage.
 
-P4-17B through P4-17E are implemented. P4-17F remains open until Foundation validation, Migration drift, and Staging review validation all succeed on the same final branch head and the final audit matrix remains consistent with implementation and tests.
+P4-17A through P4-17F are implemented and validated. The final audit matrix remains the durable acceptance boundary for future Places changes.
 
 ## Phase 5 — Public submissions / MVP-B
 
