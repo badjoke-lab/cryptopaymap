@@ -306,11 +306,11 @@ export const publicPlaceSchema = z
     latitude: z.number().min(-90).max(90),
     longitude: z.number().min(-180).max(180),
     websiteUrl: publicUrlSchema.nullable(),
-    phone: z.string().trim().min(1).max(64).nullable(),
-    description: z.string().trim().min(1).max(5_000).nullable(),
-    openingHours: z.string().trim().min(1).max(2_000).nullable(),
-    amenities: z.array(z.string().trim().min(1).max(80)).max(100),
-    socialLinks: z.array(publicSocialLinkSchema).max(30),
+    phone: z.string().trim().min(1).max(64).nullable().optional(),
+    description: z.string().trim().min(1).max(5_000).nullable().optional(),
+    openingHours: z.string().trim().min(1).max(2_000).nullable().optional(),
+    amenities: z.array(z.string().trim().min(1).max(80)).max(100).optional(),
+    socialLinks: z.array(publicSocialLinkSchema).max(30).optional(),
     claims: z.array(publicAcceptanceClaimSchema).min(1).max(100),
     media: z.array(publicMediaSchema).max(100),
     provenance: z.array(publicProvenanceSchema).min(1).max(250),
@@ -325,7 +325,8 @@ export const publicPlaceSchema = z
       });
     }
 
-    if (new Set(place.amenities).size !== place.amenities.length) {
+    const amenities = place.amenities ?? [];
+    if (new Set(amenities).size !== amenities.length) {
       context.addIssue({
         code: 'custom',
         path: ['amenities'],
@@ -334,7 +335,7 @@ export const publicPlaceSchema = z
     }
 
     const socialLinks = new Set<string>();
-    for (const [index, link] of place.socialLinks.entries()) {
+    for (const [index, link] of (place.socialLinks ?? []).entries()) {
       const key = `${link.platform}:${link.url}`;
       if (socialLinks.has(key)) {
         context.addIssue({
