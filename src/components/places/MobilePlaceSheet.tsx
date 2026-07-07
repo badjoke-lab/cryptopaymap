@@ -49,10 +49,13 @@ export function MobilePlaceSheet({
   const placeSlug = place?.placeSlug ?? null;
 
   useEffect(() => {
-    if (!placeSlug) return;
+    if (!placeSlug || state === 'closed') {
+      setEnteredSlug(null);
+      return;
+    }
     const frame = window.requestAnimationFrame(() => setEnteredSlug(placeSlug));
     return () => window.cancelAnimationFrame(frame);
-  }, [placeSlug]);
+  }, [placeSlug, state]);
 
   if (!place || state === 'closed') return null;
 
