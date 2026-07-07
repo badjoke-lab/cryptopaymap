@@ -3,6 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { MobilePlaceSheet } from '../src/components/places/MobilePlaceSheet';
+import type { PublicPlace } from '../src/public/place-detail';
 import type { PublicPlacePin } from '../src/public/places-discovery';
 import type { BottomSheetState } from '../src/state/discovery-store';
 
@@ -22,9 +23,100 @@ const pin: PublicPlacePin = {
   thumbnail: null,
 };
 
-function SheetHarness() {
+const detail: PublicPlace = {
+  placeSlug: 'example-coffee-tokyo',
+  entitySlug: 'example-coffee',
+  name: 'Example Coffee',
+  categorySlug: 'cafe',
+  entityStatus: 'active',
+  locationStatus: 'active',
+  addressLine: '1 Example Street',
+  locality: 'Tokyo',
+  region: 'Tokyo',
+  postalCode: '100-0001',
+  countryCode: 'JP',
+  latitude: 35.681236,
+  longitude: 139.767125,
+  websiteUrl: 'https://example.com',
+  phone: '+81-3-0000-0000',
+  description: 'Independent coffee shop with counter and table seating.',
+  openingHours: 'Mon–Fri 08:00–18:00',
+  amenities: ['wifi', 'outdoor-seating'],
+  socialLinks: [
+    {
+      platform: 'instagram',
+      url: 'https://www.instagram.com/examplecoffee',
+      handle: '@examplecoffee',
+    },
+  ],
+  claims: [
+    {
+      claimKey: 'example-coffee-lightning',
+      entitySlug: 'example-coffee',
+      locationSlug: 'example-coffee-tokyo',
+      claimScope: 'location_specific',
+      acceptanceScope: 'all_checkout',
+      status: 'confirmed',
+      routeType: 'direct_wallet',
+      processorSlug: null,
+      howToPay: 'Ask staff to display a Lightning invoice and scan the QR code.',
+      instructionsLanguage: 'en',
+      merchantReceives: 'crypto',
+      restrictions: null,
+      firstConfirmedAt: '2026-06-01T00:00:00Z',
+      lastConfirmedAt: '2026-06-20T00:00:00Z',
+      nextReviewAt: '2026-12-17T00:00:00Z',
+      endedAt: null,
+      endedReason: null,
+      paymentAssets: [
+        {
+          assetSlug: 'bitcoin',
+          assetSymbol: 'BTC',
+          networkSlug: 'lightning',
+          paymentMethod: 'lightning_invoice',
+          contractAddress: null,
+          isPrimary: true,
+          notes: null,
+        },
+      ],
+      evidence: [
+        {
+          kind: 'official_payment_page',
+          evidenceClass: 'a',
+          sourceType: 'official_page',
+          polarity: 'supporting',
+          sourceName: 'Example Coffee',
+          sourceUrl: 'https://example.com/payments',
+          archiveUrl: null,
+          observedAt: '2026-06-20T00:00:00Z',
+          publishedAt: null,
+          summary: 'The official payment page documents Lightning checkout.',
+        },
+      ],
+    },
+  ],
+  media: [],
+  provenance: [
+    {
+      sourceName: 'Example Coffee',
+      sourceUrl: 'https://example.com',
+      licenseSlug: null,
+      attribution: null,
+      fields: ['addressLine', 'phone', 'description', 'openingHours', 'amenities', 'socialLinks'],
+    },
+  ],
+};
+
+function SheetHarness({ withDetail = false }: { withDetail?: boolean }) {
   const [state, setState] = useState<BottomSheetState>('peek');
-  return <MobilePlaceSheet place={pin} state={state} onStateChange={setState} />;
+  return (
+    <MobilePlaceSheet
+      place={pin}
+      detail={withDetail ? detail : null}
+      state={state}
+      onStateChange={setState}
+    />
+  );
 }
 
 function swipe(handle: HTMLElement, startY: number, endY: number) {
@@ -34,25 +126,60 @@ function swipe(handle: HTMLElement, startY: number, endY: number) {
 }
 
 describe('MobilePlaceSheet gestures', () => {
-  it('expands upward, collapses downward from expanded, and does not close peek on downward swipe', () => {
+  it('follows bounded touch movement before settling to expanded or peek', () => {
     render(<SheetHarness />);
 
     const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
+    const expandHandle = screen.getByRole('button', { name: 'Expand place details' });
     expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
 
-    const expandHandle = screen.getByRole('button', { name: 'Expand place details' });
-    swipe(expandHandle, 320, 220);
+    fireEvent.touchStart(expandHandle, { touches: [{ clientY: 320 }] });
+    fireEvent.touchMove(expandHandle, { touches: [{ clientY: 220 }] });
+    expect(sheet).toHaveAttribute('data-sheet-dragging', 'true');
+    expect(sheet.style.transform).toContain('-100px');
+
+    fireEvent.touchEnd(expandHandle);
     expect(sheet).toHaveAttribute('data-sheet-state', 'expanded');
+    expect(sheet).toHaveAttribute('data-sheet-dragging', 'false');
 
     const collapseHandle = screen.getByRole('button', { name: 'Collapse place details' });
-    swipe(collapseHandle, 220, 320);
+    fireEvent.touchStart(collapseHandle, { touches: [{ clientY: 220 }] });
+    fireEvent.touchMove(collapseHandle, { touches: [{ clientY: 320 }] });
+    expect(sheet.style.transform).toContain('100px');
+    fireEvent.touchEnd(collapseHandle);
     expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
+  });
 
+  it('does not close peek on a downward swipe', () => {
+    render(<SheetHarness />);
+    const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
     const peekHandle = screen.getByRole('button', { name: 'Expand place details' });
+
     swipe(peekHandle, 220, 320);
     expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
-    expect(
-      screen.getByRole('region', { name: 'Selected place: Example Coffee' }),
-    ).toBeInTheDocument();
+    expect(sheet).toBeInTheDocument();
+  });
+
+  it('shows routine practical Place information in expanded state', () => {
+    render(<SheetHarness withDetail />);
+    fireEvent.click(screen.getByRole('button', { name: 'Expand place details' }));
+
+    expect(screen.getByText(/1 Example Street, Tokyo/)).toBeInTheDocument();
+    expect(screen.getByText('Independent coffee shop with counter and table seating.')).toBeInTheDocument();
+    expect(screen.getByText('Mon–Fri 08:00–18:00')).toBeInTheDocument();
+    expect(screen.getByText('Wifi')).toBeInTheDocument();
+    expect(screen.getByText('Outdoor-seating')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /\+81-3-0000-0000/ })).toHaveAttribute(
+      'href',
+      'tel:+81-3-0000-0000',
+    );
+    expect(screen.getByRole('link', { name: /Website/ })).toHaveAttribute(
+      'href',
+      'https://example.com',
+    );
+    expect(screen.getByRole('link', { name: /@examplecoffee/ })).toHaveAttribute(
+      'href',
+      'https://www.instagram.com/examplecoffee',
+    );
   });
 });
