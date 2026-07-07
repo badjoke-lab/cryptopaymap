@@ -1,6 +1,6 @@
 # Places UX final recovery audit
 
-**Status:** Validation in progress  
+**Status:** Completed  
 **Last updated:** 2026-07-07
 
 This is the durable completion matrix for P4-17. A partial pull-request scope or one green test run does not replace the complete 17-point contract.
@@ -16,23 +16,23 @@ Required companion documents:
 
 | # | Requirement | Implementation | Regression coverage | Status |
 |---|---|---|---|---|
-| 1 | Stable broad initial camera independent from record ordering | `PlacesMap.tsx` | `places-map.test.tsx` | Implemented |
-| 2 | Street-map-oriented default basemap with override | `PlacesMap.tsx` | `places-map.test.tsx` | Implemented |
-| 3 | Single Places render as pins, not generic dots | `PlacesMap.tsx` | `places-map.test.tsx` | Implemented |
-| 4 | Place pins and aggregate clusters remain distinct | `PlacesMap.tsx` | `places-map.test.tsx` | Implemented |
-| 5 | Practical reviewed Place information has canonical-to-public path | location schema, migration 0020, canonical schema, promotion persistence, public schema | schema checks, `place-public-profile.test.ts` | Implemented |
-| 6 | Full reviewed address/location context reaches selected surfaces | public Place projection and detail model | selected-surface tests | Implemented |
-| 7 | Desktop selected Place is useful without routine forced navigation | `DesktopSelectedPlacePanel.tsx` | `desktop-selected-place-panel.test.tsx` | Implemented |
-| 8 | Mobile expanded sheet exposes routine practical and payment information | `MobilePlaceSheet.tsx` | `mobile-place-sheet.test.tsx` | Implemented |
-| 9 | Mobile peek remains compact and distinct from expanded state | `MobilePlaceSheet.tsx` | mobile sheet and shell tests | Implemented |
-| 10 | Sheet motion is position-based and follows bounded touch movement | `MobilePlaceSheet.tsx` | direct transform assertions | Implemented |
-| 11 | Gallery is reachable from desktop and mobile selected surfaces | `PlaceMediaGallery.tsx` and selected surfaces | desktop/mobile integration tests | Implemented |
-| 12 | Image enlargement supports close, keyboard, previous/next, swipe, focus return, and attribution | `PlaceMediaGallery.tsx` | `place-media-gallery.test.tsx` | Implemented |
-| 13 | Google Maps and Apple Maps navigation handoff are explicit actions | `place-navigation.ts` and selected surfaces | navigation and integration tests | Implemented |
-| 14 | Canonical detail page handles sharing, indexing, Evidence, history, and provenance rather than routine-info gating | selected surfaces plus `/place/{slug}` action | selected-surface and Place detail tests | Implemented |
-| 15 | Current location focuses ephemerally before explicit area commit and exposes distinct failures | `PlacesApp.tsx` and pending viewport flow | current-location and map tests | Implemented |
-| 16 | Repeated selection, List→Map selection, empty-map clear, and URL restoration are deterministic | `PlacesApp.tsx`, `PlacesMap.tsx` | shell and map tests | Implemented |
-| 17 | Acceptance and regression evidence remain durable | acceptance docs, recovery plan, this matrix, tests | three repository workflows | Final workflow validation pending |
+| 1 | Stable broad initial camera independent from record ordering | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
+| 2 | Street-map-oriented default basemap with override | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
+| 3 | Single Places render as pins, not generic dots | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
+| 4 | Place pins and aggregate clusters remain distinct | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
+| 5 | Practical reviewed Place information has canonical-to-public path | location schema, migration 0020, canonical schema, promotion persistence, public schema | schema checks, `place-public-profile.test.ts` | Validated |
+| 6 | Full reviewed address/location context reaches selected surfaces | public Place projection and detail model | selected-surface tests | Validated |
+| 7 | Desktop selected Place is useful without routine forced navigation | `DesktopSelectedPlacePanel.tsx` | `desktop-selected-place-panel.test.tsx` | Validated |
+| 8 | Mobile expanded sheet exposes routine practical and payment information | `MobilePlaceSheet.tsx` | `mobile-place-sheet.test.tsx` | Validated |
+| 9 | Mobile peek remains compact and distinct from expanded state | `MobilePlaceSheet.tsx` | mobile sheet and shell tests | Validated |
+| 10 | Sheet motion is position-based and follows bounded touch movement | `MobilePlaceSheet.tsx` | direct transform assertions | Validated |
+| 11 | Gallery is reachable from desktop and mobile selected surfaces | `PlaceMediaGallery.tsx` and selected surfaces | desktop/mobile integration tests | Validated |
+| 12 | Image enlargement supports close, keyboard, previous/next, swipe, focus return, and attribution | `PlaceMediaGallery.tsx` | `place-media-gallery.test.tsx` | Validated |
+| 13 | Google Maps and Apple Maps navigation handoff are explicit actions | `place-navigation.ts` and selected surfaces | navigation and integration tests | Validated |
+| 14 | Canonical detail page handles sharing, indexing, Evidence, history, and provenance rather than routine-info gating | selected surfaces plus `/place/{slug}` action | selected-surface and Place detail tests | Validated |
+| 15 | Current location focuses ephemerally before explicit area commit and exposes distinct failures | `PlacesApp.tsx` and pending viewport flow | current-location and map tests | Validated |
+| 16 | Repeated selection, List→Map selection, empty-map clear, and URL restoration are deterministic | `PlacesApp.tsx`, `PlacesMap.tsx` | shell and map tests | Validated |
+| 17 | Acceptance and regression evidence remain durable | acceptance docs, recovery plan, this matrix, tests | three repository workflows | Validated |
 
 ## Completion details
 
@@ -70,12 +70,12 @@ Successful geolocation creates temporary map focus and does not immediately seri
 
 Selection preserves repeated-selection no-op behavior, List→Map selection, empty-canvas clearing, marker/control separation, filter-driven selection clearing, and URL/back restoration.
 
-## Final closure rule
+## Validation result
 
-P4-17F is complete only when the same final branch head satisfies all 17 rows and these workflows all succeed:
+P4-17F is complete because the same recovery head satisfied the complete 17-point matrix and all repository validation layers succeeded:
 
 1. Foundation validation
 2. Migration drift
 3. Staging review validation
 
-Until then the recovery program remains in progress.
+The recovery set remains traceable through this matrix, the acceptance contract, the recovery plan, implementation paths, and regression tests.
