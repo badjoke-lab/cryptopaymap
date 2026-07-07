@@ -1,5 +1,5 @@
-import { ChevronDown, ChevronUp, X } from 'lucide-react';
-import { useMemo, useRef } from 'react';
+import { ChevronDown, ChevronUp, ExternalLink, Phone, X } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import type { PublicPlacePin } from '../../public/places-discovery';
 import type { BottomSheetState } from '../../state/discovery-store';
@@ -13,6 +13,7 @@ interface MobilePlaceSheetProps {
 }
 
 const swipeThreshold = 48;
+const peekOffsetDvh = 53;
 
 function formatLabel(value: string): string {
   return value
@@ -39,11 +40,21 @@ export function MobilePlaceSheet({
 }: MobilePlaceSheetProps) {
   const touchStartY = useRef<number | null>(null);
   const touchCurrentY = useRef<number | null>(null);
+  const [dragOffsetY, setDragOffsetY] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [entered, setEntered] = useState(false);
   const detailModel = useMemo(() => (detail ? buildPlaceDetailModel(detail) : null), [detail]);
+
+  useEffect(() => {
+    setEntered(false);
+    const frame = window.requestAnimationFrame(() => setEntered(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, [place?.placeSlug]);
 
   if (!place || state === 'closed') return null;
 
   const expanded = state === 'expanded';
+  const profile = detailModel?.place ?? null;
   const primaryClaim = detailModel?.claims[0] ?? null;
   const location =
     detailModel?.address || [place.locality, place.countryCode].filter(Boolean).join(', ');
@@ -61,11 +72,24 @@ export function MobilePlaceSheet({
       ]
     : [];
   const assets = detailModel?.assetSymbols ?? place.assetSlugs.map(formatLabel);
+  const amenities = profile?.amenities ?? [];
+  const socialLinks = profile?.socialLinks ?? [];
   const lastConfirmedAt = detailModel?.lastConfirmedAt ?? place.lastConfirmedAt;
+  const baseOffsetDvh = expanded ? 0 : peekOffsetDvh;
+  const transform = entered
+    ? `translateY(calc(${baseOffsetDvh}dvh + ${dragOffsetY}px))`
+    : 'translateY(88dvh)';
 
   function closeSheet() {
     if (onClose) onClose();
     else onStateChange('closed');
+  }
+
+  function resetDrag() {
+    touchStartY.current = null;
+    touchCurrentY.current = null;
+    setDragOffsetY(0);
+    setDragging(false);
   }
 
   function handleTouchStart(event: React.TouchEvent<HTMLElement>) {
@@ -73,42 +97,54 @@ export function MobilePlaceSheet({
     if (!touch) return;
     touchStartY.current = touch.clientY;
     touchCurrentY.current = touch.clientY;
+    setDragOffsetY(0);
+    setDragging(true);
   }
 
   function handleTouchMove(event: React.TouchEvent<HTMLElement>) {
     const touch = event.touches[0];
     if (!touch || touchStartY.current === null) return;
     touchCurrentY.current = touch.clientY;
+    const deltaY = touch.clientY - touchStartY.current;
+    const transitionDistance = window.innerHeight * (peekOffsetDvh / 100);
+    const boundedOffset = expanded
+      ? Math.min(Math.max(deltaY, 0), transitionDistance)
+      : Math.max(Math.min(deltaY, 0), -transitionDistance);
+    setDragOffsetY(boundedOffset);
   }
 
   function handleTouchEnd() {
-    if (touchStartY.current === null || touchCurrentY.current === null) return;
-    const deltaY = touchCurrentY.current - touchStartY.current;
+    if (touchStartY.current === null || touchCurrentY.current === null) {
+      resetDrag();
+      return;
+    }
 
-    if (deltaY < -swipeThreshold) {
+    const deltaY = touchCurrentY.current - touchStartY.current;
+    if (deltaY < -swipeThreshold && !expanded) {
       onStateChange('expanded');
     } else if (deltaY > swipeThreshold && expanded) {
       onStateChange('peek');
     }
-
-    touchStartY.current = null;
-    touchCurrentY.current = null;
+    resetDrag();
   }
 
   return (
     <section
-      className={`fixed inset-x-0 bottom-0 z-40 flex flex-col rounded-t-card border-x border-t border-border bg-surface shadow-panel transition-[height] duration-normal motion-reduce:transition-none lg:hidden ${
-        expanded ? 'h-[88dvh]' : 'h-[35dvh] min-h-52'
+      className={`fixed inset-x-0 bottom-0 z-40 flex h-[88dvh] flex-col rounded-t-card border-x border-t border-border bg-surface shadow-panel motion-reduce:transition-none lg:hidden ${
+        dragging ? 'transition-none' : 'transition-transform duration-normal ease-standard'
       }`}
+      style={{ transform }}
       aria-label={`Selected place: ${place.name}`}
       data-sheet-state={state}
+      data-sheet-dragging={dragging ? 'true' : 'false'}
     >
       <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom)]">
         <div
-          className="relative shrink-0 touch-pan-x border-b border-border px-4 pb-3 pt-2"
+          className="relative shrink-0 touch-none border-b border-border px-4 pb-3 pt-2"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
+          onTouchCancel={resetDrag}
         >
           <button
             className="motion-feedback mx-auto flex min-h-11 w-full items-center justify-center"
@@ -150,9 +186,98 @@ export function MobilePlaceSheet({
 
         {expanded ? (
           <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+            {location ? (
+              <section aria-label="Location">
+                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  Location
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-ink">{location}</p>
+              </section>
+            ) : null}
+
+            {profile?.description ? (
+              <section className="mt-4" aria-label="About this place">
+                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  About
+                </h3>
+                <p className="mt-1 text-sm leading-6 text-muted">{profile.description}</p>
+              </section>
+            ) : null}
+
+            {profile?.openingHours ? (
+              <section className="mt-4" aria-label="Opening hours">
+                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  Hours
+                </h3>
+                <p className="mt-1 whitespace-pre-line text-sm leading-6 text-ink">
+                  {profile.openingHours}
+                </p>
+              </section>
+            ) : null}
+
+            {amenities.length > 0 ? (
+              <section className="mt-4" aria-label="Amenities">
+                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  Amenities
+                </h3>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {amenities.map((amenity) => (
+                    <span
+                      className="rounded-pill border border-border bg-canvas px-2.5 py-1 text-xs font-medium text-ink"
+                      key={amenity}
+                    >
+                      {formatLabel(amenity)}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
+            {profile && (profile.phone || profile.websiteUrl || socialLinks.length > 0) ? (
+              <section className="mt-4" aria-label="Contact and official links">
+                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  Contact and official links
+                </h3>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {profile.phone ? (
+                    <a
+                      className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline"
+                      href={`tel:${profile.phone}`}
+                    >
+                      <Phone className="size-4" aria-hidden="true" />
+                      {profile.phone}
+                    </a>
+                  ) : null}
+                  {profile.websiteUrl ? (
+                    <a
+                      className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline"
+                      href={profile.websiteUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      Website
+                      <ExternalLink className="size-4" aria-hidden="true" />
+                    </a>
+                  ) : null}
+                  {socialLinks.map((link) => (
+                    <a
+                      className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline"
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      key={`${link.platform}:${link.url}`}
+                    >
+                      {link.handle ?? formatLabel(link.platform)}
+                      <ExternalLink className="size-4" aria-hidden="true" />
+                    </a>
+                  ))}
+                </div>
+              </section>
+            ) : null}
+
             {primaryClaim?.howToPay ? (
               <section
-                className="rounded-card border border-border bg-canvas p-4"
+                className="mt-4 rounded-card border border-border bg-canvas p-4"
                 aria-label="How to pay"
               >
                 <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
@@ -161,12 +286,6 @@ export function MobilePlaceSheet({
             ) : null}
 
             <dl className="mt-4 grid gap-4 text-sm">
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                  Location
-                </dt>
-                <dd className="mt-1 font-medium text-ink">{location}</dd>
-              </div>
               <div>
                 <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
                   Networks
@@ -224,7 +343,7 @@ export function MobilePlaceSheet({
             type="button"
             onClick={() => onStateChange('expanded')}
           >
-            More payment information
+            More place information
             <ChevronUp className="size-4" aria-hidden="true" />
           </button>
         )}
