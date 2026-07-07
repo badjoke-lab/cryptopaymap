@@ -150,7 +150,7 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
                 height={activeImage.height}
               />
               <figcaption className="mt-3 rounded-pill bg-black/70 px-3 py-1.5 text-center text-sm text-white">
-                {activeIndex + 1} / {images.length} · {activeImage.altText}
+                {(activeIndex ?? 0) + 1} / {images.length} · {activeImage.altText}
               </figcaption>
             </figure>
 
