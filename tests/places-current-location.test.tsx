@@ -43,6 +43,7 @@ describe('Places current location', () => {
           toJSON: () => ({}),
         },
         timestamp: Date.now(),
+        toJSON: () => ({}),
       });
     });
     Object.defineProperty(navigator, 'geolocation', {
