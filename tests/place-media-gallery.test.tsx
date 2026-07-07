@@ -41,7 +41,7 @@ const replacementImages: PublicPlace['media'] = [
 ];
 
 describe('PlaceMediaGallery', () => {
-  it('opens an enlarged image, shows attribution, supports keys and focus restoration', async () => {
+  it('opens an enlarged image, contains focus, supports keys, and restores focus', async () => {
     render(<PlaceMediaGallery images={images} />);
 
     const firstThumbnail = screen.getByRole('button', {
@@ -54,9 +54,13 @@ describe('PlaceMediaGallery', () => {
       screen.getByRole('dialog', { name: 'Image viewer: Exterior of Example Coffee.' }),
     ).toBeInTheDocument();
     expect(screen.getByText('Photo supplied by Example Coffee.')).toBeInTheDocument();
-    await waitFor(() =>
-      expect(screen.getAllByRole('button', { name: 'Close image viewer' })[1]).toHaveFocus(),
-    );
+    const closeButton = screen.getAllByRole('button', { name: 'Close image viewer' })[1];
+    await waitFor(() => expect(closeButton).toHaveFocus());
+
+    fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
+    expect(screen.getByRole('button', { name: 'Next image' })).toHaveFocus();
+    fireEvent.keyDown(window, { key: 'Tab' });
+    expect(closeButton).toHaveFocus();
 
     fireEvent.keyDown(window, { key: 'ArrowRight' });
     expect(
