@@ -423,7 +423,7 @@ export function PlacesMap({
   }, [pins, runtimeState, selectedPlace]);
 
   return (
-    <div className="relative h-[calc(100dvh-13rem)] min-h-[28rem] w-full lg:h-auto lg:min-h-[38rem]">
+    <div className="relative h-[calc(100dvh-13rem)] min-h-0 w-full lg:h-auto lg:min-h-[38rem]">
       <section className="absolute inset-0" aria-label="Interactive places map">
         <div ref={containerRef} className="h-full w-full" />
       </section>
