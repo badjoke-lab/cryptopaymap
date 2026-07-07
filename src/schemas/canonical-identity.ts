@@ -51,17 +51,16 @@ export const canonicalLocationSchema = z
     visibility: claimVisibilitySchema,
     websiteUrl: httpsUrlSchema.nullable(),
     phone: z.string().trim().min(1).max(64).nullable(),
-    description: z.string().trim().min(1).max(5_000).nullable().default(null),
-    openingHours: z.string().trim().min(1).max(2_000).nullable().default(null),
+    description: z.string().trim().min(1).max(5_000).nullable().optional(),
+    openingHours: z.string().trim().min(1).max(2_000).nullable().optional(),
     amenities: z
       .array(z.string().trim().min(1).max(80))
       .max(100)
-      .default([])
-      .transform((values) => [...new Set(values)]),
+      .transform((values) => [...new Set(values)])
+      .optional(),
     socialLinks: z
       .array(canonicalLocationSocialLinkSchema)
       .max(30)
-      .default([])
       .superRefine((links, context) => {
         const seen = new Set<string>();
         links.forEach((link, index) => {
@@ -75,7 +74,8 @@ export const canonicalLocationSchema = z
           }
           seen.add(key);
         });
-      }),
+      })
+      .optional(),
     osmType: osmElementTypeSchema.nullable(),
     osmId: z.number().int().positive().nullable(),
   })
