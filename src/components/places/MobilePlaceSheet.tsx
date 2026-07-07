@@ -1,11 +1,4 @@
-import {
-  ChevronDown,
-  ChevronUp,
-  ExternalLink,
-  MapPinned,
-  Phone,
-  X,
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, ExternalLink, MapPinned, Phone, X } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import type { PublicPlacePin } from '../../public/places-discovery';
