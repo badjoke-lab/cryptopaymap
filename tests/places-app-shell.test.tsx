@@ -90,7 +90,7 @@ describe('PlacesApp shell', () => {
     expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
     expect(sheetQueries.getByText(/Last confirmed Jun 20, 2026/)).toBeInTheDocument();
 
-    fireEvent.click(sheetQueries.getByRole('button', { name: 'More payment information' }));
+    fireEvent.click(sheetQueries.getByRole('button', { name: 'More place information' }));
     await waitFor(() => expect(sheet).toHaveAttribute('data-sheet-state', 'expanded'));
     expect(sheetQueries.getByText('Lightning')).toBeInTheDocument();
     expect(sheetQueries.getByText('Direct Wallet')).toBeInTheDocument();
