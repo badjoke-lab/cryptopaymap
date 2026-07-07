@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-05
+**Last updated:** 2026-07-07
 
 This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
 
@@ -12,6 +12,8 @@ This file tracks repository implementation work. GitHub main, merged pull reques
 - Each pull request has one primary responsibility and explicit completion checks.
 - Live Cloudflare and database verification may be deferred without blocking repository-only work.
 - Public product Roadmap and repository implementation status are separate documents.
+- Places work must read `docs/PLACES_UX_ACCEPTANCE.md` and `docs/PLACES_RECOVERY_PLAN.md` before implementation or review.
+- A narrow pull-request description does not supersede the complete Places acceptance contract.
 
 ## Phase 0 — Public specifications and development control
 
@@ -141,15 +143,21 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-05 | Pin and list synchronization | Completed | P4-03, P4-04 | #102 |
 | P4-06 | Filters and bounded result updates | Completed | P4-02 | #103, #104 |
 | P4-07 | URL state and back restoration | Completed | P4-05, P4-06 | #105 |
-| P4-08 | Mobile bottom sheet | Completed | P4-05 | #106 |
+| P4-08 | Mobile bottom sheet | Completed foundation; recovery required | P4-05 | #106 |
 | P4-09 | Online Services discovery and detail | Completed | public data layer | #107 |
 | P4-10 | Home | Completed | public discovery surfaces | #108 |
 | P4-11 | Stats | Completed | public stats export | #109 |
 | P4-12 | Updates | Completed | public updates export | #115 |
 | P4-13 | Public Roadmap and Changelog release surfaces | Completed | content loaders | #116 |
 | P4-14 | Trust, data, legal, and sustainability pages | Completed | public specifications | #117, #118 |
-| P4-15 | Public media integration | Completed | P3-10, P4-01 | #119 |
-| P4-16 | MVP-A integration and quality audit | In progress | P4-01 through P4-15 | #120 |
+| P4-15 | Public media integration | Completed foundation; selected-surface recovery required | P3-10, P4-01 | #119 |
+| P4-16 | MVP-A integration and quality audit | In progress; discovered Places recovery program | P4-01 through P4-15 | #120, #121, #122 |
+| P4-17A | Places contract and tracking correction | In progress | P4-16 findings | #122 |
+| P4-17B | Map presentation foundation recovery | Planned | P4-17A | TBD |
+| P4-17C | Place information and public projection recovery | Planned | P4-17A | TBD |
+| P4-17D | Desktop selected panel and mobile sheet recovery | Planned | P4-17B, P4-17C | TBD |
+| P4-17E | Gallery, image enlargement, and external navigation | Planned | P4-17C, P4-17D | TBD |
+| P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | Planned | P4-17B through P4-17E | TBD |
 
 ### Completed P4-01 delivery
 
@@ -164,6 +172,35 @@ P4-02A established the coordinated PlacesApp public shell in pull request #97. I
 P4-03A established deterministic public Place point-feature conversion, stable feature identity and selection state, and normalized camera contracts aligned with the public URL boundary in pull request #98.
 
 P4-03B added the MapLibre renderer to the coordinated PlacesApp shell in pull request #100. It registers the public GeoJSON source, clustered and point layers, marker selection and cluster expansion behavior, camera and pending viewport coordination, Search this area behavior, resize handling, fallback states, and renderer component tests.
+
+### P4-16 audit outcome and P4-17 recovery requirement
+
+The MVP-A integration review found that repository-complete foundations did not yet provide a complete map-service interaction contract. The fixed recovery set is documented in:
+
+- `docs/PLACES_UX_ACCEPTANCE.md`;
+- `docs/PLACES_RECOVERY_PLAN.md`.
+
+P4-17 must resolve the complete 17-point set in dependency order:
+
+1. initial camera;
+2. basemap style;
+3. Place pin markers;
+4. cluster/Place distinction;
+5. practical public Place information path;
+6. full address/location presentation;
+7. desktop selected-Place completeness;
+8. mobile expanded-sheet completeness;
+9. peek/expanded role separation;
+10. drag-following position-based sheet motion;
+11. gallery in selected surfaces;
+12. image enlargement;
+13. Google Maps and Apple Maps navigation handoff;
+14. correct canonical detail-page responsibility;
+15. current-location focus/commit separation;
+16. deterministic selection semantics;
+17. durable acceptance and regression coverage.
+
+Phase 4 repository work is not complete until P4-17A through P4-17F are completed or replaced by explicitly documented items that preserve every requirement.
 
 ## Phase 5 — Public submissions / MVP-B
 
