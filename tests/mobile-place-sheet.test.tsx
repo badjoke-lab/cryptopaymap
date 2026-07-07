@@ -51,6 +51,8 @@ describe('MobilePlaceSheet gestures', () => {
     const peekHandle = screen.getByRole('button', { name: 'Expand place details' });
     swipe(peekHandle, 220, 320);
     expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
-    expect(screen.getByRole('region', { name: 'Selected place: Example Coffee' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('region', { name: 'Selected place: Example Coffee' }),
+    ).toBeInTheDocument();
   });
 });
