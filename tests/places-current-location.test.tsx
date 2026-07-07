@@ -27,6 +27,16 @@ afterEach(() => {
   window.history.replaceState({}, '', '/');
 });
 
+function geolocationFailure(code: number, message: string): GeolocationPositionError {
+  return {
+    code,
+    message,
+    PERMISSION_DENIED: 1,
+    POSITION_UNAVAILABLE: 2,
+    TIMEOUT: 3,
+  };
+}
+
 describe('Places current location', () => {
   it('focuses the map without immediately committing raw coordinates to the URL', () => {
     window.history.replaceState({}, '', '/places');
@@ -58,5 +68,35 @@ describe('Places current location', () => {
     expect(window.location.search).not.toContain('lat=');
     expect(window.location.search).not.toContain('lng=');
     expect(window.location.search).not.toContain('zoom=14');
+  });
+
+  it('shows unsupported-browser feedback', () => {
+    render(<PlacesApp pins={pins} places={[]} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Current location' }));
+
+    expect(screen.getByRole('status')).toHaveTextContent(
+      'Current location is unavailable in this browser.',
+    );
+  });
+
+  it.each([
+    [1, 'Location permission was denied. Allow location access and try again.'],
+    [2, 'Current location is unavailable. Check device location services and try again.'],
+    [3, 'Location request timed out. Try again.'],
+  ])('shows specific geolocation failure feedback for code %i', (code, expectedMessage) => {
+    const getCurrentPosition = vi.fn(
+      (_success: PositionCallback, failure: PositionErrorCallback | null | undefined) => {
+        failure?.(geolocationFailure(code, 'test failure'));
+      },
+    );
+    Object.defineProperty(navigator, 'geolocation', {
+      configurable: true,
+      value: { getCurrentPosition },
+    });
+
+    render(<PlacesApp pins={pins} places={[]} />);
+    fireEvent.click(screen.getByRole('button', { name: 'Current location' }));
+
+    expect(screen.getByRole('status')).toHaveTextContent(expectedMessage);
   });
 });
