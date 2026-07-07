@@ -154,7 +154,9 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
                   {(activeIndex ?? 0) + 1} / {images.length} · {activeImage.altText}
                 </span>
                 {activeImage.attribution ? (
-                  <span className="mt-1 block text-xs text-white/80">{activeImage.attribution}</span>
+                  <span className="mt-1 block text-xs text-white/80">
+                    {activeImage.attribution}
+                  </span>
                 ) : null}
               </figcaption>
             </figure>
