@@ -20,7 +20,7 @@ The runtime definitions are in `src/schemas/public-exports.ts`. CI exercises rep
 | `/data/locations-osm.json` | Publishable OpenStreetMap-derived location fields with attribution. |
 | `/data/acceptance-claims.json` | Reviewed public acceptance claims and their payment combinations. |
 | `/data/place-pins.json` | Minimal physical-place payload for initial map rendering. |
-| `/data/places.json` | Combined physical-place records, claims, media, and provenance. |
+| `/data/places.json` | Combined physical-place records, claims, practical Place profile fields, media, and provenance. |
 | `/data/places.geojson` | GeoJSON point features for eligible physical places. |
 | `/data/online-services.json` | Eligible online-service records and payment claims. |
 | `/data/stats.json` | Aggregates calculated only from public-eligible records. |
@@ -146,7 +146,40 @@ Media eligibility and binary processing remain separate from acceptance-claim ap
 
 ## Physical places and map pins
 
-`places.json` combines a publishable entity and location with eligible location-specific claims, public media, and public provenance.
+`places.json` combines a publishable entity and location with eligible location-specific claims, reviewed practical Place profile information, public media, and public provenance.
+
+The base location fields remain:
+
+- public Place and entity slugs;
+- name and category;
+- entity and location status;
+- address line, locality, region, postal code, and country;
+- coordinates;
+- branch-specific website when available.
+
+P4-17C adds optional reviewed practical profile fields:
+
+- `phone`;
+- `description`;
+- `openingHours`;
+- `amenities`;
+- `socialLinks`.
+
+These fields are additive and optional. Existing public Place records remain valid when they do not contain them. Absence means that CryptoPayMap does not currently publish that information; UI code must not render absence as a negative fact such as “No amenities”, “No phone”, or “Closed”.
+
+`amenities` is a bounded string array. Duplicate values are rejected in the public projection.
+
+`socialLinks` is a bounded structured array containing:
+
+```text
+platform
+url
+handle
+```
+
+Public social links require a stable lowercase platform key and an HTTPS URL. Duplicate `platform + url` pairs are rejected.
+
+Practical Place information is distinct from payment acceptance verification. A phone number, business description, opening-hours text, amenity, or social account does not prove that a payment Claim is Confirmed. Conversely, a valid Confirmed Claim does not imply that optional practical profile fields are available.
 
 `place-pins.json` is deliberately smaller. It contains only the fields needed to render and select a map result:
 
@@ -161,6 +194,8 @@ Media eligibility and binary processing remain separate from acceptance-claim ap
 Ended records are not map pins. Candidate records are not fallback results.
 
 `places.geojson` represents the same eligible pin set as GeoJSON `Point` features. Coordinates are ordered as longitude, latitude and are range checked.
+
+The complete practical profile contract is documented in `docs/PLACE_PUBLIC_PROFILE.md`.
 
 ## Online services
 
@@ -244,5 +279,7 @@ Public schema changes require:
 3. an explicit schema-version decision;
 4. compatibility or migration notes when existing consumers may be affected;
 5. a public Changelog review when the changed schema has been released.
+
+P4-17C treats the practical Place profile additions as optional additive fields, so existing records remain valid and no immediate schema-version bump is required before the fields are populated. A future change that makes any of these fields mandatory, changes their meaning, or changes the social-link shape requires an explicit schema-version decision.
 
 Repository-only schema work does not create a public product Changelog entry before the files are released.
