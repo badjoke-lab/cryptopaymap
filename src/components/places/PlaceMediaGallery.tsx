@@ -8,8 +8,7 @@ interface PlaceMediaGalleryProps {
 }
 
 const swipeThreshold = 48;
-const focusableSelector =
-  'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
+const focusableSelector = 'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
 
 export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalleryProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
