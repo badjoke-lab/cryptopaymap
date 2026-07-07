@@ -1,4 +1,4 @@
-import { X } from 'lucide-react';
+import { ExternalLink, Phone, X } from 'lucide-react';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import type { PublicPlacePin } from '../../public/places-discovery';
 
@@ -26,6 +26,7 @@ function formatDate(value: string): string {
 
 export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelectedPlacePanelProps) {
   const detail = place ? buildPlaceDetailModel(place) : null;
+  const profile = detail?.place ?? null;
   const primaryClaim = detail?.claims[0] ?? null;
   const routeTypes = detail
     ? [...new Set(detail.claims.map((claim) => claim.routeType))]
@@ -39,6 +40,8 @@ export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelect
         ),
       ]
     : [];
+  const amenities = profile?.amenities ?? [];
+  const socialLinks = profile?.socialLinks ?? [];
 
   return (
     <aside
@@ -95,6 +98,95 @@ export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelect
             Last confirmed {formatDate(detail?.lastConfirmedAt ?? pin.lastConfirmedAt)}
           </span>
         </div>
+
+        {detail?.address ? (
+          <section className="mt-5" aria-label="Location">
+            <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Location
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-ink">{detail.address}</p>
+          </section>
+        ) : null}
+
+        {profile?.description ? (
+          <section className="mt-5" aria-label="About this place">
+            <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              About
+            </h3>
+            <p className="mt-1 text-sm leading-6 text-muted">{profile.description}</p>
+          </section>
+        ) : null}
+
+        {profile?.openingHours ? (
+          <section className="mt-5" aria-label="Opening hours">
+            <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Hours
+            </h3>
+            <p className="mt-1 whitespace-pre-line text-sm leading-6 text-ink">
+              {profile.openingHours}
+            </p>
+          </section>
+        ) : null}
+
+        {amenities.length > 0 ? (
+          <section className="mt-5" aria-label="Amenities">
+            <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Amenities
+            </h3>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {amenities.map((amenity) => (
+                <span
+                  className="rounded-pill border border-border bg-canvas px-2.5 py-1 text-xs font-medium text-ink"
+                  key={amenity}
+                >
+                  {formatLabel(amenity)}
+                </span>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {profile && (profile.phone || profile.websiteUrl || socialLinks.length > 0) ? (
+          <section className="mt-5" aria-label="Contact and official links">
+            <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+              Contact and official links
+            </h3>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {profile.phone ? (
+                <a
+                  className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                  href={`tel:${profile.phone}`}
+                >
+                  <Phone className="size-4" aria-hidden="true" />
+                  {profile.phone}
+                </a>
+              ) : null}
+              {profile.websiteUrl ? (
+                <a
+                  className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                  href={profile.websiteUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Website
+                  <ExternalLink className="size-4" aria-hidden="true" />
+                </a>
+              ) : null}
+              {socialLinks.map((link) => (
+                <a
+                  className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                  href={link.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  key={`${link.platform}:${link.url}`}
+                >
+                  {link.handle ?? formatLabel(link.platform)}
+                  <ExternalLink className="size-4" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
           <div>
