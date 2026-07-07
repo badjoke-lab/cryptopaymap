@@ -24,3 +24,4 @@ await writeFile(snapshotUrl, snapshot);
 console.log('Materialized Drizzle snapshot 0014_clean_stardust.');
 
 await import('./materialize-drizzle-snapshot-0019.mjs');
+await import('./materialize-drizzle-snapshot-0020.mjs');
