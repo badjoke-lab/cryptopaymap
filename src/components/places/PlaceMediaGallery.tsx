@@ -149,8 +149,13 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
                 width={activeImage.width}
                 height={activeImage.height}
               />
-              <figcaption className="mt-3 rounded-pill bg-black/70 px-3 py-1.5 text-center text-sm text-white">
-                {(activeIndex ?? 0) + 1} / {images.length} · {activeImage.altText}
+              <figcaption className="mt-3 rounded-card bg-black/70 px-3 py-2 text-center text-sm text-white">
+                <span className="block">
+                  {(activeIndex ?? 0) + 1} / {images.length} · {activeImage.altText}
+                </span>
+                {activeImage.attribution ? (
+                  <span className="mt-1 block text-xs text-white/80">{activeImage.attribution}</span>
+                ) : null}
               </figcaption>
             </figure>
 
