@@ -1,10 +1,6 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type {
-  ExpressionSpecification,
-  GeoJSONSource,
-  Map as MapLibreMap,
-} from 'maplibre-gl';
+import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
 import type { PublicPlacePin } from '../../public/places-discovery';
 import type { DiscoveryViewport } from '../../state/discovery-url';
 import {
@@ -37,6 +33,7 @@ const selectedPinHaloColor = [15, 118, 110] as const;
 const white = [255, 255, 255] as const;
 
 type Rgb = readonly [number, number, number];
+type RuntimeState = 'loading' | 'ready' | 'unsupported' | 'error';
 
 interface PlacesMapProps {
   pins: PublicPlacePin[];
@@ -50,8 +47,6 @@ interface PlacesMapProps {
   styleUrl?: string;
 }
 
-type RuntimeState = 'loading' | 'ready' | 'unsupported' | 'error';
-
 function initialCamera(
   pins: readonly PublicPlacePin[],
   viewport: DiscoveryViewport | null,
@@ -62,17 +57,15 @@ function initialCamera(
     return { center: [normalized.longitude, normalized.latitude], zoom: normalized.zoom };
   }
 
-  if (selectedPlace) {
-    const selectedPin = pins.find((pin) => pin.placeSlug === selectedPlace);
-    if (selectedPin) {
-      return {
+  const selectedPin = selectedPlace
+    ? pins.find((pin) => pin.placeSlug === selectedPlace)
+    : undefined;
+  return selectedPin
+    ? {
         center: [selectedPin.longitude, selectedPin.latitude],
         zoom: selectedPlaceInitialZoom,
-      };
-    }
-  }
-
-  return { center: defaultMapCenter, zoom: defaultMapZoom };
+      }
+    : { center: defaultMapCenter, zoom: defaultMapZoom };
 }
 
 function pinShapeContains(x: number, y: number, inset: number): boolean {
@@ -81,36 +74,33 @@ function pinShapeContains(x: number, y: number, inset: number): boolean {
   const radius = 23 - inset;
   if (radius <= 0) return false;
 
-  const deltaX = x - centerX;
-  const deltaY = y - centerY;
-  const insideHead = deltaX * deltaX + deltaY * deltaY <= radius * radius;
-
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const insideHead = dx * dx + dy * dy <= radius * radius;
   const baseY = centerY + 13 + inset * 0.2;
   const tipY = 75 - inset * 0.5;
   if (y < baseY || y > tipY || tipY <= baseY) return insideHead;
 
   const progress = (y - baseY) / (tipY - baseY);
-  const halfBase = Math.max(1, 14 - inset * 0.4);
-  const halfWidth = halfBase * (1 - progress);
-  return insideHead || Math.abs(deltaX) <= halfWidth;
+  const halfWidth = Math.max(1, 14 - inset * 0.4) * (1 - progress);
+  return insideHead || Math.abs(dx) <= halfWidth;
 }
 
-function setPixel(data: Uint8Array, offset: number, color: Rgb, alpha = 255) {
+function setPixel(data: Uint8Array, offset: number, color: Rgb) {
   data[offset] = color[0];
   data[offset + 1] = color[1];
   data[offset + 2] = color[2];
-  data[offset + 3] = alpha;
+  data[offset + 3] = 255;
 }
 
 function createPlacePinImage(fill: Rgb, selected: boolean) {
   const width = 64;
   const height = 80;
-  const bytesPerPixel = 4;
-  const data = new Uint8Array(width * height * bytesPerPixel);
+  const data = new Uint8Array(width * height * 4);
 
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
-      const offset = (y * width + x) * bytesPerPixel;
+      const offset = (y * width + x) * 4;
       if (!pinShapeContains(x, y, 0)) continue;
 
       if (selected) {
@@ -122,11 +112,9 @@ function createPlacePinImage(fill: Rgb, selected: boolean) {
         if (pinShapeContains(x, y, 4)) setPixel(data, offset, fill);
       }
 
-      const holeDeltaX = x - 32;
-      const holeDeltaY = y - 28;
-      if (holeDeltaX * holeDeltaX + holeDeltaY * holeDeltaY <= 7.5 * 7.5) {
-        setPixel(data, offset, white);
-      }
+      const dx = x - 32;
+      const dy = y - 28;
+      if (dx * dx + dy * dy <= 7.5 * 7.5) setPixel(data, offset, white);
     }
   }
 
@@ -145,6 +133,72 @@ function pinImageExpression(): ExpressionSpecification {
     ],
     ['case', ['==', ['get', 'status'], 'stale'], stalePinImageId, confirmedPinImageId],
   ];
+}
+
+function addPinImages(map: MapLibreMap) {
+  const images = [
+    [confirmedPinImageId, createPlacePinImage(confirmedPinColor, false)],
+    [stalePinImageId, createPlacePinImage(stalePinColor, false)],
+    [selectedConfirmedPinImageId, createPlacePinImage(confirmedPinColor, true)],
+    [selectedStalePinImageId, createPlacePinImage(stalePinColor, true)],
+  ] as const;
+  for (const [id, image] of images) map.addImage(id, image, { pixelRatio: 2 });
+}
+
+function addPlaceLayers(map: MapLibreMap, data: ReturnType<typeof buildPlaceMapFeatureCollection>) {
+  map.addSource(sourceId, {
+    type: 'geojson',
+    data,
+    cluster: true,
+    clusterMaxZoom: 14,
+    clusterRadius: 48,
+  });
+  map.addLayer({
+    id: clusterLayerId,
+    type: 'circle',
+    source: sourceId,
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': '#0f766e',
+      'circle-radius': ['step', ['get', 'point_count'], 18, 20, 22, 100, 28],
+      'circle-stroke-color': '#ffffff',
+      'circle-stroke-width': 3,
+    },
+  });
+  map.addLayer({
+    id: clusterCountLayerId,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['has', 'point_count'],
+    layout: { 'text-field': ['get', 'point_count_abbreviated'], 'text-size': 12 },
+    paint: { 'text-color': '#ffffff' },
+  });
+  map.addLayer({
+    id: pointLayerId,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['!', ['has', 'point_count']],
+    layout: {
+      'icon-image': pinImageExpression(),
+      'icon-size': ['case', ['==', ['get', 'selected'], true], 1.12, 1],
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+  });
+  map.addLayer({
+    id: pointHoverLayerId,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['==', ['get', 'placeSlug'], ''],
+    layout: {
+      'icon-image': pinImageExpression(),
+      'icon-size': 1.16,
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+  });
 }
 
 export function PlacesMap({
@@ -185,9 +239,7 @@ export function PlacesMap({
   featureCollectionRef.current = featureCollection;
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
+    if (!containerRef.current) return;
     if (typeof WebGLRenderingContext === 'undefined') {
       setRuntimeState('unsupported');
       return;
@@ -200,14 +252,12 @@ export function PlacesMap({
     let observer: ResizeObserver | null = null;
     let loadTimeout: number | null = null;
 
-    function clearLoadTimeout() {
-      if (loadTimeout !== null) {
-        window.clearTimeout(loadTimeout);
-        loadTimeout = null;
-      }
-    }
+    const clearLoadTimeout = () => {
+      if (loadTimeout !== null) window.clearTimeout(loadTimeout);
+      loadTimeout = null;
+    };
 
-    function reportMovedViewport() {
+    const reportMovedViewport = () => {
       const pendingFocusMove = focusMovePendingRef.current;
       if (!map || !loaded || (!userViewportChangePending && !pendingFocusMove)) return;
       userViewportChangePending = false;
@@ -218,27 +268,25 @@ export function PlacesMap({
         longitude: center.lng,
         zoom: map.getZoom(),
       });
-      if (mapViewportChanged(committedViewportRef.current, nextViewport)) {
-        viewportRef.current(nextViewport);
-        if (boundsRef.current) {
-          const visibleBounds = map.getBounds();
-          boundsRef.current(
-            normalizeMapBounds({
-              west: visibleBounds.getWest(),
-              south: visibleBounds.getSouth(),
-              east: visibleBounds.getEast(),
-              north: visibleBounds.getNorth(),
-            }),
-          );
-        }
-      }
-    }
+      if (!mapViewportChanged(committedViewportRef.current, nextViewport)) return;
 
-    async function initialize() {
+      viewportRef.current(nextViewport);
+      if (!boundsRef.current) return;
+      const bounds = map.getBounds();
+      boundsRef.current(
+        normalizeMapBounds({
+          west: bounds.getWest(),
+          south: bounds.getSouth(),
+          east: bounds.getEast(),
+          north: bounds.getNorth(),
+        }),
+      );
+    };
+
+    const initialize = async () => {
       try {
         const maplibregl = await import('maplibre-gl');
         if (!active || !containerRef.current) return;
-
         const camera = initialCamera(
           pinsRef.current,
           committedViewportRef.current,
@@ -254,7 +302,6 @@ export function PlacesMap({
         });
         mapRef.current = map;
         map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-
         loadTimeout = window.setTimeout(() => {
           if (!loaded && active) setRuntimeState('error');
         }, mapLoadTimeoutMs);
@@ -263,80 +310,12 @@ export function PlacesMap({
           if (!map) return;
           loaded = true;
           clearLoadTimeout();
-
-          map.addImage(confirmedPinImageId, createPlacePinImage(confirmedPinColor, false), {
-            pixelRatio: 2,
-          });
-          map.addImage(stalePinImageId, createPlacePinImage(stalePinColor, false), {
-            pixelRatio: 2,
-          });
-          map.addImage(selectedConfirmedPinImageId, createPlacePinImage(confirmedPinColor, true), {
-            pixelRatio: 2,
-          });
-          map.addImage(selectedStalePinImageId, createPlacePinImage(stalePinColor, true), {
-            pixelRatio: 2,
-          });
-
-          map.addSource(sourceId, {
-            type: 'geojson',
-            data: featureCollectionRef.current,
-            cluster: true,
-            clusterMaxZoom: 14,
-            clusterRadius: 48,
-          });
-          map.addLayer({
-            id: clusterLayerId,
-            type: 'circle',
-            source: sourceId,
-            filter: ['has', 'point_count'],
-            paint: {
-              'circle-color': '#0f766e',
-              'circle-radius': ['step', ['get', 'point_count'], 18, 20, 22, 100, 28],
-              'circle-stroke-color': '#ffffff',
-              'circle-stroke-width': 3,
-            },
-          });
-          map.addLayer({
-            id: clusterCountLayerId,
-            type: 'symbol',
-            source: sourceId,
-            filter: ['has', 'point_count'],
-            layout: {
-              'text-field': ['get', 'point_count_abbreviated'],
-              'text-size': 12,
-            },
-            paint: { 'text-color': '#ffffff' },
-          });
-          map.addLayer({
-            id: pointLayerId,
-            type: 'symbol',
-            source: sourceId,
-            filter: ['!', ['has', 'point_count']],
-            layout: {
-              'icon-image': pinImageExpression(),
-              'icon-size': ['case', ['==', ['get', 'selected'], true], 1.12, 1],
-              'icon-anchor': 'bottom',
-              'icon-allow-overlap': true,
-              'icon-ignore-placement': true,
-            },
-          });
-          map.addLayer({
-            id: pointHoverLayerId,
-            type: 'symbol',
-            source: sourceId,
-            filter: ['==', ['get', 'placeSlug'], ''],
-            layout: {
-              'icon-image': pinImageExpression(),
-              'icon-size': 1.16,
-              'icon-anchor': 'bottom',
-              'icon-allow-overlap': true,
-              'icon-ignore-placement': true,
-            },
-          });
+          addPinImages(map);
+          addPlaceLayers(map, featureCollectionRef.current);
 
           map.on('click', pointLayerId, (event) => {
-            const placeSlug = event.features?.[0]?.properties?.placeSlug;
-            if (typeof placeSlug === 'string') selectRef.current(placeSlug);
+            const slug = event.features?.[0]?.properties?.placeSlug;
+            if (typeof slug === 'string') selectRef.current(slug);
           });
           map.on('click', clusterLayerId, async (event) => {
             if (!map) return;
@@ -348,22 +327,21 @@ export function PlacesMap({
             const zoom = await source.getClusterExpansionZoom(clusterId);
             const coordinates =
               feature?.geometry.type === 'Point' ? feature.geometry.coordinates : null;
-            if (!coordinates) return;
-            map.easeTo({ center: [coordinates[0], coordinates[1]], zoom });
+            if (coordinates) map.easeTo({ center: [coordinates[0], coordinates[1]], zoom });
           });
           map.on('click', (event) => {
             if (!map || !selectedPlaceRef.current) return;
-            const interactiveFeatures = map.queryRenderedFeatures(event.point, {
+            const features = map.queryRenderedFeatures(event.point, {
               layers: [pointLayerId, pointHoverLayerId, clusterLayerId],
             });
-            if (interactiveFeatures.length === 0) clearSelectionRef.current?.();
+            if (features.length === 0) clearSelectionRef.current?.();
           });
           map.on('mouseenter', pointLayerId, (event) => {
             if (!map) return;
             map.getCanvas().style.cursor = 'pointer';
-            const placeSlug = event.features?.[0]?.properties?.placeSlug;
-            if (typeof placeSlug === 'string') {
-              map.setFilter(pointHoverLayerId, ['==', ['get', 'placeSlug'], placeSlug]);
+            const slug = event.features?.[0]?.properties?.placeSlug;
+            if (typeof slug === 'string') {
+              map.setFilter(pointHoverLayerId, ['==', ['get', 'placeSlug'], slug]);
             }
           });
           map.on('mouseleave', pointLayerId, () => {
@@ -371,6 +349,7 @@ export function PlacesMap({
             map.getCanvas().style.cursor = '';
             map.setFilter(pointHoverLayerId, ['==', ['get', 'placeSlug'], '']);
           });
+
           const markUserViewportChange = (event: { originalEvent?: unknown }) => {
             if (event.originalEvent) userViewportChangePending = true;
           };
@@ -379,27 +358,23 @@ export function PlacesMap({
           map.on('rotatestart', markUserViewportChange);
           map.on('pitchstart', markUserViewportChange);
           map.on('moveend', reportMovedViewport);
-
           setRuntimeState('ready');
         });
-
         map.on('error', () => {
           if (!loaded && active) {
             clearLoadTimeout();
             setRuntimeState('error');
           }
         });
-
         observer = new ResizeObserver(() => map?.resize());
         observer.observe(containerRef.current);
       } catch {
         clearLoadTimeout();
         if (active) setRuntimeState('error');
       }
-    }
+    };
 
     void initialize();
-
     return () => {
       active = false;
       clearLoadTimeout();
@@ -424,10 +399,7 @@ export function PlacesMap({
     };
     if (!mapViewportChanged(current, committedViewport)) return;
     const normalized = normalizeMapViewport(committedViewport);
-    map.easeTo({
-      center: [normalized.longitude, normalized.latitude],
-      zoom: normalized.zoom,
-    });
+    map.easeTo({ center: [normalized.longitude, normalized.latitude], zoom: normalized.zoom });
   }, [committedViewport]);
 
   useEffect(() => {
@@ -435,10 +407,7 @@ export function PlacesMap({
     if (!map || runtimeState !== 'ready' || !focusViewport) return;
     const normalized = normalizeMapViewport(focusViewport);
     focusMovePendingRef.current = true;
-    map.easeTo({
-      center: [normalized.longitude, normalized.latitude],
-      zoom: normalized.zoom,
-    });
+    map.easeTo({ center: [normalized.longitude, normalized.latitude], zoom: normalized.zoom });
   }, [focusViewport, runtimeState]);
 
   useEffect(() => {
@@ -446,16 +415,11 @@ export function PlacesMap({
     if (!map || runtimeState !== 'ready' || !selectedPlace) return;
     const selectedPin = pins.find((pin) => pin.placeSlug === selectedPlace);
     if (!selectedPin) return;
-
     const current = map.getCenter();
-    if (
+    const alreadyCentered =
       Math.abs(current.lat - selectedPin.latitude) < 0.000001 &&
-      Math.abs(current.lng - selectedPin.longitude) < 0.000001
-    ) {
-      return;
-    }
-
-    map.easeTo({ center: [selectedPin.longitude, selectedPin.latitude] });
+      Math.abs(current.lng - selectedPin.longitude) < 0.000001;
+    if (!alreadyCentered) map.easeTo({ center: [selectedPin.longitude, selectedPin.latitude] });
   }, [pins, runtimeState, selectedPlace]);
 
   return (
