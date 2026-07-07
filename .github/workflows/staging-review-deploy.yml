@@ -4,27 +4,21 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - staging-review
+      - main
 
 concurrency:
   group: staging-review-deploy
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   deploy:
-    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
-    env:
-      PUBLIC_MAP_STYLE_URL: https://demotiles.maplibre.org/style.json
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: staging-review
-          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -67,7 +61,7 @@ jobs:
           DEPLOY_COMMIT: ${{ github.sha }}
         run: |
           node <<'NODE'
-          const { existsSync, readFileSync, writeFileSync } = require('node:fs');
+          const { existsSync, readFileSync, mkdirSync, writeFileSync } = require('node:fs');
           const credentials = process.env.CREDENTIALS_OUTCOME;
           const deploy = process.env.DEPLOY_OUTCOME;
           const status = credentials !== 'success' ? 'missing_credentials' : deploy === 'success' ? 'deployed' : 'deploy_failed';
@@ -76,20 +70,21 @@ jobs:
           const receipt = {
             status,
             commit: process.env.DEPLOY_COMMIT,
-            url: urls.at(-1) ?? null,
+            url: urls.at(-1) ?? 'https://review.cryptopaymap-staging.pages.dev',
             generatedAt: new Date().toISOString(),
           };
-          writeFileSync('config/staging-review/deployment-receipt.json', `${JSON.stringify(receipt, null, 2)}\n`);
+          mkdirSync('staging-review-receipt', { recursive: true });
+          writeFileSync('staging-review-receipt/deployment-receipt.json', `${JSON.stringify(receipt, null, 2)}\n`);
           NODE
 
-      - name: Publish deployment receipt
+      - name: Upload deployment receipt
         if: always()
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add config/staging-review/deployment-receipt.json
-          git commit -m "STG-01: record staging deployment result"
-          git push origin HEAD:staging-review
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-review-deployment-receipt
+          path: staging-review-receipt/deployment-receipt.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Enforce successful deployment
         if: always()
