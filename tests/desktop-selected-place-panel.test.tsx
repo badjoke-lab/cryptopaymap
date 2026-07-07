@@ -93,7 +93,28 @@ const place: PublicPlace = {
       ],
     },
   ],
-  media: [],
+  media: [
+    {
+      role: 'cover',
+      url: 'https://media.example.com/exterior.webp',
+      mimeType: 'image/webp',
+      width: 1200,
+      height: 800,
+      altText: 'Exterior of Example Coffee.',
+      attribution: null,
+      licenseSlug: null,
+    },
+    {
+      role: 'interior',
+      url: 'https://media.example.com/interior.webp',
+      mimeType: 'image/webp',
+      width: 1200,
+      height: 800,
+      altText: 'Interior seating at Example Coffee.',
+      attribution: null,
+      licenseSlug: null,
+    },
+  ],
   provenance: [
     {
       sourceName: 'Example Coffee',
@@ -106,7 +127,7 @@ const place: PublicPlace = {
 };
 
 describe('DesktopSelectedPlacePanel', () => {
-  it('shows routine practical Place information without requiring detail-page navigation', () => {
+  it('shows practical Place information, gallery, and navigation without requiring detail navigation', () => {
     render(<DesktopSelectedPlacePanel pin={pin} place={place} onClear={vi.fn()} />);
 
     const panel = screen.getByRole('complementary', {
@@ -115,10 +136,12 @@ describe('DesktopSelectedPlacePanel', () => {
     const queries = within(panel);
 
     expect(queries.getByText(/1 Example Street, Tokyo/)).toBeInTheDocument();
-    expect(queries.getByText('Independent coffee shop with counter and table seating.')).toBeInTheDocument();
+    expect(
+      queries.getByText('Independent coffee shop with counter and table seating.'),
+    ).toBeInTheDocument();
     expect(queries.getByText('Mon–Fri 08:00–18:00')).toBeInTheDocument();
     expect(queries.getByText('Wifi')).toBeInTheDocument();
-    expect(queries.getByText('Outdoor-seating')).toBeInTheDocument();
+    expect(queries.getByText('Outdoor Seating')).toBeInTheDocument();
     expect(queries.getByRole('link', { name: /\+81-3-0000-0000/ })).toHaveAttribute(
       'href',
       'tel:+81-3-0000-0000',
@@ -131,6 +154,20 @@ describe('DesktopSelectedPlacePanel', () => {
       'href',
       'https://www.instagram.com/examplecoffee',
     );
+    expect(queries.getByRole('link', { name: 'Google Maps' })).toHaveAttribute(
+      'href',
+      expect.stringContaining('destination=35.681236%2C139.767125'),
+    );
+    expect(queries.getByRole('link', { name: 'Apple Maps' })).toHaveAttribute(
+      'href',
+      expect.stringContaining('daddr=35.681236%2C139.767125'),
+    );
+    expect(
+      queries.getByRole('button', { name: /Enlarge image 1 of 2: Exterior of Example Coffee/ }),
+    ).toBeInTheDocument();
+    expect(
+      queries.getByRole('button', { name: /Enlarge image 2 of 2: Interior seating/ }),
+    ).toBeInTheDocument();
     expect(queries.getByText(/Ask staff to display a Lightning invoice/)).toBeInTheDocument();
     expect(queries.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
       'href',
