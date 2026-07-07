@@ -44,15 +44,19 @@ export function MobilePlaceSheet({
   const touchCurrentY = useRef<number | null>(null);
   const [dragOffsetY, setDragOffsetY] = useState(0);
   const [dragging, setDragging] = useState(false);
-  const [entered, setEntered] = useState(false);
+  const [enteredSlug, setEnteredSlug] = useState<string | null>(null);
   const detailModel = useMemo(() => (detail ? buildPlaceDetailModel(detail) : null), [detail]);
+  const placeSlug = place?.placeSlug ?? null;
 
   useEffect(() => {
-    setEntered(true);
-  }, []);
+    if (!placeSlug) return;
+    const frame = window.requestAnimationFrame(() => setEnteredSlug(placeSlug));
+    return () => window.cancelAnimationFrame(frame);
+  }, [placeSlug]);
 
   if (!place || state === 'closed') return null;
 
+  const entered = enteredSlug === place.placeSlug;
   const expanded = state === 'expanded';
   const profile = detailModel?.place ?? null;
   const primaryClaim = detailModel?.claims[0] ?? null;
@@ -164,6 +168,7 @@ export function MobilePlaceSheet({
       aria-label={`Selected place: ${place.name}`}
       data-sheet-state={state}
       data-sheet-dragging={dragging ? 'true' : 'false'}
+      data-sheet-entered={entered ? 'true' : 'false'}
     >
       <div className="flex min-h-0 flex-1 flex-col pb-[env(safe-area-inset-bottom)]">
         <div
