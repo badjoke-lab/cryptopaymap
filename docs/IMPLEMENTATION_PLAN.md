@@ -153,7 +153,7 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-15 | Public media integration | Completed foundation; selected-surface recovery required | P3-10, P4-01 | #119 |
 | P4-16 | MVP-A integration and quality audit | In progress; discovered Places recovery program | P4-01 through P4-15 | #120, #121, #122 |
 | P4-17A | Places contract and tracking correction | In progress | P4-16 findings | #122 |
-| P4-17B | Map presentation foundation recovery | Planned | P4-17A | TBD |
+| P4-17B | Map presentation foundation recovery | In progress | P4-17A | #122 |
 | P4-17C | Place information and public projection recovery | Planned | P4-17A | TBD |
 | P4-17D | Desktop selected panel and mobile sheet recovery | Planned | P4-17B, P4-17C | TBD |
 | P4-17E | Gallery, image enlargement, and external navigation | Planned | P4-17C, P4-17D | TBD |
