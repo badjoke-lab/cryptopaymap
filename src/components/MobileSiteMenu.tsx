@@ -1,5 +1,5 @@
 import { Menu, X } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const navigation = [
   { href: '/places', label: 'Places' },
@@ -10,32 +10,68 @@ const navigation = [
   { href: '/support', label: 'Support' },
 ];
 
+const focusableSelector = 'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
+
 interface MobileSiteMenuProps {
   pathname: string;
 }
 
 export function MobileSiteMenu({ pathname }: MobileSiteMenuProps) {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+  const menuRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     if (!open) return;
 
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    const frame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpen(false);
+      if (event.key === 'Escape') {
+        setOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+
+      const menu = menuRef.current;
+      if (!menu) return;
+      const focusable = [...menu.querySelectorAll<HTMLElement>(focusableSelector)].filter(
+        (element) => element.tabIndex >= 0,
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      const focusOutsideMenu = !activeElement || !menu.contains(activeElement);
+      if (event.shiftKey && (activeElement === first || focusOutsideMenu)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (activeElement === last || focusOutsideMenu)) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener('keydown', onKeyDown);
 
     return () => {
+      window.cancelAnimationFrame(frame);
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
+      triggerRef.current?.focus();
     };
   }, [open]);
 
   return (
     <div className="md:hidden">
       <button
+        ref={triggerRef}
         className="motion-feedback inline-flex min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-3 text-sm font-semibold text-ink shadow-sm"
         type="button"
         aria-expanded={open}
@@ -53,21 +89,24 @@ export function MobileSiteMenu({ pathname }: MobileSiteMenuProps) {
         type="button"
         aria-label="Close menu"
         aria-hidden={!open}
-        tabIndex={open ? 0 : -1}
+        tabIndex={-1}
         onClick={() => setOpen(false)}
       />
 
       <aside
+        ref={menuRef}
         id="mobile-primary-menu"
         className={`fixed right-0 top-0 z-[90] flex h-dvh w-[min(88vw,22.5rem)] flex-col bg-surface shadow-panel transition-transform duration-normal motion-reduce:transition-none ${
           open ? 'translate-x-0' : 'translate-x-full'
         }`}
         aria-label="Mobile primary"
         aria-hidden={!open}
+        inert={!open}
       >
         <div className="flex min-h-14 items-center justify-between border-b border-border px-4">
           <span className="font-semibold text-ink">Menu</span>
           <button
+            ref={closeButtonRef}
             className="motion-feedback flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas"
             type="button"
             aria-label="Close menu"
