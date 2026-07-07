@@ -41,6 +41,19 @@ function serializedState(state: DiscoveryUrlState): string {
   return serializeDiscoveryUrlState(state).toString();
 }
 
+function geolocationErrorMessage(error: GeolocationPositionError): string {
+  if (error.code === 1) {
+    return 'Location permission was denied. Allow location access and try again.';
+  }
+  if (error.code === 2) {
+    return 'Current location is unavailable. Check device location services and try again.';
+  }
+  if (error.code === 3) {
+    return 'Location request timed out. Try again.';
+  }
+  return 'Location could not be read. Try again.';
+}
+
 export function PlacesApp({ pins, places }: PlacesAppProps) {
   const storeRef = useRef<DiscoveryStoreApi | null>(null);
   if (storeRef.current === null) storeRef.current = createPlacesStore();
@@ -226,9 +239,9 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
           zoom: 14,
         });
       },
-      () => {
+      (error) => {
         setIsLocating(false);
-        setLocationMessage('Location could not be read. Check browser permission and try again.');
+        setLocationMessage(geolocationErrorMessage(error));
       },
       { enableHighAccuracy: false, timeout: 10_000, maximumAge: 60_000 },
     );
