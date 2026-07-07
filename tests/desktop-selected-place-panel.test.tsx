@@ -60,7 +60,7 @@ const place: PublicPlace = {
       howToPay: 'Ask staff to display a Lightning invoice and scan the QR code.',
       instructionsLanguage: 'en',
       merchantReceives: 'crypto',
-      restrictions: null,
+      restrictions: 'Minimum purchase ¥500.',
       firstConfirmedAt: '2026-06-01T00:00:00Z',
       lastConfirmedAt: '2026-06-20T00:00:00Z',
       nextReviewAt: '2026-12-17T00:00:00Z',
@@ -127,7 +127,7 @@ const place: PublicPlace = {
 };
 
 describe('DesktopSelectedPlacePanel', () => {
-  it('shows practical Place information, gallery, and navigation without requiring detail navigation', () => {
+  it('shows practical Place information, complete payment context, gallery, and navigation', () => {
     render(<DesktopSelectedPlacePanel pin={pin} place={place} onClear={vi.fn()} />);
 
     const panel = screen.getByRole('complementary', {
@@ -168,6 +168,8 @@ describe('DesktopSelectedPlacePanel', () => {
     expect(
       queries.getByRole('button', { name: /Enlarge image 2 of 2: Interior seating/ }),
     ).toBeInTheDocument();
+    expect(queries.getByText('Lightning Invoice')).toBeInTheDocument();
+    expect(queries.getByText('Minimum purchase ¥500.')).toBeInTheDocument();
     expect(queries.getByText(/Ask staff to display a Lightning invoice/)).toBeInTheDocument();
     expect(queries.getByRole('link', { name: 'Payment details' })).toHaveAttribute(
       'href',
