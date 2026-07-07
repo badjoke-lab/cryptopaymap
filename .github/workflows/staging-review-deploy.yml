@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   deploy:
@@ -85,6 +85,21 @@ jobs:
           path: staging-review-receipt/deployment-receipt.json
           if-no-files-found: error
           retention-days: 30
+
+      - name: Publish deployment receipt to status branch
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          CONTENT="$(base64 -w 0 staging-review-receipt/deployment-receipt.json)"
+          CURRENT_SHA="$(gh api "repos/$REPOSITORY/contents/config/staging-review/deployment-receipt.json?ref=staging-review" --jq '.sha')"
+          gh api --method PUT "repos/$REPOSITORY/contents/config/staging-review/deployment-receipt.json" \
+            -f message='STG-01: record staging deployment result' \
+            -f content="$CONTENT" \
+            -f sha="$CURRENT_SHA" \
+            -f branch='staging-review'
 
       - name: Enforce successful deployment
         if: always()
