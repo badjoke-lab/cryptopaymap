@@ -1,6 +1,10 @@
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
+import type {
+  ExpressionSpecification,
+  GeoJSONSource,
+  Map as MapLibreMap,
+} from 'maplibre-gl';
 import type { PublicPlacePin } from '../../public/places-discovery';
 import type { DiscoveryViewport } from '../../state/discovery-url';
 import {
@@ -129,7 +133,7 @@ function createPlacePinImage(fill: Rgb, selected: boolean) {
   return { width, height, data };
 }
 
-function pinImageExpression() {
+function pinImageExpression(): ExpressionSpecification {
   return [
     'case',
     ['==', ['get', 'selected'], true],
@@ -266,16 +270,12 @@ export function PlacesMap({
           map.addImage(stalePinImageId, createPlacePinImage(stalePinColor, false), {
             pixelRatio: 2,
           });
-          map.addImage(
-            selectedConfirmedPinImageId,
-            createPlacePinImage(confirmedPinColor, true),
-            { pixelRatio: 2 },
-          );
-          map.addImage(
-            selectedStalePinImageId,
-            createPlacePinImage(stalePinColor, true),
-            { pixelRatio: 2 },
-          );
+          map.addImage(selectedConfirmedPinImageId, createPlacePinImage(confirmedPinColor, true), {
+            pixelRatio: 2,
+          });
+          map.addImage(selectedStalePinImageId, createPlacePinImage(stalePinColor, true), {
+            pixelRatio: 2,
+          });
 
           map.addSource(sourceId, {
             type: 'geojson',
