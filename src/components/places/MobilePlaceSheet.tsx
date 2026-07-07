@@ -55,10 +55,8 @@ export function MobilePlaceSheet({
   const detailModel = useMemo(() => (detail ? buildPlaceDetailModel(detail) : null), [detail]);
 
   useEffect(() => {
-    setEntered(false);
-    const frame = window.requestAnimationFrame(() => setEntered(true));
-    return () => window.cancelAnimationFrame(frame);
-  }, [place?.placeSlug]);
+    setEntered(true);
+  }, []);
 
   if (!place || state === 'closed') return null;
 
