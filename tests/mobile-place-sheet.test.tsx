@@ -95,7 +95,28 @@ const detail: PublicPlace = {
       ],
     },
   ],
-  media: [],
+  media: [
+    {
+      role: 'cover',
+      url: 'https://media.example.com/exterior.webp',
+      mimeType: 'image/webp',
+      width: 1200,
+      height: 800,
+      altText: 'Exterior of Example Coffee.',
+      attribution: null,
+      licenseSlug: null,
+    },
+    {
+      role: 'interior',
+      url: 'https://media.example.com/interior.webp',
+      mimeType: 'image/webp',
+      width: 1200,
+      height: 800,
+      altText: 'Interior seating at Example Coffee.',
+      attribution: null,
+      licenseSlug: null,
+    },
+  ],
   provenance: [
     {
       sourceName: 'Example Coffee',
@@ -160,15 +181,17 @@ describe('MobilePlaceSheet gestures', () => {
     expect(sheet).toBeInTheDocument();
   });
 
-  it('shows routine practical Place information in expanded state', () => {
+  it('shows practical information, gallery, and navigation in expanded state', () => {
     render(<SheetHarness withDetail />);
     fireEvent.click(screen.getByRole('button', { name: 'Expand place details' }));
 
     expect(screen.getByText(/1 Example Street, Tokyo/)).toBeInTheDocument();
-    expect(screen.getByText('Independent coffee shop with counter and table seating.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Independent coffee shop with counter and table seating.'),
+    ).toBeInTheDocument();
     expect(screen.getByText('Mon–Fri 08:00–18:00')).toBeInTheDocument();
     expect(screen.getByText('Wifi')).toBeInTheDocument();
-    expect(screen.getByText('Outdoor-seating')).toBeInTheDocument();
+    expect(screen.getByText('Outdoor Seating')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /\+81-3-0000-0000/ })).toHaveAttribute(
       'href',
       'tel:+81-3-0000-0000',
@@ -181,5 +204,19 @@ describe('MobilePlaceSheet gestures', () => {
       'href',
       'https://www.instagram.com/examplecoffee',
     );
+    expect(screen.getByRole('link', { name: 'Google Maps' })).toHaveAttribute(
+      'href',
+      expect.stringContaining('destination=35.681236%2C139.767125'),
+    );
+    expect(screen.getByRole('link', { name: 'Apple Maps' })).toHaveAttribute(
+      'href',
+      expect.stringContaining('daddr=35.681236%2C139.767125'),
+    );
+    expect(
+      screen.getByRole('button', { name: /Enlarge image 1 of 2: Exterior of Example Coffee/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Enlarge image 2 of 2: Interior seating/ }),
+    ).toBeInTheDocument();
   });
 });
