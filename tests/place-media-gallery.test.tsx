@@ -27,6 +27,19 @@ const images: PublicPlace['media'] = [
   },
 ];
 
+const replacementImages: PublicPlace['media'] = [
+  {
+    role: 'cover',
+    url: 'https://media.example.com/market.webp',
+    mimeType: 'image/webp',
+    width: 1200,
+    height: 800,
+    altText: 'Exterior of Example Market.',
+    attribution: null,
+    licenseSlug: null,
+  },
+];
+
 describe('PlaceMediaGallery', () => {
   it('opens an enlarged image, shows attribution, supports keys and focus restoration', async () => {
     render(<PlaceMediaGallery images={images} />);
@@ -78,6 +91,26 @@ describe('PlaceMediaGallery', () => {
 
     expect(
       screen.getByRole('dialog', { name: 'Image viewer: Interior seating at Example Coffee.' }),
+    ).toBeInTheDocument();
+  });
+
+  it('closes the viewer and restores body scrolling when the Place image set changes', async () => {
+    const { rerender } = render(<PlaceMediaGallery images={images} />);
+    fireEvent.click(
+      screen.getByRole('button', {
+        name: /Enlarge image 2 of 2: Interior seating at Example Coffee/,
+      }),
+    );
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(document.body.style.overflow).toBe('hidden');
+
+    rerender(<PlaceMediaGallery images={replacementImages} />);
+
+    await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(document.body.style.overflow).toBe('');
+    expect(
+      screen.getByRole('button', { name: /Enlarge image 1 of 1: Exterior of Example Market/ }),
     ).toBeInTheDocument();
   });
 });
