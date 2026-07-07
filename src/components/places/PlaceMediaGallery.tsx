@@ -14,7 +14,15 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchCurrentX = useRef<number | null>(null);
+  const imageSetKey = images.map((image) => image.url).join('\n');
+  const previousImageSetKeyRef = useRef(imageSetKey);
   const open = activeIndex !== null;
+
+  useEffect(() => {
+    if (previousImageSetKeyRef.current === imageSetKey) return;
+    previousImageSetKeyRef.current = imageSetKey;
+    setActiveIndex(null);
+  }, [imageSetKey]);
 
   useEffect(() => {
     if (!open) return;
