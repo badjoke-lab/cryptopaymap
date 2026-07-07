@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { useState } from 'react';
-import { describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { MobilePlaceSheet } from '../src/components/places/MobilePlaceSheet';
 import type { PublicPlace } from '../src/public/place-detail';
 import type { PublicPlacePin } from '../src/public/places-discovery';
@@ -128,6 +128,28 @@ const detail: PublicPlace = {
   ],
 };
 
+let pendingFrame: FrameRequestCallback | null = null;
+
+beforeEach(() => {
+  vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
+    pendingFrame = callback;
+    return 1;
+  });
+  vi.spyOn(window, 'cancelAnimationFrame').mockImplementation(() => undefined);
+});
+
+afterEach(() => {
+  pendingFrame = null;
+  vi.restoreAllMocks();
+});
+
+function settleEntry() {
+  const callback = pendingFrame;
+  pendingFrame = null;
+  if (!callback) throw new Error('Expected a pending sheet entry frame.');
+  act(() => callback(0));
+}
+
 function SheetHarness({ withDetail = false }: { withDetail?: boolean }) {
   const [state, setState] = useState<BottomSheetState>('peek');
   return (
@@ -147,6 +169,19 @@ function swipe(handle: HTMLElement, startY: number, endY: number) {
 }
 
 describe('MobilePlaceSheet gestures', () => {
+  it('starts below the viewport and settles into peek for the selected Place', () => {
+    render(<SheetHarness />);
+    const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
+
+    expect(sheet).toHaveAttribute('data-sheet-entered', 'false');
+    expect(sheet.style.transform).toBe('translateY(88dvh)');
+
+    settleEntry();
+
+    expect(sheet).toHaveAttribute('data-sheet-entered', 'true');
+    expect(sheet.style.transform).toContain('53dvh');
+  });
+
   it('keeps peek compact while showing identity, category, location, assets, and freshness', () => {
     render(<SheetHarness />);
     const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
@@ -160,6 +195,7 @@ describe('MobilePlaceSheet gestures', () => {
 
   it('follows bounded touch movement before settling to expanded or peek', () => {
     render(<SheetHarness />);
+    settleEntry();
 
     const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
     const expandHandle = screen.getByRole('button', { name: 'Expand place details' });
@@ -184,6 +220,7 @@ describe('MobilePlaceSheet gestures', () => {
 
   it('does not close peek on a downward swipe', () => {
     render(<SheetHarness />);
+    settleEntry();
     const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
     const peekHandle = screen.getByRole('button', { name: 'Expand place details' });
 
@@ -194,6 +231,7 @@ describe('MobilePlaceSheet gestures', () => {
 
   it('shows practical information, complete payment context, gallery, and navigation in expanded state', () => {
     render(<SheetHarness withDetail />);
+    settleEntry();
     fireEvent.click(screen.getByRole('button', { name: 'Expand place details' }));
 
     expect(screen.getByText(/1 Example Street, Tokyo/)).toBeInTheDocument();
