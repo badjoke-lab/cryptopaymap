@@ -132,7 +132,7 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 
 ## Phase 4 — Public core / MVP-A
 
-**Status:** Repository branch completed; pull request #122 draft review pending
+**Status:** Repository work completed and merged through pull request #122
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -201,7 +201,7 @@ P4-17 resolves the complete 17-point set in dependency order:
 16. deterministic selection semantics;
 17. durable acceptance and regression coverage.
 
-P4-17A through P4-17F are implemented and validated. The final audit matrix remains the durable acceptance boundary for future Places changes.
+P4-17A through P4-17F are implemented, validated, and merged through pull request #122. The final audit matrix remains the durable acceptance boundary for future Places changes.
 
 ## Phase 5 — Public submissions / MVP-B
 
