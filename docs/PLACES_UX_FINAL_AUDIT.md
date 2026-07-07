@@ -20,7 +20,7 @@ Required companion documents:
 | 2 | Street-map-oriented default basemap with override | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
 | 3 | Single Places render as pins, not generic dots | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
 | 4 | Place pins and aggregate clusters remain distinct | `PlacesMap.tsx` | `places-map.test.tsx` | Validated |
-| 5 | Practical reviewed Place information has canonical-to-public path | location schema, migration 0020, canonical schema, promotion persistence, public schema | schema checks, `place-public-profile.test.ts` | Validated |
+| 5 | Practical reviewed Place information has canonical-to-public path | location schema, migration 0020, canonical schema, promotion persistence, public schema | `check-public-export-schemas.ts`, promotion schema checks, selected-surface tests | Validated |
 | 6 | Full reviewed address/location context reaches selected surfaces | public Place projection and detail model | selected-surface tests | Validated |
 | 7 | Desktop selected Place is useful without routine forced navigation | `DesktopSelectedPlacePanel.tsx` | `desktop-selected-place-panel.test.tsx` | Validated |
 | 8 | Mobile expanded sheet exposes routine practical and payment information | `MobilePlaceSheet.tsx` | `mobile-place-sheet.test.tsx` | Validated |
