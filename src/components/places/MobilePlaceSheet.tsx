@@ -1,8 +1,17 @@
-import { ChevronDown, ChevronUp, ExternalLink, Phone, X } from 'lucide-react';
+import {
+  ChevronDown,
+  ChevronUp,
+  ExternalLink,
+  MapPinned,
+  Phone,
+  X,
+} from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import type { PublicPlacePin } from '../../public/places-discovery';
 import type { BottomSheetState } from '../../state/discovery-store';
+import { PlaceMediaGallery } from './PlaceMediaGallery';
+import { buildPlaceNavigationLinks } from './place-navigation';
 
 interface MobilePlaceSheetProps {
   place: PublicPlacePin | null;
@@ -17,7 +26,7 @@ const peekOffsetDvh = 53;
 
 function formatLabel(value: string): string {
   return value
-    .split('_')
+    .split(/[_-]/)
     .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
     .join(' ');
 }
@@ -74,6 +83,15 @@ export function MobilePlaceSheet({
   const assets = detailModel?.assetSymbols ?? place.assetSlugs.map(formatLabel);
   const amenities = profile?.amenities ?? [];
   const socialLinks = profile?.socialLinks ?? [];
+  const galleryImages = detailModel
+    ? detailModel.cover
+      ? [detailModel.cover, ...detailModel.gallery]
+      : detailModel.gallery
+    : [];
+  const navigation = buildPlaceNavigationLinks({
+    latitude: place.latitude,
+    longitude: place.longitude,
+  });
   const lastConfirmedAt = detailModel?.lastConfirmedAt ?? place.lastConfirmedAt;
   const baseOffsetDvh = expanded ? 0 : peekOffsetDvh;
   const transform = entered
@@ -195,6 +213,32 @@ export function MobilePlaceSheet({
               </section>
             ) : null}
 
+            <section className="mt-4" aria-label="Navigate">
+              <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                Navigate
+              </h3>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <a
+                  className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline"
+                  href={navigation.googleMapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MapPinned className="size-4" aria-hidden="true" />
+                  Google Maps
+                </a>
+                <a
+                  className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline"
+                  href={navigation.appleMapsUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MapPinned className="size-4" aria-hidden="true" />
+                  Apple Maps
+                </a>
+              </div>
+            </section>
+
             {profile?.description ? (
               <section className="mt-4" aria-label="About this place">
                 <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
@@ -273,6 +317,12 @@ export function MobilePlaceSheet({
                   ))}
                 </div>
               </section>
+            ) : null}
+
+            {galleryImages.length > 0 ? (
+              <div className="mt-4">
+                <PlaceMediaGallery images={galleryImages} />
+              </div>
             ) : null}
 
             {primaryClaim?.howToPay ? (
