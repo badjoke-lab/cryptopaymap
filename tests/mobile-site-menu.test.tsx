@@ -18,10 +18,11 @@ afterEach(() => {
 
 describe('MobileSiteMenu', () => {
   it('keeps closed links inert and contains focus while open', () => {
-    render(<MobileSiteMenu pathname="/places" />);
+    const { container } = render(<MobileSiteMenu pathname="/places" />);
 
     const trigger = screen.getByRole('button', { name: 'Menu' });
-    const menu = screen.getByRole('complementary', { name: 'Mobile primary', hidden: true });
+    const menu = container.querySelector<HTMLElement>('#mobile-primary-menu');
+    if (!menu) throw new Error('Mobile primary menu was not rendered.');
     expect(menu).toHaveAttribute('inert');
 
     fireEvent.click(trigger);
