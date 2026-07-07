@@ -1,6 +1,8 @@
-import { ExternalLink, Phone, X } from 'lucide-react';
+import { ExternalLink, MapPinned, Phone, X } from 'lucide-react';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import type { PublicPlacePin } from '../../public/places-discovery';
+import { PlaceMediaGallery } from './PlaceMediaGallery';
+import { buildPlaceNavigationLinks } from './place-navigation';
 
 interface DesktopSelectedPlacePanelProps {
   pin: PublicPlacePin;
@@ -10,7 +12,7 @@ interface DesktopSelectedPlacePanelProps {
 
 function formatLabel(value: string): string {
   return value
-    .split('_')
+    .split(/[_-]/)
     .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
     .join(' ');
 }
@@ -42,6 +44,15 @@ export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelect
     : [];
   const amenities = profile?.amenities ?? [];
   const socialLinks = profile?.socialLinks ?? [];
+  const galleryImages = detail
+    ? detail.cover
+      ? [detail.cover, ...detail.gallery]
+      : detail.gallery
+    : [];
+  const navigation = buildPlaceNavigationLinks({
+    latitude: pin.latitude,
+    longitude: pin.longitude,
+  });
 
   return (
     <aside
@@ -107,6 +118,32 @@ export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelect
             <p className="mt-1 text-sm leading-6 text-ink">{detail.address}</p>
           </section>
         ) : null}
+
+        <section className="mt-5" aria-label="Navigate">
+          <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+            Navigate
+          </h3>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <a
+              className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+              href={navigation.googleMapsUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MapPinned className="size-4" aria-hidden="true" />
+              Google Maps
+            </a>
+            <a
+              className="motion-feedback inline-flex min-h-10 items-center gap-2 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+              href={navigation.appleMapsUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <MapPinned className="size-4" aria-hidden="true" />
+              Apple Maps
+            </a>
+          </div>
+        </section>
 
         {profile?.description ? (
           <section className="mt-5" aria-label="About this place">
@@ -186,6 +223,12 @@ export function DesktopSelectedPlacePanel({ pin, place, onClear }: DesktopSelect
               ))}
             </div>
           </section>
+        ) : null}
+
+        {galleryImages.length > 0 ? (
+          <div className="mt-5">
+            <PlaceMediaGallery images={galleryImages} />
+          </div>
         ) : null}
 
         <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
