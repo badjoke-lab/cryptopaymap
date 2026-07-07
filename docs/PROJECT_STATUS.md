@@ -1,64 +1,58 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-06
+**Last verified:** 2026-07-07
 
 ## Current phase
 
 Phase 4 — Public core / MVP-A
 
-## Current implementation item
-
-P4-16 — MVP-A integration and quality audit
-
 ## Active work
 
-- P4-16B — mobile List and Map synchronization
-- Branch: `work/p4-16-list-map-integration`
-- Pull request: #121
+- P4-16 — MVP-A integration and quality audit
+- P4-17A — Places contract and tracking correction
+- Branch: `work/places-ux-contract-correction`
+- Pull request: #122
 
-## Latest completed work
+## Required Places references
 
-- Phase 2 completed through pull request #40
-- Phase 3 repository work completed through pull request #95 with explicit live-verification deferrals
-- P4-01 Place detail completed through pull request #96
-- P4-02 PlacesApp shell completed through pull request #97
-- P4-03 MapLibre map completed through pull requests #98 and #100
-- P4-04 Result list completed through pull request #101
-- P4-05 Pin and list synchronization completed through pull request #102
-- P4-06 Filters and bounded result updates completed through pull requests #103 and #104
-- P4-07 URL state and browser back restoration completed through pull request #105
-- P4-08 Mobile selected Place sheet completed through pull request #106
-- P4-09 Online Services discovery and detail completed through pull request #107
-- P4-10 Home discovery surface completed through pull request #108
-- P4-11 Stats surface completed through pull request #109
-- URL-review staging environment and deploy receipts completed through pull requests #110 and #111
-- Mobile staging map loading and container sizing fixes completed through pull requests #112 and #113
-- Responsive mobile and desktop interaction boundaries completed through pull request #114
-- P4-12 Updates record-change surface completed through pull request #115
-- P4-13 Roadmap and Changelog release surfaces completed through pull request #116
-- P4-14 trust, data, legal, and sustainability pages completed through pull requests #117 and #118
-- P4-15 public Media integration completed through pull request #119
-- P4-16A staging acceptance coverage completed through pull request #120
+Before continuing Places work, read:
 
-## P4-16B in progress
+1. `docs/PLACES_UX_ACCEPTANCE.md`
+2. `docs/PLACES_RECOVERY_PLAN.md`
+3. the P4-17 section of `docs/IMPLEMENTATION_PLAN.md`
 
-- mobile List selection returns discovery to Map view
-- selected Place remains URL-owned and opens the mobile sheet
-- Map camera pans to the selected Place while preserving zoom
-- programmatic selection movement does not create Search this area state
-- integration tests cover List-to-Map and selected camera behavior
+The complete 17-point recovery set in those documents remains required even when one pull request covers only part of it.
+
+## Current recovery sequence
+
+- P4-17A — contract and tracking correction — In progress
+- P4-17B — map presentation foundation recovery — Planned
+- P4-17C — Place information and public projection recovery — Planned
+- P4-17D — desktop selected panel and mobile sheet recovery — Planned
+- P4-17E — gallery, image enlargement, and external navigation — Planned
+- P4-17F — state, responsive, accessibility, and final acceptance audit — Planned
 
 ## Next
 
-1. Validate and merge P4-16B.
-2. Remove dead links to the planned Phase 5 submission URLs without prematurely implementing submission forms.
-3. Audit responsive navigation, Places Filters and sheet restoration, long-content overflow, and all MVP-A public routes.
-4. Close remaining P4-16 integration defects before declaring Phase 4 repository work complete.
+1. Complete P4-17A in #122.
+2. Begin P4-17B.
+3. Execute P4-17C before selected surfaces depend on missing public Place fields.
+4. Execute P4-17D and P4-17E in dependency order.
+5. Run P4-17F and keep Phase 4 open until the full acceptance contract passes.
+6. Add newly discovered Places defects to the acceptance contract and implementation tracking before closing them.
+
+## Repository history relevant to this work
+
+- Phase 3 repository work completed through #95.
+- Public-core foundations P4-01 through P4-15 progressed through #119.
+- P4-16A staging acceptance coverage completed through #120.
+- P4-16B mobile List-to-Map synchronization completed through #121.
+- #122 is the active corrective Places work.
 
 ## Blocked
 
-No repository blocker. Live database, Access, R2, migration, restore persistence deployment, and production verification remain deferred until their scheduled live-verification stages.
+No repository blocker. Deferred live verification remains separate from repository completion work.
 
 ## Verification rule
 
-The actual main branch, merged pull requests, and CI results are authoritative.
+Repository reality is determined by the current branch, merged pull requests, and CI results. Required Places completion behavior is determined by the revised Places acceptance contract and recovery plan.
