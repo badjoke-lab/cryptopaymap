@@ -56,18 +56,36 @@ export function MobilePlaceSheet({
   const expanded = state === 'expanded';
   const profile = detailModel?.place ?? null;
   const primaryClaim = detailModel?.claims[0] ?? null;
-  const location =
-    detailModel?.address || [place.locality, place.countryCode].filter(Boolean).join(', ');
+  const compactLocation = [place.locality, place.countryCode].filter(Boolean).join(', ');
+  const location = detailModel?.address || compactLocation;
   const networks = detailModel?.networkSlugs ?? place.networkSlugs;
   const routes = detailModel
     ? [...new Set(detailModel.claims.map((claim) => claim.routeType))]
     : place.routeTypes;
+  const paymentMethods = detailModel
+    ? [
+        ...new Set(
+          detailModel.claims.flatMap((claim) =>
+            claim.paymentAssets.map((payment) => payment.paymentMethod),
+          ),
+        ),
+      ]
+    : [];
   const processors = detailModel
     ? [
         ...new Set(
           detailModel.claims
             .map((claim) => claim.processorSlug)
             .filter((processor): processor is string => processor !== null),
+        ),
+      ]
+    : [];
+  const restrictions = detailModel
+    ? [
+        ...new Set(
+          detailModel.claims
+            .map((claim) => claim.restrictions)
+            .filter((restriction): restriction is string => restriction !== null),
         ),
       ]
     : [];
@@ -189,7 +207,11 @@ export function MobilePlaceSheet({
               </span>
             </div>
             <h2 className="mt-2 text-lg font-semibold text-ink">{place.name}</h2>
-            <p className="mt-1 text-sm text-muted">{assets.join(', ')}</p>
+            <p className="mt-1 text-sm text-muted">
+              {formatLabel(place.categorySlug)}
+              {compactLocation ? ` · ${compactLocation}` : ''}
+            </p>
+            <p className="mt-1 text-sm font-medium text-ink">{assets.join(', ')}</p>
           </div>
         </div>
 
@@ -341,6 +363,16 @@ export function MobilePlaceSheet({
                 </dt>
                 <dd className="mt-1 font-medium text-ink">{routes.map(formatLabel).join(', ')}</dd>
               </div>
+              {paymentMethods.length > 0 ? (
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Payment methods
+                  </dt>
+                  <dd className="mt-1 font-medium text-ink">
+                    {paymentMethods.map(formatLabel).join(', ')}
+                  </dd>
+                </div>
+              ) : null}
               {processors.length > 0 ? (
                 <div>
                   <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
@@ -362,6 +394,19 @@ export function MobilePlaceSheet({
                 </dd>
               </div>
             </dl>
+
+            {restrictions.length > 0 ? (
+              <section className="mt-4" aria-label="Payment restrictions">
+                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  Restrictions
+                </h3>
+                {restrictions.map((restriction) => (
+                  <p className="mt-1 text-sm leading-6 text-muted" key={restriction}>
+                    {restriction}
+                  </p>
+                ))}
+              </section>
+            ) : null}
 
             <div className="mt-5 grid grid-cols-2 gap-2">
               <a
