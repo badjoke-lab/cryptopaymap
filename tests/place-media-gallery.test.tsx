@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/vitest';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { PlaceMediaGallery } from '../src/components/places/PlaceMediaGallery';
 import type { PublicPlace } from '../src/public/place-detail';
@@ -67,9 +67,10 @@ describe('PlaceMediaGallery', () => {
       }),
     );
 
-    const firstImage = screen.getByAltText('Exterior of Example Coffee.', {
-      selector: 'div[role="dialog"] img',
+    const dialog = screen.getByRole('dialog', {
+      name: 'Image viewer: Exterior of Example Coffee.',
     });
+    const firstImage = within(dialog).getByAltText('Exterior of Example Coffee.');
     fireEvent.touchStart(firstImage, { touches: [{ clientX: 300 }] });
     fireEvent.touchMove(firstImage, { touches: [{ clientX: 200 }] });
     fireEvent.touchEnd(firstImage);
