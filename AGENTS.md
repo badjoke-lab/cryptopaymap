@@ -11,6 +11,14 @@ Before changing files:
 3. Read the public specification documents relevant to the change.
 4. Compare the documents with the actual `main` branch, merged pull requests, and available CI results.
 
+For any Places map, list, selected-Place panel, bottom-sheet, Place information, gallery, navigation, camera, marker, current-location, or selection-state work, also read:
+
+1. `docs/PLACES_UX_ACCEPTANCE.md`;
+2. `docs/PLACES_RECOVERY_PLAN.md`;
+3. the active P4-17 item in `docs/IMPLEMENTATION_PLAN.md`.
+
+The complete Places acceptance contract remains in force even when the current pull request implements only one bounded part of it. A narrower pull-request body or temporary task description does not supersede the documented recovery contract.
+
 When repository reality and a status document disagree, repository reality is authoritative. Correct the status document in the same pull request or the next dedicated correction pull request.
 
 ## 2. Use implementation item IDs
@@ -33,6 +41,7 @@ A pull request should have one primary responsibility.
 - State the purpose, scope, exclusions, completion criteria, and checks.
 - Keep changes reviewable and reversible.
 - Update documentation when behavior, data contracts, routes, or operating procedures change.
+- For Places work, state which P4-17 recovery items are covered and which remain open.
 
 ## 4. Protect publication boundaries
 
@@ -58,6 +67,8 @@ Changes must maintain these principles:
 - sponsorship, advertising, or payment never determines verification status;
 - public exports exclude private fields and internal review data.
 
+Places recovery work that adds practical business information must extend canonical review, provenance, public projection allowlists, runtime schemas, and leakage checks together. UI convenience does not justify exporting unreviewed or private fields.
+
 ## 6. Keep project tracking synchronized
 
 At the start of an implementation item:
@@ -76,6 +87,8 @@ Before completion:
 
 Do not add a product changelog entry for repository administration alone.
 
+For P4-17, do not declare the Places recovery complete until the full 17-point acceptance matrix has been reviewed. Newly discovered Places defects must be added to the acceptance contract and implementation tracking before they are treated as completion work.
+
 ## 7. Quality checks
 
 Run every check available for the affected area. As the repository gains tooling, this normally includes:
@@ -91,6 +104,8 @@ Run every check available for the affected area. As the repository gains tooling
 
 Do not claim a check passed unless it was actually run and passed.
 
+Places changes must test the user-visible contract appropriate to the item, including camera defaults, marker/cluster distinction, selected-Place completeness, sheet gestures and reduced motion, gallery/lightbox behavior, external navigation links, current-location focus versus commit behavior, and selection restoration where applicable.
+
 ## 8. User experience requirements
 
 Interactive surfaces, especially Places, contribution flows, and administration, must be designed as application experiences rather than static pages.
@@ -104,6 +119,15 @@ Maintain:
 - reduced-motion support;
 - clear loading, empty, success, and error states;
 - a list-based alternative to map-only interaction.
+
+For Places specifically:
+
+- the default map must read as practical place discovery;
+- single Places and clusters must be visually distinct;
+- selected-Place surfaces must not hide ordinary public information behind unnecessary route changes;
+- mobile peek and expanded states have different responsibilities;
+- direct sheet dragging follows input movement where motion is enabled;
+- approved media and navigation handoff follow the Places acceptance contract.
 
 ## 9. Documentation language
 

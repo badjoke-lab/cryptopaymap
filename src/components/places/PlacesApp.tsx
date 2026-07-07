@@ -1,6 +1,7 @@
-import { List, Map as MapIcon, Search, SlidersHorizontal, X } from 'lucide-react';
+import { Crosshair, List, Map as MapIcon, Search, SlidersHorizontal } from 'lucide-react';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useStore } from 'zustand';
+import type { PublicPlace } from '../../public/place-detail';
 import {
   buildPublicPlaceFilterFacets,
   filterPublicPlacePins,
@@ -18,7 +19,9 @@ import {
   mergeDiscoveryUrlState,
   serializeDiscoveryUrlState,
   type DiscoveryUrlState,
+  type DiscoveryViewport,
 } from '../../state/discovery-url';
+import { DesktopSelectedPlacePanel } from './DesktopSelectedPlacePanel';
 import { filterPinsByMapBounds } from './map-data';
 import { MobilePlaceSheet } from './MobilePlaceSheet';
 import { PlaceFilterPanel } from './PlaceFilterPanel';
@@ -27,6 +30,7 @@ import { PlacesMap } from './PlacesMap';
 
 interface PlacesAppProps {
   pins: PublicPlacePin[];
+  places: PublicPlace[];
 }
 
 function createPlacesStore(): DiscoveryStoreApi {
@@ -37,7 +41,20 @@ function serializedState(state: DiscoveryUrlState): string {
   return serializeDiscoveryUrlState(state).toString();
 }
 
-export function PlacesApp({ pins }: PlacesAppProps) {
+function geolocationErrorMessage(error: GeolocationPositionError): string {
+  if (error.code === 1) {
+    return 'Location permission was denied. Allow location access and try again.';
+  }
+  if (error.code === 2) {
+    return 'Current location is unavailable. Check device location services and try again.';
+  }
+  if (error.code === 3) {
+    return 'Location request timed out. Try again.';
+  }
+  return 'Location could not be read. Try again.';
+}
+
+export function PlacesApp({ pins, places }: PlacesAppProps) {
   const storeRef = useRef<DiscoveryStoreApi | null>(null);
   if (storeRef.current === null) storeRef.current = createPlacesStore();
   const store = storeRef.current;
@@ -58,6 +75,9 @@ export function PlacesApp({ pins }: PlacesAppProps) {
   const setActiveBounds = useStore(store, (state) => state.setActiveBounds);
   const historyModeRef = useRef<DiscoveryHistoryMode>('replace');
   const [urlReady, setUrlReady] = useState(false);
+  const [focusViewport, setFocusViewport] = useState<DiscoveryViewport | null>(null);
+  const [isLocating, setIsLocating] = useState(false);
+  const [locationMessage, setLocationMessage] = useState<string | null>(null);
 
   function patchDiscoveryUrlState(
     patch: Partial<DiscoveryUrlState>,
@@ -90,6 +110,7 @@ export function PlacesApp({ pins }: PlacesAppProps) {
       setActiveBounds(restored.uiState.activeBounds);
       setPendingViewport(null);
       setPendingBounds(null);
+      setFocusViewport(null);
     };
 
     window.addEventListener('popstate', onPopState);
@@ -138,6 +159,11 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     [activeBounds, filteredResults],
   );
   const selected = results.find((pin) => pin.placeSlug === urlState.selectedPlace) ?? null;
+  const placesBySlug = useMemo(
+    () => new Map(places.map((place) => [place.placeSlug, place])),
+    [places],
+  );
+  const selectedDetail = selected ? (placesBySlug.get(selected.placeSlug) ?? null) : null;
   const activeFilterCount =
     urlState.assets.length +
     urlState.networks.length +
@@ -148,6 +174,8 @@ export function PlacesApp({ pins }: PlacesAppProps) {
       : urlState.statuses.length);
 
   function selectPlace(placeSlug: string) {
+    const current = store.getState().urlState;
+    if (current.selectedPlace === placeSlug && current.view === 'map') return;
     patchDiscoveryUrlState({ selectedPlace: placeSlug, view: 'map' });
     setBottomSheet('peek');
   }
@@ -172,6 +200,13 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     setPendingBounds(null);
   }
 
+  function widenArea() {
+    setActiveBounds(null);
+    setPendingViewport(null);
+    setPendingBounds(null);
+    setFocusViewport(null);
+  }
+
   function searchPendingArea() {
     if (!pendingViewport || !pendingBounds) return;
 
@@ -179,7 +214,37 @@ export function PlacesApp({ pins }: PlacesAppProps) {
     patchDiscoveryUrlState({ viewport: pendingViewport, selectedPlace: null });
     setPendingViewport(null);
     setPendingBounds(null);
+    setFocusViewport(null);
     setBottomSheet('closed');
+  }
+
+  function locateCurrentUser() {
+    if (!navigator.geolocation) {
+      setLocationMessage('Current location is unavailable in this browser.');
+      return;
+    }
+
+    setIsLocating(true);
+    setLocationMessage(null);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setIsLocating(false);
+        setPendingViewport(null);
+        setPendingBounds(null);
+        patchDiscoveryUrlState({ selectedPlace: null, view: 'map' });
+        setBottomSheet('closed');
+        setFocusViewport({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          zoom: 14,
+        });
+      },
+      (error) => {
+        setIsLocating(false);
+        setLocationMessage(geolocationErrorMessage(error));
+      },
+      { enableHighAccuracy: false, timeout: 10_000, maximumAge: 60_000 },
+    );
   }
 
   return (
@@ -234,20 +299,27 @@ export function PlacesApp({ pins }: PlacesAppProps) {
 
           <div className="flex items-center justify-between gap-2 lg:justify-start">
             <button
-              className="motion-feedback inline-flex min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink hover:bg-brand-50"
+              className="motion-feedback hidden min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink hover:bg-brand-50 lg:inline-flex"
+              type="button"
+              disabled={isLocating}
+              onClick={locateCurrentUser}
+            >
+              <Crosshair className="size-4" aria-hidden="true" />
+              {isLocating ? 'Locating…' : 'Current location'}
+            </button>
+            <button
+              className="motion-feedback hidden min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink hover:bg-brand-50 lg:inline-flex"
               type="button"
               aria-expanded={filterPanelOpen}
               onClick={() => setFilterPanelOpen(!filterPanelOpen)}
             >
-              <SlidersHorizontal className="size-4" aria-hidden="true" />
-              Filters
+              <SlidersHorizontal className="size-4" aria-hidden="true" /> Filters
               {activeFilterCount > 0 ? (
                 <span className="rounded-pill bg-brand-50 px-2 py-0.5 text-xs text-brand-800">
                   {activeFilterCount}
                 </span>
               ) : null}
             </button>
-
             <fieldset
               className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden"
               aria-label="View mode"
@@ -276,12 +348,20 @@ export function PlacesApp({ pins }: PlacesAppProps) {
           </div>
         </div>
 
+        {locationMessage ? (
+          <p className="mt-2 text-sm text-error" role="status">
+            {locationMessage}
+          </p>
+        ) : null}
+
         {filterPanelOpen ? (
           <PlaceFilterPanel
             facets={facets}
             state={urlState}
+            resultCount={results.length}
             onPatch={(patch) => patchDiscoveryUrlState(patch)}
             onClear={clearFilters}
+            onWidenArea={widenArea}
             onClose={() => setFilterPanelOpen(false)}
           />
         ) : null}
@@ -295,53 +375,50 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               pins={results}
               selectedPlace={urlState.selectedPlace}
               committedViewport={urlState.viewport}
+              focusViewport={focusViewport}
               onSelectPlace={selectPlace}
+              onClearSelection={clearSelection}
               onViewportChange={setPendingViewport}
               onBoundsChange={setPendingBounds}
             />
 
+            <div className="pointer-events-none absolute left-2 top-2 z-20 flex max-w-[calc(100%-4rem)] items-center gap-1.5 lg:hidden">
+              <button
+                className="pointer-events-auto motion-feedback inline-flex min-h-11 items-center gap-1.5 rounded-control border border-border bg-surface/95 px-3 text-sm font-semibold text-ink shadow-sm backdrop-blur"
+                type="button"
+                disabled={isLocating}
+                onClick={locateCurrentUser}
+              >
+                <Crosshair className="size-4" aria-hidden="true" />{' '}
+                {isLocating ? 'Locating…' : 'Locate'}
+              </button>
+              <button
+                className="pointer-events-auto motion-feedback inline-flex min-h-11 items-center gap-1.5 rounded-control border border-border bg-surface/95 px-3 text-sm font-semibold text-ink shadow-sm backdrop-blur"
+                type="button"
+                aria-expanded={filterPanelOpen}
+                onClick={() => setFilterPanelOpen(true)}
+              >
+                <SlidersHorizontal className="size-4" aria-hidden="true" /> Filters
+              </button>
+              <span className="rounded-pill border border-border bg-surface/95 px-2.5 py-2 text-xs font-semibold text-muted shadow-sm backdrop-blur">
+                {results.length} places
+              </span>
+            </div>
+
             {pendingViewport && pendingBounds ? (
               <button
-                className="motion-feedback absolute left-1/2 top-2 z-10 min-h-10 -translate-x-1/2 rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-panel hover:bg-brand-700 lg:top-3 lg:min-h-11 lg:px-4 lg:text-base"
+                className="motion-feedback absolute left-1/2 top-16 z-10 min-h-10 -translate-x-1/2 rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-panel hover:bg-brand-700 lg:top-3 lg:min-h-11 lg:px-4 lg:text-base"
                 type="button"
                 onClick={searchPendingArea}
               >
                 Search this area
               </button>
             ) : null}
-
-            {selected ? (
-              <aside className="absolute bottom-3 left-4 z-10 hidden w-80 rounded-card border border-border bg-surface p-4 shadow-panel lg:block">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
-                      Selected place
-                    </p>
-                    <h3 className="mt-1 text-lg font-semibold text-ink">{selected.name}</h3>
-                  </div>
-                  <button
-                    className="motion-feedback flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas"
-                    type="button"
-                    aria-label="Clear selected place"
-                    onClick={clearSelection}
-                  >
-                    <X className="size-5" aria-hidden="true" />
-                  </button>
-                </div>
-                <p className="mt-2 text-sm text-muted">
-                  {selected.assetSlugs.join(', ')} · {selected.networkSlugs.join(', ')}
-                </p>
-                <a
-                  className="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700"
-                  href={`/place/${selected.placeSlug}`}
-                >
-                  View payment details
-                </a>
-              </aside>
-            ) : null}
           </section>
 
-          <div className={urlState.view === 'map' ? 'hidden lg:block' : 'block'}>
+          <div
+            className={`${urlState.view === 'map' ? 'hidden lg:block' : 'block'} relative min-h-0`}
+          >
             <PlaceResultList
               pins={results}
               selectedPlace={urlState.selectedPlace}
@@ -350,10 +427,25 @@ export function PlacesApp({ pins }: PlacesAppProps) {
               onSelectPlace={selectPlace}
               onClearFilters={clearFilters}
             />
+            {selected ? (
+              <div className="absolute inset-0 z-10 hidden bg-canvas lg:block">
+                <DesktopSelectedPlacePanel
+                  pin={selected}
+                  place={selectedDetail}
+                  onClear={clearSelection}
+                />
+              </div>
+            ) : null}
           </div>
         </div>
 
-        <MobilePlaceSheet place={selected} state={bottomSheet} onStateChange={setBottomSheet} />
+        <MobilePlaceSheet
+          place={selected}
+          detail={selectedDetail}
+          state={bottomSheet}
+          onStateChange={setBottomSheet}
+          onClose={clearSelection}
+        />
       </div>
     </section>
   );

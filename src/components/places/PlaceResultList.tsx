@@ -62,7 +62,9 @@ export function PlaceResultList({
 
   return (
     <section
-      className="min-h-0 rounded-card border border-border bg-surface"
+      className={`min-h-0 rounded-card border border-border bg-surface ${
+        selectedPlace ? 'lg:invisible' : ''
+      }`}
       aria-labelledby="places-results-title"
     >
       <div className="border-b border-border p-4">

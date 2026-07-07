@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import type {
   PublicPlaceFilterFacet,
   PublicPlaceFilterFacets,
@@ -12,8 +13,10 @@ import type {
 interface PlaceFilterPanelProps {
   facets: PublicPlaceFilterFacets;
   state: DiscoveryUrlState;
+  resultCount: number;
   onPatch: (patch: Partial<DiscoveryUrlState>) => void;
   onClear: () => void;
+  onWidenArea: () => void;
   onClose: () => void;
 }
 
@@ -23,6 +26,8 @@ interface FilterGroupProps {
   selected: readonly string[];
   onToggle: (value: string) => void;
 }
+
+const focusableSelector = 'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
 
 function formatLabel(value: string): string {
   return value
@@ -68,37 +73,91 @@ function FilterGroup({ legend, options, selected, onToggle }: FilterGroupProps) 
 export function PlaceFilterPanel({
   facets,
   state,
+  resultCount,
   onPatch,
   onClear,
+  onWidenArea,
   onClose,
 }: PlaceFilterPanelProps) {
+  const panelRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (
+      typeof window.matchMedia !== 'function' ||
+      !window.matchMedia('(max-width: 1023px)').matches
+    ) {
+      return;
+    }
+
+    const previousActiveElement = document.activeElement as HTMLElement | null;
+    const frame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const panel = panelRef.current;
+      if (!panel) return;
+
+      const focusable = [...panel.querySelectorAll<HTMLElement>(focusableSelector)].filter(
+        (element) => element.tabIndex >= 0,
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      const focusOutsidePanel = !activeElement || !panel.contains(activeElement);
+      if (event.shiftKey && (activeElement === first || focusOutsidePanel)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (activeElement === last || focusOutsidePanel)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', onKeyDown);
+      previousActiveElement?.focus();
+    };
+  }, []);
+
   const activeCount =
     state.assets.length +
     state.networks.length +
     state.categories.length +
     state.routes.length +
     (state.statuses.length === 1 && state.statuses[0] === 'confirmed' ? 0 : state.statuses.length);
+  const staleIncluded = state.statuses.includes('stale');
 
   return (
     <div className="fixed inset-0 z-50 lg:static lg:z-auto">
       <button
         className="absolute inset-0 bg-ink/30 lg:hidden"
         type="button"
+        tabIndex={-1}
         aria-label="Close filters"
         onClick={onClose}
       />
 
       <section
+        ref={panelRef}
         className="absolute inset-x-0 bottom-0 max-h-[82svh] overflow-y-auto rounded-t-card border-x border-t border-border bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-panel lg:relative lg:inset-auto lg:mt-3 lg:max-h-none lg:overflow-visible lg:rounded-card lg:border lg:pb-4 lg:shadow-sm"
         aria-label="Place filters"
       >
         <div className="flex items-start justify-between gap-3 border-b border-border pb-4">
           <div>
             <h2 className="m-0 text-base font-semibold text-ink">Filter public places</h2>
-            <p className="mt-1 text-sm text-muted">
+            <p className="mt-1 text-sm text-muted" aria-live="polite">
+              {resultCount} {resultCount === 1 ? 'place' : 'places'} match
               {activeCount === 0
-                ? 'Confirmed status is the default.'
-                : `${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
+                ? '. Confirmed status is the default.'
+                : ` · ${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
             </p>
           </div>
           <div className="flex items-center gap-1">
@@ -110,6 +169,7 @@ export function PlaceFilterPanel({
               Clear
             </button>
             <button
+              ref={closeButtonRef}
               className="motion-feedback flex size-10 items-center justify-center rounded-control text-muted hover:bg-canvas lg:hidden"
               type="button"
               aria-label="Close filters"
@@ -119,6 +179,54 @@ export function PlaceFilterPanel({
             </button>
           </div>
         </div>
+
+        {resultCount === 0 ? (
+          <section
+            className="mt-4 rounded-card border border-border bg-canvas p-4"
+            aria-label="No matching places guidance"
+          >
+            <h3 className="m-0 text-sm font-semibold text-ink">No public places match</h3>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Candidate records are not used as substitutes. Try a wider area or another public
+              discovery path.
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <button
+                className="motion-feedback min-h-10 rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink hover:bg-brand-50"
+                type="button"
+                onClick={onWidenArea}
+              >
+                Widen area
+              </button>
+              {!staleIncluded ? (
+                <button
+                  className="motion-feedback min-h-10 rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink hover:bg-brand-50"
+                  type="button"
+                  onClick={() =>
+                    onPatch({
+                      statuses: [...state.statuses, 'stale'],
+                      selectedPlace: null,
+                    })
+                  }
+                >
+                  Include Stale
+                </button>
+              ) : null}
+              <a
+                className="motion-feedback inline-flex min-h-10 items-center rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                href="/online"
+              >
+                Online Services
+              </a>
+              <a
+                className="motion-feedback inline-flex min-h-10 items-center rounded-control border border-border bg-surface px-3 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                href="/suggest"
+              >
+                Suggest a Place
+              </a>
+            </div>
+          </section>
+        ) : null}
 
         <div className="mt-4 grid gap-5 lg:grid-cols-2">
           <FilterGroup

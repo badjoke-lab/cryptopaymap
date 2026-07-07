@@ -6,6 +6,7 @@ import {
   publicManifestFileSchema,
   publicMediaSchema,
   publicPlacePinSchema,
+  publicPlaceSchema,
   publicVersionSchema,
 } from '../src/schemas/public-exports';
 
@@ -107,6 +108,17 @@ const publicPlace = {
   latitude: 35.681236,
   longitude: 139.767125,
   websiteUrl: 'https://example.com',
+  phone: '+81-3-0000-0000',
+  description: 'Independent coffee shop with counter and table seating.',
+  openingHours: 'Mon–Fri 08:00–18:00; Sat–Sun 09:00–17:00',
+  amenities: ['wifi', 'outdoor-seating'],
+  socialLinks: [
+    {
+      platform: 'instagram',
+      url: 'https://www.instagram.com/examplecoffee',
+      handle: '@examplecoffee',
+    },
+  ],
   claims: [publicClaim],
   media: [publicMedia],
   provenance: [publicProvenance],
@@ -301,6 +313,38 @@ const invalidPins = [
 
 if (invalidPins.some((value) => publicPlacePinSchema.safeParse(value).success)) {
   throw new Error('An invalid map-pin projection was accepted.');
+}
+
+const invalidPlaces = [
+  { ...publicPlace, amenities: ['wifi', 'wifi'] },
+  {
+    ...publicPlace,
+    socialLinks: [publicPlace.socialLinks[0], publicPlace.socialLinks[0]],
+  },
+  {
+    ...publicPlace,
+    socialLinks: [
+      {
+        platform: 'Instagram',
+        url: 'https://www.instagram.com/examplecoffee',
+        handle: '@examplecoffee',
+      },
+    ],
+  },
+  {
+    ...publicPlace,
+    socialLinks: [
+      {
+        platform: 'instagram',
+        url: 'http://www.instagram.com/examplecoffee',
+        handle: '@examplecoffee',
+      },
+    ],
+  },
+];
+
+if (invalidPlaces.some((value) => publicPlaceSchema.safeParse(value).success)) {
+  throw new Error('An invalid practical Place profile projection was accepted.');
 }
 
 if (

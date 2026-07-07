@@ -2,11 +2,15 @@
 import { getCollection } from 'astro:content';
 import { PlacesApp } from '../components/places/PlacesApp';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { publicPlacePinSchema } from '../schemas/public-exports';
+import { publicPlacePinSchema, publicPlaceSchema } from '../schemas/public-exports';
 
-const entries = await getCollection('publicPlacePins');
-const pins = entries.map((entry) =>
+const pinEntries = await getCollection('publicPlacePins');
+const pins = pinEntries.map((entry) =>
   publicPlacePinSchema.parse((entry.data as { pin: unknown }).pin),
+);
+const placeEntries = await getCollection('publicPlaces');
+const places = placeEntries.map((entry) =>
+  publicPlaceSchema.parse((entry.data as { place: unknown }).place),
 );
 ---
 
@@ -14,5 +18,5 @@ const pins = entries.map((entry) =>
   title="Places | CryptoPayMap"
   description="Find reviewed physical places where cryptocurrency payment is accepted at checkout."
 >
-  <PlacesApp pins={pins} client:load />
+  <PlacesApp pins={pins} places={places} client:load />
 </BaseLayout>

@@ -3,6 +3,7 @@ import {
   bigint,
   check,
   index,
+  jsonb,
   numeric,
   pgEnum,
   pgTable,
@@ -17,6 +18,12 @@ import { entities } from './entities';
 
 export const locationStatusValues = ['active', 'temporarily_closed', 'closed', 'unknown'] as const;
 export const osmElementTypeValues = ['node', 'way', 'relation'] as const;
+
+export interface LocationSocialLink {
+  platform: string;
+  url: string;
+  handle: string | null;
+}
 
 export const locationStatusEnum = pgEnum('location_status', locationStatusValues);
 export const osmElementTypeEnum = pgEnum('osm_element_type', osmElementTypeValues);
@@ -41,6 +48,10 @@ export const locations = pgTable(
     visibility: claimVisibilityEnum('visibility').default('hidden').notNull(),
     websiteUrl: text('website_url'),
     phone: varchar('phone', { length: 64 }),
+    description: text('description'),
+    openingHours: text('opening_hours'),
+    amenities: text('amenities').array(),
+    socialLinks: jsonb('social_links').$type<LocationSocialLink[]>(),
     osmType: osmElementTypeEnum('osm_type'),
     osmId: bigint('osm_id', { mode: 'number' }),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
@@ -61,6 +72,10 @@ export const locations = pgTable(
     check(
       'locations_osm_identity_pair',
       sql`(${table.osmType} is null and ${table.osmId} is null) or (${table.osmType} is not null and ${table.osmId} is not null)`,
+    ),
+    check(
+      'locations_social_links_array',
+      sql`${table.socialLinks} is null or jsonb_typeof(${table.socialLinks}) = 'array'`,
     ),
   ],
 );
