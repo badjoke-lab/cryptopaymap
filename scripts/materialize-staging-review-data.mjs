@@ -55,6 +55,11 @@ const serviceGallery = publicMedia(
   'Abstract synthetic gallery artwork for the staging Online Service review record',
 );
 
+mediaPlace.description =
+  'Synthetic staging café profile used to review practical Place information in selected surfaces.';
+mediaPlace.openingHours = 'Mon–Fri 08:00–18:00\nSat–Sun 09:00–17:00';
+mediaPlace.amenities = ['wifi', 'outdoor-seating'];
+mediaPlace.provenance[0]?.fields.push('description', 'openingHours', 'amenities');
 mediaPlace.media = [placeCover, placeGallery];
 mediaPin.thumbnail = placeCover;
 mediaService.media = [serviceCover, serviceGallery];
@@ -75,5 +80,5 @@ await Promise.all([
 ]);
 
 console.log(
-  `Materialized staging review data: ${data.places.records.length} places, ${data.placePins.records.length} map pins, ${data.onlineServices.records.length} online services, ${updates.records.length} updates, with public Media review fixtures.`,
+  `Materialized staging review data: ${data.places.records.length} places, ${data.placePins.records.length} map pins, ${data.onlineServices.records.length} online services, ${updates.records.length} updates, with public Media and practical Place profile review fixtures.`,
 );
