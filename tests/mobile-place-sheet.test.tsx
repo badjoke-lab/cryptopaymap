@@ -62,7 +62,7 @@ const detail: PublicPlace = {
       howToPay: 'Ask staff to display a Lightning invoice and scan the QR code.',
       instructionsLanguage: 'en',
       merchantReceives: 'crypto',
-      restrictions: null,
+      restrictions: 'Minimum purchase ¥500.',
       firstConfirmedAt: '2026-06-01T00:00:00Z',
       lastConfirmedAt: '2026-06-20T00:00:00Z',
       nextReviewAt: '2026-12-17T00:00:00Z',
@@ -147,6 +147,17 @@ function swipe(handle: HTMLElement, startY: number, endY: number) {
 }
 
 describe('MobilePlaceSheet gestures', () => {
+  it('keeps peek compact while showing identity, category, location, assets, and freshness', () => {
+    render(<SheetHarness />);
+    const sheet = screen.getByRole('region', { name: 'Selected place: Example Coffee' });
+
+    expect(sheet).toHaveAttribute('data-sheet-state', 'peek');
+    expect(screen.getByText('Cafe · Tokyo, JP')).toBeInTheDocument();
+    expect(screen.getByText('Bitcoin')).toBeInTheDocument();
+    expect(screen.getByText(/Last confirmed Jun 20, 2026/)).toBeInTheDocument();
+    expect(screen.queryByText('Networks')).not.toBeInTheDocument();
+  });
+
   it('follows bounded touch movement before settling to expanded or peek', () => {
     render(<SheetHarness />);
 
@@ -181,7 +192,7 @@ describe('MobilePlaceSheet gestures', () => {
     expect(sheet).toBeInTheDocument();
   });
 
-  it('shows practical information, gallery, and navigation in expanded state', () => {
+  it('shows practical information, complete payment context, gallery, and navigation in expanded state', () => {
     render(<SheetHarness withDetail />);
     fireEvent.click(screen.getByRole('button', { name: 'Expand place details' }));
 
@@ -218,5 +229,7 @@ describe('MobilePlaceSheet gestures', () => {
     expect(
       screen.getByRole('button', { name: /Enlarge image 2 of 2: Interior seating/ }),
     ).toBeInTheDocument();
+    expect(screen.getByText('Lightning Invoice')).toBeInTheDocument();
+    expect(screen.getByText('Minimum purchase ¥500.')).toBeInTheDocument();
   });
 });
