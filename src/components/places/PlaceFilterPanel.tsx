@@ -1,4 +1,5 @@
 import { X } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import type {
   PublicPlaceFilterFacet,
   PublicPlaceFilterFacets,
@@ -25,6 +26,8 @@ interface FilterGroupProps {
   selected: readonly string[];
   onToggle: (value: string) => void;
 }
+
+const focusableSelector = 'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
 
 function formatLabel(value: string): string {
   return value
@@ -76,6 +79,54 @@ export function PlaceFilterPanel({
   onWidenArea,
   onClose,
 }: PlaceFilterPanelProps) {
+  const panelRef = useRef<HTMLElement | null>(null);
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (
+      typeof window.matchMedia !== 'function' ||
+      !window.matchMedia('(max-width: 1023px)').matches
+    ) {
+      return;
+    }
+
+    const previousActiveElement = document.activeElement as HTMLElement | null;
+    const frame = window.requestAnimationFrame(() => closeButtonRef.current?.focus());
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Tab') return;
+      const panel = panelRef.current;
+      if (!panel) return;
+
+      const focusable = [...panel.querySelectorAll<HTMLElement>(focusableSelector)].filter(
+        (element) => element.tabIndex >= 0,
+      );
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) {
+        event.preventDefault();
+        closeButtonRef.current?.focus();
+        return;
+      }
+
+      const activeElement = document.activeElement;
+      const focusOutsidePanel = !activeElement || !panel.contains(activeElement);
+      if (event.shiftKey && (activeElement === first || focusOutsidePanel)) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && (activeElement === last || focusOutsidePanel)) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener('keydown', onKeyDown);
+      previousActiveElement?.focus();
+    };
+  }, []);
+
   const activeCount =
     state.assets.length +
     state.networks.length +
@@ -89,11 +140,13 @@ export function PlaceFilterPanel({
       <button
         className="absolute inset-0 bg-ink/30 lg:hidden"
         type="button"
+        tabIndex={-1}
         aria-label="Close filters"
         onClick={onClose}
       />
 
       <section
+        ref={panelRef}
         className="absolute inset-x-0 bottom-0 max-h-[82svh] overflow-y-auto rounded-t-card border-x border-t border-border bg-surface p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] shadow-panel lg:relative lg:inset-auto lg:mt-3 lg:max-h-none lg:overflow-visible lg:rounded-card lg:border lg:pb-4 lg:shadow-sm"
         aria-label="Place filters"
       >
@@ -116,6 +169,7 @@ export function PlaceFilterPanel({
               Clear
             </button>
             <button
+              ref={closeButtonRef}
               className="motion-feedback flex size-10 items-center justify-center rounded-control text-muted hover:bg-canvas lg:hidden"
               type="button"
               aria-label="Close filters"
