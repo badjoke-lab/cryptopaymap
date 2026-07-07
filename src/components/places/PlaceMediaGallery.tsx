@@ -30,9 +30,7 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
         return;
       }
       if (event.key === 'ArrowRight' && images.length > 1) {
-        setActiveIndex((current) =>
-          current === null ? null : (current + 1) % images.length,
-        );
+        setActiveIndex((current) => (current === null ? null : (current + 1) % images.length));
       }
       if (event.key === 'ArrowLeft' && images.length > 1) {
         setActiveIndex((current) =>
@@ -96,7 +94,7 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
             type="button"
             aria-label={`Enlarge image ${index + 1} of ${images.length}: ${image.altText}`}
             onClick={() => setActiveIndex(index)}
-            key={`${image.url}:${index}`}
+            key={image.url}
           >
             <img
               className="h-full w-full object-cover"
