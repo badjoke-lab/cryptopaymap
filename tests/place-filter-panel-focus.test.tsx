@@ -15,7 +15,7 @@ const emptyFacets: PublicPlaceFilterFacets = {
 };
 
 beforeEach(() => {
-  window.matchMedia = vi.fn().mockReturnValue({ matches: true }) as typeof window.matchMedia;
+  vi.stubGlobal('matchMedia', vi.fn().mockReturnValue({ matches: true }));
   vi.spyOn(window, 'requestAnimationFrame').mockImplementation((callback) => {
     callback(0);
     return 1;
@@ -24,6 +24,7 @@ beforeEach(() => {
 });
 
 afterEach(() => {
+  vi.unstubAllGlobals();
   vi.restoreAllMocks();
 });
 
