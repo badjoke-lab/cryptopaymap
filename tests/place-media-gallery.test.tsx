@@ -12,7 +12,7 @@ const images: PublicPlace['media'] = [
     width: 1200,
     height: 800,
     altText: 'Exterior of Example Coffee.',
-    attribution: null,
+    attribution: 'Photo supplied by Example Coffee.',
     licenseSlug: null,
   },
   {
@@ -28,7 +28,7 @@ const images: PublicPlace['media'] = [
 ];
 
 describe('PlaceMediaGallery', () => {
-  it('opens an enlarged image, supports next/previous keys, Escape, and focus restoration', async () => {
+  it('opens an enlarged image, shows attribution, supports keys and focus restoration', async () => {
     render(<PlaceMediaGallery images={images} />);
 
     const firstThumbnail = screen.getByRole('button', {
@@ -40,6 +40,7 @@ describe('PlaceMediaGallery', () => {
     expect(
       screen.getByRole('dialog', { name: 'Image viewer: Exterior of Example Coffee.' }),
     ).toBeInTheDocument();
+    expect(screen.getByText('Photo supplied by Example Coffee.')).toBeInTheDocument();
     await waitFor(() =>
       expect(screen.getAllByRole('button', { name: 'Close image viewer' })[1]).toHaveFocus(),
     );
