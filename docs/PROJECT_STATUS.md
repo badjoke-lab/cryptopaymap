@@ -6,17 +6,17 @@
 
 Phase 4 — Public core / MVP-A
 
-## Active work
+## Active branch state
 
-- P4-16 — MVP-A integration and quality audit
-- P4-17A — Places contract and tracking correction
-- P4-17F — State, responsive, accessibility, and final 17-point acceptance audit
+- P4-16 — MVP-A integration and quality audit — Completed on branch
+- P4-17A through P4-17F — Places UX recovery — Completed and validated on branch
 - Branch: `work/places-ux-contract-correction`
 - Pull request: #122
+- Pull request remains draft until explicit review/merge decision.
 
 ## Required Places references
 
-Before continuing Places work, read:
+Before changing Places behavior, read:
 
 1. `docs/PLACES_UX_ACCEPTANCE.md`
 2. `docs/PLACES_RECOVERY_PLAN.md`
@@ -24,34 +24,48 @@ Before continuing Places work, read:
 4. the P4-17 section of `docs/IMPLEMENTATION_PLAN.md`
 5. `docs/PLACE_PUBLIC_PROFILE.md`
 
-The complete 17-point recovery set remains required even when one pull request covers only part of it.
+The complete 17-point recovery set remains the acceptance boundary for future Places changes.
 
 ## Recovery sequence
 
-- P4-17A — contract and tracking correction — In progress until final audit closes
+- P4-17A — contract and tracking correction — Completed
 - P4-17B — map presentation foundation recovery — Completed and validated
 - P4-17C — Place information and public projection recovery — Completed and validated
-- P4-17D — desktop selected panel and mobile sheet recovery — Completed; final cross-check in progress
-- P4-17E — gallery, image enlargement, and external navigation — Completed; final cross-check in progress
-- P4-17F — state, responsive, accessibility, and final 17-point acceptance audit — In progress
+- P4-17D — desktop selected panel and mobile sheet recovery — Completed and validated
+- P4-17E — gallery, image enlargement, and external navigation — Completed and validated
+- P4-17F — state, responsive, accessibility, and final 17-point acceptance audit — Completed and validated
 
-## Current P4-17F scope
+## Validated recovery result
 
-- keep all 17 recovery requirements traceable to implementation and regression coverage;
-- verify desktop selected-Place completeness including payment methods and restrictions;
-- verify mobile peek/expanded role separation and direct drag-following behavior;
-- verify Gallery, lightbox keyboard/touch/focus behavior, and public attribution display;
-- verify Google Maps and Apple Maps navigation handoff;
-- verify Current location ephemeral focus and distinct failure feedback;
-- verify dynamic mobile map height, reduced-motion behavior, filters overlay, URL/history restoration, and deterministic selection semantics;
-- require Foundation validation, Migration drift, and Staging review validation on the same final branch head.
+The branch now includes:
+
+- stable broad initial camera and street-map-oriented default style;
+- explicit Place pin symbols distinct from aggregate clusters;
+- reviewed practical Place profile fields from canonical model through public projection;
+- near-complete desktop selected-Place information;
+- compact mobile peek and practical expanded sheet;
+- position-based direct drag-following sheet motion;
+- Gallery and accessible enlarged-media viewer;
+- Google Maps and Apple Maps navigation handoff;
+- Current location ephemeral focus with explicit area commit and distinct error states;
+- dynamic mobile map height and deterministic selection, URL, and history behavior;
+- durable 17-point audit and regression coverage.
+
+## Validation
+
+The complete recovery branch passed:
+
+1. Foundation validation
+2. Migration drift
+3. Staging review validation
+
+The validation includes formatting, lint, Astro/TypeScript checks, runtime schema checks, migration history, unit and component tests, static build, accessibility foundation, Phase 1 file checks, and staging artifact checks.
 
 ## Next
 
-1. Complete the 17-row audit in `docs/PLACES_UX_FINAL_AUDIT.md`.
-2. Resolve any final workflow or regression failure on the current branch head.
-3. Mark P4-17F complete only after all three repository workflows succeed on the same final head.
-4. Update pull request #122 to reflect the complete recovery scope and validation result.
+1. Keep pull request #122 draft until the explicit review/merge decision.
+2. Preserve the 17-point audit matrix during review changes.
+3. After #122 is merged, continue from the next Phase 4/Phase 5 handoff determined by repository status and roadmap priorities.
 
 ## Repository history relevant to this work
 
@@ -59,9 +73,8 @@ The complete 17-point recovery set remains required even when one pull request c
 - Public-core foundations P4-01 through P4-15 progressed through #119.
 - P4-16A staging acceptance coverage completed through #120.
 - P4-16B mobile List-to-Map synchronization completed through #121.
-- P4-17B and P4-17C passed Foundation validation, Migration drift, and Staging review validation in #122.
-- P4-17D and P4-17E implementation and regression coverage are present in #122 and are included in the final P4-17F validation head.
-- #122 remains the active corrective Places work.
+- P4-17A through P4-17F are completed on branch in #122.
+- #122 remains the active draft corrective Places pull request.
 
 ## Blocked
 
