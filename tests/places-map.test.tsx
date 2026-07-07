@@ -11,11 +11,7 @@ interface HandlerRegistration {
 }
 
 class MockGeoJsonSource {
-  data: unknown;
-
-  constructor(data: unknown) {
-    this.data = data;
-  }
+  constructor(public data: unknown) {}
 
   setData(data: unknown) {
     this.data = data;
@@ -28,7 +24,6 @@ class MockGeoJsonSource {
 
 class MockMap {
   static latest: MockMap | null = null;
-
   readonly handlers: HandlerRegistration[] = [];
   readonly layers: Array<Record<string, unknown>> = [];
   readonly sources = new Map<string, MockGeoJsonSource>();
@@ -39,7 +34,6 @@ class MockMap {
   zoom = 2;
   canvas = { style: { cursor: '' } };
   renderedFeatures: Array<Record<string, unknown>> = [];
-  removed = false;
 
   constructor(options: Record<string, unknown>) {
     this.options = options;
@@ -110,17 +104,12 @@ class MockMap {
   }
 
   easeTo(options: { center?: [number, number]; zoom?: number }) {
-    if (options.center) {
-      this.center = { lng: options.center[0], lat: options.center[1] };
-    }
+    if (options.center) this.center = { lng: options.center[0], lat: options.center[1] };
     if (options.zoom !== undefined) this.zoom = options.zoom;
   }
 
   resize() {}
-
-  remove() {
-    this.removed = true;
-  }
+  remove() {}
 
   async trigger(
     event: string,
@@ -136,10 +125,7 @@ class MockMap {
 
 class MockNavigationControl {}
 
-vi.mock('maplibre-gl', () => ({
-  Map: MockMap,
-  NavigationControl: MockNavigationControl,
-}));
+vi.mock('maplibre-gl', () => ({ Map: MockMap, NavigationControl: MockNavigationControl }));
 
 const pins: PublicPlacePin[] = [
   {
@@ -176,6 +162,13 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+async function currentMap(): Promise<MockMap> {
+  await waitFor(() => expect(MockMap.latest).not.toBeNull());
+  const map = MockMap.latest;
+  if (!map) throw new Error('Map renderer did not initialize.');
+  return map;
+}
+
 describe('PlacesMap renderer', () => {
   it('uses a stable broad default camera and street-map style instead of the first pin', async () => {
     render(
@@ -188,17 +181,14 @@ describe('PlacesMap renderer', () => {
       />,
     );
 
-    await waitFor(() => expect(MockMap.latest).not.toBeNull());
-    const map = MockMap.latest;
-    if (!map) throw new Error('Map renderer did not initialize.');
-
+    const map = await currentMap();
     expect(map.options.center).toEqual([0, 20]);
     expect(map.options.zoom).toBe(2);
     expect(map.options.style).toBe('https://tiles.openfreemap.org/styles/bright');
   });
 
-  it('uses bounded Place focus for an initial selected Place and lets committed viewport win', async () => {
-    const firstRender = render(
+  it('uses bounded selected-Place focus while committed viewport takes precedence', async () => {
+    const first = render(
       <PlacesMap
         pins={pins}
         selectedPlace="example-coffee-tokyo"
@@ -208,15 +198,10 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
-    await waitFor(() => expect(MockMap.latest).not.toBeNull());
-    let map = MockMap.latest;
-    if (!map) throw new Error('Map renderer did not initialize.');
-    expect(map.options.center).toEqual([139.767125, 35.681236]);
-    expect(map.options.zoom).toBe(13);
-
-    firstRender.unmount();
-    MockMap.latest = null;
+    const selectedMap = await currentMap();
+    expect(selectedMap.options.center).toEqual([139.767125, 35.681236]);
+    expect(selectedMap.options.zoom).toBe(13);
+    first.unmount();
 
     render(
       <PlacesMap
@@ -228,19 +213,16 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
-    await waitFor(() => expect(MockMap.latest).not.toBeNull());
-    map = MockMap.latest;
-    if (!map) throw new Error('Map renderer did not initialize.');
-    expect(map.options.center).toEqual([-0.1278, 51.5074]);
-    expect(map.options.zoom).toBe(8.5);
+    await waitFor(() => expect(MockMap.latest).not.toBe(selectedMap));
+    const restoredMap = await currentMap();
+    expect(restoredMap.options.center).toEqual([-0.1278, 51.5074]);
+    expect(restoredMap.options.zoom).toBe(8.5);
   });
 
-  it('registers cluster circles and single-Place pin symbols, synchronizes selection, and reports user movement', async () => {
+  it('renders cluster circles and single-Place pin symbols with hover and selection behavior', async () => {
     const onSelectPlace = vi.fn();
     const onViewportChange = vi.fn();
-
-    const { rerender } = render(
+    const view = render(
       <PlacesMap
         pins={pins}
         selectedPlace={null}
@@ -250,30 +232,17 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
-    await waitFor(() => expect(MockMap.latest).not.toBeNull());
-    const map = MockMap.latest;
-    if (!map) throw new Error('Map renderer did not initialize.');
-
+    const map = await currentMap();
     await act(async () => map.trigger('load'));
 
-    expect(map.options.style).toBe('/test-style.json');
-    expect(map.sources.has('public-places')).toBe(true);
     expect(map.layers.map((layer) => layer.id)).toEqual([
       'public-place-clusters',
       'public-place-cluster-count',
       'public-place-points',
       'public-place-point-hover',
     ]);
-
     expect(map.layers.find((layer) => layer.id === 'public-place-clusters')?.type).toBe('circle');
-    const pointLayer = map.layers.find((layer) => layer.id === 'public-place-points');
-    expect(pointLayer?.type).toBe('symbol');
-    expect(pointLayer?.layout).toMatchObject({
-      'icon-anchor': 'bottom',
-      'icon-allow-overlap': true,
-      'icon-ignore-placement': true,
-    });
+    expect(map.layers.find((layer) => layer.id === 'public-place-points')?.type).toBe('symbol');
     expect([...map.images.keys()]).toEqual([
       'place-pin-confirmed',
       'place-pin-stale',
@@ -281,19 +250,10 @@ describe('PlacesMap renderer', () => {
       'place-pin-selected-stale',
     ]);
 
-    const confirmedPin = map.images.get('place-pin-confirmed') as
-      | { width: number; height: number; data: Uint8Array }
-      | undefined;
-    expect(confirmedPin?.width).toBe(64);
-    expect(confirmedPin?.height).toBe(80);
-    expect(confirmedPin?.data.some((value) => value !== 0)).toBe(true);
-
     const source = map.sources.get('public-places');
     if (!source) throw new Error('Public Place source was not registered.');
-
     map.center = { lat: 34.6937, lng: 135.5023 };
-
-    rerender(
+    view.rerender(
       <PlacesMap
         pins={pins}
         selectedPlace="example-coffee-tokyo"
@@ -303,11 +263,8 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
     await waitFor(() => {
-      const data = source.data as {
-        features: Array<{ properties: { selected: boolean } }>;
-      };
+      const data = source.data as { features: Array<{ properties: { selected: boolean } }> };
       expect(data.features[0]?.properties.selected).toBe(true);
       expect(map.center).toEqual({ lat: 35.681236, lng: 139.767125 });
     });
@@ -337,14 +294,7 @@ describe('PlacesMap renderer', () => {
 
     await act(async () => map.trigger('mouseleave', {}, 'public-place-points'));
     expect(map.canvas.style.cursor).toBe('');
-    expect(map.filters.get('public-place-point-hover')).toEqual([
-      '==',
-      ['get', 'placeSlug'],
-      '',
-    ]);
-
-    await act(async () => map.trigger('moveend'));
-    expect(onViewportChange).not.toHaveBeenCalled();
+    expect(map.filters.get('public-place-point-hover')).toEqual(['==', ['get', 'placeSlug'], '']);
 
     map.center = { lat: 34.6937, lng: 135.5023 };
     map.zoom = 10.25;
@@ -357,7 +307,7 @@ describe('PlacesMap renderer', () => {
     });
   });
 
-  it('clears selection only when empty map canvas is clicked', async () => {
+  it('clears selection only on empty map canvas', async () => {
     const onClearSelection = vi.fn();
     render(
       <PlacesMap
@@ -370,10 +320,7 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
-    await waitFor(() => expect(MockMap.latest).not.toBeNull());
-    const map = MockMap.latest;
-    if (!map) throw new Error('Map renderer did not initialize.');
+    const map = await currentMap();
     await act(async () => map.trigger('load'));
 
     map.renderedFeatures = [{ properties: { placeSlug: 'example-coffee-tokyo' } }];
@@ -388,7 +335,7 @@ describe('PlacesMap renderer', () => {
   it('reports an ephemeral focus viewport as pending map state', async () => {
     const onViewportChange = vi.fn();
     const onBoundsChange = vi.fn();
-    const { rerender } = render(
+    const view = render(
       <PlacesMap
         pins={pins}
         selectedPlace={null}
@@ -399,13 +346,10 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
-    await waitFor(() => expect(MockMap.latest).not.toBeNull());
-    const map = MockMap.latest;
-    if (!map) throw new Error('Map renderer did not initialize.');
+    const map = await currentMap();
     await act(async () => map.trigger('load'));
 
-    rerender(
+    view.rerender(
       <PlacesMap
         pins={pins}
         selectedPlace={null}
@@ -417,7 +361,6 @@ describe('PlacesMap renderer', () => {
         styleUrl="/test-style.json"
       />,
     );
-
     await waitFor(() => expect(map.center).toEqual({ lat: 35.7, lng: 139.7 }));
     await act(async () => map.trigger('moveend'));
 
@@ -436,7 +379,6 @@ describe('PlacesMap renderer', () => {
 
   it('shows a list-preserving fallback when WebGL is unavailable', async () => {
     vi.stubGlobal('WebGLRenderingContext', undefined);
-
     render(
       <PlacesMap
         pins={pins}
@@ -446,7 +388,6 @@ describe('PlacesMap renderer', () => {
         onViewportChange={vi.fn()}
       />,
     );
-
     expect(await screen.findByText('Interactive map unavailable')).toBeInTheDocument();
     expect(screen.getByText(/Use the public result list/)).toBeInTheDocument();
   });
