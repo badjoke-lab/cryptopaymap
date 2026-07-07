@@ -8,9 +8,12 @@ interface PlaceMediaGalleryProps {
 }
 
 const swipeThreshold = 48;
+const focusableSelector =
+  'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])';
 
 export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalleryProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
   const touchStartX = useRef<number | null>(null);
   const touchCurrentX = useRef<number | null>(null);
@@ -35,6 +38,31 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
         setActiveIndex(null);
+        return;
+      }
+      if (event.key === 'Tab') {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+        const focusable = [...dialog.querySelectorAll<HTMLElement>(focusableSelector)].filter(
+          (element) => element.tabIndex >= 0,
+        );
+        const first = focusable[0];
+        const last = focusable.at(-1);
+        if (!first || !last) {
+          event.preventDefault();
+          closeButtonRef.current?.focus();
+          return;
+        }
+
+        const activeElement = document.activeElement;
+        const focusOutsideDialog = !activeElement || !dialog.contains(activeElement);
+        if (event.shiftKey && (activeElement === first || focusOutsideDialog)) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && (activeElement === last || focusOutsideDialog)) {
+          event.preventDefault();
+          first.focus();
+        }
         return;
       }
       if (event.key === 'ArrowRight' && images.length > 1) {
@@ -118,6 +146,7 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
 
       {activeImage ? (
         <div
+          ref={dialogRef}
           className="fixed inset-0 z-[70] flex items-center justify-center p-3 sm:p-6"
           role="dialog"
           aria-modal="true"
@@ -126,6 +155,7 @@ export function PlaceMediaGallery({ images, label = 'Gallery' }: PlaceMediaGalle
           <button
             className="absolute inset-0 bg-black/85"
             type="button"
+            tabIndex={-1}
             aria-label="Close image viewer"
             onClick={() => setActiveIndex(null)}
           />
