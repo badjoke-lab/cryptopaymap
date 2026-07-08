@@ -8,3 +8,9 @@ body {
   isolation: isolate;
   pointer-events: auto;
 }
+
+@media (min-width: 64rem) {
+  aside[aria-label^="Selected place details:"] {
+    height: 100%;
+  }
+}
