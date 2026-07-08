@@ -1,0 +1,67 @@
+---
+import AdminLayout from '../../layouts/AdminLayout.astro';
+
+const claimWorkflowLinks = [
+  {
+    href: '/admin/candidates',
+    title: 'Candidate review and promotion',
+    description:
+      'Create a hidden candidate Claim through new-target promotion or existing-target linking after Candidate and source review.',
+  },
+  {
+    href: '/admin/evidence',
+    title: 'Evidence review and Claim decisions',
+    description:
+      'Review exact Evidence and Claim versions, then apply supported Claim transitions through the protected Evidence decision path.',
+  },
+  {
+    href: '/admin/rechecks',
+    title: 'Reconfirmation and stale transitions',
+    description:
+      'Work due, overdue, and stale Claim review from the version-pinned reconfirmation queue.',
+  },
+  {
+    href: '/admin/audit',
+    title: 'Claim-related Audit history',
+    description:
+      'Inspect normalized protected decision history without exposing private decision payloads.',
+  },
+];
+---
+
+<AdminLayout
+  title="Claim workflows | CryptoPayMap Admin"
+  heading="Claim workflows"
+  description="Claim creation, verification decisions, reconfirmation, and audit are separate protected operations. This index routes operators to the workspace responsible for each operation."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="claim-workflow-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">Claim operation boundary</p>
+    <h2 id="claim-workflow-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      No single editor bypasses review or publication boundaries
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      Candidate promotion creates hidden candidate Claims. Evidence review controls supported Claim decisions. Reconfirmation handles review deadlines and stale transitions. Publication remains a separate export release operation.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-labelledby="claim-workflow-routes-title">
+    <p class="m-0 text-sm font-semibold text-brand-700">Operator routes</p>
+    <h2 id="claim-workflow-routes-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+      Continue by operation
+    </h2>
+    <div class="mt-5 grid gap-4 sm:grid-cols-2">
+      {
+        claimWorkflowLinks.map((item) => (
+          <a
+            class="motion-feedback rounded-card border border-border bg-surface p-5 text-ink no-underline shadow-sm transition hover:-translate-y-0.5 hover:border-brand-600 hover:shadow-panel"
+            href={item.href}
+          >
+            <h3 class="m-0 text-lg font-semibold tracking-tight">{item.title}</h3>
+            <p class="mt-2 text-sm leading-6 text-muted">{item.description}</p>
+            <span class="mt-4 inline-flex text-sm font-semibold text-brand-700">Open workspace →</span>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</AdminLayout>
