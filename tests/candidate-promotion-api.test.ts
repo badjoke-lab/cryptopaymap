@@ -87,9 +87,7 @@ function assignment(
 
 function provenanceAssignments() {
   return [
-    ...['name', 'websiteUrl', 'countryCode'].map((field) =>
-      assignment('entity', entityId, field),
-    ),
+    ...['name', 'websiteUrl', 'countryCode'].map((field) => assignment('entity', entityId, field)),
     ...[
       'name',
       'addressLine',
@@ -245,7 +243,8 @@ function context(
     }),
     env: {
       CPM_ADMIN_CANDIDATE_SUBJECTS: options.readSubjects ?? JSON.stringify(['promoter']),
-      CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: options.promoteSubjects ?? JSON.stringify(['promoter']),
+      CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS:
+        options.promoteSubjects ?? JSON.stringify(['promoter']),
     },
     params: { candidateId },
     data: { adminIdentity: options.identity === undefined ? identity : options.identity },
