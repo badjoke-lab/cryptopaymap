@@ -55,7 +55,10 @@ function clone<T>(value: T): T {
   return structuredClone(value);
 }
 
-function valueAt(location: CanonicalLocationInput, field: PracticalLocationCorrectionField): unknown {
+function valueAt(
+  location: CanonicalLocationInput,
+  field: PracticalLocationCorrectionField,
+): unknown {
   return (location as unknown as Record<string, unknown>)[field];
 }
 
@@ -94,7 +97,10 @@ export class InMemoryLocationCorrectionBackend implements LocationCorrectionDeci
 
     const current = this.locations.get(command.locationId);
     if (current === undefined) {
-      throw new LocationCorrectionDecisionError('not_found', 'The canonical Location was not found.');
+      throw new LocationCorrectionDecisionError(
+        'not_found',
+        'The canonical Location was not found.',
+      );
     }
     if (Date.parse(current.updatedAt) !== command.expectedLocationUpdatedAt.getTime()) {
       throw new LocationCorrectionDecisionError(
