@@ -29,7 +29,7 @@ const mapLoadTimeoutMs = 12_000;
 
 const confirmedPinColor = [5, 150, 105] as const;
 const stalePinColor = [217, 119, 6] as const;
-const selectedPinHaloColor = [15, 118, 110] as const;
+const selectedPinAccentColor = [15, 95, 89] as const;
 const white = [255, 255, 255] as const;
 
 type Rgb = readonly [number, number, number];
@@ -103,18 +103,15 @@ function createPlacePinImage(fill: Rgb, selected: boolean) {
       const offset = (y * width + x) * 4;
       if (!pinShapeContains(x, y, 0)) continue;
 
-      if (selected) {
-        setPixel(data, offset, selectedPinHaloColor);
-        if (pinShapeContains(x, y, 4)) setPixel(data, offset, white);
-        if (pinShapeContains(x, y, 8)) setPixel(data, offset, fill);
-      } else {
-        setPixel(data, offset, white);
-        if (pinShapeContains(x, y, 4)) setPixel(data, offset, fill);
-      }
+      setPixel(data, offset, white);
+      if (pinShapeContains(x, y, 4)) setPixel(data, offset, fill);
 
       const dx = x - 32;
       const dy = y - 28;
       if (dx * dx + dy * dy <= 7.5 * 7.5) setPixel(data, offset, white);
+      if (selected && dx * dx + dy * dy <= 3.25 * 3.25) {
+        setPixel(data, offset, selectedPinAccentColor);
+      }
     }
   }
 
@@ -180,7 +177,7 @@ function addPlaceLayers(map: MapLibreMap, data: ReturnType<typeof buildPlaceMapF
     filter: ['!', ['has', 'point_count']],
     layout: {
       'icon-image': pinImageExpression(),
-      'icon-size': ['case', ['==', ['get', 'selected'], true], 1.12, 1],
+      'icon-size': ['case', ['==', ['get', 'selected'], true], 1.18, 1],
       'icon-anchor': 'bottom',
       'icon-allow-overlap': true,
       'icon-ignore-placement': true,
@@ -221,6 +218,8 @@ export function PlacesMap({
   const committedViewportRef = useRef(committedViewport);
   const pinsRef = useRef(pins);
   const selectedPlaceRef = useRef(selectedPlace);
+  const initialSelectedPlaceRef = useRef(selectedPlace);
+  const lastFocusedSelectedPlaceRef = useRef<string | null>(null);
   const focusMovePendingRef = useRef(false);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>('loading');
   const featureCollection = useMemo(
@@ -412,14 +411,35 @@ export function PlacesMap({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || runtimeState !== 'ready' || !selectedPlace) return;
+    if (!map || runtimeState !== 'ready') return;
+    if (!selectedPlace) {
+      lastFocusedSelectedPlaceRef.current = null;
+      return;
+    }
+    if (lastFocusedSelectedPlaceRef.current === selectedPlace) return;
+
     const selectedPin = pins.find((pin) => pin.placeSlug === selectedPlace);
     if (!selectedPin) return;
+
+    const initialSelectionWithCommittedViewport =
+      lastFocusedSelectedPlaceRef.current === null &&
+      initialSelectedPlaceRef.current === selectedPlace &&
+      committedViewportRef.current !== null;
+    lastFocusedSelectedPlaceRef.current = selectedPlace;
+    if (initialSelectionWithCommittedViewport) return;
+
     const current = map.getCenter();
     const alreadyCentered =
       Math.abs(current.lat - selectedPin.latitude) < 0.000001 &&
       Math.abs(current.lng - selectedPin.longitude) < 0.000001;
-    if (!alreadyCentered) map.easeTo({ center: [selectedPin.longitude, selectedPin.latitude] });
+    const targetZoom = Math.max(map.getZoom(), selectedPlaceInitialZoom);
+    const needsZoom = map.getZoom() < selectedPlaceInitialZoom;
+    if (!alreadyCentered || needsZoom) {
+      map.easeTo({
+        center: [selectedPin.longitude, selectedPin.latitude],
+        zoom: targetZoom,
+      });
+    }
   }, [pins, runtimeState, selectedPlace]);
 
   return (
