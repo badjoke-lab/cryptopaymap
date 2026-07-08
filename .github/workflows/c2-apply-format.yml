@@ -25,6 +25,76 @@ jobs:
           ref: ${{ github.head_ref }}
           fetch-depth: 0
 
+      - name: Apply exact C2 fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          sheet = Path('src/components/places/MobilePlaceSheet.tsx')
+          text = sheet.read_text()
+          old_how = '''                <div
+                  className="rounded-card border border-brand-200 bg-brand-50 p-4"
+                  aria-label="How to pay"
+                >
+                  <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
+                </div>'''
+          new_how = old_how.replace('<div\n', '<section\n', 1).rsplit('</div>', 1)[0] + '</section>'
+          if old_how not in text:
+              raise SystemExit('How to pay block not found')
+          text = text.replace(old_how, new_how, 1)
+
+          old_restrictions = '''                <div className="mt-4" aria-label="Payment restrictions">
+                  <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Restrictions
+                  </h3>
+                  {restrictions.map((restriction) => (
+                    <p className="mt-1 text-sm leading-6 text-muted" key={restriction}>
+                      {restriction}
+                    </p>
+                  ))}
+                </div>'''
+          new_restrictions = old_restrictions.replace('<div className=', '<section className=', 1).rsplit('</div>', 1)[0] + '</section>'
+          if old_restrictions not in text:
+              raise SystemExit('Restrictions block not found')
+          text = text.replace(old_restrictions, new_restrictions, 1)
+          sheet.write_text(text)
+
+          test = Path('tests/p4-18c-c2-mobile-priority.test.tsx')
+          text = test.read_text()
+          old_state = '''const state: DiscoveryUrlState = {
+  query: '',
+  assets: [],
+  networks: [],
+  categories: [],
+  routes: [],
+  statuses: ['confirmed'],
+  view: 'map',
+  selectedPlace: null,
+  bottomSheet: 'closed',
+  lat: null,
+  lng: null,
+  zoom: null,
+};'''
+          new_state = '''const state: DiscoveryUrlState = {
+  search: '',
+  assets: [],
+  networks: [],
+  categories: [],
+  routes: [],
+  statuses: ['confirmed'],
+  viewport: null,
+  selectedPlace: null,
+  view: 'map',
+};'''
+          if old_state not in text:
+              raise SystemExit('DiscoveryUrlState fixture block not found')
+          test.write_text(text.replace(old_state, new_state, 1))
+          PY
+
+      - name: Remove temporary C2 workflows
+        run: rm -f .github/workflows/c2-apply-format.yml .github/workflows/c2-fix-known.yml
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -37,14 +107,10 @@ jobs:
       - name: Apply repository formatter
         run: npm run format
 
-      - name: Commit formatter output
+      - name: Commit C2 fixes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add .
-          if git diff --cached --quiet; then
-            echo "No formatter changes."
-            exit 0
-          fi
-          git commit -m "style: apply C2 formatter output"
+          git add -A
+          git commit -m "fix: resolve C2 lint and state-shape errors"
           git push origin HEAD:${{ github.head_ref }}
