@@ -1,6 +1,6 @@
 {
-  "status": "missing_credentials",
-  "commit": "b84d16dc8f3a6b161e8d51ee1aa47b12fe46889f",
+  "status": "deployed",
+  "commit": "b7beb35e0612f2e69acf77e16b7a2d80aa3637ef",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-08T10:50:06.762Z"
+  "generatedAt": "2026-07-08T10:50:56.446Z"
 }
