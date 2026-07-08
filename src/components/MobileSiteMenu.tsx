@@ -104,6 +104,7 @@ export function MobileSiteMenu({ pathname }: MobileSiteMenuProps) {
         aria-label="Mobile primary"
         aria-hidden={!open}
         inert={!open}
+        data-mobile-menu-layout="bounded-panel"
       >
         <div className="flex min-h-14 items-center justify-between border-b border-border px-4">
           <div>
@@ -122,7 +123,7 @@ export function MobileSiteMenu({ pathname }: MobileSiteMenuProps) {
         </div>
 
         <nav className="min-h-0 overflow-y-auto p-3" aria-label="Mobile primary links">
-          <ul className="grid grid-cols-2 gap-2">
+          <ul className="grid grid-cols-2 gap-2" data-mobile-menu-grid="two-column">
             {navigation.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
