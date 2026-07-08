@@ -10,6 +10,7 @@ import { EvidenceReviewQueue } from '../src/components/admin/EvidenceReviewQueue
 
 const evidenceId = '10000000-0000-4000-8000-000000000001';
 const claimId = '20000000-0000-4000-8000-000000000001';
+const claimAssetId = '40000000-0000-4000-8000-000000000001';
 const now = '2026-07-02T00:00:00.000Z';
 
 function queue(): EvidenceReviewQueueResponse {
@@ -72,6 +73,22 @@ function detail(): EvidenceReviewDetailResponse {
       endedReason: null,
       updatedAt: '2026-07-01T12:00:00.000Z',
     },
+    paymentCombinations: [
+      {
+        id: claimAssetId,
+        assetSymbol: 'BTC',
+        assetStatus: 'active',
+        networkSlug: 'lightning',
+        networkStatus: 'active',
+        paymentMethodSlug: 'lightning_invoice',
+        paymentMethodStatus: 'active',
+        isPrimary: true,
+      },
+    ],
+    paymentPrerequisites: {
+      eligible: true,
+      issues: [],
+    },
     acceptedEvidence: [],
     threshold: {
       eligible: false,
@@ -111,7 +128,7 @@ describe('Evidence review components', () => {
     );
   });
 
-  it('submits exact Evidence, Claim, and accepted-set expectations', async () => {
+  it('submits exact Evidence, Claim, accepted-set, and Claim Asset expectations', async () => {
     window.history.replaceState({}, '', `/admin/evidence/detail/?id=${evidenceId}`);
     const fetchMock = vi
       .fn()
@@ -141,6 +158,8 @@ describe('Evidence review components', () => {
     render(<EvidenceReviewDetail />);
 
     expect(await screen.findByRole('heading', { name: 'Evidence decision' })).toBeInTheDocument();
+    expect(screen.getByText('Payment prerequisites: Eligible')).toBeInTheDocument();
+    expect(screen.getByText(/BTC · Lightning · Lightning Invoice · Primary/)).toBeInTheDocument();
     await user.type(screen.getByLabelText('Public summary'), 'The Evidence supports confirmation.');
     const submitButton = screen.getByRole('button', { name: 'Commit Evidence decision' });
     const form = submitButton.closest('form');
@@ -158,6 +177,7 @@ describe('Evidence review components', () => {
       expectedClaimStatus: 'candidate',
       expectedClaimVisibility: 'hidden',
       expectedAcceptedEvidenceIds: [],
+      expectedClaimAssetIds: [claimAssetId],
       disposition: 'accepted',
       finding: 'supports_claim',
       claimAction: 'confirm',
