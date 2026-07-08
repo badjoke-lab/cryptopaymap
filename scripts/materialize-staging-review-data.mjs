@@ -55,11 +55,29 @@ const serviceGallery = publicMedia(
   'Abstract synthetic gallery artwork for the staging Online Service review record',
 );
 
+mediaPlace.addressLine = '1-1 Marunouchi, Chiyoda City';
+mediaPlace.postalCode = '100-0005';
+mediaPlace.phone = '+81 3 0000 0000';
 mediaPlace.description =
   'Synthetic staging café profile used to review practical Place information in selected surfaces.';
 mediaPlace.openingHours = 'Mon–Fri 08:00–18:00\nSat–Sun 09:00–17:00';
 mediaPlace.amenities = ['wifi', 'outdoor-seating'];
-mediaPlace.provenance[0]?.fields.push('description', 'openingHours', 'amenities');
+mediaPlace.socialLinks = [
+  {
+    platform: 'instagram',
+    url: 'https://example.com/staging/social/staging-coffee-tokyo',
+    handle: '@stagingcoffee',
+  },
+];
+mediaPlace.provenance[0]?.fields.push(
+  'addressLine',
+  'postalCode',
+  'phone',
+  'description',
+  'openingHours',
+  'amenities',
+  'socialLinks',
+);
 mediaPlace.media = [placeCover, placeGallery];
 mediaPin.thumbnail = placeCover;
 mediaService.media = [serviceCover, serviceGallery];
