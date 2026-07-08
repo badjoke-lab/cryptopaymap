@@ -103,6 +103,16 @@ if (
 ) {
   throw new Error('Staging Place detail does not expose both cover and gallery Media fixtures.');
 }
+if (
+  !placeDetailHtml.includes('Before you visit') ||
+  !placeDetailHtml.includes('Synthetic staging café profile used to review practical Place information') ||
+  !placeDetailHtml.includes('Mon–Fri 08:00–18:00') ||
+  !placeDetailHtml.includes('Outdoor Seating') ||
+  !placeDetailHtml.includes('@stagingcoffee') ||
+  !placeDetailHtml.includes('+81 3 0000 0000')
+) {
+  throw new Error('Staging Place detail does not expose the complete practical profile fixture.');
+}
 
 const onlineIndexHtml = await readText('online/index.html');
 if (
@@ -121,5 +131,5 @@ if (
 }
 
 console.log(
-  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${representativeRoutes.length} representative routes, with public Media coverage.`,
+  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${representativeRoutes.length} representative routes, with public Media and practical Place profile coverage.`,
 );
