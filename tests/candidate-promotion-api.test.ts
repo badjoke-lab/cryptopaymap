@@ -71,6 +71,52 @@ function workspace(eligible = true): CandidatePromotionWorkspaceResponse {
   };
 }
 
+function assignment(
+  subjectType: 'entity' | 'location' | 'acceptance_claim' | 'claim_asset',
+  subjectId: string,
+  fieldPath: string,
+) {
+  return {
+    subjectType,
+    subjectId,
+    fieldPath,
+    sourceRecordIds: [sourceId],
+    provenanceRole: 'origin' as const,
+  };
+}
+
+function provenanceAssignments() {
+  return [
+    ...['name', 'websiteUrl', 'countryCode'].map((field) =>
+      assignment('entity', entityId, field),
+    ),
+    ...[
+      'name',
+      'addressLine',
+      'locality',
+      'countryCode',
+      'latitude',
+      'longitude',
+      'websiteUrl',
+      'description',
+      'openingHours',
+      'amenities',
+      'socialLinks',
+    ].map((field) => assignment('location', locationId, field)),
+    ...[
+      'routeType',
+      'acceptanceScope',
+      'customerPaysCrypto',
+      'merchantExplicitlyAcceptsCrypto',
+      'howToPay',
+      'merchantReceives',
+    ].map((field) => assignment('acceptance_claim', claimId, field)),
+    ...['assetId', 'networkId', 'paymentMethodId'].map((field) =>
+      assignment('claim_asset', claimAssetId, field),
+    ),
+  ];
+}
+
 function body(): CandidatePromotionEditorRequest {
   return {
     expectedCandidateType: 'physical_place',
@@ -104,6 +150,16 @@ function body(): CandidatePromotionEditorRequest {
         visibility: 'hidden',
         websiteUrl: 'https://example.test',
         phone: null,
+        description: 'Reviewed description.',
+        openingHours: 'Mon-Fri 08:00-18:00',
+        amenities: ['wifi'],
+        socialLinks: [
+          {
+            platform: 'instagram',
+            url: 'https://social.example.test/cafe',
+            handle: '@cafe',
+          },
+        ],
         osmType: null,
         osmId: null,
       },
@@ -147,6 +203,7 @@ function body(): CandidatePromotionEditorRequest {
       },
     ],
     sourceRecordIds: [sourceId],
+    provenanceAssignments: provenanceAssignments(),
   };
 }
 
@@ -234,6 +291,29 @@ describe('protected Candidate promotion endpoints', () => {
       context({ method: 'POST', body: body(), idempotencyKey: 'invalid' }),
     );
     expect(invalidKey.status).toBe(400);
+    expect(commitPromotion).not.toHaveBeenCalled();
+  });
+
+  it('rejects omitted or empty field-level provenance plans at the protected editor boundary', async () => {
+    const commitPromotion = vi.fn(async () => receipt());
+    const handlers = createCandidatePromotionHandlers({
+      loadWorkspace: vi.fn(async () => workspace()),
+      commitPromotion,
+    });
+    const complete = body();
+    const omitted = { ...complete } as Record<string, unknown>;
+    delete omitted.provenanceAssignments;
+    const empty = { ...complete, provenanceAssignments: [] };
+
+    const omittedResponse = await handlers.post(
+      context({ method: 'POST', body: omitted, idempotencyKey: requestId }),
+    );
+    const emptyResponse = await handlers.post(
+      context({ method: 'POST', body: empty, idempotencyKey: requestId }),
+    );
+
+    expect(omittedResponse.status).toBe(400);
+    expect(emptyResponse.status).toBe(400);
     expect(commitPromotion).not.toHaveBeenCalled();
   });
 
