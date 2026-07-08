@@ -12,6 +12,7 @@ import type { EvidenceReviewDetailResponse } from '../src/admin/evidence-review/
 const evidenceId = '10000000-0000-4000-8000-000000000001';
 const claimId = '20000000-0000-4000-8000-000000000001';
 const requestId = '30000000-0000-4000-8000-000000000001';
+const claimAssetId = '40000000-0000-4000-8000-000000000001';
 const now = new Date('2026-07-02T00:00:00.000Z');
 const identity = {
   actorId: 'cloudflare-access:reviewer-subject',
@@ -65,6 +66,19 @@ function detail(): EvidenceReviewDetailResponse {
       endedReason: null,
       updatedAt: '2026-07-01T12:00:00.000Z',
     },
+    paymentCombinations: [
+      {
+        id: claimAssetId,
+        assetSymbol: 'BTC',
+        assetStatus: 'active',
+        networkSlug: 'lightning',
+        networkStatus: 'active',
+        paymentMethodSlug: 'lightning_invoice',
+        paymentMethodStatus: 'active',
+        isPrimary: true,
+      },
+    ],
+    paymentPrerequisites: { eligible: true, issues: [] },
     acceptedEvidence: [],
     threshold: {
       eligible: false,
@@ -103,6 +117,7 @@ function context(method = 'GET', key: string | null = requestId) {
     expectedClaimStatus: 'candidate',
     expectedClaimVisibility: 'hidden',
     expectedAcceptedEvidenceIds: [],
+    expectedClaimAssetIds: [claimAssetId],
     disposition: 'accepted',
     finding: 'supports_claim',
     claimAction: 'confirm',
@@ -137,7 +152,7 @@ describe('protected Evidence detail endpoint', () => {
     expect(loadDetail).toHaveBeenCalled();
   });
 
-  it('commits a decision with the isolated mutation context', async () => {
+  it('commits a decision with the isolated mutation context and exact payment set', async () => {
     const writeDecision = vi.fn(async () => receipt());
     const response = await createEvidenceDetailPostHandler({ writeDecision, now: () => now })(
       context('POST'),
@@ -147,7 +162,11 @@ describe('protected Evidence detail endpoint', () => {
     expect(writeDecision).toHaveBeenCalledWith(
       expect.objectContaining({ requestId, capabilities: ['evidence:review'] }),
       evidenceId,
-      expect.objectContaining({ claimId, expectedAcceptedEvidenceIds: [] }),
+      expect.objectContaining({
+        claimId,
+        expectedAcceptedEvidenceIds: [],
+        expectedClaimAssetIds: [claimAssetId],
+      }),
       expect.any(Object),
       now,
     );
