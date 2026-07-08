@@ -67,7 +67,7 @@ export function PlaceResultList({
       }`}
       aria-labelledby="places-results-title"
     >
-      <div className="border-b border-border p-4">
+      <div className="border-b border-border p-3 sm:p-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <h2 id="places-results-title" className="m-0 text-lg font-semibold text-ink">
@@ -107,7 +107,7 @@ export function PlaceResultList({
       ) : (
         <ul
           ref={listRef}
-          className="m-0 list-none p-3 lg:max-h-[42rem] lg:overflow-y-auto"
+          className="m-0 list-none p-2 sm:p-3 lg:max-h-[42rem] lg:overflow-y-auto"
           aria-label="Place results"
           onScroll={(event) => onScrollOffsetChange(event.currentTarget.scrollTop)}
         >
@@ -126,7 +126,7 @@ export function PlaceResultList({
                 data-selected={isSelected}
               >
                 <article
-                  className={`grid gap-4 rounded-card border p-4 motion-safe:transition-[border-color,background-color,transform] motion-safe:duration-fast ${
+                  className={`grid gap-3 rounded-card border p-3 motion-safe:transition-[border-color,background-color,transform] motion-safe:duration-fast sm:gap-4 sm:p-4 ${
                     isSelected
                       ? 'border-brand-600 bg-brand-50'
                       : 'border-border bg-surface hover:border-brand-200'
@@ -135,7 +135,7 @@ export function PlaceResultList({
                   <div className="flex gap-3">
                     {pin.thumbnail ? (
                       <img
-                        className="size-20 shrink-0 rounded-control object-cover"
+                        className="size-16 shrink-0 rounded-control object-cover sm:size-20"
                         src={pin.thumbnail.url}
                         alt={pin.thumbnail.altText}
                         width={pin.thumbnail.width}
@@ -144,7 +144,7 @@ export function PlaceResultList({
                       />
                     ) : (
                       <div
-                        className="flex size-20 shrink-0 items-center justify-center rounded-control bg-canvas px-2 text-center text-xs font-semibold text-muted"
+                        className="flex size-16 shrink-0 items-center justify-center rounded-control bg-canvas px-2 text-center text-[0.68rem] font-semibold text-muted sm:size-20 sm:text-xs"
                         aria-hidden="true"
                       >
                         {formatLabel(pin.categorySlug)}
@@ -166,49 +166,49 @@ export function PlaceResultList({
                           {formatLabel(pin.categorySlug)}
                         </span>
                       </div>
-                      <h3 className="mt-2 text-base font-semibold text-ink">{pin.name}</h3>
-                      <p className="mt-1 text-sm text-muted">{location}</p>
+                      <h3 className="mt-1.5 text-base font-semibold text-ink sm:mt-2">{pin.name}</h3>
+                      <p className="mt-0.5 text-sm text-muted sm:mt-1">{location}</p>
                     </div>
                   </div>
 
-                  <dl className="grid gap-3 text-sm sm:grid-cols-2">
-                    <div>
-                      <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                  <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm sm:gap-3">
+                    <div className="min-w-0">
+                      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.05em] text-muted sm:text-xs sm:tracking-[0.06em]">
                         Assets
                       </dt>
-                      <dd className="mt-1 font-medium text-ink">
+                      <dd className="mt-0.5 truncate font-medium text-ink sm:mt-1">
                         {pin.assetSlugs.map(formatLabel).join(', ')}
                       </dd>
                     </div>
-                    <div>
-                      <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    <div className="min-w-0">
+                      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.05em] text-muted sm:text-xs sm:tracking-[0.06em]">
                         Networks
                       </dt>
-                      <dd className="mt-1 font-medium text-ink">
+                      <dd className="mt-0.5 truncate font-medium text-ink sm:mt-1">
                         {pin.networkSlugs.map(formatLabel).join(', ')}
                       </dd>
                     </div>
-                    <div>
-                      <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    <div className="min-w-0">
+                      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.05em] text-muted sm:text-xs sm:tracking-[0.06em]">
                         Routes
                       </dt>
-                      <dd className="mt-1 font-medium text-ink">
+                      <dd className="mt-0.5 truncate font-medium text-ink sm:mt-1">
                         {pin.routeTypes.map(formatLabel).join(', ')}
                       </dd>
                     </div>
-                    <div>
-                      <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    <div className="min-w-0">
+                      <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.05em] text-muted sm:text-xs sm:tracking-[0.06em]">
                         Last confirmed
                       </dt>
-                      <dd className="mt-1 font-medium text-ink">
+                      <dd className="mt-0.5 whitespace-nowrap font-medium text-ink sm:mt-1">
                         {formatDate(pin.lastConfirmedAt)}
                       </dd>
                     </div>
                   </dl>
 
-                  <div className="flex flex-wrap gap-2 border-t border-border pt-3">
+                  <div className="flex gap-2 border-t border-border pt-2.5 sm:flex-wrap sm:pt-3">
                     <button
-                      className="motion-feedback min-h-11 flex-1 rounded-control border border-border px-3 py-2 text-sm font-semibold text-ink hover:bg-brand-50"
+                      className="motion-feedback min-h-11 min-w-0 flex-1 rounded-control border border-border px-2 py-2 text-sm font-semibold text-ink hover:bg-brand-50 sm:px-3"
                       type="button"
                       aria-pressed={isSelected}
                       aria-label={`Select ${pin.name} on map`}
@@ -217,7 +217,7 @@ export function PlaceResultList({
                       {isSelected ? 'Selected on map' : 'Show on map'}
                     </button>
                     <a
-                      className="motion-feedback inline-flex min-h-11 flex-1 items-center justify-center rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white no-underline hover:bg-brand-700"
+                      className="motion-feedback inline-flex min-h-11 min-w-0 flex-1 items-center justify-center rounded-control bg-brand-600 px-2 py-2 text-center text-sm font-semibold text-white no-underline hover:bg-brand-700 sm:px-3"
                       href={`/place/${pin.placeSlug}`}
                     >
                       Payment details
