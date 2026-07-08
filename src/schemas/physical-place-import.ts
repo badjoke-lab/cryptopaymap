@@ -43,11 +43,19 @@ function normalizeAmenityInput(value: unknown): unknown {
   }
 
   if (!Array.isArray(values)) return values;
-  const normalized = values
-    .filter((item): item is string => typeof item === 'string')
-    .map((item) => item.trim())
-    .filter(Boolean);
-  return normalized.length === 0 ? null : [...new Set(normalized)];
+  const normalized: unknown[] = [];
+  const seen = new Set<string>();
+  for (const item of values) {
+    if (typeof item !== 'string') {
+      normalized.push(item);
+      continue;
+    }
+    const trimmed = item.trim();
+    if (trimmed.length === 0 || seen.has(trimmed)) continue;
+    seen.add(trimmed);
+    normalized.push(trimmed);
+  }
+  return normalized.length === 0 ? null : normalized;
 }
 
 const legacyAmenitiesInputSchema = z.preprocess(
