@@ -10,7 +10,7 @@ body {
 }
 
 @media (min-width: 64rem) {
-  aside[aria-label^='Selected place details:'] {
+  aside[aria-label^="Selected place details:"] {
     height: 100%;
   }
 }
