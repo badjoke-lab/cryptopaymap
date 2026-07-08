@@ -127,7 +127,8 @@ describe('Candidate detail contract', () => {
   it('rejects duplicate normalized practical values from an invalid backend detail', async () => {
     const detail = validDetail();
     const snapshot = detail.sources[0]?.snapshot;
-    if (!snapshot || snapshot.kind !== 'physical_place') throw new Error('Expected physical snapshot.');
+    if (!snapshot || snapshot.kind !== 'physical_place')
+      throw new Error('Expected physical snapshot.');
     snapshot.amenities = ['wifi', 'wifi'];
     const backend: CandidateDetailBackend = { loadDetail: vi.fn(async () => detail) };
 
