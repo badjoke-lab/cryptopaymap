@@ -1,0 +1,53 @@
+name: D1 apply formatter
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'src/admin/navigation.ts'
+      - 'src/layouts/AdminLayout.astro'
+      - 'src/pages/admin/**'
+      - 'src/components/admin/ReviewCandidate.tsx'
+      - 'scripts/check-staging-artifact.mjs'
+      - 'tests/admin-navigation-contract.test.ts'
+      - 'docs/P4_18_D_ADMIN_INTEGRATION_AUDIT.md'
+      - '.github/workflows/d1-apply-format.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'p4-18d1-admin-route-copy-audit'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Apply repository formatter
+        run: npm run format
+
+      - name: Commit formatter output
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .
+          if git diff --cached --quiet; then
+            echo "No formatter changes."
+            exit 0
+          fi
+          git commit -m "style: apply D1 formatter output"
+          git push origin HEAD:${{ github.head_ref }}
