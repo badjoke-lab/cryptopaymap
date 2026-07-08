@@ -8,7 +8,7 @@ Phase 4 — Public core / MVP-A closure
 
 ## Current implementation item
 
-P4-18B1 — Source and Candidate practical-profile contract
+P4-18B2 — Promotion editor and field provenance parity
 
 ## Current repository state
 
@@ -20,7 +20,8 @@ P4-18B1 — Source and Candidate practical-profile contract
 - Representative desktop/mobile and interactive-state screenshot capture is merged through #125.
 - Selected Place focus, marker presentation, and desktop selected-panel containment corrections are merged through #126.
 - P4-18A tracking correction and closure inventory is completed through #127.
-- P4-18B1 is active.
+- P4-18B1 source and Candidate practical-profile contract is completed through #128.
+- P4-18B2 is active.
 
 ## Fixed review environment
 
@@ -28,11 +29,7 @@ Review URL:
 
 `https://review.cryptopaymap-staging.pages.dev`
 
-Latest verified deployment receipt before P4-18B1 implementation:
-
-`49d68be44cf453d5fa50315c0bd933352ad05fbf`
-
-Later P4-18 work must verify the current receipt rather than assume that the URL is current.
+The deployment receipt must be checked whenever review-environment state matters. Do not assume that a repository merge is visible at the fixed URL until the receipt records the intended `main` commit.
 
 ## Required current references
 
@@ -65,8 +62,8 @@ For Phase 5 preparation and submission work also read:
 ## Active closure sequence
 
 1. P4-18A — tracking correction and closure inventory — Completed through #127
-2. P4-18B1 — source and Candidate practical-profile contract — In progress
-3. P4-18B2 — promotion editor and field provenance parity — Planned
+2. P4-18B1 — source and Candidate practical-profile contract — Completed through #128
+3. P4-18B2 — promotion editor and field provenance parity — In progress
 4. P4-18B3 — canonical persistence and public projection integration — Planned
 5. P4-18B4 — existing-record practical-profile correction path audit and completion — Planned
 6. P4-18C — bounded UI residual closure — Planned
@@ -75,18 +72,16 @@ For Phase 5 preparation and submission work also read:
 
 The authoritative scope and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`.
 
-## P4-18B1 current audit finding
+## P4-18B1 completed boundary
 
-The practical Place profile schema and persistence layer support reviewed fields including description, opening hours, amenities, and structured social links, but the legacy physical-place import and Candidate source snapshot contract currently omit several of those practical source values.
-
-P4-18B1 must close the private source-to-review path without crossing into Promotion or canonical mutation work:
+P4-18B1 closed the private source-to-review path for supported practical Place fields:
 
 ```text
 legacy or supported source value
     ↓
 strict source-row validation
     ↓
-normalized immutable source record
+raw and normalized source separation
     ↓
 private Candidate review data
     ↓
@@ -95,19 +90,35 @@ allowlisted Candidate source snapshot
 protected Admin source review
 ```
 
-Required P4-18B1 properties:
+The completed contract includes:
 
-- preserve raw source material separately from normalized review values;
-- normalize supported legacy aliases without treating them as canonical truth;
-- define deterministic amenity duplicate behavior;
-- define review-safe structured social-link behavior;
-- preserve handle-only legacy social values without inventing public URLs;
-- reject malformed practical-profile values safely;
-- keep private or unknown source payload fields out of Candidate detail responses;
-- preserve effective source/license metadata behavior;
-- retain existing duplicate Candidate and replay behavior.
+- supported legacy alias normalization without treating source values as canonical truth;
+- phone, description, opening-hours text, amenities, and review-safe social links in private review data;
+- deterministic exact-duplicate behavior for amenities and social-link review values;
+- handle-only legacy social values preserved without fabricated URLs;
+- malformed practical source values rejected fail closed;
+- unknown/private source payload values excluded from Candidate detail responses;
+- existing Candidate replay, duplicate-signal, source metadata, and effective-license boundaries preserved.
 
-Promotion editor inputs, field provenance assignment, canonical persistence, and existing-record correction remain P4-18B2 through P4-18B4.
+P4-18B1 did not add Promotion inputs, field provenance controls, canonical Location writes, existing-record corrections, or public projection changes. Those remain P4-18B2 through P4-18B4.
+
+## P4-18B2 active boundary
+
+P4-18B2 must make supported practical profile fields intentionally reviewable in the protected Promotion workspace and connect non-empty reviewed factual values to explicit field-source provenance.
+
+At minimum audit and, where required, extend:
+
+- Promotion workspace input shape from the B1 physical Candidate source snapshot;
+- protected Location editor controls for description, opening hours, amenities, and social links;
+- deterministic form parsing and normalization for structured fields;
+- new-target field descriptors and field-source assignment;
+- existing-target review descriptors where the current linking path presents or attributes practical profile values;
+- exact Candidate version and complete source-set guards;
+- fail-closed malformed structured values;
+- no automatic verification or publication;
+- regression coverage for populated, absent, malformed, duplicate, and provenance-missing cases.
+
+B2 must not silently broaden into the B3 end-to-end canonical/public integration audit or the B4 existing-record correction transaction work.
 
 ## P4-18C bounded UI residual scope
 
@@ -140,7 +151,7 @@ Planned Phase 5 order:
 
 ## Next
 
-Complete P4-18B1 source/import, normalized review data, Candidate safe snapshot, Admin source presentation, and regression coverage. Then move to P4-18B2 only after B1 is merged and tracking is updated.
+Complete P4-18B2 Promotion editor and field provenance parity. Move to P4-18B3 only after B2 is merged and tracking is updated.
 
 ## Blocked
 
