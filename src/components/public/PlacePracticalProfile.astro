@@ -1,0 +1,106 @@
+---
+import type { PublicPlace } from '../../public/place-detail';
+
+interface Props {
+  place: PublicPlace;
+}
+
+const { place } = Astro.props;
+const amenities = place.amenities ?? [];
+const socialLinks = place.socialLinks ?? [];
+const hasPracticalProfile =
+  Boolean(place.phone || place.description || place.openingHours) ||
+  amenities.length > 0 ||
+  socialLinks.length > 0;
+
+const formatLabel = (value: string) =>
+  value
+    .split(/[_-]/)
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+---
+
+{
+  hasPracticalProfile ? (
+    <section
+      class="safe-area-inline page-container pb-12 sm:pb-16"
+      aria-labelledby="practical-profile-title"
+    >
+      <div class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-7">
+        <p class="m-0 text-sm font-semibold text-brand-700">Practical information</p>
+        <h2
+          id="practical-profile-title"
+          class="mt-1 text-2xl font-semibold tracking-tight text-ink"
+        >
+          Before you visit
+        </h2>
+
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+          {place.description ? (
+            <section aria-labelledby="place-about-title">
+              <h3 id="place-about-title" class="m-0 text-sm font-semibold text-ink">
+                About
+              </h3>
+              <p class="mt-2 whitespace-pre-line text-sm leading-6 text-muted">
+                {place.description}
+              </p>
+            </section>
+          ) : null}
+
+          {place.openingHours ? (
+            <section aria-labelledby="place-hours-title">
+              <h3 id="place-hours-title" class="m-0 text-sm font-semibold text-ink">
+                Opening hours
+              </h3>
+              <p class="mt-2 whitespace-pre-line text-sm leading-6 text-muted">
+                {place.openingHours}
+              </p>
+            </section>
+          ) : null}
+
+          {amenities.length > 0 ? (
+            <section aria-labelledby="place-amenities-title">
+              <h3 id="place-amenities-title" class="m-0 text-sm font-semibold text-ink">
+                Amenities
+              </h3>
+              <div class="mt-3 flex flex-wrap gap-2">
+                {amenities.map((amenity) => (
+                  <span class="rounded-pill border border-border bg-canvas px-3 py-1.5 text-sm text-ink">
+                    {formatLabel(amenity)}
+                  </span>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
+          {place.phone || socialLinks.length > 0 ? (
+            <section aria-labelledby="place-contact-title">
+              <h3 id="place-contact-title" class="m-0 text-sm font-semibold text-ink">
+                Contact and official links
+              </h3>
+              <div class="mt-3 flex flex-wrap gap-3">
+                {place.phone ? (
+                  <a
+                    class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                    href={`tel:${place.phone}`}
+                  >
+                    {place.phone}
+                  </a>
+                ) : null}
+                {socialLinks.map((link) => (
+                  <a
+                    class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-border px-4 py-2 text-sm font-semibold text-ink no-underline hover:bg-brand-50"
+                    href={link.url}
+                    rel="external noopener"
+                  >
+                    {link.handle ?? formatLabel(link.platform)}
+                  </a>
+                ))}
+              </div>
+            </section>
+          ) : null}
+        </div>
+      </div>
+    </section>
+  ) : null
+}
