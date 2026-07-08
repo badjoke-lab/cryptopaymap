@@ -1,9 +1,9 @@
 name: B4B migration generation
 
 on:
-  push:
+  pull_request:
     branches:
-      - p4-18b4b-durable-location-correction
+      - main
     paths:
       - 'src/db/schema/location-profile-correction-decisions.ts'
       - 'src/db/schema/index.ts'
@@ -14,12 +14,13 @@ permissions:
 
 jobs:
   generate:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'p4-18b4b-durable-location-correction'
     runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
+      - name: Check out PR branch
         uses: actions/checkout@v4
         with:
-          ref: p4-18b4b-durable-location-correction
+          ref: ${{ github.head_ref }}
           fetch-depth: 0
 
       - name: Set up Node
@@ -44,4 +45,4 @@ jobs:
             exit 0
           fi
           git commit -m "db: generate Location correction persistence migration"
-          git push origin HEAD:p4-18b4b-durable-location-correction
+          git push origin HEAD:${{ github.head_ref }}
