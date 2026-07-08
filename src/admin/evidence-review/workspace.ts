@@ -9,6 +9,10 @@ import {
   evidenceVisibilitySchema,
   type EvidenceThresholdResult,
 } from '../../schemas/evidence';
+import {
+  evidenceReviewPaymentCombinationSchema,
+  evidenceReviewPaymentPrerequisitesSchema,
+} from './payment-prerequisites';
 
 export const evidenceReviewReadContextSchema = z
   .object({
@@ -118,6 +122,8 @@ export const evidenceReviewDetailResponseSchema = z
         updatedAt: z.iso.datetime({ offset: true }),
       })
       .strict(),
+    paymentCombinations: z.array(evidenceReviewPaymentCombinationSchema).max(100),
+    paymentPrerequisites: evidenceReviewPaymentPrerequisitesSchema,
     acceptedEvidence: z.array(acceptedEvidenceItemSchema),
     threshold: thresholdSchema,
   })
