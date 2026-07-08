@@ -8,7 +8,7 @@ Phase 4 — Public core / MVP-A closure
 
 ## Current implementation item
 
-P4-18B2 — Promotion editor and field provenance parity
+P4-18B3 — Canonical persistence and public projection integration
 
 ## Current repository state
 
@@ -21,7 +21,8 @@ P4-18B2 — Promotion editor and field provenance parity
 - Selected Place focus, marker presentation, and desktop selected-panel containment corrections are merged through #126.
 - P4-18A tracking correction and closure inventory is completed through #127.
 - P4-18B1 source and Candidate practical-profile contract is completed through #128.
-- P4-18B2 is active.
+- P4-18B2 Promotion editor and field provenance parity is completed through #130.
+- P4-18B3 is active.
 
 ## Fixed review environment
 
@@ -63,8 +64,8 @@ For Phase 5 preparation and submission work also read:
 
 1. P4-18A — tracking correction and closure inventory — Completed through #127
 2. P4-18B1 — source and Candidate practical-profile contract — Completed through #128
-3. P4-18B2 — promotion editor and field provenance parity — In progress
-4. P4-18B3 — canonical persistence and public projection integration — Planned
+3. P4-18B2 — promotion editor and field provenance parity — Completed through #130
+4. P4-18B3 — canonical persistence and public projection integration — In progress
 5. P4-18B4 — existing-record practical-profile correction path audit and completion — Planned
 6. P4-18C — bounded UI residual closure — Planned
 7. P4-18D — administration workflow integration audit — Planned
@@ -100,25 +101,38 @@ The completed contract includes:
 - unknown/private source payload values excluded from Candidate detail responses;
 - existing Candidate replay, duplicate-signal, source metadata, and effective-license boundaries preserved.
 
-P4-18B1 did not add Promotion inputs, field provenance controls, canonical Location writes, existing-record corrections, or public projection changes. Those remain P4-18B2 through P4-18B4.
+## P4-18B2 completed boundary
 
-## P4-18B2 active boundary
+P4-18B2 connected the B1 practical profile review data to the protected new-target Promotion workspace and explicit field-level provenance:
 
-P4-18B2 must make supported practical profile fields intentionally reviewable in the protected Promotion workspace and connect non-empty reviewed factual values to explicit field-source provenance.
+- phone, description, opening-hours text, amenities, and official social-link controls are reviewer-visible;
+- supported source values are prefilled without treating source data as canonical truth;
+- handle-only and non-HTTPS social values remain visible as source-only review information rather than fabricated canonical URLs;
+- amenities and social-link form values use deterministic parsing and normalization;
+- malformed or duplicate canonical social-link values fail closed;
+- non-empty practical Location values require explicit source assignments;
+- assignments outside the exact Candidate source set are rejected;
+- omitted or empty editor provenance plans are rejected before commit;
+- Candidate version and complete source-set guards remain in force;
+- Promotion continues to create hidden records without automatic verification or publication;
+- existing-target linking remains bounded and does not become a practical-profile correction operation.
 
-At minimum audit and, where required, extend:
+## P4-18B3 active boundary
 
-- Promotion workspace input shape from the B1 physical Candidate source snapshot;
-- protected Location editor controls for description, opening hours, amenities, and social links;
-- deterministic form parsing and normalization for structured fields;
-- new-target field descriptors and field-source assignment;
-- existing-target review descriptors where the current linking path presents or attributes practical profile values;
-- exact Candidate version and complete source-set guards;
-- fail-closed malformed structured values;
-- no automatic verification or publication;
-- regression coverage for populated, absent, malformed, duplicate, and provenance-missing cases.
+P4-18B3 must audit and complete the end-to-end new-target path from approved Promotion values through canonical persistence and validated public projection.
 
-B2 must not silently broaden into the B3 end-to-end canonical/public integration audit or the B4 existing-record correction transaction work.
+At minimum verify and, where required, extend:
+
+- canonical Location persistence for phone, description, opening hours, amenities, and structured social links;
+- transaction replay and rollback behavior for the practical profile fields;
+- field-level provenance persistence and audit history for those canonical writes;
+- canonical-to-public projection allowlists and schemas;
+- approved public Place detail, selected desktop panel, and expanded mobile sheet consumption of projected values;
+- public/private leakage boundaries;
+- malformed or noncanonical structured values failing closed before publication;
+- regression coverage proving source review → Promotion → canonical write → public projection without bypassing verification or publication activation controls.
+
+B3 must not broaden into the B4 existing-record correction transaction path.
 
 ## P4-18C bounded UI residual scope
 
@@ -151,7 +165,7 @@ Planned Phase 5 order:
 
 ## Next
 
-Complete P4-18B2 Promotion editor and field provenance parity. Move to P4-18B3 only after B2 is merged and tracking is updated.
+Complete P4-18B3 canonical persistence and public projection integration. Move to P4-18B4 only after B3 is merged and tracking is updated.
 
 ## Blocked
 
