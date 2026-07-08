@@ -129,7 +129,10 @@ export const locationCorrectionChangesSchema = z
   .strict()
   .superRefine((changes, context) => {
     if (Object.values(changes).every((change) => change === undefined)) {
-      context.addIssue({ code: 'custom', message: 'At least one Location field change is required.' });
+      context.addIssue({
+        code: 'custom',
+        message: 'At least one Location field change is required.',
+      });
     }
   });
 
@@ -304,7 +307,9 @@ export function changedLocationCorrectionFields(
   return practicalLocationCorrectionFieldValues.filter((field) => changes[field] !== undefined);
 }
 
-function applyNullableChange<T>(current: T | null, change: { operation: 'set'; value: T } | { operation: 'clear' }) {
+function applyNullableChange<T>(
+  change: { operation: 'set'; value: T } | { operation: 'clear' },
+): T | null {
   return change.operation === 'set' ? change.value : null;
 }
 
@@ -336,7 +341,7 @@ export function applyLocationCorrectionChanges(
   ] as const) {
     const change = changes[field];
     if (change !== undefined) {
-      next[field] = applyNullableChange(next[field] ?? null, change);
+      next[field] = applyNullableChange(change);
     }
   }
 
@@ -359,7 +364,10 @@ export function applyLocationCorrectionChanges(
   if (socialLinksChange !== undefined) {
     const currentLinks = next.socialLinks ?? [];
     if (socialLinksChange.operation === 'add') {
-      next.socialLinks = [...currentLinks, ...socialLinksChange.values.map((link) => ({ ...link }))];
+      next.socialLinks = [
+        ...currentLinks,
+        ...socialLinksChange.values.map((link) => ({ ...link })),
+      ];
     } else if (socialLinksChange.operation === 'remove') {
       const removed = new Set(socialLinksChange.values.map(socialLinkKey));
       next.socialLinks = currentLinks.filter((link) => !removed.has(socialLinkKey(link)));
@@ -424,7 +432,9 @@ function buildCommand(
   };
 }
 
-export function createLocationCorrectionDecisionService(backend: LocationCorrectionDecisionBackend) {
+export function createLocationCorrectionDecisionService(
+  backend: LocationCorrectionDecisionBackend,
+) {
   return {
     async correct(
       context: LocationCorrectionMutationContext,
