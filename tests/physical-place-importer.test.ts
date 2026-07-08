@@ -95,6 +95,94 @@ describe('physical-place candidate importer', () => {
     expect(plan.drafts[0]?.reviewData.countryCode).toBe('JP');
   });
 
+  it('normalizes practical legacy aliases into private review data without inventing social URLs', async () => {
+    const plan = await createPhysicalPlaceImportPlan({
+      ...envelopeBase,
+      records: [
+        {
+          ...record(1),
+          websiteUrl: undefined,
+          social_website: 'https://legacy.example.test',
+          phone: '  +81 3 0000 0000  ',
+          about: '  Legacy source description.  ',
+          opening_hours: '  Mon-Fri 08:00-18:00  ',
+          amenities: 'wifi, outdoor-seating, wifi',
+          twitter: '@legacycafe',
+          social_twitter: '@legacycafe',
+          instagram: 'https://instagram.example.test/legacycafe',
+          socialLinks: [
+            {
+              platform: 'Mastodon',
+              url: 'https://social.example.test/@legacycafe',
+              handle: '@legacycafe',
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(plan.summary.rejectedCount).toBe(0);
+    expect(plan.drafts[0]?.reviewData).toMatchObject({
+      websiteUrl: 'https://legacy.example.test',
+      phone: '+81 3 0000 0000',
+      description: 'Legacy source description.',
+      openingHours: 'Mon-Fri 08:00-18:00',
+      amenities: ['wifi', 'outdoor-seating'],
+      socialLinks: [
+        {
+          platform: 'mastodon',
+          url: 'https://social.example.test/@legacycafe',
+          handle: '@legacycafe',
+        },
+        { platform: 'x', url: null, handle: '@legacycafe' },
+        {
+          platform: 'instagram',
+          url: 'https://instagram.example.test/legacycafe',
+          handle: null,
+        },
+      ],
+    });
+
+    const rawPayload = plan.drafts[0]?.sourceRecord.rawPayload as {
+      rawRecord: Record<string, unknown>;
+      normalizedRecord: Record<string, unknown>;
+    };
+    expect(rawPayload.rawRecord.about).toBe('  Legacy source description.  ');
+    expect(rawPayload.normalizedRecord).not.toHaveProperty('about');
+    expect(rawPayload.normalizedRecord.description).toBe('Legacy source description.');
+  });
+
+  it('uses nullable practical review fields when legacy rows do not provide them', async () => {
+    const plan = await createPhysicalPlaceImportPlan({
+      ...envelopeBase,
+      records: [record(1)],
+    });
+
+    expect(plan.drafts[0]?.reviewData).toMatchObject({
+      phone: null,
+      description: null,
+      openingHours: null,
+      amenities: null,
+      socialLinks: [],
+    });
+  });
+
+  it('rejects malformed practical values and unknown private fields without aborting valid rows', async () => {
+    const plan = await createPhysicalPlaceImportPlan({
+      ...envelopeBase,
+      records: [
+        record(1),
+        { ...record(2), amenities: ['wifi', { privateNote: 'must not pass' }] },
+        { ...record(3), twitter: 'ftp://example.test/account' },
+        { ...record(4), submitterEmail: 'private@example.test' },
+      ],
+    });
+
+    expect(plan.summary.acceptedCount).toBe(1);
+    expect(plan.summary.rejectedCount).toBe(3);
+    expect(plan.rejections.every((rejection) => rejection.reason === 'invalid_record')).toBe(true);
+  });
+
   it('collapses exact replays and rejects conflicting legacy identities', async () => {
     const plan = await createPhysicalPlaceImportPlan({
       ...envelopeBase,

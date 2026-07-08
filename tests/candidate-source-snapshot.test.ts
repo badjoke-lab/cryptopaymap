@@ -14,6 +14,22 @@ const physicalRecord = {
   longitude: 139.76,
   category: 'cafe',
   websiteUrl: 'https://example.test',
+  phone: '+81 3 0000 0000',
+  description: 'Example practical source description.',
+  openingHours: 'Mon-Fri 08:00-18:00',
+  amenities: ['wifi', 'outdoor-seating'],
+  socialLinks: [
+    {
+      platform: 'instagram',
+      url: 'https://social.example.test/example-cafe',
+      handle: '@examplecafe',
+    },
+    {
+      platform: 'x',
+      url: null,
+      handle: '@examplecafe',
+    },
+  ],
   osmType: 'node',
   osmId: '123',
   paymentTags: { 'payment:bitcoin': 'yes' },
@@ -46,7 +62,7 @@ const onlineRecord = {
 };
 
 describe('Candidate source snapshot projection', () => {
-  it('projects only allowlisted physical-place fields', () => {
+  it('projects only allowlisted physical-place fields including practical review values', () => {
     const snapshot = projectCandidateSourceSnapshot('physical_place', {
       rawRecord: { privateExtra: 'must not escape' },
       normalizedRecord: physicalRecord,
@@ -57,11 +73,55 @@ describe('Candidate source snapshot projection', () => {
       kind: 'physical_place',
       name: 'Example Cafe',
       countryCode: 'JP',
+      phone: '+81 3 0000 0000',
+      description: 'Example practical source description.',
+      openingHours: 'Mon-Fri 08:00-18:00',
+      amenities: ['wifi', 'outdoor-seating'],
+      socialLinks: [
+        {
+          platform: 'instagram',
+          url: 'https://social.example.test/example-cafe',
+          handle: '@examplecafe',
+        },
+        {
+          platform: 'x',
+          url: null,
+          handle: '@examplecafe',
+        },
+      ],
       paymentTags: { 'payment:bitcoin': 'yes' },
     });
     expect(JSON.stringify(snapshot)).not.toContain('privateExtra');
     expect(JSON.stringify(snapshot)).not.toContain('unexpected');
     expect(JSON.stringify(snapshot)).not.toContain('legacyId');
+  });
+
+  it('normalizes duplicate amenities and exact duplicate social links deterministically', () => {
+    const snapshot = projectCandidateSourceSnapshot('physical_place', {
+      normalizedRecord: {
+        ...physicalRecord,
+        amenities: ['wifi', 'wifi', 'outdoor-seating'],
+        socialLinks: [physicalRecord.socialLinks[0], physicalRecord.socialLinks[0]],
+      },
+    });
+
+    expect(snapshot).toMatchObject({
+      amenities: ['wifi', 'outdoor-seating'],
+      socialLinks: [physicalRecord.socialLinks[0]],
+    });
+  });
+
+  it('returns null for malformed practical source values instead of leaking a partial snapshot', () => {
+    expect(
+      projectCandidateSourceSnapshot('physical_place', {
+        normalizedRecord: { ...physicalRecord, socialLinks: [{ platform: 'x' }] },
+      }),
+    ).toBeNull();
+    expect(
+      projectCandidateSourceSnapshot('physical_place', {
+        normalizedRecord: { ...physicalRecord, amenities: [{ privateNote: 'must not escape' }] },
+      }),
+    ).toBeNull();
   });
 
   it('projects an online snapshot only when the Candidate type matches', () => {

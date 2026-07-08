@@ -12,6 +12,7 @@ import {
   physicalPlaceImportEnvelopeSchema,
   type LegacyPhysicalPlaceRecord,
   type PhysicalPlaceImportEnvelope,
+  type PhysicalPlaceReviewSocialLink,
 } from '../schemas/physical-place-import';
 
 export interface PhysicalPlaceReviewData {
@@ -25,6 +26,11 @@ export interface PhysicalPlaceReviewData {
   longitude: number;
   category: string | null;
   websiteUrl: string | null;
+  phone: string | null;
+  description: string | null;
+  openingHours: string | null;
+  amenities: string[] | null;
+  socialLinks: PhysicalPlaceReviewSocialLink[];
   osmType: 'node' | 'way' | 'relation' | null;
   osmId: string | null;
   paymentTags: Record<string, string>;
@@ -233,6 +239,11 @@ async function createDraft(
       longitude: record.longitude,
       category: record.category,
       websiteUrl: record.websiteUrl,
+      phone: record.phone,
+      description: record.description,
+      openingHours: record.openingHours,
+      amenities: record.amenities,
+      socialLinks: record.socialLinks,
       osmType: record.osmType,
       osmId: record.osmId,
       paymentTags: record.paymentTags,

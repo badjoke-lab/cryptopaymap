@@ -10,6 +10,7 @@ import {
   sourceTypeValues,
 } from '../../db/schema';
 import { importableOnlineCandidateTypeValues } from '../../schemas/online-service-import';
+import { physicalPlaceReviewSocialLinkSchema } from '../../schemas/physical-place-import';
 
 const candidateReadCapabilitySchema = z.literal('candidate:read');
 const timestampSchema = z.iso.datetime({ offset: true });
@@ -18,6 +19,43 @@ const httpUrlSchema = z
   .max(2_048)
   .refine((value) => ['http:', 'https:'].includes(new URL(value).protocol));
 const nullableText = (maximum: number) => z.string().trim().min(1).max(maximum).nullable();
+
+const normalizedAmenitiesSchema = z
+  .array(z.string().trim().min(1).max(80))
+  .max(100)
+  .nullable()
+  .superRefine((values, context) => {
+    if (values === null) return;
+    const seen = new Set<string>();
+    values.forEach((value, index) => {
+      if (seen.has(value)) {
+        context.addIssue({
+          code: 'custom',
+          path: [index],
+          message: 'Candidate snapshot amenities must be normalized and unique.',
+        });
+      }
+      seen.add(value);
+    });
+  });
+
+const normalizedReviewSocialLinksSchema = z
+  .array(physicalPlaceReviewSocialLinkSchema)
+  .max(30)
+  .superRefine((links, context) => {
+    const seen = new Set<string>();
+    links.forEach((link, index) => {
+      const key = `${link.platform}:${link.url ?? ''}:${link.handle ?? ''}`;
+      if (seen.has(key)) {
+        context.addIssue({
+          code: 'custom',
+          path: [index],
+          message: 'Candidate snapshot social links must be normalized and unique.',
+        });
+      }
+      seen.add(key);
+    });
+  });
 
 export const candidateDetailContextSchema = z
   .object({
@@ -40,6 +78,11 @@ const physicalSourceSnapshotSchema = z
     longitude: z.number().finite().min(-180).max(180),
     category: nullableText(120),
     websiteUrl: httpUrlSchema.nullable(),
+    phone: nullableText(64),
+    description: nullableText(5_000),
+    openingHours: nullableText(2_000),
+    amenities: normalizedAmenitiesSchema,
+    socialLinks: normalizedReviewSocialLinksSchema,
     osmType: z.enum(['node', 'way', 'relation']).nullable(),
     osmId: z
       .string()

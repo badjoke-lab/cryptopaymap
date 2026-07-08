@@ -71,6 +71,17 @@ function validDetail(): CandidateDetailData {
           longitude: 139.76,
           category: 'cafe',
           websiteUrl: 'https://example.test',
+          phone: '+81 3 0000 0000',
+          description: 'Reviewed source description.',
+          openingHours: 'Mon-Fri 08:00-18:00',
+          amenities: ['wifi', 'outdoor-seating'],
+          socialLinks: [
+            {
+              platform: 'x',
+              url: null,
+              handle: '@examplecafe',
+            },
+          ],
           osmType: 'node',
           osmId: '123',
           paymentTags: { 'payment:bitcoin': 'yes' },
@@ -101,7 +112,7 @@ describe('Candidate detail contract', () => {
     expect(backend.loadDetail).not.toHaveBeenCalled();
   });
 
-  it('returns a validated detail with generation time', async () => {
+  it('returns a validated detail with practical snapshot fields and generation time', async () => {
     const backend: CandidateDetailBackend = { loadDetail: vi.fn(async () => validDetail()) };
 
     await expect(
@@ -111,6 +122,19 @@ describe('Candidate detail contract', () => {
       generatedAt: asOf.toISOString(),
     });
     expect(backend.loadDetail).toHaveBeenCalledWith(candidateId, asOf);
+  });
+
+  it('rejects duplicate normalized practical values from an invalid backend detail', async () => {
+    const detail = validDetail();
+    const snapshot = detail.sources[0]?.snapshot;
+    if (!snapshot || snapshot.kind !== 'physical_place')
+      throw new Error('Expected physical snapshot.');
+    snapshot.amenities = ['wifi', 'wifi'];
+    const backend: CandidateDetailBackend = { loadDetail: vi.fn(async () => detail) };
+
+    await expect(
+      loadCandidateDetail(authorizedContext, backend, candidateId, asOf),
+    ).rejects.toMatchObject({ code: 'invalid_detail' });
   });
 
   it('returns not found only after authorized backend access', async () => {

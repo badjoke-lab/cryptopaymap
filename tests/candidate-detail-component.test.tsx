@@ -64,6 +64,17 @@ function detailResponse(): CandidateDetailResponse {
           longitude: 139.76,
           category: 'cafe',
           websiteUrl: 'https://example.test',
+          phone: '+81 3 0000 0000',
+          description: 'Source-reviewed practical description.',
+          openingHours: 'Mon-Fri 08:00-18:00',
+          amenities: ['wifi', 'outdoor-seating'],
+          socialLinks: [
+            {
+              platform: 'x',
+              url: null,
+              handle: '@examplecafe',
+            },
+          ],
           osmType: 'node',
           osmId: '123',
           paymentTags: { 'payment:bitcoin': 'yes' },
@@ -88,7 +99,7 @@ afterEach(() => {
 });
 
 describe('ReviewCandidate', () => {
-  it('loads and displays a validated Candidate and allowlisted provenance', async () => {
+  it('loads and displays a validated Candidate and practical allowlisted provenance', async () => {
     window.history.replaceState({}, '', `/admin/candidates/detail/?id=${candidateId}`);
     const fetchMock = vi.fn(async (_input: RequestInfo | URL) => jsonResponse(detailResponse()));
     vi.stubGlobal('fetch', fetchMock);
@@ -100,6 +111,11 @@ describe('ReviewCandidate', () => {
     expect(screen.getByRole('heading', { name: 'Legacy physical import' })).toBeInTheDocument();
     expect(screen.getByText('Open Database License')).toBeInTheDocument();
     expect(screen.getByText('Example Cafe source')).toBeInTheDocument();
+    expect(screen.getByText('+81 3 0000 0000')).toBeInTheDocument();
+    expect(screen.getByText('Source-reviewed practical description.')).toBeInTheDocument();
+    expect(screen.getByText('Mon-Fri 08:00-18:00')).toBeInTheDocument();
+    expect(screen.getByText('wifi, outdoor-seating')).toBeInTheDocument();
+    expect(screen.getByText('x: @examplecafe')).toBeInTheDocument();
     expect(screen.queryByText('privateExtra')).not.toBeInTheDocument();
     expect(fetchMock.mock.calls[0]?.[0]).toBe(`/admin/api/candidates/${candidateId}`);
   });
