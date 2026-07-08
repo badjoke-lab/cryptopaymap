@@ -1,7 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { projectCanonicalPlace } from '../src/publication/place-projection';
 import { validatePublicArtifact } from '../src/publication/export-boundary';
-import type { CanonicalEntityInput, CanonicalLocationInput } from '../src/schemas/canonical-identity';
+import type {
+  CanonicalEntityInput,
+  CanonicalLocationInput,
+} from '../src/schemas/canonical-identity';
 
 const generatedAt = '2026-07-08T00:00:00Z';
 
@@ -18,7 +21,9 @@ function entity(visibility: CanonicalEntityInput['visibility'] = 'public'): Cano
   };
 }
 
-function location(visibility: CanonicalLocationInput['visibility'] = 'public'): CanonicalLocationInput {
+function location(
+  visibility: CanonicalLocationInput['visibility'] = 'public',
+): CanonicalLocationInput {
   return {
     name: 'Reviewed Cafe Tokyo',
     slug: 'reviewed-cafe-tokyo',
@@ -207,7 +212,9 @@ describe('canonical Place public projection', () => {
         media: [],
         provenance,
       }),
-    ).toThrow('Only canonical Entity and Location records explicitly marked public can be projected.');
+    ).toThrow(
+      'Only canonical Entity and Location records explicitly marked public can be projected.',
+    );
   });
 
   it('rejects malformed structured social links through canonical validation', () => {
