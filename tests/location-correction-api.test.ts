@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createLocationCorrectionHandlers } from '../functions/admin/api/location-corrections/[candidateId]';
+import type { LocationCorrectionMutationContext } from '../src/admin/location-correction/decision';
 import type { LocationCorrectionWorkspaceResponse } from '../src/admin/location-correction/workspace';
 
 const candidateId = '10000000-0000-4000-8000-000000000001';
@@ -129,7 +130,7 @@ describe('Location correction protected API', () => {
   });
 
   it('commits only after exact Candidate, Location, and source-set revalidation', async () => {
-    const writeCorrection = vi.fn(async () => ({
+    const writeCorrection = vi.fn(async (_mutationContext: LocationCorrectionMutationContext) => ({
       requestId,
       locationId,
       appliedFieldPaths: ['phone' as const],
