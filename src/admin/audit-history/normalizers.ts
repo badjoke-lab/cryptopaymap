@@ -3,6 +3,7 @@ import type { CandidatePromotionDecision } from '../../db/schema/candidate-promo
 import type { EvidenceReviewDecision } from '../../db/schema/evidence-review-decisions';
 import type { ExportActivationRecord } from '../../db/schema/export-activation-records';
 import type { ExportReleaseDecision } from '../../db/schema/export-release-decisions';
+import type { LocationProfileCorrectionDecision } from '../../db/schema/location-profile-correction-decisions';
 import type { MediaReviewDecision } from '../../db/schema/media-review-decisions';
 import type { ReconfirmationExpiration } from '../../db/schema/reconfirmation-expirations';
 import type { ExportRestoreExecutionRecord } from '../export-release/restore-execution';
@@ -56,6 +57,27 @@ export function candidatePromotionAuditItem(row: CandidatePromotionDecision): Au
     secondaryTargets: [{ type: 'acceptance_claim', id: row.claimId }],
     reasonCode: null,
     summary: null,
+    transition: null,
+    sourceRecordId: row.id,
+  };
+}
+
+export function locationProfileCorrectionAuditItem(
+  row: LocationProfileCorrectionDecision,
+): AuditHistoryItem {
+  return {
+    id: itemId('location_profile_correction', row.id),
+    occurredAt: row.decidedAt.toISOString(),
+    domain: 'canonical',
+    sourceKind: 'location_profile_correction',
+    action: 'correct_location_profile',
+    actorId: row.actorId,
+    actorType: row.actorType,
+    requestId: row.requestId,
+    target: { type: 'location', id: row.locationId },
+    secondaryTargets: [],
+    reasonCode: row.reasonCode,
+    summary: row.publicSummary,
     transition: null,
     sourceRecordId: row.id,
   };
