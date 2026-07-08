@@ -74,6 +74,7 @@ export const evidenceReviewDecisions = pgTable(
     expectedAcceptedEvidenceIds: jsonb('expected_accepted_evidence_ids')
       .$type<string[]>()
       .notNull(),
+    expectedClaimAssetIds: jsonb('expected_claim_asset_ids').$type<string[]>().notNull(),
     actorId: varchar('actor_id', { length: 200 }).notNull(),
     actorType: adminActorTypeEnum('actor_type').notNull(),
     reasonCode: varchar('reason_code', { length: 96 }).notNull(),
@@ -94,6 +95,10 @@ export const evidenceReviewDecisions = pgTable(
     check(
       'evidence_review_decisions_expected_set_array',
       sql`jsonb_typeof(${table.expectedAcceptedEvidenceIds}) = 'array' and jsonb_array_length(${table.expectedAcceptedEvidenceIds}) between 0 and 100`,
+    ),
+    check(
+      'evidence_review_decisions_expected_claim_asset_set_array',
+      sql`jsonb_typeof(${table.expectedClaimAssetIds}) = 'array' and jsonb_array_length(${table.expectedClaimAssetIds}) between 0 and 100`,
     ),
     check('evidence_review_decisions_actor_nonempty', sql`length(trim(${table.actorId})) > 0`),
     check('evidence_review_decisions_reason_nonempty', sql`length(trim(${table.reasonCode})) > 0`),
