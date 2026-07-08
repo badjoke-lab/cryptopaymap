@@ -92,18 +92,15 @@ const facets: PublicPlaceFilterFacets = {
 };
 
 const state: DiscoveryUrlState = {
-  query: '',
+  search: '',
   assets: [],
   networks: [],
   categories: [],
   routes: [],
   statuses: ['confirmed'],
-  view: 'map',
+  viewport: null,
   selectedPlace: null,
-  bottomSheet: 'closed',
-  lat: null,
-  lng: null,
-  zoom: null,
+  view: 'map',
 };
 
 beforeEach(() => {
