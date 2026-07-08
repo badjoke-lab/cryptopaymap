@@ -1,7 +1,7 @@
 # P4-18C bounded UI residual audit
 
 **Implementation item:** P4-18C  
-**Status:** Active — C1 compact mobile discovery surfaces in progress  
+**Status:** Active — C1 visually accepted; C2 planned next  
 **Last updated:** 2026-07-08
 
 ## Purpose
@@ -12,40 +12,44 @@ P4-18C closes only material UI residuals already visible in representative scree
 
 The representative screenshot artifact generated from the post-B4 main state was inspected directly. A successful screenshot workflow is treated only as capture evidence; visual acceptance is recorded here from image review.
 
+C1 was also reviewed directly from the representative screenshot artifact generated from the formatted final C1 head. The affected Mobile Places List and open Mobile Menu images were inspected rather than inferred from the capture workflow result.
+
 ## Material findings
 
 ### C-UI-01 — Mobile Places List card density
 
-**Status:** Material — C1 active
+**Status:** Closed by C1 visual acceptance
 
-Observed issue:
+Original issue:
 
-- realistic multi-result lists require excessive scrolling;
-- each card repeats four payment/freshness blocks in a single-column mobile definition list;
-- 80px Media or placeholder, four vertical metadata blocks, and two actions create an unnecessarily tall result card.
+- realistic multi-result lists required excessive scrolling;
+- each card repeated four payment/freshness blocks in a single-column mobile definition list;
+- 80px Media or placeholder, four vertical metadata blocks, and two actions created an unnecessarily tall result card.
 
-Required correction:
+C1 result:
 
-- preserve status, category, name, locality, assets, networks, route, freshness, map selection, and payment-detail access;
-- reduce mobile card padding and gaps;
-- use a smaller mobile thumbnail/placeholder with the existing larger size retained at wider breakpoints;
-- use a compact two-column metadata grid on mobile;
-- preserve touch target requirements.
+- status, category, name, locality, assets, networks, route, freshness, map selection, and payment-detail access are preserved;
+- mobile card padding and gaps are reduced;
+- mobile thumbnails/placeholders are reduced while wider-breakpoint sizing remains;
+- Assets, Networks, Routes, and Last confirmed use a compact two-column mobile summary;
+- action controls retain minimum touch target height;
+- direct review of the C1 Mobile Places List screenshot confirms materially better scan density without information loss or horizontal overflow.
 
 ### C-UI-02 — Mobile Menu uses excessive screen area
 
-**Status:** Material — C1 active
+**Status:** Closed by C1 visual acceptance
 
-Observed issue:
+Original issue:
 
-- six primary links occupy a full-height drawer with substantial unused space;
-- the menu visually reads as a large empty surface rather than a bounded navigation panel.
+- six primary links occupied a full-height drawer with substantial unused space;
+- the menu visually read as a large empty surface rather than a bounded navigation panel.
 
-Required correction:
+C1 result:
 
-- retain overlay dismissal, Escape handling, focus trap, close-button focus, and trigger focus restoration;
-- replace full-height drawer presentation with a bounded top-right panel;
-- present the six links in a compact two-column grid while retaining minimum touch targets and active-page state.
+- overlay dismissal, Escape handling, focus trap, close-button focus, trigger focus restoration, body scroll lock, and active-page state remain covered;
+- the menu is now a bounded top-right panel;
+- six primary links are presented as a three-row, two-column grid with minimum touch targets;
+- direct review of the C1 open-menu screenshot confirms the previous full-height empty-area problem is removed and navigation remains readable.
 
 ### C-UI-03 — Expanded Place sheet delays payment-critical information
 
@@ -95,13 +99,15 @@ The representative Methodology mobile screenshot was inspected. It is long by co
 
 ## Execution slices
 
-### C1 — Compact Mobile List and Menu
+### C1 — Compact Mobile List and Menu — Visually accepted
 
-- compact result cards without removing payment/freshness information;
-- bound the mobile navigation panel and use screen area coherently;
-- preserve navigation, focus, Escape, overlay, and touch behavior;
-- run focused tests and representative screenshots;
-- inspect affected screenshots after capture.
+Completed result:
+
+- compact result cards preserve payment/freshness information;
+- bounded mobile navigation panel uses screen area coherently;
+- navigation, focus, Escape, overlay, body-scroll, active-state, and touch behavior remain covered;
+- focused tests and representative screenshots completed successfully;
+- affected screenshots were directly inspected and accepted.
 
 ### C2 — Expanded sheet payment order and Filters completion
 
