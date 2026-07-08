@@ -100,10 +100,7 @@ if (claimsPage.includes('Canonical payment-claim editing will be added')) {
   throw new Error('Stale Claim placeholder copy found in Claim workflow HTML.');
 }
 
-const submissionsPage = readFileSync(
-  join(outputDirectory, 'admin/submissions/index.html'),
-  'utf8',
-);
+const submissionsPage = readFileSync(join(outputDirectory, 'admin/submissions/index.html'), 'utf8');
 const requiredSubmissionFragments = [
   'Future protected boundary',
   'No submission records or controls are connected',
@@ -171,7 +168,9 @@ for (const fragment of requiredCandidateDetailFragments) {
 }
 for (const fragment of forbiddenCandidateDetailFragments) {
   if (candidateDetailPage.includes(fragment)) {
-    throw new Error(`Private, server-only, or stale marker found in Candidate detail HTML: ${fragment}`);
+    throw new Error(
+      `Private, server-only, or stale marker found in Candidate detail HTML: ${fragment}`,
+    );
   }
 }
 
