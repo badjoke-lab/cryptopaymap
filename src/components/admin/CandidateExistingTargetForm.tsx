@@ -270,6 +270,14 @@ export function CandidateExistingTargetForm({ workspace, selectedTarget, onConfl
             <p className="mt-1 text-xs text-muted">{selectedTarget.canonicalPath}</p>
           </div>
         </div>
+        {selectedTarget.location ? (
+          <a
+            className="mt-5 inline-flex min-h-11 items-center rounded-control border border-brand-600 bg-white px-4 py-2 text-sm font-semibold text-brand-800 no-underline"
+            href={`/admin/candidates/location-correction/?candidateId=${encodeURIComponent(candidate.id)}&locationId=${encodeURIComponent(selectedTarget.location.id)}`}
+          >
+            Review practical profile correction separately
+          </a>
+        ) : null}
       </section>
 
       <ClaimSection
