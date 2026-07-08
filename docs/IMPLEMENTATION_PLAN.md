@@ -127,8 +127,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-17D | Desktop selected panel and mobile sheet recovery | Completed | P4-17B, P4-17C | #122 |
 | P4-17E | Gallery, image enlargement, and external navigation | Completed | P4-17C, P4-17D | #122 |
 | P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | Completed | P4-17B through P4-17E | #122 |
-| P4-18A | Tracking correction and closure inventory | In progress | P4-17, closure findings | — |
-| P4-18B1 | Source and Candidate practical-profile contract | Planned | P4-18A | — |
+| P4-18A | Tracking correction and closure inventory | Completed | P4-17, closure findings | #127 |
+| P4-18B1 | Source and Candidate practical-profile contract | In progress | P4-18A | — |
 | P4-18B2 | Promotion editor and field provenance parity | Planned | P4-18B1 | — |
 | P4-18B3 | Canonical persistence and public projection integration | Planned | P4-18B2 | — |
 | P4-18B4 | Existing-record practical-profile correction path audit and completion | Planned | P4-18B3 | — |
