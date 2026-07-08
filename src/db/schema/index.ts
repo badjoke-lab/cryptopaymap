@@ -21,6 +21,7 @@ export * from './evidence-review-decisions';
 export * from './export-activation-records';
 export * from './export-release-decisions';
 export * from './import-batches';
+export * from './location-profile-correction-decisions';
 export * from './locations';
 export * from './media-legacy';
 export * from './media-review-decisions';
