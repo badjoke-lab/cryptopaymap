@@ -1,14 +1,14 @@
 # P4-18D administration workflow integration audit
 
 **Implementation item:** P4-18D  
-**Status:** Active — D1 completed; D2 Access/API compatibility audit in progress  
+**Status:** Active — D1 completed through #143; D2 completed through #144; D3 guard/replay/failure integration in progress  
 **Last updated:** 2026-07-08
 
 ## Purpose
 
-P4-18D verifies the protected administration workflow as one operator journey rather than as a set of isolated repository-complete components.
+P4-18D verifies the protected administration workflow as one operator journey rather than as isolated repository-complete components.
 
-Repository tests, schemas, and built artifacts are evidence for repository behavior only. They do not prove live Cloudflare Access policy, live allowlist values, live database migrations, live R2 conditional writes, or production release/restore behavior.
+Repository tests, schemas, generated migrations, and built artifacts are evidence for repository behavior only. They do not prove live Cloudflare Access policy, live allowlist values, live database migration state, live R2 conditional writes, or production release/restore behavior.
 
 ## Required operator journey
 
@@ -46,27 +46,27 @@ Audit history
 |---|---|---|---|
 | Operations overview | `/admin` | top-level protected dashboard and operation map | D1 completed |
 | Candidate queue | `/admin/candidates` | top-level Admin navigation and overview card | reachable |
-| Candidate detail | `/admin/candidates/detail/?id=<candidate>` | Candidate queue card → detail | reachable; stale copy corrected in D1 |
+| Candidate detail | `/admin/candidates/detail/?id=<candidate>` | Candidate queue card → detail | D1 completed |
 | Duplicate review | `/admin/candidates/duplicates/?groupId=<group>` | Candidate detail contextual group navigation | reachable when applicable |
-| New-target promotion | `/admin/candidates/promotion/?id=<candidate>` | eligible Candidate queue card | reachable |
-| Existing-target linking | `/admin/candidates/existing-target/?id=<candidate>` | eligible Candidate queue card | reachable |
-| Existing-Location correction | `/admin/candidates/location-correction/?candidateId=<candidate>&locationId=<location>` | selected physical existing target → separate correction workspace | reachable in context |
+| New-target promotion | `/admin/candidates/promotion/?id=<candidate>` | eligible Candidate queue card | guard/replay contract reconciled |
+| Existing-target linking | `/admin/candidates/existing-target/?id=<candidate>` | eligible Candidate queue card | guard/replay contract reconciled |
+| Existing-Location correction | `/admin/candidates/location-correction/?candidateId=<candidate>&locationId=<location>` | selected physical existing target → separate correction workspace | guard/replay contract reconciled |
 | Claim operation map | `/admin/claims` | top-level Admin navigation and overview card | D1 completed |
 | Evidence queue | `/admin/evidence` | Admin navigation, overview, Claim workflow index | reachable |
-| Evidence detail/decision | `/admin/evidence/detail/?id=<evidence>` | Evidence queue item | D2 compatibility coherent; D3 guard/retry audit pending |
+| Evidence detail/decision | `/admin/evidence/detail/?id=<evidence>` | Evidence queue item | D3 confirmation guard hardening in progress |
 | Reconfirmation queue | `/admin/rechecks` | Admin navigation, overview, Claim workflow index | reachable |
-| Reconfirmation detail | `/admin/rechecks/detail/?id=<claim>` | Rechecks queue item | D2 semantics classified; D3 network-failure recovery pending |
+| Reconfirmation detail | `/admin/rechecks/detail/?id=<claim>` | Rechecks queue item | D3 network-failure recovery corrected |
 | Media queue | `/admin/media` | Admin navigation and overview | reachable |
-| Media detail/decision | `/admin/media/detail/?id=<media>` | Media queue item | D2 compatibility coherent; D3 guard/retry audit pending |
+| Media detail/decision | `/admin/media/detail/?id=<media>` | Media queue item | guard/replay contract reconciled |
 | Export release queue | `/admin/exports` | Admin navigation and overview | reachable |
-| Export candidate detail/decision | `/admin/exports/detail/?digest=<digest>` | current candidate card | D2 compatibility coherent; D4 release/publish boundary audit pending |
+| Export candidate detail/decision | `/admin/exports/detail/?digest=<digest>` | current candidate card | D4 release/publish boundary audit pending |
 | Publication activation | protected `export:publish` boundary | API/non-overview operation | pending D4 non-UI classification |
 | Release history | protected release-history read boundary | repository API/read model | pending D4 route/non-UI classification |
 | Restore prepare/execute | protected `export:publish` restore boundary | repository workflow exists; public restore controls remain deferred | pending D4 |
 | Audit history | `/admin/audit` | Admin navigation, overview, Claim workflow index | reachable; D4 visibility/leakage audit pending |
 | Submissions | `/admin/submissions` | explicit future Phase 5 boundary only | intentionally no operation before P5-01 |
 
-## Access and capability matrix
+## Access and capability result — D2 completed through #144
 
 The verified Cloudflare Access identity preserves two deterministic forms:
 
@@ -87,53 +87,100 @@ The public repository configuration contract is recorded in `docs/ADMIN_ACCESS_C
 | Promotion and existing-target linking | `CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS` | Access subject | `candidate:promote` |
 | Existing-Location correction | `CPM_ADMIN_LOCATION_CORRECT_SUBJECTS` | Access subject | `location:correct` |
 | Evidence decision | `CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS` | Access subject | `evidence:review` |
-| Reconfirmation read | `CPM_ADMIN_RECONFIRMATION_SUBJECTS` | Access subject | `claim:recheck` |
-| Reconfirmation expiration | `CPM_ADMIN_RECONFIRMATION_SUBJECTS` | Access subject authorization | `claim:expire` |
+| Reconfirmation read/expiration | `CPM_ADMIN_RECONFIRMATION_SUBJECTS` | Access subject | `claim:recheck` / `claim:expire` |
 | Media review | `CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS` | normalized actor ID | `media:review` |
 | Export release | `CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS` | normalized actor ID | `export:release` |
 | Publication and restore | `CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS` | normalized actor ID | `export:publish` |
 | Audit history | `CPM_ADMIN_AUDIT_READ_ACTOR_IDS` | normalized actor ID | `audit:read` |
 
-### D2 identity result
+D2 established:
 
-D2 classifies the mixed identifier families as an intentional repository contract, not an implicit equivalence:
-
-- the Access parser preserves raw `sub` as `subject`;
-- it derives `actorId` deterministically as `cloudflare-access:<sub>`;
-- subject-based policies authorize against `identity.subject`;
-- actor-ID-based policies authorize against `identity.actorId`;
+- subject and actor-ID representations are deterministic but not interchangeable;
 - one operator may require both representations in different allowlists;
-- swapping the forms fails authorization closed;
-- live values remain environment-specific and must not be committed.
+- swapped representations fail authorization closed;
+- every currently reachable mutation UI generates and sends a UUID `Idempotency-Key`;
+- Evidence, Media, Promotion, existing-target linking, Location correction, and Export release clients explicitly map invalid, denied, conflict, unavailable, and network-failure states;
+- Reconfirmation uses intentional hybrid semantics: Access subject authorization, operator-derived `actorId`, system expiration actor type, and UUID request ID;
+- repository migration checks are not live database verification.
 
-D2 adds a cross-policy integration test that passes one verified identity through all current subject- and actor-ID-based authorization families and asserts the wrong representation is denied.
+## D3 guard and replay matrix
 
-## Protected UI/API compatibility matrix
+| Operation | Reviewed-state guards | Replay/conflict contract | D3 result |
+|---|---|---|---|
+| Duplicate resolution | group version/member set and review state | deterministic request fingerprint; identical replay; changed-content conflict | coherent |
+| New-target Promotion | Candidate version, exact source set, field provenance plan | identical replay; changed-content conflict; atomic persistence | coherent |
+| Existing-target linking | Candidate version, target versions/path/Claim set, exact source set | identical replay; changed-content conflict | coherent |
+| Existing-Location correction | Candidate version, Location version, exact source set, changed-field provenance | identical replay; changed-content conflict; stale-state conflict | coherent |
+| Evidence review | Evidence version, Claim version/status/visibility, accepted Evidence set | request fingerprint and atomic row guards | **D3 hardening adds exact payment set and current payment prerequisites for confirm** |
+| Reconfirmation expiration | Claim version/status/visibility/nextReviewAt | UUID request, stale-state conflict, durable expiration record | retry UI fixed in D3 |
+| Media review | Media version/review state/subject expectations | identical replay; changed-content conflict | coherent |
+| Export release | candidate digest/status/version assumptions | identical replay; changed-content conflict | D4 publication integration pending |
 
-The matrix below records repository client/server behavior. It is not live endpoint verification.
+## D3 finding — Evidence confirmation payment prerequisites were not revalidated
 
-| Reachable mutation UI | UUID Idempotency-Key | Explicit conflict handling | Invalid/denied/unavailable handling | Network exception handling | D2 result |
-|---|---|---|---|---|---|
-| Duplicate decision | yes | 409 | denied and failed states | catch → failed | coherent |
-| New-target Promotion | yes | 409 | 400 / 403 / unavailable | catch → unavailable | coherent |
-| Existing-target linking | yes | 409 | 400 / 403 / unavailable | catch → unavailable | coherent |
-| Existing-Location correction | yes | 409 | 400 / denied / unavailable | catch → unavailable | coherent |
-| Evidence decision | yes | 409 | 400 / 403 / unavailable | catch → unavailable | coherent |
-| Reconfirmation stale transition | yes | 409 | generic non-OK failure | **missing POST catch** | D3 finding |
-| Media decision | yes | 409 | 400 / 403 / unavailable | catch → unavailable | coherent |
-| Export release decision | yes | 409 | 400 / 403 / unavailable | catch → unavailable | coherent |
+### Finding
 
-D2 adds a repository contract test that requires every currently reachable mutation UI to generate a UUID and send it through the `Idempotency-Key` header.
+Before D3, the Evidence confirmation path verified:
 
-### D-API-01 — Reconfirmation network failure can strand the submitting message
+- Evidence threshold;
+- Evidence version and pending review status;
+- Claim version, status, and visibility;
+- complete accepted Evidence ID set;
+- `howToPay`;
+- `customerPaysCrypto`;
+- `merchantExplicitlyAcceptsCrypto`.
 
-**Finding:** The Reconfirmation detail POST sets `Committing Claim transition…` and awaits `fetch` without a surrounding catch. A network exception can therefore escape without replacing the submitting message with an operator-visible failure state.
+However, the protected Evidence workspace and confirm decision path did not load or pin the current Claim Asset / Network / Payment Method set.
 
-**Classification:** Repository finding assigned to D3 failure/retry integration. D2 does not alter transition semantics.
+Normal Claim creation through new-target Promotion and existing-target linking requires at least one Claim Asset row, but the database cannot express the cross-row rule that every Claim always retains at least one valid current payment combination. A later data change or registry lifecycle change could therefore make the payment set unsuitable for confirmation while the Evidence threshold path still passed.
+
+This was a real repository guard gap relative to the verification policy and public export payment-combination rules.
+
+### D3 correction
+
+D3 adds:
+
+- protected Evidence detail projection of current payment combinations;
+- payment prerequisite evaluation using the same route/network/method/registry rules used by the public boundary;
+- at least one payment combination requirement;
+- exactly one primary combination requirement;
+- active asset, network, and payment-method registry requirements;
+- Lightning method → Lightning network compatibility;
+- on-chain method exclusion from Lightning network;
+- processor-checkout method → processor-checkout route compatibility;
+- reviewer-visible prerequisite eligibility and issue display;
+- confirm action suppression when payment prerequisites are ineligible;
+- exact reviewed Claim Asset ID set in the decision input;
+- exact set inclusion in the deterministic request fingerprint;
+- projection-time exact set comparison and prerequisite validation;
+- atomic transaction-time SQL guard that share-locks Claim Asset and registry rows and rechecks exact IDs and prerequisite conditions;
+- durable persistence of the reviewed Claim Asset ID set in the Evidence decision receipt table;
+- generated migration and migration-drift validation;
+- focused evaluator, API, workspace, component, decision-fingerprint, persistence, and integration coverage.
+
+### Conflict semantics
+
+If the reviewed Claim Asset set changes before commit, the operation fails with conflict and the reviewer must reload current state.
+
+If the set is unchanged but current registry or compatibility prerequisites no longer allow confirmation, the operation fails closed. The atomic guard prevents a time-of-check/time-of-use gap between projection and commit.
+
+## D3 finding — Reconfirmation POST network failure recovery
+
+### Finding
+
+The Reconfirmation detail component set `Committing Claim transition…` and awaited the POST without a catch block. A connectivity exception could leave the operator without a terminal failure/retry message.
+
+### D3 correction
+
+D3 wraps the mutation request in `try/catch` and replaces the submitting message with:
+
+`The Claim transition request could not be completed. Retry when connectivity returns.`
+
+Focused component coverage asserts that the submitting message is removed after a rejected network request.
+
+Transition semantics, authorization semantics, and durable expiration behavior are unchanged.
 
 ## Reconfirmation actor semantics
-
-D2 reviewed the manual and scheduled expiration paths.
 
 The repository intentionally uses a system expiration semantic context:
 
@@ -145,128 +192,74 @@ The repository intentionally uses a system expiration semantic context:
 - it requires a UUID Idempotency-Key;
 - the scheduled expiration path also uses the system expiration service contract.
 
-Existing authorization tests explicitly fix this behavior. D2 therefore does not reclassify the manual transition as an ordinary human review decision. Instead, `docs/ADMIN_ACCESS_CONFIGURATION.md` records the hybrid semantics so the boundary is not inferred incorrectly.
+D4 must verify that protected Audit normalization preserves enough attribution for manual protected expiration while keeping scheduled expiration semantics distinguishable.
 
-D3/D4 must continue to verify that durable Audit normalization preserves enough attribution for manual protected expiration while keeping scheduled expiration semantics distinct.
+## Migration boundary
 
-## Migration assumptions
+The repository migration journal before D3 ended at `0021_magenta_the_anarchist`. D3 adds a generated migration for durable Evidence decision Claim Asset set storage.
 
-The repository migration journal currently ends at `0021_magenta_the_anarchist`.
-
-Repository checks can prove:
+Repository checks can prove only:
 
 - migration files and journal metadata are internally consistent;
 - migration drift checks pass against repository expectations;
-- schemas and tests compile against the repository migration state.
+- schemas and tests compile against repository migration state.
 
 Repository checks do not prove:
 
-- a live Neon environment has applied every migration through the repository head;
-- the live Location correction decision table exists;
-- release, activation, restore, reconfirmation, Media, or Audit-related durable tables are present in a specific deployed environment;
-- the configured Pages Functions point at the intended database.
+- a live Neon environment has applied migrations through repository head;
+- the deployed environment points at the intended database;
+- the new durable Evidence decision column exists in a specific live environment.
 
-Live migration application is therefore an environment-specific item for D5/P4-18E. Repository CI must not be described as live migration verification.
+Live migration application remains an environment-specific D5/P4-18E item.
 
-## D1 findings — Route reachability and stale copy
+## D1 result — Completed through #143
 
-### D-ROUTE-01 — Nested Admin routes lost their top-level active navigation state
+D1 established:
 
-**Finding:** The shared Admin layout used exact path equality. Detail routes such as Candidate detail, Evidence detail, Rechecks detail, Media detail, Export detail, and Location correction therefore did not retain the owning top-level section as active.
+- durable operator journey matrix;
+- accurate Admin Home capability descriptions;
+- Claims operation index instead of stale placeholder copy;
+- generic placeholder restricted to genuine future Submissions work;
+- nested routes preserve owning Admin navigation state;
+- current Candidate detail workflow wording;
+- built-route and private-marker leakage checks.
 
-**D1 correction:** Centralize Admin navigation and use section-aware nested path matching, while keeping Overview exact-only.
+## D2 result — Completed through #144
 
-### D-ROUTE-02 — Claims route was a Phase 3 placeholder after Claim operations existed elsewhere
+D2 established:
 
-**Finding:** `/admin/claims` described canonical Claim editing as future work even though Claim creation, Evidence decisions, reconfirmation, and Audit operations already existed in separate protected workspaces.
-
-**D1 correction:** Replace the stale placeholder with a workflow index that routes operators by operation and preserves the separate boundaries.
-
-### D-ROUTE-03 — Shared dynamic placeholders still declared already implemented Admin sections
-
-**Finding:** The dynamic Admin section source still declared placeholders for Evidence, Rechecks, Media, Exports, and Audit after dedicated routes existed.
-
-**D1 correction:** Limit the dynamic placeholder boundary to Submissions, which is intentionally future Phase 5 work.
-
-### D-COPY-01 — Admin Home contradicted implemented capabilities
-
-**Finding:** Admin Home said Candidate promotion was disabled, public publication was disabled, and Export controls were unavailable even though repository boundaries existed for promotion, release, publication, restore, and Audit.
-
-**D1 correction:** Replace disabled/unavailable statements with accurate separation-of-capability and exact-state-guard descriptions, and add Audit history to the operation map.
-
-### D-COPY-02 — Candidate detail page described promotion as unavailable
-
-**Finding:** Candidate detail top-level copy still said promotion remained unavailable.
-
-**D1 correction:** Describe duplicate review, new-target promotion, and existing-target linking as separate guarded operations rather than unavailable functionality.
-
-### D-COPY-03 — Candidate inspection component retained a historical milestone statement
-
-**Finding:** The Candidate detail component still described duplicate decisions, canonical promotion, Evidence decisions, and publication controls as unavailable in the earlier milestone.
-
-**D1 correction:** Replace historical milestone wording with the current inspection boundary: this component is read-only, while mutations remain separate guarded workspaces or protected operations.
-
-## D1 repository contracts — Completed through #143
-
-D1 adds or updates checks for:
-
-- unique top-level Admin navigation entries;
-- nested route ownership for active-state navigation;
-- Overview exact-only active matching;
-- Admin Home capability copy and stale-copy rejection;
-- dedicated Claim workflow markers and stale placeholder rejection;
-- explicit future-only Submission boundary markers;
-- Candidate detail current workflow wording;
-- private and server-only marker leakage checks in built Admin HTML.
-
-## D2 repository contracts
-
-D2 adds:
-
-- `docs/ADMIN_ACCESS_CONFIGURATION.md` with subject and actor-ID format rules;
-- one cross-policy identity mapping test covering all current policy families;
-- fail-closed tests for swapped subject and actor-ID forms;
-- one mutation-UI contract test covering UUID `Idempotency-Key` generation across reachable mutation UIs;
-- explicit Reconfirmation hybrid actor semantic documentation;
-- API compatibility classification;
-- precise migration repository/live boundary wording;
-- D3 assignment for the Reconfirmation POST network-failure gap.
+- `docs/ADMIN_ACCESS_CONFIGURATION.md`;
+- cross-policy identity mapping coverage across all current authorization families;
+- fail-closed coverage for swapped subject and actor-ID forms;
+- mutation-UI UUID Idempotency-Key contract coverage;
+- explicit Reconfirmation hybrid actor semantics;
+- protected UI/API compatibility classification;
+- precise repository-versus-live migration boundary wording;
+- D3 assignment for Reconfirmation network-failure recovery.
 
 ## Execution slices
 
 ### D1 — Route reachability and stale copy — Completed through #143
 
-- durable operator journey matrix created;
-- Admin Home capability descriptions corrected;
-- stale Claims placeholder replaced by operation index;
-- generic placeholders restricted to genuine future Submissions work;
-- nested routes preserve owning Admin navigation state;
-- stale Candidate detail workflow copy corrected;
-- built-route markers and private-value exclusion validated.
+Closed.
 
-### D2 — Access, API compatibility, and migration assumptions — In progress
+### D2 — Access, API compatibility, and migration assumptions — Completed through #144
 
-- compare read and write authorization policies across the complete operator journey;
-- fix the subject versus actor-ID configuration contract in docs and tests;
-- verify GET/POST UI-client response compatibility;
-- verify UUID idempotency-key supply on reachable mutations;
-- classify reconfirmation actor semantics;
-- inventory migration assumptions and assign live migration checks precisely;
-- hand Reconfirmation network-failure recovery to D3.
+Closed.
 
-### D3 — Guards, replay, conflict, failure, and retry integration
+### D3 — Guards, replay, conflict, failure, and retry integration — In progress
 
-- trace version guards and source-set guards across Candidate, Promotion, correction, Evidence, reconfirmation, and Media;
-- verify accepted-Evidence guards and Claim-transition constraints;
-- verify identical replay and changed-content conflict behavior;
-- verify stale-state conflict behavior;
-- fix and verify Reconfirmation POST network-failure recovery;
-- verify operator-visible retry or reconciliation state for unavailable and post-mutation failure cases;
-- add cross-workspace integration tests where isolated tests leave a material gap.
+- reconcile version, source-set, accepted-Evidence, and payment-set guards;
+- preserve identical replay and changed-content conflict behavior;
+- close Evidence confirm payment prerequisite gap;
+- persist reviewed Claim Asset set durably;
+- close Reconfirmation POST network-failure recovery gap;
+- run full repository CI and migration drift validation;
+- move to D4 only after D3 repository findings are green.
 
 ### D4 — Publication, restore, and Audit integration
 
-- classify publication activation as a reachable UI path or explicit non-UI protected operation;
+- classify publication activation as reachable UI path or explicit non-UI protected operation;
 - classify release history and restore preparation/execution similarly;
 - verify release/publish capability separation;
 - reconcile post-switch persistence failure handling;
@@ -290,8 +283,9 @@ The following items are not proven by repository CI and must be classified by D5
 - actual subject and actor-ID allowlist values;
 - environment variable propagation to deployed Functions;
 - live Access identity claims and their `sub` values;
-- live Neon migration application through the repository migration head;
+- live Neon migration application through repository migration head;
 - live Location correction operator flow and protected Audit appearance;
+- live Evidence confirmation against the current payment prerequisite set;
 - concrete production R2 publication and restore adapter wiring;
 - live R2 conditional-write behavior;
 - production publication and restore drills;
