@@ -48,9 +48,7 @@ for (const artifact of artifacts) {
   }
   for (const fragment of forbiddenFragments) {
     if (content.includes(fragment)) {
-      throw new Error(
-        `Private or server-only marker found in ${artifact.label} HTML: ${fragment}`,
-      );
+      throw new Error(`Private or server-only marker found in ${artifact.label} HTML: ${fragment}`);
     }
   }
 }

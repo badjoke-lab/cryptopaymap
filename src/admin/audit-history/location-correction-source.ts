@@ -19,9 +19,7 @@ export function createDrizzleLocationCorrectionAuditSource(
         conditions.push(eq(locationProfileCorrectionDecisions.actorId, query.actorId));
       }
       if (query.from !== undefined) {
-        conditions.push(
-          gte(locationProfileCorrectionDecisions.decidedAt, new Date(query.from)),
-        );
+        conditions.push(gte(locationProfileCorrectionDecisions.decidedAt, new Date(query.from)));
       }
       if (query.to !== undefined) {
         conditions.push(lte(locationProfileCorrectionDecisions.decidedAt, new Date(query.to)));

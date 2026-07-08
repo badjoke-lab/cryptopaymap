@@ -65,16 +65,8 @@ describe('Location correction Audit source', () => {
   it('loads one extra durable correction row and returns bounded canonical history', async () => {
     const locationId = '20000000-0000-4000-8000-000000000001';
     const { database, calls } = fakeDatabase([
-      correctionRow(
-        '10000000-0000-4000-8000-000000000001',
-        locationId,
-        '2026-07-08T10:00:00.000Z',
-      ),
-      correctionRow(
-        '10000000-0000-4000-8000-000000000002',
-        locationId,
-        '2026-07-08T09:00:00.000Z',
-      ),
+      correctionRow('10000000-0000-4000-8000-000000000001', locationId, '2026-07-08T10:00:00.000Z'),
+      correctionRow('10000000-0000-4000-8000-000000000002', locationId, '2026-07-08T09:00:00.000Z'),
     ]);
 
     const result = await createDrizzleLocationCorrectionAuditSource(
