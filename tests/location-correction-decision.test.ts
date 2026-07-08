@@ -275,9 +275,7 @@ describe('Location correction decision contract', () => {
     correction.changes = {
       phone: { operation: 'set', value: '+81 3 1111 1111' },
     };
-    correction.provenanceAssignments = [
-      { fieldPath: 'phone', sourceRecordIds: [sourceRecordId] },
-    ];
+    correction.provenanceAssignments = [{ fieldPath: 'phone', sourceRecordIds: [sourceRecordId] }];
 
     await expect(
       createLocationCorrectionDecisionService(backend()).correct(context(), correction),
