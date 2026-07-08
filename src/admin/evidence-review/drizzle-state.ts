@@ -1,9 +1,13 @@
-import { and, eq, isNull, or } from 'drizzle-orm';
+import { and, asc, eq, isNull, or } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   acceptanceClaims,
+  assets,
+  claimAssets,
   evidence,
   evidenceReviewDecisions,
+  networks,
+  paymentMethods,
   verificationEvents,
 } from '../../db/schema';
 import {
@@ -12,6 +16,10 @@ import {
   type EvidenceReviewDecisionReceipt,
 } from './decision';
 import { InMemoryEvidenceReviewBackend } from './in-memory-backend';
+import {
+  evaluateEvidenceReviewPaymentPrerequisites,
+  evidenceReviewPaymentCombinationSchema,
+} from './payment-prerequisites';
 
 function durableEvidenceReviewStatus(
   value: string,
@@ -100,6 +108,7 @@ export async function projectEvidenceReviewDecision(
       id: acceptanceClaims.id,
       claimStatus: acceptanceClaims.claimStatus,
       visibility: acceptanceClaims.visibility,
+      routeType: acceptanceClaims.routeType,
       updatedAt: acceptanceClaims.updatedAt,
       howToPay: acceptanceClaims.howToPay,
       customerPaysCrypto: acceptanceClaims.customerPaysCrypto,
@@ -117,6 +126,46 @@ export async function projectEvidenceReviewDecision(
   const claim = claimRows[0];
   if (claim === undefined) {
     throw new EvidenceReviewDecisionError('not_found', 'The Claim record was not found.');
+  }
+
+  if (command.claimAction === 'confirm') {
+    const paymentRows = evidenceReviewPaymentCombinationSchema.array().parse(
+      await database
+        .select({
+          id: claimAssets.id,
+          assetSymbol: assets.symbol,
+          assetStatus: assets.status,
+          networkSlug: networks.slug,
+          networkStatus: networks.status,
+          paymentMethodSlug: paymentMethods.slug,
+          paymentMethodStatus: paymentMethods.status,
+          isPrimary: claimAssets.isPrimary,
+        })
+        .from(claimAssets)
+        .innerJoin(assets, eq(claimAssets.assetId, assets.id))
+        .innerJoin(networks, eq(claimAssets.networkId, networks.id))
+        .innerJoin(paymentMethods, eq(claimAssets.paymentMethodId, paymentMethods.id))
+        .where(eq(claimAssets.claimId, command.claimId))
+        .orderBy(asc(claimAssets.id)),
+    );
+    const actualClaimAssetIds = paymentRows.map((row) => row.id).sort();
+    if (JSON.stringify(actualClaimAssetIds) !== JSON.stringify(command.expectedClaimAssetIds)) {
+      throw new EvidenceReviewDecisionError(
+        'conflict',
+        'The Claim payment combination set changed after Evidence review.',
+      );
+    }
+    const paymentPrerequisites = evaluateEvidenceReviewPaymentPrerequisites(
+      claim.routeType,
+      paymentRows,
+    );
+    if (!paymentPrerequisites.eligible) {
+      throw new EvidenceReviewDecisionError(
+        'invalid_decision',
+        'The Claim payment prerequisites do not allow confirmation.',
+        paymentPrerequisites.issues,
+      );
+    }
   }
 
   const evidenceRows = await database
