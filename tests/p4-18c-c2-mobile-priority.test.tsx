@@ -119,12 +119,7 @@ afterEach(() => {
 describe('P4-18C C2 mobile payment and filter completion contracts', () => {
   it('places payment information before long practical-profile content in the expanded sheet', () => {
     render(
-      <MobilePlaceSheet
-        place={pin}
-        detail={detail}
-        state="expanded"
-        onStateChange={vi.fn()}
-      />,
+      <MobilePlaceSheet place={pin} detail={detail} state="expanded" onStateChange={vi.fn()} />,
     );
 
     const navigate = screen.getByRole('region', { name: 'Navigate' });
@@ -134,10 +129,10 @@ describe('P4-18C C2 mobile payment and filter completion contracts', () => {
     expect(
       navigate.compareDocumentPosition(payment) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+    expect(payment.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
     expect(
-      payment.compareDocumentPosition(about) & Node.DOCUMENT_POSITION_FOLLOWING,
-    ).toBeTruthy();
-    expect(screen.getByText('Ask staff for a Lightning invoice and scan the QR code.')).toBeInTheDocument();
+      screen.getByText('Ask staff for a Lightning invoice and scan the QR code.'),
+    ).toBeInTheDocument();
     expect(screen.getByText('Lightning Invoice')).toBeInTheDocument();
   });
 

@@ -260,9 +260,16 @@ export function MobilePlaceSheet({
               </div>
             </section>
 
-            <section className="mt-4" aria-label="Payment information" data-payment-priority="primary">
+            <section
+              className="mt-4"
+              aria-label="Payment information"
+              data-payment-priority="primary"
+            >
               {primaryClaim?.howToPay ? (
-                <div className="rounded-card border border-brand-200 bg-brand-50 p-4" aria-label="How to pay">
+                <div
+                  className="rounded-card border border-brand-200 bg-brand-50 p-4"
+                  aria-label="How to pay"
+                >
                   <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
                   <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
                 </div>
