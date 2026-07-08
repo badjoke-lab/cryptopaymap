@@ -18,6 +18,7 @@ const ids = {
   claim: '20000000-0000-4000-8000-000000000001',
   evidence: '30000000-0000-4000-8000-000000000001',
   priorEvidence: '30000000-0000-4000-8000-000000000002',
+  claimAsset: '40000000-0000-4000-8000-000000000001',
 } as const;
 const reviewedAt = '2026-07-01T00:00:00.000Z';
 const decidedAt = '2026-07-02T00:00:00.000Z';
@@ -99,6 +100,7 @@ function input(overrides: Partial<EvidenceReviewDecisionInput> = {}): EvidenceRe
     expectedClaimStatus: 'candidate',
     expectedClaimVisibility: 'hidden',
     expectedAcceptedEvidenceIds: [],
+    expectedClaimAssetIds: [ids.claimAsset],
     decidedAt,
     disposition: 'accepted',
     finding: 'supports_claim',
@@ -239,6 +241,18 @@ describe('Evidence review decision contract', () => {
       service.decide(context, input({ reasonCode: 'different_reason' })),
     ).rejects.toMatchObject({ code: 'conflict' });
     expect(store.snapshot().decisions).toBe(1);
+  });
+
+  it('changes the request fingerprint when the reviewed Claim Asset set changes', async () => {
+    const store = backend();
+    const service = createEvidenceReviewDecisionService(store);
+    await expect(service.decide(context, input())).resolves.toMatchObject({ state: 'committed' });
+    await expect(
+      service.decide(
+        context,
+        input({ expectedClaimAssetIds: ['40000000-0000-4000-8000-000000000002'] }),
+      ),
+    ).rejects.toMatchObject({ code: 'conflict' });
   });
 
   it('rejects a changed accepted Evidence set', async () => {
