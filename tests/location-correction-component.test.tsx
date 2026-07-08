@@ -37,7 +37,7 @@ function workspace(): LocationCorrectionWorkspaceResponse {
           id: sourceId,
           relationship: 'origin',
           sourceName: 'Official profile',
-          sourceType: 'official_website',
+          sourceType: 'official_site',
           sourceActive: true,
           sourceUrl: 'https://example.test/profile',
           archiveUrl: null,
