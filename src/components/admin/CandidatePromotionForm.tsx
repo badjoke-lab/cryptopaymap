@@ -5,6 +5,10 @@ import {
   newTargetFieldDescriptors,
   parseFieldSourceSelections,
 } from '../../admin/promotion/field-source-selection';
+import {
+  parseAmenitiesFormValue,
+  parseSocialLinksFormValue,
+} from '../../admin/promotion/practical-profile-form';
 import type { CandidatePromotionReceipt } from '../../admin/promotion/candidate-promotion';
 import {
   candidatePromotionEditorRequestSchema,
@@ -109,6 +113,17 @@ export function CandidatePromotionForm({
     const processorId =
       routeType === 'processor_checkout' ? nullable(text(form, 'processorId')) : null;
 
+    const amenities = parseAmenitiesFormValue(text(form, 'amenities'));
+    if (amenities.error) {
+      setSubmitState({ status: 'invalid', message: amenities.error });
+      return;
+    }
+    const socialLinks = parseSocialLinksFormValue(text(form, 'socialLinks'));
+    if (socialLinks.error) {
+      setSubmitState({ status: 'invalid', message: socialLinks.error });
+      return;
+    }
+
     const entity = {
       id: draftIds.entityId,
       value: {
@@ -141,6 +156,10 @@ export function CandidatePromotionForm({
               visibility: 'hidden',
               websiteUrl: nullable(text(form, 'locationWebsiteUrl')),
               phone: nullable(text(form, 'phone')),
+              description: nullable(text(form, 'description')),
+              openingHours: nullable(text(form, 'openingHours')),
+              amenities: amenities.value,
+              socialLinks: socialLinks.value,
               osmType: nullable(text(form, 'osmType')),
               osmId: text(form, 'osmId').length === 0 ? null : Number(text(form, 'osmId')),
             },
