@@ -260,8 +260,79 @@ export function MobilePlaceSheet({
               </div>
             </section>
 
+            <section className="mt-4" aria-label="Payment information" data-payment-priority="primary">
+              {primaryClaim?.howToPay ? (
+                <div className="rounded-card border border-brand-200 bg-brand-50 p-4" aria-label="How to pay">
+                  <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
+                  <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
+                </div>
+              ) : null}
+
+              <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4 text-sm">
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Networks
+                  </dt>
+                  <dd className="mt-1 font-medium text-ink">
+                    {networks.map(formatLabel).join(', ')}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Payment routes
+                  </dt>
+                  <dd className="mt-1 font-medium text-ink">
+                    {routes.map(formatLabel).join(', ')}
+                  </dd>
+                </div>
+                {paymentMethods.length > 0 ? (
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                      Payment methods
+                    </dt>
+                    <dd className="mt-1 font-medium text-ink">
+                      {paymentMethods.map(formatLabel).join(', ')}
+                    </dd>
+                  </div>
+                ) : null}
+                {processors.length > 0 ? (
+                  <div>
+                    <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                      Processor
+                    </dt>
+                    <dd className="mt-1 font-medium text-ink">
+                      {processors.map(formatLabel).join(', ')}
+                    </dd>
+                  </div>
+                ) : null}
+                <div>
+                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Merchant receives
+                  </dt>
+                  <dd className="mt-1 font-medium text-ink">
+                    {primaryClaim
+                      ? formatLabel(primaryClaim.merchantReceives)
+                      : 'Not publicly confirmed'}
+                  </dd>
+                </div>
+              </dl>
+
+              {restrictions.length > 0 ? (
+                <div className="mt-4" aria-label="Payment restrictions">
+                  <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
+                    Restrictions
+                  </h3>
+                  {restrictions.map((restriction) => (
+                    <p className="mt-1 text-sm leading-6 text-muted" key={restriction}>
+                      {restriction}
+                    </p>
+                  ))}
+                </div>
+              ) : null}
+            </section>
+
             {profile?.description ? (
-              <section className="mt-4" aria-label="About this place">
+              <section className="mt-5 border-t border-border pt-4" aria-label="About this place">
                 <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
                   About
                 </h3>
@@ -344,76 +415,6 @@ export function MobilePlaceSheet({
               <div className="mt-4">
                 <PlaceMediaGallery images={galleryImages} />
               </div>
-            ) : null}
-
-            {primaryClaim?.howToPay ? (
-              <section
-                className="mt-4 rounded-card border border-border bg-canvas p-4"
-                aria-label="How to pay"
-              >
-                <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
-                <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
-              </section>
-            ) : null}
-
-            <dl className="mt-4 grid gap-4 text-sm">
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                  Networks
-                </dt>
-                <dd className="mt-1 font-medium text-ink">
-                  {networks.map(formatLabel).join(', ')}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                  Payment routes
-                </dt>
-                <dd className="mt-1 font-medium text-ink">{routes.map(formatLabel).join(', ')}</dd>
-              </div>
-              {paymentMethods.length > 0 ? (
-                <div>
-                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                    Payment methods
-                  </dt>
-                  <dd className="mt-1 font-medium text-ink">
-                    {paymentMethods.map(formatLabel).join(', ')}
-                  </dd>
-                </div>
-              ) : null}
-              {processors.length > 0 ? (
-                <div>
-                  <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                    Processor
-                  </dt>
-                  <dd className="mt-1 font-medium text-ink">
-                    {processors.map(formatLabel).join(', ')}
-                  </dd>
-                </div>
-              ) : null}
-              <div>
-                <dt className="text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                  Merchant receives
-                </dt>
-                <dd className="mt-1 font-medium text-ink">
-                  {primaryClaim
-                    ? formatLabel(primaryClaim.merchantReceives)
-                    : 'Not publicly confirmed'}
-                </dd>
-              </div>
-            </dl>
-
-            {restrictions.length > 0 ? (
-              <section className="mt-4" aria-label="Payment restrictions">
-                <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
-                  Restrictions
-                </h3>
-                {restrictions.map((restriction) => (
-                  <p className="mt-1 text-sm leading-6 text-muted" key={restriction}>
-                    {restriction}
-                  </p>
-                ))}
-              </section>
             ) : null}
 
             <div className="mt-5 grid grid-cols-2 gap-2">
