@@ -16,7 +16,7 @@ This audit is bounded to the new-target create path. Existing-record correction 
 |---|---|---|
 | Atomic persistence | Candidate Promotion Drizzle backend writes Entity, Location, Claim, Claim Assets, provenance, mapping, Candidate state, and decision in one database batch | add practical-field regression coverage and preserve single-batch boundary |
 | Replay and conflict behavior | request fingerprint replay and conflict guards already exist in service/backends | extend practical-field regression coverage |
-| Field provenance rows | Drizzle backend expands field assignments into durable provenance rows | align in-memory integration backend with field-level rows and test practical fields |
+| Field provenance rows | Drizzle backend expands field assignments into durable provenance rows | verify practical field assignments before backend commit and the durable expansion contract |
 | Public allowlisting | strict `publicPlaceSchema` already includes practical fields | add explicit canonical-to-public Place projection helper that selects only public fields |
 | Strict schema validation | public export schemas use strict Zod contracts | projection helper must parse through `publicPlaceSchema` |
 | Leakage rejection | public export boundary recursively rejects operational keys and non-public URI schemes | projection tests must pass output through `validatePublicArtifact` and prove private extras are not projected |
@@ -30,7 +30,7 @@ This audit is bounded to the new-target create path. Existing-record correction 
 
 ### B3A — Practical create path and public Place projection
 
-- align in-memory Promotion provenance with field-level assignments;
+- verify normalized field-level Promotion assignments and durable provenance expansion behavior;
 - add practical-field Promotion persistence, replay, conflict, rollback, and provenance regression tests;
 - add explicit allowlisted canonical Place projection helper;
 - validate projected Place output through strict public schema and export leakage boundary;
