@@ -8,7 +8,7 @@ Phase 4 — Public core / MVP-A closure
 
 ## Current implementation item
 
-P4-18B4 — Existing-record practical-profile correction path audit and completion
+P4-18C — Bounded UI residual closure
 
 ## Current repository state
 
@@ -23,7 +23,8 @@ P4-18B4 — Existing-record practical-profile correction path audit and completi
 - P4-18B1 source and Candidate practical-profile contract is completed through #128.
 - P4-18B2 Promotion editor and field provenance parity is completed through #130.
 - P4-18B3 canonical persistence and public projection integration repository work is completed through #132 and #133, with closure tracking and B4 handoff through #134.
-- P4-18B4 is active.
+- P4-18B4 existing-record practical-profile correction path is repository-complete through #135, #136, #137, and #138.
+- P4-18C is active.
 
 ## Fixed review environment
 
@@ -41,15 +42,16 @@ Before starting or reviewing P4-18 work, read:
 2. `docs/PHASE4_CLOSURE_PLAN.md`;
 3. the public specification documents relevant to the active item.
 
-For P4-18B practical Place profile work also read:
+For practical Place profile work also read:
 
 1. `docs/PLACE_PUBLIC_PROFILE.md`;
 2. `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md`;
 3. `docs/P4_18_B3_AUDIT.md` for the completed new-target projection boundary;
-4. `docs/DATA_MODEL.md`;
-5. `docs/SOURCE_AND_LICENSE_POLICY.md`.
+4. `docs/P4_18_B4_AUDIT.md` for the completed existing-record correction boundary;
+5. `docs/DATA_MODEL.md`;
+6. `docs/SOURCE_AND_LICENSE_POLICY.md`.
 
-For Places UI work also read:
+For Places UI work read:
 
 1. `docs/PLACES_UX_ACCEPTANCE.md`;
 2. `docs/PLACES_RECOVERY_PLAN.md`;
@@ -68,8 +70,8 @@ For Phase 5 preparation and submission work also read:
 2. P4-18B1 — source and Candidate practical-profile contract — Completed through #128
 3. P4-18B2 — promotion editor and field provenance parity — Completed through #130
 4. P4-18B3 — canonical persistence and public projection integration — Completed through #132, #133, and #134
-5. P4-18B4 — existing-record practical-profile correction path audit and completion — In progress
-6. P4-18C — bounded UI residual closure — Planned
+5. P4-18B4 — existing-record practical-profile correction path audit and completion — Completed through #135, #136, #137, and #138
+6. P4-18C — bounded UI residual closure — In progress
 7. P4-18D — administration workflow integration audit — Planned
 8. P4-18E — live review and Phase 5 handoff audit — Planned
 
@@ -123,7 +125,7 @@ P4-18B2 connected the B1 practical profile review data to the protected new-targ
 
 P4-18B3 closed the repository-owned new-target practical Place path through canonical persistence and validated public Place projection.
 
-Repository coverage now includes:
+Repository coverage includes:
 
 - atomic practical-profile persistence and rollback behavior;
 - replay and changed-content conflict behavior;
@@ -141,33 +143,31 @@ Repository coverage now includes:
 
 The repository release-review path begins from an already generated private candidate bundle. The configured canonical query → complete candidate generation → private upload → release-review path is an environment-specific verification item assigned precisely to P4-18E. Repository tests do not prove that live path.
 
-## P4-18B4 active boundary
+## P4-18B4 completed boundary
 
-P4-18B4 must audit and complete how already canonical Place records receive reviewed practical-profile corrections without abusing existing-target Candidate linking.
+P4-18B4 closed the repository path for reviewed practical-profile corrections on already canonical Places without widening existing-target Candidate linking.
 
-At minimum audit and, where required, implement:
+Repository coverage includes:
 
-- address and locality correction;
-- phone addition, replacement, and removal;
-- website addition, replacement, and removal;
-- description correction and removal semantics;
-- opening-hours correction and removal;
-- amenities addition, removal, and complete replacement;
-- official social-link addition, removal, replacement, and handle change;
-- exact current canonical version or state guards;
-- explicit field-level before/after diff;
-- correction provenance tied to reviewed source records;
-- reviewer decision and audit record;
-- idempotent replay for an identical accepted operation;
-- conflict on stale expected canonical state;
-- atomic rollback on failure;
-- no public mutation outside the normal validated export and release boundary.
+- bounded scalar and structured correction semantics;
+- exact changed-field correction provenance;
+- deterministic replay, changed-content conflict, stale-state conflict, no-op rejection, and rollback coverage;
+- durable reviewer decisions with exact expected Location version, before/after values, source set, field assignments, reasons, and request fingerprint;
+- atomic Location update, current correction provenance maintenance, and durable decision persistence;
+- protected Candidate-source-set and canonical-Location workspace binding;
+- dedicated correction subject allowlist and UUID idempotency key;
+- Candidate-version, Location-version, exact-source-set, and eligibility revalidation immediately before write;
+- reviewer controls for scalar set/clear and Amenities/Social Link add/remove/replace/clear operations;
+- explicit navigation from selected physical existing-target review to the separate correction workspace;
+- metadata-only protected Audit history normalization of durable correction decisions;
+- operator reachability, conflict, unavailable, and retry recovery coverage;
+- built artifact checks for the correction admin page and server-only marker leakage.
 
-The current existing-target linking operation is not treated as a correction transaction merely because it can attribute Candidate sources to an existing identity. B4 must inspect the actual write path and implement the missing correction boundary where necessary.
+Live migration application, Access allowlist configuration, representative live correction, live protected Audit appearance, and configured corrected-value release flow remain environment-specific P4-18D/E verification items. Repository tests do not prove those live conditions.
 
-## P4-18C bounded UI residual scope
+## P4-18C active scope
 
-The remaining scheduled UI closure scope is limited to:
+P4-18C is bounded to:
 
 - Mobile Places List compactness and scanability;
 - Mobile Menu density;
@@ -175,9 +175,9 @@ The remaining scheduled UI closure scope is limited to:
 - Filters completion, clear, zero-result, and Map/List behavior;
 - only material density or layout defects on representative long-form public pages.
 
-Representative screenshot capture is now a standard review instrument. A successful capture job does not replace image inspection.
+Representative screenshot capture is a standard review instrument. A successful capture job does not replace image inspection.
 
-Small later visual findings may be handled as bounded fixes and do not keep P4-18C open indefinitely.
+P4-18C must not become an unlimited redesign cycle. Small later visual findings may be handled as bounded fixes and do not keep P4-18C open indefinitely.
 
 ## Phase 5 handoff
 
@@ -196,11 +196,13 @@ Planned Phase 5 order:
 
 ## Next
 
-Audit and complete P4-18B4 existing-record practical-profile correction behavior. Do not move to P4-18C until B4 is merged and tracking is updated.
+Execute the bounded P4-18C UI residual audit and fixes. Do not move to P4-18D until P4-18C repository work is closed and tracking is updated.
 
 ## Blocked
 
 No known repository blocker.
+
+P4-18D/E must verify or classify the environment-specific B4 checks recorded in `docs/P4_18_B4_AUDIT.md`.
 
 P4-18E must explicitly verify or classify the configured canonical query, full candidate generation, private candidate upload, and release-review handoff path recorded by the B3 audit. If that path is absent, it must be treated as an explicit launch blocker or assigned launch work rather than hidden by generic deferred-verification language.
 
