@@ -34,9 +34,7 @@ function normalizeAmenityInput(value: unknown): unknown {
     if (trimmed.length === 0) return null;
     try {
       const parsed: unknown = JSON.parse(trimmed);
-      values = Array.isArray(parsed)
-        ? parsed
-        : trimmed.split(/\r?\n|,/).map((item) => item.trim());
+      values = Array.isArray(parsed) ? parsed : trimmed.split(/\r?\n|,/).map((item) => item.trim());
     } catch {
       values = trimmed.split(/\r?\n|,/).map((item) => item.trim());
     }
