@@ -15,6 +15,7 @@ import {
 import {
   evidenceReviewAcceptedSetGuard,
   evidenceReviewClaimGuard,
+  evidenceReviewPaymentSetGuard,
   evidenceReviewRowGuard,
 } from './drizzle-guards';
 import {
@@ -64,6 +65,11 @@ export function createDrizzleEvidenceReviewBackend(
         evidenceReviewRowGuard(database, command),
         evidenceReviewClaimGuard(database, command),
         evidenceReviewAcceptedSetGuard(database, command),
+      ];
+      if (command.claimAction === 'confirm') {
+        statements.push(evidenceReviewPaymentSetGuard(database, command));
+      }
+      statements.push(
         database
           .update(evidence)
           .set({
@@ -71,7 +77,7 @@ export function createDrizzleEvidenceReviewBackend(
             updatedAt: command.decidedAt,
           })
           .where(eq(evidence.id, command.evidenceId)),
-      ];
+      );
 
       if (command.claimAction !== 'no_change') {
         statements.push(
