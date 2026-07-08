@@ -8,7 +8,7 @@ Phase 4 — Public core / MVP-A closure
 
 ## Current implementation item
 
-P4-18A — Tracking correction and closure inventory
+P4-18B1 — Source and Candidate practical-profile contract
 
 ## Current repository state
 
@@ -19,7 +19,8 @@ P4-18A — Tracking correction and closure inventory
 - Deployment receipts record the deployed `main` commit through #124.
 - Representative desktop/mobile and interactive-state screenshot capture is merged through #125.
 - Selected Place focus, marker presentation, and desktop selected-panel containment corrections are merged through #126.
-- P4-18 is the active bounded closure term before Phase 5 public submissions.
+- P4-18A tracking correction and closure inventory is completed through #127.
+- P4-18B1 is active.
 
 ## Fixed review environment
 
@@ -27,11 +28,11 @@ Review URL:
 
 `https://review.cryptopaymap-staging.pages.dev`
 
-Latest verified deployment receipt at the start of P4-18A:
+Latest verified deployment receipt before P4-18B1 implementation:
 
 `49d68be44cf453d5fa50315c0bd933352ad05fbf`
 
-The receipt records that the fixed review URL was deployed from that `main` commit. Later P4-18 work must verify the current receipt rather than assuming the URL is current.
+Later P4-18 work must verify the current receipt rather than assume that the URL is current.
 
 ## Required current references
 
@@ -41,23 +42,30 @@ Before starting or reviewing P4-18 work, read:
 2. `docs/PHASE4_CLOSURE_PLAN.md`;
 3. the public specification documents relevant to the active item.
 
-For Places work also read:
+For P4-18B practical Place profile work also read:
+
+1. `docs/PLACE_PUBLIC_PROFILE.md`;
+2. `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md`;
+3. `docs/DATA_MODEL.md`;
+4. `docs/SOURCE_AND_LICENSE_POLICY.md`.
+
+For Places UI work also read:
 
 1. `docs/PLACES_UX_ACCEPTANCE.md`;
 2. `docs/PLACES_RECOVERY_PLAN.md`;
-3. `docs/PLACES_UX_FINAL_AUDIT.md`;
-4. `docs/PLACE_PUBLIC_PROFILE.md` when practical Place information is affected.
+3. `docs/PLACES_UX_FINAL_AUDIT.md`.
 
 For Phase 5 preparation and submission work also read:
 
 1. `docs/SUBMISSION_WORKFLOW.md`;
-2. `docs/DATA_MODEL.md`;
-3. `docs/MEDIA_POLICY.md` when Media intake or review is affected.
+2. `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`;
+3. `docs/DATA_MODEL.md`;
+4. `docs/MEDIA_POLICY.md` when Media intake or review is affected.
 
 ## Active closure sequence
 
-1. P4-18A — tracking correction and closure inventory — In progress
-2. P4-18B1 — source and Candidate practical-profile contract — Planned
+1. P4-18A — tracking correction and closure inventory — Completed through #127
+2. P4-18B1 — source and Candidate practical-profile contract — In progress
 3. P4-18B2 — promotion editor and field provenance parity — Planned
 4. P4-18B3 — canonical persistence and public projection integration — Planned
 5. P4-18B4 — existing-record practical-profile correction path audit and completion — Planned
@@ -67,33 +75,39 @@ For Phase 5 preparation and submission work also read:
 
 The authoritative scope and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`.
 
-## Known P4-18B operational parity gap
+## P4-18B1 current audit finding
 
-The practical Place profile schema and persistence layer support reviewed fields including description, opening hours, amenities, and structured social links. The closure inventory found that the protected promotion form and field-source selection path do not yet provide complete operator handling and provenance coverage for the entire practical profile set.
+The practical Place profile schema and persistence layer support reviewed fields including description, opening hours, amenities, and structured social links, but the legacy physical-place import and Candidate source snapshot contract currently omit several of those practical source values.
 
-P4-18B must trace and close the complete path:
+P4-18B1 must close the private source-to-review path without crossing into Promotion or canonical mutation work:
 
 ```text
-source observation or submission
+legacy or supported source value
     ↓
-safe review projection
+strict source-row validation
     ↓
-reviewer-visible field value
+normalized immutable source record
     ↓
-field provenance
+private Candidate review data
     ↓
-canonical create or correction transaction
+allowlisted Candidate source snapshot
     ↓
-public projection
-    ↓
-validation and leakage checks
-    ↓
-staging review
-    ↓
-public surfaces
+protected Admin source review
 ```
 
-A schema column or display fixture alone does not complete operational parity.
+Required P4-18B1 properties:
+
+- preserve raw source material separately from normalized review values;
+- normalize supported legacy aliases without treating them as canonical truth;
+- define deterministic amenity duplicate behavior;
+- define review-safe structured social-link behavior;
+- preserve handle-only legacy social values without inventing public URLs;
+- reject malformed practical-profile values safely;
+- keep private or unknown source payload fields out of Candidate detail responses;
+- preserve effective source/license metadata behavior;
+- retain existing duplicate Candidate and replay behavior.
+
+Promotion editor inputs, field provenance assignment, canonical persistence, and existing-record correction remain P4-18B2 through P4-18B4.
 
 ## P4-18C bounded UI residual scope
 
@@ -126,7 +140,7 @@ Planned Phase 5 order:
 
 ## Next
 
-Complete P4-18A documentation and tracking synchronization, merge it, then begin P4-18B1 from the updated reference set.
+Complete P4-18B1 source/import, normalized review data, Candidate safe snapshot, Admin source presentation, and regression coverage. Then move to P4-18B2 only after B1 is merged and tracking is updated.
 
 ## Blocked
 
