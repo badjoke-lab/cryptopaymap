@@ -28,7 +28,6 @@ const COMMON_SCENARIOS = [
   ['service-detail', '/service/staging-vpn'],
   ['stats', '/stats'],
   ['updates', '/updates'],
-  ['contribute', '/contribute'],
   ['about', '/about'],
   ['methodology', '/methodology'],
   ['sources-and-licenses', '/sources-and-licenses'],
