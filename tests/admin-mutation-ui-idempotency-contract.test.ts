@@ -20,7 +20,9 @@ const adminComponentSources = import.meta.glob('../src/components/admin/*.tsx', 
 const idempotencyHeaderPattern = /['"]Idempotency-Key['"]\s*:\s*crypto\.randomUUID\(\)/;
 
 function sourceFor(fileName: string): string {
-  const entry = Object.entries(adminComponentSources).find(([path]) => path.endsWith(`/${fileName}`));
+  const entry = Object.entries(adminComponentSources).find(([path]) =>
+    path.endsWith(`/${fileName}`),
+  );
   if (entry === undefined) throw new Error(`Missing Admin component source: ${fileName}`);
   return entry[1];
 }
