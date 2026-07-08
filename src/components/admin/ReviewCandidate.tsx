@@ -294,10 +294,9 @@ function CandidateDetailContent({ detail }: { detail: CandidateDetailResponse })
       </section>
 
       <section className="mt-8 rounded-card border border-border bg-canvas p-5">
-        <h2 className="m-0 text-lg font-semibold text-ink">Read-only boundary</h2>
+        <h2 className="m-0 text-lg font-semibold text-ink">Inspection boundary</h2>
         <p className="mt-2 text-sm leading-6 text-muted">
-          This workspace provides inspection only. Duplicate decisions, edits, canonical promotion,
-          Evidence decisions, and publication controls are not available in P3-05.
+          This component reads one Candidate and its bounded source relationships only. Duplicate resolution, canonical promotion, existing-target linking, Location correction, Evidence decisions, and publication controls remain separate guarded workspaces or protected operations.
         </p>
       </section>
     </div>
