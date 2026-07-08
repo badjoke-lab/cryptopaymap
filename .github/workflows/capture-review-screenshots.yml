@@ -1,0 +1,86 @@
+name: Capture representative review screenshots
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - '.github/workflows/capture-review-screenshots.yml'
+      - 'scripts/capture-review-screenshots.mjs'
+      - 'scripts/staging-review-data.ts'
+      - 'scripts/materialize-staging-review-data.mjs'
+      - 'src/**'
+      - 'public/**'
+      - 'package.json'
+      - 'package-lock.json'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      CAPTURE_BASE_URL: http://127.0.0.1:4173
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Install screenshot runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.57.0
+          npx playwright install --with-deps chromium
+
+      - name: Build staging review site
+        run: npm run staging:review:build
+
+      - name: Start local review site
+        run: |
+          python3 -m http.server 4173 --directory dist > /tmp/cpm-review-screenshot-server.log 2>&1 &
+          echo $! > /tmp/cpm-review-screenshot-server.pid
+          for attempt in $(seq 1 30); do
+            if curl -fsS "$CAPTURE_BASE_URL/" > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/cpm-review-screenshot-server.log
+          exit 1
+
+      - name: Capture desktop and mobile scenarios
+        run: |
+          node scripts/capture-review-screenshots.mjs \
+            --device all \
+            --base-url "$CAPTURE_BASE_URL"
+
+      - name: Upload screenshot artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cpm-review-screenshots-${{ github.run_id }}
+          path: artifacts/review-screenshots/**
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Write capture summary
+        if: always()
+        run: |
+          echo '## CryptoPayMap representative screenshot capture' >> "$GITHUB_STEP_SUMMARY"
+          for DEVICE in desktop mobile; do
+            MANIFEST="artifacts/review-screenshots/manifest.$DEVICE.json"
+            if [ -f "$MANIFEST" ]; then
+              CAPTURED=$(node -e "const x=require('./$MANIFEST'); console.log(x.capturedCount)")
+              FAILED=$(node -e "const x=require('./$MANIFEST'); console.log(x.failedCount)")
+              echo "- $DEVICE: $CAPTURED captured / $FAILED failed" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+          echo '- Interactive states include menu open, filters open, list mode, Place sheet peek, Place sheet expanded, selected desktop panel, and Gallery lightbox.' >> "$GITHUB_STEP_SUMMARY"
