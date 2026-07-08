@@ -96,15 +96,21 @@ export function MobileSiteMenu({ pathname }: MobileSiteMenuProps) {
       <aside
         ref={menuRef}
         id="mobile-primary-menu"
-        className={`fixed right-0 top-0 z-[90] flex h-dvh w-[min(88vw,22.5rem)] flex-col bg-surface shadow-panel transition-transform duration-normal motion-reduce:transition-none ${
-          open ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed right-2 top-2 z-[90] flex max-h-[calc(100dvh-1rem)] w-[min(92vw,22rem)] flex-col overflow-hidden rounded-card border border-border bg-surface shadow-panel transition-[transform,opacity] duration-normal motion-reduce:transition-none ${
+          open
+            ? 'translate-x-0 opacity-100'
+            : 'pointer-events-none translate-x-[calc(100%+1rem)] opacity-0'
         }`}
         aria-label="Mobile primary"
         aria-hidden={!open}
         inert={!open}
+        data-mobile-menu-layout="bounded-panel"
       >
         <div className="flex min-h-14 items-center justify-between border-b border-border px-4">
-          <span className="font-semibold text-ink">Menu</span>
+          <div>
+            <span className="block font-semibold text-ink">Menu</span>
+            <span className="block text-xs text-muted">Primary navigation</span>
+          </div>
           <button
             ref={closeButtonRef}
             className="motion-feedback flex size-11 items-center justify-center rounded-control text-muted hover:bg-canvas"
@@ -116,17 +122,17 @@ export function MobileSiteMenu({ pathname }: MobileSiteMenuProps) {
           </button>
         </div>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto p-3" aria-label="Mobile primary links">
-          <ul className="grid gap-1">
+        <nav className="min-h-0 overflow-y-auto p-3" aria-label="Mobile primary links">
+          <ul className="grid grid-cols-2 gap-2" data-mobile-menu-grid="two-column">
             {navigation.map((item) => {
               const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <li key={item.href}>
                   <a
-                    className={`motion-feedback flex min-h-12 items-center rounded-control px-3 py-2 text-sm font-medium no-underline transition-colors ${
+                    className={`motion-feedback flex min-h-12 h-full items-center rounded-control border px-3 py-2 text-sm font-medium no-underline transition-colors ${
                       active
-                        ? 'bg-brand-50 text-brand-800'
-                        : 'text-muted hover:bg-canvas hover:text-ink'
+                        ? 'border-brand-200 bg-brand-50 text-brand-800'
+                        : 'border-border text-muted hover:bg-canvas hover:text-ink'
                     }`}
                     href={item.href}
                     aria-current={active ? 'page' : undefined}
