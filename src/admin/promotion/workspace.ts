@@ -7,6 +7,7 @@ import {
   type CandidateDetailContext,
 } from '../candidates/detail';
 import { candidatePromotionInputSchema } from './candidate-promotion';
+import { promotionProvenanceAssignmentsSchema } from './provenance-plan';
 
 const timestampSchema = z.iso.datetime({ offset: true });
 const registryOptionSchema = z
@@ -65,10 +66,15 @@ export const candidatePromotionWorkspaceResponseSchema = z
     }
   });
 
-export const candidatePromotionEditorRequestSchema = candidatePromotionInputSchema.omit({
-  candidateId: true,
-  promotedAt: true,
-});
+export const candidatePromotionEditorRequestSchema = candidatePromotionInputSchema
+  .omit({
+    candidateId: true,
+    promotedAt: true,
+    provenanceAssignments: true,
+  })
+  .extend({
+    provenanceAssignments: promotionProvenanceAssignmentsSchema.min(1),
+  });
 
 export type CandidatePromotionRegistryOptions = z.infer<
   typeof candidatePromotionRegistryOptionsSchema
