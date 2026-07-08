@@ -53,11 +53,18 @@ function workspace(eligible = true): CandidatePromotionWorkspaceResponse {
             longitude: 139.76,
             category: 'Cafe',
             websiteUrl: 'https://example.test',
-            phone: null,
-            description: null,
-            openingHours: null,
-            amenities: null,
-            socialLinks: [],
+            phone: '+81 3 0000 0000',
+            description: 'Reviewed source description.',
+            openingHours: 'Mon-Fri 08:00-18:00',
+            amenities: ['wifi', 'outdoor-seating'],
+            socialLinks: [
+              {
+                platform: 'instagram',
+                url: 'https://social.example.test/cafe',
+                handle: '@cafe',
+              },
+              { platform: 'x', url: null, handle: '@cafe' },
+            ],
             osmType: null,
             osmId: null,
             paymentTags: {},
@@ -112,7 +119,7 @@ afterEach(() => {
 });
 
 describe('Candidate promotion editor', () => {
-  it('renders explicit hidden-canonical controls for an eligible Candidate', async () => {
+  it('renders practical profile controls from the B1 source snapshot', async () => {
     vi.stubGlobal(
       'fetch',
       vi.fn(
@@ -129,6 +136,17 @@ describe('Candidate promotion editor', () => {
     expect(await screen.findByRole('heading', { name: 'Example Cafe' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Create hidden canonical records' })).toBeEnabled();
     expect(screen.getByDisplayValue('1 Main Street')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('+81 3 0000 0000')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Reviewed source description.')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Mon-Fri 08:00-18:00')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('wifi\noutdoor-seating')).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue(
+        'instagram | https://social.example.test/cafe | @cafe',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Source-only social values' })).toBeInTheDocument();
+    expect(screen.getByText('x: @cafe')).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'BTC — Bitcoin' })).toBeInTheDocument();
   });
 
