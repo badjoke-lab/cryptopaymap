@@ -266,13 +266,13 @@ export function MobilePlaceSheet({
               data-payment-priority="primary"
             >
               {primaryClaim?.howToPay ? (
-                <div
+                <section
                   className="rounded-card border border-brand-200 bg-brand-50 p-4"
                   aria-label="How to pay"
                 >
                   <h3 className="m-0 text-sm font-semibold text-ink">How to pay</h3>
                   <p className="mt-2 text-sm leading-6 text-muted">{primaryClaim.howToPay}</p>
-                </div>
+                </section>
               ) : null}
 
               <dl className="mt-4 grid grid-cols-2 gap-x-3 gap-y-4 text-sm">
@@ -325,7 +325,7 @@ export function MobilePlaceSheet({
               </dl>
 
               {restrictions.length > 0 ? (
-                <div className="mt-4" aria-label="Payment restrictions">
+                <section className="mt-4" aria-label="Payment restrictions">
                   <h3 className="m-0 text-xs font-semibold uppercase tracking-[0.06em] text-muted">
                     Restrictions
                   </h3>
@@ -334,7 +334,7 @@ export function MobilePlaceSheet({
                       {restriction}
                     </p>
                   ))}
-                </div>
+                </section>
               ) : null}
             </section>
 
