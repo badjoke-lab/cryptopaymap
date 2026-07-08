@@ -134,6 +134,7 @@ export function PlaceFilterPanel({
     state.routes.length +
     (state.statuses.length === 1 && state.statuses[0] === 'confirmed' ? 0 : state.statuses.length);
   const staleIncluded = state.statuses.includes('stale');
+  const resultLabel = `${resultCount} ${resultCount === 1 ? 'place' : 'places'}`;
 
   return (
     <div className="fixed inset-0 z-50 lg:static lg:z-auto">
@@ -154,7 +155,7 @@ export function PlaceFilterPanel({
           <div>
             <h2 className="m-0 text-base font-semibold text-ink">Filter public places</h2>
             <p className="mt-1 text-sm text-muted" aria-live="polite">
-              {resultCount} {resultCount === 1 ? 'place' : 'places'} match
+              {resultLabel} match
               {activeCount === 0
                 ? '. Confirmed status is the default.'
                 : ` · ${activeCount} active ${activeCount === 1 ? 'filter' : 'filters'}.`}
@@ -273,6 +274,16 @@ export function PlaceFilterPanel({
               onPatch({ statuses: next.length > 0 ? next : ['confirmed'], selectedPlace: null });
             }}
           />
+        </div>
+
+        <div className="sticky bottom-0 -mx-4 -mb-4 mt-5 border-t border-border bg-surface/95 px-4 pb-[calc(0.75rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur lg:hidden">
+          <button
+            className="motion-feedback min-h-11 w-full rounded-control bg-brand-600 px-4 py-2 text-sm font-semibold text-white hover:bg-brand-700"
+            type="button"
+            onClick={onClose}
+          >
+            Show {resultLabel}
+          </button>
         </div>
       </section>
     </div>
