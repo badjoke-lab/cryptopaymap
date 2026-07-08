@@ -105,7 +105,9 @@ if (
 }
 if (
   !placeDetailHtml.includes('Before you visit') ||
-  !placeDetailHtml.includes('Synthetic staging café profile used to review practical Place information') ||
+  !placeDetailHtml.includes(
+    'Synthetic staging café profile used to review practical Place information',
+  ) ||
   !placeDetailHtml.includes('Mon–Fri 08:00–18:00') ||
   !placeDetailHtml.includes('Outdoor Seating') ||
   !placeDetailHtml.includes('@stagingcoffee') ||
