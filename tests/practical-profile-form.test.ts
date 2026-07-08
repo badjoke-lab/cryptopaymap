@@ -13,9 +13,7 @@ describe('practical profile Promotion form parsing', () => {
       value: ['wifi', 'outdoor-seating', 'parking'],
       error: null,
     });
-    expect(serializeAmenitiesFormValue(['wifi', 'outdoor-seating'])).toBe(
-      'wifi\noutdoor-seating',
-    );
+    expect(serializeAmenitiesFormValue(['wifi', 'outdoor-seating'])).toBe('wifi\noutdoor-seating');
     expect(parseAmenitiesFormValue('')).toEqual({ value: undefined, error: null });
   });
 
