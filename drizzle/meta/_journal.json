@@ -148,6 +148,13 @@
       "when": 1783390889875,
       "tag": "0020_chief_warbound",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1783513409743,
+      "tag": "0021_magenta_the_anarchist",
+      "breakpoints": true
     }
   ]
 }

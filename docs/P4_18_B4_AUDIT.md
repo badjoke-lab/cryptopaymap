@@ -1,7 +1,7 @@
 # P4-18B4 existing-record practical profile correction audit
 
 **Implementation item:** P4-18B4  
-**Status:** Active — B4A contract implementation in progress  
+**Status:** Active — B4A completed through #135; B4B durable persistence in progress  
 **Last updated:** 2026-07-08
 
 ## Purpose
@@ -12,11 +12,11 @@ The work is separate from Candidate existing-target linking. Existing-target lin
 
 ## Audit finding
 
-The current repository does not contain a dedicated existing canonical Location practical-profile correction transaction that satisfies the P4-18B4 requirements.
+The repository did not contain a dedicated existing canonical Location practical-profile correction transaction that satisfied the P4-18B4 requirements.
 
 The existing-target Candidate link path explicitly does not update Entity or Location values. It creates a hidden Claim and Claim Assets, adds attribution/origin provenance, updates Candidate and legacy mapping state, and records a replay receipt.
 
-Therefore B4 requires an explicit correction operation rather than widening existing-target linking.
+Therefore B4 implements an explicit correction operation rather than widening existing-target linking.
 
 ## Required field scope
 
@@ -81,29 +81,55 @@ The correction request contains:
 - no assignment to unchanged fields;
 - no source reference outside the exact reviewed source-record set.
 
-B4 persistence must record correction provenance at field level and preserve an auditable decision receipt. Clear operations still require reviewed correction provenance even when the resulting canonical field has no current value.
+B4 persistence records correction provenance at field level and preserves an auditable decision receipt. Clear operations still require reviewed correction provenance even when the resulting canonical field has no current value.
+
+The persistence model separates:
+
+- current field basis in `provenance_links`;
+- complete correction history in durable Location correction decision receipts.
+
+For a changed field, active prior non-correction provenance is ended. Prior current correction rows for that field are replaced by the accepted correction source assignments. When a field is explicitly cleared, no current correction provenance row is inserted for the absent value, while the durable decision receipt preserves the clear operation, before/after values, reviewer identity, and reviewed source assignments.
+
+## B4A result — #135
+
+B4A established:
+
+- dedicated `location:correct` capability and mutation context;
+- strict bounded Location correction field set;
+- explicit scalar `set` and `clear` operations;
+- Amenities add, remove, replace, clear, and unchanged semantics;
+- Social Link add, remove by stable identity, replace, clear, and unchanged semantics;
+- exact changed-field provenance coverage;
+- rejection of source references outside the reviewed source set;
+- deterministic request fingerprint normalization;
+- strict canonical patch application;
+- copy-on-write in-memory atomic backend;
+- committed replay, changed-content conflict, stale-version conflict, source validation, no-op rejection, and rollback coverage.
+
+B4A did not add durable database persistence or an operator UI.
 
 ## Execution slices
 
-### B4A — Correction contract and atomic semantics
+### B4A — Correction contract and atomic semantics — Completed through #135
 
-- define strict mutation context and capability boundary;
-- define explicit scalar and structured change operations;
-- validate exact field-provenance coverage;
-- normalize deterministic request fingerprints;
-- implement canonical patch application;
-- implement copy-on-write in-memory backend;
-- cover committed replay, changed-content conflict, stale-version conflict, source-set validation, structured add/remove/replace/clear behavior, and rollback.
+- strict mutation context and capability boundary;
+- explicit scalar and structured change operations;
+- exact field-provenance coverage;
+- deterministic request fingerprints;
+- canonical patch application;
+- copy-on-write in-memory backend;
+- committed replay, changed-content conflict, stale-version conflict, source validation, structured operation, no-op, and rollback coverage.
 
-### B4B — Durable correction persistence
+### B4B — Durable correction persistence — In progress
 
-- add durable correction decision storage;
-- preserve before/after field-level diff and reviewed source IDs;
-- add exact Location version guard;
-- add source-record existence guard;
-- update the Location and correction provenance atomically;
-- preserve deterministic request replay and stale-state conflict behavior;
-- add production Drizzle persistence coverage.
+- durable correction decision storage;
+- before/after field-level diff and reviewed source IDs;
+- exact Location version guard;
+- source-record existence guard;
+- atomic Location, current correction provenance, and durable decision persistence;
+- deterministic replay and stale-state conflict behavior;
+- production Drizzle persistence coverage;
+- generated migration and migration-drift validation.
 
 ### B4C — Protected operator path
 
