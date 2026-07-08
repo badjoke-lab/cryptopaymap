@@ -269,9 +269,9 @@ describe('practical Place Promotion create path', () => {
     const store = backend(true);
     const before = store.snapshot();
 
-    await expect(createCandidatePromotionService(store).promote(context, input())).rejects.toThrow(
-      'Injected Candidate promotion failure before atomic commit.',
-    );
+    await expect(
+      createCandidatePromotionService(store).promote(context, input()),
+    ).rejects.toMatchObject({ code: 'backend_failure' });
     expect(store.snapshot()).toEqual(before);
   });
 });
