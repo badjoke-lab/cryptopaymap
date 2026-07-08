@@ -1,7 +1,15 @@
 import { and, asc, desc, eq, isNotNull, isNull } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
-import { acceptanceClaims, evidence } from '../../db/schema';
+import {
+  acceptanceClaims,
+  assets,
+  claimAssets,
+  evidence,
+  networks,
+  paymentMethods,
+} from '../../db/schema';
 import { evaluateEvidenceThreshold } from '../../schemas/evidence';
+import { evaluateEvidenceReviewPaymentPrerequisites } from './payment-prerequisites';
 import {
   thresholdWithEvidenceIds,
   type EvidenceReviewDetailResponse,
@@ -157,6 +165,24 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
         )
         .orderBy(asc(evidence.id));
 
+      const paymentRows = await database
+        .select({
+          id: claimAssets.id,
+          assetSymbol: assets.symbol,
+          assetStatus: assets.status,
+          networkSlug: networks.slug,
+          networkStatus: networks.status,
+          paymentMethodSlug: paymentMethods.slug,
+          paymentMethodStatus: paymentMethods.status,
+          isPrimary: claimAssets.isPrimary,
+        })
+        .from(claimAssets)
+        .innerJoin(assets, eq(claimAssets.assetId, assets.id))
+        .innerJoin(networks, eq(claimAssets.networkId, networks.id))
+        .innerJoin(paymentMethods, eq(claimAssets.paymentMethodId, paymentMethods.id))
+        .where(eq(claimAssets.claimId, row.claimId))
+        .orderBy(asc(claimAssets.id));
+
       const threshold = evaluateEvidenceThreshold(
         acceptedRows.map((item) => ({
           evidenceClass: item.evidenceClass,
@@ -166,6 +192,10 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
           independenceKey: item.independenceKey,
           observedAt: iso(item.observedAt),
         })),
+      );
+      const paymentPrerequisites = evaluateEvidenceReviewPaymentPrerequisites(
+        row.routeType,
+        paymentRows,
       );
 
       const detail: EvidenceReviewDetailResponse = {
@@ -212,6 +242,8 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
           endedReason: row.endedReason,
           updatedAt: row.claimUpdatedAt.toISOString(),
         },
+        paymentCombinations: paymentRows,
+        paymentPrerequisites,
         acceptedEvidence: acceptedRows.map((item) => ({
           id: item.id,
           evidenceClass: item.evidenceClass,
