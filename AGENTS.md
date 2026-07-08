@@ -11,25 +11,36 @@ Before changing files:
 3. Read the public specification documents relevant to the change.
 4. Compare the documents with the actual `main` branch, merged pull requests, and available CI results.
 
-For any Places map, list, selected-Place panel, bottom-sheet, Place information, gallery, navigation, camera, marker, current-location, or selection-state work, also read:
+For Phase 4 closure work, also read `docs/PHASE4_CLOSURE_PLAN.md`.
+
+For Places work, also read:
 
 1. `docs/PLACES_UX_ACCEPTANCE.md`;
 2. `docs/PLACES_RECOVERY_PLAN.md`;
-3. the active P4-17 item in `docs/IMPLEMENTATION_PLAN.md`.
+3. `docs/PLACES_UX_FINAL_AUDIT.md`;
+4. `docs/PLACE_PUBLIC_PROFILE.md` when practical Place information is affected;
+5. `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md` for P4-18B practical profile data work.
 
-The complete Places acceptance contract remains in force even when the current pull request implements only one bounded part of it. A narrower pull-request body or temporary task description does not supersede the documented recovery contract.
+The complete Places contract remains in force even when one pull request implements only a bounded part of it.
 
-When repository reality and a status document disagree, repository reality is authoritative. Correct the status document in the same pull request or the next dedicated correction pull request.
+For Phase 5 submission work, also read:
+
+1. `docs/SUBMISSION_WORKFLOW.md`;
+2. `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`;
+3. `docs/DATA_MODEL.md`;
+4. `docs/PHASE4_CLOSURE_PLAN.md` for the handoff gate;
+5. `docs/MEDIA_POLICY.md` when Media intake or review is affected.
+
+When repository reality and a status document disagree, repository reality is authoritative. Correct tracking in the same pull request or the next dedicated correction pull request.
 
 ## 2. Use implementation item IDs
 
 Every planned change must reference an implementation item ID, such as:
 
-- `P0-01`
-- `P1-03`
-- `FIX-P1-001`
-- `SEC-P2-001`
-- `DATA-P2-001`
+- `P0-01`;
+- `P4-18B2`;
+- `P5-03`;
+- `FIX-P1-001`.
 
 Pull request numbers are not implementation item IDs. Do not renumber the implementation plan when an unplanned fix is inserted.
 
@@ -37,23 +48,17 @@ Pull request numbers are not implementation item IDs. Do not renumber the implem
 
 A pull request should have one primary responsibility.
 
-- Do not combine a large database migration with an unrelated UI redesign.
-- State the purpose, scope, exclusions, completion criteria, and checks.
+- Do not combine a large data migration with an unrelated UI redesign.
+- State purpose, scope, exclusions, completion criteria, and checks.
 - Keep changes reviewable and reversible.
 - Update documentation when behavior, data contracts, routes, or operating procedures change.
-- For Places work, state which P4-17 recovery items are covered and which remain open.
+- State which active closure or phase item is covered and which work remains open.
+
+P4-18 is a bounded closure term. Do not expand P4-18C into an unlimited redesign cycle. Do not start Phase 5 implementation before the P4-18E handoff gate is complete.
 
 ## 4. Protect publication boundaries
 
-This is a public repository. Do not add:
-
-- private planning documents;
-- non-public candidate records;
-- submission contact details;
-- private evidence or unreviewed media;
-- secrets, credentials, tokens, connection strings, or wallet secrets;
-- internal commercial targets, private partnership discussions, or unpublished operational limits;
-- personal information or unrelated project information.
+This is a public repository. Keep non-public review material, personal information, private submission material, restricted Evidence or Media, operational access material, and unrelated internal project information out of public repository content and public artifacts.
 
 Candidate records must never become public merely because they exist in an import, submission, or review queue.
 
@@ -61,13 +66,37 @@ Candidate records must never become public merely because they exist in an impor
 
 Changes must maintain these principles:
 
-- reviewed canonical data is separate from source candidates and user submissions;
+- reviewed canonical data is separate from source Candidates and user submissions;
 - user submissions never update public canonical records automatically;
-- published acceptance claims identify the asset, network, payment route, payment method, instructions, evidence, and last confirmation date;
-- sponsorship, advertising, or payment never determines verification status;
-- public exports exclude private fields and internal review data.
+- published acceptance Claims identify the asset, network, payment route, payment method, instructions, Evidence, and last confirmation date;
+- commercial relationships do not determine verification status;
+- public exports exclude non-public review and submission material.
 
-Places recovery work that adds practical business information must extend canonical review, provenance, public projection allowlists, runtime schemas, and leakage checks together. UI convenience does not justify exporting unreviewed or private fields.
+Practical Place information changes must extend the complete operational path where applicable:
+
+```text
+source or submission intake
+    ↓
+safe review projection
+    ↓
+reviewer controls
+    ↓
+field provenance
+    ↓
+canonical create or correction transaction
+    ↓
+public projection allowlist
+    ↓
+runtime and leakage validation
+    ↓
+staging review
+    ↓
+public surfaces
+```
+
+A database column, schema property, fixture, or UI section alone does not complete a practical field.
+
+Structured fields such as amenities and social links require explicit normalization, duplicate behavior, provenance, replacement and removal semantics, and safe public projection.
 
 ## 6. Keep project tracking synchronized
 
@@ -79,19 +108,21 @@ At the start of an implementation item:
 
 Before completion:
 
-- verify the documented completion criteria;
+- verify documented completion criteria;
 - record the pull request number in the implementation plan;
-- mark the item `Completed` only after the change is merged or otherwise completed;
+- mark the item `Completed` only after merge or equivalent completion;
 - move `docs/PROJECT_STATUS.md` to the next real item;
-- check whether the public roadmap or product changelog is affected.
+- check public Roadmap and Changelog impact.
 
-Do not add a product changelog entry for repository administration alone.
+Do not add a product Changelog entry for repository administration alone.
 
-For P4-17, do not declare the Places recovery complete until the full 17-point acceptance matrix has been reviewed. Newly discovered Places defects must be added to the acceptance contract and implementation tracking before they are treated as completion work.
+P4-18 completion is controlled by `docs/PHASE4_CLOSURE_PLAN.md`. Phase 5 implementation begins only after P4-18E completes the handoff and `docs/PROJECT_STATUS.md` moves to P5-01.
+
+Material newly discovered Places defects must be added to active acceptance or closure tracking before they are treated as completion work. Small later visual preferences may be handled as bounded fixes without reopening the closure term.
 
 ## 7. Quality checks
 
-Run every check available for the affected area. As the repository gains tooling, this normally includes:
+Run every check available for the affected area. This normally includes:
 
 - formatting or linting;
 - type checking;
@@ -100,15 +131,20 @@ Run every check available for the affected area. As the repository gains tooling
 - build validation;
 - end-to-end tests where applicable;
 - accessibility checks where applicable;
-- schema and public-export validation for data changes.
+- schema and public-export validation for data changes;
+- representative screenshot capture and image inspection for affected public UI states.
 
-Do not claim a check passed unless it was actually run and passed.
+Do not claim a check passed unless it actually ran and passed.
 
-Places changes must test the user-visible contract appropriate to the item, including camera defaults, marker/cluster distinction, selected-Place completeness, sheet gestures and reduced motion, gallery/lightbox behavior, external navigation links, current-location focus versus commit behavior, and selection restoration where applicable.
+A successful screenshot capture job proves that the requested screenshots were produced. It does not prove visual acceptance. Inspect relevant images and record material findings before completing affected UI work.
+
+Places changes must test the user-visible contract appropriate to the item, including camera defaults, marker and cluster distinction, selected-Place completeness, sheet gestures and reduced motion, Gallery behavior, navigation links, current-location focus versus commit behavior, and selection restoration where applicable.
+
+Practical profile work must test presence, absence, malformed input, duplicate structured values, provenance assignment, canonical persistence or correction, strict public projection, and leakage rejection where applicable.
 
 ## 8. User experience requirements
 
-Interactive surfaces, especially Places, contribution flows, and administration, must be designed as application experiences rather than static pages.
+Interactive surfaces, especially Places, submission flows, and administration, must be designed as application experiences rather than static pages.
 
 Maintain:
 
@@ -122,12 +158,14 @@ Maintain:
 
 For Places specifically:
 
-- the default map must read as practical place discovery;
+- the default map must read as practical Place discovery;
 - single Places and clusters must be visually distinct;
 - selected-Place surfaces must not hide ordinary public information behind unnecessary route changes;
 - mobile peek and expanded states have different responsibilities;
 - direct sheet dragging follows input movement where motion is enabled;
-- approved media and navigation handoff follow the Places acceptance contract.
+- approved Media and navigation handoff follow the Places contract.
+
+P4-18C has a fixed residual scope: Mobile List compactness, Mobile Menu density, expanded-sheet information order, Filters completion flow, and only material long-page density defects. Fine-grained preference changes discovered later should be handled as bounded follow-up fixes.
 
 ## 9. Documentation language
 

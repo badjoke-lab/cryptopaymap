@@ -1,7 +1,7 @@
 # Place public profile contract
 
 **Status:** Active  
-**Last updated:** 2026-07-07
+**Last updated:** 2026-07-08
 
 ## Purpose
 
@@ -13,6 +13,7 @@ This document must be read with:
 
 - `docs/PLACES_UX_ACCEPTANCE.md`;
 - `docs/PLACES_RECOVERY_PLAN.md`;
+- `docs/PHASE4_CLOSURE_PLAN.md` while P4-18 remains active;
 - `docs/DATA_MODEL.md`;
 - `docs/PUBLIC_EXPORT_SCHEMAS.md`;
 - `docs/SOURCE_AND_LICENSE_POLICY.md`;
@@ -56,6 +57,53 @@ The canonical location model may store the following public-eligible practical f
 
 Existing canonical status, visibility, OSM identity, timestamps, provenance, Claims, Evidence, and Media remain separate fields or relationships.
 
+## Operational parity requirement
+
+A practical Place field is not considered operationally complete merely because one or more of the following exists:
+
+- a database column;
+- a canonical runtime schema;
+- a public export field;
+- a staging fixture;
+- a UI section.
+
+The complete reviewed path must be traceable where applicable:
+
+```text
+source observation or submission
+    ↓
+safe normalized review snapshot
+    ↓
+Candidate or proposed-change review
+    ↓
+reviewer-visible value and explicit decision
+    ↓
+field source or correction provenance
+    ↓
+atomic canonical create or correction operation
+    ↓
+public projection allowlist
+    ↓
+runtime schema and leakage validation
+    ↓
+staging review data
+    ↓
+public Place surfaces
+```
+
+P4-18B is responsible for closing this path for the practical profile set before Phase 5 public submission work begins.
+
+Required behavior:
+
+- source values and user-submitted values remain non-canonical until reviewed;
+- malformed structured values fail closed or remain unavailable to the canonical editor;
+- non-empty factual values receive the required provenance assignment;
+- arrays and structured links define duplicate, replacement, and removal behavior;
+- canonical correction operations use exact current-state guards and record reviewer decisions;
+- stale review state conflicts rather than silently overwriting a newer canonical value;
+- replay of the same accepted operation is deterministic;
+- public projection occurs only through the normal validated export and release boundary.
+
 ## Optional-field policy
 
 `description`, `openingHours`, `amenities`, and `socialLinks` are optional reviewed extensions.
@@ -81,11 +129,12 @@ Requirements:
 - no private review notes;
 - no unsupported promotional claims presented as verified facts;
 - source and provenance remain traceable;
+- correction must preserve the reviewed previous/current distinction in the operation history;
 - UI may show a shorter excerpt but must not change the meaning.
 
 ## Opening hours
 
-The initial recovery contract stores `openingHours` as reviewed public text rather than forcing a lossy normalized weekly schedule.
+The current contract stores `openingHours` as reviewed public text rather than forcing a lossy normalized weekly schedule.
 
 This is intentional. Real opening schedules may include:
 
@@ -100,6 +149,7 @@ Requirements:
 
 - maximum 2,000 characters;
 - reviewed source basis;
+- explicit replacement or removal semantics for corrections;
 - no automatic “Open now” calculation unless a future normalized-hours contract explicitly supports it;
 - UI labels must not imply real-time operating certainty from stale text.
 
@@ -114,6 +164,8 @@ Requirements:
 - maximum 100 entries;
 - each entry maximum 80 characters;
 - duplicate entries are removed or rejected before public projection;
+- canonical update review distinguishes additions, removals, and complete replacement;
+- field provenance must remain meaningful when the stored array changes;
 - values describe practical Place attributes, not payment acceptance status;
 - controlled vocabulary may be introduced later without treating unrecognized historical values as verified new facts.
 
@@ -136,6 +188,7 @@ Requirements:
 - `handle` is nullable because not every platform exposes a stable human-readable handle;
 - maximum 30 links;
 - duplicate `platform + url` pairs are rejected;
+- canonical update review defines add, remove, replace, and handle-change behavior explicitly;
 - links must represent reviewed official accounts or another explicitly approved official relationship;
 - user-submitted or guessed accounts do not become public automatically.
 
@@ -166,11 +219,13 @@ Public projection rules remain fail closed:
 
 ## Selected-Place presentation
 
-P4-17D and P4-17E consume this profile contract.
+P4-17D and P4-17E established the selected-Place presentation baseline. P4-18C may refine information order and density only within its bounded residual scope.
 
 Desktop selected Place and mobile expanded Place may show the practical fields when available. They must not force the user to open the canonical detail page merely to see already-public routine Place information.
 
 The canonical detail page remains responsible for complete Evidence, history, provenance, long-form record context, stable sharing, and indexing.
+
+The mobile peek state remains compact. Practical profile expansion must not turn peek into a second detail page.
 
 ## Navigation boundary
 
@@ -180,15 +235,39 @@ Navigation handoff is not stored as a separate business fact. CryptoPayMap provi
 
 Official website, phone, social links, and payment instructions remain separate actions from navigation handoff.
 
+## Existing-record correction boundary
+
+Existing canonical Places must be correctable without creating duplicate identities or bypassing normal review.
+
+P4-18B4 audits and completes the correction path for:
+
+- address and locality changes;
+- phone addition, replacement, or removal;
+- website addition, replacement, or removal;
+- description correction;
+- opening-hours correction or removal;
+- amenities addition, removal, or replacement;
+- social-link addition, removal, replacement, or handle change.
+
+The correction path must preserve exact current-state expectations, field-level diff information, correction provenance, reviewer decision identity, replay safety, conflict behavior, and the normal public export/release boundary.
+
+Existing-target Candidate linking is not automatically equivalent to an approved canonical profile correction. The audit must verify the actual operation path rather than infer parity from shared UI or schema fields.
+
 ## Validation checklist
 
-Before a practical Place field is considered publicly available:
+Before a practical Place field is considered operationally available:
 
-- the canonical field exists in the approved data model;
-- ingestion or promotion preserves the field intentionally;
+- the canonical field exists in the approved data model and implementation schema;
+- source or submission intake preserves the value safely when the input path supports it;
+- the protected review projection exposes only allowed values;
+- the operator can intentionally review the value;
 - provenance is available at the required field or record level;
+- canonical create and existing-record correction behavior are defined where applicable;
+- stale-state conflicts and replay behavior are tested;
 - public projection allowlisting is explicit;
 - runtime schema validation passes;
 - privacy and leakage validation passes;
 - source and license rules are satisfied;
-- selected-Place UI treats absence as unknown, not as a negative fact.
+- staging review data exercises representative populated values;
+- selected-Place UI treats absence as unknown, not as a negative fact;
+- affected representative screenshots are inspected when public presentation changes.

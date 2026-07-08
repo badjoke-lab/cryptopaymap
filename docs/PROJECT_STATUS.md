@@ -1,92 +1,141 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-07
+**Last verified:** 2026-07-08
 
 ## Current phase
 
-Phase 4 — Public core / MVP-A — Repository work completed through pull request #122
+Phase 4 — Public core / MVP-A closure
+
+## Current implementation item
+
+P4-18A — Tracking correction and closure inventory
 
 ## Current repository state
 
-- P4-16 — MVP-A integration and quality audit — Completed
-- P4-17A through P4-17F — Places UX recovery — Completed, validated, and merged
-- Pull request #122 merged into `main`
-- Merge commit: `ddd7265e095590c66af10b64c4679d3b2ab5669b`
+- Phase 3 administration and review repository work is complete through P3-12.
+- Phase 4 public MVP-A surfaces are implemented.
+- P4-17A through P4-17F Places recovery is completed, validated, and merged through pull request #122.
+- Review deployment now follows `main` and updates the fixed review URL after merge through #123.
+- Deployment receipts record the deployed `main` commit through #124.
+- Representative desktop/mobile and interactive-state screenshot capture is merged through #125.
+- Selected Place focus, marker presentation, and desktop selected-panel containment corrections are merged through #126.
+- P4-18 is the active bounded closure term before Phase 5 public submissions.
 
-## Required Places references
+## Fixed review environment
 
-Before changing Places behavior, read:
+Review URL:
 
-1. `docs/PLACES_UX_ACCEPTANCE.md`
-2. `docs/PLACES_RECOVERY_PLAN.md`
-3. `docs/PLACES_UX_FINAL_AUDIT.md`
-4. `docs/PLACES_VALIDATION_EVIDENCE.md`
-5. the P4-17 section of `docs/IMPLEMENTATION_PLAN.md`
-6. `docs/PLACE_PUBLIC_PROFILE.md`
+`https://review.cryptopaymap-staging.pages.dev`
 
-The complete 17-point recovery set remains the acceptance boundary for future Places changes.
+Latest verified deployment receipt at the start of P4-18A:
 
-## Recovery sequence
+`49d68be44cf453d5fa50315c0bd933352ad05fbf`
 
-- P4-17A — contract and tracking correction — Completed
-- P4-17B — map presentation foundation recovery — Completed and validated
-- P4-17C — Place information and public projection recovery — Completed and validated
-- P4-17D — desktop selected panel and mobile sheet recovery — Completed and validated
-- P4-17E — gallery, image enlargement, and external navigation — Completed and validated
-- P4-17F — state, responsive, accessibility, and final 17-point acceptance audit — Completed and validated
+The receipt records that the fixed review URL was deployed from that `main` commit. Later P4-18 work must verify the current receipt rather than assuming the URL is current.
 
-## Validated recovery result
+## Required current references
 
-The merged implementation includes:
+Before starting or reviewing P4-18 work, read:
 
-- stable broad initial camera and street-map-oriented default style;
-- explicit Place pin symbols distinct from aggregate clusters;
-- reviewed practical Place profile fields through canonical, promotion, public-schema, staging, and selected-surface boundaries;
-- near-complete desktop selected-Place information;
-- compact mobile peek and practical expanded sheet;
-- position-based direct drag-following sheet motion with first-entry and same-Place reentry coverage;
-- Gallery and enlarged-media viewer with keyboard, touch, focus containment, focus return, body scroll lock, and attribution behavior;
-- Google Maps and Apple Maps navigation handoff;
-- Current location ephemeral focus with explicit area commit and distinct error states;
-- dynamic mobile map height and deterministic selection, URL, and history behavior;
-- accessible mobile site-menu and mobile Filters focus containment;
-- covered desktop Result List hidden from keyboard focus while selected details are active;
-- durable 17-point audit and regression coverage.
+1. `docs/IMPLEMENTATION_PLAN.md`;
+2. `docs/PHASE4_CLOSURE_PLAN.md`;
+3. the public specification documents relevant to the active item.
 
-## Validation
+For Places work also read:
 
-Validated implementation head:
+1. `docs/PLACES_UX_ACCEPTANCE.md`;
+2. `docs/PLACES_RECOVERY_PLAN.md`;
+3. `docs/PLACES_UX_FINAL_AUDIT.md`;
+4. `docs/PLACE_PUBLIC_PROFILE.md` when practical Place information is affected.
 
-`7f1c3f7c3d2efa9234584401a8984da23b0564ba`
+For Phase 5 preparation and submission work also read:
 
-The complete recovery implementation passed:
+1. `docs/SUBMISSION_WORKFLOW.md`;
+2. `docs/DATA_MODEL.md`;
+3. `docs/MEDIA_POLICY.md` when Media intake or review is affected.
 
-1. Foundation validation
-2. Migration drift
-3. Staging review validation
+## Active closure sequence
 
-Foundation validation included formatting, lint, Astro/TypeScript checks, runtime schema checks, migration history, 126 passing test files with 505 passing tests, static build, accessibility foundation checks, Phase 1 file checks, and staging artifact checks.
+1. P4-18A — tracking correction and closure inventory — In progress
+2. P4-18B1 — source and Candidate practical-profile contract — Planned
+3. P4-18B2 — promotion editor and field provenance parity — Planned
+4. P4-18B3 — canonical persistence and public projection integration — Planned
+5. P4-18B4 — existing-record practical-profile correction path audit and completion — Planned
+6. P4-18C — bounded UI residual closure — Planned
+7. P4-18D — administration workflow integration audit — Planned
+8. P4-18E — live review and Phase 5 handoff audit — Planned
 
-The only commit after the validated implementation head within #122 updated validation documentation and did not change the validated implementation.
+The authoritative scope and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`.
+
+## Known P4-18B operational parity gap
+
+The practical Place profile schema and persistence layer support reviewed fields including description, opening hours, amenities, and structured social links. The closure inventory found that the protected promotion form and field-source selection path do not yet provide complete operator handling and provenance coverage for the entire practical profile set.
+
+P4-18B must trace and close the complete path:
+
+```text
+source observation or submission
+    ↓
+safe review projection
+    ↓
+reviewer-visible field value
+    ↓
+field provenance
+    ↓
+canonical create or correction transaction
+    ↓
+public projection
+    ↓
+validation and leakage checks
+    ↓
+staging review
+    ↓
+public surfaces
+```
+
+A schema column or display fixture alone does not complete operational parity.
+
+## P4-18C bounded UI residual scope
+
+The remaining scheduled UI closure scope is limited to:
+
+- Mobile Places List compactness and scanability;
+- Mobile Menu density;
+- expanded-sheet information order and access to payment-critical information;
+- Filters completion, clear, zero-result, and Map/List behavior;
+- only material density or layout defects on representative long-form public pages.
+
+Representative screenshot capture is now a standard review instrument. A successful capture job does not replace image inspection.
+
+Small later visual findings may be handled as bounded fixes and do not keep P4-18C open indefinitely.
+
+## Phase 5 handoff
+
+Phase 5 does not begin until P4-18E completes the handoff and this status file moves to P5-01.
+
+Planned Phase 5 order:
+
+1. P5-01 — Shared submission foundation
+2. P5-02 — Suggest Place and Online Service
+3. P5-03 — Payment and problem reports
+4. P5-04 — Business and service claims
+5. P5-05 — Photo and Media submission intake
+6. P5-06 — Review workflow extensions
+7. P5-07 — Canonical application transactions and retention
+8. P5-08 — MVP-B integration audit
 
 ## Next
 
-1. Treat the merged 17-point Places contract as the baseline for all future Places work.
-2. Keep deferred live verification separate from repository completion status.
-3. Determine the next repository work from the Phase 5 Public submissions / MVP-B handoff and current roadmap priorities before starting implementation.
-
-## Repository history relevant to this work
-
-- Phase 3 repository work completed through #95.
-- Public-core foundations P4-01 through P4-15 progressed through #119.
-- P4-16A staging acceptance coverage completed through #120.
-- P4-16B mobile List-to-Map synchronization completed through #121.
-- P4-17A through P4-17F completed and merged through #122.
+Complete P4-18A documentation and tracking synchronization, merge it, then begin P4-18B1 from the updated reference set.
 
 ## Blocked
 
-No repository blocker. Deferred live verification remains separate from repository completion work.
+No known repository blocker.
+
+P4-18D and P4-18E must replace broad deferred-verification language with a precise inventory of environment-specific checks that were completed, could not be completed, or remain assigned to launch work.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, and CI results. Required Places behavior is determined by the merged Places acceptance contract, recovery plan, final 17-point audit matrix, and validation evidence.
+Repository reality is determined by current `main`, merged pull requests, and actual CI results. Current work order is determined by `docs/PROJECT_STATUS.md`, `docs/IMPLEMENTATION_PLAN.md`, and the active closure or phase specification.
+
+Do not claim live verification from repository checks alone. Do not claim visual acceptance from screenshot generation alone; relevant images must be inspected.
