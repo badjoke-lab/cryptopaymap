@@ -51,7 +51,7 @@ function FilterHarness() {
 }
 
 describe('PlaceFilterPanel mobile focus', () => {
-  it('contains Tab focus and restores the trigger after close', () => {
+  it('contains Tab focus through the completion action and restores the trigger after close', () => {
     render(<FilterHarness />);
 
     const trigger = screen.getByRole('button', { name: 'Filters trigger' });
@@ -62,13 +62,16 @@ describe('PlaceFilterPanel mobile focus', () => {
     const panelQueries = within(panel);
     const closeButton = panelQueries.getByRole('button', { name: 'Close filters' });
     const clearButton = panelQueries.getByRole('button', { name: 'Clear' });
+    const completionButton = panelQueries.getByRole('button', { name: 'Show 1 place' });
     expect(closeButton).toHaveFocus();
 
+    completionButton.focus();
     fireEvent.keyDown(window, { key: 'Tab' });
     expect(clearButton).toHaveFocus();
 
+    clearButton.focus();
     fireEvent.keyDown(window, { key: 'Tab', shiftKey: true });
-    expect(closeButton).toHaveFocus();
+    expect(completionButton).toHaveFocus();
 
     fireEvent.click(closeButton);
     expect(screen.queryByRole('region', { name: 'Place filters' })).not.toBeInTheDocument();
