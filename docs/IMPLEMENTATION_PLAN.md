@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-07
+**Last updated:** 2026-07-08
 
 This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
 
@@ -10,10 +10,13 @@ This file tracks repository implementation work. GitHub main, merged pull reques
 - Implementation item IDs are independent of pull request numbers.
 - Candidate, canonical, and public-export layers remain separate.
 - Each pull request has one primary responsibility and explicit completion checks.
-- Live Cloudflare and database verification may be deferred without blocking repository-only work.
+- Live environment verification may be deferred only when the exact deferred check is recorded.
 - Public product Roadmap and repository implementation status are separate documents.
+- Phase 4 closure work must read `docs/PHASE4_CLOSURE_PLAN.md`.
 - Places work must read `docs/PLACES_UX_ACCEPTANCE.md`, `docs/PLACES_RECOVERY_PLAN.md`, and `docs/PLACES_UX_FINAL_AUDIT.md` before implementation or review.
-- A narrow pull-request description does not supersede the complete Places acceptance contract.
+- Practical Place profile work must also read `docs/PLACE_PUBLIC_PROFILE.md` and trace the complete operational path defined by P4-18B.
+- A narrow pull-request description does not supersede the complete Places acceptance or active closure contract.
+- Phase 5 implementation does not begin before the P4-18E handoff gate is complete.
 
 ## Phase 0 — Public specifications and development control
 
@@ -32,7 +35,7 @@ This file tracks repository implementation work. GitHub main, merged pull reques
 
 ## Phase 1 — Foundation
 
-**Status:** Repository work completed; live staging verification deferred
+**Status:** Repository work completed; remaining live checks are tracked by later integration and launch items
 
 | ID | Item | Status | Pull request |
 |---|---|---|---|
@@ -47,7 +50,7 @@ This file tracks repository implementation work. GitHub main, merged pull reques
 | P1-09 | PWA manifest and installability baseline | Completed | #19 |
 | P1-10 | Accessibility baseline | Completed | #20 |
 | P1-11 | Public Roadmap and Changelog loaders | Completed | #21 |
-| P1-12 | Integration and quality audit | Repository completed; live verification deferred | #22, #23 |
+| P1-12 | Integration and quality audit | Repository completed | #22, #23 |
 
 ## Phase 2 — Data core
 
@@ -73,7 +76,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 
 ## Phase 3 — Administration and review
 
-**Status:** Repository completed; live verification deferred
+**Status:** Repository completed; P4-18D/E will reconcile remaining integration and environment checks
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -87,52 +90,18 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-08 | Evidence review and verification decisions | Completed | P3-07 | #59, #60, #62, #63 |
 | P3-09 | Status transitions and reconfirmation queue | Completed | P3-07, P3-08 | #64–#67 |
 | P3-10 | Media review | Completed | P3-02, P2-10 | #69–#74 |
-| P3-11 | Export controls and release workflow | Repository completed; live verification deferred | P3-07 through P3-10 | #75–#87 |
+| P3-11 | Export controls and release workflow | Repository completed | P3-07 through P3-10 | #75–#87 |
 | P3-12 | Audit history and Phase 3 integration audit | Completed | P3-01 through P3-11 | #88, #89, #92–#95 |
 
-### Completed P3-07 deliveries
+### Phase 3 result
 
-P3-07 established isolated promotion authorization, durable atomic promotion and existing-target linking, protected workspaces, exact candidate and Claim-set guards, target search and selection, field-level provenance, reviewer controls, and cross-path integration. P3-07 is repository-complete; live Access, database, and production verification remain deferred.
+Phase 3 established protected Candidate review, duplicate resolution, new-target promotion, existing-target linking, field-level provenance, Evidence decisions, Claim transitions, reconfirmation queues, Media review, export release decisions, publication activation, release history, restore boundaries, and cross-domain Audit history.
 
-### Completed P3-08 deliveries
+Repository-complete components remain subject to the P4-18D operator-journey audit and the P4-18E environment-specific handoff checks. A repository test result must not be described as a live environment verification result.
 
-P3-08 established Evidence review authorization, strict decision contracts, durable decision persistence, Claim transitions and verification events, protected queue and detail workspaces, reviewer UI, API behavior, threshold enforcement, replay and conflict handling, and a final cross-layer audit. Live Access, database, and production verification remain deferred.
+## Phase 4 — Public core / MVP-A and closure
 
-### Completed P3-09 deliveries
-
-P3-09 established bounded reconfirmation queues, exact Claim guards, durable expiration receipts, atomic stale transitions, protected Rechecks APIs and UI, scheduled-run identity and replay behavior, and the final handoff audit. Live scheduler configuration remains deferred.
-
-### Completed P3-10 deliveries
-
-P3-10 established isolated Media review authorization, strict Media decision contracts, durable receipts, exact file-set guards, deterministic private and public storage plans, R2 adapter boundaries, protected queue, detail and preview routes, reviewer UI, publication and revocation behavior, replay safety, and the final Media integration audit. Live Access, R2, database, and production verification remain deferred.
-
-### Completed P3-11 deliveries
-
-P3-11A through P3-11D established release-decision authorization, exact candidate and snapshot guards, durable release decisions, protected release queue and detail workspaces, reviewer actions, and private candidate revalidation.
-
-P3-11E through P3-11H established separate publication authorization, immutable release-object staging, exact metadata checks, conditional active-pointer activation, durable activation history, request replay and conflicts, bounded release-history reads, and the protected history API.
-
-P3-11I through P3-11L established restore preparation, pointer inventory and execution-record contracts, target-object preflight, conditional pointer switching, switch-receipt validation, replay-safe workflow composition, and explicit post-switch persistence failure handling.
-
-P3-11M aligned restore readiness with the implemented execution workflow, added readiness-to-execution runtime verification, completed the repository integration audit, documented deferred live verification, and handed off to P3-12 in pull request #87.
-
-### Completed P3-12 deliveries
-
-P3-12A defined the protected normalized audit-history read contract across candidate, Evidence, reconfirmation, Media, and export administration. It added bounded filters, stable cursor semantics, deterministic ordering, source-domain validation, target metadata, and privacy leakage boundaries in pull request #88.
-
-P3-12B added metadata-only source normalizers, bounded concurrent aggregation, source-domain validation, duplicate identity rejection, defensive filtering, deterministic cross-source ordering, and fail-closed source handling in pull request #89.
-
-P3-12C connected bounded audit history sources to the existing durable Phase 3 tables in pull request #92. It pushes actor, time-range, target, and stable cursor filters into source queries, preserves source ordering compatible with the global cursor, and excludes restore execution from the Drizzle registry until a corresponding table exists.
-
-P3-12D added the protected audit history API, isolated audit read authorization, fail-closed environment handling, bounded response mapping, runtime checks, and API tests in pull request #93.
-
-P3-12E added the protected `/admin/audit` administration surface, metadata-only history cards, domain, actor, target, and time filters, stable cursor loading, explicit loading and failure states, component tests, and built-artifact leakage checks in pull request #94.
-
-P3-12F completed the final repository-level Phase 3 cross-domain integration audit in pull request #95. It verified deterministic history ordering, bounded pagination, domain and target filtering, stable cursor continuation, isolated audit-read authorization, rejection of source items carrying non-contract fields, explicit deferred live-verification boundaries, and the Phase 4 handoff.
-
-## Phase 4 — Public core / MVP-A
-
-**Status:** Repository work completed and merged through pull request #122
+**Status:** MVP-A public surfaces are merged; P4-18 closure is active
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -158,56 +127,101 @@ P3-12F completed the final repository-level Phase 3 cross-domain integration aud
 | P4-17D | Desktop selected panel and mobile sheet recovery | Completed | P4-17B, P4-17C | #122 |
 | P4-17E | Gallery, image enlargement, and external navigation | Completed | P4-17C, P4-17D | #122 |
 | P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | Completed | P4-17B through P4-17E | #122 |
+| P4-18A | Tracking correction and closure inventory | In progress | P4-17, closure findings | — |
+| P4-18B1 | Source and Candidate practical-profile contract | Planned | P4-18A | — |
+| P4-18B2 | Promotion editor and field provenance parity | Planned | P4-18B1 | — |
+| P4-18B3 | Canonical persistence and public projection integration | Planned | P4-18B2 | — |
+| P4-18B4 | Existing-record practical-profile correction path audit and completion | Planned | P4-18B3 | — |
+| P4-18C | Bounded UI residual closure | Planned | P4-18A, representative screenshot capture | — |
+| P4-18D | Administration workflow integration audit | Planned | P4-18B | — |
+| P4-18E | Live review and Phase 5 handoff audit | Planned | P4-18B, P4-18C, P4-18D | — |
 
-### Completed P4-01 delivery
+### P4-17 Places recovery result
 
-P4-01A established the first public Place detail boundary in pull request #96. It reads only validated published `places.json` records through the build-time content layer, generates canonical `/place/{slug}` paths from those public records, derives a status-aware detail view model, renders payment assets, networks, routes, methods, instructions, restrictions, freshness, Evidence, and approved public Media, and covers the model and privacy boundary with tests.
-
-### Completed P4-02 delivery
-
-P4-02A established the coordinated PlacesApp public shell in pull request #97. It loads only validated public Place pins, connects existing Discovery URL state and isolated Zustand UI state, coordinates map/list mode, public result selection, selected-place detail navigation, search and status filtering, and explicit empty states that never substitute Candidate records.
-
-### P4-03 deliveries
-
-P4-03A established deterministic public Place point-feature conversion, stable feature identity and selection state, and normalized camera contracts aligned with the public URL boundary in pull request #98.
-
-P4-03B added the MapLibre renderer to the coordinated PlacesApp shell in pull request #100. It registers the public GeoJSON source, clustered and point layers, marker selection and cluster expansion behavior, camera and pending viewport coordination, Search this area behavior, resize handling, fallback states, and renderer component tests.
-
-### P4-16 audit outcome and P4-17 recovery requirement
-
-The MVP-A integration review found that repository-complete foundations did not yet provide a complete map-service interaction contract. The fixed recovery set is documented in:
+The MVP-A integration review found that repository-complete foundations did not yet provide a complete map-service interaction contract. P4-17 fixed the 17-point recovery set documented in:
 
 - `docs/PLACES_UX_ACCEPTANCE.md`;
 - `docs/PLACES_RECOVERY_PLAN.md`;
 - `docs/PLACES_UX_FINAL_AUDIT.md`.
 
-P4-17 resolves the complete 17-point set in dependency order:
+P4-17A through P4-17F are implemented, validated, and merged through pull request #122. The final audit matrix remains the durable interaction boundary for future Places changes.
 
-1. initial camera;
-2. basemap style;
-3. Place pin markers;
-4. cluster/Place distinction;
-5. practical public Place information path;
-6. full address/location presentation;
-7. desktop selected-Place completeness;
-8. mobile expanded-sheet completeness;
-9. peek/expanded role separation;
-10. drag-following position-based sheet motion;
-11. gallery in selected surfaces;
-12. image enlargement;
-13. Google Maps and Apple Maps navigation handoff;
-14. correct canonical detail-page responsibility;
-15. current-location focus/commit separation;
-16. deterministic selection semantics;
-17. durable acceptance and regression coverage.
+### P4-18 closure groundwork already merged
 
-P4-17A through P4-17F are implemented, validated, and merged through pull request #122. The final audit matrix remains the durable acceptance boundary for future Places changes.
+Before the formal closure sequence was added, the following groundwork landed:
+
+- #123 — review deployment follows `main` and updates the fixed review URL;
+- #124 — observable deployment receipt records the deployed `main` commit;
+- #125 — representative desktop/mobile screenshot capture, interactive-state capture, legacy Place field parity baseline, and practical profile staging fixture coverage;
+- #126 — selected Place focus and marker correction plus desktop selected-panel containment.
+
+These changes improve observability and baseline UI behavior. They do not complete P4-18B operational parity, P4-18C residual UI closure, P4-18D administration integration, or P4-18E handoff.
+
+### P4-18 execution order
+
+The authoritative closure details and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`.
+
+Execution order:
+
+1. P4-18A — tracking correction and closure inventory;
+2. P4-18B1 — source and Candidate practical-profile contract;
+3. P4-18B2 — promotion editor and field provenance parity;
+4. P4-18B3 — canonical persistence and public projection integration;
+5. P4-18B4 — existing-record correction path audit and completion;
+6. P4-18C — bounded UI residual closure;
+7. P4-18D — administration workflow integration audit;
+8. P4-18E — live review and Phase 5 handoff audit.
+
+P4-18 is a bounded closure term. P4-18C must not become an unlimited redesign cycle. P4-18B is a prerequisite for public submission work because external corrections must not arrive before the operator can safely review, provenance, apply, and publish the same field classes.
 
 ## Phase 5 — Public submissions / MVP-B
 
-**Status:** Planned
+**Status:** Planned; blocked on P4-18E handoff
 
-Suggestions, payment reports, problem reports, owner claims, photos, private status links, quarantine uploads, review diffs, information requests, holds, partial approval, canonical transactions, and retention jobs.
+| ID | Item | Status | Depends on |
+|---|---|---|---|
+| P5-01 | Shared submission foundation | Planned | P4-18E |
+| P5-02 | Suggest Place and Online Service | Planned | P5-01 |
+| P5-03 | Payment and problem reports | Planned | P5-01, P5-02 target conventions |
+| P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |
+| P5-05 | Photo and Media submission intake | Planned | P5-01, P3-10 Media review boundary |
+| P5-06 | Review workflow extensions | Planned | P5-02 through P5-05 |
+| P5-07 | Canonical application transactions and retention | Planned | P5-06, P4-18B correction boundary |
+| P5-08 | MVP-B integration audit | Planned | P5-01 through P5-07 |
+
+### P5-01 — Shared submission foundation
+
+Provide the common submission envelope, opaque public reference, private follow-up secret handling, workflow status, contact privacy boundary, abuse controls, safe parsing, idempotency, and audit foundation used by later submission types.
+
+### P5-02 — Suggest Place and Online Service
+
+Add public suggestion intake and protected review entry without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates.
+
+### P5-03 — Payment and problem reports
+
+Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.
+
+### P5-04 — Business and service claims
+
+Add claimant intake and ownership-verification workflow boundaries. Ownership verification does not bypass payment Evidence review or publication validation.
+
+### P5-05 — Photo and Media submission intake
+
+Add upload intake, quarantine, file validation, privacy and rights acknowledgements, and handoff to the existing protected Media review boundary. Original submissions remain non-public.
+
+### P5-06 — Review workflow extensions
+
+Add reviewer diffs, information requests, time-bounded holds, partial approval, duplicate/no-change handling, and private status communication required by real submission review.
+
+### P5-07 — Canonical application transactions and retention
+
+Apply approved field decisions through explicit guarded canonical transactions, preserve correction provenance and audit history, run normal export/publication validation, and enforce private submission retention and deletion rules.
+
+### P5-08 — MVP-B integration audit
+
+Verify each submission type from public intake through private status, protected review, decision, canonical application where approved, public export, publication state, privacy boundaries, failure handling, and retention behavior.
+
+Detailed submission behavior remains governed by `docs/SUBMISSION_WORKFLOW.md` and related data, Media, verification, privacy, and publication specifications.
 
 ## Phase 6 — Launch and cutover
 
