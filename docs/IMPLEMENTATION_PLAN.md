@@ -3,7 +3,7 @@
 **Status:** Active  
 **Last updated:** 2026-07-08
 
-This file tracks repository implementation work. GitHub main, merged pull requests, and CI are authoritative when this file differs from repository reality.
+This file tracks repository implementation work. GitHub `main`, merged pull requests, and actual CI results are authoritative when this file differs from repository reality.
 
 ## Rules
 
@@ -14,7 +14,7 @@ This file tracks repository implementation work. GitHub main, merged pull reques
 - Public product Roadmap and repository implementation status are separate documents.
 - Phase 4 closure work must read `docs/PHASE4_CLOSURE_PLAN.md`.
 - Places work must read `docs/PLACES_UX_ACCEPTANCE.md`, `docs/PLACES_RECOVERY_PLAN.md`, and `docs/PLACES_UX_FINAL_AUDIT.md` before implementation or review.
-- Practical Place profile work must also read `docs/PLACE_PUBLIC_PROFILE.md` and trace the complete operational path defined by P4-18B.
+- Practical Place profile work must also read `docs/PLACE_PUBLIC_PROFILE.md` and `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md`, and trace the complete operational path defined by P4-18B.
 - A narrow pull-request description does not supersede the complete Places acceptance or active closure contract.
 - Phase 5 implementation does not begin before the P4-18E handoff gate is complete.
 
@@ -93,11 +93,9 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 | P3-11 | Export controls and release workflow | Repository completed | P3-07 through P3-10 | #75–#87 |
 | P3-12 | Audit history and Phase 3 integration audit | Completed | P3-01 through P3-11 | #88, #89, #92–#95 |
 
-### Phase 3 result
-
 Phase 3 established protected Candidate review, duplicate resolution, new-target promotion, existing-target linking, field-level provenance, Evidence decisions, Claim transitions, reconfirmation queues, Media review, export release decisions, publication activation, release history, restore boundaries, and cross-domain Audit history.
 
-Repository-complete components remain subject to the P4-18D operator-journey audit and the P4-18E environment-specific handoff checks. A repository test result must not be described as a live environment verification result.
+Repository-complete components remain subject to the P4-18D operator-journey audit and P4-18E environment-specific handoff checks. Repository tests must not be described as live environment verification.
 
 ## Phase 4 — Public core / MVP-A and closure
 
@@ -128,8 +126,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-17E | Gallery, image enlargement, and external navigation | Completed | P4-17C, P4-17D | #122 |
 | P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | Completed | P4-17B through P4-17E | #122 |
 | P4-18A | Tracking correction and closure inventory | Completed | P4-17, closure findings | #127 |
-| P4-18B1 | Source and Candidate practical-profile contract | In progress | P4-18A | — |
-| P4-18B2 | Promotion editor and field provenance parity | Planned | P4-18B1 | — |
+| P4-18B1 | Source and Candidate practical-profile contract | Completed | P4-18A | #128 |
+| P4-18B2 | Promotion editor and field provenance parity | In progress | P4-18B1 | — |
 | P4-18B3 | Canonical persistence and public projection integration | Planned | P4-18B2 | — |
 | P4-18B4 | Existing-record practical-profile correction path audit and completion | Planned | P4-18B3 | — |
 | P4-18C | Bounded UI residual closure | Planned | P4-18A, representative screenshot capture | — |
@@ -138,17 +136,15 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 
 ### P4-17 Places recovery result
 
-The MVP-A integration review found that repository-complete foundations did not yet provide a complete map-service interaction contract. P4-17 fixed the 17-point recovery set documented in:
+P4-17 fixed the 17-point recovery set documented in:
 
 - `docs/PLACES_UX_ACCEPTANCE.md`;
 - `docs/PLACES_RECOVERY_PLAN.md`;
 - `docs/PLACES_UX_FINAL_AUDIT.md`.
 
-P4-17A through P4-17F are implemented, validated, and merged through pull request #122. The final audit matrix remains the durable interaction boundary for future Places changes.
+P4-17A through P4-17F are implemented, validated, and merged through #122. The final audit matrix remains the durable interaction boundary for future Places changes.
 
 ### P4-18 closure groundwork already merged
-
-Before the formal closure sequence was added, the following groundwork landed:
 
 - #123 — review deployment follows `main` and updates the fixed review URL;
 - #124 — observable deployment receipt records the deployed `main` commit;
