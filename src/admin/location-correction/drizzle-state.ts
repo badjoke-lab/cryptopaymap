@@ -105,7 +105,10 @@ function toCanonicalLocation(
   };
 }
 
-function valueAt(location: CanonicalLocationInput, field: PracticalLocationCorrectionField): unknown {
+function valueAt(
+  location: CanonicalLocationInput,
+  field: PracticalLocationCorrectionField,
+): unknown {
   return (location as unknown as Record<string, unknown>)[field];
 }
 
