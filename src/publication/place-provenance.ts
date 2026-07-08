@@ -27,7 +27,14 @@ export interface PublicPlaceProvenanceSourceRecord {
 }
 
 export interface PublicPlaceFieldProvenanceRow {
-  subjectType: 'entity' | 'location' | 'acceptance_claim' | 'claim_asset' | 'evidence' | 'verification_event' | 'media';
+  subjectType:
+    | 'entity'
+    | 'location'
+    | 'acceptance_claim'
+    | 'claim_asset'
+    | 'evidence'
+    | 'verification_event'
+    | 'media';
   subjectId: string;
   fieldPath: string | null;
   sourceRecordId: string;
