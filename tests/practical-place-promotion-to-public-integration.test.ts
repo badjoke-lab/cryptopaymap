@@ -241,10 +241,10 @@ const confirmedClaims = [
 describe('practical Place Promotion to public projection integration', () => {
   it('preserves reviewed values, blocks hidden canonical projection, and validates the explicit public projection', async () => {
     const store = promotionBackend();
-    let committedCommand: CandidatePromotionCommand | null = null;
+    const commands: CandidatePromotionCommand[] = [];
     const service = createCandidatePromotionService({
       commitPromotion: async (command) => {
-        committedCommand = command;
+        commands.push(command);
         return store.commitPromotion(command);
       },
     });
@@ -264,6 +264,7 @@ describe('practical Place Promotion to public projection integration', () => {
     const snapshot = store.snapshot();
     const entity = snapshot.entities[0]?.value;
     const location = snapshot.locations[0]?.value;
+    const committedCommand = commands[0];
     if (!entity || !location || !committedCommand) {
       throw new Error('Expected committed practical Place canonical snapshot.');
     }
@@ -286,7 +287,9 @@ describe('practical Place Promotion to public projection integration', () => {
           },
         ],
       }),
-    ).toThrow('Only canonical Entity and Location records explicitly marked public can be projected.');
+    ).toThrow(
+      'Only canonical Entity and Location records explicitly marked public can be projected.',
+    );
 
     const provenanceRows = expandPromotionProvenanceAssignments(
       committedCommand.provenanceAssignments,
