@@ -1,7 +1,7 @@
 # P4-18B4 existing-record practical profile correction audit
 
 **Implementation item:** P4-18B4  
-**Status:** Active — B4A completed through #135; B4B durable persistence in progress  
+**Status:** Active — B4A completed through #135; B4B completed through #136; B4C protected operator path in progress  
 **Last updated:** 2026-07-08
 
 ## Purpose
@@ -106,7 +106,44 @@ B4A established:
 - copy-on-write in-memory atomic backend;
 - committed replay, changed-content conflict, stale-version conflict, source validation, no-op rejection, and rollback coverage.
 
-B4A did not add durable database persistence or an operator UI.
+## B4B result — #136
+
+B4B established:
+
+- durable Location profile correction decision storage;
+- reviewer identity, exact expected Location version, change plan, changed field set, before/after values, reviewed source set, field provenance assignments, reason, notes, decision time, and request fingerprint persistence;
+- exact Location version and source-record existence SQL guards;
+- atomic Location update, current correction provenance replacement, and durable decision receipt persistence;
+- explicit clear-operation history without inventing current provenance for an absent value;
+- deterministic replay and changed-content conflict behavior;
+- generated migration `0021_magenta_the_anarchist` and migration-drift validation;
+- production Drizzle backend and persistence foundation coverage.
+
+B4B did not add a reviewer-facing workspace or Audit history normalization.
+
+## B4C protected operator boundary
+
+B4C keeps the Candidate and Location roles distinct:
+
+```text
+physical Candidate under review
+    ↓
+exact protected Candidate source set
+    +
+selected canonical Location current version
+    ↓
+reviewer chooses explicit field operations
+    ↓
+reviewer assigns correction sources per changed field
+    ↓
+POST revalidates Candidate version, Location version, exact source set, and eligibility
+    ↓
+independent location:correct transaction
+```
+
+Existing-target linking remains a separate operation. Selecting a physical canonical target exposes a separate correction-workspace route instead of silently rewriting Location profile fields during linking.
+
+The protected API uses a dedicated subject allowlist and UUID `Idempotency-Key`. Publication remains outside the correction operation.
 
 ## Execution slices
 
@@ -120,7 +157,7 @@ B4A did not add durable database persistence or an operator UI.
 - copy-on-write in-memory backend;
 - committed replay, changed-content conflict, stale-version conflict, source validation, structured operation, no-op, and rollback coverage.
 
-### B4B — Durable correction persistence — In progress
+### B4B — Durable correction persistence — Completed through #136
 
 - durable correction decision storage;
 - before/after field-level diff and reviewed source IDs;
@@ -131,14 +168,16 @@ B4A did not add durable database persistence or an operator UI.
 - production Drizzle persistence coverage;
 - generated migration and migration-drift validation.
 
-### B4C — Protected operator path
+### B4C — Protected operator path — In progress
 
-- add protected correction workspace/read model;
-- expose current canonical values and bounded reviewed source choices;
-- add field diff and correction provenance controls;
-- add protected API authorization and idempotency boundary;
-- add reviewer-visible set/clear and structured list operation controls;
-- keep publication separate.
+- protected correction authorization and workspace/read model;
+- current canonical values and bounded reviewed Candidate source choices;
+- Candidate-version, Location-version, exact-source-set, and eligibility revalidation before write;
+- field operation controls and per-field correction source assignments;
+- protected GET/POST API authorization and idempotency boundary;
+- reviewer-visible set/clear and structured list operation controls;
+- explicit navigation from selected physical existing target to the separate correction workspace;
+- publication remains separate.
 
 ### B4D — Audit integration and closure
 
