@@ -131,6 +131,7 @@ export function PlaceResultList({
                       ? 'border-brand-600 bg-brand-50'
                       : 'border-border bg-surface hover:border-brand-200'
                   }`}
+                  data-mobile-density="compact"
                 >
                   <div className="flex gap-3">
                     {pin.thumbnail ? (
@@ -171,7 +172,10 @@ export function PlaceResultList({
                     </div>
                   </div>
 
-                  <dl className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm sm:gap-3">
+                  <dl
+                    className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm sm:gap-3"
+                    data-mobile-summary-grid="two-column"
+                  >
                     <div className="min-w-0">
                       <dt className="text-[0.68rem] font-semibold uppercase tracking-[0.05em] text-muted sm:text-xs sm:tracking-[0.06em]">
                         Assets
