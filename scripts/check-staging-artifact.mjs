@@ -52,7 +52,10 @@ const requiredAdminFragments = [
   'Protected workspace',
   'Read-only bounded counts',
   'Dashboard access grants no write capability.',
+  'Candidate promotion and existing-target linking use separate write capabilities and exact state guards.',
+  'Correction, Evidence, reconfirmation, Media, release, publication, restore, and Audit remain separate protected boundaries.',
   'Private records are not embedded in static HTML.',
+  'Audit history',
 ];
 const forbiddenAdminFragments = [
   'CF_ACCESS_TEAM_DOMAIN',
@@ -63,6 +66,9 @@ const forbiddenAdminFragments = [
   'candidateId',
   'sourceRecordId',
   'storageKey',
+  'Candidate-to-canonical promotion is disabled.',
+  'Public export publication is disabled.',
+  'Release controls remain unavailable until the dedicated publication item.',
 ];
 
 for (const fragment of requiredAdminFragments) {
@@ -72,7 +78,40 @@ for (const fragment of requiredAdminFragments) {
 }
 for (const fragment of forbiddenAdminFragments) {
   if (adminOverview.includes(fragment)) {
-    throw new Error(`Private or server-only marker found in admin HTML: ${fragment}`);
+    throw new Error(`Private, server-only, or stale marker found in admin HTML: ${fragment}`);
+  }
+}
+
+const claimsPage = readFileSync(join(outputDirectory, 'admin/claims/index.html'), 'utf8');
+const requiredClaimsFragments = [
+  'Claim operation boundary',
+  'No single editor bypasses review or publication boundaries',
+  'Candidate review and promotion',
+  'Evidence review and Claim decisions',
+  'Reconfirmation and stale transitions',
+  'Claim-related Audit history',
+];
+for (const fragment of requiredClaimsFragments) {
+  if (!claimsPage.includes(fragment)) {
+    throw new Error(`Missing Claim workflow marker: ${fragment}`);
+  }
+}
+if (claimsPage.includes('Canonical payment-claim editing will be added')) {
+  throw new Error('Stale Claim placeholder copy found in Claim workflow HTML.');
+}
+
+const submissionsPage = readFileSync(
+  join(outputDirectory, 'admin/submissions/index.html'),
+  'utf8',
+);
+const requiredSubmissionFragments = [
+  'Future protected boundary',
+  'No submission records or controls are connected',
+  'Public submissions do not exist yet',
+];
+for (const fragment of requiredSubmissionFragments) {
+  if (!submissionsPage.includes(fragment)) {
+    throw new Error(`Missing future Submission boundary marker: ${fragment}`);
   }
 }
 
@@ -113,6 +152,7 @@ const requiredCandidateDetailFragments = [
   'Candidate inspection boundary',
   'Known source payloads are revalidated before an allowlisted snapshot is shown',
   'Protected inspection',
+  'Duplicate review, new-target promotion, and existing-target linking remain separate guarded operations',
 ];
 const forbiddenCandidateDetailFragments = [
   'CPM_ADMIN_CANDIDATE_SUBJECTS',
@@ -122,6 +162,7 @@ const forbiddenCandidateDetailFragments = [
   'privateExtra',
   'sourceRecordId',
   'actorId',
+  'promotion and publication remain unavailable',
 ];
 for (const fragment of requiredCandidateDetailFragments) {
   if (!candidateDetailPage.includes(fragment)) {
@@ -130,7 +171,7 @@ for (const fragment of requiredCandidateDetailFragments) {
 }
 for (const fragment of forbiddenCandidateDetailFragments) {
   if (candidateDetailPage.includes(fragment)) {
-    throw new Error(`Private or server-only marker found in Candidate detail HTML: ${fragment}`);
+    throw new Error(`Private, server-only, or stale marker found in Candidate detail HTML: ${fragment}`);
   }
 }
 
