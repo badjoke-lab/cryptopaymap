@@ -22,7 +22,7 @@ P4-18B4 — Existing-record practical-profile correction path audit and completi
 - P4-18A tracking correction and closure inventory is completed through #127.
 - P4-18B1 source and Candidate practical-profile contract is completed through #128.
 - P4-18B2 Promotion editor and field provenance parity is completed through #130.
-- P4-18B3 canonical persistence and public projection integration repository work is completed through #132 and #133; closure tracking handoff is in progress.
+- P4-18B3 canonical persistence and public projection integration repository work is completed through #132 and #133, with closure tracking and B4 handoff through #134.
 - P4-18B4 is active.
 
 ## Fixed review environment
@@ -67,7 +67,7 @@ For Phase 5 preparation and submission work also read:
 1. P4-18A — tracking correction and closure inventory — Completed through #127
 2. P4-18B1 — source and Candidate practical-profile contract — Completed through #128
 3. P4-18B2 — promotion editor and field provenance parity — Completed through #130
-4. P4-18B3 — canonical persistence and public projection integration — Repository completed through #132 and #133; closure tracking handoff in progress
+4. P4-18B3 — canonical persistence and public projection integration — Completed through #132, #133, and #134
 5. P4-18B4 — existing-record practical-profile correction path audit and completion — In progress
 6. P4-18C — bounded UI residual closure — Planned
 7. P4-18D — administration workflow integration audit — Planned
