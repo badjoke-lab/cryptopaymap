@@ -91,21 +91,17 @@ function input(): LocationCorrectionDecisionInput {
       },
     },
     sourceRecordIds: [sourceRecordId],
-    provenanceAssignments: [
-      'phone',
-      'description',
-      'openingHours',
-      'amenities',
-      'socialLinks',
-    ].map((fieldPath) => ({
-      fieldPath: fieldPath as
-        | 'phone'
-        | 'description'
-        | 'openingHours'
-        | 'amenities'
-        | 'socialLinks',
-      sourceRecordIds: [sourceRecordId],
-    })),
+    provenanceAssignments: ['phone', 'description', 'openingHours', 'amenities', 'socialLinks'].map(
+      (fieldPath) => ({
+        fieldPath: fieldPath as
+          | 'phone'
+          | 'description'
+          | 'openingHours'
+          | 'amenities'
+          | 'socialLinks',
+        sourceRecordIds: [sourceRecordId],
+      }),
+    ),
     reasonCode: 'reviewed_profile_correction',
     publicSummary: 'Updated practical information from the reviewed official source.',
     internalNote: null,
@@ -115,7 +111,10 @@ function input(): LocationCorrectionDecisionInput {
 describe('Location correction decision contract', () => {
   it('applies scalar set/clear and structured replace/add changes atomically with field provenance', async () => {
     const store = backend();
-    const receipt = await createLocationCorrectionDecisionService(store).correct(context(), input());
+    const receipt = await createLocationCorrectionDecisionService(store).correct(
+      context(),
+      input(),
+    );
 
     expect(receipt).toMatchObject({
       locationId,
@@ -150,10 +149,10 @@ describe('Location correction decision contract', () => {
       ],
     });
     expect(snapshot.provenanceRows.map((row) => row.fieldPath)).toEqual([
-      'phone',
+      'amenities',
       'description',
       'openingHours',
-      'amenities',
+      'phone',
       'socialLinks',
     ]);
     expect(snapshot.provenanceRows.every((row) => row.provenanceRole === 'correction')).toBe(true);
@@ -241,9 +240,7 @@ describe('Location correction decision contract', () => {
       createLocationCorrectionDecisionService(backend()).correct(context(), correction),
     ).rejects.toMatchObject({
       code: 'invalid_decision',
-      issues: expect.arrayContaining([
-        expect.stringContaining('outside the reviewed source set'),
-      ]),
+      issues: expect.arrayContaining([expect.stringContaining('outside the reviewed source set')]),
     });
   });
 
@@ -251,7 +248,9 @@ describe('Location correction decision contract', () => {
     const store = backend();
     const service = createLocationCorrectionDecisionService(store);
 
-    await expect(service.correct(context(), input())).resolves.toMatchObject({ state: 'committed' });
+    await expect(service.correct(context(), input())).resolves.toMatchObject({
+      state: 'committed',
+    });
     await expect(service.correct(context(), input())).resolves.toMatchObject({ state: 'replayed' });
 
     const changed = input();
