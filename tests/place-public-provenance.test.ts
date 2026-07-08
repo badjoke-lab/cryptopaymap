@@ -115,10 +115,7 @@ describe('public Place provenance builder', () => {
       entityId,
       locationId,
       sourceRecords: sources,
-      rows: [
-        row('location', locationId, 'amenities'),
-        row('location', locationId, 'amenities'),
-      ],
+      rows: [row('location', locationId, 'amenities'), row('location', locationId, 'amenities')],
     });
 
     expect(result[0]?.fields).toEqual(['amenities']);
