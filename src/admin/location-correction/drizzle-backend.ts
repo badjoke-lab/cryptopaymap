@@ -1,20 +1,13 @@
 import { and, eq, inArray, isNull, ne } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
-import {
-  locationProfileCorrectionDecisions,
-  locations,
-  provenanceLinks,
-} from '../../db/schema';
+import { locationProfileCorrectionDecisions, locations, provenanceLinks } from '../../db/schema';
 import {
   LocationCorrectionDecisionError,
   type LocationCorrectionDecisionBackend,
   type LocationCorrectionDecisionCommand,
   type PracticalLocationCorrectionField,
 } from './decision';
-import {
-  locationCorrectionSourceSetGuard,
-  locationCorrectionTargetGuard,
-} from './drizzle-guards';
+import { locationCorrectionSourceSetGuard, locationCorrectionTargetGuard } from './drizzle-guards';
 import {
   projectLocationCorrection,
   readLocationCorrectionDecision,
