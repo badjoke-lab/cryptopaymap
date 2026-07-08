@@ -1,7 +1,7 @@
 # P4-18B3 canonical persistence and public projection audit
 
 **Implementation item:** P4-18B3  
-**Status:** Repository completed through #132 and #133; closure tracking handoff in progress  
+**Status:** Repository completed through #132 and #133; closure tracking through #134  
 **Last updated:** 2026-07-08
 
 ## Purpose
@@ -12,7 +12,7 @@ This audit is bounded to the new-target create path. Existing-record correction 
 
 ## Closure result
 
-Repository B3 requirements are complete through #132 and #133.
+Repository B3 requirements are complete through #132 and #133, with closure tracking and B4 handoff recorded by #134.
 
 The repository now covers:
 
@@ -111,7 +111,7 @@ P4-18E must verify the configured environment-specific path that actually:
 
 If that generator/upload path does not exist in the configured environment, P4-18E must record it as an explicit launch blocker or assign implementation to the appropriate launch item. Repository tests must not be labeled as live verification.
 
-## B3C closure decision
+## B3C closure decision — #134
 
 B3C concludes:
 
