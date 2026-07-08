@@ -128,8 +128,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-18A | Tracking correction and closure inventory | Completed | P4-17, closure findings | #127 |
 | P4-18B1 | Source and Candidate practical-profile contract | Completed | P4-18A | #128 |
 | P4-18B2 | Promotion editor and field provenance parity | Completed | P4-18B1 | #130 |
-| P4-18B3 | Canonical persistence and public projection integration | In progress | P4-18B2 | — |
-| P4-18B4 | Existing-record practical-profile correction path audit and completion | Planned | P4-18B3 | — |
+| P4-18B3 | Canonical persistence and public projection integration | Repository completed; closure handoff in progress | P4-18B2 | #132, #133 |
+| P4-18B4 | Existing-record practical-profile correction path audit and completion | In progress | P4-18B3 | — |
 | P4-18C | Bounded UI residual closure | Planned | P4-18A, representative screenshot capture | — |
 | P4-18D | Administration workflow integration audit | Planned | P4-18B | — |
 | P4-18E | Live review and Phase 5 handoff audit | Planned | P4-18B, P4-18C, P4-18D | — |
@@ -152,6 +152,12 @@ P4-17A through P4-17F are implemented, validated, and merged through #122. The f
 - #126 — selected Place focus and marker correction plus desktop selected-panel containment.
 
 These changes improve observability and baseline UI behavior. They do not complete P4-18B operational parity, P4-18C residual UI closure, P4-18D administration integration, or P4-18E handoff.
+
+### P4-18B3 repository result
+
+P4-18B3 repository work is completed through #132 and #133. It covers practical-profile canonical persistence, rollback, replay/conflict behavior, field provenance expansion, explicit allowlisted public Place projection, strict validation, leakage and absence semantics, public Place provenance aggregation, Promotion-to-public projection integration coverage, canonical Place detail presentation, selected desktop/mobile consumption, and staging artifact assertions.
+
+The configured canonical query → complete twelve-artifact candidate generation → private candidate upload → release-review handoff remains an environment-specific verification path. P4-18E must verify it or record an explicit blocker or launch assignment. Repository tests do not prove that live path.
 
 ### P4-18 execution order
 
