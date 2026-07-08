@@ -1,5 +1,6 @@
 ---
 import { ClientRouter } from 'astro:transitions';
+import { adminNavigationItems, isAdminNavigationItemActive } from '../admin/navigation';
 import '../styles/global.css';
 
 interface Props {
@@ -9,18 +10,7 @@ interface Props {
 }
 
 const { title, heading, description } = Astro.props;
-const pathname = Astro.url.pathname.replace(/\/$/, '') || '/admin';
-const navigation = [
-  { href: '/admin', label: 'Overview' },
-  { href: '/admin/candidates', label: 'Candidates' },
-  { href: '/admin/claims', label: 'Claims' },
-  { href: '/admin/evidence', label: 'Evidence' },
-  { href: '/admin/rechecks', label: 'Rechecks' },
-  { href: '/admin/submissions', label: 'Submissions' },
-  { href: '/admin/media', label: 'Media' },
-  { href: '/admin/exports', label: 'Exports' },
-  { href: '/admin/audit', label: 'Audit' },
-];
+const pathname = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -67,8 +57,8 @@ const navigation = [
         <nav class="overflow-x-auto lg:pr-5">
           <ul class="flex min-w-max gap-1 lg:grid lg:min-w-0">
             {
-              navigation.map((item) => {
-                const isActive = pathname === item.href;
+              adminNavigationItems.map((item) => {
+                const isActive = isAdminNavigationItemActive(pathname, item.href);
                 return (
                   <li>
                     <a
