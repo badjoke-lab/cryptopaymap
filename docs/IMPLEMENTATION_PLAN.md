@@ -127,8 +127,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-17F | State, responsive, accessibility, and final 17-point acceptance audit | Completed | P4-17B through P4-17E | #122 |
 | P4-18A | Tracking correction and closure inventory | Completed | P4-17, closure findings | #127 |
 | P4-18B1 | Source and Candidate practical-profile contract | Completed | P4-18A | #128 |
-| P4-18B2 | Promotion editor and field provenance parity | In progress | P4-18B1 | — |
-| P4-18B3 | Canonical persistence and public projection integration | Planned | P4-18B2 | — |
+| P4-18B2 | Promotion editor and field provenance parity | Completed | P4-18B1 | #130 |
+| P4-18B3 | Canonical persistence and public projection integration | In progress | P4-18B2 | — |
 | P4-18B4 | Existing-record practical-profile correction path audit and completion | Planned | P4-18B3 | — |
 | P4-18C | Bounded UI residual closure | Planned | P4-18A, representative screenshot capture | — |
 | P4-18D | Administration workflow integration audit | Planned | P4-18B | — |
@@ -216,8 +216,6 @@ Apply approved field decisions through explicit guarded canonical transactions, 
 ### P5-08 — MVP-B integration audit
 
 Verify each submission type from public intake through private status, protected review, decision, canonical application where approved, public export, publication state, privacy boundaries, failure handling, and retention behavior.
-
-Detailed submission behavior remains governed by `docs/SUBMISSION_WORKFLOW.md` and related data, Media, verification, privacy, and publication specifications.
 
 ## Phase 6 — Launch and cutover
 
