@@ -14,9 +14,22 @@ function Field({ term, value }: { term: string; value: string | number | null })
   return (
     <div>
       <dt className="text-xs font-semibold uppercase tracking-[0.08em] text-muted">{term}</dt>
-      <dd className="mt-1 break-words text-sm text-ink">{value ?? 'Not recorded'}</dd>
+      <dd className="mt-1 whitespace-pre-line break-words text-sm text-ink">
+        {value ?? 'Not recorded'}
+      </dd>
     </div>
   );
+}
+
+function formatSocialLinks(snapshot: Extract<CandidateSourceSnapshot, { kind: 'physical_place' }>) {
+  if (snapshot.socialLinks.length === 0) return null;
+  return snapshot.socialLinks
+    .map((link) => {
+      const value = link.url ?? link.handle;
+      return value === null ? null : `${link.platform}: ${value}`;
+    })
+    .filter((value): value is string => value !== null)
+    .join('\n');
 }
 
 function snapshotFields(
@@ -33,6 +46,11 @@ function snapshotFields(
       ['Coordinates', `${snapshot.latitude}, ${snapshot.longitude}`],
       ['Category', snapshot.category],
       ['Website', snapshot.websiteUrl],
+      ['Phone', snapshot.phone],
+      ['Description', snapshot.description],
+      ['Opening hours', snapshot.openingHours],
+      ['Amenities', snapshot.amenities?.join(', ') ?? null],
+      ['Social links', formatSocialLinks(snapshot)],
       [
         'OSM identity',
         snapshot.osmType && snapshot.osmId ? `${snapshot.osmType}/${snapshot.osmId}` : null,
