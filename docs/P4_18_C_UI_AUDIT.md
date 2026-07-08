@@ -1,20 +1,34 @@
 # P4-18C bounded UI residual audit
 
 **Implementation item:** P4-18C  
-**Status:** Active — C1 visually accepted; C2 planned next  
+**Status:** Repository and visual review complete through C1 and C2; C3 closure reconciliation complete  
 **Last updated:** 2026-07-08
 
 ## Purpose
 
-P4-18C closes only material UI residuals already visible in representative screenshot review. It does not reopen Phase 4 as an unlimited redesign cycle.
+P4-18C closes only material UI residuals visible in representative screenshot review. It does not reopen Phase 4 as an unlimited redesign cycle.
 
-## Visual review source
+## Visual review sources
 
-The representative screenshot artifact generated from the post-B4 main state was inspected directly. A successful screenshot workflow is treated only as capture evidence; visual acceptance is recorded here from image review.
+The representative screenshot artifact generated from the post-B4 main state was inspected directly. A successful screenshot workflow was treated only as capture evidence; visual acceptance was recorded only after image review.
 
-C1 was also reviewed directly from the representative screenshot artifact generated from the formatted final C1 head. The affected Mobile Places List and open Mobile Menu images were inspected rather than inferred from the capture workflow result.
+C1 was reviewed directly from the representative screenshot artifact generated from the formatted final C1 head. The affected Mobile Places List and open Mobile Menu images were inspected rather than inferred from the capture workflow result.
 
-## Material findings
+C2 was reviewed directly from the representative screenshot artifact generated from the final C2 head. The expanded Place sheet, Filters-open state, Mobile Places List, open Mobile Menu, and representative Methodology page were inspected from the same artifact set before C3 closure.
+
+## Closure result
+
+The fixed five-item P4-18C scope is closed:
+
+1. Mobile Places List compactness and scanability — closed by C1;
+2. Mobile Menu density — closed by C1;
+3. expanded-sheet information order and access to payment-critical information — closed by C2;
+4. Filters completion, clear, zero-result recovery, and shared Map/List state behavior — closed by C2 plus existing shared discovery-state coverage;
+5. material density or layout defects on representative long-form public pages — no material defect found in direct review.
+
+No material horizontal overflow, hidden primary interaction, or unresolved density defect was found in the final C2 artifact review. Small future visual preferences may be handled as bounded follow-up fixes and do not keep P4-18C open.
+
+## Material findings and results
 
 ### C-UI-01 — Mobile Places List card density
 
@@ -24,7 +38,7 @@ Original issue:
 
 - realistic multi-result lists required excessive scrolling;
 - each card repeated four payment/freshness blocks in a single-column mobile definition list;
-- 80px Media or placeholder, four vertical metadata blocks, and two actions created an unnecessarily tall result card.
+- large Media or placeholder blocks, four vertical metadata blocks, and two actions created an unnecessarily tall result card.
 
 C1 result:
 
@@ -33,7 +47,7 @@ C1 result:
 - mobile thumbnails/placeholders are reduced while wider-breakpoint sizing remains;
 - Assets, Networks, Routes, and Last confirmed use a compact two-column mobile summary;
 - action controls retain minimum touch target height;
-- direct review of the C1 Mobile Places List screenshot confirms materially better scan density without information loss or horizontal overflow.
+- direct final-artifact review confirms materially better scan density without information loss or horizontal overflow.
 
 ### C-UI-02 — Mobile Menu uses excessive screen area
 
@@ -49,28 +63,30 @@ C1 result:
 - overlay dismissal, Escape handling, focus trap, close-button focus, trigger focus restoration, body scroll lock, and active-page state remain covered;
 - the menu is now a bounded top-right panel;
 - six primary links are presented as a three-row, two-column grid with minimum touch targets;
-- direct review of the C1 open-menu screenshot confirms the previous full-height empty-area problem is removed and navigation remains readable.
+- direct final-artifact review confirms the previous full-height empty-area problem is removed and navigation remains readable.
 
 ### C-UI-03 — Expanded Place sheet delays payment-critical information
 
-**Status:** Material — C2 planned
+**Status:** Closed by C2 visual acceptance
 
-Observed issue:
+Original issue:
 
-The expanded mobile sheet currently renders Location, Navigate, About, Hours, Amenities, Contact/official links, and Gallery before `How to pay` and payment metadata. Payment instructions can therefore sit well below the first viewport even though payment usability is a primary responsibility of the product.
+The expanded mobile sheet rendered Location, Navigate, About, Hours, Amenities, Contact/official links, and Gallery before `How to pay` and payment metadata. Payment instructions could therefore sit well below the first viewport even though payment usability is a primary responsibility of the product.
 
-Required correction:
+C2 result:
 
-- keep the selected-place identity header concise;
-- place `How to pay` and core payment metadata before long practical-profile sections and Gallery;
-- preserve Location and navigation access near the top;
-- avoid duplicating the complete canonical Place detail page.
+- Location and navigation remain near the top;
+- `How to pay` follows Location and Navigate directly;
+- Networks, Payment routes, Payment methods, Processor, Merchant receives, and Restrictions remain grouped with the payment context;
+- About, Hours, Amenities, Contact/official links, and Gallery follow payment-critical information;
+- the complete practical profile and detail/report exits remain available;
+- direct final-artifact review confirms payment-critical information is visible before long practical-profile content without horizontal overflow or hidden actions.
 
 ### C-UI-04 — Mobile Filters lack an explicit completion affordance
 
-**Status:** Material interaction residual — C2 planned
+**Status:** Closed by C2 visual acceptance and interaction coverage
 
-Current code already provides:
+The existing implementation already provided:
 
 - immediate filter application;
 - Clear;
@@ -80,26 +96,23 @@ Current code already provides:
 - Online Services and Suggest a Place exits;
 - Map/List state preservation through shared discovery URL state.
 
-Remaining issue:
+C2 result:
 
-- the mobile filter sheet can be dismissed through close X or backdrop, but has no explicit bottom completion action after changing filters;
-- the long facet sheet therefore lacks a clear task-completion endpoint.
-
-Required correction:
-
-- add a mobile-only sticky completion footer showing current result count;
-- retain immediate application, Clear, zero-result guidance, and existing close/backdrop behavior;
-- keep desktop filter panel behavior unchanged.
+- a mobile-only sticky completion footer now shows the live result count;
+- the completion action closes the filter sheet explicitly;
+- the completion action participates in the mobile focus trap;
+- immediate application, Clear, zero-result guidance, Widen area, Include Stale, existing backdrop/close behavior, and desktop filter behavior remain unchanged;
+- direct final-artifact review confirms the completion action is visible and readable without horizontal overflow.
 
 ### C-UI-05 — Representative long-form public pages
 
-**Status:** No material defect found in current review
+**Status:** Closed with no material defect found
 
-The representative Methodology mobile screenshot was inspected. It is long by content volume, but no material horizontal overflow, hidden interaction, or broken density/layout defect was observed. P4-18C will not churn this page without new material evidence.
+The representative Methodology mobile screenshot was inspected again from the final C2 artifact set. It is long by content volume, but no material horizontal overflow, hidden interaction, or broken density/layout defect was observed. P4-18C therefore does not churn this page without new material evidence.
 
 ## Execution slices
 
-### C1 — Compact Mobile List and Menu — Visually accepted
+### C1 — Compact Mobile List and Menu — Completed and visually accepted
 
 Completed result:
 
@@ -109,21 +122,36 @@ Completed result:
 - focused tests and representative screenshots completed successfully;
 - affected screenshots were directly inspected and accepted.
 
-### C2 — Expanded sheet payment order and Filters completion
+### C2 — Expanded sheet payment order and Filters completion — Completed and visually accepted
 
-- move payment-critical information ahead of long practical-profile content in expanded sheet;
-- retain Location/navigation near the top;
-- add explicit mobile Filters completion footer with result count;
-- verify Clear, zero-result, widen-area, Include Stale, and Map/List behavior;
-- run focused tests and inspect affected screenshots.
+Completed result:
 
-### C3 — Visual closure reconciliation
+- payment-critical information is placed ahead of long practical-profile content in expanded sheet;
+- Location/navigation remain near the top;
+- mobile Filters include an explicit completion footer with live result count;
+- Clear, zero-result recovery, Widen area, Include Stale, and shared Map/List state behavior remain covered;
+- focused tests and representative screenshots completed successfully;
+- expanded-sheet and Filters-open screenshots were directly inspected and accepted.
 
-- inspect the latest affected mobile screenshots directly;
-- verify no material horizontal overflow or hidden interactive surface;
-- reconcile the five fixed P4-18C scope items;
-- record small non-material preferences as later bounded follow-ups rather than keeping C open;
-- move tracking to P4-18D only after material residuals are closed.
+### C3 — Visual closure reconciliation — Completed
+
+C3 directly inspected the latest representative artifact across:
+
+- Mobile Places List;
+- open Mobile Menu;
+- expanded Place sheet;
+- Filters-open state;
+- representative Methodology long-form page.
+
+No material residual remained in the fixed P4-18C scope. P4-18C is closed and tracking may move to P4-18D.
+
+## Closure decision
+
+P4-18C is complete.
+
+The next implementation item is P4-18D — Administration workflow integration audit.
+
+P4-18D must audit real operator journeys across Candidate, duplicate, Promotion, existing-target linking, Location correction, Evidence, reconfirmation, Media, export, Audit history, and rollback/retry boundaries. Environment-specific checks must be classified precisely as completed, unavailable, or assigned to P4-18E/launch work; repository tests must not be described as live verification.
 
 ## Non-goals
 
