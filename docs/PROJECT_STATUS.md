@@ -8,7 +8,7 @@ Phase 4 — Public core / MVP-A closure
 
 ## Current implementation item
 
-P4-18C — Bounded UI residual closure
+P4-18D — Administration workflow integration audit
 
 ## Current repository state
 
@@ -24,7 +24,8 @@ P4-18C — Bounded UI residual closure
 - P4-18B2 Promotion editor and field provenance parity is completed through #130.
 - P4-18B3 canonical persistence and public projection integration repository work is completed through #132 and #133, with closure tracking and B4 handoff through #134.
 - P4-18B4 existing-record practical-profile correction path is repository-complete through #135, #136, #137, and #138.
-- P4-18C is active.
+- P4-18C bounded UI residual closure is completed through #139, #141, and #142, with direct final-artifact visual review recorded in `docs/P4_18_C_UI_AUDIT.md`.
+- P4-18D is active.
 
 ## Fixed review environment
 
@@ -55,7 +56,8 @@ For Places UI work read:
 
 1. `docs/PLACES_UX_ACCEPTANCE.md`;
 2. `docs/PLACES_RECOVERY_PLAN.md`;
-3. `docs/PLACES_UX_FINAL_AUDIT.md`.
+3. `docs/PLACES_UX_FINAL_AUDIT.md`;
+4. `docs/P4_18_C_UI_AUDIT.md` for the completed bounded residual closure.
 
 For Phase 5 preparation and submission work also read:
 
@@ -71,8 +73,8 @@ For Phase 5 preparation and submission work also read:
 3. P4-18B2 — promotion editor and field provenance parity — Completed through #130
 4. P4-18B3 — canonical persistence and public projection integration — Completed through #132, #133, and #134
 5. P4-18B4 — existing-record practical-profile correction path audit and completion — Completed through #135, #136, #137, and #138
-6. P4-18C — bounded UI residual closure — In progress
-7. P4-18D — administration workflow integration audit — Planned
+6. P4-18C — bounded UI residual closure — Completed through #139, #141, and #142
+7. P4-18D — administration workflow integration audit — In progress
 8. P4-18E — live review and Phase 5 handoff audit — Planned
 
 The authoritative scope and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`.
@@ -141,7 +143,7 @@ Repository coverage includes:
 - practical profile consumption by desktop selected panel and mobile expanded sheet;
 - built staging Place detail coverage for description, hours, amenities, phone, official social link, and Media.
 
-The repository release-review path begins from an already generated private candidate bundle. The configured canonical query → complete candidate generation → private upload → release-review path is an environment-specific verification item assigned precisely to P4-18E. Repository tests do not prove that live path.
+The repository release-review path begins from an already generated private candidate bundle. The configured canonical query → complete twelve-artifact candidate generation → private upload → release-review path is an environment-specific verification item assigned precisely to P4-18E. Repository tests do not prove that live path.
 
 ## P4-18B4 completed boundary
 
@@ -165,19 +167,36 @@ Repository coverage includes:
 
 Live migration application, Access allowlist configuration, representative live correction, live protected Audit appearance, and configured corrected-value release flow remain environment-specific P4-18D/E verification items. Repository tests do not prove those live conditions.
 
-## P4-18C active scope
+## P4-18C completed boundary
 
-P4-18C is bounded to:
+P4-18C closed the fixed UI residual scope through C1, C2, and direct C3 final-artifact reconciliation:
 
-- Mobile Places List compactness and scanability;
-- Mobile Menu density;
-- expanded-sheet information order and access to payment-critical information;
-- Filters completion, clear, zero-result, and Map/List behavior;
-- only material density or layout defects on representative long-form public pages.
+- Mobile Places List cards were compacted while retaining status, category, locality, payment assets, networks, routes, freshness, map selection, and payment-detail access;
+- the Mobile Menu moved from a sparse full-height drawer to a bounded two-column navigation panel while preserving focus, Escape, overlay, body-scroll, and active-page behavior;
+- expanded mobile Place information now presents Location and Navigate followed immediately by `How to pay` and core payment metadata before long practical-profile content;
+- Mobile Filters now include an explicit sticky completion action with live result count while retaining immediate application, Clear, zero-result recovery, Widen area, Include Stale, and existing desktop behavior;
+- representative Methodology long-form mobile output was directly inspected with no material overflow, hidden interaction, or broken density/layout defect found;
+- final direct review of the same latest artifact set found no material horizontal overflow or hidden primary interaction across the fixed five-item scope.
 
-Representative screenshot capture is a standard review instrument. A successful capture job does not replace image inspection.
+Screenshot workflow success was not used as a substitute for image inspection. The closure record is `docs/P4_18_C_UI_AUDIT.md`.
 
-P4-18C must not become an unlimited redesign cycle. Small later visual findings may be handled as bounded fixes and do not keep P4-18C open indefinitely.
+## P4-18D active scope
+
+P4-18D audits real operator journeys and cross-workspace integration across:
+
+- Candidate queue and detail;
+- duplicate review and identity resolution;
+- new-target Promotion;
+- existing-target linking;
+- separate Location correction;
+- Evidence review and Claim decisions;
+- reconfirmation queue and expiration behavior;
+- Media review;
+- export candidate, release decision, activation, history, and restore boundaries;
+- protected Audit history coverage;
+- conflict, retry, replay, rollback, and operator-reachability behavior.
+
+P4-18D must distinguish repository evidence from environment-specific verification. Every live-only check must be classified precisely as completed, unavailable, or assigned to P4-18E/launch work. Broad deferred-verification language is not sufficient.
 
 ## Phase 5 handoff
 
@@ -196,7 +215,7 @@ Planned Phase 5 order:
 
 ## Next
 
-Execute the bounded P4-18C UI residual audit and fixes. Do not move to P4-18D until P4-18C repository work is closed and tracking is updated.
+Execute P4-18D administration workflow integration audit. Do not move to P4-18E until operator journeys, cross-workspace boundaries, retry/conflict behavior, Audit coverage, and environment-specific check inventory are reconciled.
 
 ## Blocked
 

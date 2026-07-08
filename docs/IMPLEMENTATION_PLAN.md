@@ -130,8 +130,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-18B2 | Promotion editor and field provenance parity | Completed | P4-18B1 | #130 |
 | P4-18B3 | Canonical persistence and public projection integration | Completed | P4-18B2 | #132, #133, #134 |
 | P4-18B4 | Existing-record practical-profile correction path audit and completion | Completed | P4-18B3 | #135, #136, #137, #138 |
-| P4-18C | Bounded UI residual closure | In progress | P4-18A, representative screenshot capture | — |
-| P4-18D | Administration workflow integration audit | Planned | P4-18B | — |
+| P4-18C | Bounded UI residual closure | Completed | P4-18A, representative screenshot capture | #139, #141, #142 |
+| P4-18D | Administration workflow integration audit | In progress | P4-18B | — |
 | P4-18E | Live review and Phase 5 handoff audit | Planned | P4-18B, P4-18C, P4-18D | — |
 
 ### P4-17 Places recovery result
@@ -151,7 +151,7 @@ P4-17A through P4-17F are implemented, validated, and merged through #122. The f
 - #125 — representative desktop/mobile screenshot capture, interactive-state capture, legacy Place field parity baseline, and practical profile staging fixture coverage;
 - #126 — selected Place focus and marker correction plus desktop selected-panel containment.
 
-These changes improve observability and baseline UI behavior. They do not complete P4-18C residual UI closure, P4-18D administration integration, or P4-18E handoff.
+These changes improve observability and baseline UI behavior. They do not complete P4-18D administration integration or P4-18E handoff.
 
 ### P4-18B3 repository result
 
@@ -164,6 +164,20 @@ The configured canonical query → complete twelve-artifact candidate generation
 P4-18B4 repository work is completed through #135–#138. It establishes bounded existing-Location correction semantics, exact correction provenance, replay/conflict/rollback behavior, durable decision and diff history, atomic Drizzle persistence, protected operator workspace and API, separate existing-target navigation, and protected Audit history normalization.
 
 Environment-specific migration application, Access allowlist configuration, representative live correction, live Audit appearance, and corrected-value release flow remain assigned to P4-18D/E. Repository tests do not prove those live conditions.
+
+### P4-18C repository and visual result
+
+P4-18C is completed through #139, #141, and #142.
+
+The bounded closure covers:
+
+- compact Mobile Places List cards with payment/freshness information retained;
+- bounded Mobile Menu density with focus, Escape, overlay, body-scroll, and active-page behavior preserved;
+- payment-first information ordering in the expanded mobile Place sheet;
+- explicit Mobile Filters completion with live result count while retaining Clear and zero-result recovery paths;
+- direct final-artifact inspection across List, Menu, expanded sheet, Filters, and representative Methodology long-form output.
+
+No material horizontal overflow, hidden primary interaction, or unresolved density defect remained in the fixed five-item scope. Screenshot capture success was not used as a substitute for image inspection. The durable closure record is `docs/P4_18_C_UI_AUDIT.md`.
 
 ### P4-18 execution order
 
@@ -180,7 +194,9 @@ Execution order:
 7. P4-18D — administration workflow integration audit;
 8. P4-18E — live review and Phase 5 handoff audit.
 
-P4-18 is a bounded closure term. P4-18C must not become an unlimited redesign cycle. P4-18B is a prerequisite for public submission work because external corrections must not arrive before the operator can safely review, provenance, apply, and publish the same field classes.
+P4-18 is a bounded closure term. P4-18B is a prerequisite for public submission work because external corrections must not arrive before the operator can safely review, provenance, apply, and publish the same field classes.
+
+P4-18D is now active. It must audit operator journeys and cross-workspace boundaries from Candidate intake through duplicate review, Promotion, existing-target linking, Location correction, Evidence, reconfirmation, Media, export controls, Audit history, and rollback/retry behavior. Environment-specific checks must be classified precisely rather than hidden under broad deferred-verification language.
 
 ## Phase 5 — Public submissions / MVP-B
 
