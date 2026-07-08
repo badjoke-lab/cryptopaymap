@@ -30,9 +30,7 @@ describe('Evidence confirmation payment prerequisites', () => {
     });
 
     expect(
-      evaluateEvidenceReviewPaymentPrerequisites('direct_wallet', [
-        { ...base, isPrimary: false },
-      ]),
+      evaluateEvidenceReviewPaymentPrerequisites('direct_wallet', [{ ...base, isPrimary: false }]),
     ).toMatchObject({ eligible: false });
   });
 

@@ -41,7 +41,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -127,10 +130,19 @@ export function EvidenceReviewDetail() {
 
   if (state.status !== 'ready') {
     const copy = {
-      missing_id: ['Evidence identifier required', 'Return to the Evidence queue and choose a record.'],
-      denied: ['Evidence review access denied', 'This verified identity cannot read Evidence review data.'],
+      missing_id: [
+        'Evidence identifier required',
+        'Return to the Evidence queue and choose a record.',
+      ],
+      denied: [
+        'Evidence review access denied',
+        'This verified identity cannot read Evidence review data.',
+      ],
       not_found: ['Evidence not found', 'The requested Evidence record is unavailable or deleted.'],
-      unavailable: ['Evidence review unavailable', 'The protected service could not complete safely.'],
+      unavailable: [
+        'Evidence review unavailable',
+        'The protected service could not complete safely.',
+      ],
       error: ['Evidence response could not be verified', 'No unverified review data is displayed.'],
     } as const;
     const [title, description] = copy[state.status];
@@ -345,63 +357,115 @@ function EvidenceReviewWorkspace({
         <p className="mt-4 max-w-4xl text-sm leading-6 text-muted">{evidence.summary}</p>
         <div className="mt-5 flex flex-wrap gap-4 text-sm">
           {evidence.sourceUrl ? (
-            <a className="inline-flex items-center gap-2 font-semibold text-brand-700" href={evidence.sourceUrl} target="_blank" rel="noreferrer">
+            <a
+              className="inline-flex items-center gap-2 font-semibold text-brand-700"
+              href={evidence.sourceUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
               Open source <ExternalLink className="size-4" />
             </a>
           ) : null}
           {evidence.archiveUrl ? (
-            <a className="inline-flex items-center gap-2 font-semibold text-brand-700" href={evidence.archiveUrl} target="_blank" rel="noreferrer">
+            <a
+              className="inline-flex items-center gap-2 font-semibold text-brand-700"
+              href={evidence.archiveUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
               Open archive <ExternalLink className="size-4" />
             </a>
           ) : null}
         </div>
         <dl className="mt-5 grid gap-4 text-sm sm:grid-cols-2 lg:grid-cols-4">
-          <div><dt className="font-semibold text-ink">Origin role</dt><dd className="mt-1 text-muted">{label(evidence.originRole)}</dd></div>
-          <div><dt className="font-semibold text-ink">Observed</dt><dd className="mt-1 text-muted">{evidence.observedAt ?? 'Not recorded'}</dd></div>
-          <div><dt className="font-semibold text-ink">Published</dt><dd className="mt-1 text-muted">{evidence.publishedAt ?? 'Not recorded'}</dd></div>
-          <div><dt className="font-semibold text-ink">Evidence version</dt><dd className="mt-1 text-muted">{evidence.updatedAt}</dd></div>
+          <div>
+            <dt className="font-semibold text-ink">Origin role</dt>
+            <dd className="mt-1 text-muted">{label(evidence.originRole)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Observed</dt>
+            <dd className="mt-1 text-muted">{evidence.observedAt ?? 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Published</dt>
+            <dd className="mt-1 text-muted">{evidence.publishedAt ?? 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Evidence version</dt>
+            <dd className="mt-1 text-muted">{evidence.updatedAt}</dd>
+          </div>
         </dl>
       </section>
 
       <section className="mt-6 rounded-card border border-border bg-surface p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">Claim under review</p>
-            <h2 className="mt-2 text-xl font-semibold text-ink">{label(claim.claimStatus)} · {label(claim.routeType)}</h2>
+            <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
+              Claim under review
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-ink">
+              {label(claim.claimStatus)} · {label(claim.routeType)}
+            </h2>
           </div>
-          <span className="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-semibold text-muted">{label(claim.visibility)}</span>
+          <span className="rounded-pill border border-border bg-canvas px-3 py-1 text-xs font-semibold text-muted">
+            {label(claim.visibility)}
+          </span>
         </div>
         <dl className="mt-5 grid gap-4 text-sm md:grid-cols-2">
-          <div><dt className="font-semibold text-ink">How to pay</dt><dd className="mt-1 text-muted">{claim.howToPay ?? 'Not recorded'}</dd></div>
-          <div><dt className="font-semibold text-ink">Merchant receives</dt><dd className="mt-1 text-muted">{label(claim.merchantReceives)}</dd></div>
-          <div><dt className="font-semibold text-ink">Acceptance scope</dt><dd className="mt-1 text-muted">{label(claim.acceptanceScope)}</dd></div>
-          <div><dt className="font-semibold text-ink">Claim version</dt><dd className="mt-1 text-muted">{claim.updatedAt}</dd></div>
+          <div>
+            <dt className="font-semibold text-ink">How to pay</dt>
+            <dd className="mt-1 text-muted">{claim.howToPay ?? 'Not recorded'}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Merchant receives</dt>
+            <dd className="mt-1 text-muted">{label(claim.merchantReceives)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Acceptance scope</dt>
+            <dd className="mt-1 text-muted">{label(claim.acceptanceScope)}</dd>
+          </div>
+          <div>
+            <dt className="font-semibold text-ink">Claim version</dt>
+            <dd className="mt-1 text-muted">{claim.updatedAt}</dd>
+          </div>
         </dl>
 
         <div className="mt-5 rounded-control border border-border bg-canvas p-4 text-sm">
-          <p className="font-semibold text-ink">Accepted Evidence threshold: {detail.threshold.eligible ? 'Eligible' : 'Not eligible'}</p>
+          <p className="font-semibold text-ink">
+            Accepted Evidence threshold: {detail.threshold.eligible ? 'Eligible' : 'Not eligible'}
+          </p>
           <p className="mt-1 text-muted">
-            {detail.threshold.basis ? label(detail.threshold.basis) : 'No confirmation basis'} · {acceptedIds.length} accepted record{acceptedIds.length === 1 ? '' : 's'} before this decision
+            {detail.threshold.basis ? label(detail.threshold.basis) : 'No confirmation basis'} ·{' '}
+            {acceptedIds.length} accepted record{acceptedIds.length === 1 ? '' : 's'} before this
+            decision
           </p>
         </div>
 
         <div className="mt-4 rounded-control border border-border bg-canvas p-4 text-sm">
-          <p className="font-semibold text-ink">Payment prerequisites: {detail.paymentPrerequisites.eligible ? 'Eligible' : 'Not eligible'}</p>
+          <p className="font-semibold text-ink">
+            Payment prerequisites:{' '}
+            {detail.paymentPrerequisites.eligible ? 'Eligible' : 'Not eligible'}
+          </p>
           <p className="mt-1 text-muted">
-            {detail.paymentCombinations.length} reviewed payment combination{detail.paymentCombinations.length === 1 ? '' : 's'} · exact set pinned for confirmation
+            {detail.paymentCombinations.length} reviewed payment combination
+            {detail.paymentCombinations.length === 1 ? '' : 's'} · exact set pinned for confirmation
           </p>
           {detail.paymentCombinations.length > 0 ? (
             <ul className="mt-3 grid gap-1 text-muted">
               {detail.paymentCombinations.map((combination) => (
                 <li key={combination.id}>
-                  {combination.assetSymbol} · {label(combination.networkSlug)} · {label(combination.paymentMethodSlug)}{combination.isPrimary ? ' · Primary' : ''}
+                  {combination.assetSymbol} · {label(combination.networkSlug)} ·{' '}
+                  {label(combination.paymentMethodSlug)}
+                  {combination.isPrimary ? ' · Primary' : ''}
                 </li>
               ))}
             </ul>
           ) : null}
           {!detail.paymentPrerequisites.eligible ? (
             <ul className="mt-3 grid gap-1 text-amber-900">
-              {detail.paymentPrerequisites.issues.map((issue) => <li key={issue}>{issue}</li>)}
+              {detail.paymentPrerequisites.issues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
             </ul>
           ) : null}
         </div>
@@ -411,7 +475,9 @@ function EvidenceReviewWorkspace({
         <section className="rounded-card border border-brand-600 bg-brand-50 p-5 shadow-sm">
           <h2 className="text-xl font-semibold text-ink">Evidence decision</h2>
           <p className="mt-2 text-sm leading-6 text-muted">
-            The Evidence version, Claim version, visibility, status, complete accepted Evidence set, and exact Claim Asset set are fixed in this request. Claim visibility cannot be changed here.
+            The Evidence version, Claim version, visibility, status, complete accepted Evidence set,
+            and exact Claim Asset set are fixed in this request. Claim visibility cannot be changed
+            here.
           </p>
         </section>
 
@@ -419,7 +485,13 @@ function EvidenceReviewWorkspace({
           <div className="grid gap-4 md:grid-cols-3">
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Disposition
-              <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={disposition} onChange={(event) => normalizeDisposition(event.target.value as EvidenceReviewDisposition)}>
+              <select
+                className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                value={disposition}
+                onChange={(event) =>
+                  normalizeDisposition(event.target.value as EvidenceReviewDisposition)
+                }
+              >
                 <option value="accepted">Accepted</option>
                 <option value="rejected">Rejected</option>
                 <option value="held">Held</option>
@@ -427,7 +499,12 @@ function EvidenceReviewWorkspace({
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Finding
-              <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={finding} disabled={disposition !== 'accepted'} onChange={(event) => normalizeFinding(event.target.value as EvidenceReviewFinding)}>
+              <select
+                className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                value={finding}
+                disabled={disposition !== 'accepted'}
+                onChange={(event) => normalizeFinding(event.target.value as EvidenceReviewFinding)}
+              >
                 <option value="supports_claim">Supports Claim</option>
                 <option value="contradicts_claim">Contradicts Claim</option>
                 <option value="insufficient">Insufficient</option>
@@ -435,10 +512,21 @@ function EvidenceReviewWorkspace({
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Claim action
-              <select className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" value={claimAction} disabled={disposition !== 'accepted' || finding === 'insufficient'} onChange={(event) => setClaimAction(event.target.value as EvidenceReviewClaimAction)}>
+              <select
+                className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                value={claimAction}
+                disabled={disposition !== 'accepted' || finding === 'insufficient'}
+                onChange={(event) =>
+                  setClaimAction(event.target.value as EvidenceReviewClaimAction)
+                }
+              >
                 <option value="no_change">No change</option>
-                {finding === 'supports_claim' && detail.paymentPrerequisites.eligible ? <option value="confirm">Confirm</option> : null}
-                {finding === 'contradicts_claim' ? <option value="mark_stale">Mark stale</option> : null}
+                {finding === 'supports_claim' && detail.paymentPrerequisites.eligible ? (
+                  <option value="confirm">Confirm</option>
+                ) : null}
+                {finding === 'contradicts_claim' ? (
+                  <option value="mark_stale">Mark stale</option>
+                ) : null}
                 {finding === 'contradicts_claim' ? <option value="end">End</option> : null}
                 {finding === 'contradicts_claim' ? <option value="reject">Reject</option> : null}
               </select>
@@ -448,45 +536,82 @@ function EvidenceReviewWorkspace({
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Reason code
-              <input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="reasonCode" defaultValue={disposition === 'held' ? 'needs_more_information' : 'review_decision'} pattern="[a-z0-9]+(?:_[a-z0-9]+)*" required />
+              <input
+                className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                name="reasonCode"
+                defaultValue={disposition === 'held' ? 'needs_more_information' : 'review_decision'}
+                pattern="[a-z0-9]+(?:_[a-z0-9]+)*"
+                required
+              />
             </label>
             {claimAction === 'confirm' || claimAction === 'mark_stale' ? (
               <label className="grid gap-2 text-sm font-semibold text-ink">
                 Next review time
-                <input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="nextReviewAt" type="datetime-local" defaultValue={defaultReviewDate()} required />
+                <input
+                  className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  name="nextReviewAt"
+                  type="datetime-local"
+                  defaultValue={defaultReviewDate()}
+                  required
+                />
               </label>
             ) : null}
             {claimAction === 'end' ? (
               <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
                 Ended reason
-                <input className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal" name="endedReason" required />
+                <input
+                  className="min-h-11 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                  name="endedReason"
+                  required
+                />
               </label>
             ) : null}
             <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
               Public summary
-              <textarea className="min-h-28 rounded-control border border-border bg-white px-3 py-2 font-normal" name="publicSummary" maxLength={1000} />
+              <textarea
+                className="min-h-28 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                name="publicSummary"
+                maxLength={1000}
+              />
             </label>
             <label className="grid gap-2 text-sm font-semibold text-ink md:col-span-2">
               Internal note
-              <textarea className="min-h-28 rounded-control border border-border bg-white px-3 py-2 font-normal" name="internalNote" maxLength={2000} />
+              <textarea
+                className="min-h-28 rounded-control border border-border bg-white px-3 py-2 font-normal"
+                name="internalNote"
+                maxLength={2000}
+              />
             </label>
           </div>
         </section>
 
         {!pending ? (
-          <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">
-            This Evidence is no longer pending. Reload the queue instead of submitting another decision.
+          <p
+            className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+            role="alert"
+          >
+            This Evidence is no longer pending. Reload the queue instead of submitting another
+            decision.
           </p>
         ) : null}
         {submitState.status !== 'idle' && submitState.status !== 'submitting' ? (
-          <p className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950" role="alert">{submitState.message}</p>
+          <p
+            className="rounded-control border border-warning/50 bg-amber-50 p-4 text-sm text-amber-950"
+            role="alert"
+          >
+            {submitState.message}
+          </p>
         ) : null}
         <div className="flex flex-wrap gap-3">
           <Button type="submit" disabled={!pending || submitState.status === 'submitting'}>
-            {submitState.status === 'submitting' ? 'Committing decision…' : 'Commit Evidence decision'}
+            {submitState.status === 'submitting'
+              ? 'Committing decision…'
+              : 'Commit Evidence decision'}
           </Button>
           {submitState.status === 'conflict' ? (
-            <Button type="button" variant="secondary" onClick={reload}>Reload current state</Button>
+            <Button type="button" variant="secondary" onClick={reload}>
+              Reload current state
+            </Button>
           ) : null}
         </div>
       </form>

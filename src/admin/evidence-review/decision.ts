@@ -74,9 +74,7 @@ export const evidenceReviewDecisionInputSchema = z
         message: 'Expected accepted Evidence IDs must be unique.',
       });
     }
-    if (
-      new Set(decision.expectedClaimAssetIds).size !== decision.expectedClaimAssetIds.length
-    ) {
+    if (new Set(decision.expectedClaimAssetIds).size !== decision.expectedClaimAssetIds.length) {
       context.addIssue({
         code: 'custom',
         path: ['expectedClaimAssetIds'],

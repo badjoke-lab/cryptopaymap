@@ -65,7 +65,9 @@ export function ReconfirmationDetail() {
       const receipt = (await response.json()) as { toStatus: string; state: string };
       setMessage(`Claim is ${receipt.toStatus} (${receipt.state}).`);
     } catch {
-      setMessage('The Claim transition request could not be completed. Retry when connectivity returns.');
+      setMessage(
+        'The Claim transition request could not be completed. Retry when connectivity returns.',
+      );
     }
   }
 
