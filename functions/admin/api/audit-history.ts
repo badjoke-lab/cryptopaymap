@@ -17,6 +17,7 @@ import {
   auditHistoryDatabase,
   type AuditHistoryEnvironment,
 } from '../../../src/admin/audit-history/http-environment';
+import { createDrizzleLocationCorrectionAuditSource } from '../../../src/admin/audit-history/location-correction-source';
 import { readProtectedAdminIdentity } from '../../../src/admin/dashboard/identity-context';
 
 interface AuditHistoryPagesContext {
@@ -57,7 +58,10 @@ async function loadHistoryFromEnvironment(
   const database = auditHistoryDatabase(environment);
   return loadAuditHistory(
     context,
-    createAggregatedAuditHistoryBackend(createDrizzleAuditHistorySources(database)),
+    createAggregatedAuditHistoryBackend([
+      ...createDrizzleAuditHistorySources(database),
+      createDrizzleLocationCorrectionAuditSource(database),
+    ]),
     parseAuditHistoryQuery(requestUrl),
     asOf,
   );

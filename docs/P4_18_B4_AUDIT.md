@@ -1,7 +1,7 @@
 # P4-18B4 existing-record practical profile correction audit
 
 **Implementation item:** P4-18B4  
-**Status:** Active — B4A completed through #135; B4B completed through #136; B4C protected operator path in progress  
+**Status:** Repository completed through #135, #136, #137, and #138  
 **Last updated:** 2026-07-08
 
 ## Purpose
@@ -9,6 +9,34 @@
 P4-18B4 audits and completes the guarded correction path for practical profile fields on already canonical Places.
 
 The work is separate from Candidate existing-target linking. Existing-target linking reuses an identity and creates a new hidden Claim; it does not edit canonical Entity or Location profile fields.
+
+## Closure result
+
+Repository B4 requirements are complete through #135, #136, #137, and #138.
+
+The repository now provides:
+
+- an explicit bounded `location:correct` operation;
+- scalar set, clear, and unchanged semantics;
+- Amenities add, remove, replace, clear, and unchanged semantics;
+- Social Link add, remove, replace, clear, and unchanged semantics;
+- exact changed-field correction provenance coverage;
+- deterministic replay and changed-content conflict behavior;
+- exact canonical Location version guards;
+- no-op rejection and atomic rollback coverage;
+- durable before/after correction history and reviewer decision receipts;
+- current correction provenance maintenance separated from durable correction history;
+- generated database migration and migration-drift validation;
+- protected Candidate-source-set and canonical-Location workspace binding;
+- protected GET/POST API with dedicated subject allowlist and UUID idempotency key;
+- Candidate-version, Location-version, exact-source-set, and eligibility revalidation immediately before write;
+- reviewer controls for all bounded correction operation classes;
+- explicit navigation from selected physical existing target to the separate correction workspace;
+- protected Audit history normalization of durable correction decisions;
+- operator reachability, conflict, unavailable, and retry recovery coverage;
+- built artifact checks for the Location correction admin page and server-only marker leakage.
+
+Repository B4 completion does not claim that the live database migration, Cloudflare Access allowlist, live operator workflow, release generation path, or production publication flow has been verified. Those environment-specific checks remain for P4-18D/E according to their scopes.
 
 ## Audit finding
 
@@ -33,7 +61,7 @@ The bounded B4 practical profile correction scope is:
 - `amenities`;
 - `socialLinks`.
 
-Name, category, coordinates, country reassignment, Claim state, Evidence, and Media remain outside this bounded correction operation unless a later audit finds a direct dependency that cannot be separated safely.
+Name, category, coordinates, country reassignment, Claim state, Evidence, and Media remain outside this bounded correction operation.
 
 ## Required semantics
 
@@ -45,7 +73,7 @@ Scalar corrections distinguish:
 - set — assign a reviewed value;
 - clear — explicitly remove the current optional value.
 
-An empty form value must never silently mean clear.
+An empty form value never silently means clear.
 
 ### Amenities
 
@@ -119,9 +147,7 @@ B4B established:
 - generated migration `0021_magenta_the_anarchist` and migration-drift validation;
 - production Drizzle backend and persistence foundation coverage.
 
-B4B did not add a reviewer-facing workspace or Audit history normalization.
-
-## B4C protected operator boundary
+## B4C result — #137
 
 B4C keeps the Candidate and Location roles distinct:
 
@@ -141,51 +167,79 @@ POST revalidates Candidate version, Location version, exact source set, and elig
 independent location:correct transaction
 ```
 
-Existing-target linking remains a separate operation. Selecting a physical canonical target exposes a separate correction-workspace route instead of silently rewriting Location profile fields during linking.
+B4C established:
 
-The protected API uses a dedicated subject allowlist and UUID `Idempotency-Key`. Publication remains outside the correction operation.
-
-## Execution slices
-
-### B4A — Correction contract and atomic semantics — Completed through #135
-
-- strict mutation context and capability boundary;
-- explicit scalar and structured change operations;
-- exact field-provenance coverage;
-- deterministic request fingerprints;
-- canonical patch application;
-- copy-on-write in-memory backend;
-- committed replay, changed-content conflict, stale-version conflict, source validation, structured operation, no-op, and rollback coverage.
-
-### B4B — Durable correction persistence — Completed through #136
-
-- durable correction decision storage;
-- before/after field-level diff and reviewed source IDs;
-- exact Location version guard;
-- source-record existence guard;
-- atomic Location, current correction provenance, and durable decision persistence;
-- deterministic replay and stale-state conflict behavior;
-- production Drizzle persistence coverage;
-- generated migration and migration-drift validation.
-
-### B4C — Protected operator path — In progress
-
-- protected correction authorization and workspace/read model;
-- current canonical values and bounded reviewed Candidate source choices;
+- dedicated `CPM_ADMIN_LOCATION_CORRECT_SUBJECTS` authorization policy;
+- isolated correction read and mutation contexts;
+- UUID `Idempotency-Key` requirement;
+- protected workspace/read model;
+- bounded canonical Location current values and reviewed Candidate source choices;
 - Candidate-version, Location-version, exact-source-set, and eligibility revalidation before write;
 - field operation controls and per-field correction source assignments;
-- protected GET/POST API authorization and idempotency boundary;
-- reviewer-visible set/clear and structured list operation controls;
-- explicit navigation from selected physical existing target to the separate correction workspace;
-- publication remains separate.
+- explicit decision reason, public summary, and internal note controls;
+- separate navigation from selected physical existing-target review;
+- explicit invalid, denied, not-found, conflict, unavailable, and success states;
+- publication kept outside the correction operation.
 
-### B4D — Audit integration and closure
+Existing-target linking remains a separate operation and does not silently rewrite Location profile fields.
 
-- normalize durable correction decisions into protected Audit history;
-- verify operator reachability and failure/retry states;
-- reconcile the B4 completion matrix;
-- record any environment-specific checks for P4-18D/E;
-- move tracking to P4-18C only after B4 repository requirements are closed.
+## B4D result — #138
+
+B4D closes the repository correction path by establishing:
+
+- `canonical` as a protected Audit history domain;
+- `location_profile_correction` as the durable correction source kind;
+- `location` as an exact Audit target type;
+- bounded metadata-only normalization of durable correction decisions;
+- exclusion of internal note, before/after payloads, request fingerprint, and private correction payloads from normalized Audit items;
+- Drizzle Audit source filtering by actor, time, pagination cursor, and Location target;
+- protected Audit API aggregation of correction history;
+- operator reachability from selected physical existing-target review;
+- unavailable-workspace retry recovery coverage;
+- built artifact presence and server-only marker leakage checks for the correction admin page.
+
+## Completion matrix
+
+| Requirement | Repository result |
+|---|---|
+| Address/locality/region/postal correction | Covered by bounded scalar set/clear contract |
+| Phone add/replace/remove | Covered |
+| Website add/replace/remove | Covered |
+| Description correction/removal | Covered |
+| Opening-hours correction/removal | Covered |
+| Amenities add/remove/replace/clear | Covered |
+| Social link add/remove/replace/handle change | Covered |
+| Exact canonical state guard | Covered by Location `updatedAt` guard plus SQL lock guard |
+| Explicit before/after diff | Durable decision receipt |
+| Correction provenance | Field-level reviewed-source assignments plus current provenance maintenance |
+| Reviewer decision | Durable decision table and protected operator path |
+| Identical replay | Covered |
+| Changed-content conflict | Covered |
+| Stale-state conflict | Covered |
+| Atomic rollback | Covered |
+| Separate publication boundary | Covered |
+| Protected Audit record | Covered through #138 |
+| Operator reachability | Covered through explicit existing-target route |
+| Failure/retry states | Covered through API and component tests |
+| Built admin artifact boundary | Covered by staging artifact check |
+
+## Environment-specific checks carried forward
+
+P4-18D/E must verify or classify, without treating repository tests as live evidence:
+
+- migration `0021_magenta_the_anarchist` applied in the configured database environment;
+- `CPM_ADMIN_LOCATION_CORRECT_SUBJECTS` configured for intended live reviewers;
+- protected correction page and API reachable only through intended Access policy;
+- one representative live correction can load exact Candidate sources and canonical Location version;
+- stale Candidate, stale Location, and changed source-set conflicts fail closed in the configured environment;
+- correction decision appears in live protected Audit history after a successful live correction;
+- corrected canonical values enter the configured candidate-generation and release-review path assigned by the B3 audit before any public activation.
+
+## Closure decision
+
+P4-18B4 repository requirements are closed through #135, #136, #137, and #138.
+
+The next implementation item is P4-18C bounded UI residual closure. B4 live/environment checks remain assigned to P4-18D/E and must not be represented as completed by repository CI alone.
 
 ## Non-goals
 

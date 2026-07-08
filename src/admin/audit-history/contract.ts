@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const auditHistoryDomainValues = [
   'candidate',
+  'canonical',
   'evidence',
   'reconfirmation',
   'media',
@@ -11,6 +12,7 @@ export const auditHistoryDomainValues = [
 export const auditHistorySourceKindValues = [
   'candidate_duplicate_decision',
   'candidate_promotion',
+  'location_profile_correction',
   'evidence_review_decision',
   'reconfirmation_expiration',
   'media_review_decision',
@@ -22,6 +24,7 @@ export const auditHistorySourceKindValues = [
 export const auditHistoryTargetTypeValues = [
   'source_candidate',
   'duplicate_group',
+  'location',
   'acceptance_claim',
   'evidence',
   'media_asset',
@@ -31,6 +34,7 @@ export const auditHistoryTargetTypeValues = [
 const sourceKindDomain = {
   candidate_duplicate_decision: 'candidate',
   candidate_promotion: 'candidate',
+  location_profile_correction: 'canonical',
   evidence_review_decision: 'evidence',
   reconfirmation_expiration: 'reconfirmation',
   media_review_decision: 'media',

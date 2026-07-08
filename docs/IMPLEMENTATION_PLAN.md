@@ -14,7 +14,7 @@ This file tracks repository implementation work. GitHub `main`, merged pull requ
 - Public product Roadmap and repository implementation status are separate documents.
 - Phase 4 closure work must read `docs/PHASE4_CLOSURE_PLAN.md`.
 - Places work must read `docs/PLACES_UX_ACCEPTANCE.md`, `docs/PLACES_RECOVERY_PLAN.md`, and `docs/PLACES_UX_FINAL_AUDIT.md` before implementation or review.
-- Practical Place profile work must also read `docs/PLACE_PUBLIC_PROFILE.md` and `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md`, and trace the complete operational path defined by P4-18B.
+- Practical Place profile work must also read `docs/PLACE_PUBLIC_PROFILE.md`, `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md`, `docs/P4_18_B3_AUDIT.md`, and `docs/P4_18_B4_AUDIT.md`.
 - A narrow pull-request description does not supersede the complete Places acceptance or active closure contract.
 - Phase 5 implementation does not begin before the P4-18E handoff gate is complete.
 
@@ -129,8 +129,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-18B1 | Source and Candidate practical-profile contract | Completed | P4-18A | #128 |
 | P4-18B2 | Promotion editor and field provenance parity | Completed | P4-18B1 | #130 |
 | P4-18B3 | Canonical persistence and public projection integration | Completed | P4-18B2 | #132, #133, #134 |
-| P4-18B4 | Existing-record practical-profile correction path audit and completion | In progress | P4-18B3 | — |
-| P4-18C | Bounded UI residual closure | Planned | P4-18A, representative screenshot capture | — |
+| P4-18B4 | Existing-record practical-profile correction path audit and completion | Completed | P4-18B3 | #135, #136, #137, #138 |
+| P4-18C | Bounded UI residual closure | In progress | P4-18A, representative screenshot capture | — |
 | P4-18D | Administration workflow integration audit | Planned | P4-18B | — |
 | P4-18E | Live review and Phase 5 handoff audit | Planned | P4-18B, P4-18C, P4-18D | — |
 
@@ -151,13 +151,19 @@ P4-17A through P4-17F are implemented, validated, and merged through #122. The f
 - #125 — representative desktop/mobile screenshot capture, interactive-state capture, legacy Place field parity baseline, and practical profile staging fixture coverage;
 - #126 — selected Place focus and marker correction plus desktop selected-panel containment.
 
-These changes improve observability and baseline UI behavior. They do not complete P4-18B operational parity, P4-18C residual UI closure, P4-18D administration integration, or P4-18E handoff.
+These changes improve observability and baseline UI behavior. They do not complete P4-18C residual UI closure, P4-18D administration integration, or P4-18E handoff.
 
 ### P4-18B3 repository result
 
 P4-18B3 repository work is completed through #132 and #133, with closure reconciliation and B4 handoff through #134. It covers practical-profile canonical persistence, rollback, replay/conflict behavior, field provenance expansion, explicit allowlisted public Place projection, strict validation, leakage and absence semantics, public Place provenance aggregation, Promotion-to-public projection integration coverage, canonical Place detail presentation, selected desktop/mobile consumption, and staging artifact assertions.
 
 The configured canonical query → complete twelve-artifact candidate generation → private candidate upload → release-review handoff remains an environment-specific verification path. P4-18E must verify it or record an explicit blocker or launch assignment. Repository tests do not prove that live path.
+
+### P4-18B4 repository result
+
+P4-18B4 repository work is completed through #135–#138. It establishes bounded existing-Location correction semantics, exact correction provenance, replay/conflict/rollback behavior, durable decision and diff history, atomic Drizzle persistence, protected operator workspace and API, separate existing-target navigation, and protected Audit history normalization.
+
+Environment-specific migration application, Access allowlist configuration, representative live correction, live Audit appearance, and corrected-value release flow remain assigned to P4-18D/E. Repository tests do not prove those live conditions.
 
 ### P4-18 execution order
 
