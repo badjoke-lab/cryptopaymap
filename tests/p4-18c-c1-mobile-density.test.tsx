@@ -50,11 +50,12 @@ describe('P4-18C C1 mobile density contracts', () => {
     expect(within(summary as HTMLElement).getByText('Lightning')).toBeInTheDocument();
     expect(within(summary as HTMLElement).getByText('Direct Wallet')).toBeInTheDocument();
     expect(within(summary as HTMLElement).getByText('Jul 1, 2026')).toBeInTheDocument();
-    expect(within(article as HTMLElement).getByRole('button', { name: /Select Compact Cafe/ })).toBeInTheDocument();
-    expect(within(article as HTMLElement).getByRole('link', { name: 'Payment details' })).toHaveAttribute(
-      'href',
-      '/place/compact-cafe-tokyo',
-    );
+    expect(
+      within(article as HTMLElement).getByRole('button', { name: /Select Compact Cafe/ }),
+    ).toBeInTheDocument();
+    expect(
+      within(article as HTMLElement).getByRole('link', { name: 'Payment details' }),
+    ).toHaveAttribute('href', '/place/compact-cafe-tokyo');
   });
 
   it('opens a bounded two-column mobile menu and preserves Escape close behavior', async () => {

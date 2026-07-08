@@ -167,7 +167,9 @@ export function PlaceResultList({
                           {formatLabel(pin.categorySlug)}
                         </span>
                       </div>
-                      <h3 className="mt-1.5 text-base font-semibold text-ink sm:mt-2">{pin.name}</h3>
+                      <h3 className="mt-1.5 text-base font-semibold text-ink sm:mt-2">
+                        {pin.name}
+                      </h3>
                       <p className="mt-0.5 text-sm text-muted sm:mt-1">{location}</p>
                     </div>
                   </div>
