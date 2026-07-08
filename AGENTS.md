@@ -18,7 +18,8 @@ For Places work, also read:
 1. `docs/PLACES_UX_ACCEPTANCE.md`;
 2. `docs/PLACES_RECOVERY_PLAN.md`;
 3. `docs/PLACES_UX_FINAL_AUDIT.md`;
-4. `docs/PLACE_PUBLIC_PROFILE.md` when practical Place information is affected.
+4. `docs/PLACE_PUBLIC_PROFILE.md` when practical Place information is affected;
+5. `docs/PRACTICAL_PROFILE_DATA_MODEL_EXTENSION.md` for P4-18B practical profile data work.
 
 The complete Places contract remains in force even when one pull request implements only a bounded part of it.
 
