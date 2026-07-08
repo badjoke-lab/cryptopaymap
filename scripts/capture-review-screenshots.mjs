@@ -34,6 +34,10 @@ const COMMON_SCENARIOS = [
   ['data', '/data'],
   ['roadmap', '/roadmap'],
   ['changelog', '/changelog'],
+  ['privacy', '/privacy'],
+  ['terms', '/terms'],
+  ['disclaimer', '/disclaimer'],
+  ['contact', '/contact'],
   ['support', '/support'],
   ['partners', '/partners'],
 ].map(([id, route]) => ({ id, route, action: 'none', fullPage: true }));
@@ -98,11 +102,17 @@ function scenariosForDevice(deviceName) {
   ];
 }
 
-async function settle(page) {
+async function settle(page, delayMs = 1_000) {
   await page.evaluate(async () => {
     await document.fonts?.ready;
   });
-  await page.waitForTimeout(500);
+  await page.waitForTimeout(delayMs);
+}
+
+async function waitForPlacesMap(page) {
+  const loading = page.getByText('Loading map...', { exact: true });
+  await loading.waitFor({ state: 'hidden', timeout: 20_000 }).catch(() => {});
+  await page.waitForTimeout(1_500);
 }
 
 async function gotoScenario(page, baseUrl, route) {
@@ -114,6 +124,7 @@ async function gotoScenario(page, baseUrl, route) {
     throw new Error(`HTTP ${response?.status() ?? 'no response'} for ${route}`);
   }
   await settle(page);
+  if (route === '/places') await waitForPlacesMap(page);
 }
 
 async function showPlacesList(page) {
@@ -129,13 +140,24 @@ async function selectPlaceFromList(page) {
     .click();
 }
 
+async function expandPlaceSheet(page) {
+  await selectPlaceFromList(page);
+  const peekSheet = page.locator('[data-sheet-state="peek"][data-sheet-entered="true"]');
+  await peekSheet.waitFor({ state: 'visible' });
+  const expandButton = page.getByRole('button', { name: 'Expand place details', exact: true });
+  await expandButton.evaluate((button) => button.click());
+  await page.locator('[data-sheet-state="expanded"]').waitFor({ state: 'visible' });
+}
+
 async function runAction(page, action) {
   switch (action) {
     case 'none':
       return;
     case 'open-mobile-menu':
       await page.getByRole('button', { name: 'Menu', exact: true }).click();
-      await page.getByLabel('Mobile primary').waitFor({ state: 'visible' });
+      await page
+        .getByRole('complementary', { name: 'Mobile primary', exact: true })
+        .waitFor({ state: 'visible' });
       break;
     case 'open-filters':
       await page.getByRole('button', { name: 'Filters', exact: true }).first().click();
@@ -151,23 +173,15 @@ async function runAction(page, action) {
         .waitFor({ state: 'visible' });
       break;
     case 'expand-place-sheet':
-      await selectPlaceFromList(page);
-      await page
-        .locator('[data-sheet-state="peek"][data-sheet-entered="true"]')
-        .waitFor({ state: 'visible' });
-      await page.getByRole('button', { name: 'Expand place details', exact: true }).click();
-      await page.locator('[data-sheet-state="expanded"]').waitFor({ state: 'visible' });
+      await expandPlaceSheet(page);
       break;
-    case 'open-place-gallery':
-      await selectPlaceFromList(page);
-      await page
-        .locator('[data-sheet-state="peek"][data-sheet-entered="true"]')
-        .waitFor({ state: 'visible' });
-      await page.getByRole('button', { name: 'Expand place details', exact: true }).click();
-      await page.locator('[data-sheet-state="expanded"]').waitFor({ state: 'visible' });
-      await page.getByRole('button', { name: /Enlarge image 1 of/ }).click();
+    case 'open-place-gallery': {
+      await expandPlaceSheet(page);
+      const imageButton = page.getByRole('button', { name: /Enlarge image 1 of/ }).first();
+      await imageButton.evaluate((button) => button.click());
       await page.getByRole('dialog', { name: /Image viewer:/ }).waitFor({ state: 'visible' });
       break;
+    }
     case 'select-place-desktop':
       await page
         .getByRole('button', { name: `Select ${STAGING_PLACE_NAME} on map`, exact: true })
@@ -179,12 +193,16 @@ async function runAction(page, action) {
     default:
       throw new Error(`Unknown screenshot action: ${action}`);
   }
-  await settle(page);
+  await settle(page, 1_500);
 }
 
 async function measurePage(page) {
   return page.evaluate(() => {
     const root = document.documentElement;
+    const sheet = document.querySelector('[data-sheet-state]');
+    const map = document.querySelector('.maplibregl-canvas');
+    const sheetRect = sheet?.getBoundingClientRect();
+    const mapRect = map?.getBoundingClientRect();
     return {
       title: document.title,
       h1Count: document.querySelectorAll('h1').length,
@@ -196,8 +214,23 @@ async function measurePage(page) {
       menuOpen:
         document.querySelector('#mobile-primary-menu')?.getAttribute('aria-hidden') === 'false',
       filterPanelOpen: Boolean(document.querySelector('[aria-label="Place filters"]')),
-      placeSheetState:
-        document.querySelector('[data-sheet-state]')?.getAttribute('data-sheet-state') ?? null,
+      placeSheetState: sheet?.getAttribute('data-sheet-state') ?? null,
+      placeSheetRect: sheetRect
+        ? {
+            top: Math.round(sheetRect.top),
+            bottom: Math.round(sheetRect.bottom),
+            height: Math.round(sheetRect.height),
+          }
+        : null,
+      placeSheetZIndex: sheet ? getComputedStyle(sheet).zIndex : null,
+      mapRect: mapRect
+        ? {
+            top: Math.round(mapRect.top),
+            bottom: Math.round(mapRect.bottom),
+            height: Math.round(mapRect.height),
+          }
+        : null,
+      mapZIndex: map ? getComputedStyle(map).zIndex : null,
       dialogOpen: Boolean(document.querySelector('[role="dialog"][aria-modal="true"]')),
     };
   });
