@@ -116,4 +116,23 @@ describe('Rechecks components', () => {
     expect(body).not.toHaveProperty('effectiveAt');
     expect(body).not.toHaveProperty('reasonCode');
   });
+
+  it('replaces the submitting message when the stale-transition POST loses connectivity', async () => {
+    window.history.replaceState({}, '', `/admin/rechecks/detail/?id=${claimId}`);
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify(detail), { status: 200 }))
+      .mockRejectedValueOnce(new TypeError('network unavailable'));
+    vi.stubGlobal('fetch', fetchMock);
+    render(<ReconfirmationDetail />);
+
+    await userEvent.setup().click(await screen.findByRole('button', { name: 'Mark Claim stale' }));
+
+    expect(
+      await screen.findByText(
+        'The Claim transition request could not be completed. Retry when connectivity returns.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('Committing Claim transition…')).not.toBeInTheDocument();
+  });
 });
