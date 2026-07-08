@@ -1,0 +1,47 @@
+name: B4B migration generation
+
+on:
+  push:
+    branches:
+      - p4-18b4b-durable-location-correction
+    paths:
+      - 'src/db/schema/location-profile-correction-decisions.ts'
+      - 'src/db/schema/index.ts'
+      - '.github/workflows/b4b-generate-migration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: p4-18b4b-durable-location-correction
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Generate Drizzle migration
+        run: npm run db:generate
+
+      - name: Commit generated migration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add drizzle
+          if git diff --cached --quiet; then
+            echo "No migration changes generated."
+            exit 0
+          fi
+          git commit -m "db: generate Location correction persistence migration"
+          git push origin HEAD:p4-18b4b-durable-location-correction
