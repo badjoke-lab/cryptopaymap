@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import PlaceDetail from '../../components/public/PlaceDetail.astro';
+import PlacePracticalProfile from '../../components/public/PlacePracticalProfile.astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import { publicPlaceSchema } from '../../schemas/public-exports';
@@ -27,4 +28,5 @@ const description = `${place.name}: verified cryptocurrency payment information,
 
 <BaseLayout title={`${place.name} | CryptoPayMap`} description={description}>
   <PlaceDetail model={model} />
+  <PlacePracticalProfile place={place} />
 </BaseLayout>
