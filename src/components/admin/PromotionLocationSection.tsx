@@ -56,8 +56,8 @@ export function LocationSection({
     <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
       <h2 className="m-0 text-xl font-semibold text-ink">Canonical location</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-        Review source values before commit. Promotion creates a hidden canonical Location and does not
-        verify or publish the payment Claim.
+        Review source values before commit. Promotion creates a hidden canonical Location and does
+        not verify or publish the payment Claim.
       </p>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -156,8 +156,8 @@ export function LocationSection({
         <section className="mt-5 rounded-control border border-warning/50 bg-amber-50 p-4">
           <h3 className="m-0 text-sm font-semibold text-amber-950">Source-only social values</h3>
           <p className="mt-2 text-xs leading-5 text-amber-900">
-            These source values are reviewable but were not prefilled because the canonical social-link
-            contract requires an HTTPS URL. Do not invent a URL from a handle.
+            These source values are reviewable but were not prefilled because the canonical
+            social-link contract requires an HTTPS URL. Do not invent a URL from a handle.
           </p>
           <ul className="mt-3 grid gap-1 pl-5 text-sm text-amber-950">
             {reviewOnlySocials.map((value) => (
