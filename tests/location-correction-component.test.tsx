@@ -143,4 +143,30 @@ describe('Location correction editor', () => {
       provenanceAssignments: [{ fieldPath: 'phone', sourceRecordIds: [sourceId] }],
     });
   });
+
+  it('recovers from a failed workspace load through the explicit retry action', async () => {
+    let attempts = 0;
+    const fetchMock = vi.fn(async () => {
+      attempts += 1;
+      if (attempts === 1) {
+        return new Response(JSON.stringify({ error: 'location_correction_unavailable' }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      return new Response(JSON.stringify(workspace()), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+    vi.stubGlobal('fetch', fetchMock);
+    const user = userEvent.setup();
+
+    render(<LocationCorrectionEditor />);
+    await screen.findByRole('heading', { name: 'Location correction unavailable' });
+    await user.click(screen.getByRole('button', { name: 'Retry workspace' }));
+
+    expect(await screen.findByRole('heading', { name: 'Reviewed Cafe Tokyo' })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
 });
