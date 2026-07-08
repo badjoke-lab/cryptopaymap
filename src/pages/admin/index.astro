@@ -6,32 +6,42 @@ const sections = [
   {
     href: '/admin/candidates',
     title: 'Candidate review',
-    description: 'Inspect private source candidates and provenance before any canonical decision.',
+    description:
+      'Inspect private source Candidates and provenance, resolve duplicates, then enter a separate promotion or existing-target workflow.',
   },
   {
     href: '/admin/claims',
-    title: 'Claims',
-    description: 'Prepare explicit payment claims without bypassing Evidence or verification policy.',
+    title: 'Claim workflows',
+    description:
+      'Route Claim creation, Evidence decisions, reconfirmation, and Audit inspection to their separate protected workspaces.',
   },
   {
     href: '/admin/evidence',
     title: 'Evidence',
-    description: 'Review source strength, observation dates, visibility, and contradictions.',
+    description:
+      'Review exact Evidence and Claim versions, accepted Evidence sets, source strength, and contradictions before a supported decision.',
   },
   {
     href: '/admin/rechecks',
     title: 'Rechecks',
-    description: 'Manage time-based reconfirmation work and stale records.',
+    description: 'Manage due, overdue, and stale Claim review through exact reconfirmation state.',
   },
   {
     href: '/admin/media',
     title: 'Media',
-    description: 'Separate private proof, rights review, and public-gallery eligibility.',
+    description: 'Separate private proof, rights review, privacy checks, and public-gallery eligibility.',
   },
   {
     href: '/admin/exports',
     title: 'Exports',
-    description: 'Release controls remain unavailable until the dedicated publication item.',
+    description:
+      'Review validated private export candidates and durable release decisions before separate publication and restore boundaries.',
+  },
+  {
+    href: '/admin/audit',
+    title: 'Audit history',
+    description:
+      'Inspect normalized protected decision history across Candidate, canonical, Evidence, reconfirmation, Media, and export domains.',
   },
 ];
 ---
@@ -39,7 +49,7 @@ const sections = [
 <AdminLayout
   title="Administration | CryptoPayMap"
   heading="Operations workspace"
-  description="A protected read-only dashboard for bounded operational summaries. Candidate records, source payloads, contacts, Evidence content, and media keys are not returned by this view."
+  description="A protected dashboard for bounded operational summaries and explicit navigation into separate review, decision, correction, release, publication, restore, and Audit boundaries."
 >
   <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="access-boundary-title">
     <p class="m-0 text-sm font-semibold text-brand-800">Access boundary active</p>
@@ -47,15 +57,14 @@ const sections = [
       Identity and dashboard capability are checked before private queries
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      The Pages Function verifies the Cloudflare Access assertion before the dashboard endpoint maps an exact subject identifier
-      to the read-only dashboard capability. Missing configuration, denied identities, and invalid summaries fail closed.
+      The Pages Function verifies the Cloudflare Access assertion before the dashboard endpoint maps an exact subject identifier to the read-only dashboard capability. Missing configuration, denied identities, and invalid summaries fail closed.
     </p>
   </section>
 
   <section class="mt-8" aria-labelledby="operational-summary-title">
     <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <p class="m-0 text-sm font-semibold text-brand-700">P3-03</p>
+        <p class="m-0 text-sm font-semibold text-brand-700">Operational overview</p>
         <h2 id="operational-summary-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
           Operational summary
         </h2>
@@ -70,13 +79,13 @@ const sections = [
   <section class="mt-10" aria-labelledby="workspace-sections-title">
     <div class="flex flex-wrap items-end justify-between gap-3">
       <div>
-        <p class="m-0 text-sm font-semibold text-brand-700">Phase 3 workspace</p>
+        <p class="m-0 text-sm font-semibold text-brand-700">Protected operation map</p>
         <h2 id="workspace-sections-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
-          Review areas
+          Review and decision areas
         </h2>
       </div>
       <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-        Detail views remain separate
+        Separate capability boundaries
       </span>
     </div>
 
@@ -100,8 +109,8 @@ const sections = [
     <h2 id="safety-title" class="m-0 text-xl font-semibold tracking-tight text-ink">Current safety state</h2>
     <ul class="mt-4 grid gap-3 text-sm leading-6 text-muted sm:grid-cols-2">
       <li>Dashboard access grants no write capability.</li>
-      <li>Candidate-to-canonical promotion is disabled.</li>
-      <li>Public export publication is disabled.</li>
+      <li>Candidate promotion and existing-target linking use separate write capabilities and exact state guards.</li>
+      <li>Correction, Evidence, reconfirmation, Media, release, publication, restore, and Audit remain separate protected boundaries.</li>
       <li>Private records are not embedded in static HTML.</li>
     </ul>
   </section>
