@@ -143,6 +143,7 @@ export function createDrizzleEvidenceReviewBackend(
           expectedEvidenceUpdatedAt: command.expectedEvidenceUpdatedAt,
           expectedClaimUpdatedAt: command.expectedClaimUpdatedAt,
           expectedAcceptedEvidenceIds: command.expectedAcceptedEvidenceIds,
+          expectedClaimAssetIds: command.expectedClaimAssetIds,
           actorId: command.actorId,
           actorType: command.actorType,
           reasonCode: command.reasonCode,
