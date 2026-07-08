@@ -1,24 +1,34 @@
-import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
-const mutationUiFiles = [
-  'src/components/admin/DuplicateReviewDecisionForm.tsx',
-  'src/components/admin/CandidatePromotionForm.tsx',
-  'src/components/admin/CandidateExistingTargetForm.tsx',
-  'src/components/admin/LocationCorrectionEditor.tsx',
-  'src/components/admin/EvidenceReviewDetail.tsx',
-  'src/components/admin/ReconfirmationDetail.tsx',
-  'src/components/admin/MediaReviewDetail.tsx',
-  'src/components/admin/ExportReleaseDetail.tsx',
+const mutationUiFileNames = [
+  'DuplicateReviewDecisionForm.tsx',
+  'CandidatePromotionForm.tsx',
+  'CandidateExistingTargetForm.tsx',
+  'LocationCorrectionEditor.tsx',
+  'EvidenceReviewDetail.tsx',
+  'ReconfirmationDetail.tsx',
+  'MediaReviewDetail.tsx',
+  'ExportReleaseDetail.tsx',
 ] as const;
+
+const adminComponentSources = import.meta.glob('../src/components/admin/*.tsx', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
 
 const idempotencyHeaderPattern = /['"]Idempotency-Key['"]\s*:\s*crypto\.randomUUID\(\)/;
 
+function sourceFor(fileName: string): string {
+  const entry = Object.entries(adminComponentSources).find(([path]) => path.endsWith(`/${fileName}`));
+  if (entry === undefined) throw new Error(`Missing Admin component source: ${fileName}`);
+  return entry[1];
+}
+
 describe('reachable Admin mutation UI idempotency contract', () => {
-  for (const path of mutationUiFiles) {
-    it(`${path} sends a generated UUID Idempotency-Key`, () => {
-      const source = readFileSync(path, 'utf8');
-      expect(source).toMatch(idempotencyHeaderPattern);
+  for (const fileName of mutationUiFileNames) {
+    it(`${fileName} sends a generated UUID Idempotency-Key`, () => {
+      expect(sourceFor(fileName)).toMatch(idempotencyHeaderPattern);
     });
   }
 });
