@@ -139,12 +139,12 @@ describe('Candidate promotion editor', () => {
     expect(screen.getByDisplayValue('+81 3 0000 0000')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Reviewed source description.')).toBeInTheDocument();
     expect(screen.getByDisplayValue('Mon-Fri 08:00-18:00')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('wifi\noutdoor-seating')).toBeInTheDocument();
-    expect(
-      screen.getByDisplayValue(
-        'instagram | https://social.example.test/cafe | @cafe',
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('textbox', { name: 'Amenities' })).toHaveValue(
+      'wifi\noutdoor-seating',
+    );
+    expect(screen.getByRole('textbox', { name: 'Official social links' })).toHaveValue(
+      'instagram | https://social.example.test/cafe | @cafe',
+    );
     expect(screen.getByRole('heading', { name: 'Source-only social values' })).toBeInTheDocument();
     expect(screen.getByText('x: @cafe')).toBeInTheDocument();
     expect(screen.getByRole('option', { name: 'BTC — Bitcoin' })).toBeInTheDocument();
