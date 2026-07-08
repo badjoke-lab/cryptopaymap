@@ -32,6 +32,4 @@ export const locationCorrectionEditorRequestSchema = z
   })
   .strict();
 
-export type LocationCorrectionEditorRequest = z.infer<
-  typeof locationCorrectionEditorRequestSchema
->;
+export type LocationCorrectionEditorRequest = z.infer<typeof locationCorrectionEditorRequestSchema>;

@@ -24,11 +24,7 @@ describe('Location correction authorization', () => {
       capabilities: ['location:correct'],
     });
     expect(
-      authorizeLocationCorrection(
-        identity,
-        policy,
-        '10000000-0000-4000-8000-000000000001',
-      ),
+      authorizeLocationCorrection(identity, policy, '10000000-0000-4000-8000-000000000001'),
     ).toMatchObject({
       requestId: '10000000-0000-4000-8000-000000000001',
       actorId: identity.actorId,

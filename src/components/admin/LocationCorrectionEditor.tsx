@@ -40,10 +40,7 @@ type SubmitState =
   | { status: 'invalid' | 'conflict' | 'unavailable'; message: string }
   | { status: 'success'; message: string };
 
-type ScalarField = Exclude<
-  PracticalLocationCorrectionField,
-  'amenities' | 'socialLinks'
->;
+type ScalarField = Exclude<PracticalLocationCorrectionField, 'amenities' | 'socialLinks'>;
 
 type ScalarOperation = 'unchanged' | 'set' | 'clear';
 type StructuredOperation = 'unchanged' | 'add' | 'remove' | 'replace' | 'clear';
@@ -75,7 +72,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -181,7 +181,9 @@ export function LocationCorrectionEditor() {
         if (response.status === 503) return setState({ status: 'unavailable' });
         if (!response.ok) return setState({ status: 'error' });
         const parsed = locationCorrectionWorkspaceResponseSchema.safeParse(await response.json());
-        setState(parsed.success ? { status: 'ready', workspace: parsed.data } : { status: 'error' });
+        setState(
+          parsed.success ? { status: 'ready', workspace: parsed.data } : { status: 'error' },
+        );
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError') return;
         setState({ status: 'error' });
@@ -207,18 +209,39 @@ export function LocationCorrectionEditor() {
   }
   if (state.status !== 'ready') {
     const messages = {
-      missing_id: ['Correction target required', 'Return to existing-target review and choose a Place.'],
-      denied: ['Location correction denied', 'This verified identity cannot correct Location profiles.'],
-      not_found: ['Correction context not found', 'The Candidate or canonical Location is unavailable.'],
-      unavailable: ['Location correction unavailable', 'The protected service could not complete safely.'],
-      error: ['Workspace response could not be verified', 'No unverified correction data is displayed.'],
+      missing_id: [
+        'Correction target required',
+        'Return to existing-target review and choose a Place.',
+      ],
+      denied: [
+        'Location correction denied',
+        'This verified identity cannot correct Location profiles.',
+      ],
+      not_found: [
+        'Correction context not found',
+        'The Candidate or canonical Location is unavailable.',
+      ],
+      unavailable: [
+        'Location correction unavailable',
+        'The protected service could not complete safely.',
+      ],
+      error: [
+        'Workspace response could not be verified',
+        'No unverified correction data is displayed.',
+      ],
     } as const;
     const [title, description] = messages[state.status];
     return (
       <StatusPanel
         title={title}
         description={description}
-        icon={state.status === 'denied' ? <ShieldAlert className="size-5" /> : <AlertTriangle className="size-5" />}
+        icon={
+          state.status === 'denied' ? (
+            <ShieldAlert className="size-5" />
+          ) : (
+            <AlertTriangle className="size-5" />
+          )
+        }
         action={
           state.status === 'unavailable' || state.status === 'error' ? (
             <Button variant="secondary" onClick={() => void loadWorkspace()}>
@@ -246,13 +269,15 @@ function CorrectionWorkspace({
 }) {
   const [submitState, setSubmitState] = useState<SubmitState>({ status: 'idle' });
   const [scalarOperations, setScalarOperations] = useState<Record<ScalarField, ScalarOperation>>(
-    () => Object.fromEntries(scalarFields.map(({ field }) => [field, 'unchanged'])) as Record<
-      ScalarField,
-      ScalarOperation
-    >,
+    () =>
+      Object.fromEntries(scalarFields.map(({ field }) => [field, 'unchanged'])) as Record<
+        ScalarField,
+        ScalarOperation
+      >,
   );
   const [amenitiesOperation, setAmenitiesOperation] = useState<StructuredOperation>('unchanged');
-  const [socialLinksOperation, setSocialLinksOperation] = useState<StructuredOperation>('unchanged');
+  const [socialLinksOperation, setSocialLinksOperation] =
+    useState<StructuredOperation>('unchanged');
 
   const changedFields = useMemo(() => {
     const fields: PracticalLocationCorrectionField[] = scalarFields
@@ -277,7 +302,10 @@ function CorrectionWorkspace({
       } else {
         const value = text(form, `value:${field}`);
         if (!value) {
-          setSubmitState({ status: 'invalid', message: `${humanize(field)} requires a set value.` });
+          setSubmitState({
+            status: 'invalid',
+            message: `${humanize(field)} requires a set value.`,
+          });
           return;
         }
         changes[field] = { operation: 'set', value };
@@ -386,12 +414,17 @@ function CorrectionWorkspace({
         const body = (await response.json()) as { issues?: unknown };
         setSubmitState({
           status: 'invalid',
-          message: Array.isArray(body.issues) ? body.issues.join(' · ') : 'The correction was invalid.',
+          message: Array.isArray(body.issues)
+            ? body.issues.join(' · ')
+            : 'The correction was invalid.',
         });
         return;
       }
       if (!response.ok) {
-        setSubmitState({ status: 'unavailable', message: 'The correction could not be committed.' });
+        setSubmitState({
+          status: 'unavailable',
+          message: 'The correction could not be committed.',
+        });
         return;
       }
       const receipt = receiptSchema.safeParse(await response.json());
@@ -405,7 +438,10 @@ function CorrectionWorkspace({
       });
       await reload();
     } catch {
-      setSubmitState({ status: 'unavailable', message: 'The correction request could not be completed.' });
+      setSubmitState({
+        status: 'unavailable',
+        message: 'The correction request could not be completed.',
+      });
     }
   }
 
@@ -448,7 +484,10 @@ function CorrectionWorkspace({
           {scalarFields.map(({ field, label, multiline }) => {
             const operation = scalarOperations[field];
             return (
-              <section key={field} className="rounded-card border border-border bg-surface p-5 shadow-sm">
+              <section
+                key={field}
+                className="rounded-card border border-border bg-surface p-5 shadow-sm"
+              >
                 <div className="grid gap-1">
                   <h3 className="m-0 text-lg font-semibold text-ink">{label}</h3>
                   <p className="m-0 text-sm text-muted">
@@ -543,10 +582,12 @@ function CorrectionWorkspace({
           <section className="rounded-card border border-brand-600 bg-brand-50 p-5">
             <h3 className="m-0 text-lg font-semibold text-ink">Before commit</h3>
             <p className="mt-2 text-sm text-muted">
-              Changed fields: {changedFields.length > 0 ? changedFields.map(humanize).join(', ') : 'None'}
+              Changed fields:{' '}
+              {changedFields.length > 0 ? changedFields.map(humanize).join(', ') : 'None'}
             </p>
             <p className="mt-2 text-sm text-muted">
-              This operation updates canonical private state and correction provenance. Publication remains a separate validated release operation.
+              This operation updates canonical private state and correction provenance. Publication
+              remains a separate validated release operation.
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
               <Button type="submit" disabled={submitState.status === 'submitting'}>

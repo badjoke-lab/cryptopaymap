@@ -175,7 +175,10 @@ export async function loadLocationCorrectionWorkspace(
       locationBackend.loadLocation(locationIdResult.data),
     ]);
     if (location === null) {
-      throw new LocationCorrectionWorkspaceError('not_found', 'The canonical Location was not found.');
+      throw new LocationCorrectionWorkspaceError(
+        'not_found',
+        'The canonical Location was not found.',
+      );
     }
     const issues = eligibilityIssues(candidate);
     const result = locationCorrectionWorkspaceResponseSchema.safeParse({
