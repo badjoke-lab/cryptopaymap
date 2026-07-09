@@ -8,6 +8,8 @@ import {
   exportReleaseDecisions,
   mediaReviewDecisions,
   reconfirmationExpirations,
+  submissionEvents,
+  submissions,
 } from '../../db/schema';
 import type { AuditHistoryQuery } from './contract';
 import type { AuditHistorySource } from './aggregation';
@@ -19,6 +21,7 @@ import {
   exportReleaseDecisionAuditItem,
   mediaReviewDecisionAuditItem,
   reconfirmationExpirationAuditItem,
+  submissionEventAuditItem,
 } from './normalizers';
 
 function commonConditions(
@@ -311,6 +314,51 @@ export function createDrizzleExportActivationAuditSource(
   };
 }
 
+export function createDrizzleSubmissionAuditSource(
+  database: CryptoPayMapDatabase,
+): AuditHistorySource {
+  return {
+    domain: 'submission',
+    async loadAuditHistorySource(query, sourceLimit) {
+      const conditions = commonConditions(
+        query,
+        submissionEvents.createdAt,
+        submissionEvents.actorId,
+        'submission_event',
+        submissionEvents.id,
+      );
+      if (query.targetType === 'submission' && query.targetId !== undefined) {
+        conditions.push(eq(submissions.publicId, query.targetId));
+      } else if (query.targetType !== undefined) {
+        return { items: [], hasMore: false };
+      }
+
+      const rows = await database
+        .select({
+          id: submissionEvents.id,
+          publicId: submissions.publicId,
+          submissionType: submissions.submissionType,
+          fromStatus: submissionEvents.fromStatus,
+          toStatus: submissionEvents.toStatus,
+          action: submissionEvents.action,
+          reasonCode: submissionEvents.reasonCode,
+          actorId: submissionEvents.actorId,
+          actorType: submissionEvents.actorType,
+          createdAt: submissionEvents.createdAt,
+        })
+        .from(submissionEvents)
+        .innerJoin(submissions, eq(submissionEvents.submissionId, submissions.id))
+        .where(whereOrUndefined(conditions))
+        .orderBy(desc(submissionEvents.createdAt), desc(submissionEvents.id))
+        .limit(sourceLimit + 1);
+      return {
+        items: rows.slice(0, sourceLimit).map(submissionEventAuditItem),
+        hasMore: rows.length > sourceLimit,
+      };
+    },
+  };
+}
+
 export function createDrizzleAuditHistorySources(
   database: CryptoPayMapDatabase,
 ): AuditHistorySource[] {
@@ -322,5 +370,6 @@ export function createDrizzleAuditHistorySources(
     createDrizzleMediaAuditSource(database),
     createDrizzleExportReleaseAuditSource(database),
     createDrizzleExportActivationAuditSource(database),
+    createDrizzleSubmissionAuditSource(database),
   ];
 }
