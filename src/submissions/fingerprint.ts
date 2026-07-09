@@ -18,9 +18,7 @@ export function canonicalSubmissionIntakeString(intake: CommonSubmissionIntake):
   return JSON.stringify(canonicalizeJson(intake as unknown as SubmissionJsonValue));
 }
 
-export async function fingerprintSubmissionIntake(
-  intake: CommonSubmissionIntake,
-): Promise<string> {
+export async function fingerprintSubmissionIntake(intake: CommonSubmissionIntake): Promise<string> {
   const canonical = canonicalSubmissionIntakeString(intake);
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(canonical));
   return bytesToHex(new Uint8Array(digest));
