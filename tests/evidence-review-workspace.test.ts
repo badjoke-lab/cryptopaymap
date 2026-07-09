@@ -18,6 +18,7 @@ const context: EvidenceReviewReadContext = {
 const now = new Date('2026-07-02T00:00:00.000Z');
 const evidenceId = '10000000-0000-4000-8000-000000000001';
 const claimId = '20000000-0000-4000-8000-000000000001';
+const claimAssetId = '40000000-0000-4000-8000-000000000001';
 
 function detail(): EvidenceReviewDetailResponse {
   return {
@@ -64,6 +65,19 @@ function detail(): EvidenceReviewDetailResponse {
       endedReason: null,
       updatedAt: '2026-07-01T12:00:00.000Z',
     },
+    paymentCombinations: [
+      {
+        id: claimAssetId,
+        assetSymbol: 'BTC',
+        assetStatus: 'active',
+        networkSlug: 'lightning',
+        networkStatus: 'active',
+        paymentMethodSlug: 'lightning_invoice',
+        paymentMethodStatus: 'active',
+        isPrimary: true,
+      },
+    ],
+    paymentPrerequisites: { eligible: true, issues: [] },
     acceptedEvidence: [],
     threshold: {
       eligible: false,
@@ -91,7 +105,7 @@ describe('Evidence review workspace contract', () => {
     ).toThrow(EvidenceReviewWorkspaceError);
   });
 
-  it('loads a validated queue and detail for an authorized reviewer', async () => {
+  it('loads a validated queue and payment-aware detail for an authorized reviewer', async () => {
     const backend: EvidenceReviewWorkspaceBackend = {
       loadQueue: vi.fn(async () => ({ items: [], hasMore: false })),
       loadDetail: vi.fn(async () => detail()),

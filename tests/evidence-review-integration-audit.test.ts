@@ -18,6 +18,7 @@ const ids = {
   evidence: '10000000-0000-4000-8000-000000000001',
   claim: '20000000-0000-4000-8000-000000000001',
   request: '30000000-0000-4000-8000-000000000001',
+  claimAsset: '40000000-0000-4000-8000-000000000001',
 } as const;
 const reviewedAt = '2026-07-01T12:00:00.000Z';
 const decidedAt = new Date('2026-07-02T00:00:00.000Z');
@@ -74,6 +75,19 @@ function detail(): EvidenceReviewDetailResponse {
       endedReason: null,
       updatedAt: reviewedAt,
     },
+    paymentCombinations: [
+      {
+        id: ids.claimAsset,
+        assetSymbol: 'BTC',
+        assetStatus: 'active',
+        networkSlug: 'bitcoin',
+        networkStatus: 'active',
+        paymentMethodSlug: 'onchain',
+        paymentMethodStatus: 'active',
+        isPrimary: true,
+      },
+    ],
+    paymentPrerequisites: { eligible: true, issues: [] },
     acceptedEvidence: [],
     threshold: {
       eligible: false,
@@ -135,6 +149,7 @@ function decisionBody(reasonCode = 'threshold_met') {
     expectedClaimStatus: 'candidate',
     expectedClaimVisibility: 'hidden',
     expectedAcceptedEvidenceIds: [],
+    expectedClaimAssetIds: [ids.claimAsset],
     disposition: 'accepted',
     finding: 'supports_claim',
     claimAction: 'confirm',
@@ -223,6 +238,8 @@ describe('P3-08 Evidence review integration audit', () => {
     await expect(detailResponse.json()).resolves.toMatchObject({
       evidence: { id: ids.evidence, updatedAt: reviewedAt, claimVisibility: 'hidden' },
       claim: { id: ids.claim, updatedAt: reviewedAt, visibility: 'hidden' },
+      paymentCombinations: [expect.objectContaining({ id: ids.claimAsset })],
+      paymentPrerequisites: { eligible: true, issues: [] },
       acceptedEvidence: [],
     });
 

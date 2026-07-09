@@ -11,6 +11,7 @@ import {
 const now = new Date('2026-07-02T00:00:00.000Z');
 const evidenceId = '10000000-0000-4000-8000-000000000001';
 const claimId = '20000000-0000-4000-8000-000000000001';
+const claimAssetId = '30000000-0000-4000-8000-000000000001';
 const context: EvidenceReviewReadContext = {
   actorId: 'system:workspace-check',
   actorType: 'system',
@@ -61,6 +62,19 @@ const detail: EvidenceReviewDetailResponse = {
     endedReason: null,
     updatedAt: '2026-07-01T12:00:00.000Z',
   },
+  paymentCombinations: [
+    {
+      id: claimAssetId,
+      assetSymbol: 'BTC',
+      assetStatus: 'active',
+      networkSlug: 'bitcoin',
+      networkStatus: 'active',
+      paymentMethodSlug: 'onchain',
+      paymentMethodStatus: 'active',
+      isPrimary: true,
+    },
+  ],
+  paymentPrerequisites: { eligible: true, issues: [] },
   acceptedEvidence: [],
   threshold: {
     eligible: false,

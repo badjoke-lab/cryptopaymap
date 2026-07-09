@@ -1,0 +1,2 @@
+ALTER TABLE "evidence_review_decisions" ADD COLUMN "expected_claim_asset_ids" jsonb NOT NULL;--> statement-breakpoint
+ALTER TABLE "evidence_review_decisions" ADD CONSTRAINT "evidence_review_decisions_expected_claim_asset_set_array" CHECK (jsonb_typeof("evidence_review_decisions"."expected_claim_asset_ids") = 'array' and jsonb_array_length("evidence_review_decisions"."expected_claim_asset_ids") between 0 and 100);

@@ -41,28 +41,34 @@ export function ReconfirmationDetail() {
     setMessage('Committing Claim transition…');
     const form = new FormData(event.currentTarget);
     const text = (name: string) => String(form.get(name) ?? '').trim();
-    const response = await fetch(`/admin/api/rechecks/${encodeURIComponent(claimId)}`, {
-      method: 'POST',
-      cache: 'no-store',
-      credentials: 'same-origin',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Idempotency-Key': crypto.randomUUID(),
-      },
-      body: JSON.stringify({
-        expectedClaimUpdatedAt: detail.claim.updatedAt,
-        expectedClaimStatus: 'confirmed',
-        expectedClaimVisibility: detail.claim.visibility,
-        expectedNextReviewAt: detail.claim.nextReviewAt,
-        publicSummary: text('publicSummary') || null,
-        internalNote: text('internalNote') || null,
-      }),
-    });
-    if (response.status === 409) return setMessage('The Claim changed. Reload before retrying.');
-    if (!response.ok) return setMessage('The Claim transition was not committed.');
-    const receipt = (await response.json()) as { toStatus: string; state: string };
-    setMessage(`Claim is ${receipt.toStatus} (${receipt.state}).`);
+    try {
+      const response = await fetch(`/admin/api/rechecks/${encodeURIComponent(claimId)}`, {
+        method: 'POST',
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'Idempotency-Key': crypto.randomUUID(),
+        },
+        body: JSON.stringify({
+          expectedClaimUpdatedAt: detail.claim.updatedAt,
+          expectedClaimStatus: 'confirmed',
+          expectedClaimVisibility: detail.claim.visibility,
+          expectedNextReviewAt: detail.claim.nextReviewAt,
+          publicSummary: text('publicSummary') || null,
+          internalNote: text('internalNote') || null,
+        }),
+      });
+      if (response.status === 409) return setMessage('The Claim changed. Reload before retrying.');
+      if (!response.ok) return setMessage('The Claim transition was not committed.');
+      const receipt = (await response.json()) as { toStatus: string; state: string };
+      setMessage(`Claim is ${receipt.toStatus} (${receipt.state}).`);
+    } catch {
+      setMessage(
+        'The Claim transition request could not be completed. Retry when connectivity returns.',
+      );
+    }
   }
 
   if (!detail) return <p role={message.includes('unavailable') ? 'alert' : undefined}>{message}</p>;

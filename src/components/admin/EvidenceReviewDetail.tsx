@@ -1,14 +1,14 @@
 import { AlertTriangle, CheckCircle2, ExternalLink, RefreshCw, ShieldAlert } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
-import {
-  evidenceReviewDetailResponseSchema,
-  type EvidenceReviewDetailResponse,
-} from '../../admin/evidence-review/workspace';
 import type {
   EvidenceReviewClaimAction,
   EvidenceReviewDisposition,
   EvidenceReviewFinding,
 } from '../../admin/evidence-review/decision';
+import {
+  evidenceReviewDetailResponseSchema,
+  type EvidenceReviewDetailResponse,
+} from '../../admin/evidence-review/workspace';
 import { Button } from '../ui/Button';
 
 type LoadState =
@@ -122,11 +122,12 @@ export function EvidenceReviewDetail() {
     return (
       <StatusPanel
         title="Loading Evidence review"
-        description="The protected service is loading the exact Evidence, Claim version, accepted Evidence set, and threshold result."
+        description="The protected service is loading the exact Evidence, Claim version, accepted Evidence set, payment combination set, and threshold result."
         icon={<RefreshCw className="size-5 animate-spin motion-reduce:animate-none" />}
       />
     );
   }
+
   if (state.status !== 'ready') {
     const copy = {
       missing_id: [
@@ -188,7 +189,9 @@ function EvidenceReviewWorkspace({
     evidence.polarity === 'contradicting' ? 'contradicts_claim' : 'supports_claim',
   );
   const [claimAction, setClaimAction] = useState<EvidenceReviewClaimAction>(
-    evidence.polarity === 'supporting' && claim.claimStatus !== 'confirmed'
+    evidence.polarity === 'supporting' &&
+      claim.claimStatus !== 'confirmed' &&
+      detail.paymentPrerequisites.eligible
       ? 'confirm'
       : 'no_change',
   );
@@ -197,6 +200,10 @@ function EvidenceReviewWorkspace({
   const acceptedIds = useMemo(
     () => detail.acceptedEvidence.map((item) => item.id).sort(),
     [detail.acceptedEvidence],
+  );
+  const claimAssetIds = useMemo(
+    () => detail.paymentCombinations.map((item) => item.id).sort(),
+    [detail.paymentCombinations],
   );
 
   function normalizeDisposition(next: EvidenceReviewDisposition) {
@@ -237,6 +244,7 @@ function EvidenceReviewWorkspace({
       expectedClaimStatus: claim.claimStatus,
       expectedClaimVisibility: claim.visibility,
       expectedAcceptedEvidenceIds: acceptedIds,
+      expectedClaimAssetIds: claimAssetIds,
       disposition,
       finding,
       claimAction,
@@ -269,7 +277,8 @@ function EvidenceReviewWorkspace({
       if (response.status === 409) {
         setSubmitState({
           status: 'conflict',
-          message: 'The Evidence, Claim, or accepted Evidence set changed. Reload before retrying.',
+          message:
+            'The Evidence, Claim, accepted Evidence set, or Claim Asset set changed. Reload before retrying.',
         });
         return;
       }
@@ -420,6 +429,7 @@ function EvidenceReviewWorkspace({
             <dd className="mt-1 text-muted">{claim.updatedAt}</dd>
           </div>
         </dl>
+
         <div className="mt-5 rounded-control border border-border bg-canvas p-4 text-sm">
           <p className="font-semibold text-ink">
             Accepted Evidence threshold: {detail.threshold.eligible ? 'Eligible' : 'Not eligible'}
@@ -430,16 +440,47 @@ function EvidenceReviewWorkspace({
             decision
           </p>
         </div>
+
+        <div className="mt-4 rounded-control border border-border bg-canvas p-4 text-sm">
+          <p className="font-semibold text-ink">
+            Payment prerequisites:{' '}
+            {detail.paymentPrerequisites.eligible ? 'Eligible' : 'Not eligible'}
+          </p>
+          <p className="mt-1 text-muted">
+            {detail.paymentCombinations.length} reviewed payment combination
+            {detail.paymentCombinations.length === 1 ? '' : 's'} · exact set pinned for confirmation
+          </p>
+          {detail.paymentCombinations.length > 0 ? (
+            <ul className="mt-3 grid gap-1 text-muted">
+              {detail.paymentCombinations.map((combination) => (
+                <li key={combination.id}>
+                  {combination.assetSymbol} · {label(combination.networkSlug)} ·{' '}
+                  {label(combination.paymentMethodSlug)}
+                  {combination.isPrimary ? ' · Primary' : ''}
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {!detail.paymentPrerequisites.eligible ? (
+            <ul className="mt-3 grid gap-1 text-amber-900">
+              {detail.paymentPrerequisites.issues.map((issue) => (
+                <li key={issue}>{issue}</li>
+              ))}
+            </ul>
+          ) : null}
+        </div>
       </section>
 
       <form className="mt-6 grid gap-6" onSubmit={submit}>
         <section className="rounded-card border border-brand-600 bg-brand-50 p-5 shadow-sm">
           <h2 className="text-xl font-semibold text-ink">Evidence decision</h2>
           <p className="mt-2 text-sm leading-6 text-muted">
-            The Evidence version, Claim version, visibility, status, and complete accepted Evidence
-            set are fixed in this request. Claim visibility cannot be changed here.
+            The Evidence version, Claim version, visibility, status, complete accepted Evidence set,
+            and exact Claim Asset set are fixed in this request. Claim visibility cannot be changed
+            here.
           </p>
         </section>
+
         <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
           <div className="grid gap-4 md:grid-cols-3">
             <label className="grid gap-2 text-sm font-semibold text-ink">
@@ -480,7 +521,9 @@ function EvidenceReviewWorkspace({
                 }
               >
                 <option value="no_change">No change</option>
-                {finding === 'supports_claim' ? <option value="confirm">Confirm</option> : null}
+                {finding === 'supports_claim' && detail.paymentPrerequisites.eligible ? (
+                  <option value="confirm">Confirm</option>
+                ) : null}
                 {finding === 'contradicts_claim' ? (
                   <option value="mark_stale">Mark stale</option>
                 ) : null}
@@ -489,6 +532,7 @@ function EvidenceReviewWorkspace({
               </select>
             </label>
           </div>
+
           <div className="mt-4 grid gap-4 md:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-ink">
               Reason code

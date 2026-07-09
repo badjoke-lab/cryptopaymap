@@ -46,6 +46,7 @@ export const evidenceReviewDecisionInputSchema = z
     expectedClaimStatus: z.enum(evidenceReviewClaimStatusValues),
     expectedClaimVisibility: z.enum(evidenceReviewClaimVisibilityValues),
     expectedAcceptedEvidenceIds: z.array(z.uuid()).max(100),
+    expectedClaimAssetIds: z.array(z.uuid()).max(100),
     decidedAt: z.iso.datetime({ offset: true }),
     disposition: z.enum(evidenceReviewDispositionValues),
     finding: z.enum(evidenceReviewFindingValues),
@@ -71,6 +72,13 @@ export const evidenceReviewDecisionInputSchema = z
         code: 'custom',
         path: ['expectedAcceptedEvidenceIds'],
         message: 'Expected accepted Evidence IDs must be unique.',
+      });
+    }
+    if (new Set(decision.expectedClaimAssetIds).size !== decision.expectedClaimAssetIds.length) {
+      context.addIssue({
+        code: 'custom',
+        path: ['expectedClaimAssetIds'],
+        message: 'Expected Claim Asset IDs must be unique.',
       });
     }
     if (
@@ -196,6 +204,7 @@ export interface EvidenceReviewDecisionCommand {
   expectedClaimStatus: EvidenceReviewClaimStatus;
   expectedClaimVisibility: EvidenceReviewClaimVisibility;
   expectedAcceptedEvidenceIds: string[];
+  expectedClaimAssetIds: string[];
   decidedAt: Date;
   disposition: EvidenceReviewDisposition;
   finding: EvidenceReviewFinding;
@@ -277,6 +286,7 @@ function buildCommand(
   input: EvidenceReviewDecisionInput,
 ): EvidenceReviewDecisionCommand {
   const expectedAcceptedEvidenceIds = [...input.expectedAcceptedEvidenceIds].sort();
+  const expectedClaimAssetIds = [...input.expectedClaimAssetIds].sort();
   const requestFingerprint = JSON.stringify(
     stable({
       requestId: context.requestId,
@@ -284,6 +294,7 @@ function buildCommand(
       actorType: context.actorType,
       ...input,
       expectedAcceptedEvidenceIds,
+      expectedClaimAssetIds,
     }),
   );
   return {
@@ -298,6 +309,7 @@ function buildCommand(
     expectedClaimStatus: input.expectedClaimStatus,
     expectedClaimVisibility: input.expectedClaimVisibility,
     expectedAcceptedEvidenceIds,
+    expectedClaimAssetIds,
     decidedAt: new Date(input.decidedAt),
     disposition: input.disposition,
     finding: input.finding,
