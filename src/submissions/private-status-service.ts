@@ -6,10 +6,7 @@ import {
   type SubmissionWorkflowStatus,
 } from './contract';
 import type { SubmissionPersistenceBackend } from './persistence';
-import {
-  submissionStatusSecretSchema,
-  verifySubmissionStatusSecret,
-} from './status-secret';
+import { submissionStatusSecretSchema, verifySubmissionStatusSecret } from './status-secret';
 
 const dummyStatusTokenHash = `sha256:${'0'.repeat(64)}`;
 
