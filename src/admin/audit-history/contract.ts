@@ -7,6 +7,7 @@ export const auditHistoryDomainValues = [
   'reconfirmation',
   'media',
   'export',
+  'submission',
 ] as const;
 
 export const auditHistorySourceKindValues = [
@@ -19,6 +20,7 @@ export const auditHistorySourceKindValues = [
   'export_release_decision',
   'export_activation',
   'export_restore_execution',
+  'submission_event',
 ] as const;
 
 export const auditHistoryTargetTypeValues = [
@@ -29,6 +31,7 @@ export const auditHistoryTargetTypeValues = [
   'evidence',
   'media_asset',
   'export_snapshot',
+  'submission',
 ] as const;
 
 const sourceKindDomain = {
@@ -41,6 +44,7 @@ const sourceKindDomain = {
   export_release_decision: 'export',
   export_activation: 'export',
   export_restore_execution: 'export',
+  submission_event: 'submission',
 } as const satisfies Record<
   (typeof auditHistorySourceKindValues)[number],
   (typeof auditHistoryDomainValues)[number]
