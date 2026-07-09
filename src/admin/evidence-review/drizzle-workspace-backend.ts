@@ -185,7 +185,10 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
         .innerJoin(paymentMethods, eq(claimAssets.paymentMethodId, paymentMethods.id))
         .where(eq(claimAssets.claimId, row.claimId))
         .orderBy(asc(claimAssets.id));
-      const paymentCombinations = evidenceReviewPaymentCombinationSchema.array().max(100).parse(paymentRows);
+      const paymentCombinations = evidenceReviewPaymentCombinationSchema
+        .array()
+        .max(100)
+        .parse(paymentRows);
 
       const threshold = evaluateEvidenceThreshold(
         acceptedRows.map((item) => ({
