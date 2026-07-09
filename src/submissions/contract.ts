@@ -69,13 +69,17 @@ function isBlockedHostname(hostname: string): boolean {
     normalized.endsWith('.localhost') ||
     normalized.endsWith('.local') ||
     normalized === '0.0.0.0' ||
-    normalized === '::1'
+    normalized === '::1' ||
+    normalized === '[::1]'
   ) {
     return true;
   }
 
   const octets = normalized.split('.').map((value) => Number(value));
-  if (octets.length !== 4 || octets.some((value) => !Number.isInteger(value) || value < 0 || value > 255)) {
+  if (
+    octets.length !== 4 ||
+    octets.some((value) => !Number.isInteger(value) || value < 0 || value > 255)
+  ) {
     return false;
   }
 
@@ -95,10 +99,16 @@ export const submissionEvidenceUrlSchema = z.url().superRefine((value, context) 
     context.addIssue({ code: 'custom', message: 'Evidence URLs must use HTTP or HTTPS.' });
   }
   if (url.username.length > 0 || url.password.length > 0) {
-    context.addIssue({ code: 'custom', message: 'Evidence URLs must not contain embedded credentials.' });
+    context.addIssue({
+      code: 'custom',
+      message: 'Evidence URLs must not contain embedded credentials.',
+    });
   }
   if (isBlockedHostname(url.hostname)) {
-    context.addIssue({ code: 'custom', message: 'Evidence URLs must not target local or private hosts.' });
+    context.addIssue({
+      code: 'custom',
+      message: 'Evidence URLs must not target local or private hosts.',
+    });
   }
 });
 
@@ -143,16 +153,27 @@ export const submissionJsonValueSchema: z.ZodType<SubmissionJsonValue> = z.lazy(
   ]),
 );
 
+function jsonChildren(value: SubmissionJsonValue): SubmissionJsonValue[] {
+  if (value === null || typeof value !== 'object') return [];
+  return Array.isArray(value) ? value : Object.values(value);
+}
+
 function jsonDepth(value: SubmissionJsonValue, depth = 0): number {
   if (value === null || typeof value !== 'object') return depth;
-  const children = Array.isArray(value) ? value : Object.values(value);
-  return children.reduce((maximum, child) => Math.max(maximum, jsonDepth(child, depth + 1)), depth);
+  let maximum = depth;
+  for (const child of jsonChildren(value)) {
+    maximum = Math.max(maximum, jsonDepth(child, depth + 1));
+  }
+  return maximum;
 }
 
 function jsonNodeCount(value: SubmissionJsonValue): number {
   if (value === null || typeof value !== 'object') return 1;
-  const children = Array.isArray(value) ? value : Object.values(value);
-  return 1 + children.reduce((count, child) => count + jsonNodeCount(child), 0);
+  let count = 1;
+  for (const child of jsonChildren(value)) {
+    count += jsonNodeCount(child);
+  }
+  return count;
 }
 
 export const submissionOriginalPayloadSchema = z
@@ -160,7 +181,10 @@ export const submissionOriginalPayloadSchema = z
   .superRefine((payload, context) => {
     const serialized = JSON.stringify(payload);
     if (serialized.length > 65_536) {
-      context.addIssue({ code: 'custom', message: 'Submission payloads must be 64 KiB or smaller.' });
+      context.addIssue({
+        code: 'custom',
+        message: 'Submission payloads must be 64 KiB or smaller.',
+      });
     }
     if (jsonDepth(payload) > 8) {
       context.addIssue({ code: 'custom', message: 'Submission payload nesting is too deep.' });
@@ -265,7 +289,11 @@ export const submissionPublicStatusProjectionSchema = z
     linkedPublicRecord: z
       .object({
         recordType: z.enum(['place', 'online_service']),
-        slug: z.string().min(1).max(160).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
+        slug: z
+          .string()
+          .min(1)
+          .max(160)
+          .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/),
       })
       .strict()
       .nullable(),
@@ -273,7 +301,11 @@ export const submissionPublicStatusProjectionSchema = z
       .array(
         z
           .object({
-            mediaReference: z.string().min(8).max(80).regex(/^[A-Z0-9_-]+$/),
+            mediaReference: z
+              .string()
+              .min(8)
+              .max(80)
+              .regex(/^[A-Z0-9_-]+$/),
             decision: z.enum(['pending', 'approved', 'rejected']),
           })
           .strict(),
