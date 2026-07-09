@@ -1,7 +1,7 @@
 # P4-18E live review and Phase 5 handoff audit
 
 **Implementation item:** P4-18E  
-**Status:** Active  
+**Status:** Completed through #148  
 **Last updated:** 2026-07-09
 
 ## Purpose
@@ -41,7 +41,7 @@ This audit does not treat an unavailable live check as success and does not trea
 
 The fixed review deployment workflow records deployment status, deployed commit, URL, and generation time, publishes the receipt to the `staging-review` branch, and fails the deployment workflow when credentials or deployment fail.
 
-The current receipt records:
+The audited receipt records:
 
 ```text
 status: deployed
@@ -52,7 +52,7 @@ generatedAt: 2026-07-09T11:07:48.167Z
 
 The receipt commit exactly matches the P4-18D5 merge commit used as the P4-18E audit baseline.
 
-D5 and later handoff-only changes do not weaken the deployment receipt rule: repository merge state and deployed receipt state must continue to be compared explicitly whenever review-environment state matters.
+Later handoff-only changes do not weaken the deployment receipt rule: repository merge state and deployed receipt state must continue to be compared explicitly whenever review-environment state matters.
 
 ## 3. Staging artifact and repository validation
 
@@ -108,7 +108,7 @@ This visual result applies to the captured public UI state. It does not prove li
 
 P4-18B repository paths satisfy the Phase 5 prerequisite that practical Place data can be reviewed, provenance-assigned, written atomically, corrected through a separate guarded operation, projected through an allowlisted public boundary, and consumed by public Place surfaces.
 
-P4-18E does not have access to a configured live environment that can prove the complete new-target or correction flow end to end. Those live checks remain explicit Launch work/configured-environment verification.
+P4-18E did not have access to a configured live environment that could prove the complete new-target or correction flow end to end. Those live checks remain explicit Launch work/configured-environment verification.
 
 This absence does not reopen P4-18B or block P5-01 because Phase 5 implementation can proceed on the reviewed repository contracts. It does prevent launch readiness from being claimed until configured-environment validation is complete.
 
@@ -126,7 +126,7 @@ P4-18D completed the repository administration journey audit through D1–D5:
 - accurate repository-only classification of restore contracts;
 - explicit environment and Launch work ownership.
 
-P4-18E could not execute configured live Admin mutations because the required live identity, allowlist values, environment bindings, database state, and representative review data are not available to this audit environment.
+P4-18E could not execute configured live Admin mutations because the required live identity, allowlist values, environment bindings, database state, and representative review data were not available to this audit environment.
 
 These checks are recorded as unavailable rather than passed.
 
@@ -160,36 +160,40 @@ Starting Phase 5 does not waive any Launch work item.
 
 ## 8. Phase 5 prerequisite decision
 
-The P4-18E handoff gate may close when this audit is green because:
+The P4-18E handoff gate is closed because:
 
 1. P4-18B practical profile repository parity is complete;
 2. P4-18C bounded UI residual closure is complete;
 3. P4-18D repository administration integration findings are resolved or explicitly assigned;
-4. the fixed review deployment receipt matches the intended handoff `main` commit;
-5. staging validation and representative screenshot capture are successful;
+4. the fixed review deployment receipt matched the intended handoff `main` commit;
+5. staging validation and representative screenshot capture were successful;
 6. relevant images were inspected directly;
 7. no material visual Phase 5 blocker was found;
 8. every unavailable environment check is explicitly recorded;
 9. production restore gaps remain visible Launch work rather than hidden repository completion;
-10. there is no known repository blocker to P5-01.
+10. there is no known repository blocker to P5-01;
+11. #148 merged green.
 
 ## 9. Closure decision
 
-After this audit and tracking update merge green:
+P4-18E is completed through #148.
+
+The tracking handoff moves repository state to:
+
+```text
+Phase 5 — Public submissions / MVP-B
+P5-01 — Shared submission foundation
+```
+
+The resulting interpretation is:
 
 - Phase 4 P4-18 closure is complete for Phase 5 handoff purposes;
-- P4-18E is completed;
 - Phase 5 may begin at P5-01 Shared submission foundation;
 - launch readiness is **not** claimed;
 - configured-environment and production restore Launch work remain mandatory before production launch criteria can be claimed.
 
 ## Next
 
-Move repository tracking to:
-
-```text
-Phase 5 — Public submissions / MVP-B
-P5-01 — Shared submission foundation
-```
+Execute P5-01 Shared submission foundation.
 
 P5-01 must establish common submission envelope, opaque public reference, private follow-up secret handling, workflow state, contact privacy boundary, abuse controls, safe parsing, idempotency, and audit foundation before individual public submission forms are implemented.
