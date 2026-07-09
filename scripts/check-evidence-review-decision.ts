@@ -58,6 +58,7 @@ const receipt = await createEvidenceReviewDecisionService(backend).decide(
     expectedClaimStatus: 'candidate',
     expectedClaimVisibility: 'hidden',
     expectedAcceptedEvidenceIds: [],
+    expectedClaimAssetIds: [],
     decidedAt,
     disposition: 'accepted',
     finding: 'supports_claim',
