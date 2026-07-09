@@ -1,8 +1,5 @@
 import { z } from 'zod';
-import {
-  issueSubmissionStatusSecret,
-  type IssuedSubmissionStatusSecret,
-} from './status-secret';
+import { issueSubmissionStatusSecret, type IssuedSubmissionStatusSecret } from './status-secret';
 
 export interface SubmissionStatusSecretProvider {
   issueForRequest(requestId: string): Promise<IssuedSubmissionStatusSecret>;
