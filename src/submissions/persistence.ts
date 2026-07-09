@@ -1,11 +1,17 @@
 import type {
-  SubmissionRelationship,
   SubmissionResolution,
-  SubmissionTargetType,
   SubmissionType,
   SubmissionWorkflowStatus,
 } from './contract';
-import type { SubmissionEventActorType } from '../db/schema/submissions';
+import {
+  submissionEventActorTypeValues,
+  submissionRelationshipValues,
+  submissionTargetTypeValues,
+} from '../db/schema/submissions';
+
+export type SubmissionEventActorType = (typeof submissionEventActorTypeValues)[number];
+export type SubmissionRelationship = (typeof submissionRelationshipValues)[number];
+export type SubmissionTargetType = (typeof submissionTargetTypeValues)[number];
 
 export class SubmissionPersistenceError extends Error {
   constructor(
