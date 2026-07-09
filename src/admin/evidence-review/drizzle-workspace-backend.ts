@@ -9,7 +9,10 @@ import {
   paymentMethods,
 } from '../../db/schema';
 import { evaluateEvidenceThreshold } from '../../schemas/evidence';
-import { evaluateEvidenceReviewPaymentPrerequisites } from './payment-prerequisites';
+import {
+  evaluateEvidenceReviewPaymentPrerequisites,
+  evidenceReviewPaymentCombinationSchema,
+} from './payment-prerequisites';
 import {
   thresholdWithEvidenceIds,
   type EvidenceReviewDetailResponse,
@@ -182,6 +185,7 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
         .innerJoin(paymentMethods, eq(claimAssets.paymentMethodId, paymentMethods.id))
         .where(eq(claimAssets.claimId, row.claimId))
         .orderBy(asc(claimAssets.id));
+      const paymentCombinations = evidenceReviewPaymentCombinationSchema.array().max(100).parse(paymentRows);
 
       const threshold = evaluateEvidenceThreshold(
         acceptedRows.map((item) => ({
@@ -195,7 +199,7 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
       );
       const paymentPrerequisites = evaluateEvidenceReviewPaymentPrerequisites(
         row.routeType,
-        paymentRows,
+        paymentCombinations,
       );
 
       const detail: EvidenceReviewDetailResponse = {
@@ -242,7 +246,7 @@ export function createDrizzleEvidenceReviewWorkspaceBackend(
           endedReason: row.endedReason,
           updatedAt: row.claimUpdatedAt.toISOString(),
         },
-        paymentCombinations: paymentRows,
+        paymentCombinations,
         paymentPrerequisites,
         acceptedEvidence: acceptedRows.map((item) => ({
           id: item.id,
