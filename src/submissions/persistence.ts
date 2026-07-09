@@ -1,8 +1,4 @@
-import type {
-  SubmissionResolution,
-  SubmissionType,
-  SubmissionWorkflowStatus,
-} from './contract';
+import type { SubmissionResolution, SubmissionType, SubmissionWorkflowStatus } from './contract';
 import {
   submissionEventActorTypeValues,
   submissionRelationshipValues,
