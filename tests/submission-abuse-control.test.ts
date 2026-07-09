@@ -126,7 +126,11 @@ describe('P5-01D abuse-controlled submission intake', () => {
       const submit = vi.fn();
       const service = createAbuseControlledSubmissionIntakeService({
         rateLimiter: allowRateLimiter(),
-        challengeVerifier: { async verify() { return decision; } },
+        challengeVerifier: {
+          async verify() {
+            return decision;
+          },
+        },
         intake: { submit },
       });
 
@@ -239,10 +243,9 @@ describe('Cloudflare Turnstile Siteverify adapter', () => {
       expectedHostname: 'review.example.test',
       expectedAction: 'submission_intake',
       fetchImpl: (async () =>
-        new Response(
-          JSON.stringify({ success: false, 'error-codes': ['internal-error'] }),
-          { status: 200 },
-        )) as typeof fetch,
+        new Response(JSON.stringify({ success: false, 'error-codes': ['internal-error'] }), {
+          status: 200,
+        })) as typeof fetch,
     });
     await expect(
       internalErrorVerifier.verify({ requestId, token: 'turnstile-token', remoteIp: null }),
