@@ -4,10 +4,8 @@ import { createExportHistoryHandler } from '../functions/admin/api/export-histor
 import type { CryptoPayMapDatabase } from '../src/db/client';
 import { createDrizzleAuditHistorySources } from '../src/admin/audit-history/drizzle-sources';
 import { createDrizzleLocationCorrectionAuditSource } from '../src/admin/audit-history/location-correction-source';
-import {
-  ExportRestoreWorkflowError,
-  type ExportRestorePointerSwitchReceipt,
-} from '../src/admin/export-release/restore-workflow';
+import type { ExportRestorePointerSwitchReceipt } from '../src/admin/export-release/restore-execution';
+import { ExportRestoreWorkflowError } from '../src/admin/export-release/restore-workflow';
 import { authorizeReconfirmationExpiration } from '../src/admin/reconfirmation/authorization';
 
 const identity = {
