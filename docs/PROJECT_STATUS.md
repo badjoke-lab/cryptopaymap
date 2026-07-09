@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-01C — Idempotent private intake service
+P5-01D — Abuse-control and Turnstile boundary
 
 ## Current repository state
 
@@ -26,7 +26,8 @@ P5-01C — Idempotent private intake service
 - Phase 5 tracking handoff is complete through #149.
 - P5-01A submission contract and privacy model is complete through #150.
 - P5-01B submission persistence and workflow-state foundation is complete through #151.
-- P5-01C idempotent private intake service is active.
+- P5-01C idempotent private intake service is complete through #152.
+- P5-01D abuse-control and Turnstile boundary is active.
 
 ## Fixed review environment
 
@@ -48,7 +49,8 @@ Before P5-01 implementation or review, read:
 6. `docs/P5_01A_SUBMISSION_CONTRACT_AND_PRIVACY_MODEL.md`;
 7. `docs/P5_01B_SUBMISSION_PERSISTENCE_FOUNDATION.md`;
 8. `docs/P5_01C_IDEMPOTENT_PRIVATE_INTAKE.md`;
-9. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+9. `docs/P5_01D_ABUSE_CONTROL_AND_TURNSTILE.md`;
+10. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -67,8 +69,8 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 
 1. P5-01A — submission contract and privacy model — Completed through #150
 2. P5-01B — persistence and workflow-state foundation — Completed through #151
-3. P5-01C — idempotent private intake service — In progress
-4. P5-01D — abuse-control and Turnstile boundary — Planned
+3. P5-01C — idempotent private intake service — Completed through #152
+4. P5-01D — abuse-control and Turnstile boundary — In progress
 5. P5-01E — Audit integration and Phase 5 foundation audit — Planned
 
 ## P5-01 active scope
@@ -97,7 +99,7 @@ P5-01B established:
 - guarded workflow transitions and stale-state conflict behavior;
 - generated Drizzle migration `0023` and migration-drift closure.
 
-P5-01C now establishes:
+P5-01C established:
 
 - canonical SHA-256 intake fingerprinting;
 - identical retry replay and changed-content conflict;
@@ -107,6 +109,18 @@ P5-01C now establishes:
 - safe private intake receipts;
 - concurrent create-conflict recovery as replay when durable state matches;
 - failure-before-persistence behavior for invalid requests and contact-protection failures.
+
+P5-01D now establishes:
+
+- provider-neutral rate-limit and challenge-verification contracts;
+- rate-limit-before-challenge ordering;
+- fail-closed deny/unavailable behavior before durable intake;
+- opaque rate-limit bucket-key boundary;
+- in-memory fixed-window contract implementation for tests;
+- Cloudflare Turnstile Siteverify adapter;
+- request UUID Siteverify idempotency-key use;
+- exact hostname and action validation;
+- provider/network/response failure normalization without leaking provider internals.
 
 P5-01 must preserve the existing Candidate, canonical, Evidence, Media, verification, export, and publication boundaries.
 
@@ -144,15 +158,15 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-01C, then begin P5-01D abuse-control and Turnstile boundary.
+Complete P5-01D, then begin P5-01E Audit integration and Phase 5 foundation audit.
 
 Do not begin individual submission-form implementation before the common persistence, privacy, workflow, abuse-control, idempotency, and Audit foundations are explicit and validated.
 
 ## Blocked
 
-No known repository blocker to P5-01C.
+No known repository blocker to P5-01D.
 
-Production contact encryption and HMAC key environment binding remain required before a public intake route is exposed.
+Production contact encryption, HMAC key environment binding, production rate-limit provider, opaque bucket-key derivation, and Turnstile environment binding remain required before a public intake route is exposed.
 
 Production restore completion remains a Launch gate rather than a P5-01 start blocker.
 
