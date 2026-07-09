@@ -8,10 +8,7 @@ import {
   submissions,
 } from '../db/schema';
 import { formatSubmissionPublicId } from './contract';
-import {
-  SubmissionPersistenceError,
-  type SubmissionPersistenceBackend,
-} from './persistence';
+import { SubmissionPersistenceError, type SubmissionPersistenceBackend } from './persistence';
 import { assertSubmissionWorkflowTransition } from './workflow';
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
