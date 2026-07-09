@@ -25,13 +25,15 @@ describe('submission status secret boundary', () => {
     expect(repeated).toEqual(first);
     expect(different.secret).not.toBe(first.secret);
     expect(different.tokenHash).not.toBe(first.tokenHash);
-    await expect(verifySubmissionStatusSecret(different.secret, first.tokenHash)).resolves.toBe(false);
+    await expect(verifySubmissionStatusSecret(different.secret, first.tokenHash)).resolves.toBe(
+      false,
+    );
   });
 
   it('rejects malformed secrets and hashes without throwing from the verification boundary', async () => {
-    await expect(verifySubmissionStatusSecret('bad-secret', `sha256:${'a'.repeat(64)}`)).resolves.toBe(
-      false,
-    );
+    await expect(
+      verifySubmissionStatusSecret('bad-secret', `sha256:${'a'.repeat(64)}`),
+    ).resolves.toBe(false);
     await expect(verifySubmissionStatusSecret('bad-secret', 'bad-hash')).resolves.toBe(false);
   });
 
