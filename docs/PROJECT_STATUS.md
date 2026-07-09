@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-01 — Shared submission foundation
+P5-01B — Submission persistence and workflow-state foundation
 
 ## Current repository state
 
@@ -23,7 +23,9 @@ P5-01 — Shared submission foundation
 - P4-18C bounded UI residual closure and direct visual acceptance are complete through #139, #141, and #142.
 - P4-18D administration workflow integration audit is complete through #143–#147.
 - P4-18E live review and Phase 5 handoff audit is complete through #148.
-- Phase 5 is active at P5-01.
+- Phase 5 tracking handoff is complete through #149.
+- P5-01A submission contract and privacy model is complete through #150.
+- P5-01B is active in #151.
 
 ## Fixed review environment
 
@@ -42,8 +44,9 @@ Before P5-01 implementation or review, read:
 3. `docs/SUBMISSION_WORKFLOW.md`;
 4. `docs/DATA_MODEL.md`;
 5. `docs/SECURITY_AND_PRIVACY.md`;
-6. `docs/P4_18_D5_CLOSURE_AND_ENVIRONMENT_INVENTORY.md`;
-7. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+6. `docs/P5_01A_SUBMISSION_CONTRACT_AND_PRIVACY_MODEL.md`;
+7. `docs/P5_01B_SUBMISSION_PERSISTENCE_FOUNDATION.md`;
+8. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -58,23 +61,39 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
+## P5-01 execution slices
+
+1. P5-01A — submission contract and privacy model — Completed through #150
+2. P5-01B — persistence and workflow-state foundation — In progress in #151
+3. P5-01C — idempotent private intake service — Planned
+4. P5-01D — abuse-control and Turnstile boundary — Planned
+5. P5-01E — Audit integration and Phase 5 foundation audit — Planned
+
 ## P5-01 active scope
 
 P5-01 establishes the common private submission foundation before individual public submission forms are implemented.
 
-Required boundaries include:
+P5-01A established:
 
-- common submission envelope;
-- opaque public reference;
-- private follow-up secret handling;
-- workflow status model;
-- contact privacy boundary;
-- source submission privacy and non-public defaults;
-- abuse-control contract and Turnstile boundary;
-- strict runtime parsing and bounded payloads;
-- idempotent intake behavior;
-- durable private submission audit foundation;
-- no direct canonical or public mutation from intake.
+- strict common submission envelope;
+- bounded original-payload contract;
+- submission workflow and resolution vocabulary;
+- opaque public reference format;
+- 32-byte status secret issuance and one-way hash storage representation;
+- purpose-built safe status projection;
+- contact/public projection separation;
+- evidence-link baseline safety checks.
+
+P5-01B now establishes:
+
+- durable private Submission parent records;
+- original/normalized/proposed payload separation;
+- encrypted-contact persistence boundary;
+- workflow event history;
+- year-scoped public reference allocation;
+- request identity and fingerprint persistence for P5-01C;
+- guarded workflow transitions and stale-state conflict behavior;
+- generated Drizzle migration and migration-drift closure.
 
 P5-01 must preserve the existing Candidate, canonical, Evidence, Media, verification, export, and publication boundaries.
 
@@ -112,13 +131,13 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Execute P5-01 Shared submission foundation.
+Complete P5-01B in #151, then begin P5-01C idempotent private intake service.
 
-Do not begin individual submission-form implementation before the common submission envelope, privacy, workflow, abuse, idempotency, and audit foundations are explicit and validated.
+Do not begin individual submission-form implementation before the common persistence, privacy, workflow, abuse-control, idempotency, and Audit foundations are explicit and validated.
 
 ## Blocked
 
-No known repository blocker to P5-01.
+No known repository blocker to P5-01B.
 
 Production restore completion remains a Launch gate rather than a P5-01 start blocker.
 
