@@ -6,10 +6,7 @@ import type { ExportReleaseDecision } from '../../db/schema/export-release-decis
 import type { LocationProfileCorrectionDecision } from '../../db/schema/location-profile-correction-decisions';
 import type { MediaReviewDecision } from '../../db/schema/media-review-decisions';
 import type { ReconfirmationExpiration } from '../../db/schema/reconfirmation-expirations';
-import type {
-  SubmissionEvent,
-  submissionTypeValues,
-} from '../../db/schema/submissions';
+import type { SubmissionEvent, submissionTypeValues } from '../../db/schema/submissions';
 import type { ExportRestoreExecutionRecord } from '../export-release/restore-execution';
 import type { AuditHistoryItem, AuditHistoryTarget } from './contract';
 
