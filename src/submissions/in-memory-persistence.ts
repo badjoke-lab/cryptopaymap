@@ -11,7 +11,6 @@ import { assertSubmissionWorkflowTransition } from './workflow';
 interface StoredSubmission extends SubmissionPersistenceReplayRecord {
   updatedAt: Date;
   resolution: TransitionSubmissionPersistenceCommand['resolution'];
-  statusTokenHash: string;
   originalPayload: Record<string, unknown>;
   contact: CreateSubmissionPersistenceCommand['contact'];
 }
@@ -48,6 +47,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         publicId: stored.publicId,
         requestFingerprint: stored.requestFingerprint,
         workflowStatus: stored.workflowStatus,
+        statusTokenHash: stored.statusTokenHash,
         submittedAt: stored.submittedAt,
       };
     },
@@ -70,10 +70,10 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         publicId: command.publicId,
         requestFingerprint: command.requestFingerprint,
         workflowStatus: 'received',
+        statusTokenHash: command.statusTokenHash,
         submittedAt: command.submittedAt.toISOString(),
         updatedAt: command.submittedAt,
         resolution: null,
-        statusTokenHash: command.statusTokenHash,
         originalPayload: structuredClone(command.originalPayload),
         contact: command.contact === null ? null : { ...command.contact },
       };
