@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-08
+**Last verified:** 2026-07-09
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 4 — Public core / MVP-A closure
 
 ## Current implementation item
 
-P4-18D — Administration workflow integration audit
+P4-18E — Live review and Phase 5 handoff audit
 
 ## Current repository state
 
@@ -25,7 +25,8 @@ P4-18D — Administration workflow integration audit
 - P4-18B3 canonical persistence and public projection integration repository work is completed through #132 and #133, with closure tracking and B4 handoff through #134.
 - P4-18B4 existing-record practical-profile correction path is repository-complete through #135, #136, #137, and #138.
 - P4-18C bounded UI residual closure is completed through #139, #141, and #142, with direct final-artifact visual review recorded in `docs/P4_18_C_UI_AUDIT.md`.
-- P4-18D is active.
+- P4-18D administration workflow integration audit is repository-complete through D1 #143, D2 #144, D3 #145, D4 #146, and D5 closure inventory in the current handoff change.
+- P4-18E is the active handoff gate before Phase 5.
 
 ## Fixed review environment
 
@@ -37,11 +38,14 @@ The deployment receipt must be checked whenever review-environment state matters
 
 ## Required current references
 
-Before starting or reviewing P4-18 work, read:
+Before starting or reviewing P4-18E work, read:
 
 1. `docs/IMPLEMENTATION_PLAN.md`;
 2. `docs/PHASE4_CLOSURE_PLAN.md`;
-3. the public specification documents relevant to the active item.
+3. `docs/P4_18_D_ADMIN_INTEGRATION_AUDIT.md`;
+4. `docs/P4_18_D4_PUBLICATION_RESTORE_AUDIT.md`;
+5. `docs/P4_18_D5_CLOSURE_AND_ENVIRONMENT_INVENTORY.md`;
+6. the public specification documents relevant to the live path under review.
 
 For practical Place profile work also read:
 
@@ -74,10 +78,10 @@ For Phase 5 preparation and submission work also read:
 4. P4-18B3 — canonical persistence and public projection integration — Completed through #132, #133, and #134
 5. P4-18B4 — existing-record practical-profile correction path audit and completion — Completed through #135, #136, #137, and #138
 6. P4-18C — bounded UI residual closure — Completed through #139, #141, and #142
-7. P4-18D — administration workflow integration audit — In progress
-8. P4-18E — live review and Phase 5 handoff audit — Planned
+7. P4-18D — administration workflow integration audit — Completed through #143, #144, #145, #146, and the D5 handoff change
+8. P4-18E — live review and Phase 5 handoff audit — In progress
 
-The authoritative scope and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`.
+The authoritative scope and completion criteria are in `docs/PHASE4_CLOSURE_PLAN.md`. The environment-specific assignment matrix is in `docs/P4_18_D5_CLOSURE_AND_ENVIRONMENT_INVENTORY.md`.
 
 ## P4-18B1 completed boundary
 
@@ -165,7 +169,7 @@ Repository coverage includes:
 - operator reachability, conflict, unavailable, and retry recovery coverage;
 - built artifact checks for the correction admin page and server-only marker leakage.
 
-Live migration application, Access allowlist configuration, representative live correction, live protected Audit appearance, and configured corrected-value release flow remain environment-specific P4-18D/E verification items. Repository tests do not prove those live conditions.
+Live migration application, Access allowlist configuration, representative live correction, live protected Audit appearance, and configured corrected-value release flow remain P4-18E verification items. Repository tests do not prove those live conditions.
 
 ## P4-18C completed boundary
 
@@ -180,9 +184,9 @@ P4-18C closed the fixed UI residual scope through C1, C2, and direct C3 final-ar
 
 Screenshot workflow success was not used as a substitute for image inspection. The closure record is `docs/P4_18_C_UI_AUDIT.md`.
 
-## P4-18D active scope
+## P4-18D completed boundary
 
-P4-18D audits real operator journeys and cross-workspace integration across:
+P4-18D closed the repository administration integration audit across:
 
 - Candidate queue and detail;
 - duplicate review and identity resolution;
@@ -196,7 +200,19 @@ P4-18D audits real operator journeys and cross-workspace integration across:
 - protected Audit history coverage;
 - conflict, retry, replay, rollback, and operator-reachability behavior.
 
-P4-18D must distinguish repository evidence from environment-specific verification. Every live-only check must be classified precisely as completed, unavailable, or assigned to P4-18E/launch work. Broad deferred-verification language is not sufficient.
+D1 through D4 resolved or classified repository findings. D5 assigns every remaining environment-dependent check to P4-18E or explicit Launch work. Publication activation and release history are explicit non-UI protected boundaries. Restore contracts and workflow exist in the repository, but production restore persistence, invocation, R2 adapter wiring, durable restore Audit source, reconciliation runbook, and drills remain explicit Launch work and are not described as production-operational.
+
+## P4-18E handoff
+
+P4-18E is the active gate. It must use `docs/P4_18_D5_CLOSURE_AND_ENVIRONMENT_INVENTORY.md` and:
+
+- verify the fixed review deployment receipt against intended `main`;
+- verify or precisely mark unavailable the configured Access, allowlist, Functions environment, Neon migration, representative Admin path, candidate generation/upload/review, publication activation, release history, and Audit checks;
+- run staging artifact validation;
+- run representative screenshot capture and inspect the relevant images directly;
+- classify every unavailable environment check precisely;
+- keep Launch work assignments visible rather than treating them as repository-complete;
+- confirm Phase 5 prerequisites before moving to P5-01.
 
 ## Phase 5 handoff
 
@@ -215,17 +231,15 @@ Planned Phase 5 order:
 
 ## Next
 
-Execute P4-18D administration workflow integration audit. Do not move to P4-18E until operator journeys, cross-workspace boundaries, retry/conflict behavior, Audit coverage, and environment-specific check inventory are reconciled.
+Execute P4-18E live review and Phase 5 handoff audit. Do not move to P5-01 until the D5-assigned live-review checks are verified or precisely classified and the Phase 5 handoff gate is explicitly completed.
 
 ## Blocked
 
 No known repository blocker.
 
-P4-18D/E must verify or classify the environment-specific B4 checks recorded in `docs/P4_18_B4_AUDIT.md`.
+Phase 5 remains blocked on P4-18E completion.
 
-P4-18E must explicitly verify or classify the configured canonical query, full candidate generation, private candidate upload, and release-review handoff path recorded by the B3 audit. If that path is absent, it must be treated as an explicit launch blocker or assigned launch work rather than hidden by generic deferred-verification language.
-
-P4-18D and P4-18E must replace broad deferred-verification language with a precise inventory of environment-specific checks that were completed, could not be completed, or remain assigned to launch work.
+Production restore persistence, protected invocation, concrete R2 restore adapter wiring, durable restore Audit source, post-switch reconciliation runbook, and production restore drills remain explicit Launch work. They must not be represented as complete by repository tests.
 
 ## Verification rule
 
