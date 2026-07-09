@@ -146,7 +146,10 @@ export const submissionPayloads = pgTable(
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull(),
   },
   (table) => [
-    check('submission_payloads_original_object', sql`jsonb_typeof(${table.originalPayload}) = 'object'`),
+    check(
+      'submission_payloads_original_object',
+      sql`jsonb_typeof(${table.originalPayload}) = 'object'`,
+    ),
     check(
       'submission_payloads_normalized_object',
       sql`${table.normalizedPayload} is null or jsonb_typeof(${table.normalizedPayload}) = 'object'`,
