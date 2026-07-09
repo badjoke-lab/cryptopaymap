@@ -56,6 +56,7 @@ export interface SubmissionPersistenceReplayRecord {
   publicId: string;
   requestFingerprint: string;
   workflowStatus: SubmissionWorkflowStatus;
+  statusTokenHash: string;
   submittedAt: string;
 }
 

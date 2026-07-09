@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-01B — Submission persistence and workflow-state foundation
+P5-01C — Idempotent private intake service
 
 ## Current repository state
 
@@ -25,7 +25,8 @@ P5-01B — Submission persistence and workflow-state foundation
 - P4-18E live review and Phase 5 handoff audit is complete through #148.
 - Phase 5 tracking handoff is complete through #149.
 - P5-01A submission contract and privacy model is complete through #150.
-- P5-01B is active in #151.
+- P5-01B submission persistence and workflow-state foundation is complete through #151.
+- P5-01C idempotent private intake service is active.
 
 ## Fixed review environment
 
@@ -46,7 +47,8 @@ Before P5-01 implementation or review, read:
 5. `docs/SECURITY_AND_PRIVACY.md`;
 6. `docs/P5_01A_SUBMISSION_CONTRACT_AND_PRIVACY_MODEL.md`;
 7. `docs/P5_01B_SUBMISSION_PERSISTENCE_FOUNDATION.md`;
-8. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+8. `docs/P5_01C_IDEMPOTENT_PRIVATE_INTAKE.md`;
+9. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -64,8 +66,8 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 ## P5-01 execution slices
 
 1. P5-01A — submission contract and privacy model — Completed through #150
-2. P5-01B — persistence and workflow-state foundation — In progress in #151
-3. P5-01C — idempotent private intake service — Planned
+2. P5-01B — persistence and workflow-state foundation — Completed through #151
+3. P5-01C — idempotent private intake service — In progress
 4. P5-01D — abuse-control and Turnstile boundary — Planned
 5. P5-01E — Audit integration and Phase 5 foundation audit — Planned
 
@@ -84,16 +86,27 @@ P5-01A established:
 - contact/public projection separation;
 - evidence-link baseline safety checks.
 
-P5-01B now establishes:
+P5-01B established:
 
 - durable private Submission parent records;
 - original/normalized/proposed payload separation;
 - encrypted-contact persistence boundary;
 - workflow event history;
 - year-scoped public reference allocation;
-- request identity and fingerprint persistence for P5-01C;
+- request identity and fingerprint persistence;
 - guarded workflow transitions and stale-state conflict behavior;
-- generated Drizzle migration and migration-drift closure.
+- generated Drizzle migration `0023` and migration-drift closure.
+
+P5-01C now establishes:
+
+- canonical SHA-256 intake fingerprinting;
+- identical retry replay and changed-content conflict;
+- deterministic HMAC-based status-secret re-derivation without plaintext secret storage;
+- replay integrity checks against durable token hashes;
+- mandatory contact-protection provider injection;
+- safe private intake receipts;
+- concurrent create-conflict recovery as replay when durable state matches;
+- failure-before-persistence behavior for invalid requests and contact-protection failures.
 
 P5-01 must preserve the existing Candidate, canonical, Evidence, Media, verification, export, and publication boundaries.
 
@@ -131,13 +144,15 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-01B in #151, then begin P5-01C idempotent private intake service.
+Complete P5-01C, then begin P5-01D abuse-control and Turnstile boundary.
 
 Do not begin individual submission-form implementation before the common persistence, privacy, workflow, abuse-control, idempotency, and Audit foundations are explicit and validated.
 
 ## Blocked
 
-No known repository blocker to P5-01B.
+No known repository blocker to P5-01C.
+
+Production contact encryption and HMAC key environment binding remain required before a public intake route is exposed.
 
 Production restore completion remains a Launch gate rather than a P5-01 start blocker.
 
