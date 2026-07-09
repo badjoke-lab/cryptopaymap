@@ -1,8 +1,8 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Planned; blocked on P4-18E handoff  
-**Last updated:** 2026-07-08
+**Status:** Active — P5-01F closure correction in progress  
+**Last updated:** 2026-07-09
 
 ## Purpose
 
@@ -10,7 +10,7 @@
 
 This document defines repository implementation order. It does not replace or narrow the submission workflow contract.
 
-Phase 5 begins only after the P4-18E handoff gate in `docs/PHASE4_CLOSURE_PLAN.md` is complete.
+Phase 5 began after the P4-18E handoff gate in `docs/PHASE4_CLOSURE_PLAN.md` completed.
 
 ## Non-negotiable boundaries
 
@@ -45,6 +45,20 @@ P5-08 MVP-B integration audit
 ```
 
 P5-03 through P5-05 share P5-01 but may only overlap when their data, privacy, and reviewer boundaries remain independent and reviewable. P5-06 and P5-07 depend on the real intake shapes delivered before them.
+
+## Current position
+
+```text
+P5-01A  Completed through #150
+P5-01B  Completed through #151
+P5-01C  Completed through #152
+P5-01D  Completed through #153
+P5-01E  Completed through #154
+P5-01F  In progress
+P5-02   Blocked on P5-01F completion
+```
+
+P5-01F was added after a post-#154 sequence audit found that the private follow-up status-read completion requirement had not yet been implemented. This correction must complete before P5-02 begins.
 
 ---
 
@@ -81,6 +95,8 @@ Create the common private intake and follow-up foundation used by all public sub
 ### Completion gate
 
 A synthetic submission can be received, assigned a public reference, retrieved through its private follow-up boundary, and kept isolated from canonical/public data.
+
+The completion gate is not satisfied until P5-01F verifies the `public reference + status secret → safe status projection` path.
 
 ---
 
