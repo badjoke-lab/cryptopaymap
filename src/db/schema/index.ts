@@ -29,4 +29,5 @@ export * from './networks';
 export * from './payment-registries';
 export * from './reconfirmation-expirations';
 export * from './source-provenance';
+export * from './submissions';
 export * from './verification-events';
