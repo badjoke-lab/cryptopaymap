@@ -83,11 +83,11 @@ describe('audit history Drizzle sources', () => {
     });
   });
 
-  it('registers the seven currently durable Phase 3 table sources', () => {
+  it('registers the eight currently durable standard Audit table sources', () => {
     const { database } = fakeDatabase([]);
     const sources = createDrizzleAuditHistorySources(database);
 
-    expect(sources).toHaveLength(7);
+    expect(sources).toHaveLength(8);
     expect(sources.map((source) => source.domain)).toEqual([
       'candidate',
       'candidate',
@@ -96,6 +96,7 @@ describe('audit history Drizzle sources', () => {
       'media',
       'export',
       'export',
+      'submission',
     ]);
   });
 });
