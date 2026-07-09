@@ -1,7 +1,4 @@
-import type {
-  SubmissionResolution,
-  SubmissionWorkflowStatus,
-} from './contract';
+import type { SubmissionResolution, SubmissionWorkflowStatus } from './contract';
 
 export class SubmissionWorkflowError extends Error {
   constructor(
@@ -31,9 +28,7 @@ export interface SubmissionWorkflowTransition {
   resolution: SubmissionResolution | null;
 }
 
-export function assertSubmissionWorkflowTransition(
-  transition: SubmissionWorkflowTransition,
-): void {
+export function assertSubmissionWorkflowTransition(transition: SubmissionWorkflowTransition): void {
   if (!allowedTransitions[transition.fromStatus].includes(transition.toStatus)) {
     throw new SubmissionWorkflowError(
       'transition_not_allowed',
