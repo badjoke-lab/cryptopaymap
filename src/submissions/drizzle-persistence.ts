@@ -73,6 +73,7 @@ export function createDrizzleSubmissionPersistenceBackend(
           publicId: submissions.publicId,
           requestFingerprint: submissions.requestFingerprint,
           workflowStatus: submissions.workflowStatus,
+          statusTokenHash: submissions.statusTokenHash,
           submittedAt: submissions.submittedAt,
         })
         .from(submissions)
@@ -85,6 +86,7 @@ export function createDrizzleSubmissionPersistenceBackend(
         publicId: row.publicId,
         requestFingerprint: row.requestFingerprint,
         workflowStatus: row.workflowStatus,
+        statusTokenHash: row.statusTokenHash,
         submittedAt: row.submittedAt.toISOString(),
       };
     },
