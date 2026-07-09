@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-08
+**Last updated:** 2026-07-09
 
 This file tracks repository implementation work. GitHub `main`, merged pull requests, and actual CI results are authoritative when this file differs from repository reality.
 
@@ -50,7 +50,7 @@ This file tracks repository implementation work. GitHub `main`, merged pull requ
 | P1-09 | PWA manifest and installability baseline | Completed | #19 |
 | P1-10 | Accessibility baseline | Completed | #20 |
 | P1-11 | Public Roadmap and Changelog loaders | Completed | #21 |
-| P1-12 | Integration and quality audit | Repository completed | #22, #23 |
+| P1-12 | Integration and quality audit | Repository completed; old live-check draft superseded | #22; #23 closed superseded |
 
 ## Phase 2 — Data core
 
@@ -76,7 +76,7 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 
 ## Phase 3 — Administration and review
 
-**Status:** Repository completed; P4-18D/E will reconcile remaining integration and environment checks
+**Status:** Repository completed; P4-18E will reconcile remaining configured-environment checks before Phase 5 handoff
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -95,11 +95,11 @@ Phase 2 keeps imported records private, preserves source and license provenance,
 
 Phase 3 established protected Candidate review, duplicate resolution, new-target promotion, existing-target linking, field-level provenance, Evidence decisions, Claim transitions, reconfirmation queues, Media review, export release decisions, publication activation, release history, restore boundaries, and cross-domain Audit history.
 
-Repository-complete components remain subject to the P4-18D operator-journey audit and P4-18E environment-specific handoff checks. Repository tests must not be described as live environment verification.
+Repository-complete components have been reconciled by P4-18D. P4-18E owns the configured-environment handoff checks. Repository tests must not be described as live environment verification.
 
 ## Phase 4 — Public core / MVP-A and closure
 
-**Status:** MVP-A public surfaces are merged; P4-18 closure is active
+**Status:** MVP-A public surfaces are merged; P4-18E live review and Phase 5 handoff is active
 
 | ID | Item | Status | Depends on | Pull request |
 |---|---|---|---|---|
@@ -131,8 +131,8 @@ Repository-complete components remain subject to the P4-18D operator-journey aud
 | P4-18B3 | Canonical persistence and public projection integration | Completed | P4-18B2 | #132, #133, #134 |
 | P4-18B4 | Existing-record practical-profile correction path audit and completion | Completed | P4-18B3 | #135, #136, #137, #138 |
 | P4-18C | Bounded UI residual closure | Completed | P4-18A, representative screenshot capture | #139, #141, #142 |
-| P4-18D | Administration workflow integration audit | In progress | P4-18B | — |
-| P4-18E | Live review and Phase 5 handoff audit | Planned | P4-18B, P4-18C, P4-18D | — |
+| P4-18D | Administration workflow integration audit | Completed | P4-18B | #143–#147 |
+| P4-18E | Live review and Phase 5 handoff audit | In progress | P4-18B, P4-18C, P4-18D | — |
 
 ### P4-17 Places recovery result
 
@@ -151,7 +151,7 @@ P4-17A through P4-17F are implemented, validated, and merged through #122. The f
 - #125 — representative desktop/mobile screenshot capture, interactive-state capture, legacy Place field parity baseline, and practical profile staging fixture coverage;
 - #126 — selected Place focus and marker correction plus desktop selected-panel containment.
 
-These changes improve observability and baseline UI behavior. They do not complete P4-18D administration integration or P4-18E handoff.
+These changes improve observability and baseline UI behavior. They do not complete the P4-18E handoff.
 
 ### P4-18B3 repository result
 
@@ -163,7 +163,7 @@ The configured canonical query → complete twelve-artifact candidate generation
 
 P4-18B4 repository work is completed through #135–#138. It establishes bounded existing-Location correction semantics, exact correction provenance, replay/conflict/rollback behavior, durable decision and diff history, atomic Drizzle persistence, protected operator workspace and API, separate existing-target navigation, and protected Audit history normalization.
 
-Environment-specific migration application, Access allowlist configuration, representative live correction, live Audit appearance, and corrected-value release flow remain assigned to P4-18D/E. Repository tests do not prove those live conditions.
+Environment-specific migration application, Access allowlist configuration, representative live correction, live Audit appearance, and corrected-value release flow remain assigned to P4-18E. Repository tests do not prove those live conditions.
 
 ### P4-18C repository and visual result
 
@@ -178,6 +178,25 @@ The bounded closure covers:
 - direct final-artifact inspection across List, Menu, expanded sheet, Filters, and representative Methodology long-form output.
 
 No material horizontal overflow, hidden primary interaction, or unresolved density defect remained in the fixed five-item scope. Screenshot capture success was not used as a substitute for image inspection. The durable closure record is `docs/P4_18_C_UI_AUDIT.md`.
+
+### P4-18D repository result
+
+P4-18D is completed through D1 #143, D2 #144, D3 #145, D4 #146, and D5 #147.
+
+The audit established:
+
+- coherent operator route reachability and accurate capability copy;
+- explicit raw Access subject versus normalized actor-ID authorization mapping;
+- reachable mutation UI idempotency coverage;
+- exact Evidence confirmation payment-set and prerequisite guards;
+- Reconfirmation connectivity failure recovery;
+- release decision versus publication capability separation;
+- explicit non-UI classification for publication activation and release history;
+- accurate repository-only classification for restore contracts and workflow;
+- explicit Launch work ownership for production restore persistence, invocation, R2 wiring, durable restore Audit source, reconciliation runbook, and drills;
+- precise P4-18E ownership for configured-environment verification.
+
+The closure inventory is `docs/P4_18_D5_CLOSURE_AND_ENVIRONMENT_INVENTORY.md`.
 
 ### P4-18 execution order
 
@@ -196,7 +215,7 @@ Execution order:
 
 P4-18 is a bounded closure term. P4-18B is a prerequisite for public submission work because external corrections must not arrive before the operator can safely review, provenance, apply, and publish the same field classes.
 
-P4-18D is now active. It must audit operator journeys and cross-workspace boundaries from Candidate intake through duplicate review, Promotion, existing-target linking, Location correction, Evidence, reconfirmation, Media, export controls, Audit history, and rollback/retry behavior. Environment-specific checks must be classified precisely rather than hidden under broad deferred-verification language.
+P4-18D repository work is complete. P4-18E is active and must verify or precisely classify the configured-environment checks assigned by D5 before the project may move to P5-01.
 
 ## Phase 5 — Public submissions / MVP-B
 
