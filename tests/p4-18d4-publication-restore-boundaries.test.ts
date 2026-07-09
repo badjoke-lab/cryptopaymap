@@ -27,8 +27,9 @@ describe('P4-18D4 publication, restore, and Audit boundaries', () => {
     const durableSources = createDrizzleAuditHistorySources(database);
     const locationSource = createDrizzleLocationCorrectionAuditSource(database);
 
-    expect(durableSources).toHaveLength(7);
+    expect(durableSources).toHaveLength(8);
     expect(durableSources.filter((source) => source.domain === 'export')).toHaveLength(2);
+    expect(durableSources.filter((source) => source.domain === 'submission')).toHaveLength(1);
     expect(locationSource.domain).toBe('canonical');
   });
 

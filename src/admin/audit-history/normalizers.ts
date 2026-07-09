@@ -6,6 +6,7 @@ import type { ExportReleaseDecision } from '../../db/schema/export-release-decis
 import type { LocationProfileCorrectionDecision } from '../../db/schema/location-profile-correction-decisions';
 import type { MediaReviewDecision } from '../../db/schema/media-review-decisions';
 import type { ReconfirmationExpiration } from '../../db/schema/reconfirmation-expirations';
+import type { SubmissionEvent, submissionTypeValues } from '../../db/schema/submissions';
 import type { ExportRestoreExecutionRecord } from '../export-release/restore-execution';
 import type { AuditHistoryItem, AuditHistoryTarget } from './contract';
 
@@ -20,6 +21,19 @@ function subjectTarget(
   if (subjectType === 'claim') return { type: 'acceptance_claim', id: subjectId };
   if (subjectType === 'evidence') return { type: 'evidence', id: subjectId };
   return null;
+}
+
+export interface SubmissionEventAuditRow {
+  id: SubmissionEvent['id'];
+  publicId: string;
+  submissionType: (typeof submissionTypeValues)[number];
+  fromStatus: SubmissionEvent['fromStatus'];
+  toStatus: SubmissionEvent['toStatus'];
+  action: SubmissionEvent['action'];
+  reasonCode: SubmissionEvent['reasonCode'];
+  actorId: SubmissionEvent['actorId'];
+  actorType: SubmissionEvent['actorType'];
+  createdAt: SubmissionEvent['createdAt'];
 }
 
 export function candidateDuplicateDecisionAuditItem(
@@ -200,5 +214,24 @@ export function exportRestoreExecutionAuditItem(
     summary: null,
     transition: null,
     sourceRecordId: row.requestId,
+  };
+}
+
+export function submissionEventAuditItem(row: SubmissionEventAuditRow): AuditHistoryItem {
+  return {
+    id: itemId('submission_event', row.id),
+    occurredAt: row.createdAt.toISOString(),
+    domain: 'submission',
+    sourceKind: 'submission_event',
+    action: row.action,
+    actorId: row.actorId,
+    actorType: row.actorType === 'system' ? 'system' : 'human',
+    requestId: null,
+    target: { type: 'submission', id: row.publicId },
+    secondaryTargets: [],
+    reasonCode: row.reasonCode,
+    summary: null,
+    transition: { fromState: row.fromStatus, toState: row.toStatus },
+    sourceRecordId: row.id,
   };
 }

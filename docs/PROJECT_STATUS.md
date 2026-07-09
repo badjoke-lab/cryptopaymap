@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-01D — Abuse-control and Turnstile boundary
+P5-01E — Audit integration and Phase 5 foundation audit
 
 ## Current repository state
 
@@ -27,7 +27,8 @@ P5-01D — Abuse-control and Turnstile boundary
 - P5-01A submission contract and privacy model is complete through #150.
 - P5-01B submission persistence and workflow-state foundation is complete through #151.
 - P5-01C idempotent private intake service is complete through #152.
-- P5-01D abuse-control and Turnstile boundary is active.
+- P5-01D abuse-control and Turnstile boundary is complete through #153.
+- P5-01E Submission Audit integration and foundation closure is active.
 
 ## Fixed review environment
 
@@ -50,7 +51,8 @@ Before P5-01 implementation or review, read:
 7. `docs/P5_01B_SUBMISSION_PERSISTENCE_FOUNDATION.md`;
 8. `docs/P5_01C_IDEMPOTENT_PRIVATE_INTAKE.md`;
 9. `docs/P5_01D_ABUSE_CONTROL_AND_TURNSTILE.md`;
-10. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+10. `docs/P5_01E_SUBMISSION_FOUNDATION_AUDIT.md`;
+11. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -70,18 +72,18 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 1. P5-01A — submission contract and privacy model — Completed through #150
 2. P5-01B — persistence and workflow-state foundation — Completed through #151
 3. P5-01C — idempotent private intake service — Completed through #152
-4. P5-01D — abuse-control and Turnstile boundary — In progress
-5. P5-01E — Audit integration and Phase 5 foundation audit — Planned
+4. P5-01D — abuse-control and Turnstile boundary — Completed through #153
+5. P5-01E — Audit integration and Phase 5 foundation audit — In progress
 
 ## P5-01 active scope
 
-P5-01 establishes the common private submission foundation before individual public submission forms are implemented.
+P5-01 establishes the common private Submission foundation before individual public submission forms are implemented.
 
 P5-01A established:
 
-- strict common submission envelope;
+- strict common Submission envelope;
 - bounded original-payload contract;
-- submission workflow and resolution vocabulary;
+- Submission workflow and resolution vocabulary;
 - opaque public reference format;
 - 32-byte status secret issuance and one-way hash storage representation;
 - purpose-built safe status projection;
@@ -110,7 +112,7 @@ P5-01C established:
 - concurrent create-conflict recovery as replay when durable state matches;
 - failure-before-persistence behavior for invalid requests and contact-protection failures.
 
-P5-01D now establishes:
+P5-01D established:
 
 - provider-neutral rate-limit and challenge-verification contracts;
 - rate-limit-before-challenge ordering;
@@ -121,6 +123,16 @@ P5-01D now establishes:
 - request UUID Siteverify idempotency-key use;
 - exact hostname and action validation;
 - provider/network/response failure normalization without leaking provider internals.
+
+P5-01E now establishes:
+
+- `submission` protected Audit domain;
+- durable `submission_event` Audit source;
+- opaque public Submission reference Audit target;
+- metadata-only Drizzle projection that excludes private payload, contact, token, fingerprint, internal note, and abuse-control data;
+- explicit submitter/reviewer/system actor normalization;
+- A–D integration audit for commit, replay, changed-content conflict, abuse deny, and private receipt exclusion;
+- P5-02 handoff decision and explicit route/environment obligations.
 
 P5-01 must preserve the existing Candidate, canonical, Evidence, Media, verification, export, and publication boundaries.
 
@@ -158,17 +170,17 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-01D, then begin P5-01E Audit integration and Phase 5 foundation audit.
+Complete P5-01E. After it merges green, move to P5-02 Suggest Place and Online Service.
 
-Do not begin individual submission-form implementation before the common persistence, privacy, workflow, abuse-control, idempotency, and Audit foundations are explicit and validated.
+P5-02 must compose the P5-01 shared foundation and must not expose a public route with test-only contact protection, rate limiting, or secret configuration.
 
 ## Blocked
 
-No known repository blocker to P5-01D.
+No known repository blocker to P5-01E.
 
 Production contact encryption, HMAC key environment binding, production rate-limit provider, opaque bucket-key derivation, and Turnstile environment binding remain required before a public intake route is exposed.
 
-Production restore completion remains a Launch gate rather than a P5-01 start blocker.
+Production restore completion remains a Launch gate rather than a P5-01/P5-02 repository start blocker.
 
 ## Verification rule
 
