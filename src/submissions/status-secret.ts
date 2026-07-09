@@ -45,9 +45,14 @@ export async function hashSubmissionStatusSecret(secret: string): Promise<string
 export async function issueSubmissionStatusSecret(
   entropy?: Uint8Array,
 ): Promise<IssuedSubmissionStatusSecret> {
-  const bytes = entropy === undefined ? crypto.getRandomValues(new Uint8Array(statusSecretByteLength)) : entropy;
+  const bytes =
+    entropy === undefined
+      ? crypto.getRandomValues(new Uint8Array(statusSecretByteLength))
+      : entropy;
   if (!(bytes instanceof Uint8Array) || bytes.byteLength !== statusSecretByteLength) {
-    throw new Error(`Submission status secret entropy must be exactly ${statusSecretByteLength} bytes.`);
+    throw new Error(
+      `Submission status secret entropy must be exactly ${statusSecretByteLength} bytes.`,
+    );
   }
 
   const secret = submissionStatusSecretSchema.parse(`cpmss_${encodeBase64Url(bytes)}`);
