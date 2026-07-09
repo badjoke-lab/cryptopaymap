@@ -91,6 +91,20 @@ export function createDrizzleSubmissionPersistenceBackend(
       };
     },
 
+    async readPrivateStatusByPublicId(publicId) {
+      const rows = await database
+        .select({
+          publicId: submissions.publicId,
+          workflowStatus: submissions.workflowStatus,
+          resolution: submissions.resolution,
+          statusTokenHash: submissions.statusTokenHash,
+        })
+        .from(submissions)
+        .where(eq(submissions.publicId, publicId))
+        .limit(1);
+      return rows[0] ?? null;
+    },
+
     async createSubmission(command) {
       const statements: unknown[] = [
         database.insert(submissions).values({
