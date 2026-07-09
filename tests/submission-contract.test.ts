@@ -80,6 +80,19 @@ describe('shared submission contract', () => {
         ...intake(),
         evidenceLinks: [
           {
+            url: 'http://[::1]/internal',
+            observedAt: null,
+            summary: null,
+          },
+        ],
+      }),
+    ).toThrow();
+
+    expect(() =>
+      commonSubmissionIntakeSchema.parse({
+        ...intake(),
+        evidenceLinks: [
+          {
             url: 'https://user:secret@example.test/payments',
             observedAt: null,
             summary: null,
@@ -164,9 +177,9 @@ describe('shared submission contract', () => {
     };
 
     expect(() => submissionRecordSchema.parse(record)).toThrow();
-    expect(
-      submissionRecordSchema.parse({ ...record, resolution: 'approved' }).resolution,
-    ).toBe('approved');
+    expect(submissionRecordSchema.parse({ ...record, resolution: 'approved' }).resolution).toBe(
+      'approved',
+    );
   });
 
   it('rejects private review fields from the public status projection', () => {
