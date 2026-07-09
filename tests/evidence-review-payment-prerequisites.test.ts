@@ -58,6 +58,6 @@ describe('Evidence confirmation payment prerequisites', () => {
       },
     ]);
     expect(processorMismatch.eligible).toBe(false);
-    expect(processorMismatch.issues.join(' ')).toContain('processor-checkout route');
+    expect(processorMismatch.issues.join(' ')).toContain('processor checkout route');
   });
 });
