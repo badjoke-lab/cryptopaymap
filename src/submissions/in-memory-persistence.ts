@@ -21,6 +21,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
   const counters = new Map<number, number>();
   const submissionsById = new Map<string, StoredSubmission>();
   const submissionIdByRequest = new Map<string, string>();
+  const submissionIdByPublicId = new Map<string, string>();
   const publicIds = new Set<string>();
   const statusTokenHashes = new Set<string>();
 
@@ -52,6 +53,19 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
       };
     },
 
+    async readPrivateStatusByPublicId(publicId) {
+      const submissionId = submissionIdByPublicId.get(publicId);
+      if (submissionId === undefined) return null;
+      const stored = submissionsById.get(submissionId);
+      if (stored === undefined) return null;
+      return {
+        publicId: stored.publicId,
+        workflowStatus: stored.workflowStatus,
+        resolution: stored.resolution,
+        statusTokenHash: stored.statusTokenHash,
+      };
+    },
+
     async createSubmission(command) {
       if (
         submissionsById.has(command.id) ||
@@ -79,6 +93,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
       };
       submissionsById.set(command.id, stored);
       submissionIdByRequest.set(command.intakeRequestId, command.id);
+      submissionIdByPublicId.set(command.publicId, command.id);
       publicIds.add(command.publicId);
       statusTokenHashes.add(command.statusTokenHash);
 

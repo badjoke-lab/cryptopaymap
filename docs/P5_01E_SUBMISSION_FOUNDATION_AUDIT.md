@@ -1,23 +1,33 @@
-# P5-01E Submission foundation Audit and P5-02 handoff
+# P5-01E Submission foundation Audit and corrected P5-02 handoff
 
 **Implementation item:** P5-01E  
-**Status:** Active  
+**Status:** Completed through #154; handoff-gate correction tracked by P5-01F  
 **Last updated:** 2026-07-09
+
+## Correction note
+
+P5-01E correctly completed Submission Audit integration and the P5-01A–D cross-slice foundation audit. After #154 merged, a direct re-read of `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md` found one completion-gate requirement that the repository had not yet implemented: a synthetic Submission must be retrievable through its private follow-up status boundary.
+
+The repository already had status-secret issuance and verification helpers, durable token-hash persistence, and a strict safe status projection schema, but it did not yet have a `public reference + status secret` read service.
+
+Therefore the original P5-01E statement that P5-02 could begin immediately after #154 was premature. P5-01F closes that requirement before P5-02 begins.
+
+This correction does not reopen the completed P5-01E Audit work. It corrects the P5-01 completion gate transparently.
 
 ## Purpose
 
-P5-01E closes the shared Submission foundation by auditing P5-01A through P5-01D as one boundary, connecting durable Submission workflow events to protected metadata-only Audit history, and deciding whether type-specific Suggest work may begin.
+P5-01E audited P5-01A through P5-01D as one boundary and connected durable Submission workflow events to protected metadata-only Audit history.
 
 The audit distinguishes:
 
 - repository-complete shared foundation behavior;
-- route/environment work that must be completed when public intake is exposed;
+- route/environment work required when public intake is exposed;
 - later type-specific Submission work;
 - retained Launch work unrelated to the P5-01 foundation gate.
 
 Repository tests are not described as live Cloudflare, Neon, or distributed rate-limit verification.
 
-## 1. P5-01 closure summary
+## 1. P5-01 slice status after correction
 
 | Slice | Result | Main capability |
 |---|---|---|
@@ -25,11 +35,10 @@ Repository tests are not described as live Cloudflare, Neon, or distributed rate
 | P5-01B | Completed | private durable persistence, workflow events, public-reference allocation, transition guards and migration 0023 |
 | P5-01C | Completed | canonical fingerprint, exact replay, changed-content conflict, HMAC status-secret re-derivation and protected contact gate |
 | P5-01D | Completed | provider-neutral rate/challenge contracts, fail-closed abuse gate and Turnstile Siteverify adapter |
-| P5-01E | Active in this change | metadata-only Submission Audit integration and A-D foundation reconciliation |
+| P5-01E | Completed through #154 | metadata-only Submission Audit integration and A-D foundation reconciliation |
+| P5-01F | Required closure correction | private follow-up status read through public reference plus status secret |
 
-## 2. Shared end-to-end foundation path
-
-The repository foundation now composes:
+## 2. Shared intake foundation path audited by P5-01E
 
 ```text
 public-route-shaped request inputs
@@ -61,13 +70,23 @@ safe private intake receipt
 protected metadata-only Audit history
 ```
 
-A public HTTP route and type-specific Suggest form are intentionally not part of P5-01.
+A public HTTP route and type-specific Suggest form remain outside P5-01.
 
-## 3. Privacy audit
+P5-01F extends the closure path with:
 
-P5-01 enforces separate boundaries for:
+```text
+public reference + status secret
+↓
+minimal private status lookup
+↓
+secret verification
+↓
+strict safe status projection
+```
 
-### Public receipt
+## 3. Privacy audit result
+
+### Safe intake receipt
 
 Allowed:
 
@@ -78,7 +97,7 @@ statusSecret
 submittedAt
 ```
 
-Not allowed:
+Excluded:
 
 ```text
 internal UUID
@@ -102,7 +121,7 @@ Stores operational identity and workflow metadata, but not plaintext status secr
 
 ### Private payload persistence
 
-Stores safely parsed private Submission payload content separately from parent workflow state and protected contact rows.
+Stores safely parsed private Submission payload content separately from workflow state and protected contact rows.
 
 ### Contact persistence
 
@@ -136,14 +155,12 @@ created time
 
 The source does not select private payload, contact, token, fingerprint, abuse-control, network-origin, or internal-note fields.
 
-## 4. Idempotency audit
+## 4. Idempotency audit result
 
 P5-01C provides two independent replay checks:
 
 1. exact canonical fingerprint equality for one intake request UUID;
 2. equality between the request-bound re-derived status-secret hash and durable stored token hash.
-
-Result:
 
 ```text
 same request UUID + same fingerprint + matching token hash
@@ -158,7 +175,7 @@ same request UUID + same fingerprint + token hash mismatch
 
 Concurrent insert conflicts perform one durable request lookup. Matching state becomes replay. Missing matching state preserves the persistence conflict.
 
-## 5. Persistence and workflow audit
+## 5. Persistence and workflow audit result
 
 P5-01B provides durable tables for:
 
@@ -181,11 +198,11 @@ allowed transition
 valid resolution shape
 ```
 
-A stale reviewer state fails before the status change and workflow-event insert can be accepted as a successful transition.
+A stale reviewer state fails before the status change and workflow-event insert can be accepted as successful.
 
-The migration history contains generated migration `0023` for the Submission persistence foundation.
+Migration history contains generated migration `0023` for the Submission persistence foundation.
 
-## 6. Abuse-control audit
+## 6. Abuse-control audit result
 
 P5-01D enforces:
 
@@ -213,13 +230,11 @@ challenge unavailable
 → no intake
 ```
 
-The domain service accepts an opaque rate-limit bucket key rather than a raw IP-shaped identifier.
+The domain accepts an opaque rate-limit bucket key rather than a raw IP-shaped identifier. The Cloudflare adapter remains behind the provider-neutral challenge interface.
 
-The Cloudflare adapter remains behind the provider-neutral challenge interface.
+## 7. Submission Audit integration result
 
-## 7. Submission Audit integration
-
-P5-01E adds:
+P5-01E added:
 
 ```text
 domain: submission
@@ -243,13 +258,11 @@ reviewer  → human
 system    → system
 ```
 
-The original bounded actor ID remains available to protected Audit readers.
-
-The standard durable Audit source registry now contains eight sources. Location profile correction remains the separately appended durable source. Restore execution remains excluded from durable Drizzle source registration until a production persistence table exists.
+The standard durable Audit source registry contains eight sources. Location profile correction remains the separately appended durable source. Restore execution remains excluded from durable Drizzle source registration until a production persistence table exists.
 
 ## 8. Private-field exclusion result
 
-P5-01E regression coverage verifies that the Submission Audit Drizzle projection does not select:
+Regression coverage verifies that the Submission Audit Drizzle projection does not select:
 
 ```text
 internalNote
@@ -262,7 +275,7 @@ normalizedPayload
 proposedChanges
 ```
 
-The P5-01 foundation integration coverage also verifies that safe intake receipts do not expose:
+The foundation integration coverage also verifies that safe intake receipts do not expose:
 
 ```text
 contact email
@@ -273,7 +286,7 @@ remote IP
 rate-limit key
 ```
 
-## 9. A-D integration audit
+## 9. A-D integration audit result
 
 The bounded integration audit verifies:
 
@@ -284,36 +297,9 @@ The bounded integration audit verifies:
 5. challenge denial leaves persistence empty;
 6. the safe receipt excludes private operational fields.
 
-This integration test does not claim live distributed provider or live database verification.
+This does not claim live distributed provider or live database verification.
 
-## 10. Repository-complete P5-01 boundary
-
-P5-01 is repository-complete when this P5-01E change is green because the shared foundation then has:
-
-- strict common intake contract;
-- bounded JSON payload rules;
-- public reference and status-secret separation;
-- safe public/private status projection contract;
-- private durable Submission persistence;
-- original/normalized/proposed payload separation;
-- protected contact persistence boundary;
-- workflow event history;
-- guarded workflow transitions;
-- canonical request fingerprinting;
-- exact replay and changed-content conflict;
-- deterministic request-bound status-secret re-derivation;
-- replay integrity checking;
-- contact-protection provider gate;
-- provider-neutral rate-limit contract;
-- provider-neutral challenge-verification contract;
-- fail-closed abuse-control ordering;
-- Turnstile Siteverify adapter;
-- metadata-only durable Submission Audit source;
-- cross-slice integration coverage.
-
-## 11. Required route/environment work before public intake exposure
-
-P5-01 repository closure does not mean a public route can be exposed with placeholder providers.
+## 10. Required route/environment work before public intake exposure
 
 The first public intake route must wire and verify:
 
@@ -330,9 +316,9 @@ The first public intake route must wire and verify:
 11. no logging of challenge token, raw remote IP, plaintext email, plaintext status secret, or provider secret;
 12. configured-environment verification of the complete route path.
 
-These requirements belong to the first type-specific public intake route implementation and its configured-environment verification. They must not be replaced by test-only providers.
+These requirements must not be replaced by test-only providers.
 
-## 12. Retained Launch work
+## 11. Retained Launch work
 
 P5-01 closure does not waive previously retained Launch work, including:
 
@@ -345,9 +331,11 @@ P5-01 closure does not waive previously retained Launch work, including:
 - concrete R2 publication conditional-write verification;
 - production restore persistence, invocation, R2 adapter wiring, durable restore Audit source, reconciliation runbook, and drills.
 
-## 13. P5-02 gate decision
+## 12. Corrected P5-02 gate decision
 
-P5-02 Suggest Place and Online Service may begin after P5-01E merges green because:
+P5-02 must wait until P5-01F merges green.
+
+After P5-01F completes, the P5-02 gate is satisfied because:
 
 1. the common Submission contract is explicit;
 2. privacy boundaries are explicit;
@@ -355,36 +343,19 @@ P5-02 Suggest Place and Online Service may begin after P5-01E merges green becau
 4. workflow history exists;
 5. idempotent replay/conflict behavior exists;
 6. status-secret handling avoids plaintext persistence;
-7. contact persistence requires a protection provider;
-8. abuse-control ordering is fail closed;
-9. Turnstile is isolated behind a provider-neutral adapter;
-10. Submission Audit history is metadata-only;
-11. cross-slice integration coverage is green;
-12. no common foundation blocker requires a type-specific form to be implemented inside P5-01.
+7. private follow-up status can be retrieved through public reference plus valid secret;
+8. missing reference and wrong secret share one bounded service failure;
+9. contact persistence requires a protection provider;
+10. abuse-control ordering is fail closed;
+11. Turnstile is isolated behind a provider-neutral adapter;
+12. Submission Audit history is metadata-only;
+13. cross-slice integration coverage is green.
 
-P5-02 must not bypass the shared foundation. Its public route and form must compose the P5-01 contracts rather than reimplementing them.
+P5-02 must compose the P5-01 contracts rather than reimplementing them.
 
-## 14. Out of scope
+## 13. P5-01E completion result
 
-P5-01E does not implement:
-
-- Suggest Place form;
-- Suggest Online Service form;
-- public Submission HTTP route;
-- production contact encryption provider;
-- production distributed rate-limit provider;
-- Turnstile widget;
-- Submission review UI;
-- partial approval;
-- canonical application transaction;
-- public status lookup route;
-- notification delivery;
-- Media quarantine upload;
-- production restore capability.
-
-## 15. Completion criteria
-
-P5-01E is complete when:
+P5-01E remains completed through #154 for its own scope:
 
 1. Submission is a valid Audit domain;
 2. `submission_event` is a valid Audit source kind;
@@ -394,16 +365,21 @@ P5-01E is complete when:
 6. actor-type normalization is explicit;
 7. A-D integration audit is green;
 8. Audit contract check is part of `schema:check`;
-9. existing durable-source count tests are reconciled;
-10. full repository validation is green;
-11. P5-02 gate and route/environment obligations are explicitly recorded.
+9. durable-source count tests are reconciled;
+10. full repository validation was green.
+
+The only corrected statement is the broader P5-01/P5-02 handoff gate.
 
 ## Next
 
-After P5-01E is green and merged:
+Complete:
+
+```text
+P5-01F — Private follow-up status read boundary
+```
+
+Then proceed to:
 
 ```text
 P5-02 — Suggest Place and Online Service
 ```
-
-P5-02 should begin with a type-specific Suggest contract layered on the shared P5-01 envelope, followed by protected private review entry and public route/form wiring with real environment-backed abuse and contact-protection providers.

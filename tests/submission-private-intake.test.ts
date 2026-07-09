@@ -211,6 +211,9 @@ describe('P5-01C idempotent private intake service', () => {
           submittedAt: receivedAt.toISOString(),
         };
       },
+      async readPrivateStatusByPublicId() {
+        return null;
+      },
       async createSubmission() {
         throw new SubmissionPersistenceError('conflict', 'concurrent insert');
       },
@@ -250,6 +253,9 @@ describe('P5-01C idempotent private intake service', () => {
           statusTokenHash: `sha256:${'f'.repeat(64)}`,
           submittedAt: receivedAt.toISOString(),
         };
+      },
+      async readPrivateStatusByPublicId() {
+        return null;
       },
       async createSubmission() {
         throw new Error('not used');

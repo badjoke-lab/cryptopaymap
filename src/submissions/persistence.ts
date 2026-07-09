@@ -60,6 +60,13 @@ export interface SubmissionPersistenceReplayRecord {
   submittedAt: string;
 }
 
+export interface SubmissionPrivateStatusRecord {
+  publicId: string;
+  workflowStatus: SubmissionWorkflowStatus;
+  resolution: SubmissionResolution | null;
+  statusTokenHash: string;
+}
+
 export interface TransitionSubmissionPersistenceCommand {
   submissionId: string;
   expectedStatus: SubmissionWorkflowStatus;
@@ -85,6 +92,7 @@ export interface TransitionSubmissionPersistenceReceipt {
 export interface SubmissionPersistenceBackend {
   allocatePublicReference(year: number, at: Date): Promise<string>;
   readByIntakeRequestId(requestId: string): Promise<SubmissionPersistenceReplayRecord | null>;
+  readPrivateStatusByPublicId(publicId: string): Promise<SubmissionPrivateStatusRecord | null>;
   createSubmission(
     command: CreateSubmissionPersistenceCommand,
   ): Promise<CreateSubmissionPersistenceReceipt>;
