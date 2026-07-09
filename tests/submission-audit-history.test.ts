@@ -83,7 +83,9 @@ describe('P5-01E Submission Audit history', () => {
   });
 
   it('maps submitter actors to human and system actors to system', () => {
-    expect(submissionEventAuditItem({ ...safeRow, actorType: 'submitter' }).actorType).toBe('human');
+    expect(submissionEventAuditItem({ ...safeRow, actorType: 'submitter' }).actorType).toBe(
+      'human',
+    );
     expect(submissionEventAuditItem({ ...safeRow, actorType: 'system' }).actorType).toBe('system');
   });
 
@@ -125,7 +127,11 @@ describe('P5-01E Submission Audit history', () => {
   it('returns no Submission items for a different target type', async () => {
     const { database, calls } = fakeSubmissionAuditDatabase();
     const result = await createDrizzleSubmissionAuditSource(database).loadAuditHistorySource(
-      { targetType: 'acceptance_claim', targetId: '30000000-0000-4000-8000-000000000001', limit: 25 },
+      {
+        targetType: 'acceptance_claim',
+        targetId: '30000000-0000-4000-8000-000000000001',
+        limit: 25,
+      },
       25,
     );
 
