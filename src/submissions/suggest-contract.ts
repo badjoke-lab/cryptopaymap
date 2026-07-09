@@ -26,13 +26,13 @@ export const suggestEntityProposalSchema = z
 export const suggestPlaceProposalSchema = z
   .object({
     branchName: boundedText(160).nullable(),
-    addressLine: boundedText(500),
+    addressLine: boundedText(500).nullable(),
     locality: boundedText(120).nullable(),
     region: boundedText(120).nullable(),
     postalCode: boundedText(32).nullable(),
     countryCode: countryCodeSchema,
-    latitude: z.number().finite().min(-90).max(90),
-    longitude: z.number().finite().min(-180).max(180),
+    latitude: z.number().finite().min(-90).max(90).nullable(),
+    longitude: z.number().finite().min(-180).max(180).nullable(),
     websiteUrl: httpsUrlSchema.nullable(),
     phone: boundedText(64).nullable(),
     description: boundedText(5_000).nullable(),
@@ -59,7 +59,24 @@ export const suggestPlaceProposalSchema = z
         });
       }),
   })
-  .strict();
+  .strict()
+  .superRefine((place, context) => {
+    const hasCoordinates = place.latitude !== null || place.longitude !== null;
+    if ((place.latitude === null) !== (place.longitude === null)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['latitude'],
+        message: 'Latitude and longitude must either both be present or both be absent.',
+      });
+    }
+    if (place.addressLine === null && !hasCoordinates) {
+      context.addIssue({
+        code: 'custom',
+        path: ['addressLine'],
+        message: 'Place suggestions require an address or a coordinate pair.',
+      });
+    }
+  });
 
 export const suggestCategoryProposalSchema = z
   .object({
@@ -70,7 +87,6 @@ export const suggestCategoryProposalSchema = z
 
 export const suggestCategoryProposalsSchema = z
   .array(suggestCategoryProposalSchema)
-  .min(1)
   .max(20)
   .superRefine((categories, context) => {
     const seen = new Set<string>();
@@ -86,10 +102,10 @@ export const suggestCategoryProposalsSchema = z
       seen.add(category.slug);
       if (category.isPrimary) primaryCount += 1;
     });
-    if (primaryCount !== 1) {
+    if (primaryCount > 1) {
       context.addIssue({
         code: 'custom',
-        message: 'Suggestion category proposals require exactly one primary category.',
+        message: 'Suggestion category proposals may contain at most one primary category.',
       });
     }
   });
@@ -103,10 +119,10 @@ export const suggestProcessorProposalSchema = z
 
 export const suggestPaymentProposalSchema = z
   .object({
-    assetSlug: publicSlugSchema,
-    networkSlug: publicSlugSchema,
-    routeType: z.enum(routeTypeValues),
-    paymentMethod: z.enum(paymentMethodValues),
+    assetSlug: publicSlugSchema.nullable(),
+    networkSlug: publicSlugSchema.nullable(),
+    routeType: z.enum(routeTypeValues).nullable(),
+    paymentMethod: z.enum(paymentMethodValues).nullable(),
     processor: suggestProcessorProposalSchema.nullable(),
     contractAddress: boundedText(200).nullable(),
     howToPay: boundedText(1_000).nullable(),
@@ -115,11 +131,26 @@ export const suggestPaymentProposalSchema = z
   })
   .strict()
   .superRefine((proposal, context) => {
+    if (
+      proposal.assetSlug === null &&
+      proposal.networkSlug === null &&
+      proposal.routeType === null &&
+      proposal.paymentMethod === null &&
+      proposal.processor === null &&
+      proposal.contractAddress === null &&
+      proposal.howToPay === null &&
+      proposal.restrictions === null
+    ) {
+      context.addIssue({
+        code: 'custom',
+        message: 'Payment proposals require at least one concrete payment detail.',
+      });
+    }
     if (proposal.routeType === 'processor_checkout' && proposal.processor === null) {
       context.addIssue({
         code: 'custom',
         path: ['processor'],
-        message: 'Processor checkout proposals require a processor proposal.',
+        message: 'Known processor-checkout routes require a processor proposal.',
       });
     }
     if (proposal.routeType === 'direct_wallet' && proposal.processor !== null) {
@@ -140,11 +171,13 @@ export const suggestPaymentProposalsSchema = z
     let primaryCount = 0;
     proposals.forEach((proposal, index) => {
       const key = [
-        proposal.assetSlug,
-        proposal.networkSlug,
-        proposal.routeType,
-        proposal.paymentMethod,
+        proposal.assetSlug ?? '',
+        proposal.networkSlug ?? '',
+        proposal.routeType ?? '',
+        proposal.paymentMethod ?? '',
+        proposal.processor?.name ?? '',
         proposal.contractAddress ?? '',
+        proposal.howToPay ?? '',
       ].join(':');
       if (seen.has(key)) {
         context.addIssue({
@@ -156,10 +189,10 @@ export const suggestPaymentProposalsSchema = z
       seen.add(key);
       if (proposal.isPrimary) primaryCount += 1;
     });
-    if (primaryCount !== 1) {
+    if (primaryCount > 1) {
       context.addIssue({
         code: 'custom',
-        message: 'Suggestion payment proposals require exactly one primary payment option.',
+        message: 'Suggestion payment proposals may contain at most one primary payment option.',
       });
     }
   });
@@ -186,9 +219,15 @@ export const onlineServiceSuggestionPayloadSchema = z
     suggestionKind: z.literal('online_service'),
     place: z.null(),
   })
-  .strict()
+  .strict();
+
+export const suggestOriginalPayloadSchema = z
+  .discriminatedUnion('suggestionKind', [
+    physicalPlaceSuggestionPayloadSchema,
+    onlineServiceSuggestionPayloadSchema,
+  ])
   .superRefine((payload, context) => {
-    if (payload.entity.websiteUrl === null) {
+    if (payload.suggestionKind === 'online_service' && payload.entity.websiteUrl === null) {
       context.addIssue({
         code: 'custom',
         path: ['entity', 'websiteUrl'],
@@ -196,11 +235,6 @@ export const onlineServiceSuggestionPayloadSchema = z
       });
     }
   });
-
-export const suggestOriginalPayloadSchema = z.discriminatedUnion('suggestionKind', [
-  physicalPlaceSuggestionPayloadSchema,
-  onlineServiceSuggestionPayloadSchema,
-]);
 
 export const suggestSubmissionIntakeSchema = commonSubmissionIntakeSchema
   .extend({
