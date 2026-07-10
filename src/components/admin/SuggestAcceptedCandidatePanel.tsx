@@ -171,7 +171,8 @@ export function SuggestAcceptedCandidatePanel() {
     return (
       <p className="m-0 flex items-center gap-2 text-sm text-status-stale">
         <AlertTriangle className="size-4" aria-hidden="true" />
-        The Submission or normalized proposal changed before Candidate creation could commit. Reload the review before trying again.
+        The Submission or normalized proposal changed before Candidate creation could commit. Reload
+        the review before trying again.
       </p>
     );
   }
