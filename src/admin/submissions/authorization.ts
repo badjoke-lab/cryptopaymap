@@ -18,6 +18,7 @@ const submissionSubjectsSchema = z
 export interface SubmissionReviewAuthorizationEnvironment {
   CPM_ADMIN_SUBMISSION_SUBJECTS?: string;
   CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS?: string;
+  CPM_ADMIN_SUBMISSION_CANDIDATE_SUBJECTS?: string;
   [key: string]: unknown;
 }
 
@@ -35,6 +36,12 @@ export interface SubmissionTransitionContext {
   actorId: string;
   actorType: 'human' | 'system';
   capabilities: ['submission:transition'];
+}
+
+export interface SubmissionCandidateCreateContext {
+  actorId: string;
+  actorType: 'human' | 'system';
+  capabilities: ['submission:candidate:create'];
 }
 
 export class SubmissionReviewAuthorizationError extends Error {
@@ -95,6 +102,15 @@ export function readSubmissionTransitionAuthorizationPolicy(
   );
 }
 
+export function readSubmissionCandidateAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(
+    environment.CPM_ADMIN_SUBMISSION_CANDIDATE_SUBJECTS,
+    'Submission Candidate creation',
+  );
+}
+
 export function authorizeSubmissionReviewRead(
   identity: AdminAccessIdentity,
   policy: SubmissionReviewAuthorizationPolicy,
@@ -126,5 +142,22 @@ export function authorizeSubmissionTransition(
     actorId: identity.actorId,
     actorType: identity.actorType,
     capabilities: ['submission:transition'],
+  };
+}
+
+export function authorizeSubmissionCandidateCreate(
+  identity: AdminAccessIdentity,
+  policy: SubmissionReviewAuthorizationPolicy,
+): SubmissionCandidateCreateContext {
+  if (!policy.subjects.has(identity.subject)) {
+    throw new SubmissionReviewAuthorizationError(
+      'denied',
+      'The verified administration identity is not authorized to create Candidates from Submissions.',
+    );
+  }
+  return {
+    actorId: identity.actorId,
+    actorType: identity.actorType,
+    capabilities: ['submission:candidate:create'],
   };
 }
