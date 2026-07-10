@@ -66,6 +66,8 @@ export interface SubmissionPrivateStatusRecord {
   workflowStatus: SubmissionWorkflowStatus;
   resolution: SubmissionResolution | null;
   statusTokenHash: string;
+  requestedAction: string | null;
+  publicMessage: string | null;
 }
 
 export interface TransitionSubmissionPersistenceCommand {
