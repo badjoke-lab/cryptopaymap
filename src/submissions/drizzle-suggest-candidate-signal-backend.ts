@@ -1,10 +1,6 @@
 import { and, eq, ilike, inArray, or, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
-import {
-  candidateSourceRecords,
-  sourceCandidates,
-  sourceRecords,
-} from '../db/schema';
+import { candidateSourceRecords, sourceCandidates, sourceRecords } from '../db/schema';
 import { projectCandidateSourceSnapshot } from '../admin/candidates/source-snapshot';
 import type {
   SuggestCandidateSignalMaterial,
@@ -53,10 +49,7 @@ export function createDrizzleSuggestCandidateSignalSearchBackend(
                 candidateSourceRecords,
                 eq(candidateSourceRecords.candidateId, sourceCandidates.id),
               )
-              .innerJoin(
-                sourceRecords,
-                eq(candidateSourceRecords.sourceRecordId, sourceRecords.id),
-              )
+              .innerJoin(sourceRecords, eq(candidateSourceRecords.sourceRecordId, sourceRecords.id))
               .where(
                 and(
                   eq(sourceCandidates.candidateType, 'online_service'),
@@ -106,10 +99,7 @@ export function createDrizzleSuggestCandidateSignalSearchBackend(
         )
         .limit(maximumSourceRows);
 
-      const snapshotsByCandidate = new Map<
-        string,
-        SuggestCandidateSignalMaterial['snapshots']
-      >();
+      const snapshotsByCandidate = new Map<string, SuggestCandidateSignalMaterial['snapshots']>();
       const candidateTypes = new Map(
         boundedCandidates.map((candidate) => [candidate.candidateId, candidate.candidateType]),
       );
