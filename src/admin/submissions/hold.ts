@@ -139,7 +139,10 @@ export async function placeSuggestSubmissionOnHold(
   changedAt = new Date(),
 ): Promise<SuggestHoldReceipt> {
   if (!context.capabilities.includes('submission:transition')) {
-    throw new SuggestHoldError('unauthorized', 'The actor is not authorized to place Suggest submissions on Hold.');
+    throw new SuggestHoldError(
+      'unauthorized',
+      'The actor is not authorized to place Suggest submissions on Hold.',
+    );
   }
 
   const submissionIdResult = z.uuid().safeParse(submissionId);
@@ -153,7 +156,9 @@ export async function placeSuggestSubmissionOnHold(
   try {
     existingEvent = await backend.readHoldEvent(request.requestId);
   } catch (error) {
-    throw new SuggestHoldError('backend_failure', 'The Hold replay check failed.', { cause: error });
+    throw new SuggestHoldError('backend_failure', 'The Hold replay check failed.', {
+      cause: error,
+    });
   }
   if (existingEvent !== null) {
     return replayReceipt(existingEvent, submissionIdResult.data, request, context.actorId);
@@ -163,9 +168,13 @@ export async function placeSuggestSubmissionOnHold(
   try {
     currentState = await backend.readState(submissionIdResult.data);
   } catch (error) {
-    throw new SuggestHoldError('backend_failure', 'The Suggest submission state could not be loaded.', {
-      cause: error,
-    });
+    throw new SuggestHoldError(
+      'backend_failure',
+      'The Suggest submission state could not be loaded.',
+      {
+        cause: error,
+      },
+    );
   }
   if (currentState === null || currentState.submissionType !== 'suggest') {
     throw new SuggestHoldError('not_found', 'The Suggest submission was not found.');
