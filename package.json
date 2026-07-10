@@ -23,6 +23,7 @@
     "db:generate": "npm run db:snapshot:materialize && drizzle-kit generate",
     "db:check": "npm run db:snapshot:materialize && drizzle-kit check",
     "db:migrate": "npm run db:snapshot:materialize && drizzle-kit migrate",
+    "worker:check:submission-rate-limit": "wrangler deploy --dry-run --config workers/submission-rate-limit/wrangler.jsonc",
     "accessibility:check": "node scripts/check-accessibility-foundation.mjs",
     "staging:check": "node scripts/check-staging-artifact.mjs && node scripts/check-suggest-information-request-artifact.mjs && node scripts/check-suggest-hold-artifact.mjs && node scripts/check-suggest-accepted-candidate-artifact.mjs && node scripts/check-candidate-promotion-artifact.mjs && node scripts/check-candidate-existing-target-artifact.mjs && node scripts/check-evidence-review-artifact.mjs && node scripts/check-media-review-artifact.mjs && node scripts/check-export-release-artifact.mjs && node scripts/check-audit-history-artifact.mjs",
     "staging:review:data": "tsx scripts/materialize-staging-review-data.mjs",
@@ -30,7 +31,7 @@
     "pages:dev": "npm run build && npm run accessibility:check && npm run staging:check && wrangler pages dev",
     "pages:deploy:staging": "npm run build && npm run accessibility:check && npm run staging:check && wrangler pages deploy dist --project-name cryptopaymap-staging --branch staging",
     "pages:deploy:staging-review": "npm run staging:review:build && wrangler pages deploy dist --project-name cryptopaymap-staging --branch review",
-    "quality": "npm run format:check && npm run lint && npm run check && npm run schema:check && npm run db:check && npm run test && npm run build && npm run accessibility:check && npm run staging:check"
+    "quality": "npm run format:check && npm run lint && npm run check && npm run schema:check && npm run db:check && npm run worker:check:submission-rate-limit && npm run test && npm run build && npm run accessibility:check && npm run staging:check"
   },
   "dependencies": {
     "@astrojs/react": "6.0.0",
