@@ -57,10 +57,7 @@ export function consumeFixedWindowRateLimit(
   }
 
   if (current.requestCount >= parsedOptions.limit) {
-    const retryAfterMs = Math.max(
-      1,
-      parsedOptions.windowMs - (nowMs - current.windowStartedAtMs),
-    );
+    const retryAfterMs = Math.max(1, parsedOptions.windowMs - (nowMs - current.windowStartedAtMs));
     return {
       state: current,
       response: {
