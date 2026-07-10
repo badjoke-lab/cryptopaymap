@@ -4,20 +4,21 @@ import { createSubmissionPrivateStatusService } from '../src/submissions/private
 import { issueSubmissionStatusSecret } from '../src/submissions/status-secret';
 
 const publicId = 'CPM-S-2026-000001';
+const nextReviewAt = '2026-08-09T05:05:00.000Z';
 
-describe('P5-02F private status information request projection', () => {
-  it('returns bounded requested action and public message for needs_information only', async () => {
-    const issued = await issueSubmissionStatusSecret(new Uint8Array(32).fill(7));
+describe('P5-02G private status Hold projection', () => {
+  it('returns required action, public message, and next review time for on_hold only', async () => {
+    const issued = await issueSubmissionStatusSecret(new Uint8Array(32).fill(8));
     const persistence = {
       async readPrivateStatusByPublicId() {
         return {
           publicId,
-          workflowStatus: 'needs_information' as const,
+          workflowStatus: 'on_hold' as const,
           resolution: null,
           statusTokenHash: issued.tokenHash,
-          requestedAction: 'Please confirm which network is used for USDT.',
-          publicMessage: 'We need the payment network before review can continue.',
-          nextReviewAt: null,
+          requestedAction: 'No submitter action is required before the next review.',
+          publicMessage: 'Review is paused until the next scheduled verification date.',
+          nextReviewAt,
         };
       },
     } as unknown as SubmissionPersistenceBackend;
@@ -25,18 +26,18 @@ describe('P5-02F private status information request projection', () => {
 
     await expect(status.read(publicId, issued.secret)).resolves.toEqual({
       publicId,
-      statusLabel: 'more_information_needed',
-      requestedAction: 'Please confirm which network is used for USDT.',
-      publicMessage: 'We need the payment network before review can continue.',
-      nextReviewAt: null,
+      statusLabel: 'on_hold',
+      requestedAction: 'No submitter action is required before the next review.',
+      publicMessage: 'Review is paused until the next scheduled verification date.',
+      nextReviewAt,
       linkedPublicRecord: null,
       mediaDecisions: [],
-      permittedActions: ['provide_information', 'withdraw', 'rotate_status_secret'],
+      permittedActions: ['withdraw', 'rotate_status_secret'],
     });
   });
 
-  it('suppresses information request text when workflow status is not needs_information', async () => {
-    const issued = await issueSubmissionStatusSecret(new Uint8Array(32).fill(7));
+  it('suppresses Hold timing after status leaves on_hold', async () => {
+    const issued = await issueSubmissionStatusSecret(new Uint8Array(32).fill(8));
     const persistence = {
       async readPrivateStatusByPublicId() {
         return {
@@ -44,9 +45,9 @@ describe('P5-02F private status information request projection', () => {
           workflowStatus: 'in_review' as const,
           resolution: null,
           statusTokenHash: issued.tokenHash,
-          requestedAction: 'Stored request text',
-          publicMessage: 'Stored public message',
-          nextReviewAt: null,
+          requestedAction: 'Stored Hold action',
+          publicMessage: 'Stored Hold message',
+          nextReviewAt,
         };
       },
     } as unknown as SubmissionPersistenceBackend;

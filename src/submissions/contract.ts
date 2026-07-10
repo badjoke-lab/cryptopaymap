@@ -286,6 +286,7 @@ export const submissionPublicStatusProjectionSchema = z
     statusLabel: submissionPublicStatusLabelSchema,
     requestedAction: safePlainTextSchema(500).nullable(),
     publicMessage: safePlainTextSchema(1_000).nullable(),
+    nextReviewAt: z.iso.datetime({ offset: true }).nullable(),
     linkedPublicRecord: z
       .object({
         recordType: z.enum(['place', 'online_service']),

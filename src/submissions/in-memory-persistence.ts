@@ -66,6 +66,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         statusTokenHash: stored.statusTokenHash,
         requestedAction: null,
         publicMessage: null,
+        nextReviewAt: null,
       };
     },
 

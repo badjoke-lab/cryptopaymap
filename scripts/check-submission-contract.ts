@@ -41,6 +41,7 @@ const status = submissionPublicStatusProjectionSchema.parse({
   statusLabel: publicStatusLabelForSubmission('in_review', null),
   requestedAction: null,
   publicMessage: 'The submission is under review.',
+  nextReviewAt: null,
   linkedPublicRecord: null,
   mediaDecisions: [],
   permittedActions: ['withdraw'],

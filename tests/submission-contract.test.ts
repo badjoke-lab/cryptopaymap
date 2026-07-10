@@ -188,6 +188,7 @@ describe('shared submission contract', () => {
       statusLabel: 'under_review',
       requestedAction: null,
       publicMessage: 'The submission is under review.',
+      nextReviewAt: null,
       linkedPublicRecord: null,
       mediaDecisions: [],
       permittedActions: ['withdraw'],
