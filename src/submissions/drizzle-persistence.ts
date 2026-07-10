@@ -128,7 +128,7 @@ export function createDrizzleSubmissionPersistenceBackend(
         database.insert(submissionPayloads).values({
           submissionId: command.id,
           originalPayload: command.originalPayload,
-          normalizedPayload: null,
+          normalizedPayload: command.normalizedPayload ?? null,
           proposedChanges: null,
           updatedAt: command.submittedAt,
         }),
