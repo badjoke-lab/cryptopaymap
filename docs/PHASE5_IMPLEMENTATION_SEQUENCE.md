@@ -56,10 +56,17 @@ P5-01D  Completed through #153
 P5-01E  Completed through #154
 P5-01F  Completed through #155
 P5-01   Completed
-P5-02A  In progress — Suggest contract and normalization
+P5-02A  Completed through #156
+P5-02B  Completed through #157
+P5-02C  Completed through #158
+P5-02D  Completed through #159
+P5-02E  Completed through #160
+P5-02F  Completed through #161
+P5-02G  Completed through #162
+P5-02H  In progress — accepted-as-Candidate transaction boundary
 ```
 
-P5-01F closed the private follow-up status-read requirement after the post-#154 sequence audit. P5-01 is now repository-complete and P5-02 may proceed.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, and now the accepted-as-Candidate transaction boundary. Public route/form wiring with real environment-backed providers and a P5-02 integration audit remain after P5-02H.
 
 ---
 
@@ -118,20 +125,40 @@ Accept new Place or Online Service suggestions into protected review without dir
 - reviewer entry path;
 - accepted-as-Candidate outcome.
 
-### Current bounded slice
+### Current bounded sequence
 
-P5-02A defines the type-specific Suggest contract and review-safe normalization boundary.
+```text
+P5-02A — Suggest contract and review-safe normalization                Completed #156
+    ↓
+P5-02B — private Suggest intake integration                            Completed #157
+    ↓
+P5-02C — Candidate overlap and canonical-target read-only signals      Completed #158
+    ↓
+P5-02D — protected reviewer queue and detail entry                     Completed #159
+    ↓
+P5-02E — guarded received→triage→in_review transitions                 Completed #160
+    ↓
+P5-02F — guarded in_review→needs_information request                   Completed #161
+    ↓
+P5-02G — guarded time-bounded in_review→on_hold operation              Completed #162
+    ↓
+P5-02H — atomic accepted-as-Candidate outcome                          In progress
+    ↓
+public Suggest route/form wiring with real environment-backed providers
+    ↓
+P5-02 integration and handoff audit
+```
 
-P5-02A must:
+P5-02H must:
 
-- support `physical_place` and `online_service` kinds;
-- compose the P5-01 common envelope;
-- keep new-record Suggest separate from existing-record correction workflows;
-- accept reviewable incomplete Place/payment material without inventing canonical facts;
-- preserve unknown Asset/Network/Route/Method values explicitly;
-- never infer Network from Asset;
-- normalize identity, Place, practical profile, category, payment, observation, relationship, and Evidence-link proposals for protected review;
-- add no public route, Candidate mutation, canonical mutation, Evidence acceptance, export, or publication.
+- accept only exact-state `in_review` Suggest submissions;
+- require a separate Candidate-create capability;
+- revalidate the normalized Suggest projection immediately before transaction planning;
+- use a configured active `user_submission` source channel;
+- create a private Source Record, private Candidate, and origin linkage atomically with Submission resolution and durable event history;
+- guard both Submission state version and normalized payload version;
+- replay safely under identical request UUID retry;
+- create no canonical Entity, Location, Claim, Evidence acceptance, public export, or publication state.
 
 ### Operational dependency
 
@@ -141,7 +168,7 @@ P4-18B must already provide safe operator handling and correction behavior for p
 
 A suggestion can move from public intake to protected review and resolve without directly changing a public record. A useful but insufficient suggestion may become a private Candidate.
 
-P5-02 is not complete when P5-02A alone finishes. Later bounded slices must add private Suggest intake integration, duplicate Candidate/existing-target signals, protected reviewer entry, public route/form wiring with real environment-backed providers, and an integration audit.
+P5-02 is not complete when P5-02H finishes. Public Suggest route/form wiring with real environment-backed providers and a bounded integration/handoff audit still remain.
 
 ---
 

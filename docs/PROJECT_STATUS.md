@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02G — Time-bounded Suggest Hold boundary
+P5-02H — Accepted-as-Candidate transaction boundary
 
 ## Current repository state
 
@@ -24,7 +24,8 @@ P5-02G — Time-bounded Suggest Hold boundary
 - P5-02D protected Suggest reviewer queue and detail entry is complete through #159.
 - P5-02E guarded received→triage and triage→in_review transitions are complete through #160.
 - P5-02F bounded in_review→needs_information request boundary is complete through #161.
-- P5-02G bounded in_review→on_hold operation with 30/60/90 day next-review timing is active.
+- P5-02G bounded in_review→on_hold operation with 30/60/90 day next-review timing is complete through #162.
+- P5-02H atomic accepted-as-Candidate transaction boundary is active.
 
 ## Fixed review environment
 
@@ -56,7 +57,8 @@ Before P5-02 implementation or review, read:
 16. `docs/P5_02E_GUARDED_SUGGEST_REVIEW_TRANSITIONS.md`;
 17. `docs/P5_02F_SUGGEST_INFORMATION_REQUEST.md`;
 18. `docs/P5_02G_TIME_BOUNDED_HOLD.md`;
-19. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+19. `docs/P5_02H_ACCEPTED_AS_CANDIDATE.md`;
+20. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -86,9 +88,9 @@ P5-02E  Guarded received→triage and triage→in_review transitions          Co
     ↓
 P5-02F  Guarded in_review→needs_information request                       Completed #161
     ↓
-P5-02G  Guarded time-bounded in_review→on_hold operation                  In progress
+P5-02G  Guarded time-bounded in_review→on_hold operation                  Completed #162
     ↓
-next bounded reviewer operation slice
+P5-02H  Atomic accepted-as-Candidate outcome                              In progress
     ↓
 public Suggest route/form wiring with real environment-backed providers
     ↓
@@ -97,28 +99,28 @@ P5-02 integration and handoff audit
 
 Exact later slice IDs are assigned when each bounded scope begins.
 
-## P5-02G active scope
+## P5-02H active scope
 
-P5-02G establishes:
+P5-02H establishes:
 
-- one bounded `in_review → on_hold` operation;
-- Hold periods limited to exactly 30, 60, or 90 days;
-- server-computed `nextReviewAt` from commit time plus selected duration;
-- exact `expectedUpdatedAt` concurrency guard;
-- bounded internal Hold reason, required action, and public status message;
-- durable `submission_hold_started` event history;
-- strict versioned Hold event envelope;
-- deterministic request UUID replay identity through the existing event primary key;
-- changed-semantics UUID reuse conflict;
-- concurrent identical commit replay recovery;
-- Suggest-only operation isolation;
-- protected `POST /admin/api/submissions/:submissionId/hold` endpoint;
-- private submitter-status projection of required action, public message, and next review time only while `on_hold`;
-- internal Hold reason exclusion from private status;
-- reviewer detail Hold form available only for `in_review`;
-- focused service/API/private-status tests, runtime checks, and staging artifact validation.
+- one explicit `in_review → resolved / accepted_as_candidate` outcome;
+- separate exact verified Candidate-create allowlist and `submission:candidate:create` capability;
+- configured `CPM_USER_SUBMISSION_SOURCE_ID` source channel;
+- atomic verification that the configured source exists, is active, and uses `user_submission` type;
+- strict normalized Suggest projection revalidation immediately before transaction planning;
+- deterministic Candidate and Source Record IDs from the request UUID;
+- stable SHA-256 content hash for normalized source material;
+- exact Submission status/update-time guard;
+- normalized payload update-time guard;
+- one atomic Source Record + Candidate + origin link + Submission resolution + durable event transaction;
+- private Candidate status `new` with no canonical target or duplicate group preassignment;
+- durable replay and changed-semantics UUID conflict behavior;
+- concurrent identical transaction replay recovery;
+- protected `POST /admin/api/submissions/:submissionId/accept-candidate` endpoint;
+- reviewer detail accepted-as-Candidate panel available only from `in_review`;
+- focused service/API tests, runtime checks, and staging artifact validation.
 
-P5-02G does not add automatic expiry transitions, a scheduled review runner, submitter response intake, duplicate resolution, accepted-as-Candidate transactions, canonical target selection, Evidence acceptance, final resolution, canonical application, export, or publication.
+P5-02H does not add duplicate/no-change outcomes, Candidate duplicate-group decisions, Candidate promotion, canonical target selection, existing-target linking, Evidence acceptance, canonical application, export, or publication.
 
 ## Route and environment requirements before public intake exposure
 
@@ -151,11 +153,13 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02G and merge it green. Then continue with the next bounded P5-02 reviewer operation without combining duplicate resolution, accepted-as-Candidate, and canonical application into one broad mutation endpoint.
+Complete P5-02H and merge it green. Then wire the public Suggest route/form with real environment-backed providers and close P5-02 with an integration and handoff audit.
 
 ## Blocked
 
-No known repository blocker to P5-02G.
+No known repository blocker to P5-02H.
+
+`CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist are required in configured environments before the new transaction can run there.
 
 Production contact encryption, HMAC key environment binding, production distributed rate limiting, opaque bucket-key derivation, and Turnstile environment binding remain required before a public Suggest route is exposed.
 
