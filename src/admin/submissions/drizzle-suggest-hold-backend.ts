@@ -4,7 +4,9 @@ import { submissionEvents, submissions } from '../../db/schema';
 import { createDrizzleSubmissionPersistenceBackend } from '../../submissions/drizzle-persistence';
 import type { SuggestHoldBackend } from './hold';
 
-export function createDrizzleSuggestHoldBackend(database: CryptoPayMapDatabase): SuggestHoldBackend {
+export function createDrizzleSuggestHoldBackend(
+  database: CryptoPayMapDatabase,
+): SuggestHoldBackend {
   const persistence = createDrizzleSubmissionPersistenceBackend(database);
 
   return {
