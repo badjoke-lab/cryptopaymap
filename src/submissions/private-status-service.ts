@@ -61,8 +61,9 @@ export function createSubmissionPrivateStatusService(
       return submissionPublicStatusProjectionSchema.parse({
         publicId: record.publicId,
         statusLabel: publicStatusLabelForSubmission(record.workflowStatus, record.resolution),
-        requestedAction: null,
-        publicMessage: null,
+        requestedAction:
+          record.workflowStatus === 'needs_information' ? record.requestedAction : null,
+        publicMessage: record.workflowStatus === 'needs_information' ? record.publicMessage : null,
         linkedPublicRecord: null,
         mediaDecisions: [],
         permittedActions: permittedActionsForStatus(record.workflowStatus),

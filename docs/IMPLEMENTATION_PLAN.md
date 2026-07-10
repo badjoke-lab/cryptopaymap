@@ -192,9 +192,9 @@ Configured environment wiring remains required when the first public Suggest rou
 
 ### P5-02 — Suggest Place and Online Service
 
-**Status:** In progress at P5-02C
+**Status:** In progress at P5-02F
 
-P5-02 adds public suggestion intake and protected review entry without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates after explicit protected review.
+P5-02 adds Suggest-specific intake, protected review entry, bounded review signals, and separately guarded reviewer operations without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates only after a later explicit protected decision transaction.
 
 Completed and active slices:
 
@@ -203,7 +203,13 @@ P5-02A — Suggest type-specific contract and review-safe normalization       Co
     ↓
 P5-02B — Suggest private intake integration                               Completed #157
     ↓
-P5-02C — duplicate Candidate and existing-target read-only signals        In progress
+P5-02C — duplicate Candidate and existing-target read-only signals        Completed #158
+    ↓
+P5-02D — protected Suggest reviewer queue and detail entry                 Completed #159
+    ↓
+P5-02E — guarded received→triage and triage→in_review transitions          Completed #160
+    ↓
+P5-02F — guarded in_review→needs_information request                       In progress
 ```
 
 P5-02A established:
@@ -229,7 +235,7 @@ P5-02B established:
 - abuse-control composition before Suggest intake;
 - generic P5-01 intake backward compatibility.
 
-P5-02C now establishes:
+P5-02C established:
 
 - read-only Candidate overlap signals using existing duplicate-signal vocabulary;
 - physical same-name-and-coordinate Candidate review signals;
@@ -240,7 +246,36 @@ P5-02C now establishes:
 - fail-closed behavior when either Candidate or canonical target search cannot complete;
 - no automatic duplicate decision, Candidate creation, target selection, linking, canonical mutation, export, or publication.
 
-Later P5-02 slices must add protected reviewer entry, public route/form wiring with real environment-backed providers, and a bounded P5-02 integration audit.
+P5-02D established:
+
+- protected Suggest queue and detail read paths;
+- separate Submission read authorization;
+- normalized proposal validation before reviewer display;
+- P5-02C signal composition inside the protected detail path;
+- bounded workflow-event summary without arbitrary private-field serialization;
+- read-only reviewer workspace without mutation controls.
+
+P5-02E established:
+
+- separate Submission transition authorization;
+- exact-state guarded `received → triage` and `triage → in_review` operations;
+- atomic workflow event persistence;
+- deterministic request UUID replay identity;
+- concurrent identical request replay recovery;
+- bounded conflict responses and reviewer action controls.
+
+P5-02F now establishes:
+
+- exact-state guarded `in_review → needs_information` operation;
+- bounded requested-action and public-message text;
+- strict versioned information-request event envelope;
+- durable replay and changed-content UUID conflict behavior;
+- private status projection of only strict parsed request text;
+- suppression of old request text outside `needs_information`;
+- protected reviewer information-request form;
+- no submitter response intake, hold, duplicate decision, Candidate creation, canonical mutation, export, or publication.
+
+Later P5-02 slices must continue one bounded reviewer operation at a time, wire the public Suggest route/form with real environment-backed providers, and close with a bounded P5-02 integration audit.
 
 ### P5-03 — Payment and problem reports
 

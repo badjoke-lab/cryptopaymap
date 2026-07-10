@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
   submissionContacts,
@@ -8,6 +8,7 @@ import {
   submissions,
 } from '../db/schema';
 import { formatSubmissionPublicId } from './contract';
+import { parseSubmissionInformationRequestEventPayload } from './information-request-contract';
 import { SubmissionPersistenceError, type SubmissionPersistenceBackend } from './persistence';
 import { assertSubmissionWorkflowTransition } from './workflow';
 
@@ -94,6 +95,7 @@ export function createDrizzleSubmissionPersistenceBackend(
     async readPrivateStatusByPublicId(publicId) {
       const rows = await database
         .select({
+          submissionId: submissions.id,
           publicId: submissions.publicId,
           workflowStatus: submissions.workflowStatus,
           resolution: submissions.resolution,
@@ -102,7 +104,40 @@ export function createDrizzleSubmissionPersistenceBackend(
         .from(submissions)
         .where(eq(submissions.publicId, publicId))
         .limit(1);
-      return rows[0] ?? null;
+      const row = rows[0];
+      if (row === undefined) return null;
+
+      let requestedAction: string | null = null;
+      let publicMessage: string | null = null;
+      if (row.workflowStatus === 'needs_information') {
+        const eventRows = await database
+          .select({ internalNote: submissionEvents.internalNote })
+          .from(submissionEvents)
+          .where(
+            and(
+              eq(submissionEvents.submissionId, row.submissionId),
+              eq(submissionEvents.action, 'submission_information_requested'),
+            ),
+          )
+          .orderBy(desc(submissionEvents.createdAt), desc(submissionEvents.id))
+          .limit(1);
+        const payload = parseSubmissionInformationRequestEventPayload(
+          eventRows[0]?.internalNote ?? null,
+        );
+        if (payload !== null) {
+          requestedAction = payload.requestedAction;
+          publicMessage = payload.publicMessage;
+        }
+      }
+
+      return {
+        publicId: row.publicId,
+        workflowStatus: row.workflowStatus,
+        resolution: row.resolution,
+        statusTokenHash: row.statusTokenHash,
+        requestedAction,
+        publicMessage,
+      };
     },
 
     async createSubmission(command) {

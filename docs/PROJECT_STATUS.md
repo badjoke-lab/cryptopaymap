@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02E — Guarded Suggest review workflow transitions
+P5-02F — Suggest information request boundary
 
 ## Current repository state
 
@@ -22,7 +22,8 @@ P5-02E — Guarded Suggest review workflow transitions
 - P5-02B Suggest private intake integration is complete through #157.
 - P5-02C read-only Candidate overlap and canonical target signal generation is complete through #158.
 - P5-02D protected Suggest reviewer queue and detail entry is complete through #159.
-- P5-02E first guarded Suggest review workflow transition boundary is active.
+- P5-02E guarded received→triage and triage→in_review transitions are complete through #160.
+- P5-02F bounded in_review→needs_information request boundary is active.
 
 ## Fixed review environment
 
@@ -52,7 +53,8 @@ Before P5-02 implementation or review, read:
 14. `docs/P5_02C_SUGGEST_REVIEW_SIGNALS.md`;
 15. `docs/P5_02D_SUGGEST_REVIEWER_ENTRY.md`;
 16. `docs/P5_02E_GUARDED_SUGGEST_REVIEW_TRANSITIONS.md`;
-17. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+17. `docs/P5_02F_SUGGEST_INFORMATION_REQUEST.md`;
+18. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -78,7 +80,9 @@ P5-02C  Duplicate Candidate and existing-target read-only signals        Complet
     ↓
 P5-02D  Protected Suggest reviewer queue and detail entry                 Completed #159
     ↓
-P5-02E  Guarded received→triage and triage→in_review transitions          In progress
+P5-02E  Guarded received→triage and triage→in_review transitions          Completed #160
+    ↓
+P5-02F  Guarded in_review→needs_information request                       In progress
     ↓
 next bounded reviewer operation slice
     ↓
@@ -89,26 +93,27 @@ P5-02 integration and handoff audit
 
 Exact later slice IDs are assigned when each bounded scope begins.
 
-## P5-02E active scope
+## P5-02F active scope
 
-P5-02E establishes:
+P5-02F establishes:
 
-- separate exact verified transition allowlist and `submission:transition` capability;
-- `begin_triage` for `received → triage` only;
-- `begin_review` for `triage → in_review` only;
-- protected `POST /admin/api/submissions/:submissionId/transition` endpoint;
-- exact expected status and expected updated-time guard;
-- atomic workflow update and Submission event insertion through the P5-01 persistence boundary;
-- deterministic transition event IDs derived from action request UUIDs;
-- identical request replay from durable Submission events;
-- request UUID reuse conflict for different operations;
-- concurrent identical commit recovery after persistence conflict;
-- Suggest-only transition isolation;
-- reuse of existing Submission Audit history source;
-- protected reviewer action panel with conflict and authorization states;
-- focused service/API tests, runtime checks, and staging artifact validation.
+- one bounded `in_review → needs_information` operation;
+- versioned request contract with exact `expectedUpdatedAt` concurrency guard;
+- bounded `requestedAction` and `publicMessage` text fields;
+- HTML-like input rejection and strict safe-text validation;
+- durable `submission_information_requested` event history;
+- strict versioned event JSON envelope stored only inside the matching event note;
+- deterministic request UUID replay identity through the existing event primary key;
+- changed-content UUID reuse conflict;
+- concurrent identical commit replay recovery;
+- Suggest-only operation isolation;
+- protected `POST /admin/api/submissions/:submissionId/request-information` endpoint;
+- private submitter-status projection of only `requestedAction` and `publicMessage`;
+- suppression of information-request text outside `needs_information` status;
+- reviewer detail information-request form available only for `in_review`;
+- focused service/API/private-status tests, runtime checks, and staging artifact validation.
 
-P5-02E does not add information requests, hold behavior, duplicate resolution, accepted-as-Candidate transactions, canonical target selection, Evidence acceptance, final resolution, canonical application, export, or publication.
+P5-02F does not add submitter response intake, hold behavior, duplicate resolution, accepted-as-Candidate transactions, canonical target selection, Evidence acceptance, final resolution, canonical application, export, or publication.
 
 ## Route and environment requirements before public intake exposure
 
@@ -141,11 +146,11 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02E and merge it green. Then define the next bounded P5-02 reviewer operation slice without combining information request, hold, duplicate resolution, accepted-as-Candidate, and canonical application into one broad mutation endpoint.
+Complete P5-02F and merge it green. Then continue with the next bounded P5-02 reviewer operation without combining hold, duplicate resolution, accepted-as-Candidate, and canonical application into one broad mutation endpoint.
 
 ## Blocked
 
-No known repository blocker to P5-02E.
+No known repository blocker to P5-02F.
 
 Production contact encryption, HMAC key environment binding, production distributed rate limiting, opaque bucket-key derivation, and Turnstile environment binding remain required before a public Suggest route is exposed.
 
