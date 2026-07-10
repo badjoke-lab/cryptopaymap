@@ -44,27 +44,21 @@ describe('P5-02M Durable Object fixed-window contract', () => {
     });
   });
 
-  it('fails safe from stale or invalid persisted state by starting a fresh window', () => {
-    expect(
+  it('fails closed on clock rollback or invalid persisted state', () => {
+    expect(() =>
       consumeFixedWindowRateLimit(
         { windowStartedAtMs: 5_000, requestCount: 2 },
         4_000,
         options,
       ),
-    ).toEqual({
-      state: { windowStartedAtMs: 4_000, requestCount: 1 },
-      response: { outcome: 'allow', remaining: 1 },
-    });
-    expect(
+    ).toThrow('Rate-limit state is invalid.');
+    expect(() =>
       consumeFixedWindowRateLimit(
         { windowStartedAtMs: Number.NaN, requestCount: 0 },
         4_000,
         options,
       ),
-    ).toEqual({
-      state: { windowStartedAtMs: 4_000, requestCount: 1 },
-      response: { outcome: 'allow', remaining: 1 },
-    });
+    ).toThrow('Rate-limit state is invalid.');
   });
 });
 
