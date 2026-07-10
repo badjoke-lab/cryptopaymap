@@ -110,8 +110,7 @@ function queueContext(overrides: { identity?: unknown; subjects?: string } = {})
   return {
     request: new Request('https://example.test/admin/api/submissions'),
     env: {
-      CPM_ADMIN_SUBMISSION_SUBJECTS:
-        overrides.subjects ?? JSON.stringify(['reviewer-subject']),
+      CPM_ADMIN_SUBMISSION_SUBJECTS: overrides.subjects ?? JSON.stringify(['reviewer-subject']),
     },
     params: {},
     data: { adminIdentity: overrides.identity === undefined ? identity : overrides.identity },
@@ -125,8 +124,7 @@ function detailContext(
   return {
     request: new Request(`https://example.test/admin/api/submissions/${submissionId}`),
     env: {
-      CPM_ADMIN_SUBMISSION_SUBJECTS:
-        overrides.subjects ?? JSON.stringify(['reviewer-subject']),
+      CPM_ADMIN_SUBMISSION_SUBJECTS: overrides.subjects ?? JSON.stringify(['reviewer-subject']),
     },
     params: { submissionId: overrides.submissionId ?? submissionId },
     data: { adminIdentity: overrides.identity === undefined ? identity : overrides.identity },
