@@ -7,9 +7,7 @@ function encodeBase64Url(bytes: Uint8Array): string {
 }
 
 const deriver = createSubmissionRateLimitBucketDeriverFromEnvironment({
-  CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL: encodeBase64Url(
-    new Uint8Array(32).fill(17),
-  ),
+  CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(17)),
 });
 
 const rawIdentity = '203.0.113.42';
