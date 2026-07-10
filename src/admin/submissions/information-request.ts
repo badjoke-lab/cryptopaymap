@@ -1,23 +1,14 @@
 import { z } from 'zod';
+import {
+  parseSubmissionInformationRequestEventPayload,
+  serializeSubmissionInformationRequestEventPayload,
+  submissionInformationPublicMessageSchema,
+  submissionInformationRequestedActionSchema,
+} from '../../submissions/information-request-contract';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type { SubmissionTransitionContext } from './authorization';
 
 const timestampSchema = z.iso.datetime({ offset: true });
-const safePlainTextSchema = (maximum: number) =>
-  z
-    .string()
-    .min(1)
-    .max(maximum)
-    .refine((value) => value.trim().length > 0, 'Text must contain non-whitespace content.')
-    .refine((value) => !/[<>]/.test(value), 'HTML-like text is not accepted.');
-
-export const submissionInformationRequestEventPayloadSchema = z
-  .object({
-    schemaVersion: z.literal('suggest-information-request-event-v1'),
-    requestedAction: safePlainTextSchema(500),
-    publicMessage: safePlainTextSchema(1_000),
-  })
-  .strict();
 
 export const suggestInformationRequestSchema = z
   .object({
@@ -25,8 +16,8 @@ export const suggestInformationRequestSchema = z
     requestId: z.uuid(),
     expectedStatus: z.literal('in_review'),
     expectedUpdatedAt: timestampSchema,
-    requestedAction: safePlainTextSchema(500),
-    publicMessage: safePlainTextSchema(1_000),
+    requestedAction: submissionInformationRequestedActionSchema,
+    publicMessage: submissionInformationPublicMessageSchema,
   })
   .strict();
 
@@ -36,15 +27,12 @@ export const suggestInformationRequestReceiptSchema = z
     submissionId: z.uuid(),
     fromStatus: z.literal('in_review'),
     toStatus: z.literal('needs_information'),
-    requestedAction: safePlainTextSchema(500),
-    publicMessage: safePlainTextSchema(1_000),
+    requestedAction: submissionInformationRequestedActionSchema,
+    publicMessage: submissionInformationPublicMessageSchema,
     changedAt: timestampSchema,
   })
   .strict();
 
-export type SubmissionInformationRequestEventPayload = z.infer<
-  typeof submissionInformationRequestEventPayloadSchema
->;
 export type SuggestInformationRequest = z.infer<typeof suggestInformationRequestSchema>;
 export type SuggestInformationRequestReceipt = z.infer<
   typeof suggestInformationRequestReceiptSchema
@@ -97,23 +85,6 @@ export class SuggestInformationRequestError extends Error {
   ) {
     super(message, options);
     this.name = 'SuggestInformationRequestError';
-  }
-}
-
-export function serializeSubmissionInformationRequestEventPayload(
-  payload: SubmissionInformationRequestEventPayload,
-): string {
-  return JSON.stringify(submissionInformationRequestEventPayloadSchema.parse(payload));
-}
-
-export function parseSubmissionInformationRequestEventPayload(
-  value: string | null,
-): SubmissionInformationRequestEventPayload | null {
-  if (value === null) return null;
-  try {
-    return submissionInformationRequestEventPayloadSchema.parse(JSON.parse(value));
-  } catch {
-    return null;
   }
 }
 
