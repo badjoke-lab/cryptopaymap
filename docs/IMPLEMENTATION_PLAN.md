@@ -217,7 +217,9 @@ P5-02H — atomic accepted-as-Candidate outcome                              Com
     ↓
 P5-02I — Submission status-secret environment binding                     Completed #167
     ↓
-P5-02J — Submission contact protection                                    In progress
+P5-02J — Submission contact protection                                    Completed #168
+    ↓
+P5-02K — Opaque Submission rate-limit bucket derivation                    In progress
     ↓
 remaining public Suggest route/form provider and exposure slices
     ↓
@@ -309,7 +311,15 @@ P5-02I established:
 - bounded configuration failures without configured-value disclosure;
 - no public route exposure.
 
-P5-02J now establishes production-capable protected contact output for the existing private intake service while keeping public intake unavailable.
+P5-02J established:
+
+- production-capable AES-GCM contact encryption with randomized ciphertext;
+- separate keyed normalized-email HMAC hashing;
+- explicit key identity and configured retention date derivation;
+- bounded configuration and operation failures without secret or plaintext email disclosure;
+- no public route exposure.
+
+P5-02K now establishes privacy-preserving opaque rate-limit bucket derivation for a later trusted edge identity input while leaving trusted-header extraction and the distributed provider out of scope.
 
 The active P5-02 work must continue the remaining public Suggest provider and exposure slices. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
