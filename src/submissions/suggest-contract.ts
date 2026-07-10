@@ -263,8 +263,13 @@ export interface SuggestReviewProjection {
   evidenceLinks: CommonSubmissionIntake['evidenceLinks'];
 }
 
-export function normalizeSuggestSubmissionIntake(raw: unknown): SuggestReviewProjection {
-  const intake = suggestSubmissionIntakeSchema.parse(raw);
+export type SuggestionKind = z.infer<typeof suggestionKindSchema>;
+export type SuggestOriginalPayload = z.infer<typeof suggestOriginalPayloadSchema>;
+export type SuggestSubmissionIntake = z.infer<typeof suggestSubmissionIntakeSchema>;
+
+export function normalizeParsedSuggestSubmissionIntake(
+  intake: SuggestSubmissionIntake,
+): SuggestReviewProjection {
   const payload = intake.originalPayload;
   return {
     suggestionKind: payload.suggestionKind,
@@ -279,6 +284,6 @@ export function normalizeSuggestSubmissionIntake(raw: unknown): SuggestReviewPro
   };
 }
 
-export type SuggestionKind = z.infer<typeof suggestionKindSchema>;
-export type SuggestOriginalPayload = z.infer<typeof suggestOriginalPayloadSchema>;
-export type SuggestSubmissionIntake = z.infer<typeof suggestSubmissionIntakeSchema>;
+export function normalizeSuggestSubmissionIntake(raw: unknown): SuggestReviewProjection {
+  return normalizeParsedSuggestSubmissionIntake(suggestSubmissionIntakeSchema.parse(raw));
+}
