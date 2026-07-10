@@ -17,6 +17,7 @@ const submissionSubjectsSchema = z
 
 export interface SubmissionReviewAuthorizationEnvironment {
   CPM_ADMIN_SUBMISSION_SUBJECTS?: string;
+  CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS?: string;
   [key: string]: unknown;
 }
 
@@ -30,6 +31,12 @@ export interface SubmissionReviewContext {
   capabilities: ['submission:read'];
 }
 
+export interface SubmissionTransitionContext {
+  actorId: string;
+  actorType: 'human' | 'system';
+  capabilities: ['submission:transition'];
+}
+
 export class SubmissionReviewAuthorizationError extends Error {
   constructor(
     readonly code: 'configuration' | 'denied',
@@ -41,14 +48,14 @@ export class SubmissionReviewAuthorizationError extends Error {
   }
 }
 
-export function readSubmissionReviewAuthorizationPolicy(
-  environment: SubmissionReviewAuthorizationEnvironment,
+function readSubjectPolicy(
+  serialized: string | undefined,
+  capabilityLabel: string,
 ): SubmissionReviewAuthorizationPolicy {
-  const serialized = environment.CPM_ADMIN_SUBMISSION_SUBJECTS;
   if (typeof serialized !== 'string' || serialized.trim() === '') {
     throw new SubmissionReviewAuthorizationError(
       'configuration',
-      'Submission review authorization is not configured.',
+      `${capabilityLabel} authorization is not configured.`,
     );
   }
 
@@ -58,7 +65,7 @@ export function readSubmissionReviewAuthorizationPolicy(
   } catch (error) {
     throw new SubmissionReviewAuthorizationError(
       'configuration',
-      'Submission review authorization is invalid.',
+      `${capabilityLabel} authorization is invalid.`,
       { cause: error },
     );
   }
@@ -67,10 +74,25 @@ export function readSubmissionReviewAuthorizationPolicy(
   if (!result.success) {
     throw new SubmissionReviewAuthorizationError(
       'configuration',
-      'Submission review authorization is invalid.',
+      `${capabilityLabel} authorization is invalid.`,
     );
   }
   return { subjects: new Set(result.data) };
+}
+
+export function readSubmissionReviewAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(environment.CPM_ADMIN_SUBMISSION_SUBJECTS, 'Submission review');
+}
+
+export function readSubmissionTransitionAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(
+    environment.CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS,
+    'Submission transition',
+  );
 }
 
 export function authorizeSubmissionReviewRead(
@@ -87,5 +109,22 @@ export function authorizeSubmissionReviewRead(
     actorId: identity.actorId,
     actorType: identity.actorType,
     capabilities: ['submission:read'],
+  };
+}
+
+export function authorizeSubmissionTransition(
+  identity: AdminAccessIdentity,
+  policy: SubmissionReviewAuthorizationPolicy,
+): SubmissionTransitionContext {
+  if (!policy.subjects.has(identity.subject)) {
+    throw new SubmissionReviewAuthorizationError(
+      'denied',
+      'The verified administration identity is not authorized for Submission transitions.',
+    );
+  }
+  return {
+    actorId: identity.actorId,
+    actorType: identity.actorType,
+    capabilities: ['submission:transition'],
   };
 }
