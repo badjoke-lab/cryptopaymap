@@ -56,11 +56,13 @@ function event(
   };
 }
 
-function backend(options: {
-  currentState?: SuggestReviewTransitionState | null;
-  existingEvent?: SuggestReviewTransitionEventRecord | null;
-  commit?: (command: SuggestReviewTransitionCommitCommand) => Promise<void>;
-} = {}) {
+function backend(
+  options: {
+    currentState?: SuggestReviewTransitionState | null;
+    existingEvent?: SuggestReviewTransitionEventRecord | null;
+    commit?: (command: SuggestReviewTransitionCommitCommand) => Promise<void>;
+  } = {},
+) {
   const commitTransition = vi.fn(
     options.commit ??
       (async () => {
@@ -145,7 +147,11 @@ describe('P5-02E guarded Suggest review transitions', () => {
 
   it('rejects a request UUID that was already used for a different transition', async () => {
     const testBackend = backend({
-      existingEvent: event({ action: 'submission_review_started', fromStatus: 'triage', toStatus: 'in_review' }),
+      existingEvent: event({
+        action: 'submission_review_started',
+        fromStatus: 'triage',
+        toStatus: 'in_review',
+      }),
     });
 
     await expect(
@@ -155,7 +161,11 @@ describe('P5-02E guarded Suggest review transitions', () => {
 
   it('rejects stale expected status or updatedAt before commit', async () => {
     const testBackend = backend({
-      currentState: { ...state(), workflowStatus: 'triage', updatedAt: '2026-07-10T02:01:00.000Z' },
+      currentState: {
+        ...state(),
+        workflowStatus: 'triage',
+        updatedAt: '2026-07-10T02:01:00.000Z',
+      },
     });
 
     await expect(
