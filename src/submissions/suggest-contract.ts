@@ -2,7 +2,12 @@ import { z } from 'zod';
 import { routeTypeValues } from '../db/schema/enums';
 import { paymentMethodValues } from '../db/schema/payment-registries';
 import { canonicalLocationSocialLinkSchema } from '../schemas/canonical-identity';
-import { countryCodeSchema, dateOnlySchema, httpsUrlSchema, publicSlugSchema } from '../schemas/core';
+import {
+  countryCodeSchema,
+  dateOnlySchema,
+  httpsUrlSchema,
+  publicSlugSchema,
+} from '../schemas/core';
 import {
   commonSubmissionIntakeSchema,
   submissionRelationshipSchema,
@@ -237,7 +242,7 @@ export const suggestOriginalPayloadSchema = z
   });
 
 export const suggestSubmissionIntakeSchema = commonSubmissionIntakeSchema
-  .extend({
+  .safeExtend({
     submissionType: z.literal('suggest'),
     targetType: z.null(),
     targetId: z.null(),
