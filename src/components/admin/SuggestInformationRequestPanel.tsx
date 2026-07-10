@@ -67,11 +67,12 @@ export function SuggestInformationRequestPanel() {
     void loadDetail();
   }, [loadDetail]);
 
-  async function submitInformationRequest(
-    activeSubmissionId: string,
-    expectedUpdatedAt: string,
-  ) {
-    setState({ status: 'submitting', submissionId: activeSubmissionId, updatedAt: expectedUpdatedAt });
+  async function submitInformationRequest(activeSubmissionId: string, expectedUpdatedAt: string) {
+    setState({
+      status: 'submitting',
+      submissionId: activeSubmissionId,
+      updatedAt: expectedUpdatedAt,
+    });
     try {
       const response = await fetch(
         `/admin/api/submissions/${encodeURIComponent(activeSubmissionId)}/request-information`,
@@ -133,7 +134,8 @@ export function SuggestInformationRequestPanel() {
     return (
       <p className="m-0 flex items-center gap-2 text-sm text-status-stale">
         <AlertTriangle className="size-4" aria-hidden="true" />
-        The Submission changed before this request could commit. Reload the review before trying again.
+        The Submission changed before this request could commit. Reload the review before trying
+        again.
       </p>
     );
   }
