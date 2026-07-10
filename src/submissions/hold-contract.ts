@@ -9,11 +9,7 @@ const safePlainTextSchema = (maximum: number) =>
     .refine((value) => !/[<>]/.test(value), 'HTML-like text is not accepted.');
 
 export const submissionHoldDayValues = [30, 60, 90] as const;
-export const submissionHoldDaysSchema = z.union([
-  z.literal(30),
-  z.literal(60),
-  z.literal(90),
-]);
+export const submissionHoldDaysSchema = z.union([z.literal(30), z.literal(60), z.literal(90)]);
 export const submissionHoldReasonSchema = safePlainTextSchema(500);
 export const submissionHoldRequiredActionSchema = safePlainTextSchema(500);
 export const submissionHoldPublicMessageSchema = safePlainTextSchema(1_000);
