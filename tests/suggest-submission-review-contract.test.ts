@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { SubmissionReviewContext } from '../src/admin/submissions/authorization';
 import {
   loadSuggestSubmissionReviewDetail,
   suggestSubmissionReviewDetailResponseSchema,
@@ -10,10 +11,10 @@ import {
   type SuggestSubmissionQueuePageData,
 } from '../src/admin/submissions/queue';
 
-const context = {
+const context: SubmissionReviewContext = {
   actorId: 'cloudflare-access:reviewer-subject',
-  actorType: 'human' as const,
-  capabilities: ['submission:read'] as const,
+  actorType: 'human',
+  capabilities: ['submission:read'],
 };
 const submissionId = '10000000-0000-4000-8000-000000000001';
 const now = new Date('2026-07-10T02:00:00.000Z');
@@ -104,7 +105,11 @@ describe('P5-02D Suggest Submission reviewer contracts', () => {
     const query = suggestSubmissionQueueQuerySchema.parse({});
     const response = await loadSuggestSubmissionQueue(
       context,
-      { async loadPage() { return queuePage(); } },
+      {
+        async loadPage() {
+          return queuePage();
+        },
+      },
       query,
       now,
     );
@@ -118,10 +123,20 @@ describe('P5-02D Suggest Submission reviewer contracts', () => {
   });
 
   it('rejects queue access without the Submission read capability', async () => {
+    const unauthorizedContext = {
+      actorId: 'actor',
+      actorType: 'human',
+      capabilities: [],
+    } as unknown as SubmissionReviewContext;
+
     await expect(
       loadSuggestSubmissionQueue(
-        { actorId: 'actor', actorType: 'human', capabilities: [] as never[] },
-        { async loadPage() { return queuePage(); } },
+        unauthorizedContext,
+        {
+          async loadPage() {
+            return queuePage();
+          },
+        },
         suggestSubmissionQueueQuerySchema.parse({}),
         now,
       ),
@@ -131,7 +146,11 @@ describe('P5-02D Suggest Submission reviewer contracts', () => {
   it('loads normalized Suggest detail and composes P5-02C signals', async () => {
     const response = await loadSuggestSubmissionReviewDetail(
       context,
-      { async loadDetail() { return detailData(); } },
+      {
+        async loadDetail() {
+          return detailData();
+        },
+      },
       {
         candidateBackend: {
           async searchCandidateSignalMaterial() {
@@ -167,10 +186,22 @@ describe('P5-02D Suggest Submission reviewer contracts', () => {
     await expect(
       loadSuggestSubmissionReviewDetail(
         context,
-        { async loadDetail() { return invalid; } },
         {
-          candidateBackend: { async searchCandidateSignalMaterial() { return []; } },
-          canonicalTargetBackend: { async searchTargets() { return []; } },
+          async loadDetail() {
+            return invalid;
+          },
+        },
+        {
+          candidateBackend: {
+            async searchCandidateSignalMaterial() {
+              return [];
+            },
+          },
+          canonicalTargetBackend: {
+            async searchTargets() {
+              return [];
+            },
+          },
         },
         submissionId,
         now,
