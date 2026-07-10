@@ -146,9 +146,7 @@ for (const fragment of requiredSubmissionDetailFragments) {
 }
 for (const fragment of forbiddenSubmissionFragments) {
   if (submissionDetailPage.includes(fragment)) {
-    throw new Error(
-      `Private or server-only marker found in Submission detail HTML: ${fragment}`,
-    );
+    throw new Error(`Private or server-only marker found in Submission detail HTML: ${fragment}`);
   }
 }
 
