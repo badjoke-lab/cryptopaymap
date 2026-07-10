@@ -8,6 +8,7 @@ import {
   submissions,
 } from '../db/schema';
 import { formatSubmissionPublicId } from './contract';
+import { parseSubmissionHoldEventPayload } from './hold-contract';
 import { parseSubmissionInformationRequestEventPayload } from './information-request-contract';
 import { SubmissionPersistenceError, type SubmissionPersistenceBackend } from './persistence';
 import { assertSubmissionWorkflowTransition } from './workflow';
@@ -109,6 +110,8 @@ export function createDrizzleSubmissionPersistenceBackend(
 
       let requestedAction: string | null = null;
       let publicMessage: string | null = null;
+      let nextReviewAt: string | null = null;
+
       if (row.workflowStatus === 'needs_information') {
         const eventRows = await database
           .select({ internalNote: submissionEvents.internalNote })
@@ -130,6 +133,26 @@ export function createDrizzleSubmissionPersistenceBackend(
         }
       }
 
+      if (row.workflowStatus === 'on_hold') {
+        const eventRows = await database
+          .select({ internalNote: submissionEvents.internalNote })
+          .from(submissionEvents)
+          .where(
+            and(
+              eq(submissionEvents.submissionId, row.submissionId),
+              eq(submissionEvents.action, 'submission_hold_started'),
+            ),
+          )
+          .orderBy(desc(submissionEvents.createdAt), desc(submissionEvents.id))
+          .limit(1);
+        const payload = parseSubmissionHoldEventPayload(eventRows[0]?.internalNote ?? null);
+        if (payload !== null) {
+          requestedAction = payload.requiredAction;
+          publicMessage = payload.publicMessage;
+          nextReviewAt = payload.nextReviewAt;
+        }
+      }
+
       return {
         publicId: row.publicId,
         workflowStatus: row.workflowStatus,
@@ -137,6 +160,7 @@ export function createDrizzleSubmissionPersistenceBackend(
         statusTokenHash: row.statusTokenHash,
         requestedAction,
         publicMessage,
+        nextReviewAt,
       };
     },
 
