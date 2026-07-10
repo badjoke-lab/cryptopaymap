@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02M — Durable Object distributed Submission rate limiting
+P5-02N — Turnstile environment binding
 
 ## Current repository state
 
@@ -30,7 +30,8 @@ P5-02M — Durable Object distributed Submission rate limiting
 - P5-02J Submission contact protection is complete through #168.
 - P5-02K opaque Submission rate-limit bucket derivation is complete through #169.
 - P5-02L trusted Cloudflare edge identity extraction is complete through #170.
-- P5-02M Durable Object distributed Submission rate limiting is in progress without public route exposure.
+- P5-02M Durable Object distributed Submission rate limiting is complete through #171.
+- P5-02N Turnstile environment binding is in progress without public route exposure.
 
 ## Fixed review environment
 
@@ -68,7 +69,8 @@ Before P5-02 implementation or review, read:
 22. `docs/P5_02K_OPAQUE_RATE_LIMIT_BUCKET_DERIVATION.md`;
 23. `docs/P5_02L_CLOUDFLARE_EDGE_IDENTITY.md`;
 24. `docs/P5_02M_DURABLE_OBJECT_RATE_LIMIT.md`;
-25. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+25. `docs/P5_02N_TURNSTILE_ENVIRONMENT_BINDING.md`;
+26. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -110,9 +112,11 @@ P5-02K  Opaque Submission rate-limit bucket derivation                    Comple
     ↓
 P5-02L  Trusted Cloudflare edge identity extraction                       Completed #170
     ↓
-P5-02M  Durable Object distributed Submission rate limiting               In progress
+P5-02M  Durable Object distributed Submission rate limiting               Completed #171
     ↓
-remaining public Suggest route/form provider and exposure slices
+P5-02N  Turnstile environment binding                                    In progress
+    ↓
+remaining public Suggest route/form composition and exposure slices
     ↓
 P5-02 integration and handoff audit
 ```
@@ -169,13 +173,13 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02M Durable Object distributed rate limiting, then continue Turnstile environment/browser wiring and the remaining public Suggest provider/exposure slices. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
+Complete P5-02N Turnstile environment binding, then continue public HTTP composition, safe error and Retry-After mapping, Suggest form/browser wiring, and configured-environment verification. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
 
 ## Blocked
 
 No known repository blocker to continuing the public Suggest route/form wiring.
 
-Turnstile environment/browser wiring, complete route composition, and configured deployment verification remain required before public Suggest intake is exposed. Status-secret HMAC binding is repository-complete through #167, contact protection through #168, opaque bucket derivation through #169, and trusted edge identity extraction through #170.
+Public HTTP composition, safe error and Retry-After mapping, Suggest form/browser wiring, and configured deployment verification remain required before public Suggest intake is exposed. Status-secret HMAC binding is repository-complete through #167, contact protection through #168, opaque bucket derivation through #169, trusted edge identity extraction through #170, and distributed rate limiting through #171.
 
 The P5-02M Durable Object worker and Pages binding must be deployed and verified in a configured environment before route activation. Repository dry-run compilation does not prove that live binding.
 
