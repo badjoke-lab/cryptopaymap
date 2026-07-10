@@ -39,6 +39,7 @@ export interface CreateSubmissionPersistenceCommand {
   statusTokenHash: string;
   submittedAt: Date;
   originalPayload: Record<string, unknown>;
+  normalizedPayload?: Record<string, unknown> | null;
   contact: SubmissionContactPersistenceInput | null;
   actorId: string;
   actorType: SubmissionEventActorType;

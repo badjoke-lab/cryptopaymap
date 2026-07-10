@@ -1,7 +1,11 @@
 import { z } from 'zod';
 import type { SubmissionContactProtector } from './contact-protection';
 import { protectedSubmissionContactSchema } from './contact-protection';
-import { commonSubmissionIntakeSchema, type CommonSubmissionIntake } from './contract';
+import {
+  commonSubmissionIntakeSchema,
+  submissionOriginalPayloadSchema,
+  type CommonSubmissionIntake,
+} from './contract';
 import { fingerprintSubmissionIntake } from './fingerprint';
 import {
   SubmissionPersistenceError,
@@ -43,13 +47,32 @@ export interface SubmissionPrivateIntakeService {
   ): Promise<SubmissionPrivateIntakeReceipt>;
 }
 
+export interface ParsedSubmissionPrivateIntake {
+  intake: CommonSubmissionIntake;
+  normalizedPayload: Record<string, unknown> | null;
+}
+
+export interface SubmissionIntakeParser {
+  parse(rawInput: unknown): ParsedSubmissionPrivateIntake;
+}
+
 export interface SubmissionPrivateIntakeDependencies {
   persistence: SubmissionPersistenceBackend;
   statusSecrets: SubmissionStatusSecretProvider;
   contactProtector: SubmissionContactProtector;
+  intakeParser?: SubmissionIntakeParser;
   generateSubmissionId?: () => string;
   intakeActorId?: string;
 }
+
+const commonSubmissionIntakeParser: SubmissionIntakeParser = {
+  parse(rawInput) {
+    return {
+      intake: commonSubmissionIntakeSchema.parse(rawInput),
+      normalizedPayload: null,
+    };
+  },
+};
 
 function persistencePayload(intake: CommonSubmissionIntake): Record<string, unknown> {
   return {
@@ -70,6 +93,7 @@ export function createSubmissionPrivateIntakeService(
 ): SubmissionPrivateIntakeService {
   const generateSubmissionId = dependencies.generateSubmissionId ?? (() => crypto.randomUUID());
   const actorId = dependencies.intakeActorId ?? 'submitter:public-intake';
+  const intakeParser = dependencies.intakeParser ?? commonSubmissionIntakeParser;
   if (actorId.trim().length === 0) {
     throw new Error('Submission intake actor ID must not be empty.');
   }
@@ -108,9 +132,15 @@ export function createSubmissionPrivateIntakeService(
 
       let parsedRequestId: string;
       let intake: CommonSubmissionIntake;
+      let normalizedPayload: Record<string, unknown> | null;
       try {
         parsedRequestId = requestIdSchema.parse(requestId);
-        intake = commonSubmissionIntakeSchema.parse(rawInput);
+        const parsed = intakeParser.parse(rawInput);
+        intake = commonSubmissionIntakeSchema.parse(parsed.intake);
+        normalizedPayload =
+          parsed.normalizedPayload === null
+            ? null
+            : submissionOriginalPayloadSchema.parse(parsed.normalizedPayload);
       } catch (error) {
         throw new SubmissionIntakeError(
           'invalid_request',
@@ -165,6 +195,7 @@ export function createSubmissionPrivateIntakeService(
           statusTokenHash: issued.tokenHash,
           submittedAt: receivedAt,
           originalPayload: persistencePayload(intake),
+          normalizedPayload,
           contact,
           actorId,
           actorType: 'submitter',

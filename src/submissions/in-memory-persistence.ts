@@ -12,6 +12,7 @@ interface StoredSubmission extends SubmissionPersistenceReplayRecord {
   updatedAt: Date;
   resolution: TransitionSubmissionPersistenceCommand['resolution'];
   originalPayload: Record<string, unknown>;
+  normalizedPayload: Record<string, unknown> | null;
   contact: CreateSubmissionPersistenceCommand['contact'];
 }
 
@@ -89,6 +90,10 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         updatedAt: command.submittedAt,
         resolution: null,
         originalPayload: structuredClone(command.originalPayload),
+        normalizedPayload:
+          command.normalizedPayload === undefined || command.normalizedPayload === null
+            ? null
+            : structuredClone(command.normalizedPayload),
         contact: command.contact === null ? null : { ...command.contact },
       };
       submissionsById.set(command.id, stored);
@@ -142,6 +147,8 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
       return [...submissionsById.values()].map((stored) => ({
         ...stored,
         originalPayload: structuredClone(stored.originalPayload),
+        normalizedPayload:
+          stored.normalizedPayload === null ? null : structuredClone(stored.normalizedPayload),
         contact: stored.contact === null ? null : { ...stored.contact },
       }));
     },
