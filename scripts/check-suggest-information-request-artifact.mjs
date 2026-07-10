@@ -1,10 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const detailPage = readFileSync(
-  join('dist', 'admin/submissions/detail/index.html'),
-  'utf8',
-);
+const detailPage = readFileSync(join('dist', 'admin/submissions/detail/index.html'), 'utf8');
 
 const requiredFragments = [
   'Submitter follow-up boundary',
