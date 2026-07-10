@@ -1,7 +1,7 @@
 # P5-01C idempotent private intake service
 
 **Implementation item:** P5-01C  
-**Status:** Active  
+**Status:** Completed through #152
 **Last updated:** 2026-07-09
 
 ## Purpose

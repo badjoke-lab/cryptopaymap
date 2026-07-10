@@ -1,7 +1,7 @@
 # P5-01D abuse-control and Turnstile boundary
 
 **Implementation item:** P5-01D  
-**Status:** Active  
+**Status:** Completed through #153
 **Last updated:** 2026-07-09
 
 ## Purpose

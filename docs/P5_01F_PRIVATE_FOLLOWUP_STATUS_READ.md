@@ -1,7 +1,7 @@
 # P5-01F private follow-up status read boundary
 
 **Implementation item:** P5-01F  
-**Status:** Active  
+**Status:** Completed through #155
 **Last updated:** 2026-07-09
 
 ## Purpose
