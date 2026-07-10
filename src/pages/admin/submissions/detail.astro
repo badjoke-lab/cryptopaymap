@@ -1,4 +1,5 @@
 ---
+import { SuggestInformationRequestPanel } from '../../../components/admin/SuggestInformationRequestPanel';
 import { SuggestSubmissionReview } from '../../../components/admin/SuggestSubmissionReview';
 import { SuggestReviewTransitionPanel } from '../../../components/admin/SuggestReviewTransitionPanel';
 import AdminLayout from '../../../layouts/AdminLayout.astro';
@@ -7,7 +8,7 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
 <AdminLayout
   title="Suggest review | CryptoPayMap Admin"
   heading="Suggest review"
-  description="Inspect the normalized Suggest proposal, review bounded overlap signals, and apply the first exact-state guarded workflow transitions without crossing into duplicate, Candidate, canonical, Evidence, export, or publication mutations."
+  description="Inspect the normalized Suggest proposal, review bounded overlap signals, apply exact-state workflow transitions, and request bounded additional information without crossing into duplicate, Candidate, canonical, Evidence, export, or publication mutations."
 >
   <section
     class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6"
@@ -18,10 +19,10 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
       id="suggest-review-boundary-title"
       class="mt-1 text-xl font-semibold tracking-tight text-ink"
     >
-      Read-only signals remain separate from exact-state workflow transitions
+      Read-only signals remain separate from guarded workflow and information-request actions
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      Zero signals are non-conclusive. This slice only allows received → triage and triage → in review. It does not mark duplicates, create Candidates, select canonical targets, accept Evidence, write canonical values, export, or publish.
+      Zero signals are non-conclusive. This phase allows received → triage, triage → in review, and an in-review information request. It does not mark duplicates, create Candidates, select canonical targets, accept Evidence, write canonical values, export, or publish.
     </p>
     <div class="mt-5">
       <a
@@ -52,6 +53,31 @@ import AdminLayout from '../../../layouts/AdminLayout.astro';
     </div>
     <section class="rounded-card border border-border bg-surface p-5 shadow-sm">
       <SuggestReviewTransitionPanel client:load />
+    </section>
+  </section>
+
+  <section class="mt-8" aria-labelledby="suggest-information-request-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">Submitter follow-up boundary</p>
+        <h2
+          id="suggest-information-request-title"
+          class="mt-1 text-2xl font-semibold tracking-tight text-ink"
+        >
+          Request additional information
+        </h2>
+      </div>
+      <span
+        class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted"
+      >
+        in review → needs information
+      </span>
+    </div>
+    <section class="rounded-card border border-border bg-surface p-5 shadow-sm">
+      <p class="mb-4 max-w-3xl text-sm leading-6 text-muted">
+        Only bounded requested-action text and a public status message are projected to the submitter. General reviewer notes and other private event material remain private.
+      </p>
+      <SuggestInformationRequestPanel client:load />
     </section>
   </section>
 
