@@ -247,9 +247,8 @@ describe('P5-02A Suggest submission contract', () => {
   it('allows categories to remain unclassified but rejects duplicates and multiple primary categories', () => {
     const payload = physicalPayload();
     expect(
-      suggestSubmissionIntakeSchema.safeParse(
-        commonEnvelope({ ...payload, categories: [] }),
-      ).success,
+      suggestSubmissionIntakeSchema.safeParse(commonEnvelope({ ...payload, categories: [] }))
+        .success,
     ).toBe(true);
 
     const duplicateCategories = [
