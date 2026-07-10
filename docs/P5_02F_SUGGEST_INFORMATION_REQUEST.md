@@ -1,7 +1,7 @@
 # P5-02F Suggest information request
 
 **Implementation item:** P5-02F  
-**Status:** Active  
+**Status:** Completed through #161
 **Last updated:** 2026-07-10
 
 ## Purpose

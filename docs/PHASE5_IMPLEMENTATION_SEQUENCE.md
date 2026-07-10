@@ -63,10 +63,12 @@ P5-02D  Completed through #159
 P5-02E  Completed through #160
 P5-02F  Completed through #161
 P5-02G  Completed through #162
-P5-02H  In progress — accepted-as-Candidate transaction boundary
+P5-02H  Completed through #163
+Public Suggest route/form wiring with real environment-backed providers  In progress
+P5-02 integration and handoff audit                                    Planned
 ```
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, and now the accepted-as-Candidate transaction boundary. Public route/form wiring with real environment-backed providers and a P5-02 integration audit remain after P5-02H.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, and the accepted-as-Candidate transaction boundary. Public route/form wiring with real environment-backed providers is active; a bounded P5-02 integration and handoff audit remains after it.
 
 ---
 
@@ -142,11 +144,11 @@ P5-02F — guarded in_review→needs_information request                   Compl
     ↓
 P5-02G — guarded time-bounded in_review→on_hold operation              Completed #162
     ↓
-P5-02H — atomic accepted-as-Candidate outcome                          In progress
+P5-02H — atomic accepted-as-Candidate outcome                          Completed #163
     ↓
-public Suggest route/form wiring with real environment-backed providers
+public Suggest route/form wiring with real environment-backed providers  In progress
     ↓
-P5-02 integration and handoff audit
+P5-02 integration and handoff audit                                    Planned
 ```
 
 P5-02H must:

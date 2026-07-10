@@ -1,7 +1,7 @@
 # P5-02A Suggest contract and normalization boundary
 
 **Implementation item:** P5-02A  
-**Status:** Active  
+**Status:** Completed through #156
 **Last updated:** 2026-07-10
 
 ## Purpose

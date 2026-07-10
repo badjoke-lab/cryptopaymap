@@ -1,7 +1,7 @@
 # P5-02D Suggest reviewer entry
 
 **Implementation item:** P5-02D  
-**Status:** Active  
+**Status:** Completed through #159
 **Last updated:** 2026-07-10
 
 ## Purpose

@@ -1,7 +1,7 @@
 # P5-02H accepted-as-Candidate transaction
 
 **Implementation item:** P5-02H  
-**Status:** Active  
+**Status:** Completed through #163
 **Last updated:** 2026-07-10
 
 ## Purpose

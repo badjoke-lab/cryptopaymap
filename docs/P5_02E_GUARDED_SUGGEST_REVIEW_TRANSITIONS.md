@@ -1,7 +1,7 @@
 # P5-02E guarded Suggest review transitions
 
 **Implementation item:** P5-02E  
-**Status:** Active  
+**Status:** Completed through #160
 **Last updated:** 2026-07-10
 
 ## Purpose
