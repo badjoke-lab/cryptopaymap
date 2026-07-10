@@ -17,6 +17,7 @@ describe('P5-02F private status information request projection', () => {
           statusTokenHash: issued.tokenHash,
           requestedAction: 'Please confirm which network is used for USDT.',
           publicMessage: 'We need the payment network before review can continue.',
+          nextReviewAt: null,
         };
       },
     } as unknown as SubmissionPersistenceBackend;
@@ -27,6 +28,7 @@ describe('P5-02F private status information request projection', () => {
       statusLabel: 'more_information_needed',
       requestedAction: 'Please confirm which network is used for USDT.',
       publicMessage: 'We need the payment network before review can continue.',
+      nextReviewAt: null,
       linkedPublicRecord: null,
       mediaDecisions: [],
       permittedActions: ['provide_information', 'withdraw', 'rotate_status_secret'],
@@ -44,6 +46,7 @@ describe('P5-02F private status information request projection', () => {
           statusTokenHash: issued.tokenHash,
           requestedAction: 'Stored request text',
           publicMessage: 'Stored public message',
+          nextReviewAt: null,
         };
       },
     } as unknown as SubmissionPersistenceBackend;
@@ -53,6 +56,7 @@ describe('P5-02F private status information request projection', () => {
       statusLabel: 'under_review',
       requestedAction: null,
       publicMessage: null,
+      nextReviewAt: null,
     });
   });
 });
