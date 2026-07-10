@@ -84,7 +84,7 @@ The contract:
 - further requests are denied without incrementing the count;
 - deny decisions return a positive whole-second `retryAfterSeconds` value;
 - expiry of the configured window starts a fresh window;
-- invalid or stale persisted state starts a fresh bounded window rather than exposing internal provider state.
+- invalid persisted state or clock rollback fails closed through the worker's unavailable response path.
 
 Limit and window configuration are bounded before the provider is created:
 
@@ -113,7 +113,7 @@ P5-02M preserves these boundaries:
 - the provider receives opaque bucket keys, never raw remote IP addresses;
 - one Durable Object identity coordinates one opaque bucket globally;
 - state storage is strongly consistent and survives object eviction or restart;
-- provider failures fail closed as `unavailable`;
+- invalid persisted state and provider failures fail closed as `unavailable`;
 - internal provider errors are not returned through the provider-neutral interface;
 - no public route is exposed;
 - no Turnstile order changes are made;
@@ -150,7 +150,7 @@ P5-02M is complete when:
 1. a SQLite-backed Durable Object worker exists with explicit migration configuration;
 2. the Pages-side adapter implements the existing `SubmissionRateLimiter` interface;
 3. opaque bucket keys select Durable Object identities;
-4. fixed-window allow, remaining-count, deny, retry-after, and expiry behavior are deterministic and tested;
+4. fixed-window allow, remaining-count, deny, retry-after, expiry, and fail-closed invalid-state behavior are deterministic and tested;
 5. provider HTTP failures, malformed responses, and exceptions fail closed as `unavailable`;
 6. raw IP identity is absent from the provider contract;
 7. runtime checks cover the fixed-window and adapter contracts;
