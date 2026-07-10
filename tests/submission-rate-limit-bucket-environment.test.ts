@@ -60,9 +60,9 @@ describe('P5-02K opaque Submission rate-limit bucket derivation', () => {
     ['padded', { CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL: `${'A'.repeat(43)}=` }],
     ['too short', environment(new Uint8Array(31).fill(17))],
   ])('fails closed for %s configuration', (_name, configuredEnvironment) => {
-    expect(() => createSubmissionRateLimitBucketDeriverFromEnvironment(configuredEnvironment)).toThrow(
-      SubmissionRateLimitBucketConfigurationError,
-    );
+    expect(() =>
+      createSubmissionRateLimitBucketDeriverFromEnvironment(configuredEnvironment),
+    ).toThrow(SubmissionRateLimitBucketConfigurationError);
   });
 
   it('accepts exactly 32 decoded key bytes', async () => {
