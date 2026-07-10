@@ -1,7 +1,7 @@
 # P5-02B Suggest private intake integration
 
 **Implementation item:** P5-02B  
-**Status:** Active  
+**Status:** Completed through #157
 **Last updated:** 2026-07-10
 
 ## Purpose

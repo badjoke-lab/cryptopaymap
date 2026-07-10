@@ -1,7 +1,7 @@
 # P5-02C Suggest review signals
 
 **Implementation item:** P5-02C  
-**Status:** Active  
+**Status:** Completed through #158
 **Last updated:** 2026-07-10
 
 ## Purpose

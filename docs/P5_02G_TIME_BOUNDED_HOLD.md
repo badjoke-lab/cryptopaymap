@@ -1,7 +1,7 @@
 # P5-02G time-bounded Suggest Hold
 
 **Implementation item:** P5-02G  
-**Status:** Active  
+**Status:** Completed through #162
 **Last updated:** 2026-07-10
 
 ## Purpose

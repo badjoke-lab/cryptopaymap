@@ -192,9 +192,9 @@ Configured environment wiring remains required when the first public Suggest rou
 
 ### P5-02 — Suggest Place and Online Service
 
-**Status:** In progress at P5-02F
+**Status:** In progress at public Suggest route/form wiring
 
-P5-02 adds Suggest-specific intake, protected review entry, bounded review signals, and separately guarded reviewer operations without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates only after a later explicit protected decision transaction.
+P5-02 adds Suggest-specific intake, protected review entry, bounded review signals, and separately guarded reviewer operations without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates only after an explicit protected decision transaction.
 
 Completed and active slices:
 
@@ -209,7 +209,15 @@ P5-02D — protected Suggest reviewer queue and detail entry                 Com
     ↓
 P5-02E — guarded received→triage and triage→in_review transitions          Completed #160
     ↓
-P5-02F — guarded in_review→needs_information request                       In progress
+P5-02F — guarded in_review→needs_information request                       Completed #161
+    ↓
+P5-02G — guarded time-bounded in_review→on_hold operation                  Completed #162
+    ↓
+P5-02H — atomic accepted-as-Candidate outcome                              Completed #163
+    ↓
+public Suggest route/form wiring with real environment-backed providers  In progress
+    ↓
+P5-02 integration and handoff audit
 ```
 
 P5-02A established:
@@ -264,7 +272,7 @@ P5-02E established:
 - concurrent identical request replay recovery;
 - bounded conflict responses and reviewer action controls.
 
-P5-02F now establishes:
+P5-02F established:
 
 - exact-state guarded `in_review → needs_information` operation;
 - bounded requested-action and public-message text;
@@ -275,7 +283,22 @@ P5-02F now establishes:
 - protected reviewer information-request form;
 - no submitter response intake, hold, duplicate decision, Candidate creation, canonical mutation, export, or publication.
 
-Later P5-02 slices must continue one bounded reviewer operation at a time, wire the public Suggest route/form with real environment-backed providers, and close with a bounded P5-02 integration audit.
+P5-02G established:
+
+- an exact-state guarded `in_review → on_hold` operation;
+- bounded 30/60/90 day next-review timing;
+- durable replay, Audit, and private-status behavior;
+- no automatic state change when the next-review date arrives.
+
+P5-02H established:
+
+- an exact-state guarded `in_review → resolved / accepted_as_candidate` outcome;
+- separate Candidate-create authorization and configured `user_submission` source validation;
+- atomic private Source Record, Candidate, origin linkage, Submission resolution, and durable event persistence;
+- deterministic replay and normalized-payload version guards;
+- no canonical mutation, export, or publication.
+
+The active P5-02 work must wire the public Suggest route/form with real environment-backed providers. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
 ### P5-03 — Payment and problem reports
 
