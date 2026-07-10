@@ -33,14 +33,23 @@ export function consumeFixedWindowRateLimit(
   const parsedOptions = durableObjectRateLimitOptionsSchema.parse(options);
   if (!Number.isFinite(nowMs)) throw new Error('Rate-limit clock is invalid.');
 
+  if (current === null) {
+    return {
+      state: { windowStartedAtMs: nowMs, requestCount: 1 },
+      response: { outcome: 'allow', remaining: parsedOptions.limit - 1 },
+    };
+  }
+
   if (
-    current === null ||
     !Number.isFinite(current.windowStartedAtMs) ||
     !Number.isInteger(current.requestCount) ||
     current.requestCount < 1 ||
-    nowMs < current.windowStartedAtMs ||
-    nowMs - current.windowStartedAtMs >= parsedOptions.windowMs
+    nowMs < current.windowStartedAtMs
   ) {
+    throw new Error('Rate-limit state is invalid.');
+  }
+
+  if (nowMs - current.windowStartedAtMs >= parsedOptions.windowMs) {
     return {
       state: { windowStartedAtMs: nowMs, requestCount: 1 },
       response: { outcome: 'allow', remaining: parsedOptions.limit - 1 },
