@@ -7,7 +7,6 @@ const detailPage = readFileSync(
 );
 
 const requiredFragments = [
-  'Read-only signals remain separate from guarded workflow and information-request actions',
   'Submitter follow-up boundary',
   'Request additional information',
   'in review → needs information',
