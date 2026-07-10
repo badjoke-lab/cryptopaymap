@@ -138,11 +138,7 @@ export async function requestSuggestSubmissionInformation(
 
   const submissionIdResult = z.uuid().safeParse(submissionId);
   const requestResult = suggestInformationRequestSchema.safeParse(rawRequest);
-  if (
-    !submissionIdResult.success ||
-    !requestResult.success ||
-    Number.isNaN(changedAt.getTime())
-  ) {
+  if (!submissionIdResult.success || !requestResult.success || Number.isNaN(changedAt.getTime())) {
     throw new SuggestInformationRequestError(
       'invalid_request',
       'The Suggest information request is invalid.',
