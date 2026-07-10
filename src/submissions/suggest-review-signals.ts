@@ -181,7 +181,8 @@ function candidateSignalReasons(
   if (suggestedDomain !== null) {
     const domainMatch = material.snapshots.some(
       (snapshot) =>
-        snapshot.kind === 'online_service' && officialDomain(snapshot.websiteUrl) === suggestedDomain,
+        snapshot.kind === 'online_service' &&
+        officialDomain(snapshot.websiteUrl) === suggestedDomain,
     );
     if (domainMatch) {
       reasons.push({ reason: 'shared_official_domain', strength: 'strong' });
@@ -198,7 +199,9 @@ function canonicalTargetReasons(
   target: CandidateCanonicalTargetOption,
 ): Array<(typeof suggestCanonicalTargetSignalReasonValues)[number]> {
   const reasons: Array<(typeof suggestCanonicalTargetSignalReasonValues)[number]> = [];
-  if (normalizeCandidateName(target.entity.name) === normalizeCandidateName(projection.entity.name)) {
+  if (
+    normalizeCandidateName(target.entity.name) === normalizeCandidateName(projection.entity.name)
+  ) {
     reasons.push('same_normalized_name');
   }
 
@@ -242,10 +245,9 @@ function canonicalSearchQueries(projection: SuggestReviewProjection): string[] {
     const domain = officialDomain(projection.entity.websiteUrl);
     if (domain !== null) queries.push(domain);
   }
-  return [...new Set(queries.map((query) => query.trim()).filter((query) => query.length >= 2))].slice(
-    0,
-    3,
-  );
+  return [
+    ...new Set(queries.map((query) => query.trim()).filter((query) => query.length >= 2)),
+  ].slice(0, 3);
 }
 
 export async function generateSuggestReviewSignals(
@@ -308,7 +310,9 @@ export async function generateSuggestReviewSignals(
       return {
         target,
         reasons,
-        strength: reasons.includes('shared_official_domain') ? ('strong' as const) : ('review' as const),
+        strength: reasons.includes('shared_official_domain')
+          ? ('strong' as const)
+          : ('review' as const),
       };
     })
     .filter((signal) => signal.reasons.length > 0)
