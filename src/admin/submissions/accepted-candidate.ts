@@ -53,6 +53,7 @@ export interface SuggestAcceptedCandidateState {
   updatedAt: string;
   priority: number;
   normalizedPayload: unknown;
+  payloadUpdatedAt: string;
 }
 
 export interface SuggestAcceptedCandidateEventRecord {
@@ -72,6 +73,7 @@ export interface SuggestAcceptedCandidateCommitCommand {
   submissionId: string;
   publicId: string;
   expectedUpdatedAt: Date;
+  expectedPayloadUpdatedAt: Date;
   actorId: string;
   actorType: 'human' | 'system';
   sourceId: string;
@@ -281,6 +283,7 @@ export async function acceptSuggestSubmissionAsCandidate(
       submissionId: submissionIdResult.data,
       publicId: currentState.publicId,
       expectedUpdatedAt: new Date(request.expectedUpdatedAt),
+      expectedPayloadUpdatedAt: new Date(currentState.payloadUpdatedAt),
       actorId: context.actorId,
       actorType: context.actorType,
       sourceId: sourceIdResult.data,
