@@ -219,7 +219,9 @@ P5-02I — Submission status-secret environment binding                     Comp
     ↓
 P5-02J — Submission contact protection                                    Completed #168
     ↓
-P5-02K — Opaque Submission rate-limit bucket derivation                    In progress
+P5-02K — Opaque Submission rate-limit bucket derivation                    Completed #169
+    ↓
+P5-02L — Trusted Cloudflare edge identity extraction                       In progress
     ↓
 remaining public Suggest route/form provider and exposure slices
     ↓
@@ -319,7 +321,14 @@ P5-02J established:
 - bounded configuration and operation failures without secret or plaintext email disclosure;
 - no public route exposure.
 
-P5-02K now establishes privacy-preserving opaque rate-limit bucket derivation for a later trusted edge identity input while leaving trusted-header extraction and the distributed provider out of scope.
+P5-02K established:
+
+- explicit server-only HMAC binding for opaque rate-limit bucket derivation;
+- versioned domain-separated HMAC-SHA-256 derivation;
+- deterministic `rl_<opaque>` output accepted by the existing abuse-control contract;
+- no raw edge identity in output and no public route exposure.
+
+P5-02L now establishes a direct incoming Pages Function request boundary for strict `CF-Connecting-IP` extraction and IP normalization while leaving distributed rate limiting and public route composition out of scope.
 
 The active P5-02 work must continue the remaining public Suggest provider and exposure slices. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
