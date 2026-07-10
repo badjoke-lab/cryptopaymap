@@ -66,12 +66,13 @@ P5-02G  Completed through #162
 P5-02H  Completed through #163
 P5-02I  Submission status-secret environment binding                    Completed #167
 P5-02J  Submission contact protection                                   Completed #168
-P5-02K  Opaque Submission rate-limit bucket derivation                   In progress
+P5-02K  Opaque Submission rate-limit bucket derivation                   Completed #169
+P5-02L  Trusted Cloudflare edge identity extraction                      In progress
 Remaining public Suggest route/form provider and exposure slices        Planned
 P5-02 integration and handoff audit                                    Planned
 ```
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, and contact protection. Opaque bucket derivation is the current bounded provider-wiring slice; public route/form exposure and a bounded P5-02 integration and handoff audit remain afterward.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, and opaque bucket derivation. Trusted edge identity extraction is the current bounded provider-wiring slice; public route/form exposure and a bounded P5-02 integration and handoff audit remain afterward.
 
 ---
 
@@ -153,7 +154,9 @@ P5-02I — Submission status-secret environment binding                  Complet
     ↓
 P5-02J — Submission contact protection                                 Completed #168
     ↓
-P5-02K — Opaque Submission rate-limit bucket derivation                In progress
+P5-02K — Opaque Submission rate-limit bucket derivation                Completed #169
+    ↓
+P5-02L — Trusted Cloudflare edge identity extraction                   In progress
     ↓
 remaining public Suggest route/form provider and exposure slices       Planned
     ↓
