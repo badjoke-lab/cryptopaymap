@@ -77,9 +77,11 @@ export const suggestSubmissionQueuePageDataSchema = z
     }
   });
 
-export const suggestSubmissionQueueResponseSchema = suggestSubmissionQueuePageDataSchema.safeExtend({
-  generatedAt: timestampSchema,
-});
+export const suggestSubmissionQueueResponseSchema = suggestSubmissionQueuePageDataSchema.safeExtend(
+  {
+    generatedAt: timestampSchema,
+  },
+);
 
 export type SuggestSubmissionQueueQuery = z.infer<typeof suggestSubmissionQueueQuerySchema>;
 export type SuggestSubmissionQueueItem = z.infer<typeof suggestSubmissionQueueItemSchema>;
@@ -88,10 +90,7 @@ export type SuggestSubmissionQueueResponse = z.infer<typeof suggestSubmissionQue
 export type SuggestSubmissionQueueCursor = z.infer<typeof submissionQueueCursorSchema>;
 
 export interface SuggestSubmissionQueueBackend {
-  loadPage(
-    query: SuggestSubmissionQueueQuery,
-    asOf: Date,
-  ): Promise<SuggestSubmissionQueuePageData>;
+  loadPage(query: SuggestSubmissionQueueQuery, asOf: Date): Promise<SuggestSubmissionQueuePageData>;
 }
 
 export class SuggestSubmissionQueueError extends Error {
