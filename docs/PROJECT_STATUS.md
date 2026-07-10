@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02H — Accepted-as-Candidate transaction boundary
+P5-02 — Public Suggest route/form wiring
 
 ## Current repository state
 
@@ -25,7 +25,8 @@ P5-02H — Accepted-as-Candidate transaction boundary
 - P5-02E guarded received→triage and triage→in_review transitions are complete through #160.
 - P5-02F bounded in_review→needs_information request boundary is complete through #161.
 - P5-02G bounded in_review→on_hold operation with 30/60/90 day next-review timing is complete through #162.
-- P5-02H atomic accepted-as-Candidate transaction boundary is active.
+- P5-02H atomic accepted-as-Candidate transaction boundary is complete through #163.
+- Public Suggest route/form wiring with real environment-backed providers is the next active P5-02 work.
 
 ## Fixed review environment
 
@@ -90,37 +91,33 @@ P5-02F  Guarded in_review→needs_information request                       Comp
     ↓
 P5-02G  Guarded time-bounded in_review→on_hold operation                  Completed #162
     ↓
-P5-02H  Atomic accepted-as-Candidate outcome                              In progress
+P5-02H  Atomic accepted-as-Candidate outcome                              Completed #163
     ↓
-public Suggest route/form wiring with real environment-backed providers
+public Suggest route/form wiring with real environment-backed providers  In progress
     ↓
 P5-02 integration and handoff audit
 ```
 
 Exact later slice IDs are assigned when each bounded scope begins.
 
-## P5-02H active scope
+## Current active scope — public Suggest route/form wiring
 
-P5-02H establishes:
+The next P5-02 work must connect the completed Suggest intake and review foundations to a public route and form without weakening the private/canonical/public boundaries.
 
-- one explicit `in_review → resolved / accepted_as_candidate` outcome;
-- separate exact verified Candidate-create allowlist and `submission:candidate:create` capability;
-- configured `CPM_USER_SUBMISSION_SOURCE_ID` source channel;
-- atomic verification that the configured source exists, is active, and uses `user_submission` type;
-- strict normalized Suggest projection revalidation immediately before transaction planning;
-- deterministic Candidate and Source Record IDs from the request UUID;
-- stable SHA-256 content hash for normalized source material;
-- exact Submission status/update-time guard;
-- normalized payload update-time guard;
-- one atomic Source Record + Candidate + origin link + Submission resolution + durable event transaction;
-- private Candidate status `new` with no canonical target or duplicate group preassignment;
-- durable replay and changed-semantics UUID conflict behavior;
-- concurrent identical transaction replay recovery;
-- protected `POST /admin/api/submissions/:submissionId/accept-candidate` endpoint;
-- reviewer detail accepted-as-Candidate panel available only from `in_review`;
-- focused service/API tests, runtime checks, and staging artifact validation.
+The public Suggest route/form work must:
 
-P5-02H does not add duplicate/no-change outcomes, Candidate duplicate-group decisions, Candidate promotion, canonical target selection, existing-target linking, Evidence acceptance, canonical application, export, or publication.
+- reuse the completed P5-01 and P5-02A–H contracts rather than duplicate intake logic;
+- expose only the intended new Place and Online Service Suggest flow;
+- wire concrete environment-backed contact encryption and email hashing;
+- bind the status-secret HMAC key from the environment;
+- use a production distributed rate-limit provider;
+- derive privacy-preserving opaque rate-limit bucket keys;
+- wire Turnstile secret and site-key environment bindings;
+- verify exact hostname and expected action;
+- map route failures to bounded safe public responses and Retry-After behavior where applicable;
+- avoid logging challenge tokens, raw remote IPs, plaintext email, plaintext status secrets, or provider secrets;
+- verify the complete configured-environment route path before public intake exposure;
+- preserve the rule that Suggest intake does not directly create canonical or public truth.
 
 ## Route and environment requirements before public intake exposure
 
@@ -153,17 +150,17 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02H and merge it green. Then wire the public Suggest route/form with real environment-backed providers and close P5-02 with an integration and handoff audit.
+Wire the public Suggest route/form with real environment-backed providers. Then close P5-02 with a bounded integration and handoff audit before P5-03 begins.
 
 ## Blocked
 
-No known repository blocker to P5-02H.
+No known repository blocker to beginning the public Suggest route/form wiring.
 
-`CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist are required in configured environments before the new transaction can run there.
+Configured environment-backed contact protection, HMAC key binding, distributed rate limiting, opaque bucket-key derivation, and Turnstile bindings are required before the public Suggest route is exposed.
 
-Production contact encryption, HMAC key environment binding, production distributed rate limiting, opaque bucket-key derivation, and Turnstile environment binding remain required before a public Suggest route is exposed.
+`CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist remain required in configured environments for the accepted-as-Candidate transaction path.
 
-Production restore completion remains a Launch gate rather than a P5-02 repository start blocker.
+Production restore completion remains a Launch gate rather than a P5-02 repository blocker.
 
 ## Verification rule
 
