@@ -38,7 +38,9 @@ export function SuggestReviewTransitionPanel() {
         return;
       }
       const result = suggestSubmissionReviewDetailResponseSchema.safeParse(await response.json());
-      setState(result.success ? { status: 'ready', detail: result.data } : { status: 'unavailable' });
+      setState(
+        result.success ? { status: 'ready', detail: result.data } : { status: 'unavailable' },
+      );
     } catch {
       setState({ status: 'unavailable' });
     }
@@ -64,7 +66,8 @@ export function SuggestReviewTransitionPanel() {
     return (
       <p className="m-0 flex items-center gap-2 text-sm text-status-stale">
         <AlertTriangle className="size-4" aria-hidden="true" />
-        Guarded review actions are unavailable because the current Submission state could not be verified.
+        Guarded review actions are unavailable because the current Submission state could not be
+        verified.
       </p>
     );
   }
