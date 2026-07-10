@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02A — Suggest Place and Online Service contract and normalization
+P5-02B — Suggest private intake integration
 
 ## Current repository state
 
@@ -18,8 +18,8 @@ P5-02A — Suggest Place and Online Service contract and normalization
 - Phase 3 administration and review repository work is complete through P3-12.
 - Phase 4 public MVP-A and P4-18 closure are complete for the Phase 5 handoff.
 - P5-01 shared Submission foundation is complete through #150–#155.
-- P5-02 Suggest Place and Online Service is active.
-- P5-02A defines the type-specific Place/Online Suggest contract and review-safe normalization boundary.
+- P5-02A Suggest Place and Online Service contract and review-safe normalization is complete through #156.
+- P5-02B integrates strict Suggest parsing and normalization with private intake persistence.
 
 ## Fixed review environment
 
@@ -45,7 +45,8 @@ Before P5-02 implementation or review, read:
 10. `docs/P5_01E_SUBMISSION_FOUNDATION_AUDIT.md`;
 11. `docs/P5_01F_PRIVATE_FOLLOWUP_STATUS_READ.md`;
 12. `docs/P5_02A_SUGGEST_CONTRACT_AND_NORMALIZATION.md`;
-13. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+13. `docs/P5_02B_SUGGEST_PRIVATE_INTAKE_INTEGRATION.md`;
+14. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -62,44 +63,31 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 
 ## P5-01 completion result
 
-P5-01 completed the common private Submission foundation through these slices:
+P5-01 completed the common private Submission foundation through:
 
-1. P5-01A — submission contract and privacy model — #150
-2. P5-01B — persistence and workflow-state foundation — #151
-3. P5-01C — idempotent private intake service — #152
-4. P5-01D — abuse-control and Turnstile boundary — #153
-5. P5-01E — Audit integration and A–D foundation audit — #154
-6. P5-01F — private follow-up status read boundary — #155
+```text
+P5-01A  #150  submission contract and privacy model
+P5-01B  #151  persistence and workflow-state foundation
+P5-01C  #152  idempotent private intake service
+P5-01D  #153  abuse-control and Turnstile boundary
+P5-01E  #154  Audit integration and A–D foundation audit
+P5-01F  #155  private follow-up status read boundary
+```
 
-The completed foundation provides:
-
-- strict common Submission envelope;
-- bounded original payload rules;
-- opaque public reference and private follow-up secret boundaries;
-- durable private Submission, payload, protected-contact, and workflow-event persistence;
-- guarded workflow transitions;
-- canonical request fingerprinting;
-- deterministic replay and changed-content conflict;
-- HMAC-based status-secret re-derivation without plaintext secret persistence;
-- protected contact provider boundary;
-- provider-neutral rate-limit and challenge-verification contracts;
-- Turnstile Siteverify adapter boundary;
-- metadata-only Submission Audit history;
-- private follow-up status retrieval through public reference plus valid secret;
-- bounded safe status projection with no private reviewer, contact, payload, token, or internal identity leakage.
+The completed foundation provides strict common intake, private persistence, deterministic replay/conflict behavior, protected contact and abuse-control boundaries, metadata-only Submission Audit history, and private follow-up status retrieval.
 
 P5-01 repository completion does not claim that public route environment wiring is already complete.
 
 ## P5-02 execution direction
 
-P5-02 must accept new physical Place and Online Service suggestions into protected review without direct Candidate, canonical, Evidence, export, or public mutation.
+P5-02 accepts new physical Place and Online Service suggestions into protected review without direct Candidate, canonical, Evidence, export, or public mutation.
 
-The current bounded sequence is:
+Current bounded sequence:
 
 ```text
-P5-02A  Suggest type-specific contract and review-safe normalization
+P5-02A  Suggest type-specific contract and review-safe normalization       Completed #156
     ↓
-private Suggest intake integration
+P5-02B  Suggest private intake integration                               In progress
     ↓
 duplicate Candidate and existing-target signals
     ↓
@@ -110,29 +98,26 @@ public Suggest route/form wiring with real environment-backed providers
 P5-02 integration and handoff audit
 ```
 
-Exact later slice IDs should be assigned when each bounded scope begins; P5-02A is the only active slice now.
+Exact later slice IDs are assigned when each bounded scope begins.
 
-## P5-02A active scope
+## P5-02B active scope
 
-P5-02A establishes:
+P5-02B establishes:
 
-- `physical_place` and `online_service` Suggest kinds;
-- new-record-only Suggest boundary with no canonical target ID;
-- required relationship disclosure;
-- entity identity proposal;
-- physical Place address/coordinate and practical-profile proposals;
-- category proposals;
-- payment Asset, Network, Route, Method, Processor, How-to-pay, and restriction proposals;
-- explicit uncertainty for incomplete but useful proposals;
-- no asset-to-network inference;
-- review-safe normalization that excludes common private operational fields;
-- focused contract tests and schema-check integration.
+- optional type-specific parser/normalizer injection for the P5-01 private intake service;
+- unchanged generic intake behavior when no parser is supplied;
+- strict Suggest parsing before fingerprint lookup, contact protection, public-reference allocation, and persistence;
+- deterministic review-safe Suggest normalization;
+- atomic persistence of original and normalized private payloads in the existing `submission_payloads` record;
+- replay/conflict behavior preserved for Suggest content;
+- abuse-control composition preserved before Suggest parsing and private intake;
+- focused integration tests and schema-check integration.
 
-P5-02A does not add a public form, public route, Candidate creation, canonical mutation, Evidence acceptance, export, or publication.
+P5-02B does not add a public form, public route, Candidate creation, duplicate search, existing-target similarity search, canonical mutation, Evidence acceptance, export, or publication.
 
 ## Route and environment requirements before public intake exposure
 
-A public Submission route must not be exposed with placeholder providers. The first public Suggest route must wire and verify:
+A public Suggest route must not be exposed with placeholder providers. It must wire and verify:
 
 - concrete environment-backed contact encryption and email hashing;
 - status-secret HMAC key environment binding;
@@ -161,11 +146,11 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02A contract and normalization work, merge it green, then begin the next bounded P5-02 slice for private Suggest intake integration and protected review entry preparation.
+Complete P5-02B and merge it green. Then begin the next bounded P5-02 slice for duplicate Candidate and existing-target signal generation before protected reviewer entry.
 
 ## Blocked
 
-No known repository blocker to P5-02A.
+No known repository blocker to P5-02B.
 
 Production contact encryption, HMAC key environment binding, production distributed rate limiting, opaque bucket-key derivation, and Turnstile environment binding remain required before a public Suggest route is exposed.
 
