@@ -26,7 +26,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-6 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-6 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -207,7 +210,11 @@ export function SuggestSubmissionQueue() {
               {items.length} loaded
             </span>
           </div>
-          <div className="mt-5 grid gap-4">{items.map((item) => <QueueCard key={item.id} item={item} />)}</div>
+          <div className="mt-5 grid gap-4">
+            {items.map((item) => (
+              <QueueCard key={item.id} item={item} />
+            ))}
+          </div>
           {pageState?.nextCursor ? (
             <div className="mt-5 flex justify-center">
               <Button
