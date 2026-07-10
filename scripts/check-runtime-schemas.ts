@@ -8,6 +8,7 @@ import './check-online-service-importer';
 import './check-phase-2-integration';
 import './check-physical-place-importer';
 import './check-source-provenance';
+import './check-submission-contact-protection';
 import './check-submission-status-secret-environment';
 import './check-verification-events';
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';

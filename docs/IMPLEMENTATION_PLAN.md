@@ -215,7 +215,9 @@ P5-02G — guarded time-bounded in_review→on_hold operation                  C
     ↓
 P5-02H — atomic accepted-as-Candidate outcome                              Completed #163
     ↓
-P5-02I — Submission status-secret environment binding                     In progress
+P5-02I — Submission status-secret environment binding                     Completed #167
+    ↓
+P5-02J — Submission contact protection                                    In progress
     ↓
 remaining public Suggest route/form provider and exposure slices
     ↓
@@ -300,7 +302,16 @@ P5-02H established:
 - deterministic replay and normalized-payload version guards;
 - no canonical mutation, export, or publication.
 
-The active P5-02 work must wire the public Suggest route/form with real environment-backed providers. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
+P5-02I established:
+
+- explicit server-only environment binding for the existing deterministic status-secret HMAC provider;
+- strict canonical Base64URL decoding and minimum key-length enforcement;
+- bounded configuration failures without configured-value disclosure;
+- no public route exposure.
+
+P5-02J now establishes production-capable protected contact output for the existing private intake service while keeping public intake unavailable.
+
+The active P5-02 work must continue the remaining public Suggest provider and exposure slices. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
 ### P5-03 — Payment and problem reports
 
