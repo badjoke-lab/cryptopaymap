@@ -176,3 +176,174 @@ A suggestion can move from public intake to protected review and resolve without
 P5-02 is not complete when P5-02H finishes. Public Suggest route/form wiring with real environment-backed providers and a bounded integration/handoff audit still remain.
 
 ---
+
+## P5-03 — Payment and problem reports
+
+### Goal
+
+Accept target-aware reports about payment success, failure, and incorrect or problematic public information.
+
+### Scope
+
+- preselected Place or Online Service targets;
+- positive and negative payment outcomes;
+- asset, network, route, method, and observed payment steps;
+- optional public evidence links;
+- restricted transaction or receipt evidence boundary;
+- factual correction proposals;
+- practical profile correction proposals for address, phone, website, hours, amenities, social links, and description where relevant;
+- privacy, rights, duplicate, closure, and other problem categories;
+- priority recheck signal generation;
+- negative Evidence review entry;
+- no automatic Claim status change.
+
+### Completion gate
+
+Reports become review material, may add Evidence or recheck priority after explicit review, and cannot directly confirm, stale, end, hide, or publish a canonical Claim.
+
+---
+
+## P5-04 — Business and service claims
+
+### Goal
+
+Accept representative claims and verify ownership or authority separately from payment verification.
+
+### Scope
+
+- claimant role and target scope;
+- official contact method boundary;
+- proposed practical profile and payment corrections;
+- ownership-verification method state;
+- official-domain, website, DNS, official-social, and approved assisted verification adapter boundaries where implemented;
+- protected ownership proof handling;
+- ownership relationship status and scope;
+- expiration and revocation boundaries;
+- handoff of proposed changes to normal field and Claim review.
+
+### Completion gate
+
+A verified representative relationship can be recorded without granting uncontrolled editing rights or bypassing Evidence, canonical application, and publication review.
+
+---
+
+## P5-05 — Photo and Media submission intake
+
+### Goal
+
+Accept public-gallery Media proposals safely and connect them to the existing protected Media review system.
+
+### Scope
+
+- target binding;
+- image role;
+- capture date and description;
+- rights and authorization basis;
+- public-display permission;
+- privacy and rights acknowledgements;
+- bounded upload authorization;
+- quarantine object path;
+- MIME, size, dimension, and file-integrity validation;
+- duplicate file hash behavior;
+- derivative processing boundary;
+- Media asset creation in non-public state;
+- handoff to the existing Media review queue;
+- cleanup and retention of rejected or abandoned private uploads.
+
+### Completion gate
+
+A submitted image remains non-public until the existing Media decision and controlled publication boundaries approve it.
+
+---
+
+## P5-06 — Review workflow extensions
+
+### Goal
+
+Support the review states and partial decisions required by real public submissions.
+
+### Scope
+
+- Submission review queue and detail workspace;
+- field-level proposed-versus-current diff;
+- information request;
+- submitter follow-up response;
+- time-bounded hold with reason and next review date;
+- partial approval;
+- duplicate and no-change outcomes;
+- accepted-as-Candidate outcome;
+- withdrawal behavior;
+- status history;
+- private reviewer notes separated from public status text;
+- bounded public-facing resolution summaries.
+
+### Completion gate
+
+A multi-field Submission can resolve fields independently, request more information, pause safely, and report a bounded public status without exposing private review content.
+
+---
+
+## P5-07 — Canonical application transactions and retention
+
+### Goal
+
+Apply approved Submission decisions safely to canonical data and enforce private-data lifecycle rules.
+
+### Scope
+
+- explicit application plan derived from approved field decisions;
+- exact canonical version or state expectations;
+- field-level diff and correction provenance;
+- atomic canonical create or update transaction;
+- Claim, Claim Asset, identity, and practical profile boundaries kept distinct;
+- Media decisions remain delegated to Media review operations;
+- request replay and stale-state conflict handling;
+- application receipt and Audit history;
+- public export and release remain separate;
+- contact, private payload, evidence, ownership proof, and upload retention jobs;
+- deletion or anonymization where required;
+- preservation of minimum Audit records where lawful and necessary.
+
+### Completion gate
+
+Approved changes can be applied once, replay safely, conflict on stale state, retain provenance and review identity, and reach public output only through the normal export and release workflow.
+
+---
+
+## P5-08 — MVP-B integration audit
+
+### Goal
+
+Verify the complete Submission system across all public and protected boundaries before launch preparation.
+
+### Required journeys
+
+1. Suggestion → review → Candidate or approved canonical change → export → publication.
+2. Positive payment report → Evidence review → optional reconfirmation → publication.
+3. Negative payment report → Evidence/recheck → explicit Claim decision if justified.
+4. Problem report → correction, no change, duplicate, privacy, or rights outcome.
+5. Business claim → ownership verification → normal proposed-change review.
+6. Photo submission → quarantine → Media review → controlled public Media publication.
+7. Information request → private follow-up → resumed review.
+8. Partial approval → approved-field application with rejected or held fields preserved correctly.
+
+### Audit categories
+
+- privacy and data minimization;
+- authorization;
+- abuse controls;
+- replay and duplicate handling;
+- status secret handling;
+- field-level review and provenance;
+- stale-state conflict behavior;
+- canonical/public separation;
+- Media isolation;
+- export leakage validation;
+- public status privacy;
+- retention and cleanup;
+- mobile and accessibility behavior;
+- failure, retry, and rollback boundaries.
+
+### Completion gate
+
+Phase 5 is complete only when the full Submission-to-publication path is auditable and the system can demonstrate that unreviewed Submission data never becomes public canonical data automatically.
