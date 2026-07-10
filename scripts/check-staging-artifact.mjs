@@ -13,6 +13,7 @@ const requiredFiles = [
   'admin/evidence/index.html',
   'admin/rechecks/index.html',
   'admin/submissions/index.html',
+  'admin/submissions/detail/index.html',
   'admin/media/index.html',
   'admin/exports/index.html',
   'admin/audit/index.html',
@@ -102,13 +103,52 @@ if (claimsPage.includes('Canonical payment-claim editing will be added')) {
 
 const submissionsPage = readFileSync(join(outputDirectory, 'admin/submissions/index.html'), 'utf8');
 const requiredSubmissionFragments = [
-  'Future protected boundary',
-  'No submission records or controls are connected',
-  'Public submissions do not exist yet',
+  'Submission review boundary',
+  'Review normalized proposals and bounded overlap signals before any decision or mutation',
+  'Suggest review queue',
+  'Protected read-only',
+];
+const forbiddenSubmissionFragments = [
+  'CPM_ADMIN_SUBMISSION_SUBJECTS',
+  'DATABASE_URL',
+  'encryptedEmail',
+  'emailHash',
+  'statusTokenHash',
+  'requestFingerprint',
+  'originalPayload',
+  'internalNote',
 ];
 for (const fragment of requiredSubmissionFragments) {
   if (!submissionsPage.includes(fragment)) {
-    throw new Error(`Missing future Submission boundary marker: ${fragment}`);
+    throw new Error(`Missing Submission reviewer marker: ${fragment}`);
+  }
+}
+for (const fragment of forbiddenSubmissionFragments) {
+  if (submissionsPage.includes(fragment)) {
+    throw new Error(`Private or server-only marker found in Submission reviewer HTML: ${fragment}`);
+  }
+}
+
+const submissionDetailPage = readFileSync(
+  join(outputDirectory, 'admin/submissions/detail/index.html'),
+  'utf8',
+);
+const requiredSubmissionDetailFragments = [
+  'Read-only reviewer entry',
+  'Signals inform review but do not decide or mutate anything',
+  'Reviewer workspace',
+  'No mutation controls',
+];
+for (const fragment of requiredSubmissionDetailFragments) {
+  if (!submissionDetailPage.includes(fragment)) {
+    throw new Error(`Missing Submission detail reviewer marker: ${fragment}`);
+  }
+}
+for (const fragment of forbiddenSubmissionFragments) {
+  if (submissionDetailPage.includes(fragment)) {
+    throw new Error(
+      `Private or server-only marker found in Submission detail HTML: ${fragment}`,
+    );
   }
 }
 
