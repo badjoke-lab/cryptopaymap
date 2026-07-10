@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-11
 
 This file tracks repository implementation work. GitHub `main`, merged pull requests, and actual CI results are authoritative when this file differs from repository reality.
 
@@ -215,7 +215,9 @@ P5-02G — guarded time-bounded in_review→on_hold operation                  C
     ↓
 P5-02H — atomic accepted-as-Candidate outcome                              Completed #163
     ↓
-public Suggest route/form wiring with real environment-backed providers  In progress
+P5-02I — Submission status-secret environment binding                     In progress
+    ↓
+remaining public Suggest route/form provider and exposure slices
     ↓
 P5-02 integration and handoff audit
 ```

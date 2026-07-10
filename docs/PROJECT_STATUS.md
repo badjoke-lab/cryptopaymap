@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-10
+**Last verified:** 2026-07-11
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02 — Public Suggest route/form wiring
+P5-02I — Submission status-secret environment binding
 
 ## Current repository state
 
@@ -26,7 +26,7 @@ P5-02 — Public Suggest route/form wiring
 - P5-02F bounded in_review→needs_information request boundary is complete through #161.
 - P5-02G bounded in_review→on_hold operation with 30/60/90 day next-review timing is complete through #162.
 - P5-02H atomic accepted-as-Candidate transaction boundary is complete through #163.
-- Public Suggest route/form wiring with real environment-backed providers is the next active P5-02 work.
+- P5-02I Submission status-secret environment binding is in progress without public route exposure.
 
 ## Fixed review environment
 
@@ -93,7 +93,9 @@ P5-02G  Guarded time-bounded in_review→on_hold operation                  Comp
     ↓
 P5-02H  Atomic accepted-as-Candidate outcome                              Completed #163
     ↓
-public Suggest route/form wiring with real environment-backed providers  In progress
+P5-02I  Submission status-secret environment binding                     In progress
+    ↓
+remaining public Suggest route/form provider and exposure slices
     ↓
 P5-02 integration and handoff audit
 ```

@@ -2,7 +2,7 @@
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
 **Status:** Active — P5-02 Suggest work in progress  
-**Last updated:** 2026-07-10
+**Last updated:** 2026-07-11
 
 ## Purpose
 
@@ -64,7 +64,8 @@ P5-02E  Completed through #160
 P5-02F  Completed through #161
 P5-02G  Completed through #162
 P5-02H  Completed through #163
-Public Suggest route/form wiring with real environment-backed providers  In progress
+P5-02I  Submission status-secret environment binding                    In progress
+Remaining public Suggest route/form provider and exposure slices        Planned
 P5-02 integration and handoff audit                                    Planned
 ```
 
@@ -146,7 +147,9 @@ P5-02G — guarded time-bounded in_review→on_hold operation              Compl
     ↓
 P5-02H — atomic accepted-as-Candidate outcome                          Completed #163
     ↓
-public Suggest route/form wiring with real environment-backed providers  In progress
+P5-02I — Submission status-secret environment binding                  In progress
+    ↓
+remaining public Suggest route/form provider and exposure slices       Planned
     ↓
 P5-02 integration and handoff audit                                    Planned
 ```
