@@ -21,7 +21,11 @@ const maximumRetentionDays = 3_650;
 const encryptionDomain = 'cryptopaymap:submission-contact-email:v1:';
 const hashDomain = 'cryptopaymap:submission-email-hash:v1:';
 const emailSchema = z.email().max(320);
-const keyIdSchema = z.string().min(1).max(32).regex(/^[A-Za-z0-9_-]+$/);
+const keyIdSchema = z
+  .string()
+  .min(1)
+  .max(32)
+  .regex(/^[A-Za-z0-9_-]+$/);
 const canonicalBase64UrlSchema = z
   .string()
   .min(1)
@@ -67,11 +71,7 @@ export class SubmissionContactProtectionError extends Error {
 function base64UrlEncode(bytes: Uint8Array): string {
   let binary = '';
   for (const byte of bytes) binary += String.fromCharCode(byte);
-  return globalThis
-    .btoa(binary)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/g, '');
+  return globalThis.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/g, '');
 }
 
 function decodeCanonicalBase64Url(value: string): Uint8Array {
@@ -119,12 +119,10 @@ export function createSubmissionContactProtectorFromEnvironment(
   const parsed = submissionContactProtectionEnvironmentSchema.safeParse({
     CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL:
       environment.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL,
-    CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID:
-      environment.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID,
+    CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: environment.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID,
     CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL:
       environment.CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL,
-    CPM_SUBMISSION_CONTACT_RETENTION_DAYS:
-      environment.CPM_SUBMISSION_CONTACT_RETENTION_DAYS,
+    CPM_SUBMISSION_CONTACT_RETENTION_DAYS: environment.CPM_SUBMISSION_CONTACT_RETENTION_DAYS,
   });
   if (!parsed.success) throw new SubmissionContactProtectionConfigurationError();
 
@@ -177,10 +175,7 @@ export function createSubmissionContactProtectorFromEnvironment(
         if (!Number.isFinite(retentionUntilMs)) throw new SubmissionContactProtectionError();
 
         const iv = crypto.getRandomValues(new Uint8Array(ivByteLength));
-        const [encryptionKey, hashKey] = await Promise.all([
-          encryptionKeyPromise,
-          hashKeyPromise,
-        ]);
+        const [encryptionKey, hashKey] = await Promise.all([encryptionKeyPromise, hashKeyPromise]);
         const ciphertext = await crypto.subtle.encrypt(
           { name: 'AES-GCM', iv, additionalData },
           encryptionKey,
