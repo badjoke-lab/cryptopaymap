@@ -35,7 +35,9 @@ function request() {
   };
 }
 
-function state(overrides: Partial<SuggestInformationRequestState> = {}): SuggestInformationRequestState {
+function state(
+  overrides: Partial<SuggestInformationRequestState> = {},
+): SuggestInformationRequestState {
   return {
     submissionId,
     submissionType: 'suggest',
@@ -65,11 +67,13 @@ function event(
   };
 }
 
-function backend(options: {
-  currentState?: SuggestInformationRequestState | null;
-  existingEvent?: SuggestInformationRequestEventRecord | null;
-  commit?: (command: SuggestInformationRequestCommitCommand) => Promise<void>;
-} = {}) {
+function backend(
+  options: {
+    currentState?: SuggestInformationRequestState | null;
+    existingEvent?: SuggestInformationRequestEventRecord | null;
+    commit?: (command: SuggestInformationRequestCommitCommand) => Promise<void>;
+  } = {},
+) {
   const commitRequest = vi.fn(options.commit ?? (async () => undefined));
   const value: SuggestInformationRequestBackend = {
     async readState() {
@@ -158,7 +162,13 @@ describe('P5-02F Suggest information request', () => {
 
     const report = backend({ currentState: state({ submissionType: 'report' }) });
     await expect(
-      requestSuggestSubmissionInformation(context, report.value, submissionId, request(), changedAt),
+      requestSuggestSubmissionInformation(
+        context,
+        report.value,
+        submissionId,
+        request(),
+        changedAt,
+      ),
     ).rejects.toMatchObject({ code: 'not_found' });
   });
 
