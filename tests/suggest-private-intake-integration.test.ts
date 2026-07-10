@@ -77,7 +77,7 @@ function validSuggest() {
   };
 }
 
-function contactProtector(protectEmail = vi.fn()) : SubmissionContactProtector {
+function contactProtector(protectEmail = vi.fn()): SubmissionContactProtector {
   return {
     async protectEmail(email, received) {
       protectEmail(email, received);
