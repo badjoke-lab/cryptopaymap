@@ -192,17 +192,21 @@ Configured environment wiring remains required when the first public Suggest rou
 
 ### P5-02 — Suggest Place and Online Service
 
-**Status:** In progress at P5-02A
+**Status:** In progress at P5-02C
 
 P5-02 adds public suggestion intake and protected review entry without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates after explicit protected review.
 
-Current bounded work:
+Completed and active slices:
 
 ```text
-P5-02A — Suggest type-specific contract and review-safe normalization
+P5-02A — Suggest type-specific contract and review-safe normalization       Completed #156
+    ↓
+P5-02B — Suggest private intake integration                               Completed #157
+    ↓
+P5-02C — duplicate Candidate and existing-target read-only signals        In progress
 ```
 
-P5-02A establishes:
+P5-02A established:
 
 - physical Place and Online Service Suggest kinds;
 - new-record-only target rules;
@@ -211,15 +215,32 @@ P5-02A establishes:
 - category proposals;
 - payment Asset, Network, Route, Method, Processor, How-to-pay, and restriction proposals;
 - explicit uncertainty for incomplete but useful proposals;
-- no asset-to-network inference;
+- no Asset-to-Network inference;
 - required relationship disclosure;
 - observation date and common Evidence-link composition;
-- review-safe normalization;
-- focused schema and contract coverage.
+- review-safe normalization.
 
-P5-02A does not add a public route or form, duplicate/existing-target search, Candidate creation, reviewer UI, canonical mutation, Evidence acceptance, export, or publication.
+P5-02B established:
 
-Later P5-02 slices must add private Suggest intake integration, duplicate Candidate/existing-target signals, protected reviewer entry, public route/form wiring with real environment-backed providers, and a bounded P5-02 integration audit.
+- reusable type-specific parser/normalizer injection into private intake;
+- strict Suggest parsing before contact protection and durable persistence;
+- atomic original/normalized private payload persistence;
+- deterministic Suggest replay and changed-content conflict behavior;
+- abuse-control composition before Suggest intake;
+- generic P5-01 intake backward compatibility.
+
+P5-02C now establishes:
+
+- read-only Candidate overlap signals using existing duplicate-signal vocabulary;
+- physical same-name-and-coordinate Candidate review signals;
+- Online Service official-domain strong signals and normalized-name review signals;
+- reuse of the existing canonical target search backend and target option contract;
+- bounded canonical target reasons for name, official domain, address, and near coordinates;
+- explicit `absenceIsConclusive: false` semantics for zero-result bounded searches;
+- fail-closed behavior when either Candidate or canonical target search cannot complete;
+- no automatic duplicate decision, Candidate creation, target selection, linking, canonical mutation, export, or publication.
+
+Later P5-02 slices must add protected reviewer entry, public route/form wiring with real environment-backed providers, and a bounded P5-02 integration audit.
 
 ### P5-03 — Payment and problem reports
 
@@ -235,11 +256,11 @@ Add upload intake, quarantine, file validation, privacy and rights acknowledgeme
 
 ### P5-06 — Review workflow extensions
 
-Add reviewer diffs, information requests, time-bounded holds, partial approval, duplicate/no-change handling, and private status communication required by real submission review.
+Add reviewer diffs, information requests, time-bounded holds, partial approval, duplicate/no-change handling, and private status communication required by real Submission review.
 
 ### P5-07 — Canonical application transactions and retention
 
-Apply approved field decisions through explicit guarded canonical transactions, preserve correction provenance and Audit history, run normal export/publication validation, and enforce private submission retention and deletion rules.
+Apply approved field decisions through explicit guarded canonical transactions, preserve correction provenance and Audit history, run normal export/publication validation, and enforce private Submission retention and deletion rules.
 
 ### P5-08 — MVP-B integration audit
 

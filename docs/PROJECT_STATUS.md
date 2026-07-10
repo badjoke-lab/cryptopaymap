@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02B — Suggest private intake integration
+P5-02C — Suggest duplicate Candidate and existing-target review signals
 
 ## Current repository state
 
@@ -18,8 +18,9 @@ P5-02B — Suggest private intake integration
 - Phase 3 administration and review repository work is complete through P3-12.
 - Phase 4 public MVP-A and P4-18 closure are complete for the Phase 5 handoff.
 - P5-01 shared Submission foundation is complete through #150–#155.
-- P5-02A Suggest Place and Online Service contract and review-safe normalization is complete through #156.
-- P5-02B integrates strict Suggest parsing and normalization with private intake persistence.
+- P5-02A Suggest contract and review-safe normalization is complete through #156.
+- P5-02B Suggest private intake integration is complete through #157.
+- P5-02C read-only Candidate overlap and canonical target signal generation is active.
 
 ## Fixed review environment
 
@@ -46,7 +47,8 @@ Before P5-02 implementation or review, read:
 11. `docs/P5_01F_PRIVATE_FOLLOWUP_STATUS_READ.md`;
 12. `docs/P5_02A_SUGGEST_CONTRACT_AND_NORMALIZATION.md`;
 13. `docs/P5_02B_SUGGEST_PRIVATE_INTAKE_INTEGRATION.md`;
-14. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+14. `docs/P5_02C_SUGGEST_REVIEW_SIGNALS.md`;
+15. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -61,35 +63,14 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
-## P5-01 completion result
-
-P5-01 completed the common private Submission foundation through:
-
-```text
-P5-01A  #150  submission contract and privacy model
-P5-01B  #151  persistence and workflow-state foundation
-P5-01C  #152  idempotent private intake service
-P5-01D  #153  abuse-control and Turnstile boundary
-P5-01E  #154  Audit integration and A–D foundation audit
-P5-01F  #155  private follow-up status read boundary
-```
-
-The completed foundation provides strict common intake, private persistence, deterministic replay/conflict behavior, protected contact and abuse-control boundaries, metadata-only Submission Audit history, and private follow-up status retrieval.
-
-P5-01 repository completion does not claim that public route environment wiring is already complete.
-
-## P5-02 execution direction
-
-P5-02 accepts new physical Place and Online Service suggestions into protected review without direct Candidate, canonical, Evidence, export, or public mutation.
-
-Current bounded sequence:
+## P5-02 execution sequence
 
 ```text
 P5-02A  Suggest type-specific contract and review-safe normalization       Completed #156
     ↓
-P5-02B  Suggest private intake integration                               In progress
+P5-02B  Suggest private intake integration                               Completed #157
     ↓
-duplicate Candidate and existing-target signals
+P5-02C  Duplicate Candidate and existing-target read-only signals        In progress
     ↓
 protected reviewer entry path
     ↓
@@ -100,20 +81,23 @@ P5-02 integration and handoff audit
 
 Exact later slice IDs are assigned when each bounded scope begins.
 
-## P5-02B active scope
+## P5-02C active scope
 
-P5-02B establishes:
+P5-02C establishes:
 
-- optional type-specific parser/normalizer injection for the P5-01 private intake service;
-- unchanged generic intake behavior when no parser is supplied;
-- strict Suggest parsing before fingerprint lookup, contact protection, public-reference allocation, and persistence;
-- deterministic review-safe Suggest normalization;
-- atomic persistence of original and normalized private payloads in the existing `submission_payloads` record;
-- replay/conflict behavior preserved for Suggest content;
-- abuse-control composition preserved before Suggest parsing and private intake;
-- focused integration tests and schema-check integration.
+- Candidate overlap signals from normalized Suggest identity and bounded source snapshots;
+- reuse of existing Candidate duplicate reason vocabulary;
+- physical same-name-and-coordinate review signals;
+- Online Service official-domain strong signals;
+- Online Service normalized-name review signals;
+- reuse of the existing canonical target search result contract;
+- bounded canonical search queries derived from Suggest name, address, locality, or official domain;
+- canonical target reasons for name, official domain, address, and near coordinates;
+- explicit non-conclusive zero-result semantics;
+- fail-closed behavior if either read backend cannot complete;
+- no automatic duplicate decision, Candidate creation, target selection, linking, canonical mutation, export, or publication.
 
-P5-02B does not add a public form, public route, Candidate creation, duplicate search, existing-target similarity search, canonical mutation, Evidence acceptance, export, or publication.
+P5-02C signals are private review material only.
 
 ## Route and environment requirements before public intake exposure
 
@@ -146,11 +130,11 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02B and merge it green. Then begin the next bounded P5-02 slice for duplicate Candidate and existing-target signal generation before protected reviewer entry.
+Complete P5-02C and merge it green. Then begin the next bounded P5-02 slice for protected reviewer entry using the persisted Suggest projection and read-only review signals.
 
 ## Blocked
 
-No known repository blocker to P5-02B.
+No known repository blocker to P5-02C.
 
 Production contact encryption, HMAC key environment binding, production distributed rate limiting, opaque bucket-key derivation, and Turnstile environment binding remain required before a public Suggest route is exposed.
 
