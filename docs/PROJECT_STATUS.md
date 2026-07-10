@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02C — Suggest duplicate Candidate and existing-target review signals
+P5-02D — Protected Suggest reviewer entry
 
 ## Current repository state
 
@@ -20,7 +20,8 @@ P5-02C — Suggest duplicate Candidate and existing-target review signals
 - P5-01 shared Submission foundation is complete through #150–#155.
 - P5-02A Suggest contract and review-safe normalization is complete through #156.
 - P5-02B Suggest private intake integration is complete through #157.
-- P5-02C read-only Candidate overlap and canonical target signal generation is active.
+- P5-02C read-only Candidate overlap and canonical target signal generation is complete through #158.
+- P5-02D protected Suggest reviewer queue and detail entry is active.
 
 ## Fixed review environment
 
@@ -48,7 +49,8 @@ Before P5-02 implementation or review, read:
 12. `docs/P5_02A_SUGGEST_CONTRACT_AND_NORMALIZATION.md`;
 13. `docs/P5_02B_SUGGEST_PRIVATE_INTAKE_INTEGRATION.md`;
 14. `docs/P5_02C_SUGGEST_REVIEW_SIGNALS.md`;
-15. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+15. `docs/P5_02D_SUGGEST_REVIEWER_ENTRY.md`;
+16. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -70,9 +72,11 @@ P5-02A  Suggest type-specific contract and review-safe normalization       Compl
     ↓
 P5-02B  Suggest private intake integration                               Completed #157
     ↓
-P5-02C  Duplicate Candidate and existing-target read-only signals        In progress
+P5-02C  Duplicate Candidate and existing-target read-only signals        Completed #158
     ↓
-protected reviewer entry path
+P5-02D  Protected Suggest reviewer queue and detail entry                 In progress
+    ↓
+first guarded Suggest review action boundary
     ↓
 public Suggest route/form wiring with real environment-backed providers
     ↓
@@ -81,23 +85,23 @@ P5-02 integration and handoff audit
 
 Exact later slice IDs are assigned when each bounded scope begins.
 
-## P5-02C active scope
+## P5-02D active scope
 
-P5-02C establishes:
+P5-02D establishes:
 
-- Candidate overlap signals from normalized Suggest identity and bounded source snapshots;
-- reuse of existing Candidate duplicate reason vocabulary;
-- physical same-name-and-coordinate review signals;
-- Online Service official-domain strong signals;
-- Online Service normalized-name review signals;
-- reuse of the existing canonical target search result contract;
-- bounded canonical search queries derived from Suggest name, address, locality, or official domain;
-- canonical target reasons for name, official domain, address, and near coordinates;
-- explicit non-conclusive zero-result semantics;
-- fail-closed behavior if either read backend cannot complete;
-- no automatic duplicate decision, Candidate creation, target selection, linking, canonical mutation, export, or publication.
+- exact verified Submission reviewer allowlist and `submission:read` capability;
+- protected `GET /admin/api/submissions` Suggest queue;
+- protected `GET /admin/api/submissions/:submissionId` Suggest detail;
+- bounded queue ordering and cursor pagination;
+- strict normalized Suggest projection validation before display;
+- P5-02C Candidate overlap and canonical target signal composition inside detail read;
+- bounded workflow event summary without actor ID or internal note leakage;
+- `/admin/submissions` queue UI;
+- `/admin/submissions/detail` reviewer detail UI;
+- explicit read-only boundary with no duplicate decision, Candidate creation, target selection, linking, Evidence acceptance, workflow transition, canonical mutation, export, or publication controls;
+- focused contract/API tests and runtime checks.
 
-P5-02C signals are private review material only.
+The reviewer response contract excludes contact data, original payload, status secret material, request fingerprints, rate-limit data, challenge tokens, event actor identifiers, and internal notes.
 
 ## Route and environment requirements before public intake exposure
 
@@ -130,11 +134,11 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02C and merge it green. Then begin the next bounded P5-02 slice for protected reviewer entry using the persisted Suggest projection and read-only review signals.
+Complete P5-02D and merge it green. Then begin the next bounded P5-02 slice for the first guarded Suggest review action boundary.
 
 ## Blocked
 
-No known repository blocker to P5-02C.
+No known repository blocker to P5-02D.
 
 Production contact encryption, HMAC key environment binding, production distributed rate limiting, opaque bucket-key derivation, and Turnstile environment binding remain required before a public Suggest route is exposed.
 
