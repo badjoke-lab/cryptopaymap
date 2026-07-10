@@ -20,15 +20,17 @@ function decodeBase64Url(value: string): Uint8Array {
   );
 }
 
+function copyArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  return copy.buffer;
+}
+
 function environment(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
-    CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(
-      new Uint8Array(32).fill(11),
-    ),
+    CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(11)),
     CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: 'contact-2026-01',
-    CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(
-      new Uint8Array(32).fill(29),
-    ),
+    CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(29)),
     CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '30',
     ...overrides,
   };
@@ -38,19 +40,23 @@ async function decryptEnvelope(encryptedEmail: string, keyBytes: Uint8Array): Pr
   const [version, keyId, ivEncoded, ciphertextEncoded] = encryptedEmail.split('.');
   expect(version).toBe('v1');
   expect(keyId).toBe('contact-2026-01');
-  const key = await crypto.subtle.importKey('raw', keyBytes, { name: 'AES-GCM' }, false, [
-    'decrypt',
-  ]);
+  const key = await crypto.subtle.importKey(
+    'raw',
+    copyArrayBuffer(keyBytes),
+    { name: 'AES-GCM' },
+    false,
+    ['decrypt'],
+  );
   const plaintext = await crypto.subtle.decrypt(
     {
       name: 'AES-GCM',
-      iv: decodeBase64Url(ivEncoded ?? ''),
+      iv: copyArrayBuffer(decodeBase64Url(ivEncoded ?? '')),
       additionalData: new TextEncoder().encode(
         'cryptopaymap:submission-contact-email:v1:contact-2026-01',
       ),
     },
     key,
-    decodeBase64Url(ciphertextEncoded ?? ''),
+    copyArrayBuffer(decodeBase64Url(ciphertextEncoded ?? '')),
   );
   return new TextDecoder().decode(plaintext);
 }
@@ -95,9 +101,7 @@ describe('P5-02J Submission contact protection', () => {
     const first = createSubmissionContactProtectorFromEnvironment(environment());
     const second = createSubmissionContactProtectorFromEnvironment(
       environment({
-        CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(
-          new Uint8Array(32).fill(31),
-        ),
+        CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(31)),
       }),
     );
 
@@ -109,26 +113,34 @@ describe('P5-02J Submission contact protection', () => {
   it.each([
     ['missing encryption key', { CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: undefined }],
     ['empty encryption key', { CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: '' }],
-    ['short encryption key', {
-      CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(
-        new Uint8Array(31).fill(11),
-      ),
-    }],
-    ['long encryption key', {
-      CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(
-        new Uint8Array(33).fill(11),
-      ),
-    }],
-    ['short hash key', {
-      CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(
-        new Uint8Array(31).fill(29),
-      ),
-    }],
-    ['same encryption and hash key material', {
-      CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(
-        new Uint8Array(32).fill(11),
-      ),
-    }],
+    [
+      'short encryption key',
+      {
+        CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(
+          new Uint8Array(31).fill(11),
+        ),
+      },
+    ],
+    [
+      'long encryption key',
+      {
+        CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(
+          new Uint8Array(33).fill(11),
+        ),
+      },
+    ],
+    [
+      'short hash key',
+      {
+        CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(new Uint8Array(31).fill(29)),
+      },
+    ],
+    [
+      'same encryption and hash key material',
+      {
+        CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(11)),
+      },
+    ],
     ['invalid key id', { CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: 'contact key' }],
     ['zero retention', { CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '0' }],
     ['excessive retention', { CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '3651' }],
