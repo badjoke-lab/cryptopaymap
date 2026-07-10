@@ -136,9 +136,9 @@ function DetailView({ detail }: { detail: SuggestSubmissionReviewDetailResponse 
 
       <Section title="Payment proposals">
         <div className="grid gap-4">
-          {projection.paymentProposals.map((payment, index) => (
+          {projection.paymentProposals.map((payment) => (
             <article
-              key={`${payment.assetSlug ?? 'unknown'}-${payment.networkSlug ?? 'unknown'}-${index}`}
+              key={JSON.stringify(payment)}
               className="rounded-control border border-border bg-canvas p-4"
             >
               <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -242,9 +242,9 @@ function DetailView({ detail }: { detail: SuggestSubmissionReviewDetailResponse 
 
       <Section title="Workflow history">
         <ol className="grid gap-3">
-          {events.map((event, index) => (
+          {events.map((event) => (
             <li
-              key={`${event.createdAt}-${index}`}
+              key={`${event.createdAt}-${event.action}-${event.fromStatus ?? 'start'}-${event.toStatus}-${event.reasonCode ?? 'none'}-${event.actorType}`}
               className="rounded-control border border-border bg-canvas p-4 text-sm"
             >
               <p className="font-semibold text-ink">{event.action.replaceAll('_', ' ')}</p>
