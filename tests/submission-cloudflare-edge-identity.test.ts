@@ -11,9 +11,7 @@ function requestWithHeaders(headers: HeadersInit): Request {
 describe('P5-02L trusted Cloudflare edge identity extraction', () => {
   it('reads a canonical IPv4 identity from CF-Connecting-IP', () => {
     expect(
-      readTrustedCloudflareEdgeIdentity(
-        requestWithHeaders({ 'CF-Connecting-IP': '203.0.113.42' }),
-      ),
+      readTrustedCloudflareEdgeIdentity(requestWithHeaders({ 'CF-Connecting-IP': '203.0.113.42' })),
     ).toBe('203.0.113.42');
   });
 
@@ -27,17 +25,13 @@ describe('P5-02L trusted Cloudflare edge identity extraction', () => {
 
   it('accepts compressed IPv6', () => {
     expect(
-      readTrustedCloudflareEdgeIdentity(
-        requestWithHeaders({ 'CF-Connecting-IP': '2001:db8::2' }),
-      ),
+      readTrustedCloudflareEdgeIdentity(requestWithHeaders({ 'CF-Connecting-IP': '2001:db8::2' })),
     ).toBe('2001:db8::2');
   });
 
   it('does not fall back to X-Forwarded-For', () => {
     expect(() =>
-      readTrustedCloudflareEdgeIdentity(
-        requestWithHeaders({ 'X-Forwarded-For': '203.0.113.42' }),
-      ),
+      readTrustedCloudflareEdgeIdentity(requestWithHeaders({ 'X-Forwarded-For': '203.0.113.42' })),
     ).toThrow(SubmissionEdgeIdentityError);
   });
 
