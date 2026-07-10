@@ -1,3 +1,4 @@
+import { commonSubmissionIntakeSchema } from './contract';
 import {
   createSubmissionPrivateIntakeService,
   type SubmissionPrivateIntakeDependencies,
@@ -20,10 +21,11 @@ export function createSuggestSubmissionPrivateIntakeService(
     ...dependencies,
     intakeParser: {
       parse(rawInput) {
-        const intake = suggestSubmissionIntakeSchema.parse(rawInput);
-        const normalized = normalizeParsedSuggestSubmissionIntake(intake);
+        const suggestIntake = suggestSubmissionIntakeSchema.parse(rawInput);
+        const originalIntake = commonSubmissionIntakeSchema.parse(rawInput);
+        const normalized = normalizeParsedSuggestSubmissionIntake(suggestIntake);
         return {
-          intake,
+          intake: originalIntake,
           normalizedPayload: structuredClone(normalized) as unknown as Record<string, unknown>,
         };
       },
