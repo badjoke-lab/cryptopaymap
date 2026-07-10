@@ -1,0 +1,19 @@
+{
+  "name": "cryptopaymap-submission-rate-limit",
+  "main": "index.ts",
+  "compatibility_date": "2026-07-11",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SUBMISSION_RATE_LIMIT_BUCKETS",
+        "class_name": "SubmissionRateLimitBucket"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["SubmissionRateLimitBucket"]
+    }
+  ]
+}
