@@ -16,9 +16,10 @@ import {
   generateSuggestReviewSignals,
   suggestReviewSignalResponseSchema,
   type SuggestReviewSignalDependencies,
+  type SuggestReviewSignalResponse,
 } from '../../submissions/suggest-review-signals';
-import { submissionReviewContextSchema } from './queue';
 import type { SubmissionReviewContext } from './authorization';
+import { submissionReviewContextSchema } from './queue';
 
 const timestampSchema = z.iso.datetime({ offset: true });
 
@@ -172,7 +173,7 @@ export async function loadSuggestSubmissionReviewDetail(
     );
   }
 
-  let signals;
+  let signals: SuggestReviewSignalResponse;
   try {
     signals = await generateSuggestReviewSignals(
       detailResult.data.projection,
