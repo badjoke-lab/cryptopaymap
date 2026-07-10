@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02J — Submission contact protection
+P5-02K — Opaque Submission rate-limit bucket derivation
 
 ## Current repository state
 
@@ -27,7 +27,8 @@ P5-02J — Submission contact protection
 - P5-02G bounded in_review→on_hold operation with 30/60/90 day next-review timing is complete through #162.
 - P5-02H atomic accepted-as-Candidate transaction boundary is complete through #163.
 - P5-02I Submission status-secret environment binding is complete through #167.
-- P5-02J Submission contact protection is in progress without public route exposure.
+- P5-02J Submission contact protection is complete through #168.
+- P5-02K opaque Submission rate-limit bucket derivation is in progress without public route exposure.
 
 ## Fixed review environment
 
@@ -62,7 +63,8 @@ Before P5-02 implementation or review, read:
 19. `docs/P5_02H_ACCEPTED_AS_CANDIDATE.md`;
 20. `docs/P5_02I_SUBMISSION_STATUS_SECRET_ENVIRONMENT_BINDING.md`;
 21. `docs/P5_02J_SUBMISSION_CONTACT_PROTECTION.md`;
-22. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+22. `docs/P5_02K_OPAQUE_RATE_LIMIT_BUCKET_DERIVATION.md`;
+23. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -98,7 +100,9 @@ P5-02H  Atomic accepted-as-Candidate outcome                              Comple
     ↓
 P5-02I  Submission status-secret environment binding                     Completed #167
     ↓
-P5-02J  Submission contact protection                                    In progress
+P5-02J  Submission contact protection                                    Completed #168
+    ↓
+P5-02K  Opaque Submission rate-limit bucket derivation                    In progress
     ↓
 remaining public Suggest route/form provider and exposure slices
     ↓
@@ -157,13 +161,13 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02J Submission contact protection, then continue the remaining public Suggest provider and exposure slices. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
+Complete P5-02K opaque rate-limit bucket derivation, then continue trusted edge identity extraction and the remaining public Suggest provider/exposure slices. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
 
 ## Blocked
 
 No known repository blocker to continuing the public Suggest route/form wiring.
 
-Configured environment-backed contact protection, distributed rate limiting, opaque bucket-key derivation, and Turnstile bindings are still required before the public Suggest route is exposed. Status-secret HMAC key binding is repository-complete through #167 but still requires configured-environment verification when composed into the route.
+Configured-environment trusted edge identity extraction, distributed rate limiting, Turnstile bindings, and complete route composition remain required before the public Suggest route is exposed. Status-secret HMAC binding is repository-complete through #167 and contact protection through #168, but both still require configured-environment verification when composed into the route.
 
 `CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist remain required in configured environments for the accepted-as-Candidate transaction path.
 
