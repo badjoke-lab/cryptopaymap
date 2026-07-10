@@ -7,13 +7,9 @@ function encodeBase64Url(bytes: Uint8Array): string {
 }
 
 const protector = createSubmissionContactProtectorFromEnvironment({
-  CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(
-    new Uint8Array(32).fill(11),
-  ),
+  CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(11)),
   CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: 'contact-check-v1',
-  CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(
-    new Uint8Array(32).fill(29),
-  ),
+  CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: encodeBase64Url(new Uint8Array(32).fill(29)),
   CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '30',
 });
 
