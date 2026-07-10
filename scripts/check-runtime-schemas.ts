@@ -10,6 +10,7 @@ import './check-physical-place-importer';
 import './check-source-provenance';
 import './check-submission-cloudflare-edge-identity';
 import './check-submission-contact-protection';
+import './check-submission-durable-object-rate-limit';
 import './check-submission-rate-limit-bucket';
 import './check-submission-status-secret-environment';
 import './check-verification-events';

@@ -221,7 +221,9 @@ P5-02J — Submission contact protection                                    Comp
     ↓
 P5-02K — Opaque Submission rate-limit bucket derivation                    Completed #169
     ↓
-P5-02L — Trusted Cloudflare edge identity extraction                       In progress
+P5-02L — Trusted Cloudflare edge identity extraction                       Completed #170
+    ↓
+P5-02M — Durable Object distributed Submission rate limiting               In progress
     ↓
 remaining public Suggest route/form provider and exposure slices
     ↓
@@ -328,7 +330,14 @@ P5-02K established:
 - deterministic `rl_<opaque>` output accepted by the existing abuse-control contract;
 - no raw edge identity in output and no public route exposure.
 
-P5-02L now establishes a direct incoming Pages Function request boundary for strict `CF-Connecting-IP` extraction and IP normalization while leaving distributed rate limiting and public route composition out of scope.
+P5-02L established:
+
+- direct incoming Pages Function request boundary for `CF-Connecting-IP` only;
+- strict IPv4 and IPv6 validation and normalization;
+- fail-closed handling with no forwarded-header fallback;
+- no raw identity persistence or public route exposure.
+
+P5-02M now establishes a SQLite-backed Durable Object distributed fixed-window provider behind the existing `SubmissionRateLimiter` interface. It keeps raw edge identity out of the provider and leaves live Pages binding, route policy values, Turnstile wiring, and public route activation for later slices.
 
 The active P5-02 work must continue the remaining public Suggest provider and exposure slices. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
