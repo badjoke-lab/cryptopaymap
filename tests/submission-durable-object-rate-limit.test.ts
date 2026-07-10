@@ -46,11 +46,7 @@ describe('P5-02M Durable Object fixed-window contract', () => {
 
   it('fails closed on clock rollback or invalid persisted state', () => {
     expect(() =>
-      consumeFixedWindowRateLimit(
-        { windowStartedAtMs: 5_000, requestCount: 2 },
-        4_000,
-        options,
-      ),
+      consumeFixedWindowRateLimit({ windowStartedAtMs: 5_000, requestCount: 2 }, 4_000, options),
     ).toThrow('Rate-limit state is invalid.');
     expect(() =>
       consumeFixedWindowRateLimit(
@@ -141,7 +137,9 @@ describe('P5-02M Durable Object SubmissionRateLimiter adapter', () => {
     [
       'malformed response',
       fakeNamespace({
-        response: new Response(JSON.stringify({ outcome: 'allow', remaining: -1 }), { status: 200 }),
+        response: new Response(JSON.stringify({ outcome: 'allow', remaining: -1 }), {
+          status: 200,
+        }),
       }),
     ],
     ['provider exception', fakeNamespace({ error: new Error('provider detail') })],
