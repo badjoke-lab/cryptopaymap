@@ -30,7 +30,8 @@ export function createDrizzleSuggestSubmissionDetailBackend(
         .where(and(eq(submissions.id, submissionId), eq(submissions.submissionType, 'suggest')))
         .limit(1);
       const row = rows[0];
-      if (row === undefined || row.normalizedPayload === null || row.relationship === null) return null;
+      if (row === undefined || row.normalizedPayload === null || row.relationship === null)
+        return null;
 
       const eventRows = await database
         .select({
@@ -59,8 +60,7 @@ export function createDrizzleSuggestSubmissionDetailBackend(
           submittedAt: row.submittedAt.toISOString(),
           updatedAt: row.updatedAt.toISOString(),
         },
-        projection:
-          row.normalizedPayload as SuggestSubmissionReviewDetailData['projection'],
+        projection: row.normalizedPayload as SuggestSubmissionReviewDetailData['projection'],
         events: boundedEvents.map((event) => ({
           fromStatus: event.fromStatus,
           toStatus: event.toStatus,
