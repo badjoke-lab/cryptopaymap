@@ -68,6 +68,7 @@ export interface SubmissionPrivateStatusRecord {
   statusTokenHash: string;
   requestedAction: string | null;
   publicMessage: string | null;
+  nextReviewAt: string | null;
 }
 
 export interface TransitionSubmissionPersistenceCommand {
