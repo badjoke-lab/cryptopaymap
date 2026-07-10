@@ -22,13 +22,15 @@ function body() {
   };
 }
 
-function context(overrides: {
-  identity?: unknown;
-  subjects?: string;
-  contentType?: string;
-  submissionId?: string | string[];
-  requestBody?: unknown;
-} = {}) {
+function context(
+  overrides: {
+    identity?: unknown;
+    subjects?: string;
+    contentType?: string;
+    submissionId?: string | string[];
+    requestBody?: unknown;
+  } = {},
+) {
   return {
     request: new Request(`https://example.test/admin/api/submissions/${submissionId}/transition`, {
       method: 'POST',
