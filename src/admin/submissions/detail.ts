@@ -161,7 +161,10 @@ export async function loadSuggestSubmissionReviewDetail(
     );
   }
   if (detail === null) {
-    throw new SuggestSubmissionReviewDetailError('not_found', 'The Suggest Submission was not found.');
+    throw new SuggestSubmissionReviewDetailError(
+      'not_found',
+      'The Suggest Submission was not found.',
+    );
   }
 
   const detailResult = suggestSubmissionReviewDetailDataSchema.safeParse(detail);
