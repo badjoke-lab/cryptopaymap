@@ -102,7 +102,7 @@ function onlineCandidateMaterial(): SuggestCandidateSignalMaterial {
         websiteUrl: 'https://hosting.example/pricing',
         countryCode: 'US',
         category: null,
-        acceptanceScope: 'online_service',
+        acceptanceScope: 'all_checkout',
         routeType: 'processor_checkout',
         processorName: 'Processor',
         processorUrl: null,
@@ -269,18 +269,19 @@ describe('P5-02C Suggest review signals', () => {
     });
     expect(result.canonicalTargetSignals[0]).toMatchObject({
       target: { canonicalPath: '/place/example-coffee-shibuya' },
-      reasons: ['same_normalized_name', 'same_address', 'near_coordinates'],
-      strength: 'review',
+      reasons: [
+        'same_normalized_name',
+        'shared_official_domain',
+        'same_address',
+        'near_coordinates',
+      ],
+      strength: 'strong',
     });
   });
 
   it('derives bounded canonical search queries from Suggest identity and location material', async () => {
     const queries: string[] = [];
-    await generateSuggestReviewSignals(
-      physicalProjection(),
-      dependencies([], [], queries),
-      asOf,
-    );
+    await generateSuggestReviewSignals(physicalProjection(), dependencies([], [], queries), asOf);
 
     expect(queries).toEqual(['Example Coffee', '1-2-3 Jingumae', 'Shibuya']);
   });
