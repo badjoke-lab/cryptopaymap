@@ -1,7 +1,7 @@
 # P5-01A submission contract and privacy model
 
 **Implementation item:** P5-01A  
-**Status:** Active  
+**Status:** Completed through #150
 **Last updated:** 2026-07-09
 
 ## Purpose

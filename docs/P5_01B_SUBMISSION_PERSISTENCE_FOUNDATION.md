@@ -1,7 +1,7 @@
 # P5-01B submission persistence and workflow-state foundation
 
 **Implementation item:** P5-01B  
-**Status:** Active  
+**Status:** Completed through #151
 **Last updated:** 2026-07-09
 
 ## Purpose
