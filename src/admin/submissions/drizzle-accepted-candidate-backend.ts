@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm';
+import { eq, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   candidateSourceRecords,
