@@ -50,7 +50,7 @@ describe('P5-02F private status information request projection', () => {
     const status = createSubmissionPrivateStatusService(persistence);
 
     await expect(status.read(publicId, issued.secret)).resolves.toMatchObject({
-      statusLabel: 'in_review',
+      statusLabel: 'under_review',
       requestedAction: null,
       publicMessage: null,
     });
