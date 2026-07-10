@@ -1,8 +1,8 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-01F closure correction in progress  
-**Last updated:** 2026-07-09
+**Status:** Active — P5-02 Suggest work in progress  
+**Last updated:** 2026-07-10
 
 ## Purpose
 
@@ -54,11 +54,12 @@ P5-01B  Completed through #151
 P5-01C  Completed through #152
 P5-01D  Completed through #153
 P5-01E  Completed through #154
-P5-01F  In progress
-P5-02   Blocked on P5-01F completion
+P5-01F  Completed through #155
+P5-01   Completed
+P5-02A  In progress — Suggest contract and normalization
 ```
 
-P5-01F was added after a post-#154 sequence audit found that the private follow-up status-read completion requirement had not yet been implemented. This correction must complete before P5-02 begins.
+P5-01F closed the private follow-up status-read requirement after the post-#154 sequence audit. P5-01 is now repository-complete and P5-02 may proceed.
 
 ---
 
@@ -66,12 +67,12 @@ P5-01F was added after a post-#154 sequence audit found that the private follow-
 
 ### Goal
 
-Create the common private intake and follow-up foundation used by all public submission types.
+Create the common private intake and follow-up foundation used by all public Submission types.
 
 ### Scope
 
-- common submission envelope;
-- submission type and workflow status;
+- common Submission envelope;
+- Submission type and workflow status;
 - opaque public reference;
 - one-time private follow-up secret issuance and stored verification representation;
 - safe original-payload preservation and normalized review projection separation;
@@ -81,22 +82,17 @@ Create the common private intake and follow-up foundation used by all public sub
 - request-size, content-type, URL, and text safety validation;
 - abuse and rate-control adapter boundary;
 - request replay and duplicate-request behavior;
-- audit event foundation;
-- private submission status read contract;
+- Audit event foundation;
+- private Submission status read contract;
 - public status labels that do not expose internal review information.
 
-### Out of scope
+### Completion result
 
-- type-specific approval logic;
-- canonical mutations;
-- public publication;
-- Media processing.
+P5-01 completed through #150–#155.
 
-### Completion gate
+A synthetic Submission can be received, assigned a public reference, replayed deterministically, protected by abuse-control boundaries, persisted privately, represented in metadata-only Audit history, and retrieved through its private follow-up boundary while remaining isolated from canonical/public data.
 
-A synthetic submission can be received, assigned a public reference, retrieved through its private follow-up boundary, and kept isolated from canonical/public data.
-
-The completion gate is not satisfied until P5-01F verifies the `public reference + status secret → safe status projection` path.
+Configured-environment provider wiring remains required when the first public Suggest route is exposed.
 
 ---
 
@@ -122,6 +118,21 @@ Accept new Place or Online Service suggestions into protected review without dir
 - reviewer entry path;
 - accepted-as-Candidate outcome.
 
+### Current bounded slice
+
+P5-02A defines the type-specific Suggest contract and review-safe normalization boundary.
+
+P5-02A must:
+
+- support `physical_place` and `online_service` kinds;
+- compose the P5-01 common envelope;
+- keep new-record Suggest separate from existing-record correction workflows;
+- accept reviewable incomplete Place/payment material without inventing canonical facts;
+- preserve unknown Asset/Network/Route/Method values explicitly;
+- never infer Network from Asset;
+- normalize identity, Place, practical profile, category, payment, observation, relationship, and Evidence-link proposals for protected review;
+- add no public route, Candidate mutation, canonical mutation, Evidence acceptance, export, or publication.
+
 ### Operational dependency
 
 P4-18B must already provide safe operator handling and correction behavior for practical profile fields. Suggestion intake must not introduce field classes that the protected review and canonical application paths cannot safely process.
@@ -129,6 +140,8 @@ P4-18B must already provide safe operator handling and correction behavior for p
 ### Completion gate
 
 A suggestion can move from public intake to protected review and resolve without directly changing a public record. A useful but insufficient suggestion may become a private Candidate.
+
+P5-02 is not complete when P5-02A alone finishes. Later bounded slices must add private Suggest intake integration, duplicate Candidate/existing-target signals, protected reviewer entry, public route/form wiring with real environment-backed providers, and an integration audit.
 
 ---
 
@@ -219,7 +232,7 @@ Support the review states and partial decisions required by real public submissi
 
 ### Scope
 
-- submission review queue and detail workspace;
+- Submission review queue and detail workspace;
 - field-level proposed-versus-current diff;
 - information request;
 - submitter follow-up response;
@@ -234,7 +247,7 @@ Support the review states and partial decisions required by real public submissi
 
 ### Completion gate
 
-A multi-field submission can resolve fields independently, request more information, pause safely, and report a bounded public status without exposing private review content.
+A multi-field Submission can resolve fields independently, request more information, pause safely, and report a bounded public status without exposing private review content.
 
 ---
 
@@ -242,7 +255,7 @@ A multi-field submission can resolve fields independently, request more informat
 
 ### Goal
 
-Apply approved submission decisions safely to canonical data and enforce private-data lifecycle rules.
+Apply approved Submission decisions safely to canonical data and enforce private-data lifecycle rules.
 
 ### Scope
 
@@ -253,11 +266,11 @@ Apply approved submission decisions safely to canonical data and enforce private
 - Claim, Claim Asset, identity, and practical profile boundaries kept distinct;
 - Media decisions remain delegated to Media review operations;
 - request replay and stale-state conflict handling;
-- application receipt and audit history;
+- application receipt and Audit history;
 - public export and release remain separate;
 - contact, private payload, evidence, ownership proof, and upload retention jobs;
 - deletion or anonymization where required;
-- preservation of minimum audit records where lawful and necessary.
+- preservation of minimum Audit records where lawful and necessary.
 
 ### Completion gate
 
@@ -269,7 +282,7 @@ Approved changes can be applied once, replay safely, conflict on stale state, re
 
 ### Goal
 
-Verify the complete submission system across all public and protected boundaries before launch preparation.
+Verify the complete Submission system across all public and protected boundaries before launch preparation.
 
 ### Required journeys
 
@@ -301,4 +314,4 @@ Verify the complete submission system across all public and protected boundaries
 
 ### Completion gate
 
-Phase 5 is complete only when the full submission-to-publication path is auditable and the system can demonstrate that unreviewed submission data never becomes public canonical data automatically.
+Phase 5 is complete only when the full Submission-to-publication path is auditable and the system can demonstrate that unreviewed Submission data never becomes public canonical data automatically.
