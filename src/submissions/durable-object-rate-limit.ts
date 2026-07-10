@@ -9,7 +9,7 @@ import type { SubmissionRateLimiter } from './rate-limit';
 const requestIdSchema = z.uuid();
 const bucketKeySchema = z.string().regex(/^rl_[A-Za-z0-9_-]{16,128}$/);
 
-export interface SubmissionRateLimitDurableObjectId {}
+export type SubmissionRateLimitDurableObjectId = object;
 
 export interface SubmissionRateLimitDurableObjectStub {
   fetch(request: Request): Promise<Response>;
@@ -51,7 +51,9 @@ export function createDurableObjectSubmissionRateLimiter(
           return { outcome: 'unavailable', reasonCode: 'distributed_provider_unavailable' };
         }
 
-        const parsedDecision = durableObjectRateLimitResponseSchema.safeParse(await response.json());
+        const parsedDecision = durableObjectRateLimitResponseSchema.safeParse(
+          await response.json(),
+        );
         if (!parsedDecision.success) {
           return { outcome: 'unavailable', reasonCode: 'distributed_provider_unavailable' };
         }
