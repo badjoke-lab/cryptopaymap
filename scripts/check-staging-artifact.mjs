@@ -110,6 +110,7 @@ const requiredSubmissionFragments = [
 ];
 const forbiddenSubmissionFragments = [
   'CPM_ADMIN_SUBMISSION_SUBJECTS',
+  'CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS',
   'DATABASE_URL',
   'encryptedEmail',
   'emailHash',
@@ -134,10 +135,12 @@ const submissionDetailPage = readFileSync(
   'utf8',
 );
 const requiredSubmissionDetailFragments = [
-  'Read-only reviewer entry',
-  'Signals inform review but do not decide or mutate anything',
+  'Guarded reviewer workflow',
+  'Read-only signals remain separate from exact-state workflow transitions',
+  'Review workflow actions',
+  'Exact-state guarded',
   'Reviewer workspace',
-  'No mutation controls',
+  'Signals remain read-only',
 ];
 for (const fragment of requiredSubmissionDetailFragments) {
   if (!submissionDetailPage.includes(fragment)) {

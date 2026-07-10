@@ -1,38 +1,75 @@
 ---
 import { SuggestSubmissionReview } from '../../../components/admin/SuggestSubmissionReview';
+import { SuggestReviewTransitionPanel } from '../../../components/admin/SuggestReviewTransitionPanel';
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 ---
 
 <AdminLayout
   title="Suggest review | CryptoPayMap Admin"
   heading="Suggest review"
-  description="Inspect the normalized Suggest proposal, submitted evidence links, bounded Candidate and canonical-target signals, and workflow event summary without exposing contact data or original private payloads."
+  description="Inspect the normalized Suggest proposal, review bounded overlap signals, and apply the first exact-state guarded workflow transitions without crossing into duplicate, Candidate, canonical, Evidence, export, or publication mutations."
 >
-  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="suggest-review-boundary-title">
-    <p class="m-0 text-sm font-semibold text-brand-800">Read-only reviewer entry</p>
-    <h2 id="suggest-review-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
-      Signals inform review but do not decide or mutate anything
+  <section
+    class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6"
+    aria-labelledby="suggest-review-boundary-title"
+  >
+    <p class="m-0 text-sm font-semibold text-brand-800">Guarded reviewer workflow</p>
+    <h2
+      id="suggest-review-boundary-title"
+      class="mt-1 text-xl font-semibold tracking-tight text-ink"
+    >
+      Read-only signals remain separate from exact-state workflow transitions
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      Zero signals are non-conclusive. This workspace does not mark duplicates, create Candidates, select canonical targets, accept Evidence, write canonical values, export, or publish.
+      Zero signals are non-conclusive. This slice only allows received → triage and triage → in review. It does not mark duplicates, create Candidates, select canonical targets, accept Evidence, write canonical values, export, or publish.
     </p>
     <div class="mt-5">
-      <a class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-brand-700 px-4 py-2 text-sm font-semibold text-brand-800 no-underline hover:bg-brand-100" href="/admin/submissions">
+      <a
+        class="motion-feedback inline-flex min-h-11 items-center rounded-control border border-brand-700 px-4 py-2 text-sm font-semibold text-brand-800 no-underline hover:bg-brand-100"
+        href="/admin/submissions"
+      >
         Return to Suggest queue
       </a>
     </div>
+  </section>
+
+  <section class="mt-8" aria-labelledby="suggest-review-actions-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">Separate write capability</p>
+        <h2
+          id="suggest-review-actions-title"
+          class="mt-1 text-2xl font-semibold tracking-tight text-ink"
+        >
+          Review workflow actions
+        </h2>
+      </div>
+      <span
+        class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted"
+      >
+        Exact-state guarded
+      </span>
+    </div>
+    <section class="rounded-card border border-border bg-surface p-5 shadow-sm">
+      <SuggestReviewTransitionPanel client:load />
+    </section>
   </section>
 
   <section class="mt-8" aria-labelledby="suggest-review-workspace-title">
     <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
         <p class="m-0 text-sm font-semibold text-brand-700">Protected Submission detail</p>
-        <h2 id="suggest-review-workspace-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+        <h2
+          id="suggest-review-workspace-title"
+          class="mt-1 text-2xl font-semibold tracking-tight text-ink"
+        >
           Reviewer workspace
         </h2>
       </div>
-      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
-        No mutation controls
+      <span
+        class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted"
+      >
+        Signals remain read-only
       </span>
     </div>
     <SuggestSubmissionReview client:load />

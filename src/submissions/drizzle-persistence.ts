@@ -213,7 +213,7 @@ export function createDrizzleSubmissionPersistenceBackend(
           })
           .where(eq(submissions.id, command.submissionId)),
         database.insert(submissionEvents).values({
-          id: crypto.randomUUID(),
+          id: command.eventId ?? crypto.randomUUID(),
           submissionId: command.submissionId,
           fromStatus: command.expectedStatus,
           toStatus: command.toStatus,
