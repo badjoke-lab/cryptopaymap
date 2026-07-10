@@ -51,6 +51,7 @@ export function SuggestReviewTransitionControls({
       </p>
     );
   }
+  const activeSpecification = specification;
 
   async function submitTransition() {
     setState({ status: 'submitting' });
@@ -68,7 +69,7 @@ export function SuggestReviewTransitionControls({
           body: JSON.stringify({
             schemaVersion: 'suggest-review-transition-v1',
             requestId: crypto.randomUUID(),
-            action: specification.action,
+            action: activeSpecification.action,
             expectedStatus: workflowStatus,
             expectedUpdatedAt: updatedAt,
           }),
@@ -104,10 +105,10 @@ export function SuggestReviewTransitionControls({
     <div>
       <div className="flex flex-wrap items-center gap-3">
         <Button disabled={state.status === 'submitting'} onClick={() => void submitTransition()}>
-          {state.status === 'submitting' ? 'Applying transition…' : specification.label}
+          {state.status === 'submitting' ? 'Applying transition…' : activeSpecification.label}
         </Button>
         <span className="text-sm text-muted">
-          {workflowStatus.replaceAll('_', ' ')} → {specification.nextStatus}
+          {workflowStatus.replaceAll('_', ' ')} → {activeSpecification.nextStatus}
         </span>
       </div>
 
@@ -122,7 +123,8 @@ export function SuggestReviewTransitionControls({
       {state.status === 'conflict' ? (
         <p className="mt-3 flex items-center gap-2 text-sm text-status-stale">
           <AlertTriangle className="size-4" aria-hidden="true" />
-          The Submission changed before this action could commit. Reload the review before trying again.
+          The Submission changed before this action could commit. Reload the review before trying
+          again.
         </p>
       ) : null}
       {state.status === 'denied' ? (
