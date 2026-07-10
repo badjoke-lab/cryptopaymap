@@ -71,7 +71,9 @@ function projection() {
   };
 }
 
-function state(overrides: Partial<SuggestAcceptedCandidateState> = {}): SuggestAcceptedCandidateState {
+function state(
+  overrides: Partial<SuggestAcceptedCandidateState> = {},
+): SuggestAcceptedCandidateState {
   return {
     submissionId,
     publicId: 'CPM-S-2026-000001',
