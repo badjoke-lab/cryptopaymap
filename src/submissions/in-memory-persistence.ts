@@ -64,6 +64,8 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         workflowStatus: stored.workflowStatus,
         resolution: stored.resolution,
         statusTokenHash: stored.statusTokenHash,
+        requestedAction: null,
+        publicMessage: null,
       };
     },
 
