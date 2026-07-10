@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-09
+**Last updated:** 2026-07-10
 
 This file tracks repository implementation work. GitHub `main`, merged pull requests, and actual CI results are authoritative when this file differs from repository reality.
 
@@ -141,8 +141,8 @@ P4-18E closed the Phase 5 handoff gate while preserving unavailable configured-e
 
 | ID | Item | Status | Depends on |
 |---|---|---|---|
-| P5-01 | Shared submission foundation | In progress | P4-18E |
-| P5-02 | Suggest Place and Online Service | Planned | P5-01 |
+| P5-01 | Shared submission foundation | Completed through #150–#155 | P4-18E |
+| P5-02 | Suggest Place and Online Service | In progress | P5-01 |
 | P5-03 | Payment and problem reports | Planned | P5-01, P5-02 target conventions |
 | P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |
 | P5-05 | Photo and Media submission intake | Planned | P5-01, P3-10 Media review boundary |
@@ -152,56 +152,74 @@ P4-18E closed the Phase 5 handoff gate while preserving unavailable configured-e
 
 ### P5-01 — Shared submission foundation
 
-P5-01 establishes common private submission infrastructure before individual public forms exist.
+**Status:** Completed through #150–#155
 
-Required work:
+P5-01 established common private Submission infrastructure before individual public forms exist.
 
-1. define the common submission envelope and stable identifiers;
-2. define opaque public reference behavior that reveals no private submission payload;
-3. define private follow-up secret generation, storage representation, and verification boundary;
-4. implement submission workflow status and allowed transitions needed by later intake types;
-5. implement contact privacy boundaries and non-public defaults;
-6. implement strict runtime parsing, payload limits, normalization, and fail-closed rejection;
-7. define abuse-control and Turnstile verification boundary without coupling domain logic to one provider response shape;
-8. implement idempotent intake semantics and changed-content conflict behavior;
-9. establish durable private submission persistence and metadata-only audit foundation;
-10. prove that intake cannot directly mutate Candidate, canonical, Evidence, Media review, verification, export, or public artifacts;
-11. add focused schema, persistence, idempotency, privacy, and integration coverage;
-12. document exactly which live environment checks remain for later configured-environment verification.
-
-P5-01 should be divided into bounded slices rather than one large pull request.
-
-Recommended slice order:
+Completed slices:
 
 ```text
-P5-01A — submission contract and privacy model
+P5-01A — submission contract and privacy model                  #150
     ↓
-P5-01B — persistence and workflow-state foundation
+P5-01B — persistence and workflow-state foundation             #151
     ↓
-P5-01C — idempotent private intake service
+P5-01C — idempotent private intake service                     #152
     ↓
-P5-01D — abuse-control / Turnstile boundary
+P5-01D — abuse-control / Turnstile boundary                    #153
     ↓
-P5-01E — audit integration and Phase 5 foundation audit
+P5-01E — Audit integration and A–D foundation audit            #154
+    ↓
+P5-01F — private follow-up status read boundary                #155
 ```
 
-P5-01 completion criteria:
+P5-01 completion provides:
 
-- one shared submission contract can support later suggestion, report, claim, and Media intake families;
-- all new submissions remain private by default;
-- public reference and follow-up secret boundaries reveal no contact or payload data;
-- identical retries are deterministic;
-- reused idempotency identity with changed content fails conflict;
-- contact data never enters public exports or metadata-only Audit output;
-- abuse-control failure cannot create a durable accepted intake;
-- intake cannot directly mutate canonical/public state;
-- migration and schema checks are green;
-- focused unit/integration tests and full repository validation are green;
-- no later submission type is implemented prematurely inside the foundation item.
+- one common Submission envelope for later Suggest, Report, Claim, and Media intake families;
+- opaque public reference and follow-up secret separation;
+- private durable persistence and workflow events;
+- contact protection boundary and non-public defaults;
+- strict parsing and bounded payload rules;
+- deterministic replay and changed-content conflict;
+- provider-neutral abuse-control and challenge-verification boundaries;
+- Turnstile Siteverify adapter boundary;
+- metadata-only Submission Audit history;
+- private follow-up status read through public reference plus valid secret;
+- same bounded service failure for missing reference and wrong secret;
+- no direct Candidate, canonical, Evidence, Media review, verification, export, or public mutation from intake;
+- green migration, schema, focused test, and full repository validation gates.
+
+Configured environment wiring remains required when the first public Suggest route is introduced.
 
 ### P5-02 — Suggest Place and Online Service
 
-Add public suggestion intake and protected review entry without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates.
+**Status:** In progress at P5-02A
+
+P5-02 adds public suggestion intake and protected review entry without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates after explicit protected review.
+
+Current bounded work:
+
+```text
+P5-02A — Suggest type-specific contract and review-safe normalization
+```
+
+P5-02A establishes:
+
+- physical Place and Online Service Suggest kinds;
+- new-record-only target rules;
+- entity identity and official URL proposals;
+- Place address, coordinate, and practical-profile proposals;
+- category proposals;
+- payment Asset, Network, Route, Method, Processor, How-to-pay, and restriction proposals;
+- explicit uncertainty for incomplete but useful proposals;
+- no asset-to-network inference;
+- required relationship disclosure;
+- observation date and common Evidence-link composition;
+- review-safe normalization;
+- focused schema and contract coverage.
+
+P5-02A does not add a public route or form, duplicate/existing-target search, Candidate creation, reviewer UI, canonical mutation, Evidence acceptance, export, or publication.
+
+Later P5-02 slices must add private Suggest intake integration, duplicate Candidate/existing-target signals, protected reviewer entry, public route/form wiring with real environment-backed providers, and a bounded P5-02 integration audit.
 
 ### P5-03 — Payment and problem reports
 
@@ -225,7 +243,7 @@ Apply approved field decisions through explicit guarded canonical transactions, 
 
 ### P5-08 — MVP-B integration audit
 
-Verify each submission type from public intake through private status, protected review, decision, canonical application where approved, public export, publication state, privacy boundaries, failure handling, and retention behavior.
+Verify each Submission type from public intake through private status, protected review, decision, canonical application where approved, public export, publication state, privacy boundaries, failure handling, and retention behavior.
 
 ## Phase 6 — Launch and cutover
 
