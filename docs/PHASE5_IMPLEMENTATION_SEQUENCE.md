@@ -65,12 +65,13 @@ P5-02F  Completed through #161
 P5-02G  Completed through #162
 P5-02H  Completed through #163
 P5-02I  Submission status-secret environment binding                    Completed #167
-P5-02J  Submission contact protection                                   In progress
+P5-02J  Submission contact protection                                   Completed #168
+P5-02K  Opaque Submission rate-limit bucket derivation                   In progress
 Remaining public Suggest route/form provider and exposure slices        Planned
 P5-02 integration and handoff audit                                    Planned
 ```
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, and status-secret environment binding. Contact protection is the current bounded provider-wiring slice; public route/form exposure and a bounded P5-02 integration and handoff audit remain afterward.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, and contact protection. Opaque bucket derivation is the current bounded provider-wiring slice; public route/form exposure and a bounded P5-02 integration and handoff audit remain afterward.
 
 ---
 
@@ -150,7 +151,9 @@ P5-02H — atomic accepted-as-Candidate outcome                          Complet
     ↓
 P5-02I — Submission status-secret environment binding                  Completed #167
     ↓
-P5-02J — Submission contact protection                                 In progress
+P5-02J — Submission contact protection                                 Completed #168
+    ↓
+P5-02K — Opaque Submission rate-limit bucket derivation                In progress
     ↓
 remaining public Suggest route/form provider and exposure slices       Planned
     ↓
