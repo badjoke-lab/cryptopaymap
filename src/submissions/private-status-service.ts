@@ -58,12 +58,13 @@ export function createSubmissionPrivateStatusService(
       );
       if (!verified) notAvailable();
 
+      const exposesFollowUpText = ['needs_information', 'on_hold'].includes(record.workflowStatus);
       return submissionPublicStatusProjectionSchema.parse({
         publicId: record.publicId,
         statusLabel: publicStatusLabelForSubmission(record.workflowStatus, record.resolution),
-        requestedAction:
-          record.workflowStatus === 'needs_information' ? record.requestedAction : null,
-        publicMessage: record.workflowStatus === 'needs_information' ? record.publicMessage : null,
+        requestedAction: exposesFollowUpText ? record.requestedAction : null,
+        publicMessage: exposesFollowUpText ? record.publicMessage : null,
+        nextReviewAt: record.workflowStatus === 'on_hold' ? record.nextReviewAt : null,
         linkedPublicRecord: null,
         mediaDecisions: [],
         permittedActions: permittedActionsForStatus(record.workflowStatus),
