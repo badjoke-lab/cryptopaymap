@@ -69,6 +69,7 @@ export interface SubmissionPrivateStatusRecord {
 }
 
 export interface TransitionSubmissionPersistenceCommand {
+  eventId?: string;
   submissionId: string;
   expectedStatus: SubmissionWorkflowStatus;
   expectedUpdatedAt: Date;
