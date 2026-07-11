@@ -14,6 +14,7 @@ import './check-submission-durable-object-rate-limit';
 import './check-submission-rate-limit-bucket';
 import './check-submission-status-secret-environment';
 import './check-submission-turnstile-environment';
+import './check-suggest-http-route';
 import './check-verification-events';
 import { assetRegistry, findAssetCandidates } from '../src/registries/assets';
 import { findNetworkCandidates, networkRegistry } from '../src/registries/networks';

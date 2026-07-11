@@ -225,9 +225,11 @@ P5-02L — Trusted Cloudflare edge identity extraction                       Com
     ↓
 P5-02M — Durable Object distributed Submission rate limiting               Completed #171
     ↓
-P5-02N — Turnstile environment binding                                    In progress
+P5-02N — Turnstile environment binding                                    Completed #172
     ↓
-remaining public Suggest route/form composition and exposure slices
+P5-02O — Public Suggest HTTP route and safe response mapping               In progress
+    ↓
+remaining Suggest form/browser widget/CSP and configured-environment slices
     ↓
 P5-02 integration and handoff audit
 ```
@@ -347,9 +349,18 @@ P5-02M established:
 - Wrangler dry-run bundle validation through the repository schema-check CI path;
 - no raw identity in the provider contract and no public route exposure.
 
-P5-02N now establishes explicit Turnstile server/browser environment binding, one shared action value for widget and server verification, exact configured hostname/action enforcement through the existing Siteverify adapter, client-safe configuration separation, and bounded configuration failure behavior without public route exposure.
+P5-02N established:
 
-The active P5-02 work must continue public HTTP composition, safe error and Retry-After mapping, Suggest browser/form wiring, and configured-environment verification. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
+- explicit Turnstile server/browser environment binding;
+- one shared action value for widget configuration and server verification;
+- exact configured hostname/action enforcement through the existing Siteverify adapter;
+- client-safe configuration separation from the server secret;
+- bounded configuration failure behavior without configured-value disclosure;
+- no public route exposure.
+
+P5-02O now establishes the `POST /api/suggest` Pages Function route, strict HTTP envelope and byte limits, complete environment-backed provider composition, trusted edge identity to opaque bucket handoff, bounded 202/400/409/413/415/429/503 response mapping, and `Retry-After` behavior without adding the public Suggest form UI.
+
+The active P5-02 work must continue Suggest form/browser Turnstile widget/CSP wiring and configured-environment verification. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
 ### P5-03 — Payment and problem reports
 

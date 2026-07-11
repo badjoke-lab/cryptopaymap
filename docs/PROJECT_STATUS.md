@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02N — Turnstile environment binding
+P5-02O — Public Suggest HTTP route and safe response mapping
 
 ## Current repository state
 
@@ -31,7 +31,8 @@ P5-02N — Turnstile environment binding
 - P5-02K opaque Submission rate-limit bucket derivation is complete through #169.
 - P5-02L trusted Cloudflare edge identity extraction is complete through #170.
 - P5-02M Durable Object distributed Submission rate limiting is complete through #171.
-- P5-02N Turnstile environment binding is in progress without public route exposure.
+- P5-02N Turnstile environment binding is complete through #172.
+- P5-02O public Suggest HTTP composition and safe response mapping are in progress without a public Suggest form UI.
 
 ## Fixed review environment
 
@@ -70,7 +71,8 @@ Before P5-02 implementation or review, read:
 23. `docs/P5_02L_CLOUDFLARE_EDGE_IDENTITY.md`;
 24. `docs/P5_02M_DURABLE_OBJECT_RATE_LIMIT.md`;
 25. `docs/P5_02N_TURNSTILE_ENVIRONMENT_BINDING.md`;
-26. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+26. `docs/P5_02O_SUGGEST_HTTP_ROUTE.md`;
+27. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -114,9 +116,11 @@ P5-02L  Trusted Cloudflare edge identity extraction                       Comple
     ↓
 P5-02M  Durable Object distributed Submission rate limiting               Completed #171
     ↓
-P5-02N  Turnstile environment binding                                    In progress
+P5-02N  Turnstile environment binding                                    Completed #172
     ↓
-remaining public Suggest route/form composition and exposure slices
+P5-02O  Public Suggest HTTP route and safe response mapping               In progress
+    ↓
+remaining Suggest form/browser widget/CSP and configured-environment slices
     ↓
 P5-02 integration and handoff audit
 ```
@@ -144,7 +148,7 @@ The public Suggest route/form work must:
 
 ## Route and environment requirements before public intake exposure
 
-A public Suggest route must not be exposed with placeholder providers. It must wire and verify:
+The Suggest HTTP route must wire and verify:
 
 - concrete environment-backed contact encryption and email hashing;
 - status-secret HMAC key environment binding;
@@ -155,6 +159,8 @@ A public Suggest route must not be exposed with placeholder providers. It must w
 - route-level safe error mapping and Retry-After behavior;
 - no logging of challenge token, raw remote IP, plaintext email, plaintext status secret, or provider secret;
 - configured-environment verification of the complete route path.
+
+A repository route that fails closed when configuration is absent does not prove live intake readiness. The public Suggest form must not be enabled until the configured route path is verified.
 
 ## Retained Launch work
 
@@ -173,13 +179,13 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02N Turnstile environment binding, then continue public HTTP composition, safe error and Retry-After mapping, Suggest form/browser wiring, and configured-environment verification. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
+Complete P5-02O public Suggest HTTP composition and safe response mapping, then continue Suggest form/browser Turnstile widget/CSP wiring and configured-environment verification. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
 
 ## Blocked
 
 No known repository blocker to continuing the public Suggest route/form wiring.
 
-Public HTTP composition, safe error and Retry-After mapping, Suggest form/browser wiring, and configured deployment verification remain required before public Suggest intake is exposed. Status-secret HMAC binding is repository-complete through #167, contact protection through #168, opaque bucket derivation through #169, trusted edge identity extraction through #170, and distributed rate limiting through #171.
+Suggest form/browser widget/CSP wiring and configured deployment verification remain required before the public Suggest form is enabled. Status-secret HMAC binding is repository-complete through #167, contact protection through #168, opaque bucket derivation through #169, trusted edge identity extraction through #170, distributed rate limiting through #171, and Turnstile environment binding through #172.
 
 The P5-02M Durable Object worker and Pages binding must be deployed and verified in a configured environment before route activation. Repository dry-run compilation does not prove that live binding.
 
