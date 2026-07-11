@@ -19,13 +19,10 @@ const durableObjectNamespace = {
 
 const validEnvironment = {
   DATABASE_URL: 'postgresql://user:pass@example.test/cryptopaymap',
-  CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL:
-    'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM',
-  CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL:
-    'AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE',
+  CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL: 'AwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwM',
+  CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: 'AQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQE',
   CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: 'contact-v1',
-  CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL:
-    'AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI',
+  CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: 'AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgI',
   CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '180',
   CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL:
     'BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ',
@@ -54,18 +51,12 @@ describe('P5-02O Suggest HTTP environment composition', () => {
       'missing Durable Object binding',
       { ...validEnvironment, SUBMISSION_RATE_LIMIT_BUCKETS: undefined },
     ],
-    [
-      'invalid request limit',
-      { ...validEnvironment, CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: '0' },
-    ],
+    ['invalid request limit', { ...validEnvironment, CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: '0' }],
     [
       'invalid rate-limit window',
       { ...validEnvironment, CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: '86401' },
     ],
-    [
-      'missing Turnstile secret',
-      { ...validEnvironment, CPM_TURNSTILE_SECRET_KEY: undefined },
-    ],
+    ['missing Turnstile secret', { ...validEnvironment, CPM_TURNSTILE_SECRET_KEY: undefined }],
     [
       'invalid contact encryption key',
       { ...validEnvironment, CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: 'invalid' },
