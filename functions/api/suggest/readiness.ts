@@ -31,7 +31,7 @@ async function tokenMatches(provided: string, expected: string): Promise<boolean
   const [providedDigest, expectedDigest] = await Promise.all([digest(provided), digest(expected)]);
   let difference = 0;
   for (let index = 0; index < expectedDigest.length; index += 1) {
-    difference |= providedDigest[index] ^ expectedDigest[index];
+    difference |= providedDigest[index]! ^ expectedDigest[index]!;
   }
   return difference === 0;
 }
