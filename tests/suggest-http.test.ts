@@ -122,11 +122,13 @@ describe('P5-02O public Suggest HTTP boundary', () => {
     expect(response.status).toBe(202);
     expect(response.headers.get('Cache-Control')).toBe('no-store');
     expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
-    await expect(response.json()).resolves.toEqual({
+    const responseText = await response.text();
+    expect(JSON.parse(responseText)).toEqual({
       submissionReference: 'CPM-S-2026-000123',
       statusSecret: 'cpmss_example-secret',
       submittedAt: '2026-07-11T00:00:00.000Z',
     });
+    expect(responseText).not.toContain('203.0.113.10');
     expect(fixture.deriveBucketKey).toHaveBeenCalledWith('203.0.113.10');
     expect(fixture.submit).toHaveBeenCalledWith({
       requestId,
@@ -136,7 +138,6 @@ describe('P5-02O public Suggest HTTP boundary', () => {
       rawInput: expect.objectContaining({ submissionType: 'suggest' }),
       receivedAt: new Date('2026-07-11T00:00:00.000Z'),
     });
-    expect(JSON.stringify(await response.clone().json())).not.toContain('203.0.113.10');
   });
 
   it('returns 429 with bounded Retry-After for rate-limit denial', async () => {
@@ -199,8 +200,9 @@ describe('P5-02O public Suggest HTTP boundary', () => {
     const response = await fixture.handler(pagesContext(request()));
 
     expect(response.status).toBe(status);
-    await expect(response.json()).resolves.toEqual({ error: publicError });
-    expect(await response.clone().text()).not.toContain(error.message);
+    const responseText = await response.text();
+    expect(JSON.parse(responseText)).toEqual({ error: publicError });
+    expect(responseText).not.toContain(error.message);
   });
 
   it('rejects unsupported media type before environment composition', async () => {
