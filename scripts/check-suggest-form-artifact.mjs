@@ -8,8 +8,8 @@ const headers = readFileSync(join('dist', '_headers'), 'utf8');
 const requiredSuggestFragments = [
   'Suggest a place or online service',
   'Suggestions remain private until reviewed',
-  'Submit suggestion',
-  'A submission creates private review material only',
+  'Preparing the secure submission form',
+  'Loading the review and verification configuration for this environment.',
 ];
 
 for (const fragment of requiredSuggestFragments) {
@@ -37,6 +37,7 @@ const forbiddenSuggestFragments = [
   'CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL',
   'CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL',
   'CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL',
+  'CPM_SUGGEST_READINESS_TOKEN',
   'DATABASE_URL',
   'SUBMISSION_RATE_LIMIT_BUCKETS',
   'encryptedEmail',
