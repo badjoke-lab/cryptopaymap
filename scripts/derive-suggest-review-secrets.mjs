@@ -18,18 +18,15 @@ function decodeCanonicalBase64Url(value) {
 }
 
 function derive(seed, label, length = 32) {
-  return Buffer.from(
-    hkdfSync('sha256', seed, derivationSalt, Buffer.from(label, 'utf8'), length),
-  );
+  return Buffer.from(hkdfSync('sha256', seed, derivationSalt, Buffer.from(label, 'utf8'), length));
 }
 
 export function deriveSuggestReviewSecrets(seedBase64Url) {
   const seed = decodeCanonicalBase64Url(seedBase64Url);
   return Object.freeze({
-    CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL: derive(
-      seed,
-      'submission-status-hmac-key',
-    ).toString('base64url'),
+    CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL: derive(seed, 'submission-status-hmac-key').toString(
+      'base64url',
+    ),
     CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: derive(
       seed,
       'submission-contact-encryption-key',
