@@ -43,11 +43,12 @@ function renderConfiguredForm() {
 
 describe('P5-02Q runtime-configured Suggest form', () => {
   it('loads same-origin client-safe configuration before rendering Turnstile', async () => {
-    const fetchMock = vi.fn(async () =>
-      new Response(
-        JSON.stringify({ siteKey: 'public-site-key', action: 'submission_intake' }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } },
-      ),
+    const fetchMock = vi.fn(
+      async () =>
+        new Response(JSON.stringify({ siteKey: 'public-site-key', action: 'submission_intake' }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }),
     );
     vi.stubGlobal('fetch', fetchMock);
 
@@ -69,7 +70,10 @@ describe('P5-02Q runtime-configured Suggest form', () => {
   });
 
   it('fails closed when runtime configuration cannot be loaded', async () => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response('unavailable', { status: 503 })));
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => new Response('unavailable', { status: 503 })),
+    );
 
     renderConfiguredForm();
 
@@ -80,11 +84,12 @@ describe('P5-02Q runtime-configured Suggest form', () => {
   it('fails closed on malformed client configuration', async () => {
     vi.stubGlobal(
       'fetch',
-      vi.fn(async () =>
-        new Response(JSON.stringify({ siteKey: 'public-site-key', action: 'invalid action' }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        }),
+      vi.fn(
+        async () =>
+          new Response(JSON.stringify({ siteKey: 'public-site-key', action: 'invalid action' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }),
       ),
     );
 
