@@ -8,16 +8,18 @@
 
 P5-02Q turns the fixed review deployment from a static review surface into a deployment path that can verify the configured Suggest runtime boundary without claiming more than the environment proves.
 
-The slice addresses two concrete gaps left after P5-02P:
+The slice provides:
 
-1. the SQLite-backed Durable Object Worker existed in the repository but the fixed review workflow did not deploy it or bind it to the Pages Function environment;
-2. the public Suggest page depended on build-time Turnstile site-key/action values, while the actual server verification contract is runtime environment-backed.
-
-P5-02Q adds explicit deployment, runtime configuration delivery, authenticated readiness verification, and deployment receipt evidence.
+- separate deployment of the SQLite-backed Submission rate-limit Durable Object Worker;
+- explicit Pages-to-Worker Durable Object binding;
+- runtime-safe Turnstile browser configuration;
+- authenticated database and Durable Object readiness verification;
+- fixed review post-deployment checks;
+- a durable deployment receipt.
 
 ## Cloudflare deployment model
 
-The Submission rate-limit provider remains a separate Worker:
+The Submission rate-limit provider is the separate Worker:
 
 ```text
 cryptopaymap-submission-rate-limit
@@ -42,64 +44,104 @@ class_name: SubmissionRateLimitBucket
 script_name: cryptopaymap-submission-rate-limit
 ```
 
-The binding is declared for both the top-level Pages configuration and the preview environment used by the fixed `review` branch deployment.
+The binding is declared for the Pages configuration and the preview environment used by the fixed `review` branch deployment.
 
 ## Deployment order
-
-The fixed review workflow runs in this order:
 
 ```text
 validated staging-review build
 ↓
 Cloudflare credential check
 ↓
-configured Suggest input check
+review database URL and root-seed check
+↓
+stable review-secret derivation
 ↓
 Durable Object Worker deploy
 ↓
-Pages secret synchronization for preview
+Pages preview secret synchronization
 ↓
-Pages review deployment with wrangler.jsonc binding configuration
+Pages review deployment with Durable Object binding
 ↓
 client configuration endpoint verification
 ↓
-authenticated database + DO readiness verification
+authenticated database + Durable Object readiness verification
 ↓
-Turnstile CSP header verification
+Turnstile CSP verification
 ↓
 deployment receipt publication
 ```
 
-A later step must not run when an earlier required deployment step failed.
+Later steps must not run after a required earlier step fails.
 
-## Pages secret synchronization
+## Manual repository secrets
 
-The workflow requires configured review values for:
+The fixed review workflow requires only these two Suggest-specific repository secrets:
 
 ```text
 DATABASE_URL
+CPM_REVIEW_SECRET_SEED_BASE64URL
+```
+
+`DATABASE_URL` is the PostgreSQL connection string for the fixed review database.
+
+`CPM_REVIEW_SECRET_SEED_BASE64URL` must be canonical unpadded Base64URL encoding of exactly 32 random bytes. It is a root secret for the fixed review environment only.
+
+The root seed must remain stable while review Submission data needs to remain readable and verifiable. Rotating it changes every derived key and invalidates existing review status secrets, contact ciphertext access, email hashes, rate-limit buckets, and readiness authentication.
+
+The root seed must not be used in production and must not be reused by another project or environment.
+
+## Stable review-secret derivation
+
+The workflow uses HKDF-SHA-256 with versioned domain separation:
+
+```text
+salt: cryptopaymap:review-suggest:v1
+```
+
+It derives separate values for:
+
+```text
 CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL
 CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL
-CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID
 CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL
-CPM_SUBMISSION_CONTACT_RETENTION_DAYS
 CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL
-CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS
-CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS
-CPM_TURNSTILE_SECRET_KEY
-PUBLIC_TURNSTILE_SITE_KEY
-CPM_TURNSTILE_EXPECTED_HOSTNAME
-CPM_TURNSTILE_EXPECTED_ACTION
 CPM_SUGGEST_READINESS_TOKEN
 ```
 
-Values are assembled into a temporary runner-local JSON file, bulk synchronized into the Pages preview environment, and deleted from the runner after the command completes.
+Each cryptographic key is 32 bytes. Each use has a different HKDF info label. Derived values are deterministic for the same seed and distinct across purposes.
 
-The workflow does not print values.
+The workflow masks derived values, writes them only to runner-local files with restricted permissions, synchronizes them to the Pages preview environment, and deletes the temporary files.
+
+## Fixed review policy values
+
+The review environment uses explicit non-production policy values:
+
+```text
+CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID=review-v1
+CPM_SUBMISSION_CONTACT_RETENTION_DAYS=180
+CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS=5
+CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS=600
+CPM_TURNSTILE_EXPECTED_HOSTNAME=review.cryptopaymap-staging.pages.dev
+CPM_TURNSTILE_EXPECTED_ACTION=submission_intake
+```
+
+These values are deployment policy, not secrets.
+
+## Turnstile review mode
+
+The fixed review environment uses Cloudflare's published always-pass testing pair:
+
+```text
+site key:   1x00000000000000000000AA
+secret key: 1x0000000000000000000000000000000AA
+```
+
+These are official testing values, not production credentials. They are used only on the fixed review environment so automated and manual integration work is not blocked by a production Turnstile widget.
+
+Production must use a real widget and secret pair with its own hostname policy.
 
 ## Runtime client configuration
-
-The public Suggest page no longer reads Turnstile site key or action from build-time `import.meta.env` values.
 
 The browser loads:
 
@@ -107,7 +149,7 @@ The browser loads:
 GET /api/suggest/config
 ```
 
-The endpoint validates the existing Turnstile runtime environment and returns only:
+The endpoint returns only:
 
 ```json
 {
@@ -116,33 +158,9 @@ The endpoint validates the existing Turnstile runtime environment and returns on
 }
 ```
 
-It does not return:
+It does not return the Turnstile secret, expected hostname, database URL, root seed, derived keys, or readiness token.
 
-- Turnstile secret key;
-- expected hostname;
-- database URL;
-- contact protection keys;
-- status-secret key;
-- rate-limit bucket key;
-- readiness token.
-
-When configuration is unavailable or malformed, the endpoint returns a bounded `503` and the browser form remains unavailable.
-
-## Browser fail-closed behavior
-
-`ConfiguredSuggestForm` loads same-origin runtime configuration before rendering the existing `SuggestForm`.
-
-States are:
-
-```text
-loading
-ready
-error
-```
-
-Only `ready` renders the Suggest form and Turnstile widget.
-
-A failed request, non-200 response, or malformed client configuration renders an unavailable state and does not render the submission button.
+When runtime configuration is unavailable or malformed, the endpoint returns a bounded `503` and the browser form remains unavailable.
 
 ## Readiness boundary
 
@@ -150,76 +168,53 @@ The workflow verifies:
 
 ```text
 GET /api/suggest/readiness
-Authorization: Bearer <configured readiness token>
+Authorization: Bearer <derived readiness token>
 ```
 
-The readiness token is a dedicated secret and is not reused from database, HMAC, encryption, or Turnstile secrets.
-
-Unauthorized requests receive:
-
-```text
-404 not_found
-```
+Unauthorized requests receive `404 not_found`.
 
 Authorized verification performs:
 
 1. complete Suggest HTTP runtime composition;
 2. database URL validation;
-3. live lightweight database query;
+3. a live lightweight database query;
 4. live Durable Object namespace resolution;
-5. live request to the bound Durable Object `/health` path;
+5. a live request to the bound Durable Object `/health` path;
 6. strict `{ "status": "ready" }` response validation.
 
 Success returns only:
 
 ```json
-{
-  "ready": true
-}
+{ "ready": true }
 ```
 
 Failure returns only:
 
 ```json
-{
-  "ready": false
-}
+{ "ready": false }
 ```
 
 No provider detail is returned.
 
 ## Durable Object health probe
 
-The `SubmissionRateLimitBucket` accepts:
-
-```text
-GET /health
-```
-
-and returns:
+`GET /health` returns:
 
 ```json
-{
-  "status": "ready"
-}
+{ "status": "ready" }
 ```
 
-This path does not consume a rate-limit request or update the fixed-window counter row.
-
-The Durable Object constructor still verifies/creates its SQLite table as part of normal object initialization.
+The health path does not consume a rate-limit request or update the fixed-window counter.
 
 ## Post-deployment verification
 
-After Pages deployment, the workflow retries the fixed review URL until the new deployment is observable.
+The workflow retries the fixed review URL until the new deployment is observable. It verifies:
 
-It verifies:
+- `/api/suggest/config` returns the exact fixed-review site key and action;
+- `/api/suggest/readiness` returns `200` and `{ ready: true }` with the derived bearer token;
+- `/suggest` includes the required Turnstile CSP directives.
 
-- `/api/suggest/config` returns `200` and a valid client-safe shape;
-- `/api/suggest/readiness` returns `200` and `{ ready: true }` with the dedicated bearer token;
-- `/suggest` response CSP includes the Cloudflare challenge origin;
-- `frame-src` includes the Cloudflare challenge origin.
-
-The fixed review URL is:
+Fixed review URL:
 
 ```text
 https://review.cryptopaymap-staging.pages.dev
@@ -227,15 +222,13 @@ https://review.cryptopaymap-staging.pages.dev
 
 ## Deployment receipt
 
-The existing final success value remains:
+Full success preserves:
 
 ```text
 status: deployed
 ```
 
-for compatibility with existing review-state interpretation.
-
-The receipt now also records:
+The receipt records:
 
 ```text
 checks.credentials
@@ -246,7 +239,9 @@ checks.pagesDeployment
 checks.configuredVerification
 ```
 
-Failure status values are bounded:
+It also records non-secret review configuration metadata, including the derivation version, test-key mode, retention days, and rate-limit policy.
+
+Failure statuses remain bounded:
 
 ```text
 missing_credentials
@@ -257,66 +252,62 @@ deploy_failed
 verification_failed
 ```
 
-Repository merge must not be interpreted as configured live verification. The receipt for the intended main commit is the deployment evidence.
+Repository merge is not configured-environment proof. The receipt for the intended `main` commit is the deployment evidence.
 
-## What P5-02Q proves
+## What readiness proves
 
-When the receipt for the intended commit records `status: deployed` and all checks are `success`, P5-02Q proves:
+A successful receipt proves:
 
-- the DO Worker deployment step succeeded;
+- Cloudflare deployment credentials were accepted;
+- required review inputs were present and the seed was valid;
+- the Durable Object Worker deployment step succeeded;
 - Pages preview secret synchronization succeeded;
 - the Pages review deployment succeeded;
-- runtime client-safe Turnstile configuration is reachable;
+- runtime client configuration is reachable;
 - the database accepts a lightweight query;
-- the Pages Function can resolve and call the bound DO namespace;
-- the DO health response is valid;
-- the `/suggest` Turnstile CSP is present at the fixed review URL.
+- the Pages Function can resolve and call the bound Durable Object;
+- the deployed Suggest CSP is present.
 
-## What P5-02Q does not prove
+## What readiness does not prove
 
-P5-02Q does not prove:
+It does not prove:
 
-- a human-completed Turnstile challenge succeeds;
-- Siteverify accepts a real token for the configured hostname and action;
-- a real Suggest POST persists successfully end to end;
-- deterministic replay of a real live submission succeeds;
-- configured 429 behavior is reached under a real rate-limit sequence;
-- log streams contain no sensitive values unless logs are separately inspected;
-- reviewer workflow behavior for the resulting live Submission;
+- production Turnstile configuration;
+- a production human challenge;
+- a real production Siteverify result;
+- a successful live Suggest POST and private persistence;
+- deterministic live replay;
+- configured live 429 behavior;
+- sensitive-log inspection;
+- reviewer workflow behavior for a resulting live Submission;
 - P5-02 integration closure;
 - P5-03 readiness.
 
-Those claims require explicit later evidence and must not be inferred from readiness success.
-
 ## Security and privacy invariants
 
-P5-02Q preserves these boundaries:
-
-- server secrets remain server-only;
-- browser configuration returns only public site key and action;
-- readiness uses a dedicated bearer token;
+- the root seed and all derived values remain server-only;
+- one seed is expanded only through versioned, purpose-separated HKDF labels;
+- the browser receives only the public test site key and action;
 - readiness failures are generic;
-- the DO health path does not consume user rate-limit quota;
-- no raw IP, plaintext email, plaintext status secret, challenge token, database URL, provider secret, or key material is returned;
-- temporary secret-sync files are deleted on the runner;
+- temporary secret files are deleted;
+- no raw IP, plaintext email, plaintext status secret, challenge token, database URL, root seed, or derived key is returned;
 - public Suggest intake still creates private review material only;
 - no direct Candidate, canonical, export, or publication mutation is added.
 
 ## Completion criteria
 
-P5-02Q repository work is complete when:
+Repository work is complete when:
 
-1. Pages wrangler configuration contains the exact DO binding with `script_name`;
-2. the fixed review workflow deploys the DO Worker before Pages;
-3. configured review inputs are checked before deployment;
-4. Pages preview secrets are synchronized without value logging;
-5. the Suggest browser loads client-safe runtime config from same origin;
-6. build-time Turnstile config dependency is removed from `/suggest`;
-7. readiness validates full runtime composition, database connectivity, and live DO binding/health;
-8. readiness is protected by a dedicated bearer secret;
+1. the Pages Durable Object binding is explicit;
+2. the fixed review workflow deploys the Worker before Pages;
+3. manual Suggest configuration is reduced to `DATABASE_URL` and one valid root seed;
+4. stable purpose-separated derivation is tested;
+5. fixed review policy values and official Turnstile testing keys are explicit;
+6. Pages secrets are synchronized without value logging;
+7. runtime browser configuration remains client-safe and fail-closed;
+8. readiness validates runtime composition, database connectivity, and live Durable Object health;
 9. post-deploy verification checks config, readiness, and CSP;
-10. deployment receipt preserves `deployed` success compatibility and records detailed check outcomes;
-11. focused tests and deployment-contract checks pass;
-12. full GitHub CI passes.
+10. the deployment receipt records detailed outcomes;
+11. focused tests, deployment-contract checks, and full GitHub CI pass.
 
-Configured environment verification is complete only after a receipt for the intended main commit records successful deployment and configured verification. Repository CI alone is not sufficient.
+Configured review verification completes only after the receipt for the intended main commit records successful deployment and configured verification.
