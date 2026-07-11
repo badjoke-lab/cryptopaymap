@@ -45,7 +45,7 @@ export function ConfiguredSuggestForm({ assets, networks }: ConfiguredSuggestFor
   if (state === 'loading') {
     return (
       <StatePanel
-        tone="info"
+        tone="loading"
         title="Preparing the secure submission form"
         description="Loading the review and verification configuration for this environment."
       />
