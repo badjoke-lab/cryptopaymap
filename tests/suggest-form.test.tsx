@@ -110,14 +110,7 @@ describe('P5-02P public Suggest form', () => {
   });
 
   it('fails closed when browser Turnstile configuration is unavailable', async () => {
-    render(
-      <SuggestForm
-        siteKey=""
-        action=""
-        assets={[]}
-        networks={[]}
-      />,
-    );
+    render(<SuggestForm siteKey="" action="" assets={[]} networks={[]} />);
 
     expect(screen.getByRole('alert')).toHaveTextContent('Verification is unavailable');
     expect(screen.getByRole('button', { name: 'Submit suggestion' })).toBeDisabled();
