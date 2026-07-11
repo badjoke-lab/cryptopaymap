@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react';
-import { Button } from '../ui/Button';
-import { FieldFrame, TextField } from '../ui/Field';
-import { SelectField, type SelectOption } from '../ui/SelectField';
-import { StatePanel } from '../ui/StatePanel';
+import type { SuggestSubmissionIntake } from '../../submissions/suggest-contract';
 import {
   browserSuggestValidationMessages,
   buildSuggestSubmissionIntakeFromBrowserForm,
   emptySuggestBrowserFormValues,
   type SuggestBrowserFormValues,
 } from '../../submissions/suggest-browser-contract';
+import { Button } from '../ui/Button';
+import { FieldFrame, TextField } from '../ui/Field';
+import { StatePanel } from '../ui/StatePanel';
 
 const turnstileScriptId = 'cpm-turnstile-api';
 const turnstileScriptUrl = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
@@ -57,7 +57,17 @@ interface SuggestPublicError {
   error: string;
 }
 
-const relationshipOptions: SelectOption[] = [
+interface NativeSelectProps {
+  id: string;
+  label: string;
+  value: string;
+  options: SuggestFormOption[];
+  placeholder?: string;
+  optional?: boolean;
+  onChange(value: string): void;
+}
+
+const relationshipOptions: SuggestFormOption[] = [
   { value: 'customer', label: 'Customer' },
   { value: 'employee', label: 'Employee' },
   { value: 'owner_or_authorized_representative', label: 'Owner or authorized representative' },
@@ -66,12 +76,12 @@ const relationshipOptions: SelectOption[] = [
   { value: 'other', label: 'Other' },
 ];
 
-const routeOptions: SelectOption[] = [
+const routeOptions: SuggestFormOption[] = [
   { value: 'direct_wallet', label: 'Direct wallet' },
   { value: 'processor_checkout', label: 'Processor checkout' },
 ];
 
-const paymentMethodOptions: SelectOption[] = [
+const paymentMethodOptions: SuggestFormOption[] = [
   { value: 'onchain', label: 'On-chain transfer' },
   { value: 'lightning_invoice', label: 'Lightning invoice' },
   { value: 'lightning_nfc', label: 'Lightning NFC' },
@@ -81,6 +91,34 @@ const paymentMethodOptions: SelectOption[] = [
   { value: 'invoice', label: 'Invoice' },
   { value: 'payment_link', label: 'Payment link' },
 ];
+
+function NativeSelect({
+  id,
+  label,
+  value,
+  options,
+  placeholder = 'Select an option',
+  optional = false,
+  onChange,
+}: NativeSelectProps) {
+  return (
+    <FieldFrame id={id} label={label} optional={optional}>
+      <select
+        id={id}
+        className="min-h-11 w-full rounded-control border border-border bg-surface px-3 py-2 text-base text-ink shadow-sm focus:border-brand-600 focus:outline-none focus:ring-3 focus:ring-brand-50"
+        value={value}
+        onChange={(event) => onChange(event.currentTarget.value)}
+      >
+        <option value="">{placeholder}</option>
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+    </FieldFrame>
+  );
+}
 
 function todayDate(): string {
   return new Date().toISOString().slice(0, 10);
@@ -232,7 +270,7 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
       return;
     }
 
-    let submission;
+    let submission: SuggestSubmissionIntake;
     try {
       submission = buildSuggestSubmissionIntakeFromBrowserForm(values);
     } catch (error) {
@@ -296,11 +334,10 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
     );
   }
 
-  const assetOptions: SelectOption[] = assets.map((asset) => ({ ...asset }));
-  const networkOptions: SelectOption[] = networks.map((network) => ({ ...network }));
   const isPhysical = values.suggestionKind === 'physical_place';
   const processorRoute = values.routeType === 'processor_checkout';
   const configurationUnavailable = !siteKey || !action;
+  const step = (physical: string, online: string) => (isPhysical ? physical : online);
 
   return (
     <form className="grid gap-8" onSubmit={submit} noValidate>
@@ -309,15 +346,15 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
           <p className="m-0 text-sm font-semibold text-brand-700">1. What are you suggesting?</p>
           <h2 className="mt-1 text-xl font-semibold text-ink">Business or service</h2>
         </div>
-        <SelectField
+        <NativeSelect
           id="suggestion-kind"
           label="Suggestion type"
+          value={values.suggestionKind}
           options={[
             { value: 'physical_place', label: 'Physical place' },
             { value: 'online_service', label: 'Online service' },
           ]}
-          value={values.suggestionKind}
-          onValueChange={(value) =>
+          onChange={(value) =>
             update('suggestionKind', value as SuggestBrowserFormValues['suggestionKind'])
           }
         />
@@ -332,7 +369,9 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
         <TextField
           id="website-url"
           label="Official HTTPS website"
-          hint={isPhysical ? 'Optional, but useful for verification.' : 'Required for online services.'}
+          hint={
+            isPhysical ? 'Optional, but useful for verification.' : 'Required for online services.'
+          }
           optional={isPhysical}
           type="url"
           value={values.websiteUrl}
@@ -398,50 +437,52 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
 
       <section className="grid gap-5 rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
         <div>
-          <p className="m-0 text-sm font-semibold text-brand-700">{isPhysical ? '3' : '2'}. Payment details</p>
+          <p className="m-0 text-sm font-semibold text-brand-700">
+            {step('3', '2')}. Payment details
+          </p>
           <h2 className="mt-1 text-xl font-semibold text-ink">How can someone pay?</h2>
           <p className="mt-2 text-sm leading-6 text-muted">
             Unknown details may be left blank, but at least one concrete payment detail is required.
           </p>
         </div>
         <div className="grid gap-5 sm:grid-cols-2">
-          <SelectField
+          <NativeSelect
             id="asset"
             label="Asset"
             optional
-            options={assetOptions}
+            options={assets}
             placeholder="Unknown"
-            value={values.assetSlug || undefined}
-            onValueChange={(value) => update('assetSlug', value)}
+            value={values.assetSlug}
+            onChange={(value) => update('assetSlug', value)}
           />
-          <SelectField
+          <NativeSelect
             id="network"
             label="Network"
             optional
-            options={networkOptions}
+            options={networks}
             placeholder="Unknown"
-            value={values.networkSlug || undefined}
-            onValueChange={(value) => update('networkSlug', value)}
+            value={values.networkSlug}
+            onChange={(value) => update('networkSlug', value)}
           />
-          <SelectField
+          <NativeSelect
             id="route-type"
             label="Payment route"
             optional
             options={routeOptions}
             placeholder="Unknown"
-            value={values.routeType || undefined}
-            onValueChange={(value) =>
+            value={values.routeType}
+            onChange={(value) =>
               update('routeType', value as SuggestBrowserFormValues['routeType'])
             }
           />
-          <SelectField
+          <NativeSelect
             id="payment-method"
             label="Payment method"
             optional
             options={paymentMethodOptions}
             placeholder="Unknown"
-            value={values.paymentMethod || undefined}
-            onValueChange={(value) =>
+            value={values.paymentMethod}
+            onChange={(value) =>
               update('paymentMethod', value as SuggestBrowserFormValues['paymentMethod'])
             }
           />
@@ -508,7 +549,9 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
 
       <section className="grid gap-5 rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
         <div>
-          <p className="m-0 text-sm font-semibold text-brand-700">{isPhysical ? '4' : '3'}. Evidence and contact</p>
+          <p className="m-0 text-sm font-semibold text-brand-700">
+            {step('4', '3')}. Evidence and contact
+          </p>
           <h2 className="mt-1 text-xl font-semibold text-ink">Help reviewers verify it</h2>
         </div>
         <TextField
@@ -528,12 +571,12 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
           maxLength={1_000}
           onChange={(event) => update('evidenceSummary', event.currentTarget.value)}
         />
-        <SelectField
+        <NativeSelect
           id="relationship"
           label="Your relationship to this business or service"
           options={relationshipOptions}
           value={values.relationship}
-          onValueChange={(value) =>
+          onChange={(value) =>
             update('relationship', value as SuggestBrowserFormValues['relationship'])
           }
         />
@@ -562,7 +605,9 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
 
       <section className="grid gap-5 rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
         <div>
-          <p className="m-0 text-sm font-semibold text-brand-700">{isPhysical ? '5' : '4'}. Review and submit</p>
+          <p className="m-0 text-sm font-semibold text-brand-700">
+            {step('5', '4')}. Review and submit
+          </p>
           <h2 className="mt-1 text-xl font-semibold text-ink">Confirm the submission terms</h2>
         </div>
         <label className="flex min-h-11 items-start gap-3 text-sm leading-6 text-ink">
@@ -572,7 +617,11 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
             checked={values.privacyNoticeAccepted}
             onChange={(event) => update('privacyNoticeAccepted', event.currentTarget.checked)}
           />
-          I have read the <a className="font-semibold text-brand-700" href="/privacy">Privacy notice</a>.
+          I have read the{' '}
+          <a className="font-semibold text-brand-700" href="/privacy">
+            Privacy notice
+          </a>
+          .
         </label>
         <label className="flex min-h-11 items-start gap-3 text-sm leading-6 text-ink">
           <input
@@ -581,7 +630,11 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
             checked={values.submissionTermsAccepted}
             onChange={(event) => update('submissionTermsAccepted', event.currentTarget.checked)}
           />
-          I agree to the <a className="font-semibold text-brand-700" href="/terms">submission terms</a> and understand that submissions are reviewed before public data changes.
+          I agree to the{' '}
+          <a className="font-semibold text-brand-700" href="/terms">
+            submission terms
+          </a>{' '}
+          and understand that submissions are reviewed before public data changes.
         </label>
 
         <div>
@@ -589,10 +642,11 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
           <div
             ref={turnstileContainerRef}
             className="min-h-16 w-full overflow-hidden rounded-control"
-            aria-label="Turnstile verification"
           />
           {challengeState === 'loading' ? (
-            <p className="mt-2 text-sm text-muted" aria-live="polite">Loading verification…</p>
+            <p className="mt-2 text-sm text-muted" aria-live="polite">
+              Loading verification…
+            </p>
           ) : null}
           {challengeState === 'error' ? (
             <p className="mt-2 text-sm font-medium text-danger" role="alert">
@@ -605,12 +659,17 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
           <div className="rounded-control border border-danger/30 bg-danger/5 p-4" role="alert">
             <p className="m-0 font-semibold text-danger">Check these details</p>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-ink">
-              {messages.map((message) => <li key={message}>{message}</li>)}
+              {messages.map((message) => (
+                <li key={message}>{message}</li>
+              ))}
             </ul>
           </div>
         ) : null}
         {submitError ? (
-          <p className="m-0 rounded-control border border-danger/30 bg-danger/5 p-4 text-sm font-medium text-danger" role="alert">
+          <p
+            className="m-0 rounded-control border border-danger/30 bg-danger/5 p-4 text-sm font-medium text-danger"
+            role="alert"
+          >
             {submitError}
           </p>
         ) : null}
@@ -619,12 +678,15 @@ export function SuggestForm({ siteKey, action, assets, networks }: SuggestFormPr
           type="submit"
           size="lg"
           loading={submitState === 'submitting'}
-          disabled={configurationUnavailable || challengeState === 'error' || challengeToken === null}
+          disabled={
+            configurationUnavailable || challengeState === 'error' || challengeToken === null
+          }
         >
           Submit suggestion
         </Button>
         <p className="m-0 text-xs leading-5 text-muted">
-          A submission creates private review material only. It does not automatically publish or change a CryptoPayMap record.
+          A submission creates private review material only. It does not automatically publish or
+          change a CryptoPayMap record.
         </p>
       </section>
     </form>
