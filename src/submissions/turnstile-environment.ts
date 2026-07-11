@@ -7,9 +7,7 @@ const hostnameSchema = z
   .string()
   .min(1)
   .max(253)
-  .regex(
-    /^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/,
-  );
+  .regex(/^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)*[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/);
 const actionSchema = z.string().regex(/^[A-Za-z0-9_-]{1,32}$/);
 
 export const submissionTurnstileEnvironmentSchema = z
