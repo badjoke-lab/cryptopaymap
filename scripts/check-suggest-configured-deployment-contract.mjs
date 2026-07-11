@@ -109,7 +109,10 @@ const first = deriveSuggestReviewSecrets(seedOne);
 const replay = deriveSuggestReviewSecrets(seedOne);
 const changed = deriveSuggestReviewSecrets(seedTwo);
 
-assert(JSON.stringify(first) === JSON.stringify(replay), 'Review secret derivation is not deterministic.');
+assert(
+  JSON.stringify(first) === JSON.stringify(replay),
+  'Review secret derivation is not deterministic.',
+);
 assert(
   JSON.stringify(first) !== JSON.stringify(changed),
   'Review secret derivation did not change for a different seed.',
