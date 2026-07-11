@@ -227,9 +227,11 @@ P5-02M — Durable Object distributed Submission rate limiting               Com
     ↓
 P5-02N — Turnstile environment binding                                    Completed #172
     ↓
-P5-02O — Public Suggest HTTP route and safe response mapping               In progress
+P5-02O — Public Suggest HTTP route and safe response mapping               Completed #173
     ↓
-remaining Suggest form/browser widget/CSP and configured-environment slices
+P5-02P — Public Suggest form and Turnstile browser wiring                  In progress
+    ↓
+configured-environment verification
     ↓
 P5-02 integration and handoff audit
 ```
@@ -358,9 +360,19 @@ P5-02N established:
 - bounded configuration failure behavior without configured-value disclosure;
 - no public route exposure.
 
-P5-02O now establishes the `POST /api/suggest` Pages Function route, strict HTTP envelope and byte limits, complete environment-backed provider composition, trusted edge identity to opaque bucket handoff, bounded 202/400/409/413/415/429/503 response mapping, and `Retry-After` behavior without adding the public Suggest form UI.
+P5-02O established:
 
-The active P5-02 work must continue Suggest form/browser Turnstile widget/CSP wiring and configured-environment verification. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
+- the `POST /api/suggest` Pages Function route;
+- strict HTTP envelope, UUID idempotency key, and streamed body-byte limits;
+- complete environment-backed DB, status-secret, contact-protection, opaque-bucket, Durable Object limiter, Turnstile, and private Suggest intake composition;
+- trusted edge identity to opaque bucket handoff;
+- bounded 202/400/409/413/415/429/503 response mapping;
+- bounded `Retry-After` behavior;
+- no browser form UI or canonical/public mutation.
+
+P5-02P now establishes the public `/contribute` and `/suggest` browser surfaces, a strict browser payload builder that reuses the existing Suggest schema, explicit Turnstile rendering, browser POST orchestration and private receipt rendering, bounded public error presentation, `/suggest`-scoped Turnstile CSP, and build-artifact leakage checks.
+
+The active P5-02 work must continue configured-environment verification of the complete Suggest route path. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
 ### P5-03 — Payment and problem reports
 

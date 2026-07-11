@@ -70,12 +70,13 @@ P5-02K  Opaque Submission rate-limit bucket derivation                   Complet
 P5-02L  Trusted Cloudflare edge identity extraction                      Completed #170
 P5-02M  Durable Object distributed Submission rate limiting              Completed #171
 P5-02N  Turnstile environment binding                                   Completed #172
-P5-02O  Public Suggest HTTP route and safe response mapping              In progress
-Remaining Suggest form/browser widget/CSP and configured-environment slices Planned
+P5-02O  Public Suggest HTTP route and safe response mapping              Completed #173
+P5-02P  Public Suggest form and Turnstile browser wiring                 In progress
+Configured-environment Suggest verification                            Planned
 P5-02 integration and handoff audit                                    Planned
 ```
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, and Turnstile environment binding. Public Suggest HTTP composition and safe response mapping are the current bounded slice; form/browser widget/CSP wiring, configured-environment verification, and a bounded P5-02 integration and handoff audit remain afterward.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, and the public Suggest HTTP route. Public Suggest form and browser Turnstile wiring are the current bounded slice; configured-environment verification and a bounded P5-02 integration and handoff audit remain afterward.
 
 ---
 
@@ -165,9 +166,11 @@ P5-02M — Durable Object distributed Submission rate limiting           Complet
     ↓
 P5-02N — Turnstile environment binding                                Completed #172
     ↓
-P5-02O — Public Suggest HTTP route and safe response mapping           In progress
+P5-02O — Public Suggest HTTP route and safe response mapping           Completed #173
     ↓
-remaining Suggest form/browser widget/CSP and configured-environment slices Planned
+P5-02P — Public Suggest form and Turnstile browser wiring              In progress
+    ↓
+configured-environment Suggest verification                           Planned
     ↓
 P5-02 integration and handoff audit                                    Planned
 ```

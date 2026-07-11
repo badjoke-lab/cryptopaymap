@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Contribute — CryptoPayMap"
+  description="Contribute payment information to CryptoPayMap through reviewed submission workflows."
+>
+  <header class="safe-area-inline page-container py-10 sm:py-14">
+    <p class="m-0 text-sm font-semibold text-brand-700">Contribute</p>
+    <h1 class="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      Help improve verified payment information
+    </h1>
+    <p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+      Public submissions enter a private review workflow. They do not automatically change Confirmed records, public exports, or publication state.
+    </p>
+  </header>
+
+  <section class="safe-area-inline page-container grid gap-5 pb-12 sm:grid-cols-2 sm:pb-16 lg:grid-cols-3">
+    <article class="rounded-card border border-border bg-surface p-6 shadow-sm sm:col-span-2 lg:col-span-1">
+      <p class="m-0 text-sm font-semibold text-brand-700">Available now</p>
+      <h2 class="mt-2 text-xl font-semibold text-ink">Suggest a place or service</h2>
+      <p class="mt-3 text-sm leading-6 text-muted">
+        Propose a physical place or online service with payment details and public Evidence for review.
+      </p>
+      <a
+        class="motion-feedback mt-5 inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
+        href="/suggest"
+      >
+        Open Suggest form
+      </a>
+    </article>
+
+    <article class="rounded-card border border-border bg-canvas p-6">
+      <p class="m-0 text-sm font-semibold text-muted">Planned</p>
+      <h2 class="mt-2 text-xl font-semibold text-ink">Payment and problem reports</h2>
+      <p class="mt-3 text-sm leading-6 text-muted">
+        Target-aware payment confirmations, failures, factual corrections, privacy reports, and other problems are planned for later Phase 5 work.
+      </p>
+    </article>
+
+    <article class="rounded-card border border-border bg-canvas p-6">
+      <p class="m-0 text-sm font-semibold text-muted">Planned</p>
+      <h2 class="mt-2 text-xl font-semibold text-ink">Claims and photos</h2>
+      <p class="mt-3 text-sm leading-6 text-muted">
+        Representative claims and public-gallery photo proposals will use separate verification, rights, and Media review boundaries.
+      </p>
+    </article>
+  </section>
+</BaseLayout>
