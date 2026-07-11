@@ -1,11 +1,9 @@
 ---
-import { SuggestForm } from '../components/submissions/SuggestForm';
+import { ConfiguredSuggestForm } from '../components/submissions/ConfiguredSuggestForm';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { assetRegistry } from '../registries/assets';
 import { networkRegistry } from '../registries/networks';
 
-const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
-const action = import.meta.env.CPM_TURNSTILE_EXPECTED_ACTION ?? '';
 const assets = assetRegistry.map((asset) => ({
   value: asset.slug,
   label: `${asset.symbol} — ${asset.name}`,
@@ -37,7 +35,7 @@ const networks = networkRegistry.map((network) => ({
 
   <section class="safe-area-inline page-container pb-12 sm:pb-16">
     <div class="mx-auto max-w-4xl">
-      <SuggestForm siteKey={siteKey} action={action} assets={assets} networks={networks} client:load />
+      <ConfiguredSuggestForm assets={assets} networks={networks} client:load />
     </div>
   </section>
 </BaseLayout>

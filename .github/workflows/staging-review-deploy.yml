@@ -42,29 +42,188 @@ jobs:
           test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing CLOUDFLARE_API_TOKEN"; exit 1; }
           test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing CLOUDFLARE_ACCOUNT_ID"; exit 1; }
 
+      - name: Verify configured Suggest deployment inputs
+        id: suggest_config
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL }}
+          CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL }}
+          CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: ${{ secrets.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID }}
+          CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL }}
+          CPM_SUBMISSION_CONTACT_RETENTION_DAYS: ${{ secrets.CPM_SUBMISSION_CONTACT_RETENTION_DAYS }}
+          CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL }}
+          CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: ${{ secrets.CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS }}
+          CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: ${{ secrets.CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS }}
+          CPM_TURNSTILE_SECRET_KEY: ${{ secrets.CPM_TURNSTILE_SECRET_KEY }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
+          CPM_TURNSTILE_EXPECTED_HOSTNAME: ${{ secrets.CPM_TURNSTILE_EXPECTED_HOSTNAME }}
+          CPM_TURNSTILE_EXPECTED_ACTION: ${{ secrets.CPM_TURNSTILE_EXPECTED_ACTION }}
+          CPM_SUGGEST_READINESS_TOKEN: ${{ secrets.CPM_SUGGEST_READINESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          required=(
+            DATABASE_URL
+            CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL
+            CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL
+            CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID
+            CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL
+            CPM_SUBMISSION_CONTACT_RETENTION_DAYS
+            CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL
+            CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS
+            CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS
+            CPM_TURNSTILE_SECRET_KEY
+            PUBLIC_TURNSTILE_SITE_KEY
+            CPM_TURNSTILE_EXPECTED_HOSTNAME
+            CPM_TURNSTILE_EXPECTED_ACTION
+            CPM_SUGGEST_READINESS_TOKEN
+          )
+          for key in "${required[@]}"; do
+            test -n "${!key:-}" || { echo "Missing $key"; exit 1; }
+          done
+
+      - name: Deploy Submission rate-limit Durable Object Worker
+        id: worker_deploy
+        if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc
+
+      - name: Synchronize configured Suggest Pages secrets
+        id: pages_secrets
+        if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success' && steps.worker_deploy.outcome == 'success'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL }}
+          CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL }}
+          CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: ${{ secrets.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID }}
+          CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL }}
+          CPM_SUBMISSION_CONTACT_RETENTION_DAYS: ${{ secrets.CPM_SUBMISSION_CONTACT_RETENTION_DAYS }}
+          CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL: ${{ secrets.CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL }}
+          CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: ${{ secrets.CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS }}
+          CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: ${{ secrets.CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS }}
+          CPM_TURNSTILE_SECRET_KEY: ${{ secrets.CPM_TURNSTILE_SECRET_KEY }}
+          PUBLIC_TURNSTILE_SITE_KEY: ${{ secrets.PUBLIC_TURNSTILE_SITE_KEY }}
+          CPM_TURNSTILE_EXPECTED_HOSTNAME: ${{ secrets.CPM_TURNSTILE_EXPECTED_HOSTNAME }}
+          CPM_TURNSTILE_EXPECTED_ACTION: ${{ secrets.CPM_TURNSTILE_EXPECTED_ACTION }}
+          CPM_SUGGEST_READINESS_TOKEN: ${{ secrets.CPM_SUGGEST_READINESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          trap 'rm -f pages-secrets.json' EXIT
+          node <<'NODE'
+          const { writeFileSync } = require('node:fs');
+          const keys = [
+            'DATABASE_URL',
+            'CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL',
+            'CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL',
+            'CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID',
+            'CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL',
+            'CPM_SUBMISSION_CONTACT_RETENTION_DAYS',
+            'CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL',
+            'CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS',
+            'CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS',
+            'CPM_TURNSTILE_SECRET_KEY',
+            'PUBLIC_TURNSTILE_SITE_KEY',
+            'CPM_TURNSTILE_EXPECTED_HOSTNAME',
+            'CPM_TURNSTILE_EXPECTED_ACTION',
+            'CPM_SUGGEST_READINESS_TOKEN',
+          ];
+          const values = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+          writeFileSync('pages-secrets.json', `${JSON.stringify(values)}\n`, { mode: 0o600 });
+          NODE
+          npx wrangler pages secret bulk pages-secrets.json \
+            --project-name cryptopaymap-staging \
+            --env preview
+
       - name: Deploy staging review to Cloudflare Pages
         id: deploy
-        if: steps.credentials.outcome == 'success'
+        if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success' && steps.worker_deploy.outcome == 'success' && steps.pages_secrets.outcome == 'success'
         continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           set -o pipefail
-          npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch review 2>&1 | tee deployment-output.log
+          npx wrangler pages deploy dist \
+            --project-name cryptopaymap-staging \
+            --branch review \
+            --config wrangler.jsonc 2>&1 | tee deployment-output.log
+
+      - name: Verify configured Suggest review path
+        id: configured_verify
+        if: steps.deploy.outcome == 'success'
+        continue-on-error: true
+        env:
+          CPM_SUGGEST_READINESS_TOKEN: ${{ secrets.CPM_SUGGEST_READINESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          base_url='https://review.cryptopaymap-staging.pages.dev'
+          verified='false'
+
+          for attempt in $(seq 1 18); do
+            config_status="$(curl -sS -o suggest-config-response.json -w '%{http_code}' "$base_url/api/suggest/config" || true)"
+            readiness_status="$(curl -sS -o suggest-readiness-response.json -w '%{http_code}' \
+              -H "Authorization: Bearer $CPM_SUGGEST_READINESS_TOKEN" \
+              "$base_url/api/suggest/readiness" || true)"
+            if [ "$config_status" = '200' ] && [ "$readiness_status" = '200' ]; then
+              verified='true'
+              break
+            fi
+            echo "Configured Suggest verification attempt $attempt not ready: config=$config_status readiness=$readiness_status"
+            sleep 5
+          done
+
+          test "$verified" = 'true'
+
+          node <<'NODE'
+          const { readFileSync } = require('node:fs');
+          const config = JSON.parse(readFileSync('suggest-config-response.json', 'utf8'));
+          if (typeof config.siteKey !== 'string' || config.siteKey.length === 0) process.exit(1);
+          if (!/^[A-Za-z0-9_-]{1,32}$/.test(config.action)) process.exit(1);
+          const readiness = JSON.parse(readFileSync('suggest-readiness-response.json', 'utf8'));
+          if (readiness.ready !== true) process.exit(1);
+          NODE
+
+          headers="$(curl -sSI "$base_url/suggest")"
+          printf '%s\n' "$headers" | grep -Eqi '^content-security-policy:.*https://challenges\.cloudflare\.com'
+          printf '%s\n' "$headers" | grep -Eqi '^content-security-policy:.*frame-src https://challenges\.cloudflare\.com'
+
+          rm -f suggest-config-response.json suggest-readiness-response.json
 
       - name: Write deployment receipt
         if: always()
         env:
           CREDENTIALS_OUTCOME: ${{ steps.credentials.outcome }}
+          CONFIG_OUTCOME: ${{ steps.suggest_config.outcome }}
+          WORKER_OUTCOME: ${{ steps.worker_deploy.outcome }}
+          SECRET_SYNC_OUTCOME: ${{ steps.pages_secrets.outcome }}
           DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          VERIFY_OUTCOME: ${{ steps.configured_verify.outcome }}
           DEPLOY_COMMIT: ${{ github.sha }}
         run: |
           node <<'NODE'
           const { existsSync, readFileSync, mkdirSync, writeFileSync } = require('node:fs');
-          const credentials = process.env.CREDENTIALS_OUTCOME;
-          const deploy = process.env.DEPLOY_OUTCOME;
-          const status = credentials !== 'success' ? 'missing_credentials' : deploy === 'success' ? 'deployed' : 'deploy_failed';
+          const checks = {
+            credentials: process.env.CREDENTIALS_OUTCOME,
+            configuredInputs: process.env.CONFIG_OUTCOME,
+            durableObjectWorker: process.env.WORKER_OUTCOME,
+            pagesSecrets: process.env.SECRET_SYNC_OUTCOME,
+            pagesDeployment: process.env.DEPLOY_OUTCOME,
+            configuredVerification: process.env.VERIFY_OUTCOME,
+          };
+          let status = 'deployed';
+          if (checks.credentials !== 'success') status = 'missing_credentials';
+          else if (checks.configuredInputs !== 'success') status = 'missing_configuration';
+          else if (checks.durableObjectWorker !== 'success') status = 'worker_deploy_failed';
+          else if (checks.pagesSecrets !== 'success') status = 'secret_sync_failed';
+          else if (checks.pagesDeployment !== 'success') status = 'deploy_failed';
+          else if (checks.configuredVerification !== 'success') status = 'verification_failed';
+
           const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
           const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
           const receipt = {
@@ -72,6 +231,7 @@ jobs:
             commit: process.env.DEPLOY_COMMIT,
             url: urls.at(-1) ?? 'https://review.cryptopaymap-staging.pages.dev',
             generatedAt: new Date().toISOString(),
+            checks,
           };
           mkdirSync('staging-review-receipt', { recursive: true });
           writeFileSync('staging-review-receipt/deployment-receipt.json', `${JSON.stringify(receipt, null, 2)}\n`);
@@ -96,16 +256,24 @@ jobs:
           CONTENT="$(base64 -w 0 staging-review-receipt/deployment-receipt.json)"
           CURRENT_SHA="$(gh api "repos/$REPOSITORY/contents/config/staging-review/deployment-receipt.json?ref=staging-review" --jq '.sha')"
           gh api --method PUT "repos/$REPOSITORY/contents/config/staging-review/deployment-receipt.json" \
-            -f message='STG-01: record staging deployment result' \
+            -f message='P5-02Q: record configured review deployment result' \
             -f content="$CONTENT" \
             -f sha="$CURRENT_SHA" \
             -f branch='staging-review'
 
-      - name: Enforce successful deployment
+      - name: Enforce successful configured deployment
         if: always()
         env:
           CREDENTIALS_OUTCOME: ${{ steps.credentials.outcome }}
+          CONFIG_OUTCOME: ${{ steps.suggest_config.outcome }}
+          WORKER_OUTCOME: ${{ steps.worker_deploy.outcome }}
+          SECRET_SYNC_OUTCOME: ${{ steps.pages_secrets.outcome }}
           DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          VERIFY_OUTCOME: ${{ steps.configured_verify.outcome }}
         run: |
-          test "$CREDENTIALS_OUTCOME" = "success" || exit 1
-          test "$DEPLOY_OUTCOME" = "success" || exit 1
+          test "$CREDENTIALS_OUTCOME" = 'success' || exit 1
+          test "$CONFIG_OUTCOME" = 'success' || exit 1
+          test "$WORKER_OUTCOME" = 'success' || exit 1
+          test "$SECRET_SYNC_OUTCOME" = 'success' || exit 1
+          test "$DEPLOY_OUTCOME" = 'success' || exit 1
+          test "$VERIFY_OUTCOME" = 'success' || exit 1

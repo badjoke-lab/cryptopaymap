@@ -48,6 +48,9 @@ export class SubmissionRateLimitBucket {
 
   async fetch(request: Request): Promise<Response> {
     const url = new URL(request.url);
+    if (request.method === 'GET' && url.pathname === '/health') {
+      return jsonResponse(200, { status: 'ready' });
+    }
     if (request.method !== 'POST' || url.pathname !== '/consume') {
       return jsonResponse(404, { error: 'not_found' });
     }

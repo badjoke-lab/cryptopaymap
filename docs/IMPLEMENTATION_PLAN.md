@@ -192,7 +192,7 @@ Configured environment wiring remains required when the first public Suggest rou
 
 ### P5-02 — Suggest Place and Online Service
 
-**Status:** In progress at public Suggest route/form wiring
+**Status:** In progress at configured review verification
 
 P5-02 adds Suggest-specific intake, protected review entry, bounded review signals, and separately guarded reviewer operations without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates only after an explicit protected decision transaction.
 
@@ -229,9 +229,9 @@ P5-02N — Turnstile environment binding                                    Comp
     ↓
 P5-02O — Public Suggest HTTP route and safe response mapping               Completed #173
     ↓
-P5-02P — Public Suggest form and Turnstile browser wiring                  In progress
+P5-02P — Public Suggest form and Turnstile browser wiring                  Completed #174
     ↓
-configured-environment verification
+P5-02Q — Configured Suggest review verification                           In progress
     ↓
 P5-02 integration and handoff audit
 ```
@@ -370,9 +370,31 @@ P5-02O established:
 - bounded `Retry-After` behavior;
 - no browser form UI or canonical/public mutation.
 
-P5-02P now establishes the public `/contribute` and `/suggest` browser surfaces, a strict browser payload builder that reuses the existing Suggest schema, explicit Turnstile rendering, browser POST orchestration and private receipt rendering, bounded public error presentation, `/suggest`-scoped Turnstile CSP, and build-artifact leakage checks.
+P5-02P established:
 
-The active P5-02 work must continue configured-environment verification of the complete Suggest route path. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
+- public `/contribute` and `/suggest` browser surfaces;
+- a strict browser payload builder that reuses the existing Suggest schema;
+- explicit Turnstile rendering;
+- browser POST orchestration and private receipt rendering;
+- bounded public error presentation;
+- `/suggest`-scoped Turnstile CSP;
+- build-artifact leakage checks.
+
+P5-02Q now establishes:
+
+- separate rate-limit Durable Object Worker deployment before Pages deployment;
+- exact Pages Durable Object binding with `script_name` for the preview review environment;
+- preview secret synchronization for all configured Suggest runtime requirements;
+- same-origin client-safe Turnstile runtime configuration instead of build-time configuration;
+- browser fail-closed behavior when runtime configuration is unavailable;
+- dedicated authenticated readiness verification;
+- live lightweight database query and Pages-to-Durable-Object health reachability checks;
+- post-deploy config, readiness, and CSP verification against the fixed review URL;
+- deployment receipt detail for credentials, configured inputs, Worker deploy, secret sync, Pages deploy, and configured verification.
+
+Repository completion of P5-02Q does not itself prove live configured success. The fixed review receipt for the intended main commit must record `status: deployed` and successful detailed checks. Readiness success still does not prove a real Turnstile token, a successful live Suggest POST, deterministic live replay, a configured 429 sequence, or sensitive-log inspection.
+
+After P5-02Q configured evidence is obtained, P5-02 closes with a bounded integration and handoff audit before P5-03 begins.
 
 ### P5-03 — Payment and problem reports
 
