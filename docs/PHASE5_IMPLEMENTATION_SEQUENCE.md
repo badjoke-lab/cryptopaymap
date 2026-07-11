@@ -71,12 +71,12 @@ P5-02L  Trusted Cloudflare edge identity extraction                      Complet
 P5-02M  Durable Object distributed Submission rate limiting              Completed #171
 P5-02N  Turnstile environment binding                                   Completed #172
 P5-02O  Public Suggest HTTP route and safe response mapping              Completed #173
-P5-02P  Public Suggest form and Turnstile browser wiring                 In progress
-Configured-environment Suggest verification                            Planned
+P5-02P  Public Suggest form and Turnstile browser wiring                 Completed #174
+P5-02Q  Configured Suggest review verification                          In progress
 P5-02 integration and handoff audit                                    Planned
 ```
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, and the public Suggest HTTP route. Public Suggest form and browser Turnstile wiring are the current bounded slice; configured-environment verification and a bounded P5-02 integration and handoff audit remain afterward.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, the public Suggest HTTP route, and the public Suggest form/browser wiring. Configured review deployment verification is the current bounded slice; a bounded P5-02 integration and handoff audit remains afterward.
 
 ---
 
@@ -168,9 +168,9 @@ P5-02N — Turnstile environment binding                                Complete
     ↓
 P5-02O — Public Suggest HTTP route and safe response mapping           Completed #173
     ↓
-P5-02P — Public Suggest form and Turnstile browser wiring              In progress
+P5-02P — Public Suggest form and Turnstile browser wiring              Completed #174
     ↓
-configured-environment Suggest verification                           Planned
+P5-02Q — Configured Suggest review verification                       In progress
     ↓
 P5-02 integration and handoff audit                                    Planned
 ```
@@ -186,6 +186,21 @@ P5-02H must:
 - replay safely under identical request UUID retry;
 - create no canonical Entity, Location, Claim, Evidence acceptance, public export, or publication state.
 
+### Configured review dependency
+
+P5-02Q must not treat repository CI as proof of live review configuration. The fixed review deployment must provide explicit evidence for:
+
+- the separate SQLite-backed rate-limit Durable Object Worker deployment;
+- the Pages preview Durable Object namespace binding;
+- required Suggest runtime secret synchronization;
+- client-safe runtime Turnstile configuration availability;
+- a lightweight live database query;
+- live Pages Function to Durable Object health reachability;
+- deployed Suggest CSP presence;
+- a deployment receipt for the intended main commit with successful configured-verification checks.
+
+Readiness verification does not by itself prove a real human Turnstile challenge, a live successful Suggest POST, deterministic live replay, a real configured 429 sequence, or sensitive-log inspection. Those claims require explicit later evidence.
+
 ### Operational dependency
 
 P4-18B must already provide safe operator handling and correction behavior for practical profile fields. Suggestion intake must not introduce field classes that the protected review and canonical application paths cannot safely process.
@@ -194,7 +209,7 @@ P4-18B must already provide safe operator handling and correction behavior for p
 
 A suggestion can move from public intake to protected review and resolve without directly changing a public record. A useful but insufficient suggestion may become a private Candidate.
 
-P5-02 is not complete when P5-02H finishes. Public Suggest route/form wiring with real environment-backed providers and a bounded integration/handoff audit still remain.
+P5-02 is not complete when P5-02H finishes. Public Suggest route/form wiring, configured review verification, and a bounded integration/handoff audit still remain.
 
 ---
 
