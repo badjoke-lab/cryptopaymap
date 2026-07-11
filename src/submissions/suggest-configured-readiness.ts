@@ -8,9 +8,7 @@ import {
   type SuggestHttpEnvironment,
 } from './suggest-http-environment';
 
-const durableObjectReadinessResponseSchema = z
-  .object({ status: z.literal('ready') })
-  .strict();
+const durableObjectReadinessResponseSchema = z.object({ status: z.literal('ready') }).strict();
 
 export const suggestReadinessTokenSchema = z.string().min(32).max(512).regex(/^\S+$/);
 
