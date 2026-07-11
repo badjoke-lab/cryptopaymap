@@ -67,8 +67,7 @@ export function createSuggestHttpRuntimeFromEnvironment(
       DATABASE_URL: environment.DATABASE_URL,
     });
     const rateLimitPolicy = rateLimitPolicySchema.parse({
-      CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS:
-        environment.CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS,
+      CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: environment.CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS,
       CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS:
         environment.CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS,
     });
