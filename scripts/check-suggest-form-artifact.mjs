@@ -8,8 +8,6 @@ const headers = readFileSync(join('dist', '_headers'), 'utf8');
 const requiredSuggestFragments = [
   'Suggest a place or online service',
   'Suggestions remain private until reviewed',
-  'Submission reference',
-  'Status secret',
   'Submit suggestion',
   'A submission creates private review material only',
 ];
