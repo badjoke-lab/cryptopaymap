@@ -49,7 +49,7 @@ describe('P5-02N Turnstile environment binding', () => {
     ).resolves.toEqual({ outcome: 'allow', reasonCode: 'challenge_verified' });
   });
 
-  it('preserves exact hostname and action mismatch denial through the existing verifier', async () => {
+  it('preserves exact hostname mismatch denial through the existing verifier', async () => {
     const configuration = createSubmissionTurnstileConfigurationFromEnvironment(validEnvironment, {
       fetchImpl: (async () =>
         new Response(
@@ -65,6 +65,24 @@ describe('P5-02N Turnstile environment binding', () => {
     await expect(
       configuration.verifier.verify({ requestId, token: 'turnstile-token', remoteIp: null }),
     ).resolves.toEqual({ outcome: 'deny', reasonCode: 'challenge_hostname_mismatch' });
+  });
+
+  it('preserves exact action mismatch denial through the existing verifier', async () => {
+    const configuration = createSubmissionTurnstileConfigurationFromEnvironment(validEnvironment, {
+      fetchImpl: (async () =>
+        new Response(
+          JSON.stringify({
+            success: true,
+            hostname: 'review.example.test',
+            action: 'different_action',
+          }),
+          { status: 200 },
+        )) as typeof fetch,
+    });
+
+    await expect(
+      configuration.verifier.verify({ requestId, token: 'turnstile-token', remoteIp: null }),
+    ).resolves.toEqual({ outcome: 'deny', reasonCode: 'challenge_action_mismatch' });
   });
 
   it.each([
