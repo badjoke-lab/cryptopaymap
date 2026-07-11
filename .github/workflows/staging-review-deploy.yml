@@ -78,9 +78,17 @@ jobs:
             CPM_TURNSTILE_EXPECTED_ACTION
             CPM_SUGGEST_READINESS_TOKEN
           )
+          missing=()
           for key in "${required[@]}"; do
-            test -n "${!key:-}" || { echo "Missing $key"; exit 1; }
+            if [ -z "${!key:-}" ]; then
+              missing+=("$key")
+            fi
           done
+          printf '%s\n' "${missing[@]}" > missing-configured-inputs.txt
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Missing configured input: %s\n' "${missing[@]}"
+            exit 1
+          fi
 
       - name: Deploy Submission rate-limit Durable Object Worker
         id: worker_deploy
@@ -224,6 +232,9 @@ jobs:
           else if (checks.pagesDeployment !== 'success') status = 'deploy_failed';
           else if (checks.configuredVerification !== 'success') status = 'verification_failed';
 
+          const missingConfiguredInputs = existsSync('missing-configured-inputs.txt')
+            ? readFileSync('missing-configured-inputs.txt', 'utf8').split(/\r?\n/).filter(Boolean)
+            : [];
           const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
           const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
           const receipt = {
@@ -232,6 +243,7 @@ jobs:
             url: urls.at(-1) ?? 'https://review.cryptopaymap-staging.pages.dev',
             generatedAt: new Date().toISOString(),
             checks,
+            ...(missingConfiguredInputs.length > 0 ? { missingConfiguredInputs } : {}),
           };
           mkdirSync('staging-review-receipt', { recursive: true });
           writeFileSync('staging-review-receipt/deployment-receipt.json', `${JSON.stringify(receipt, null, 2)}\n`);
