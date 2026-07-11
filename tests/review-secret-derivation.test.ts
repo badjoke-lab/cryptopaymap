@@ -1,20 +1,22 @@
+import { Buffer } from 'node:buffer';
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { cwd, env as processEnvironment, execPath } from 'node:process';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const temporaryDirectories: string[] = [];
-const scriptPath = join(process.cwd(), 'scripts/derive-suggest-review-secrets.mjs');
+const scriptPath = join(cwd(), 'scripts/derive-suggest-review-secrets.mjs');
 const canonicalSeed = Buffer.alloc(32, 7).toString('base64url');
 
 function derive(outputName: string, seed = canonicalSeed) {
   const directory = mkdtempSync(join(tmpdir(), 'cpm-review-secrets-'));
   temporaryDirectories.push(directory);
   const outputPath = join(directory, outputName);
-  execFileSync(process.execPath, [scriptPath, outputPath], {
+  execFileSync(execPath, [scriptPath, outputPath], {
     env: {
-      ...process.env,
+      ...processEnvironment,
       CPM_REVIEW_SECRET_SEED_BASE64URL: seed,
     },
     stdio: 'pipe',
@@ -73,7 +75,7 @@ describe('P5-02Q stable review secret derivation', () => {
     const directory = mkdtempSync(join(tmpdir(), 'cpm-review-secrets-invalid-'));
     temporaryDirectories.push(directory);
     const outputPath = join(directory, 'invalid.json');
-    const environment = { ...process.env };
+    const environment = { ...processEnvironment };
     if (seed === undefined) {
       delete environment.CPM_REVIEW_SECRET_SEED_BASE64URL;
     } else {
@@ -81,7 +83,7 @@ describe('P5-02Q stable review secret derivation', () => {
     }
 
     expect(() =>
-      execFileSync(process.execPath, [scriptPath, outputPath], {
+      execFileSync(execPath, [scriptPath, outputPath], {
         env: environment,
         stdio: 'pipe',
       }),
