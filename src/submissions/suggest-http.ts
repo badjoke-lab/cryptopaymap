@@ -3,7 +3,10 @@ import {
   SubmissionAbuseControlError,
   type AbuseControlledSubmissionIntakeService,
 } from './abuse-controlled-intake';
-import { readTrustedCloudflareEdgeIdentity, SubmissionEdgeIdentityError } from './cloudflare-edge-identity';
+import {
+  readTrustedCloudflareEdgeIdentity,
+  SubmissionEdgeIdentityError,
+} from './cloudflare-edge-identity';
 import { SubmissionIntakeError } from './intake-service';
 import type { SubmissionRateLimitBucketDeriver } from './rate-limit-bucket-environment';
 import { suggestSubmissionIntakeSchema } from './suggest-contract';
@@ -116,11 +119,7 @@ function retryAfterSeconds(error: SubmissionAbuseControlError): number | undefin
 function mapSubmissionError(error: unknown): Response {
   if (error instanceof SubmissionAbuseControlError) {
     if (error.code === 'rate_limited') {
-      return jsonResponse(
-        429,
-        { error: 'suggest_rate_limited' },
-        retryAfterSeconds(error),
-      );
+      return jsonResponse(429, { error: 'suggest_rate_limited' }, retryAfterSeconds(error));
     }
     if (error.code === 'abuse_request_invalid' || error.code === 'challenge_rejected') {
       return jsonResponse(400, { error: 'suggest_request_invalid' });
