@@ -1,6 +1,14 @@
 {
-  "status": "deployed",
-  "commit": "79ff6f43dea460f48166a26f853f10d241a50763",
+  "status": "missing_configuration",
+  "commit": "ef2cca07c67422a8c3c8153d78f9c639fa218b05",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-11T01:13:30.250Z"
+  "generatedAt": "2026-07-11T02:46:46.569Z",
+  "checks": {
+    "credentials": "success",
+    "configuredInputs": "failure",
+    "durableObjectWorker": "skipped",
+    "pagesSecrets": "skipped",
+    "pagesDeployment": "skipped",
+    "configuredVerification": "skipped"
+  }
 }
