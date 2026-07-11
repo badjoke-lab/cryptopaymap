@@ -4,10 +4,7 @@ const pagesConfig = JSON.parse(readFileSync('wrangler.jsonc', 'utf8'));
 const workflow = readFileSync('.github/workflows/staging-review-deploy.yml', 'utf8');
 const workerConfig = readFileSync('workers/submission-rate-limit/wrangler.jsonc', 'utf8');
 const suggestPage = readFileSync('src/pages/suggest.astro', 'utf8');
-const configuredForm = readFileSync(
-  'src/components/submissions/ConfiguredSuggestForm.tsx',
-  'utf8',
-);
+const configuredForm = readFileSync('src/components/submissions/ConfiguredSuggestForm.tsx', 'utf8');
 
 const expectedBinding = {
   name: 'SUBMISSION_RATE_LIMIT_BUCKETS',
