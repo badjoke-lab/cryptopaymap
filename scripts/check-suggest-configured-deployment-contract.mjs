@@ -1,4 +1,5 @@
 import { readFileSync } from 'node:fs';
+import { deriveSuggestReviewSecrets } from './derive-suggest-review-secrets.mjs';
 
 const pagesConfig = JSON.parse(readFileSync('wrangler.jsonc', 'utf8'));
 const workflow = readFileSync('.github/workflows/staging-review-deploy.yml', 'utf8');
@@ -20,6 +21,10 @@ function hasExactBinding(bindings) {
       binding.class_name === expectedBinding.class_name &&
       binding.script_name === expectedBinding.script_name,
   );
+}
+
+function assert(condition, message) {
+  if (!condition) throw new Error(message);
 }
 
 if (!hasExactBinding(pagesConfig.durable_objects?.bindings ?? [])) {
@@ -96,6 +101,52 @@ for (const obsoleteSecret of [
   if (workflow.includes(obsoleteSecret)) {
     throw new Error(`Obsolete per-value review secret remains in workflow: ${obsoleteSecret}`);
   }
+}
+
+const seedOne = Buffer.alloc(32, 7).toString('base64url');
+const seedTwo = Buffer.alloc(32, 8).toString('base64url');
+const first = deriveSuggestReviewSecrets(seedOne);
+const replay = deriveSuggestReviewSecrets(seedOne);
+const changed = deriveSuggestReviewSecrets(seedTwo);
+
+assert(JSON.stringify(first) === JSON.stringify(replay), 'Review secret derivation is not deterministic.');
+assert(
+  JSON.stringify(first) !== JSON.stringify(changed),
+  'Review secret derivation did not change for a different seed.',
+);
+
+const derivedKeys = [
+  first.CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL,
+  first.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL,
+  first.CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL,
+  first.CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL,
+];
+assert(new Set(derivedKeys).size === 4, 'Review cryptographic keys are not purpose-separated.');
+for (const value of derivedKeys) {
+  assert(/^[A-Za-z0-9_-]{43}$/.test(value), 'Derived review key is not canonical Base64URL.');
+  assert(Buffer.from(value, 'base64url').length === 32, 'Derived review key is not 32 bytes.');
+  assert(
+    Buffer.from(value, 'base64url').toString('base64url') === value,
+    'Derived review key is not canonical.',
+  );
+}
+assert(
+  /^cpmrv_[A-Za-z0-9_-]{43}$/.test(first.CPM_SUGGEST_READINESS_TOKEN),
+  'Derived readiness token is invalid.',
+);
+
+for (const invalidSeed of [
+  `${seedOne}=`,
+  Buffer.alloc(16, 7).toString('base64url'),
+  'not base64url',
+]) {
+  let rejected = false;
+  try {
+    deriveSuggestReviewSecrets(invalidSeed);
+  } catch {
+    rejected = true;
+  }
+  assert(rejected, 'Invalid review seed was accepted.');
 }
 
 if (!suggestPage.includes('ConfiguredSuggestForm')) {
