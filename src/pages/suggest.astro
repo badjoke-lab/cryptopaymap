@@ -1,0 +1,43 @@
+---
+import { SuggestForm } from '../components/submissions/SuggestForm';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { assetRegistry } from '../registries/assets';
+import { networkRegistry } from '../registries/networks';
+
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
+const action = import.meta.env.CPM_TURNSTILE_EXPECTED_ACTION ?? '';
+const assets = assetRegistry.map((asset) => ({
+  value: asset.slug,
+  label: `${asset.symbol} — ${asset.name}`,
+}));
+const networks = networkRegistry.map((network) => ({
+  value: network.slug,
+  label: network.name,
+}));
+---
+
+<BaseLayout
+  title="Suggest a place or service — CryptoPayMap"
+  description="Suggest a physical place or online service for private CryptoPayMap review. Submissions do not change public data automatically."
+>
+  <header class="safe-area-inline page-container py-10 sm:py-14">
+    <p class="m-0 text-sm font-semibold text-brand-700">Contribute</p>
+    <h1 class="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      Suggest a place or online service
+    </h1>
+    <p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+      Share payment details and public Evidence for review. Suggestions remain private until reviewed, and a submission never changes the public dataset automatically.
+    </p>
+    <div class="mt-5 flex flex-wrap gap-3 text-sm">
+      <a class="font-semibold text-brand-700" href="/methodology">How verification works</a>
+      <a class="font-semibold text-brand-700" href="/privacy">Privacy notice</a>
+      <a class="font-semibold text-brand-700" href="/terms">Terms</a>
+    </div>
+  </header>
+
+  <section class="safe-area-inline page-container pb-12 sm:pb-16">
+    <div class="mx-auto max-w-4xl">
+      <SuggestForm siteKey={siteKey} action={action} assets={assets} networks={networks} client:load />
+    </div>
+  </section>
+</BaseLayout>
