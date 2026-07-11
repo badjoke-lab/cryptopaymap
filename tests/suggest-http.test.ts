@@ -57,7 +57,9 @@ function validSuggestSubmission() {
   };
 }
 
-function request(body: unknown = { challengeToken: 'turnstile-token', submission: validSuggestSubmission() }) {
+function request(
+  body: unknown = { challengeToken: 'turnstile-token', submission: validSuggestSubmission() },
+) {
   return new Request('https://example.test/api/suggest', {
     method: 'POST',
     headers: {
@@ -85,7 +87,7 @@ interface RuntimeFixtureOptions {
 }
 
 function runtimeFixture(options: RuntimeFixtureOptions = {}) {
-  const deriveBucketKey = vi.fn(async (edgeIdentity: string) => {
+  const deriveBucketKey = vi.fn(async (_edgeIdentity: string) => {
     if (options.deriveError) throw options.deriveError;
     return opaqueBucket;
   });
@@ -208,12 +210,11 @@ describe('P5-02O public Suggest HTTP boundary', () => {
   it('rejects unsupported media type before environment composition', async () => {
     const fixture = handlerFor();
     const input = request();
+    const headers = new Headers(input.headers);
+    headers.set('Content-Type', 'text/plain');
     const unsupported = new Request(input.url, {
       method: 'POST',
-      headers: {
-        ...Object.fromEntries(input.headers.entries()),
-        'Content-Type': 'text/plain',
-      },
+      headers,
       body: 'not json',
     });
     const response = await fixture.handler(pagesContext(unsupported));
@@ -226,12 +227,11 @@ describe('P5-02O public Suggest HTTP boundary', () => {
   it('rejects malformed UUID idempotency keys before environment composition', async () => {
     const fixture = handlerFor();
     const input = request();
+    const headers = new Headers(input.headers);
+    headers.set('Idempotency-Key', 'not-a-uuid');
     const invalid = new Request(input.url, {
       method: 'POST',
-      headers: {
-        ...Object.fromEntries(input.headers.entries()),
-        'Idempotency-Key': 'not-a-uuid',
-      },
+      headers,
       body: await input.text(),
     });
     const response = await fixture.handler(pagesContext(invalid));
