@@ -223,9 +223,11 @@ P5-02K — Opaque Submission rate-limit bucket derivation                    Com
     ↓
 P5-02L — Trusted Cloudflare edge identity extraction                       Completed #170
     ↓
-P5-02M — Durable Object distributed Submission rate limiting               In progress
+P5-02M — Durable Object distributed Submission rate limiting               Completed #171
     ↓
-remaining public Suggest route/form provider and exposure slices
+P5-02N — Turnstile environment binding                                    In progress
+    ↓
+remaining public Suggest route/form composition and exposure slices
     ↓
 P5-02 integration and handoff audit
 ```
@@ -337,9 +339,17 @@ P5-02L established:
 - fail-closed handling with no forwarded-header fallback;
 - no raw identity persistence or public route exposure.
 
-P5-02M now establishes a SQLite-backed Durable Object distributed fixed-window provider behind the existing `SubmissionRateLimiter` interface. It keeps raw edge identity out of the provider and leaves live Pages binding, route policy values, Turnstile wiring, and public route activation for later slices.
+P5-02M established:
 
-The active P5-02 work must continue the remaining public Suggest provider and exposure slices. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
+- a SQLite-backed Durable Object distributed fixed-window provider behind the existing `SubmissionRateLimiter` interface;
+- deterministic mapping from opaque rate-limit bucket keys to Durable Object identities;
+- fail-closed provider, malformed-response, invalid persisted-state, and clock-rollback handling;
+- Wrangler dry-run bundle validation through the repository schema-check CI path;
+- no raw identity in the provider contract and no public route exposure.
+
+P5-02N now establishes explicit Turnstile server/browser environment binding, one shared action value for widget and server verification, exact configured hostname/action enforcement through the existing Siteverify adapter, client-safe configuration separation, and bounded configuration failure behavior without public route exposure.
+
+The active P5-02 work must continue public HTTP composition, safe error and Retry-After mapping, Suggest browser/form wiring, and configured-environment verification. P5-02 then closes with a bounded integration and handoff audit before P5-03 begins.
 
 ### P5-03 — Payment and problem reports
 
