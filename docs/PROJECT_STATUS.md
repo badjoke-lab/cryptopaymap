@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02P — Public Suggest form and Turnstile browser wiring
+P5-02Q — Configured Suggest review verification
 
 ## Current repository state
 
@@ -33,7 +33,8 @@ P5-02P — Public Suggest form and Turnstile browser wiring
 - P5-02M Durable Object distributed Submission rate limiting is complete through #171.
 - P5-02N Turnstile environment binding is complete through #172.
 - P5-02O public Suggest HTTP composition and safe response mapping are complete through #173.
-- P5-02P public Suggest form, browser Turnstile wiring, and scoped CSP are in progress.
+- P5-02P public Suggest form, browser Turnstile wiring, and scoped CSP are complete through #174.
+- P5-02Q configured Suggest review deployment and readiness verification are in progress.
 
 ## Fixed review environment
 
@@ -41,7 +42,7 @@ Review URL:
 
 `https://review.cryptopaymap-staging.pages.dev`
 
-Deployment receipt state must be checked whenever review-environment state matters. A repository merge must not be assumed visible at the fixed URL until the receipt records the intended `main` commit.
+Deployment receipt state must be checked whenever review-environment state matters. A repository merge must not be assumed visible or configured correctly at the fixed URL until the receipt records the intended `main` commit and successful configured verification.
 
 ## Required current references
 
@@ -74,7 +75,8 @@ Before P5-02 implementation or review, read:
 25. `docs/P5_02N_TURNSTILE_ENVIRONMENT_BINDING.md`;
 26. `docs/P5_02O_SUGGEST_HTTP_ROUTE.md`;
 27. `docs/P5_02P_SUGGEST_FORM_TURNSTILE.md`;
-28. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+28. `docs/P5_02Q_CONFIGURED_SUGGEST_REVIEW_VERIFICATION.md`;
+29. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -122,51 +124,52 @@ P5-02N  Turnstile environment binding                                    Complet
     ↓
 P5-02O  Public Suggest HTTP route and safe response mapping               Completed #173
     ↓
-P5-02P  Public Suggest form and Turnstile browser wiring                  In progress
+P5-02P  Public Suggest form and Turnstile browser wiring                  Completed #174
     ↓
-configured-environment verification
+P5-02Q  Configured Suggest review verification                           In progress
     ↓
 P5-02 integration and handoff audit
 ```
 
 Exact later slice IDs are assigned when each bounded scope begins.
 
-## Current active scope — public Suggest form and browser wiring
+## Current active scope — configured Suggest review verification
 
-P5-02P must connect the completed HTTP route to a usable public browser experience without weakening the private/canonical/public boundaries.
+P5-02Q must make the fixed review environment verifiable without treating repository CI as proof of live deployment state.
 
-The current form work must:
+The current work must:
 
-- expose `/contribute` and `/suggest` public entry paths;
-- reuse the completed Suggest intake schema through a browser payload builder;
-- avoid Asset-to-Network inference;
-- render Turnstile explicitly with the configured public site key and action;
-- submit to the same-origin `/api/suggest` route with a UUID idempotency key;
-- show only bounded public errors and the private success receipt;
-- keep challenge tokens in transient component state only;
-- avoid browser persistence of the status secret;
-- scope Turnstile CSP allowances to `/suggest`;
-- verify built HTML does not contain server-only environment markers;
-- preserve the rule that Suggest intake does not directly create Candidate, canonical, export, or publication state.
+- deploy the SQLite-backed Submission rate-limit Durable Object Worker before the Pages review deployment;
+- bind `SUBMISSION_RATE_LIMIT_BUCKETS` to the separate Worker with an explicit `script_name`;
+- synchronize the required Suggest runtime secrets and rate-limit policy into the Pages preview environment without logging secret values;
+- remove build-time Turnstile configuration dependency from `/suggest`;
+- expose only client-safe runtime Turnstile site key and action through a same-origin configuration endpoint;
+- fail the browser form closed when runtime configuration is unavailable or malformed;
+- provide a separately authenticated readiness route using a dedicated bearer token;
+- verify complete Suggest runtime composition, a live lightweight database query, and a live Pages Function → Durable Object health request;
+- verify the fixed review configuration endpoint, readiness route, and Turnstile CSP after deployment;
+- record detailed deployment and configured-verification outcomes in the fixed review deployment receipt;
+- preserve generic failure responses and the rule that Suggest intake does not directly create Candidate, canonical, export, or publication state.
 
-## Route and environment requirements before live public intake readiness
+## Evidence required before configured verification is complete
 
-The repository now contains the route and form layers, but configured-environment verification must still prove:
+Repository CI may prove code, schema, build, tests, deployment-contract checks, and Worker dry-run compilation. It does not prove the fixed review deployment.
 
-- production database connectivity and migration state;
-- concrete status-secret, contact encryption, and email-HMAC secrets;
-- opaque rate-limit bucket secret;
-- deployed SQLite-backed Durable Object worker;
-- live Pages Durable Object namespace binding;
-- configured rate-limit policy values;
-- Turnstile secret/site key pair;
-- exact Turnstile hostname and action behavior;
-- successful end-to-end Suggest submission into private persistence;
-- deterministic replay behavior;
-- 429 Retry-After behavior under configured rate limiting;
-- no logging of challenge token, raw remote IP, plaintext email, plaintext status secret, or provider secret.
+Configured verification is complete only when the deployment receipt for the intended `main` commit records:
 
-Repository checks do not prove live deployment configuration.
+```text
+status: deployed
+checks.credentials: success
+checks.configuredInputs: success
+checks.durableObjectWorker: success
+checks.pagesSecrets: success
+checks.pagesDeployment: success
+checks.configuredVerification: success
+```
+
+P5-02Q readiness success proves configuration composition, database query reachability, Pages-to-Durable-Object binding reachability, DO health response, and deployed Suggest CSP/config availability. It does not prove a real human Turnstile challenge, Siteverify success for a live token, a real Suggest POST and private persistence, deterministic live replay, configured 429 behavior, or log-redaction inspection.
+
+Those remaining claims require separate explicit evidence and must not be inferred from readiness success.
 
 ## Retained Launch work
 
@@ -185,13 +188,15 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02P public Suggest form and Turnstile browser wiring, then perform configured-environment verification of the complete Suggest route path. Close P5-02 with a bounded integration and handoff audit before P5-03 begins.
+Complete P5-02Q repository work and obtain a successful fixed-review deployment receipt for the intended main commit. Then close P5-02 with a bounded integration and handoff audit before P5-03 begins.
 
 ## Blocked
 
-No known repository blocker to completing the P5-02P browser/form slice.
+No known repository blocker to implementing P5-02Q.
 
-Live public intake readiness remains blocked on configured deployment verification. The P5-02M Durable Object worker and Pages binding must be deployed and verified; Turnstile hostname/action configuration and the complete private-persistence path must be exercised in a configured environment.
+Configured live verification may still be blocked by missing GitHub secrets, Cloudflare deployment configuration, Neon connectivity, or Turnstile account configuration. Any such condition must be surfaced through the workflow outcome and deployment receipt rather than treated as success.
+
+A successful readiness receipt still does not substitute for later real Turnstile-token and live Suggest POST evidence.
 
 `CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist remain required in configured environments for the accepted-as-Candidate transaction path.
 
