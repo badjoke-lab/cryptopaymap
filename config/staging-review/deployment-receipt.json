@@ -1,8 +1,8 @@
 {
   "status": "missing_configuration",
-  "commit": "ef2cca07c67422a8c3c8153d78f9c639fa218b05",
+  "commit": "506416eae4dd5b52d266a09269597c5e351b1015",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-11T02:46:46.569Z",
+  "generatedAt": "2026-07-11T02:57:58.699Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "failure",
@@ -10,5 +10,21 @@
     "pagesSecrets": "skipped",
     "pagesDeployment": "skipped",
     "configuredVerification": "skipped"
-  }
+  },
+  "missingConfiguredInputs": [
+    "DATABASE_URL",
+    "CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL",
+    "CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL",
+    "CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID",
+    "CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL",
+    "CPM_SUBMISSION_CONTACT_RETENTION_DAYS",
+    "CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL",
+    "CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS",
+    "CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS",
+    "CPM_TURNSTILE_SECRET_KEY",
+    "PUBLIC_TURNSTILE_SITE_KEY",
+    "CPM_TURNSTILE_EXPECTED_HOSTNAME",
+    "CPM_TURNSTILE_EXPECTED_ACTION",
+    "CPM_SUGGEST_READINESS_TOKEN"
+  ]
 }
