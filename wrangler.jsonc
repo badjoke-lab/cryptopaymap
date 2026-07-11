@@ -2,5 +2,27 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "cryptopaymap-staging",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-06-26"
+  "compatibility_date": "2026-06-26",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "SUBMISSION_RATE_LIMIT_BUCKETS",
+        "class_name": "SubmissionRateLimitBucket",
+        "script_name": "cryptopaymap-submission-rate-limit"
+      }
+    ]
+  },
+  "env": {
+    "preview": {
+      "durable_objects": {
+        "bindings": [
+          {
+            "name": "SUBMISSION_RATE_LIMIT_BUCKETS",
+            "class_name": "SubmissionRateLimitBucket",
+            "script_name": "cryptopaymap-submission-rate-limit"
+          }
+        ]
+      }
+    }
+  }
 }
