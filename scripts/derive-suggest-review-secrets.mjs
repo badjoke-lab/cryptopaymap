@@ -1,5 +1,7 @@
 import { hkdfSync } from 'node:crypto';
 import { writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const seedEnvironmentName = 'CPM_REVIEW_SECRET_SEED_BASE64URL';
 const derivationSalt = Buffer.from('cryptopaymap:review-suggest:v1', 'utf8');
@@ -58,6 +60,7 @@ function main() {
   console.log('Stable Suggest review secrets derived.');
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+const entrypoint = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : null;
+if (entrypoint === import.meta.url) {
   main();
 }
