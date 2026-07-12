@@ -233,10 +233,10 @@ const expectedAction = 'submission_intake';
 const successfulVerifierFetch = async (input, init = {}) => {
   const url = new URL(String(input));
   if (url.pathname === '/api/suggest/config') {
-    return new Response(
-      JSON.stringify({ siteKey: expectedSiteKey, action: expectedAction }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } },
-    );
+    return new Response(JSON.stringify({ siteKey: expectedSiteKey, action: expectedAction }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
   if (url.pathname === '/api/suggest/readiness') {
     assert(
@@ -284,10 +284,10 @@ try {
     fetchImpl: async (input) => {
       const url = new URL(String(input));
       if (url.pathname === '/api/suggest/config') {
-        return new Response(
-          JSON.stringify({ siteKey: expectedSiteKey, action: expectedAction }),
-          { status: 200, headers: { 'Content-Type': 'application/json' } },
-        );
+        return new Response(JSON.stringify({ siteKey: expectedSiteKey, action: expectedAction }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
       }
       if (url.pathname === '/api/suggest/readiness') {
         return new Response(JSON.stringify({ ready: false }), {
