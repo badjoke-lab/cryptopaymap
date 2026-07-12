@@ -1,4 +1,5 @@
 import { createHash, randomUUID } from 'node:crypto';
+import { buildP502rLiveJourneyResult } from './p5-02r-live-journey-result.mjs';
 import { p502rSyntheticSuggestRequest } from './p5-02r-synthetic-suggest-fixture.mjs';
 
 const defaultBaseUrl = 'https://review.cryptopaymap-staging.pages.dev';
@@ -169,28 +170,20 @@ const publicArtifactsUnchanged = Object.fromEntries(
   publicArtifactPaths.map((path) => [path, artifactsBefore[path] === artifactsAfter[path]]),
 );
 
-const result = {
-  status: 'complete',
-  firstPost: { httpStatus: first.status, receiptShapeMatches: firstReceiptValid },
-  exactReplay: {
-    httpStatus: replay.status,
-    receiptShapeMatches: replayReceiptValid,
-    publicReferenceMatches: replayReferenceMatches,
-    statusSecretMatches: replayStatusSecretMatches,
-  },
-  changedContent: { httpStatus: changed.status, conflictShapeMatches },
+const { succeeded, result } = buildP502rLiveJourneyResult({
+  firstHttpStatus: first.status,
+  firstReceiptValid,
+  replayHttpStatus: replay.status,
+  replayReceiptValid,
+  replayReferenceMatches,
+  replayStatusSecretMatches,
+  changedContentHttpStatus: changed.status,
+  conflictShapeMatches,
   publicArtifactsUnchanged,
-};
+});
 
 console.log(JSON.stringify(result, null, 2));
 
-if (
-  !firstReceiptValid ||
-  !replayReceiptValid ||
-  !replayReferenceMatches ||
-  !replayStatusSecretMatches ||
-  !conflictShapeMatches ||
-  Object.values(publicArtifactsUnchanged).includes(false)
-) {
+if (!succeeded) {
   process.exitCode = 1;
 }
