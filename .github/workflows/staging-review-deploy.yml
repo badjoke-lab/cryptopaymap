@@ -155,8 +155,7 @@ jobs:
           set -o pipefail
           npx wrangler pages deploy dist \
             --project-name cryptopaymap-staging \
-            --branch review \
-            --config wrangler.jsonc 2>&1 | tee deployment-output.log
+            --branch review 2>&1 | tee deployment-output.log
 
       - name: Prepare Pages deployment diagnostic summary
         if: always() && steps.deploy.outcome == 'failure'
