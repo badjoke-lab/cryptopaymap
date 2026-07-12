@@ -1,0 +1,60 @@
+name: Initialize fixed review database
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type INITIALIZE_FIXED_REVIEW_DATABASE
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  actions: write
+
+jobs:
+  initialize:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Validate explicit confirmation
+        env:
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          if [ "$CONFIRMATION" != 'INITIALIZE_FIXED_REVIEW_DATABASE' ]; then
+            echo 'Exact fixed-review initialization confirmation is required.' >&2
+            exit 1
+          fi
+
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Require a fresh empty fixed-review database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/check-empty-fixed-review-database.mjs
+
+      - name: Apply repository migrations to fixed-review database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:migrate
+
+      - name: Verify Submission schema and migration ledger
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: node scripts/check-p5-02r-review-schema.mjs
+
+      - name: Trigger configured staging-review deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run staging-review-deploy.yml --ref main
