@@ -1,14 +1,14 @@
 {
-  "status": "worker_deploy_failed",
+  "status": "deploy_failed",
   "commit": "c4af87ff6cc8b9d8c2d20abf316770295f65b24a",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-12T02:28:23.791Z",
+  "generatedAt": "2026-07-12T06:20:56.511Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "success",
-    "durableObjectWorker": "failure",
-    "pagesSecrets": "skipped",
-    "pagesDeployment": "skipped",
+    "durableObjectWorker": "success",
+    "pagesSecrets": "success",
+    "pagesDeployment": "failure",
     "configuredVerification": "skipped"
   },
   "reviewConfiguration": {
@@ -23,15 +23,5 @@
       "maximumRequests": 5,
       "windowSeconds": 600
     }
-  },
-  "diagnosticsArtifact": "staging-review-worker-deployment-log",
-  "workerDeploymentDiagnostic": {
-    "lines": [
-      "✘ [ERROR] A request to the Cloudflare API (/accounts/<redacted-token>/workers/services/<redacted-token>) failed.",
-      "Authentication error [code: 10000]",
-      "Please ensure it has the correct permissions for this operation.",
-      "✘ [ERROR] Failed to automatically retrieve account IDs for the logged in user.",
-      "You may have incorrect permissions on your API token, or your authentication may have expired. Try running `wrangler login` to re-authenticate. You can also skip this account check by adding an `account_id` in your Wrangler configuration file, or by setting the value of CLOUDFLARE_ACCOUNT_ID"
-    ]
   }
 }
