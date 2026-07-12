@@ -51,7 +51,6 @@ const workflowMarkers = [
   'wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc',
   'tee worker-deployment-output.log',
   'Prepare Worker deployment diagnostic summary',
-  'scripts/summarize-worker-deployment-log.mjs',
   'worker-deployment-diagnostic.json',
   'Upload Worker deployment diagnostics',
   'staging-review-worker-deployment-log',
@@ -68,6 +67,11 @@ const workflowMarkers = [
   "CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.cryptopaymap-staging.pages.dev'",
   "CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake'",
   'Deploy staging review to Cloudflare Pages',
+  'tee deployment-output.log',
+  'Prepare Pages deployment diagnostic summary',
+  'pages-deployment-diagnostic.json',
+  'Upload Pages deployment diagnostics',
+  'staging-review-pages-deployment-log',
   '--config wrangler.jsonc',
   'Verify configured Suggest review path',
   '/api/suggest/config',
@@ -75,6 +79,8 @@ const workflowMarkers = [
   'Authorization: Bearer $CPM_SUGGEST_READINESS_TOKEN',
   'configuredVerification',
   'workerDeploymentDiagnostic',
+  'pagesDeploymentDiagnostic',
+  'pagesDiagnosticsArtifact',
   'git worktree add --detach',
   'git -C "$STATUS_WORKTREE" push origin HEAD:staging-review',
 ];
@@ -170,17 +176,20 @@ ERROR code: 10000 — authentication error while deploying Durable Object Worker
 See https://user:password@example.test/private
 `);
 const diagnosticJson = JSON.stringify(diagnostic);
-assert(diagnostic.lines.length > 0, 'Worker diagnostic summary is empty.');
-assert(diagnosticJson.includes('10000'), 'Worker diagnostic summary removed the error code.');
+assert(diagnostic.lines.length > 0, 'Deployment diagnostic summary is empty.');
+assert(diagnosticJson.includes('10000'), 'Deployment diagnostic summary removed the error code.');
 assert(
   !diagnosticJson.includes('Bearer A'),
-  'Worker diagnostic summary leaked authorization data.',
+  'Deployment diagnostic summary leaked authorization data.',
 );
 assert(
   !diagnosticJson.includes('b'.repeat(32)),
-  'Worker diagnostic summary leaked a long account identifier.',
+  'Deployment diagnostic summary leaked a long account identifier.',
 );
-assert(!diagnosticJson.includes('password'), 'Worker diagnostic summary leaked URL credentials.');
+assert(
+  !diagnosticJson.includes('password'),
+  'Deployment diagnostic summary leaked URL credentials.',
+);
 
 if (!suggestPage.includes('ConfiguredSuggestForm')) {
   throw new Error('Suggest page must use runtime-configured form wrapper.');
