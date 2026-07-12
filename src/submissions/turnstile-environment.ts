@@ -16,6 +16,7 @@ export const submissionTurnstileEnvironmentSchema = z
     PUBLIC_TURNSTILE_SITE_KEY: nonWhitespaceTokenSchema,
     CPM_TURNSTILE_EXPECTED_HOSTNAME: hostnameSchema,
     CPM_TURNSTILE_EXPECTED_ACTION: actionSchema,
+    PUBLIC_TURNSTILE_ACTION: actionSchema.optional(),
   })
   .strict();
 
@@ -25,6 +26,7 @@ export type SubmissionTurnstileEnvironment = Readonly<
     PUBLIC_TURNSTILE_SITE_KEY?: unknown;
     CPM_TURNSTILE_EXPECTED_HOSTNAME?: unknown;
     CPM_TURNSTILE_EXPECTED_ACTION?: unknown;
+    PUBLIC_TURNSTILE_ACTION?: unknown;
   }
 >;
 
@@ -60,6 +62,9 @@ export function createSubmissionTurnstileConfigurationFromEnvironment(
     PUBLIC_TURNSTILE_SITE_KEY: environment.PUBLIC_TURNSTILE_SITE_KEY,
     CPM_TURNSTILE_EXPECTED_HOSTNAME: environment.CPM_TURNSTILE_EXPECTED_HOSTNAME,
     CPM_TURNSTILE_EXPECTED_ACTION: environment.CPM_TURNSTILE_EXPECTED_ACTION,
+    ...(environment.PUBLIC_TURNSTILE_ACTION === undefined
+      ? {}
+      : { PUBLIC_TURNSTILE_ACTION: environment.PUBLIC_TURNSTILE_ACTION }),
   });
   if (!parsed.success) throw new SubmissionTurnstileConfigurationError();
 
@@ -76,7 +81,8 @@ export function createSubmissionTurnstileConfigurationFromEnvironment(
       verifier,
       client: {
         siteKey: parsed.data.PUBLIC_TURNSTILE_SITE_KEY,
-        action: parsed.data.CPM_TURNSTILE_EXPECTED_ACTION,
+        action:
+          parsed.data.PUBLIC_TURNSTILE_ACTION ?? parsed.data.CPM_TURNSTILE_EXPECTED_ACTION,
       },
       expectedHostname: parsed.data.CPM_TURNSTILE_EXPECTED_HOSTNAME,
     };
