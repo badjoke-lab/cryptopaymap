@@ -1,8 +1,8 @@
 {
   "status": "deploy_failed",
-  "commit": "c4af87ff6cc8b9d8c2d20abf316770295f65b24a",
+  "commit": "6dfac4db9ceaaa5f67253c317f482161e095c7ad",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-12T06:20:56.511Z",
+  "generatedAt": "2026-07-12T06:42:26.179Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "success",
@@ -23,5 +23,11 @@
       "maximumRequests": 5,
       "windowSeconds": 600
     }
+  },
+  "pagesDiagnosticsArtifact": "staging-review-pages-deployment-log",
+  "pagesDeploymentDiagnostic": {
+    "lines": [
+      "✘ [ERROR] Pages does not support custom paths for the Wrangler configuration file"
+    ]
   }
 }
