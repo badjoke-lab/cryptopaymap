@@ -81,8 +81,7 @@ export function createSubmissionTurnstileConfigurationFromEnvironment(
       verifier,
       client: {
         siteKey: parsed.data.PUBLIC_TURNSTILE_SITE_KEY,
-        action:
-          parsed.data.PUBLIC_TURNSTILE_ACTION ?? parsed.data.CPM_TURNSTILE_EXPECTED_ACTION,
+        action: parsed.data.PUBLIC_TURNSTILE_ACTION ?? parsed.data.CPM_TURNSTILE_EXPECTED_ACTION,
       },
       expectedHostname: parsed.data.CPM_TURNSTILE_EXPECTED_HOSTNAME,
     };
