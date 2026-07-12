@@ -158,6 +158,24 @@ jobs:
             --branch review \
             --config wrangler.jsonc 2>&1 | tee deployment-output.log
 
+      - name: Prepare Pages deployment diagnostic summary
+        if: always() && steps.deploy.outcome == 'failure'
+        run: |
+          node scripts/summarize-worker-deployment-log.mjs \
+            deployment-output.log \
+            pages-deployment-diagnostic.json
+
+      - name: Upload Pages deployment diagnostics
+        if: always() && steps.deploy.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-review-pages-deployment-log
+          path: |
+            deployment-output.log
+            pages-deployment-diagnostic.json
+          if-no-files-found: error
+          retention-days: 30
+
       - name: Verify configured Suggest review path
         id: configured_verify
         if: steps.deploy.outcome == 'success'
@@ -232,6 +250,9 @@ jobs:
           const workerDeploymentDiagnostic = existsSync('worker-deployment-diagnostic.json')
             ? JSON.parse(readFileSync('worker-deployment-diagnostic.json', 'utf8'))
             : null;
+          const pagesDeploymentDiagnostic = existsSync('pages-deployment-diagnostic.json')
+            ? JSON.parse(readFileSync('pages-deployment-diagnostic.json', 'utf8'))
+            : null;
           const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
           const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
           const receipt = {
@@ -250,7 +271,11 @@ jobs:
             ...(checks.durableObjectWorker === 'failure'
               ? { diagnosticsArtifact: 'staging-review-worker-deployment-log' }
               : {}),
+            ...(checks.pagesDeployment === 'failure'
+              ? { pagesDiagnosticsArtifact: 'staging-review-pages-deployment-log' }
+              : {}),
             ...(workerDeploymentDiagnostic ? { workerDeploymentDiagnostic } : {}),
+            ...(pagesDeploymentDiagnostic ? { pagesDeploymentDiagnostic } : {}),
             ...(missingConfiguredInputs.length > 0 ? { missingConfiguredInputs } : {}),
           };
           mkdirSync('staging-review-receipt', { recursive: true });
