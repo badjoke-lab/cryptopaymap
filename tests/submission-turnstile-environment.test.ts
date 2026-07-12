@@ -11,6 +11,17 @@ const validEnvironment = {
   CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.example.test',
   CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
 };
+const officialTestEnvironment = {
+  CPM_TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
+  PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
+  CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
+  CPM_TURNSTILE_EXPECTED_ACTION: 'test',
+  PUBLIC_TURNSTILE_ACTION: 'submission_intake',
+};
+
+function observedOfficialTestResponse(): Response {
+  return new Response(JSON.stringify({ success: true, hostname: 'example.com' }), { status: 200 });
+}
 
 describe('P5-02N/P5-02R Turnstile environment binding', () => {
   it('binds server verification and returns only client-safe widget configuration', async () => {
@@ -49,15 +60,9 @@ describe('P5-02N/P5-02R Turnstile environment binding', () => {
     ).resolves.toEqual({ outcome: 'allow', reasonCode: 'challenge_verified' });
   });
 
-  it('separates the browser action from strict Siteverify metadata when configured', async () => {
+  it('separates the browser action from strict documented Siteverify metadata', async () => {
     const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
-      {
-        CPM_TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
-        PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
-        CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
-        CPM_TURNSTILE_EXPECTED_ACTION: 'test',
-        PUBLIC_TURNSTILE_ACTION: 'submission_intake',
-      },
+      officialTestEnvironment,
       {
         fetchImpl: (async () =>
           new Response(
@@ -83,6 +88,51 @@ describe('P5-02N/P5-02R Turnstile environment binding', () => {
         remoteIp: '203.0.113.10',
       }),
     ).resolves.toEqual({ outcome: 'allow', reasonCode: 'challenge_verified' });
+  });
+
+  it('accepts observed Siteverify metadata only for the exact official dummy token and pair', async () => {
+    const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
+      officialTestEnvironment,
+      { fetchImpl: (async () => observedOfficialTestResponse()) as typeof fetch },
+    );
+
+    await expect(
+      configuration.verifier.verify({
+        requestId,
+        token: 'XXXX.DUMMY.TOKEN.XXXX',
+        remoteIp: null,
+      }),
+    ).resolves.toEqual({ outcome: 'allow', reasonCode: 'challenge_verified' });
+  });
+
+  it('rejects observed test metadata for a non-dummy token', async () => {
+    const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
+      officialTestEnvironment,
+      { fetchImpl: (async () => observedOfficialTestResponse()) as typeof fetch },
+    );
+
+    await expect(
+      configuration.verifier.verify({
+        requestId,
+        token: 'not-the-official-dummy-token',
+        remoteIp: null,
+      }),
+    ).resolves.toEqual({ outcome: 'deny', reasonCode: 'challenge_hostname_mismatch' });
+  });
+
+  it('rejects observed test metadata when the public site key is not the official pair', async () => {
+    const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
+      { ...officialTestEnvironment, PUBLIC_TURNSTILE_SITE_KEY: 'different-public-site-key' },
+      { fetchImpl: (async () => observedOfficialTestResponse()) as typeof fetch },
+    );
+
+    await expect(
+      configuration.verifier.verify({
+        requestId,
+        token: 'XXXX.DUMMY.TOKEN.XXXX',
+        remoteIp: null,
+      }),
+    ).resolves.toEqual({ outcome: 'deny', reasonCode: 'challenge_hostname_mismatch' });
   });
 
   it('preserves exact hostname mismatch denial through the existing verifier', async () => {
