@@ -34,8 +34,7 @@ function summarizeReadinessResponse(status, parsedBody) {
     httpStatus: status,
     jsonParsed: parsedBody.parsed,
     ready: objectValue?.ready === true,
-    errorCode:
-      typeof objectValue?.error === 'string' ? objectValue.error.slice(0, 64) : null,
+    errorCode: typeof objectValue?.error === 'string' ? objectValue.error.slice(0, 64) : null,
   };
 }
 
@@ -54,10 +53,8 @@ function summarizeCsp(status, headerValue) {
   return {
     httpStatus: status,
     headerPresent: headerValue.length > 0,
-    scriptSrcAllowsChallenge:
-      directives.get('script-src')?.includes(challengeOrigin) ?? false,
-    frameSrcAllowsChallenge:
-      directives.get('frame-src')?.includes(challengeOrigin) ?? false,
+    scriptSrcAllowsChallenge: directives.get('script-src')?.includes(challengeOrigin) ?? false,
+    frameSrcAllowsChallenge: directives.get('frame-src')?.includes(challengeOrigin) ?? false,
   };
 }
 
@@ -129,8 +126,7 @@ export async function verifyConfiguredSuggestReview({
       );
 
       const endpointsReady =
-        diagnostic.config.httpStatus === 200 &&
-        diagnostic.readiness.httpStatus === 200;
+        diagnostic.config.httpStatus === 200 && diagnostic.readiness.httpStatus === 200;
       const payloadsValid =
         diagnostic.config.jsonParsed &&
         diagnostic.config.siteKeyMatches &&
@@ -166,8 +162,7 @@ export async function verifyConfiguredSuggestReview({
       }
     } catch (error) {
       diagnostic.stage = 'network';
-      diagnostic.networkError =
-        error instanceof Error ? error.name.slice(0, 64) : 'UnknownError';
+      diagnostic.networkError = error instanceof Error ? error.name.slice(0, 64) : 'UnknownError';
     }
 
     if (attempt < attempts) await sleep(delayMs);
