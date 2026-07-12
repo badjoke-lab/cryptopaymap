@@ -1,8 +1,8 @@
 {
   "status": "verification_failed",
-  "commit": "aefda78bdd797f60c0f55213df56b88b40ba7c18",
+  "commit": "3c0bb09e0f9897451d707b6fec7b9f61bcf396c3",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-12T06:52:36.555Z",
+  "generatedAt": "2026-07-12T07:14:33.451Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "success",
@@ -23,5 +23,31 @@
       "maximumRequests": 5,
       "windowSeconds": 600
     }
+  },
+  "configuredVerificationDiagnosticsArtifact": "staging-review-configured-verification-diagnostic",
+  "configuredVerificationDiagnostic": {
+    "status": "failure",
+    "stage": "csp",
+    "baseUrl": "https://review.cryptopaymap-staging.pages.dev",
+    "attemptsCompleted": 18,
+    "config": {
+      "httpStatus": 200,
+      "jsonParsed": true,
+      "siteKeyMatches": true,
+      "actionMatches": true
+    },
+    "readiness": {
+      "httpStatus": 200,
+      "jsonParsed": true,
+      "ready": true,
+      "errorCode": null
+    },
+    "csp": {
+      "httpStatus": 200,
+      "headerPresent": false,
+      "scriptSrcAllowsChallenge": false,
+      "frameSrcAllowsChallenge": false
+    },
+    "networkError": null
   }
 }
