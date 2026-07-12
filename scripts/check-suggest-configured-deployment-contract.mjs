@@ -172,8 +172,14 @@ See https://user:password@example.test/private
 const diagnosticJson = JSON.stringify(diagnostic);
 assert(diagnostic.lines.length > 0, 'Worker diagnostic summary is empty.');
 assert(diagnosticJson.includes('10000'), 'Worker diagnostic summary removed the error code.');
-assert(!diagnosticJson.includes('Bearer A'), 'Worker diagnostic summary leaked authorization data.');
-assert(!diagnosticJson.includes('b'.repeat(32)), 'Worker diagnostic summary leaked a long account identifier.');
+assert(
+  !diagnosticJson.includes('Bearer A'),
+  'Worker diagnostic summary leaked authorization data.',
+);
+assert(
+  !diagnosticJson.includes('b'.repeat(32)),
+  'Worker diagnostic summary leaked a long account identifier.',
+);
 assert(!diagnosticJson.includes('password'), 'Worker diagnostic summary leaked URL credentials.');
 
 if (!suggestPage.includes('ConfiguredSuggestForm')) {
