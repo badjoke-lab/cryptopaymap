@@ -1,8 +1,8 @@
 {
   "status": "failed",
-  "commit": "271e04ffaf29d57ac91874e1f0b499593fde6240",
-  "generatedAt": "2026-07-12T15:34:09.881Z",
-  "workflowRunId": "29198428669",
+  "commit": "390319ab90a53a9ae3727f1cb5e0a5b839e27c08",
+  "generatedAt": "2026-07-12T15:47:04.153Z",
+  "workflowRunId": "29198846719",
   "checks": {
     "databaseSchema": "failure",
     "schemaResultParsed": true,
@@ -13,13 +13,42 @@
     "status": "failed",
     "failedStage": "database_schema",
     "schema": {
-      "status": "missing_schema",
+      "status": "schema_drift",
       "tables": {
         "submission_public_reference_counters": false,
         "submissions": true,
         "submission_payloads": false,
         "submission_contacts": false,
         "submission_events": false
+      },
+      "submissionColumns": {
+        "id": true,
+        "intake_request_id": false,
+        "request_fingerprint": false,
+        "public_id": false,
+        "submission_type": false,
+        "target_type": false,
+        "target_id": false,
+        "relationship": false,
+        "workflow_status": false,
+        "resolution": false,
+        "priority": false,
+        "status_token_hash": false,
+        "submitted_at": false,
+        "updated_at": true,
+        "resolved_at": false,
+        "withdrawn_at": false
+      },
+      "enums": {
+        "submission_event_actor_type": false,
+        "submission_relationship": false,
+        "submission_target_type": false,
+        "submission_type": false
+      },
+      "migrationLedger": {
+        "tableExists": false,
+        "migrationCount": null,
+        "submissionFoundationMigrationRecorded": false
       }
     }
   }
