@@ -70,7 +70,9 @@ const enumRows = await sql`
     and typname = any(${expectedSubmissionEnums})
 `;
 const presentEnums = new Set(enumRows.map((row) => row.typname));
-const enums = Object.fromEntries(expectedSubmissionEnums.map((name) => [name, presentEnums.has(name)]));
+const enums = Object.fromEntries(
+  expectedSubmissionEnums.map((name) => [name, presentEnums.has(name)]),
+);
 
 const migrationTableRows = await sql`
   select exists (
