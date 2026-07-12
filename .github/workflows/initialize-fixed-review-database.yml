@@ -57,4 +57,31 @@ jobs:
       - name: Trigger configured staging-review deployment
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh workflow run staging-review-deploy.yml --ref main
+        run: |
+          gh workflow run staging-review-deploy.yml --ref main
+          sleep 5
+          deploy_run_id="$(gh run list \
+            --workflow staging-review-deploy.yml \
+            --branch main \
+            --event workflow_dispatch \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId')"
+          test -n "$deploy_run_id"
+          gh run watch "$deploy_run_id" --exit-status
+
+      - name: Run fixed-review live audit after deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh workflow run p5-02r-fixed-review-live-audit.yml --ref main
+          sleep 5
+          audit_run_id="$(gh run list \
+            --workflow p5-02r-fixed-review-live-audit.yml \
+            --branch main \
+            --event workflow_dispatch \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId')"
+          test -n "$audit_run_id"
+          gh run watch "$audit_run_id" --exit-status
