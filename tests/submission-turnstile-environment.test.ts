@@ -12,7 +12,7 @@ const validEnvironment = {
   CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
 };
 
-describe('P5-02N Turnstile environment binding', () => {
+describe('P5-02N/P5-02R Turnstile environment binding', () => {
   it('binds server verification and returns only client-safe widget configuration', async () => {
     const fetchImpl = vi.fn(async (_url: string | URL | Request, init?: RequestInit) => {
       expect(JSON.parse(String(init?.body))).toEqual({
@@ -44,6 +44,42 @@ describe('P5-02N Turnstile environment binding', () => {
       configuration.verifier.verify({
         requestId,
         token: 'turnstile-token',
+        remoteIp: '203.0.113.10',
+      }),
+    ).resolves.toEqual({ outcome: 'allow', reasonCode: 'challenge_verified' });
+  });
+
+  it('separates the browser action from strict Siteverify metadata when configured', async () => {
+    const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
+      {
+        CPM_TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
+        PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
+        CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
+        CPM_TURNSTILE_EXPECTED_ACTION: 'test',
+        PUBLIC_TURNSTILE_ACTION: 'submission_intake',
+      },
+      {
+        fetchImpl: (async () =>
+          new Response(
+            JSON.stringify({
+              success: true,
+              hostname: 'localhost',
+              action: 'test',
+            }),
+            { status: 200 },
+          )) as typeof fetch,
+      },
+    );
+
+    expect(configuration.client).toEqual({
+      siteKey: '1x00000000000000000000AA',
+      action: 'submission_intake',
+    });
+    expect(configuration.expectedHostname).toBe('localhost');
+    await expect(
+      configuration.verifier.verify({
+        requestId,
+        token: 'XXXX.DUMMY.TOKEN.XXXX',
         remoteIp: '203.0.113.10',
       }),
     ).resolves.toEqual({ outcome: 'allow', reasonCode: 'challenge_verified' });
@@ -103,6 +139,10 @@ describe('P5-02N Turnstile environment binding', () => {
     [
       'action with unsupported characters',
       { ...validEnvironment, CPM_TURNSTILE_EXPECTED_ACTION: 'submission intake' },
+    ],
+    [
+      'browser action with unsupported characters',
+      { ...validEnvironment, PUBLIC_TURNSTILE_ACTION: 'submission intake' },
     ],
   ])('rejects %s with one generic configuration error', (_name, environment) => {
     expect(() => createSubmissionTurnstileConfigurationFromEnvironment(environment)).toThrow(
