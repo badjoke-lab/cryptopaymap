@@ -69,8 +69,12 @@ const workflowMarkers = [
   "CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '180'",
   "CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: '5'",
   "CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: '600'",
-  "CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.cryptopaymap-staging.pages.dev'",
-  "CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake'",
+  "CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost'",
+  "CPM_TURNSTILE_EXPECTED_ACTION: 'test'",
+  "PUBLIC_TURNSTILE_ACTION: 'submission_intake'",
+  "browserAction: 'submission_intake'",
+  "siteverifyExpectedHostname: 'localhost'",
+  "siteverifyExpectedAction: 'test'",
   'Deploy staging review to Cloudflare Pages',
   'tee deployment-output.log',
   'Prepare Pages deployment diagnostic summary',
@@ -95,6 +99,15 @@ const workflowMarkers = [
 for (const marker of workflowMarkers) {
   if (!workflow.includes(marker)) {
     throw new Error(`Configured Suggest workflow marker missing: ${marker}`);
+  }
+}
+
+for (const obsoleteReviewMarker of [
+  "CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.cryptopaymap-staging.pages.dev'",
+  "CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake'",
+]) {
+  if (workflow.includes(obsoleteReviewMarker)) {
+    throw new Error(`Obsolete fixed-review Turnstile marker remains: ${obsoleteReviewMarker}`);
   }
 }
 
