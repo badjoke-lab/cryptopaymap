@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { SubmissionChallengeVerifier } from './challenge-verification';
 import { createTurnstileSiteverifyVerifier } from './turnstile-siteverify';
 
+const officialAlwaysPassTestSecret = '1x0000000000000000000000000000000AA';
+const officialAlwaysPassTestSiteKey = '1x00000000000000000000AA';
 const nonWhitespaceTokenSchema = z.string().min(1).max(512).regex(/^\S+$/);
 const hostnameSchema = z
   .string()
@@ -69,10 +71,16 @@ export function createSubmissionTurnstileConfigurationFromEnvironment(
   if (!parsed.success) throw new SubmissionTurnstileConfigurationError();
 
   try {
+    const officialAlwaysPassTestMode =
+      parsed.data.CPM_TURNSTILE_SECRET_KEY === officialAlwaysPassTestSecret &&
+      parsed.data.PUBLIC_TURNSTILE_SITE_KEY === officialAlwaysPassTestSiteKey &&
+      parsed.data.CPM_TURNSTILE_EXPECTED_HOSTNAME === 'localhost' &&
+      parsed.data.CPM_TURNSTILE_EXPECTED_ACTION === 'test';
     const verifier = createTurnstileSiteverifyVerifier({
       secretKey: parsed.data.CPM_TURNSTILE_SECRET_KEY,
       expectedHostname: parsed.data.CPM_TURNSTILE_EXPECTED_HOSTNAME,
       expectedAction: parsed.data.CPM_TURNSTILE_EXPECTED_ACTION,
+      ...(officialAlwaysPassTestMode ? { allowOfficialAlwaysPassTestMetadata: true } : {}),
       ...(options.fetchImpl === undefined ? {} : { fetchImpl: options.fetchImpl }),
       ...(options.timeoutMs === undefined ? {} : { timeoutMs: options.timeoutMs }),
     });

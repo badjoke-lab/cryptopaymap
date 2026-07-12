@@ -5,6 +5,8 @@ import type {
 } from './challenge-verification';
 
 const defaultEndpoint = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+const officialAlwaysPassTestSecret = '1x0000000000000000000000000000000AA';
+const officialAlwaysPassDummyToken = 'XXXX.DUMMY.TOKEN.XXXX';
 
 const siteverifyResponseSchema = z
   .object({
@@ -29,6 +31,7 @@ export interface TurnstileSiteverifyOptions {
   secretKey: string;
   expectedHostname: string;
   expectedAction: string;
+  allowOfficialAlwaysPassTestMetadata?: boolean;
   endpoint?: string;
   timeoutMs?: number;
   fetchImpl?: typeof fetch;
@@ -57,6 +60,11 @@ export function createTurnstileSiteverifyVerifier(
     throw new Error('Turnstile timeout must be an integer between 500 and 30000 ms.');
   }
   const fetchImpl = options.fetchImpl ?? fetch;
+  const officialAlwaysPassTestMode =
+    options.allowOfficialAlwaysPassTestMetadata === true &&
+    options.secretKey === officialAlwaysPassTestSecret &&
+    options.expectedHostname === 'localhost' &&
+    options.expectedAction === 'test';
 
   return {
     async verify(rawRequest) {
@@ -100,11 +108,19 @@ export function createTurnstileSiteverifyVerifier(
           return { outcome: 'deny', reasonCode: 'challenge_failed' };
         }
 
-        if (parsed.data.hostname !== options.expectedHostname) {
-          return { outcome: 'deny', reasonCode: 'challenge_hostname_mismatch' };
-        }
-        if (parsed.data.action !== options.expectedAction) {
-          return { outcome: 'deny', reasonCode: 'challenge_action_mismatch' };
+        const observedOfficialTestMetadata =
+          officialAlwaysPassTestMode &&
+          request.data.token === officialAlwaysPassDummyToken &&
+          parsed.data.hostname === 'example.com' &&
+          parsed.data.action === undefined;
+
+        if (!observedOfficialTestMetadata) {
+          if (parsed.data.hostname !== options.expectedHostname) {
+            return { outcome: 'deny', reasonCode: 'challenge_hostname_mismatch' };
+          }
+          if (parsed.data.action !== options.expectedAction) {
+            return { outcome: 'deny', reasonCode: 'challenge_action_mismatch' };
+          }
         }
 
         return { outcome: 'allow', reasonCode: 'challenge_verified' };
