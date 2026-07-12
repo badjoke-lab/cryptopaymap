@@ -4,6 +4,8 @@ import { join } from 'node:path';
 const suggestPage = readFileSync(join('dist', 'suggest/index.html'), 'utf8');
 const contributePage = readFileSync(join('dist', 'contribute/index.html'), 'utf8');
 const headers = readFileSync(join('dist', '_headers'), 'utf8');
+const runtimeHeaderPolicy = readFileSync('src/http/pages-response-headers.ts', 'utf8');
+const pagesMiddleware = readFileSync('functions/_middleware.ts', 'utf8');
 
 const requiredSuggestFragments = [
   'Suggest a place or online service',
@@ -53,7 +55,6 @@ for (const fragment of forbiddenSuggestFragments) {
 }
 
 const requiredCspFragments = [
-  '/suggest',
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
   'frame-src https://challenges.cloudflare.com',
   "connect-src 'self'",
@@ -61,10 +62,22 @@ const requiredCspFragments = [
   "frame-ancestors 'none'",
 ];
 
+if (!headers.includes('/suggest')) {
+  throw new Error('Missing static Suggest header path marker.');
+}
 for (const fragment of requiredCspFragments) {
   if (!headers.includes(fragment)) {
-    throw new Error(`Missing Suggest Turnstile CSP marker: ${fragment}`);
+    throw new Error(`Missing static Suggest Turnstile CSP marker: ${fragment}`);
+  }
+  if (!runtimeHeaderPolicy.includes(fragment)) {
+    throw new Error(`Missing Pages Function Suggest CSP marker: ${fragment}`);
   }
 }
 
-console.log('Suggest form and Turnstile CSP artifact checks passed.');
+for (const marker of ['applyPagesResponseHeaders', 'context.next()']) {
+  if (!pagesMiddleware.includes(marker)) {
+    throw new Error(`Missing Pages response-header middleware marker: ${marker}`);
+  }
+}
+
+console.log('Suggest form and static/Function Turnstile CSP checks passed.');
