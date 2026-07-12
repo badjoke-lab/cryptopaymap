@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { deriveSuggestReviewSecrets } from './derive-suggest-review-secrets.mjs';
+import { summarizeWorkerDeploymentLog } from './summarize-worker-deployment-log.mjs';
 
 const pagesConfig = JSON.parse(readFileSync('wrangler.jsonc', 'utf8'));
 const workflow = readFileSync('.github/workflows/staging-review-deploy.yml', 'utf8');
@@ -49,6 +50,9 @@ const workflowMarkers = [
   'Deploy Submission rate-limit Durable Object Worker',
   'wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc',
   'tee worker-deployment-output.log',
+  'Prepare Worker deployment diagnostic summary',
+  'scripts/summarize-worker-deployment-log.mjs',
+  'worker-deployment-diagnostic.json',
   'Upload Worker deployment diagnostics',
   'staging-review-worker-deployment-log',
   'CPM_REVIEW_SECRET_SEED_BASE64URL',
@@ -70,6 +74,7 @@ const workflowMarkers = [
   '/api/suggest/readiness',
   'Authorization: Bearer $CPM_SUGGEST_READINESS_TOKEN',
   'configuredVerification',
+  'workerDeploymentDiagnostic',
   'git worktree add --detach',
   'git -C "$STATUS_WORKTREE" push origin HEAD:staging-review',
 ];
@@ -157,6 +162,25 @@ for (const invalidSeed of [
   }
   assert(rejected, 'Invalid review seed was accepted.');
 }
+
+const diagnostic = summarizeWorkerDeploymentLog(`
+Authorization: Bearer ${'A'.repeat(48)}
+Account ${'b'.repeat(32)}
+ERROR code: 10000 — authentication error while deploying Durable Object Worker
+See https://user:password@example.test/private
+`);
+const diagnosticJson = JSON.stringify(diagnostic);
+assert(diagnostic.lines.length > 0, 'Worker diagnostic summary is empty.');
+assert(diagnosticJson.includes('10000'), 'Worker diagnostic summary removed the error code.');
+assert(
+  !diagnosticJson.includes('Bearer A'),
+  'Worker diagnostic summary leaked authorization data.',
+);
+assert(
+  !diagnosticJson.includes('b'.repeat(32)),
+  'Worker diagnostic summary leaked a long account identifier.',
+);
+assert(!diagnosticJson.includes('password'), 'Worker diagnostic summary leaked URL credentials.');
 
 if (!suggestPage.includes('ConfiguredSuggestForm')) {
   throw new Error('Suggest page must use runtime-configured form wrapper.');

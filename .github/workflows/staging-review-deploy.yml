@@ -82,12 +82,21 @@ jobs:
           npx wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc \
             2>&1 | tee worker-deployment-output.log
 
+      - name: Prepare Worker deployment diagnostic summary
+        if: always() && steps.worker_deploy.outcome == 'failure'
+        run: |
+          node scripts/summarize-worker-deployment-log.mjs \
+            worker-deployment-output.log \
+            worker-deployment-diagnostic.json
+
       - name: Upload Worker deployment diagnostics
         if: always() && steps.worker_deploy.outcome == 'failure'
         uses: actions/upload-artifact@v4
         with:
           name: staging-review-worker-deployment-log
-          path: worker-deployment-output.log
+          path: |
+            worker-deployment-output.log
+            worker-deployment-diagnostic.json
           if-no-files-found: error
           retention-days: 30
 
@@ -220,6 +229,9 @@ jobs:
           const missingConfiguredInputs = existsSync('missing-configured-inputs.txt')
             ? readFileSync('missing-configured-inputs.txt', 'utf8').split(/\r?\n/).filter(Boolean)
             : [];
+          const workerDeploymentDiagnostic = existsSync('worker-deployment-diagnostic.json')
+            ? JSON.parse(readFileSync('worker-deployment-diagnostic.json', 'utf8'))
+            : null;
           const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
           const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
           const receipt = {
@@ -238,6 +250,7 @@ jobs:
             ...(checks.durableObjectWorker === 'failure'
               ? { diagnosticsArtifact: 'staging-review-worker-deployment-log' }
               : {}),
+            ...(workerDeploymentDiagnostic ? { workerDeploymentDiagnostic } : {}),
             ...(missingConfiguredInputs.length > 0 ? { missingConfiguredInputs } : {}),
           };
           mkdirSync('staging-review-receipt', { recursive: true });
