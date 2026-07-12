@@ -407,6 +407,12 @@ P5-02R now audits:
 
 P5-02 remains in progress until P5-02R records repository and fixed-review audit evidence and an explicit handoff decision.
 
+The 2026-07-12 fixed-review audit found that the official always-pass widget token returns successful
+Siteverify metadata for `hostname: example.com` with no action, while the deployed application expects
+`localhost` and `test`. The route correctly rejects this mismatch with bounded HTTP 400. P5-02R and
+P5-02 remain in progress, and P5-03 remains blocked until the test-key contract is corrected without
+weakening hostname/action verification and the live replay/conflict journey passes.
+
 ### P5-03 — Payment and problem reports
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.

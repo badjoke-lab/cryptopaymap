@@ -207,7 +207,14 @@ Complete P5-02R repository and fixed-review audit evidence. Then record the P5-0
 
 ## Blocked
 
-No known repository blocker to beginning P5-02R.
+P5-02R found that the deployed official always-pass Turnstile widget token validates successfully at
+Siteverify but returns `hostname: example.com` with no action, while the configured application
+expects `hostname: localhost` and `action: test`. The public route correctly returns bounded HTTP 400
+instead of weakening exact metadata verification.
+
+P5-03 remains blocked until the fixed-review test-key contract is corrected without weakening
+Turnstile hostname/action enforcement and the P5-02R live first POST, exact replay, changed-content
+conflict, public-artifact comparison, and privacy checks pass.
 
 A live synthetic Suggest probe may reveal a Turnstile testing, migration, persistence, or route-composition gap. Such a result is an audit finding to correct, not a reason to mark the audit successful.
 

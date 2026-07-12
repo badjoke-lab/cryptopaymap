@@ -263,6 +263,47 @@ It must not report request body content, challenge token, status secret, databas
 
 A failed audit must not advance P5-03. The failure must be corrected or explicitly reclassified through a documented decision.
 
+## 2026-07-12 fixed-review audit finding
+
+Repository integration checks pass for the complete Suggest path, including strict schema reuse,
+private persistence, exact replay, changed-content conflict, bounded HTTP mapping, protected review
+projection, guarded transitions, and accepted-as-Candidate transaction isolation.
+
+The authoritative `staging-review` receipt records `status: deployed` for main commit
+`38da5d44605d8400a70ace4ba5a02ef7499823a1`, with all configured checks successful.
+
+The first live P5-02R probe found a configured Turnstile metadata mismatch before private intake:
+
+```text
+deployed official always-pass widget token
+→ Cloudflare Siteverify success
+→ hostname example.com
+→ action absent
+
+configured application expectation
+→ hostname localhost
+→ action test
+
+public Suggest result
+→ HTTP 400 suggest_request_invalid
+```
+
+The synthetic request itself passes the repository's strict Suggest schema. The probe used only
+fictional Place content, no contact data, and an explicit P5-02R automated-review marker. No public
+receipt or status secret was returned. `/data/manifest.json` and `/version.json` remained byte-stable
+across each bounded attempt.
+
+The audit did not weaken Turnstile success, hostname, or action verification. Exact replay and
+changed-content live conflict therefore remain unproven, and P5-02 does not hand off to P5-03.
+The configured test-key contract must be corrected without weakening production verification, then
+the same fixed-review probe must prove HTTP 202, deterministic replay identity, HTTP 409 changed-body
+conflict, and stable public artifacts.
+
+Receipt and repository scanning found no Turnstile token, returned status secret, private payload,
+contact data, raw edge identity, database value, or derived key in tracked diagnostics or public
+artifacts. Authenticated Actions log download was unavailable to the audit identity (`HTTP 403`), so
+production or privileged log-stream inspection remains retained Launch work and is not claimed here.
+
 ## Completion result
 
 P5-02R completes when the repository and fixed-review evidence demonstrate that Suggest intake is a real private-review path with deterministic public-route replay/conflict behavior, preserved privacy boundaries, and no automatic public/canonical mutation.
