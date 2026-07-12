@@ -1,8 +1,8 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-02 Suggest work in progress  
-**Last updated:** 2026-07-11
+**Status:** Active — P5-02 Suggest audit in progress  
+**Last updated:** 2026-07-12
 
 ## Purpose
 
@@ -72,11 +72,11 @@ P5-02M  Durable Object distributed Submission rate limiting              Complet
 P5-02N  Turnstile environment binding                                   Completed #172
 P5-02O  Public Suggest HTTP route and safe response mapping              Completed #173
 P5-02P  Public Suggest form and Turnstile browser wiring                 Completed #174
-P5-02Q  Configured Suggest review verification                          In progress
-P5-02 integration and handoff audit                                    Planned
+P5-02Q  Configured Suggest review verification                          Completed #175–#183
+P5-02R  Suggest integration and handoff audit                           In progress
 ```
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, the public Suggest HTTP route, and the public Suggest form/browser wiring. Configured review deployment verification is the current bounded slice; a bounded P5-02 integration and handoff audit remains afterward.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, the public Suggest HTTP route, the public Suggest form/browser wiring, and configured fixed-review verification. The bounded P5-02 integration and handoff audit is now active.
 
 ---
 
@@ -170,9 +170,9 @@ P5-02O — Public Suggest HTTP route and safe response mapping           Complet
     ↓
 P5-02P — Public Suggest form and Turnstile browser wiring              Completed #174
     ↓
-P5-02Q — Configured Suggest review verification                       In progress
+P5-02Q — Configured Suggest review verification                       Completed #175–#183
     ↓
-P5-02 integration and handoff audit                                    Planned
+P5-02R — Suggest integration and handoff audit                        In progress
 ```
 
 P5-02H must:
@@ -188,18 +188,37 @@ P5-02H must:
 
 ### Configured review dependency
 
-P5-02Q must not treat repository CI as proof of live review configuration. The fixed review deployment must provide explicit evidence for:
+P5-02Q completed against fixed-review main commit:
 
-- the separate SQLite-backed rate-limit Durable Object Worker deployment;
-- the Pages preview Durable Object namespace binding;
+```text
+513dc7f543ac27fe512319a3cc24cc16c3de4302
+```
+
+The fixed-review receipt records successful:
+
+- SQLite-backed rate-limit Durable Object Worker deployment;
+- Pages preview Durable Object namespace binding;
 - required Suggest runtime secret synchronization;
 - client-safe runtime Turnstile configuration availability;
-- a lightweight live database query;
-- live Pages Function to Durable Object health reachability;
+- lightweight live Neon query;
+- Pages Function to Durable Object health reachability;
 - deployed Suggest CSP presence;
-- a deployment receipt for the intended main commit with successful configured-verification checks.
+- durable deployment receipt publication.
 
-Readiness verification does not by itself prove a real human Turnstile challenge, a live successful Suggest POST, deterministic live replay, a real configured 429 sequence, or sensitive-log inspection. Those claims require explicit later evidence.
+Readiness verification does not by itself prove a real successful Suggest POST, deterministic live replay, a real configured 429 sequence, or protected reviewer execution. P5-02R owns the bounded integration/handoff decision and must not infer those claims from readiness alone.
+
+### P5-02R audit dependency
+
+P5-02R must:
+
+- reconcile P5-02A through P5-02Q contract continuity;
+- run one clearly synthetic fixed-review Suggest intake without real personal or business data;
+- prove public-route first acceptance, exact replay, and changed-content conflict;
+- avoid logging the challenge token or returned status secret;
+- compare stable public review artifacts before and after intake;
+- confirm no automatic public/canonical mutation;
+- assign protected Admin, production Turnstile, live 429, and configured accepted-as-Candidate work to explicit later gates;
+- record an explicit P5-03 handoff decision.
 
 ### Operational dependency
 
@@ -209,7 +228,7 @@ P4-18B must already provide safe operator handling and correction behavior for p
 
 A suggestion can move from public intake to protected review and resolve without directly changing a public record. A useful but insufficient suggestion may become a private Candidate.
 
-P5-02 is not complete when P5-02H finishes. Public Suggest route/form wiring, configured review verification, and a bounded integration/handoff audit still remain.
+P5-02 completes only when P5-02R records repository and fixed-review audit evidence and an explicit P5-03 handoff decision.
 
 ---
 
