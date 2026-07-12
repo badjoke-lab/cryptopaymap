@@ -1,21 +1,61 @@
 # P5-02Q configured Suggest review verification
 
 **Implementation item:** P5-02Q  
-**Status:** In progress  
-**Last updated:** 2026-07-11
+**Status:** Completed through #175–#183  
+**Last updated:** 2026-07-12
 
 ## Purpose
 
-P5-02Q turns the fixed review deployment from a static review surface into a deployment path that can verify the configured Suggest runtime boundary without claiming more than the environment proves.
+P5-02Q turned the fixed review deployment from a static review surface into a deployment path that verifies the configured Suggest runtime boundary without claiming more than the environment proves.
 
-The slice provides:
+The completed slice provides:
 
 - separate deployment of the SQLite-backed Submission rate-limit Durable Object Worker;
 - explicit Pages-to-Worker Durable Object binding;
 - runtime-safe Turnstile browser configuration;
 - authenticated database and Durable Object readiness verification;
+- Pages Functions response-header enforcement for Suggest CSP;
 - fixed review post-deployment checks;
-- a durable deployment receipt.
+- a durable deployment receipt with bounded diagnostics.
+
+## Completion evidence
+
+Configured review verification completed for main commit:
+
+```text
+513dc7f543ac27fe512319a3cc24cc16c3de4302
+```
+
+The fixed-review receipt records:
+
+```text
+status: deployed
+checks.credentials: success
+checks.configuredInputs: success
+checks.durableObjectWorker: success
+checks.pagesSecrets: success
+checks.pagesDeployment: success
+checks.configuredVerification: success
+```
+
+The configured verification diagnostic records:
+
+```text
+status: success
+stage: complete
+runtime config HTTP 200
+site key match true
+action match true
+readiness HTTP 200
+ready true
+Suggest CSP HTTP 200
+CSP header present true
+Turnstile script-src allowed true
+Turnstile frame-src allowed true
+network error null
+```
+
+The receipt, rather than repository CI alone, is the authoritative configured-environment evidence.
 
 ## Cloudflare deployment model
 
@@ -67,12 +107,12 @@ client configuration endpoint verification
 ↓
 authenticated database + Durable Object readiness verification
 ↓
-Turnstile CSP verification
+Function-applied Turnstile CSP verification
 ↓
 deployment receipt publication
 ```
 
-Later steps must not run after a required earlier step fails.
+Later steps do not run after a required earlier step fails.
 
 ## Manual repository secrets
 
@@ -85,11 +125,11 @@ CPM_REVIEW_SECRET_SEED_BASE64URL
 
 `DATABASE_URL` is the PostgreSQL connection string for the fixed review database.
 
-`CPM_REVIEW_SECRET_SEED_BASE64URL` must be canonical unpadded Base64URL encoding of exactly 32 random bytes. It is a root secret for the fixed review environment only.
+`CPM_REVIEW_SECRET_SEED_BASE64URL` is canonical unpadded Base64URL encoding of exactly 32 random bytes. It is a root secret for the fixed review environment only.
 
 The root seed must remain stable while review Submission data needs to remain readable and verifiable. Rotating it changes every derived key and invalidates existing review status secrets, contact ciphertext access, email hashes, rate-limit buckets, and readiness authentication.
 
-The root seed must not be used in production and must not be reused by another project or environment.
+The root seed must not be used in production or reused by another project or environment.
 
 ## Stable review-secret derivation
 
@@ -111,7 +151,7 @@ CPM_SUGGEST_READINESS_TOKEN
 
 Each cryptographic key is 32 bytes. Each use has a different HKDF info label. Derived values are deterministic for the same seed and distinct across purposes.
 
-The workflow masks derived values, writes them only to runner-local files with restricted permissions, synchronizes them to the Pages preview environment, and deletes the temporary files.
+The workflow masks derived values, writes them only to runner-local files with restricted permissions, synchronizes them to the Pages preview environment, and deletes temporary files.
 
 ## Fixed review policy values
 
@@ -177,7 +217,7 @@ Authorized verification performs:
 
 1. complete Suggest HTTP runtime composition;
 2. database URL validation;
-3. a live lightweight database query;
+3. a live lightweight Neon query;
 4. live Durable Object namespace resolution;
 5. a live request to the bound Durable Object `/health` path;
 6. strict `{ "status": "ready" }` response validation.
@@ -206,6 +246,24 @@ No provider detail is returned.
 
 The health path does not consume a rate-limit request or update the fixed-window counter.
 
+## Pages Functions response headers
+
+The first configured verification runs showed that `_headers` was present in the static artifact but the deployed `/suggest` response had no CSP because the project also uses Pages Functions.
+
+P5-02Q corrected this with root Pages Functions middleware that applies response headers after `context.next()`.
+
+The middleware:
+
+- attaches the exact `/suggest` Turnstile CSP;
+- applies `no-store` and `no-referrer` to `/suggest`;
+- preserves stricter API response headers;
+- preserves protected Admin cache/referrer/noindex policy;
+- preserves static asset, public data, manifest, and icon cache policy;
+- marks fixed-review hostnames as non-indexable;
+- retains `_headers` as the static fallback.
+
+The successful receipt proves the deployed Function response now contains the required CSP.
+
 ## Post-deployment verification
 
 The workflow retries the fixed review URL until the new deployment is observable. It verifies:
@@ -220,7 +278,7 @@ Fixed review URL:
 https://review.cryptopaymap-staging.pages.dev
 ```
 
-## Deployment receipt
+## Deployment receipt and diagnostics
 
 Full success preserves:
 
@@ -241,7 +299,7 @@ checks.configuredVerification
 
 It also records non-secret review configuration metadata, including the derivation version, test-key mode, retention days, and rate-limit policy.
 
-Failure statuses remain bounded:
+Failure statuses are bounded:
 
 ```text
 missing_credentials
@@ -252,36 +310,40 @@ deploy_failed
 verification_failed
 ```
 
-Repository merge is not configured-environment proof. The receipt for the intended `main` commit is the deployment evidence.
+Worker, Pages deploy, and configured verification failures produce bounded diagnostics. Raw deployment logs remain authenticated Actions artifacts; only redacted or shape-only diagnostics enter the status receipt.
 
-## What readiness proves
+## What P5-02Q proves
 
-A successful receipt proves:
+The successful receipt proves:
 
 - Cloudflare deployment credentials were accepted;
 - required review inputs were present and the seed was valid;
-- the Durable Object Worker deployment step succeeded;
+- the Durable Object Worker deployment succeeded;
 - Pages preview secret synchronization succeeded;
 - the Pages review deployment succeeded;
-- runtime client configuration is reachable;
-- the database accepts a lightweight query;
+- runtime client configuration is reachable and correct;
+- Neon accepts a lightweight query;
 - the Pages Function can resolve and call the bound Durable Object;
-- the deployed Suggest CSP is present.
+- the deployed `/suggest` response contains the required CSP.
 
-## What readiness does not prove
+## What P5-02Q does not prove
 
-It does not prove:
+P5-02Q does not prove:
 
-- production Turnstile configuration;
-- a production human challenge;
-- a real production Siteverify result;
-- a successful live Suggest POST and private persistence;
-- deterministic live replay;
+- a successful public Suggest POST and private persistence;
+- deterministic live public-route replay;
+- changed-content live public-route conflict;
 - configured live 429 behavior;
-- sensitive-log inspection;
-- reviewer workflow behavior for a resulting live Submission;
+- production Turnstile configuration or a production human challenge;
+- production-domain hostname verification;
+- protected reviewer execution;
+- configured accepted-as-Candidate execution;
+- sensitive production log-stream inspection;
 - P5-02 integration closure;
-- P5-03 readiness.
+- P5-03 readiness;
+- Launch readiness.
+
+Those claims require explicit later evidence and must not be inferred from readiness success.
 
 ## Security and privacy invariants
 
@@ -290,13 +352,14 @@ It does not prove:
 - the browser receives only the public test site key and action;
 - readiness failures are generic;
 - temporary secret files are deleted;
+- diagnostics exclude raw credentials and private application values;
 - no raw IP, plaintext email, plaintext status secret, challenge token, database URL, root seed, or derived key is returned;
 - public Suggest intake still creates private review material only;
 - no direct Candidate, canonical, export, or publication mutation is added.
 
-## Completion criteria
+## Completion result
 
-Repository work is complete when:
+P5-02Q is complete because:
 
 1. the Pages Durable Object binding is explicit;
 2. the fixed review workflow deploys the Worker before Pages;
@@ -304,10 +367,19 @@ Repository work is complete when:
 4. stable purpose-separated derivation is tested;
 5. fixed review policy values and official Turnstile testing keys are explicit;
 6. Pages secrets are synchronized without value logging;
-7. runtime browser configuration remains client-safe and fail-closed;
-8. readiness validates runtime composition, database connectivity, and live Durable Object health;
-9. post-deploy verification checks config, readiness, and CSP;
-10. the deployment receipt records detailed outcomes;
-11. focused tests, deployment-contract checks, and full GitHub CI pass.
+7. runtime browser configuration remains client-safe and fail closed;
+8. readiness validates runtime composition, Neon connectivity, and live Durable Object health;
+9. Pages Functions middleware supplies the deployed Suggest CSP;
+10. post-deploy verification checks config, readiness, and CSP;
+11. the deployment receipt records detailed outcomes;
+12. focused tests, deployment-contract checks, full GitHub CI, and configured fixed-review verification passed.
 
-Configured review verification completes only after the receipt for the intended main commit records successful deployment and configured verification.
+## Next
+
+Proceed to:
+
+```text
+P5-02R — Suggest integration and handoff audit
+```
+
+P5-02R owns the synthetic live Suggest POST, deterministic replay/conflict evidence, public non-mutation comparison, privacy audit, residual-work classification, and final P5-03 handoff decision.

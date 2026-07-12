@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-11
+**Last verified:** 2026-07-12
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02Q — Configured Suggest review verification
+P5-02R — Suggest integration and handoff audit
 
 ## Current repository state
 
@@ -34,7 +34,8 @@ P5-02Q — Configured Suggest review verification
 - P5-02N Turnstile environment binding is complete through #172.
 - P5-02O public Suggest HTTP composition and safe response mapping are complete through #173.
 - P5-02P public Suggest form, browser Turnstile wiring, and scoped CSP are complete through #174.
-- P5-02Q configured Suggest review deployment and readiness verification are in progress.
+- P5-02Q configured Suggest review deployment and readiness verification are complete through #175–#183.
+- P5-02R Suggest integration and handoff audit is in progress.
 
 ## Fixed review environment
 
@@ -42,7 +43,13 @@ Review URL:
 
 `https://review.cryptopaymap-staging.pages.dev`
 
-Deployment receipt state must be checked whenever review-environment state matters. A repository merge must not be assumed visible or configured correctly at the fixed URL until the receipt records the intended `main` commit and successful configured verification.
+The successful P5-02Q deployment receipt for main commit:
+
+`513dc7f543ac27fe512319a3cc24cc16c3de4302`
+
+records `status: deployed` and success for credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, Pages deployment, and configured verification.
+
+Deployment receipt state must still be checked whenever review-environment state matters. A later repository merge must not be assumed visible or configured correctly at the fixed URL until the receipt records the intended `main` commit and successful configured verification.
 
 ## Required current references
 
@@ -76,7 +83,8 @@ Before P5-02 implementation or review, read:
 26. `docs/P5_02O_SUGGEST_HTTP_ROUTE.md`;
 27. `docs/P5_02P_SUGGEST_FORM_TURNSTILE.md`;
 28. `docs/P5_02Q_CONFIGURED_SUGGEST_REVIEW_VERIFICATION.md`;
-29. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+29. `docs/P5_02R_SUGGEST_INTEGRATION_AND_HANDOFF_AUDIT.md`;
+30. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -126,59 +134,66 @@ P5-02O  Public Suggest HTTP route and safe response mapping               Comple
     ↓
 P5-02P  Public Suggest form and Turnstile browser wiring                  Completed #174
     ↓
-P5-02Q  Configured Suggest review verification                           In progress
+P5-02Q  Configured Suggest review verification                           Completed #175–#183
     ↓
-P5-02 integration and handoff audit
+P5-02R  Suggest integration and handoff audit                            In progress
 ```
 
-Exact later slice IDs are assigned when each bounded scope begins.
+## P5-02Q completion evidence
 
-## Current active scope — configured Suggest review verification
+The fixed-review receipt for commit `513dc7f543ac27fe512319a3cc24cc16c3de4302` proves:
 
-P5-02Q must make the fixed review environment verifiable without treating repository CI as proof of live deployment state.
+- Cloudflare credentials accepted;
+- configured review inputs present;
+- stable review-secret derivation accepted;
+- SQLite-backed rate-limit Durable Object Worker deployed;
+- Pages preview secrets synchronized;
+- Pages review deployment succeeded;
+- runtime client configuration returned the expected site key and action;
+- Neon accepted a lightweight query;
+- Pages resolved and called the bound Durable Object health path;
+- `/suggest` returned the required Function-applied Turnstile CSP.
+
+P5-02Q does not prove a successful public Suggest POST, deterministic live replay, changed-content live conflict, configured live 429 behavior, or protected reviewer execution.
+
+## Current active scope — P5-02R integration and handoff audit
+
+P5-02R must audit P5-02A through P5-02Q as one boundary.
 
 The current work must:
 
-- deploy the SQLite-backed Submission rate-limit Durable Object Worker before the Pages review deployment;
-- bind `SUBMISSION_RATE_LIMIT_BUCKETS` to the separate Worker with an explicit `script_name`;
-- synchronize the required Suggest runtime secrets and rate-limit policy into the Pages preview environment without logging secret values;
-- remove build-time Turnstile configuration dependency from `/suggest`;
-- expose only client-safe runtime Turnstile site key and action through a same-origin configuration endpoint;
-- fail the browser form closed when runtime configuration is unavailable or malformed;
-- provide a separately authenticated readiness route using a dedicated bearer token;
-- verify complete Suggest runtime composition, a live lightweight database query, and a live Pages Function → Durable Object health request;
-- verify the fixed review configuration endpoint, readiness route, and Turnstile CSP after deployment;
-- record detailed deployment and configured-verification outcomes in the fixed review deployment receipt;
-- preserve generic failure responses and the rule that Suggest intake does not directly create Candidate, canonical, export, or publication state.
+- verify browser, HTTP route, strict Suggest schema, provider composition, private persistence, reviewer projection, workflow transition, and accepted-as-Candidate contract continuity;
+- run one clearly synthetic fixed-review Suggest journey without real person or business data;
+- verify first POST acceptance, exact replay identity, and changed-content conflict at the public route boundary;
+- avoid logging the Turnstile token or returned status secret;
+- compare stable public review artifacts before and after live intake to confirm no automatic public mutation;
+- verify private/secret field exclusion from receipts, diagnostics, and public artifacts;
+- retain configured P5-02Q receipt evidence for the audited main commit or a later compatible main commit;
+- separate P5-03 handoff criteria from protected Admin and production Launch work;
+- document any discovered platform or contract gap and keep P5-03 blocked until it is corrected or explicitly reclassified.
 
-## Evidence required before configured verification is complete
+## P5-02R handoff gate
 
-Repository CI may prove code, schema, build, tests, deployment-contract checks, and Worker dry-run compilation. It does not prove the fixed review deployment.
+P5-03 may begin only after:
 
-Configured verification is complete only when the deployment receipt for the intended `main` commit records:
-
-```text
-status: deployed
-checks.credentials: success
-checks.configuredInputs: success
-checks.durableObjectWorker: success
-checks.pagesSecrets: success
-checks.pagesDeployment: success
-checks.configuredVerification: success
-```
-
-P5-02Q readiness success proves configuration composition, database query reachability, Pages-to-Durable-Object binding reachability, DO health response, and deployed Suggest CSP/config availability. It does not prove a real human Turnstile challenge, Siteverify success for a live token, a real Suggest POST and private persistence, deterministic live replay, configured 429 behavior, or log-redaction inspection.
-
-Those remaining claims require separate explicit evidence and must not be inferred from readiness success.
+1. P5-02 repository integration checks are green;
+2. the configured fixed-review receipt remains successful;
+3. the synthetic live intake path is accepted or an explicit approved retained gate exists;
+4. exact replay and changed-content conflict are proven at the public route;
+5. stable public artifacts remain unchanged by intake;
+6. no private or secret leakage is found;
+7. residual work is assigned to the correct later Phase 5 or Launch gate;
+8. the P5-02R audit records an explicit handoff decision.
 
 ## Retained Launch work
 
 Starting or completing Phase 5 does not waive retained Launch work, including:
 
 - live Cloudflare Access and identity verification;
-- actual allowlist and deployed environment verification;
+- actual allowlist and deployed Admin environment verification;
 - live Neon migration-state verification;
 - representative protected Admin journeys with configured data;
+- configured accepted-as-Candidate execution requiring source/capability configuration;
 - canonical query → complete candidate generation → private upload → release-review handoff;
 - corrected canonical value → generation → release → activation flow;
 - concrete R2 publication conditional-write verification;
@@ -188,22 +203,20 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02Q repository work and obtain a successful fixed-review deployment receipt for the intended main commit. Then close P5-02 with a bounded integration and handoff audit before P5-03 begins.
+Complete P5-02R repository and fixed-review audit evidence. Then record the P5-02 handoff decision before P5-03 begins.
 
 ## Blocked
 
-No known repository blocker to implementing P5-02Q.
+No known repository blocker to beginning P5-02R.
 
-Configured live verification may still be blocked by missing GitHub secrets, Cloudflare deployment configuration, Neon connectivity, or Turnstile account configuration. Any such condition must be surfaced through the workflow outcome and deployment receipt rather than treated as success.
+A live synthetic Suggest probe may reveal a Turnstile testing, migration, persistence, or route-composition gap. Such a result is an audit finding to correct, not a reason to mark the audit successful.
 
-A successful readiness receipt still does not substitute for later real Turnstile-token and live Suggest POST evidence.
-
-`CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist remain required in configured environments for the accepted-as-Candidate transaction path.
+`CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist remain required in configured environments for live accepted-as-Candidate execution. That configured protected journey remains Launch work unless explicitly brought into a later bounded slice.
 
 Production restore completion remains a Launch gate rather than a P5-02 repository blocker.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, and actual CI results. Current work order is determined by `docs/PROJECT_STATUS.md`, `docs/IMPLEMENTATION_PLAN.md`, and the active phase specification.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and the fixed-review deployment receipt. Current work order is determined by `docs/PROJECT_STATUS.md`, `docs/IMPLEMENTATION_PLAN.md`, and the active phase specification.
 
 Do not claim live verification from repository checks alone. Do not claim visual acceptance from screenshot generation alone; relevant images must be inspected directly.

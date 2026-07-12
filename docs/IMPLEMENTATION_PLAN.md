@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-11
+**Last updated:** 2026-07-12
 
 This file tracks repository implementation work. GitHub `main`, merged pull requests, and actual CI results are authoritative when this file differs from repository reality.
 
@@ -192,7 +192,7 @@ Configured environment wiring remains required when the first public Suggest rou
 
 ### P5-02 — Suggest Place and Online Service
 
-**Status:** In progress at configured review verification
+**Status:** In progress at P5-02R integration and handoff audit
 
 P5-02 adds Suggest-specific intake, protected review entry, bounded review signals, and separately guarded reviewer operations without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates only after an explicit protected decision transaction.
 
@@ -231,9 +231,9 @@ P5-02O — Public Suggest HTTP route and safe response mapping               Com
     ↓
 P5-02P — Public Suggest form and Turnstile browser wiring                  Completed #174
     ↓
-P5-02Q — Configured Suggest review verification                           In progress
+P5-02Q — Configured Suggest review verification                           Completed #175–#183
     ↓
-P5-02 integration and handoff audit
+P5-02R — Suggest integration and handoff audit                            In progress
 ```
 
 P5-02A established:
@@ -380,7 +380,7 @@ P5-02P established:
 - `/suggest`-scoped Turnstile CSP;
 - build-artifact leakage checks.
 
-P5-02Q now establishes:
+P5-02Q established:
 
 - separate rate-limit Durable Object Worker deployment before Pages deployment;
 - exact Pages Durable Object binding with `script_name` for the preview review environment;
@@ -388,13 +388,24 @@ P5-02Q now establishes:
 - same-origin client-safe Turnstile runtime configuration instead of build-time configuration;
 - browser fail-closed behavior when runtime configuration is unavailable;
 - dedicated authenticated readiness verification;
-- live lightweight database query and Pages-to-Durable-Object health reachability checks;
+- live lightweight Neon query and Pages-to-Durable-Object health reachability checks;
+- Function-applied response security headers for Pages Functions responses;
 - post-deploy config, readiness, and CSP verification against the fixed review URL;
 - deployment receipt detail for credentials, configured inputs, Worker deploy, secret sync, Pages deploy, and configured verification.
 
-Repository completion of P5-02Q does not itself prove live configured success. The fixed review receipt for the intended main commit must record `status: deployed` and successful detailed checks. Readiness success still does not prove a real Turnstile token, a successful live Suggest POST, deterministic live replay, a configured 429 sequence, or sensitive-log inspection.
+The fixed-review receipt for main commit `513dc7f543ac27fe512319a3cc24cc16c3de4302` records `status: deployed` and successful configured checks. It proves runtime configuration, Neon query reachability, Durable Object reachability, Pages deployment, and deployed Suggest CSP. It does not prove a successful public Suggest POST, deterministic live replay, changed-content live conflict, configured live 429 behavior, or protected reviewer execution.
 
-After P5-02Q configured evidence is obtained, P5-02 closes with a bounded integration and handoff audit before P5-03 begins.
+P5-02R now audits:
+
+- P5-02A through P5-02Q contract continuity;
+- one clearly synthetic fixed-review Suggest intake without real person or business data;
+- first public-route acceptance, exact replay, and changed-content conflict;
+- public artifact equality before and after intake;
+- private and secret field exclusion from receipts, diagnostics, and public output;
+- separation of protected Admin, production Turnstile, live 429, and configured accepted-as-Candidate work into explicit later gates;
+- the final P5-03 handoff decision.
+
+P5-02 remains in progress until P5-02R records repository and fixed-review audit evidence and an explicit handoff decision.
 
 ### P5-03 — Payment and problem reports
 
