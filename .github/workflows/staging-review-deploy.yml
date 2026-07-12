@@ -179,40 +179,22 @@ jobs:
         id: configured_verify
         if: steps.deploy.outcome == 'success'
         continue-on-error: true
+        env:
+          CPM_REVIEW_BASE_URL: https://review.cryptopaymap-staging.pages.dev
+          CPM_EXPECTED_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
+          CPM_EXPECTED_TURNSTILE_ACTION: submission_intake
         run: |
-          set -euo pipefail
-          base_url='https://review.cryptopaymap-staging.pages.dev'
-          verified='false'
+          node scripts/verify-configured-suggest-review.mjs \
+            configured-verification-diagnostic.json
 
-          for attempt in $(seq 1 18); do
-            config_status="$(curl -sS -o suggest-config-response.json -w '%{http_code}' "$base_url/api/suggest/config" || true)"
-            readiness_status="$(curl -sS -o suggest-readiness-response.json -w '%{http_code}' \
-              -H "Authorization: Bearer $CPM_SUGGEST_READINESS_TOKEN" \
-              "$base_url/api/suggest/readiness" || true)"
-            if [ "$config_status" = '200' ] && [ "$readiness_status" = '200' ]; then
-              verified='true'
-              break
-            fi
-            echo "Configured Suggest verification attempt $attempt not ready: config=$config_status readiness=$readiness_status"
-            sleep 5
-          done
-
-          test "$verified" = 'true'
-
-          node <<'NODE'
-          const { readFileSync } = require('node:fs');
-          const config = JSON.parse(readFileSync('suggest-config-response.json', 'utf8'));
-          if (config.siteKey !== '1x00000000000000000000AA') process.exit(1);
-          if (config.action !== 'submission_intake') process.exit(1);
-          const readiness = JSON.parse(readFileSync('suggest-readiness-response.json', 'utf8'));
-          if (readiness.ready !== true) process.exit(1);
-          NODE
-
-          headers="$(curl -sSI "$base_url/suggest")"
-          printf '%s\n' "$headers" | grep -Eqi '^content-security-policy:.*https://challenges\.cloudflare\.com'
-          printf '%s\n' "$headers" | grep -Eqi '^content-security-policy:.*frame-src https://challenges\.cloudflare\.com'
-
-          rm -f suggest-config-response.json suggest-readiness-response.json
+      - name: Upload configured verification diagnostics
+        if: always() && steps.configured_verify.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-review-configured-verification-diagnostic
+          path: configured-verification-diagnostic.json
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Write deployment receipt
         if: always()
@@ -252,6 +234,9 @@ jobs:
           const pagesDeploymentDiagnostic = existsSync('pages-deployment-diagnostic.json')
             ? JSON.parse(readFileSync('pages-deployment-diagnostic.json', 'utf8'))
             : null;
+          const configuredVerificationDiagnostic = existsSync('configured-verification-diagnostic.json')
+            ? JSON.parse(readFileSync('configured-verification-diagnostic.json', 'utf8'))
+            : null;
           const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
           const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
           const receipt = {
@@ -273,8 +258,17 @@ jobs:
             ...(checks.pagesDeployment === 'failure'
               ? { pagesDiagnosticsArtifact: 'staging-review-pages-deployment-log' }
               : {}),
+            ...(checks.configuredVerification === 'failure'
+              ? {
+                  configuredVerificationDiagnosticsArtifact:
+                    'staging-review-configured-verification-diagnostic',
+                }
+              : {}),
             ...(workerDeploymentDiagnostic ? { workerDeploymentDiagnostic } : {}),
             ...(pagesDeploymentDiagnostic ? { pagesDeploymentDiagnostic } : {}),
+            ...(configuredVerificationDiagnostic
+              ? { configuredVerificationDiagnostic }
+              : {}),
             ...(missingConfiguredInputs.length > 0 ? { missingConfiguredInputs } : {}),
           };
           mkdirSync('staging-review-receipt', { recursive: true });
