@@ -72,7 +72,6 @@ const workflowMarkers = [
   'pages-deployment-diagnostic.json',
   'Upload Pages deployment diagnostics',
   'staging-review-pages-deployment-log',
-  '--config wrangler.jsonc',
   'Verify configured Suggest review path',
   '/api/suggest/config',
   '/api/suggest/readiness',
@@ -89,6 +88,16 @@ for (const marker of workflowMarkers) {
   if (!workflow.includes(marker)) {
     throw new Error(`Configured Suggest workflow marker missing: ${marker}`);
   }
+}
+
+const pagesDeployCommand = workflow.match(
+  /npx wrangler pages deploy dist[\s\S]*?tee deployment-output\.log/,
+)?.[0];
+if (!pagesDeployCommand) {
+  throw new Error('Pages deployment command contract is missing.');
+}
+if (pagesDeployCommand.includes('--config')) {
+  throw new Error('Pages deployment must use the default root Wrangler configuration.');
 }
 
 for (const obsoleteMarker of [
