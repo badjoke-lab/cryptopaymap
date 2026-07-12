@@ -24,11 +24,16 @@ function isExactPath(pathname: string, path: string): boolean {
   return pathname === path || pathname === `${path}/`;
 }
 
+function setIfMissing(headers: Headers, name: string, value: string): void {
+  if (!headers.has(name)) headers.set(name, value);
+}
+
 function applyCommonSecurityHeaders(headers: Headers): void {
-  headers.set('X-Content-Type-Options', 'nosniff');
-  headers.set('X-Frame-Options', 'DENY');
-  headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
-  headers.set(
+  setIfMissing(headers, 'X-Content-Type-Options', 'nosniff');
+  setIfMissing(headers, 'X-Frame-Options', 'DENY');
+  setIfMissing(headers, 'Referrer-Policy', 'strict-origin-when-cross-origin');
+  setIfMissing(
+    headers,
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(self), payment=()',
   );
