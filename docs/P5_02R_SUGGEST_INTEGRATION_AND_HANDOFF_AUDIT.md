@@ -273,7 +273,9 @@ The authoritative `staging-review` receipt records `status: deployed` for main c
 `38da5d44605d8400a70ace4ba5a02ef7499823a1`, with all configured checks successful.
 
 The corrected live P5-02R probe directly submitted Cloudflare's exact documented always-pass dummy
-token to Siteverify with the official test secret before calling the application route. It found:
+token to Siteverify with the official test secret before calling the application route. A four-request
+transport matrix covered JSON and `application/x-www-form-urlencoded`, each with and without a fresh
+UUID `idempotency_key`. All four independent requests found:
 
 ```text
 exact token: official documented dummy token (not printed by the probe)
@@ -291,9 +293,10 @@ expected fixed-review metadata
 ```
 
 This directly contradicts Cloudflare's current testing documentation, which specifies `localhost`
-and `test` for this exact dummy-token validation. Because the prerequisite metadata did not match,
-the corrected probe did not call `/api/suggest`; it therefore made no intake, replay, conflict,
-rate-limit, canonical-mutation, or publication claim.
+and `test` for this exact dummy-token validation. The discrepancy is reproducible across both
+officially supported request formats and is independent of `idempotency_key`. Because the
+prerequisite metadata did not match, the corrected probe did not call `/api/suggest`; it therefore
+made no intake, replay, conflict, rate-limit, canonical-mutation, or publication claim.
 
 The synthetic request itself passes the repository's strict Suggest schema and uses only fictional
 Place content, no contact data, and an explicit P5-02R automated-review marker. No public receipt or

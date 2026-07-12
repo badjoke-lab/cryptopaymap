@@ -7,20 +7,25 @@ const requestId = randomUUID();
 const challengeToken = 'XXXX.DUMMY.TOKEN.XXXX';
 const officialTestSecret = '1x0000000000000000000000000000000AA';
 const publicArtifactPaths = ['/data/manifest.json', '/version.json'];
+const siteverifyEndpoint = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
 function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
 }
 
-async function validateOfficialDummyToken() {
-  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+async function validateOfficialDummyToken(requestFormat, idempotencyIncluded) {
+  const values = {
+    secret: officialTestSecret,
+    response: challengeToken,
+    ...(idempotencyIncluded ? { idempotency_key: randomUUID() } : {}),
+  };
+  const isJson = requestFormat === 'json';
+  const response = await fetch(siteverifyEndpoint, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      secret: officialTestSecret,
-      response: challengeToken,
-      idempotency_key: randomUUID(),
-    }),
+    headers: {
+      'Content-Type': isJson ? 'application/json' : 'application/x-www-form-urlencoded',
+    },
+    body: isJson ? JSON.stringify(values) : new URLSearchParams(values),
   });
   let payload = null;
   try {
@@ -29,6 +34,8 @@ async function validateOfficialDummyToken() {
     // Only bounded metadata is returned to the caller.
   }
   const metadata = {
+    requestFormat,
+    idempotencyIncluded,
     httpStatus: response.status,
     success: payload?.success === true,
     hostname: typeof payload?.hostname === 'string' ? payload.hostname : null,
@@ -36,8 +43,20 @@ async function validateOfficialDummyToken() {
     hostnameMatches: payload?.hostname === 'localhost',
     actionMatches: payload?.action === 'test',
   };
-  console.log(JSON.stringify({ dummyTokenValidation: metadata }, null, 2));
   return metadata;
+}
+
+async function runSiteverifyTransportMatrix() {
+  const results = [];
+  for (const requestFormat of ['json', 'application/x-www-form-urlencoded']) {
+    for (const idempotencyIncluded of [false, true]) {
+      results.push(await validateOfficialDummyToken(requestFormat, idempotencyIncluded));
+    }
+  }
+  console.log(JSON.stringify({ siteverifyTransportMatrix: results }, null, 2));
+  if (results.some((result) => result.httpStatus !== 200 || !result.success)) {
+    process.exitCode = 1;
+  }
 }
 
 async function readPublicArtifacts() {
@@ -81,8 +100,14 @@ function isReceipt(value) {
   );
 }
 
+if (process.argv.includes('--siteverify-transport-matrix')) {
+  await runSiteverifyTransportMatrix();
+  process.exit(process.exitCode ?? 0);
+}
+
 const artifactsBefore = await readPublicArtifacts();
-const dummyTokenValidation = await validateOfficialDummyToken();
+const dummyTokenValidation = await validateOfficialDummyToken('json', true);
+console.log(JSON.stringify({ dummyTokenValidation }, null, 2));
 if (
   dummyTokenValidation.httpStatus !== 200 ||
   !dummyTokenValidation.success ||
