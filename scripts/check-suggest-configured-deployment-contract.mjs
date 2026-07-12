@@ -1,6 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { deriveSuggestReviewSecrets } from './derive-suggest-review-secrets.mjs';
 import { summarizeWorkerDeploymentLog } from './summarize-worker-deployment-log.mjs';
+import {
+  ConfiguredSuggestReviewVerificationError,
+  verifyConfiguredSuggestReview,
+} from './verify-configured-suggest-review.mjs';
 
 const pagesConfig = JSON.parse(readFileSync('wrangler.jsonc', 'utf8'));
 const workflow = readFileSync('.github/workflows/staging-review-deploy.yml', 'utf8');
@@ -8,6 +12,7 @@ const workerConfig = readFileSync('workers/submission-rate-limit/wrangler.jsonc'
 const suggestPage = readFileSync('src/pages/suggest.astro', 'utf8');
 const configuredForm = readFileSync('src/components/submissions/ConfiguredSuggestForm.tsx', 'utf8');
 const reviewSecretDerivation = readFileSync('scripts/derive-suggest-review-secrets.mjs', 'utf8');
+const configuredVerifier = readFileSync('scripts/verify-configured-suggest-review.mjs', 'utf8');
 
 const expectedBinding = {
   name: 'SUBMISSION_RATE_LIMIT_BUCKETS',
@@ -73,10 +78,13 @@ const workflowMarkers = [
   'Upload Pages deployment diagnostics',
   'staging-review-pages-deployment-log',
   'Verify configured Suggest review path',
-  '/api/suggest/config',
-  '/api/suggest/readiness',
-  'Authorization: Bearer $CPM_SUGGEST_READINESS_TOKEN',
+  'scripts/verify-configured-suggest-review.mjs',
+  'configured-verification-diagnostic.json',
+  'Upload configured verification diagnostics',
+  'staging-review-configured-verification-diagnostic',
   'configuredVerification',
+  'configuredVerificationDiagnostic',
+  'configuredVerificationDiagnosticsArtifact',
   'workerDeploymentDiagnostic',
   'pagesDeploymentDiagnostic',
   'pagesDiagnosticsArtifact',
@@ -129,6 +137,21 @@ for (const marker of [
   }
 }
 
+for (const marker of [
+  '/api/suggest/config',
+  '/api/suggest/readiness',
+  'content-security-policy',
+  'https://challenges.cloudflare.com',
+  'ConfiguredSuggestReviewVerificationError',
+  'attemptsCompleted',
+  'siteKeyMatches',
+  'frameSrcAllowsChallenge',
+]) {
+  if (!configuredVerifier.includes(marker)) {
+    throw new Error(`Configured review verifier marker missing: ${marker}`);
+  }
+}
+
 const seedOne = Buffer.alloc(32, 7).toString('base64url');
 const seedTwo = Buffer.alloc(32, 8).toString('base64url');
 const first = deriveSuggestReviewSecrets(seedOne);
@@ -178,26 +201,117 @@ for (const invalidSeed of [
   assert(rejected, 'Invalid review seed was accepted.');
 }
 
-const diagnostic = summarizeWorkerDeploymentLog(`
+const deploymentDiagnostic = summarizeWorkerDeploymentLog(`
 Authorization: Bearer ${'A'.repeat(48)}
 Account ${'b'.repeat(32)}
 ERROR code: 10000 — authentication error while deploying Durable Object Worker
 See https://user:password@example.test/private
 `);
-const diagnosticJson = JSON.stringify(diagnostic);
-assert(diagnostic.lines.length > 0, 'Deployment diagnostic summary is empty.');
-assert(diagnosticJson.includes('10000'), 'Deployment diagnostic summary removed the error code.');
+const deploymentDiagnosticJson = JSON.stringify(deploymentDiagnostic);
+assert(deploymentDiagnostic.lines.length > 0, 'Deployment diagnostic summary is empty.');
 assert(
-  !diagnosticJson.includes('Bearer A'),
+  deploymentDiagnosticJson.includes('10000'),
+  'Deployment diagnostic summary removed the error code.',
+);
+assert(
+  !deploymentDiagnosticJson.includes('Bearer A'),
   'Deployment diagnostic summary leaked authorization data.',
 );
 assert(
-  !diagnosticJson.includes('b'.repeat(32)),
+  !deploymentDiagnosticJson.includes('b'.repeat(32)),
   'Deployment diagnostic summary leaked a long account identifier.',
 );
 assert(
-  !diagnosticJson.includes('password'),
+  !deploymentDiagnosticJson.includes('password'),
   'Deployment diagnostic summary leaked URL credentials.',
+);
+
+const verifierToken = 'T'.repeat(48);
+const verifierBaseUrl = 'https://review.example.test';
+const expectedSiteKey = '1x00000000000000000000AA';
+const expectedAction = 'submission_intake';
+const successfulVerifierFetch = async (input, init = {}) => {
+  const url = new URL(String(input));
+  if (url.pathname === '/api/suggest/config') {
+    return new Response(JSON.stringify({ siteKey: expectedSiteKey, action: expectedAction }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  if (url.pathname === '/api/suggest/readiness') {
+    assert(
+      new Headers(init.headers).get('Authorization') === `Bearer ${verifierToken}`,
+      'Configured verifier did not send the readiness bearer token.',
+    );
+    return new Response(JSON.stringify({ ready: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+  if (url.pathname === '/suggest') {
+    return new Response('ok', {
+      status: 200,
+      headers: {
+        'Content-Security-Policy':
+          "default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com",
+      },
+    });
+  }
+  throw new Error(`Unexpected verifier URL: ${url.pathname}`);
+};
+
+const successfulVerification = await verifyConfiguredSuggestReview({
+  baseUrl: verifierBaseUrl,
+  readinessToken: verifierToken,
+  expectedSiteKey,
+  expectedAction,
+  attempts: 1,
+  delayMs: 0,
+  fetchImpl: successfulVerifierFetch,
+});
+assert(successfulVerification.status === 'success', 'Configured verifier success path failed.');
+assert(successfulVerification.stage === 'complete', 'Configured verifier did not complete.');
+
+let failedVerification = null;
+try {
+  await verifyConfiguredSuggestReview({
+    baseUrl: verifierBaseUrl,
+    readinessToken: verifierToken,
+    expectedSiteKey,
+    expectedAction,
+    attempts: 1,
+    delayMs: 0,
+    fetchImpl: async (input) => {
+      const url = new URL(String(input));
+      if (url.pathname === '/api/suggest/config') {
+        return new Response(JSON.stringify({ siteKey: expectedSiteKey, action: expectedAction }), {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      if (url.pathname === '/api/suggest/readiness') {
+        return new Response(JSON.stringify({ ready: false }), {
+          status: 503,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      throw new Error(`Unexpected failed verifier URL: ${url.pathname}`);
+    },
+  });
+} catch (error) {
+  failedVerification = error;
+}
+assert(
+  failedVerification instanceof ConfiguredSuggestReviewVerificationError,
+  'Configured verifier failure did not use the bounded error type.',
+);
+assert(
+  failedVerification.diagnostic.readiness.httpStatus === 503,
+  'Configured verifier failure did not retain the readiness status.',
+);
+assert(
+  !JSON.stringify(failedVerification.diagnostic).includes(verifierToken),
+  'Configured verifier diagnostic leaked the readiness token.',
 );
 
 if (!suggestPage.includes('ConfiguredSuggestForm')) {
