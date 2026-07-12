@@ -1,32 +1,26 @@
 {
   "status": "failed",
-  "commit": "54b9a7b6983ef759308a80026aba5b06ea3dfeb1",
-  "generatedAt": "2026-07-12T15:24:49.027Z",
-  "workflowRunId": "29198127517",
+  "commit": "271e04ffaf29d57ac91874e1f0b499593fde6240",
+  "generatedAt": "2026-07-12T15:34:09.881Z",
+  "workflowRunId": "29198428669",
   "checks": {
-    "liveJourney": "failure",
-    "resultParsed": true
+    "databaseSchema": "failure",
+    "schemaResultParsed": true,
+    "liveJourney": "skipped",
+    "auditResultParsed": false
   },
   "result": {
     "status": "failed",
-    "failedStage": "first_post",
-    "dummyTokenValidation": {
-      "requestFormat": "json",
-      "idempotencyIncluded": true,
-      "httpStatus": 200,
-      "success": true,
-      "hostname": "example.com",
-      "action": null,
-      "hostnameMatches": false,
-      "actionMatches": false
-    },
-    "firstPost": {
-      "httpStatus": 503,
-      "receiptShapeMatches": false
-    },
-    "publicArtifactsUnchanged": {
-      "/data/manifest.json": true,
-      "/version.json": true
+    "failedStage": "database_schema",
+    "schema": {
+      "status": "missing_schema",
+      "tables": {
+        "submission_public_reference_counters": false,
+        "submissions": true,
+        "submission_payloads": false,
+        "submission_contacts": false,
+        "submission_events": false
+      }
     }
   }
 }
