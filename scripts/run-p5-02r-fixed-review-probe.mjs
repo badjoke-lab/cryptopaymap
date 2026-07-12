@@ -114,12 +114,22 @@ if (process.argv.includes('--siteverify-transport-matrix')) {
 
 const artifactsBefore = await readPublicArtifacts();
 const dummyTokenValidation = await validateOfficialDummyToken('json', true);
-console.log(JSON.stringify({ dummyTokenValidation }, null, 2));
 if (
   dummyTokenValidation.httpStatus !== 200 ||
   !dummyTokenValidation.success ||
   !officialDummyMetadataSupported(dummyTokenValidation)
 ) {
+  console.log(
+    JSON.stringify(
+      {
+        status: 'failed',
+        failedStage: 'dummy_token_validation',
+        dummyTokenValidation,
+      },
+      null,
+      2,
+    ),
+  );
   process.exit(1);
 }
 
@@ -137,6 +147,7 @@ if (!firstReceiptValid) {
       {
         status: 'failed',
         failedStage: first.status === 429 ? 'rate_limit' : 'first_post',
+        dummyTokenValidation,
         firstPost: { httpStatus: first.status, receiptShapeMatches: false },
         publicArtifactsUnchanged,
       },
@@ -187,7 +198,7 @@ const { succeeded, result } = buildP502rLiveJourneyResult({
   publicArtifactsUnchanged,
 });
 
-console.log(JSON.stringify(result, null, 2));
+console.log(JSON.stringify({ dummyTokenValidation, ...result }, null, 2));
 
 if (!succeeded) {
   process.exitCode = 1;
