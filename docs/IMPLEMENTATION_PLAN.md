@@ -407,10 +407,11 @@ P5-02R now audits:
 
 P5-02 remains in progress until P5-02R records repository and fixed-review audit evidence and an explicit handoff decision.
 
-The 2026-07-12 fixed-review audit found that the official always-pass widget token returns successful
-Siteverify metadata for `hostname: example.com` with no action, while the deployed application expects
-`localhost` and `test`. The route correctly rejects this mismatch with bounded HTTP 400. P5-02R and
-P5-02 remain in progress, and P5-03 remains blocked until the test-key contract is corrected without
+The corrected 2026-07-12 fixed-review audit directly validated Cloudflare's exact documented
+always-pass dummy token with the official test secret. Siteverify returned HTTP 200 and success but
+reported `hostname: example.com` with no action rather than the documented `localhost` and `test`.
+The probe stopped before the application route. P5-02R and P5-02 remain in progress, and P5-03 remains
+blocked until this documentation contradiction is resolved or explicitly reclassified without
 weakening hostname/action verification and the live replay/conflict journey passes.
 
 ### P5-03 — Payment and problem reports

@@ -272,10 +272,11 @@ projection, guarded transitions, and accepted-as-Candidate transaction isolation
 The authoritative `staging-review` receipt records `status: deployed` for main commit
 `38da5d44605d8400a70ace4ba5a02ef7499823a1`, with all configured checks successful.
 
-The first live P5-02R probe found a configured Turnstile metadata mismatch before private intake:
+The corrected live P5-02R probe directly submitted Cloudflare's exact documented always-pass dummy
+token to Siteverify with the official test secret before calling the application route. It found:
 
 ```text
-deployed official always-pass widget token
+exact token: official documented dummy token (not printed by the probe)
 → Cloudflare Siteverify success
 → hostname example.com
 → action absent
@@ -284,20 +285,25 @@ configured application expectation
 → hostname localhost
 → action test
 
-public Suggest result
-→ HTTP 400 suggest_request_invalid
+expected fixed-review metadata
+→ hostname localhost
+→ action test
 ```
 
-The synthetic request itself passes the repository's strict Suggest schema. The probe used only
-fictional Place content, no contact data, and an explicit P5-02R automated-review marker. No public
-receipt or status secret was returned. `/data/manifest.json` and `/version.json` remained byte-stable
-across each bounded attempt.
+This directly contradicts Cloudflare's current testing documentation, which specifies `localhost`
+and `test` for this exact dummy-token validation. Because the prerequisite metadata did not match,
+the corrected probe did not call `/api/suggest`; it therefore made no intake, replay, conflict,
+rate-limit, canonical-mutation, or publication claim.
+
+The synthetic request itself passes the repository's strict Suggest schema and uses only fictional
+Place content, no contact data, and an explicit P5-02R automated-review marker. No public receipt or
+status secret was returned.
 
 The audit did not weaken Turnstile success, hostname, or action verification. Exact replay and
 changed-content live conflict therefore remain unproven, and P5-02 does not hand off to P5-03.
-The configured test-key contract must be corrected without weakening production verification, then
-the same fixed-review probe must prove HTTP 202, deterministic replay identity, HTTP 409 changed-body
-conflict, and stable public artifacts.
+The documented dummy-token metadata discrepancy must be resolved or explicitly reclassified without
+weakening production verification. The same fixed-review probe must then prove HTTP 202,
+deterministic replay identity, HTTP 409 changed-body conflict, and stable public artifacts.
 
 Receipt and repository scanning found no Turnstile token, returned status secret, private payload,
 contact data, raw edge identity, database value, or derived key in tracked diagnostics or public

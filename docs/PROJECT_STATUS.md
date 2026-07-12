@@ -207,14 +207,16 @@ Complete P5-02R repository and fixed-review audit evidence. Then record the P5-0
 
 ## Blocked
 
-P5-02R found that the deployed official always-pass Turnstile widget token validates successfully at
-Siteverify but returns `hostname: example.com` with no action, while the configured application
-expects `hostname: localhost` and `action: test`. The public route correctly returns bounded HTTP 400
-instead of weakening exact metadata verification.
+P5-02R directly validated Cloudflare's exact documented always-pass dummy token with the official
+test secret. Siteverify returned HTTP 200 and success but reported `hostname: example.com` with no
+action, rather than the documented and configured `hostname: localhost` and `action: test`. The
+corrected probe stopped before calling the application route and did not draw an intake or
+rate-limit conclusion.
 
-P5-03 remains blocked until the fixed-review test-key contract is corrected without weakening
-Turnstile hostname/action enforcement and the P5-02R live first POST, exact replay, changed-content
-conflict, public-artifact comparison, and privacy checks pass.
+P5-03 remains blocked until this direct contradiction with the current Cloudflare testing
+documentation is resolved or explicitly reclassified without weakening Turnstile hostname/action
+enforcement, and the P5-02R live first POST, exact replay, changed-content conflict, public-artifact
+comparison, and privacy checks pass.
 
 A live synthetic Suggest probe may reveal a Turnstile testing, migration, persistence, or route-composition gap. Such a result is an audit finding to correct, not a reason to mark the audit successful.
 

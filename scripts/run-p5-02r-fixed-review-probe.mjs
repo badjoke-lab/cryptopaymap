@@ -1,137 +1,43 @@
-import { spawn } from 'node:child_process';
 import { createHash, randomUUID } from 'node:crypto';
-import { mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
 import { p502rSyntheticSuggestRequest } from './p5-02r-synthetic-suggest-fixture.mjs';
 
 const defaultBaseUrl = 'https://review.cryptopaymap-staging.pages.dev';
 const baseUrl = new URL(process.env.CPM_P5_02R_REVIEW_URL ?? defaultBaseUrl);
 const requestId = randomUUID();
+const challengeToken = 'XXXX.DUMMY.TOKEN.XXXX';
+const officialTestSecret = '1x0000000000000000000000000000000AA';
 const publicArtifactPaths = ['/data/manifest.json', '/version.json'];
-
-function chromeExecutable() {
-  return (
-    process.env.CPM_P5_02R_CHROME_PATH ??
-    (process.platform === 'darwin'
-      ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-      : 'google-chrome')
-  );
-}
-
-function wait(milliseconds) {
-  return new Promise((resolve) => setTimeout(resolve, milliseconds));
-}
-
-async function browserChallengeToken() {
-  const profile = mkdtempSync(join(tmpdir(), 'cpm-p5-02r-chrome-'));
-  const browser = spawn(
-    chromeExecutable(),
-    [
-      '--headless=new',
-      '--disable-gpu',
-      '--no-first-run',
-      '--no-default-browser-check',
-      '--remote-debugging-port=0',
-      `--user-data-dir=${profile}`,
-      'about:blank',
-    ],
-    { stdio: ['ignore', 'ignore', 'pipe'] },
-  );
-
-  try {
-    const browserWebSocketUrl = await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => reject(new Error('browser_start_timeout')), 15_000);
-      browser.stderr.setEncoding('utf8');
-      browser.stderr.on('data', (chunk) => {
-        const match = /DevTools listening on (ws:\/\/\S+)/.exec(chunk);
-        if (match?.[1]) {
-          clearTimeout(timeout);
-          resolve(match[1]);
-        }
-      });
-      browser.once('exit', () => {
-        clearTimeout(timeout);
-        reject(new Error('browser_start_failed'));
-      });
-    });
-    const browserEndpoint = new URL(browserWebSocketUrl);
-    const targetResponse = await fetch(
-      `http://${browserEndpoint.host}/json/new?${encodeURIComponent(new URL('/suggest', baseUrl))}`,
-      { method: 'PUT' },
-    );
-    if (!targetResponse.ok) throw new Error('browser_target_failed');
-    const target = await targetResponse.json();
-    if (typeof target.webSocketDebuggerUrl !== 'string') {
-      throw new Error('browser_target_invalid');
-    }
-
-    const socket = new WebSocket(target.webSocketDebuggerUrl);
-    let commandId = 0;
-    const pending = new Map();
-    socket.addEventListener('message', (event) => {
-      const message = JSON.parse(event.data);
-      if (typeof message.id !== 'number') return;
-      const handler = pending.get(message.id);
-      if (handler) {
-        pending.delete(message.id);
-        handler(message);
-      }
-    });
-    await new Promise((resolve, reject) => {
-      socket.addEventListener('open', resolve, { once: true });
-      socket.addEventListener('error', () => reject(new Error('browser_socket_failed')), {
-        once: true,
-      });
-    });
-
-    const evaluate = (expression) =>
-      new Promise((resolve, reject) => {
-        const id = ++commandId;
-        const timeout = setTimeout(() => {
-          pending.delete(id);
-          reject(new Error('browser_command_timeout'));
-        }, 5_000);
-        pending.set(id, (message) => {
-          clearTimeout(timeout);
-          if (message.error) reject(new Error('browser_command_failed'));
-          else resolve(message.result);
-        });
-        socket.send(
-          JSON.stringify({
-            id,
-            method: 'Runtime.evaluate',
-            params: { expression, returnByValue: true },
-          }),
-        );
-      });
-
-    const deadline = Date.now() + 30_000;
-    while (Date.now() < deadline) {
-      const result = await evaluate(
-        `document.querySelector('input[name="cf-turnstile-response"]')?.value ?? ''`,
-      );
-      const token = result?.result?.value;
-      if (typeof token === 'string' && token.length > 0) {
-        socket.close();
-        return token;
-      }
-      await wait(250);
-    }
-    socket.close();
-    throw new Error('browser_challenge_timeout');
-  } finally {
-    if (browser.exitCode === null) {
-      const exited = new Promise((resolve) => browser.once('exit', resolve));
-      browser.kill('SIGTERM');
-      await Promise.race([exited, wait(5_000)]);
-    }
-    rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 100 });
-  }
-}
 
 function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
+}
+
+async function validateOfficialDummyToken() {
+  const response = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      secret: officialTestSecret,
+      response: challengeToken,
+      idempotency_key: randomUUID(),
+    }),
+  });
+  let payload = null;
+  try {
+    payload = await response.json();
+  } catch {
+    // Only bounded metadata is returned to the caller.
+  }
+  const metadata = {
+    httpStatus: response.status,
+    success: payload?.success === true,
+    hostname: typeof payload?.hostname === 'string' ? payload.hostname : null,
+    action: typeof payload?.action === 'string' ? payload.action : null,
+    hostnameMatches: payload?.hostname === 'localhost',
+    actionMatches: payload?.action === 'test',
+  };
+  console.log(JSON.stringify({ dummyTokenValidation: metadata }, null, 2));
+  return metadata;
 }
 
 async function readPublicArtifacts() {
@@ -176,7 +82,16 @@ function isReceipt(value) {
 }
 
 const artifactsBefore = await readPublicArtifacts();
-const challengeToken = await browserChallengeToken();
+const dummyTokenValidation = await validateOfficialDummyToken();
+if (
+  dummyTokenValidation.httpStatus !== 200 ||
+  !dummyTokenValidation.success ||
+  !dummyTokenValidation.hostnameMatches ||
+  !dummyTokenValidation.actionMatches
+) {
+  process.exit(1);
+}
+
 const originalBody = p502rSyntheticSuggestRequest(challengeToken, 'P5-02R automated review probe');
 const first = await post(originalBody);
 const firstReceiptValid = first.status === 202 && isReceipt(first.payload);
@@ -190,7 +105,7 @@ if (!firstReceiptValid) {
     JSON.stringify(
       {
         status: 'failed',
-        failedStage: 'first_post',
+        failedStage: first.status === 429 ? 'rate_limit' : 'first_post',
         firstPost: { httpStatus: first.status, receiptShapeMatches: false },
         publicArtifactsUnchanged,
       },
