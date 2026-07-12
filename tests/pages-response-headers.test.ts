@@ -35,6 +35,23 @@ describe('P5-02Q Pages Function response headers', () => {
     expect(response.headers.has('X-Robots-Tag')).toBe(false);
   });
 
+  it('preserves a stricter upstream security header', () => {
+    const response = apply(
+      '/api/suggest/config',
+      'www.example.test',
+      new Response('{}', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Referrer-Policy': 'no-referrer',
+          'X-Content-Type-Options': 'nosniff',
+        },
+      }),
+    );
+
+    expect(response.headers.get('Referrer-Policy')).toBe('no-referrer');
+    expect(response.headers.get('Content-Type')).toBe('application/json');
+  });
+
   it('marks every fixed-review response as non-indexable', () => {
     const response = apply('/places', 'cryptopaymap-staging.pages.dev');
 
