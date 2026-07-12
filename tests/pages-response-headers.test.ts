@@ -15,9 +15,7 @@ describe('P5-02Q Pages Function response headers', () => {
   it('attaches the exact Suggest CSP and fail-closed cache/referrer policy', async () => {
     const response = apply('/suggest', 'review.cryptopaymap-staging.pages.dev');
 
-    expect(response.headers.get('Content-Security-Policy')).toBe(
-      suggestContentSecurityPolicy,
-    );
+    expect(response.headers.get('Content-Security-Policy')).toBe(suggestContentSecurityPolicy);
     expect(response.headers.get('Cache-Control')).toBe('no-store');
     expect(response.headers.get('Referrer-Policy')).toBe('no-referrer');
     expect(response.headers.get('X-Content-Type-Options')).toBe('nosniff');
