@@ -7,16 +7,17 @@ const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
   {
     CPM_TURNSTILE_SECRET_KEY: 'runtime-server-secret',
     PUBLIC_TURNSTILE_SITE_KEY: 'runtime-public-site-key',
-    CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.example.test',
-    CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
+    CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
+    CPM_TURNSTILE_EXPECTED_ACTION: 'test',
+    PUBLIC_TURNSTILE_ACTION: 'submission_intake',
   },
   {
     fetchImpl: (async () =>
       new Response(
         JSON.stringify({
           success: true,
-          hostname: 'review.example.test',
-          action: 'submission_intake',
+          hostname: 'localhost',
+          action: 'test',
         }),
         { status: 200 },
       )) as typeof fetch,
@@ -26,7 +27,7 @@ const configuration = createSubmissionTurnstileConfigurationFromEnvironment(
 if (
   configuration.client.siteKey !== 'runtime-public-site-key' ||
   configuration.client.action !== 'submission_intake' ||
-  configuration.expectedHostname !== 'review.example.test'
+  configuration.expectedHostname !== 'localhost'
 ) {
   throw new Error('Submission Turnstile environment check produced invalid client configuration.');
 }
@@ -45,7 +46,8 @@ try {
     CPM_TURNSTILE_SECRET_KEY: 'runtime-server-secret',
     PUBLIC_TURNSTILE_SITE_KEY: 'runtime-public-site-key',
     CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.example.test',
-    CPM_TURNSTILE_EXPECTED_ACTION: 'invalid action',
+    CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
+    PUBLIC_TURNSTILE_ACTION: 'invalid action',
   });
   throw new Error('Expected invalid Turnstile configuration to fail.');
 } catch (error) {
