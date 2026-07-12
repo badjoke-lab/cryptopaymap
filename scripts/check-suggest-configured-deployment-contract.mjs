@@ -186,7 +186,10 @@ assert(
   !diagnosticJson.includes('b'.repeat(32)),
   'Deployment diagnostic summary leaked a long account identifier.',
 );
-assert(!diagnosticJson.includes('password'), 'Deployment diagnostic summary leaked URL credentials.');
+assert(
+  !diagnosticJson.includes('password'),
+  'Deployment diagnostic summary leaked URL credentials.',
+);
 
 if (!suggestPage.includes('ConfiguredSuggestForm')) {
   throw new Error('Suggest page must use runtime-configured form wrapper.');
