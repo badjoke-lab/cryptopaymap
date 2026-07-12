@@ -77,7 +77,19 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc
+        run: |
+          set -o pipefail
+          npx wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc \
+            2>&1 | tee worker-deployment-output.log
+
+      - name: Upload Worker deployment diagnostics
+        if: always() && steps.worker_deploy.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-review-worker-deployment-log
+          path: worker-deployment-output.log
+          if-no-files-found: error
+          retention-days: 30
 
       - name: Synchronize configured Suggest Pages secrets
         id: pages_secrets
@@ -223,6 +235,9 @@ jobs:
               contactRetentionDays: 180,
               rateLimit: { maximumRequests: 5, windowSeconds: 600 },
             },
+            ...(checks.durableObjectWorker === 'failure'
+              ? { diagnosticsArtifact: 'staging-review-worker-deployment-log' }
+              : {}),
             ...(missingConfiguredInputs.length > 0 ? { missingConfiguredInputs } : {}),
           };
           mkdirSync('staging-review-receipt', { recursive: true });
@@ -241,17 +256,27 @@ jobs:
       - name: Publish deployment receipt to status branch
         if: always()
         env:
-          GH_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
+          STATUS_WORKTREE: ${{ runner.temp }}/cryptopaymap-staging-review-status
         run: |
           set -euo pipefail
-          CONTENT="$(base64 -w 0 staging-review-receipt/deployment-receipt.json)"
-          CURRENT_SHA="$(gh api "repos/$REPOSITORY/contents/config/staging-review/deployment-receipt.json?ref=staging-review" --jq '.sha')"
-          gh api --method PUT "repos/$REPOSITORY/contents/config/staging-review/deployment-receipt.json" \
-            -f message='P5-02Q: record configured review deployment result' \
-            -f content="$CONTENT" \
-            -f sha="$CURRENT_SHA" \
-            -f branch='staging-review'
+          rm -rf "$STATUS_WORKTREE"
+          git fetch origin staging-review:refs/remotes/origin/staging-review
+          git worktree add --detach "$STATUS_WORKTREE" refs/remotes/origin/staging-review
+          trap 'git worktree remove --force "$STATUS_WORKTREE" >/dev/null 2>&1 || true' EXIT
+
+          mkdir -p "$STATUS_WORKTREE/config/staging-review"
+          cp staging-review-receipt/deployment-receipt.json \
+            "$STATUS_WORKTREE/config/staging-review/deployment-receipt.json"
+
+          git -C "$STATUS_WORKTREE" config user.name 'github-actions[bot]'
+          git -C "$STATUS_WORKTREE" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$STATUS_WORKTREE" add config/staging-review/deployment-receipt.json
+          if git -C "$STATUS_WORKTREE" diff --cached --quiet; then
+            echo 'Deployment receipt is unchanged.'
+            exit 0
+          fi
+          git -C "$STATUS_WORKTREE" commit -m 'P5-02Q: record configured review deployment result'
+          git -C "$STATUS_WORKTREE" push origin HEAD:staging-review
 
       - name: Enforce successful configured deployment
         if: always()
