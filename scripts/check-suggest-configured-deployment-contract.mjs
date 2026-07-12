@@ -48,6 +48,9 @@ for (const marker of [
 const workflowMarkers = [
   'Deploy Submission rate-limit Durable Object Worker',
   'wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc',
+  'tee worker-deployment-output.log',
+  'Upload Worker deployment diagnostics',
+  'staging-review-worker-deployment-log',
   'CPM_REVIEW_SECRET_SEED_BASE64URL',
   'node scripts/derive-suggest-review-secrets.mjs review-derived-secrets.json',
   'wrangler pages secret bulk pages-secrets.json',
@@ -67,11 +70,28 @@ const workflowMarkers = [
   '/api/suggest/readiness',
   'Authorization: Bearer $CPM_SUGGEST_READINESS_TOKEN',
   'configuredVerification',
+  'git worktree add --detach',
+  'git -C "$STATUS_WORKTREE" push origin HEAD:staging-review',
 ];
 
 for (const marker of workflowMarkers) {
   if (!workflow.includes(marker)) {
     throw new Error(`Configured Suggest workflow marker missing: ${marker}`);
+  }
+}
+
+for (const obsoleteMarker of [
+  'gh api --method PUT',
+  'secrets.CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL',
+  'secrets.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL',
+  'secrets.CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL',
+  'secrets.CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL',
+  'secrets.CPM_TURNSTILE_SECRET_KEY',
+  'secrets.PUBLIC_TURNSTILE_SITE_KEY',
+  'secrets.CPM_SUGGEST_READINESS_TOKEN',
+]) {
+  if (workflow.includes(obsoleteMarker)) {
+    throw new Error(`Obsolete configured deployment marker remains: ${obsoleteMarker}`);
   }
 }
 
@@ -86,20 +106,6 @@ for (const marker of [
 ]) {
   if (!reviewSecretDerivation.includes(marker)) {
     throw new Error(`Review secret derivation marker missing: ${marker}`);
-  }
-}
-
-for (const obsoleteSecret of [
-  'secrets.CPM_SUBMISSION_STATUS_HMAC_KEY_BASE64URL',
-  'secrets.CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL',
-  'secrets.CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL',
-  'secrets.CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL',
-  'secrets.CPM_TURNSTILE_SECRET_KEY',
-  'secrets.PUBLIC_TURNSTILE_SITE_KEY',
-  'secrets.CPM_SUGGEST_READINESS_TOKEN',
-]) {
-  if (workflow.includes(obsoleteSecret)) {
-    throw new Error(`Obsolete per-value review secret remains in workflow: ${obsoleteSecret}`);
   }
 }
 
