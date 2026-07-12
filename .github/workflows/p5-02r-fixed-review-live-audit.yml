@@ -8,7 +8,7 @@ on:
       - completed
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   audit:
@@ -29,16 +29,91 @@ jobs:
           node-version: 24
 
       - name: Run bounded fixed-review Suggest audit
+        id: live_audit
+        continue-on-error: true
         run: |
-          set -o pipefail
           node scripts/run-p5-02r-fixed-review-probe.mjs \
-            2>&1 | tee p5-02r-fixed-review-live-audit.log
+            > p5-02r-fixed-review-live-audit.json \
+            2> p5-02r-fixed-review-live-audit-error.log
+
+      - name: Write bounded audit receipt
+        if: always()
+        env:
+          AUDIT_OUTCOME: ${{ steps.live_audit.outcome }}
+          AUDITED_COMMIT: ${{ github.event.workflow_run.head_sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          node <<'NODE'
+          const { existsSync, readFileSync, writeFileSync } = require('node:fs');
+          let result = null;
+          let resultParsed = false;
+          if (existsSync('p5-02r-fixed-review-live-audit.json')) {
+            try {
+              result = JSON.parse(readFileSync('p5-02r-fixed-review-live-audit.json', 'utf8'));
+              resultParsed = true;
+            } catch {
+              result = null;
+            }
+          }
+          const complete =
+            process.env.AUDIT_OUTCOME === 'success' &&
+            resultParsed &&
+            result?.status === 'complete';
+          const receipt = {
+            status: complete ? 'complete' : 'failed',
+            commit: process.env.AUDITED_COMMIT,
+            generatedAt: new Date().toISOString(),
+            workflowRunId: process.env.WORKFLOW_RUN_ID,
+            checks: {
+              liveJourney: process.env.AUDIT_OUTCOME,
+              resultParsed,
+            },
+            result,
+          };
+          writeFileSync(
+            'p5-02r-fixed-review-live-audit-receipt.json',
+            `${JSON.stringify(receipt, null, 2)}\n`,
+          );
+          NODE
 
       - name: Upload bounded audit evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: p5-02r-fixed-review-live-audit
-          path: p5-02r-fixed-review-live-audit.log
-          if-no-files-found: error
+          path: |
+            p5-02r-fixed-review-live-audit.json
+            p5-02r-fixed-review-live-audit-error.log
+            p5-02r-fixed-review-live-audit-receipt.json
+          if-no-files-found: warn
           retention-days: 30
+
+      - name: Publish audit receipt to status branch
+        if: always()
+        env:
+          STATUS_WORKTREE: ${{ runner.temp }}/cryptopaymap-p5-02r-audit-status
+        run: |
+          set -euo pipefail
+          rm -rf "$STATUS_WORKTREE"
+          git fetch origin staging-review:refs/remotes/origin/staging-review
+          git worktree add --detach "$STATUS_WORKTREE" refs/remotes/origin/staging-review
+          trap 'git worktree remove --force "$STATUS_WORKTREE" >/dev/null 2>&1 || true' EXIT
+
+          mkdir -p "$STATUS_WORKTREE/config/staging-review"
+          cp p5-02r-fixed-review-live-audit-receipt.json \
+            "$STATUS_WORKTREE/config/staging-review/p5-02r-live-audit-receipt.json"
+
+          git -C "$STATUS_WORKTREE" config user.name 'github-actions[bot]'
+          git -C "$STATUS_WORKTREE" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$STATUS_WORKTREE" add config/staging-review/p5-02r-live-audit-receipt.json
+          if git -C "$STATUS_WORKTREE" diff --cached --quiet; then
+            echo 'P5-02R audit receipt is unchanged.'
+            exit 0
+          fi
+          git -C "$STATUS_WORKTREE" commit -m 'Record P5-02R fixed-review live audit receipt'
+          git -C "$STATUS_WORKTREE" push origin HEAD:staging-review
+
+      - name: Enforce live audit success
+        if: always()
+        run: |
+          node -e "const r=require('./p5-02r-fixed-review-live-audit-receipt.json'); if(r.status!=='complete') process.exit(1)"
