@@ -1,8 +1,8 @@
 {
   "status": "deployed",
-  "commit": "90debdbbb76b5c4150465fc877ea8d41ed926276",
+  "commit": "38da5d44605d8400a70ace4ba5a02ef7499823a1",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-12T07:50:57.276Z",
+  "generatedAt": "2026-07-12T12:47:11.148Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "success",
@@ -18,6 +18,9 @@
     ],
     "derivedSecretsVersion": "cryptopaymap:review-suggest:v1",
     "turnstileMode": "cloudflare_official_always_pass_test_keys",
+    "browserAction": "submission_intake",
+    "siteverifyExpectedHostname": "localhost",
+    "siteverifyExpectedAction": "test",
     "contactRetentionDays": 180,
     "rateLimit": {
       "maximumRequests": 5,
