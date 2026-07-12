@@ -130,8 +130,9 @@ jobs:
             CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: '600',
             CPM_TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
             PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
-            CPM_TURNSTILE_EXPECTED_HOSTNAME: 'review.cryptopaymap-staging.pages.dev',
-            CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
+            CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
+            CPM_TURNSTILE_EXPECTED_ACTION: 'test',
+            PUBLIC_TURNSTILE_ACTION: 'submission_intake',
           };
           writeFileSync('pages-secrets.json', `${JSON.stringify(values)}\n`, { mode: 0o600 });
           appendFileSync(
@@ -249,6 +250,9 @@ jobs:
               manualSecrets: ['DATABASE_URL', 'CPM_REVIEW_SECRET_SEED_BASE64URL'],
               derivedSecretsVersion: 'cryptopaymap:review-suggest:v1',
               turnstileMode: 'cloudflare_official_always_pass_test_keys',
+              browserAction: 'submission_intake',
+              siteverifyExpectedHostname: 'localhost',
+              siteverifyExpectedAction: 'test',
               contactRetentionDays: 180,
               rateLimit: { maximumRequests: 5, windowSeconds: 600 },
             },
