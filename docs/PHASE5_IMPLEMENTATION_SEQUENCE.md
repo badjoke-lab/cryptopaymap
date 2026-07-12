@@ -76,6 +76,15 @@ P5-02Q  Configured Suggest review verification                          Complete
 P5-02R  Suggest integration and handoff audit                           In progress
 ```
 
+The corrected fixed-review P5-02R probe directly validated Cloudflare's exact documented always-pass
+dummy token with the official test secret. Siteverify returned HTTP 200 and success but reported
+`hostname: example.com` with no action rather than the documented `localhost` and `test`. The probe
+reproduced this result for JSON and `application/x-www-form-urlencoded`, each with and without
+`idempotency_key`, so the discrepancy is transport-independent and not caused by that optional
+parameter. It stopped before the application route. P5-02 and P5-02R remain in progress, and P5-03
+remains blocked pending resolution or explicit reclassification of this documentation contradiction
+and a successful live journey rerun.
+
 P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, the public Suggest HTTP route, the public Suggest form/browser wiring, and configured fixed-review verification. The bounded P5-02 integration and handoff audit is now active.
 
 ---

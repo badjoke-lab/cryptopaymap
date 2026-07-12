@@ -407,6 +407,15 @@ P5-02R now audits:
 
 P5-02 remains in progress until P5-02R records repository and fixed-review audit evidence and an explicit handoff decision.
 
+The corrected 2026-07-12 fixed-review audit directly validated Cloudflare's exact documented
+always-pass dummy token with the official test secret. Siteverify returned HTTP 200 and success but
+reported `hostname: example.com` with no action rather than the documented `localhost` and `test`.
+The result was identical for JSON and `application/x-www-form-urlencoded`, each with and without
+`idempotency_key`, so the discrepancy is transport-independent and not caused by that optional
+parameter. The probe stopped before the application route. P5-02R and P5-02 remain in progress, and
+P5-03 remains blocked until this documentation contradiction is resolved or explicitly reclassified
+without weakening hostname/action verification and the live replay/conflict journey passes.
+
 ### P5-03 — Payment and problem reports
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.

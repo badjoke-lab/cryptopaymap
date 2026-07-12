@@ -207,7 +207,18 @@ Complete P5-02R repository and fixed-review audit evidence. Then record the P5-0
 
 ## Blocked
 
-No known repository blocker to beginning P5-02R.
+P5-02R directly validated Cloudflare's exact documented always-pass dummy token with the official
+test secret. Siteverify returned HTTP 200 and success but reported `hostname: example.com` with no
+action, rather than the documented and configured `hostname: localhost` and `action: test`. The
+same result occurred for JSON and `application/x-www-form-urlencoded`, each with and without a fresh
+UUID `idempotency_key`. The discrepancy is therefore transport-independent and not caused by the
+optional idempotency parameter. The corrected probe stopped before calling the application route and
+did not draw an intake or rate-limit conclusion.
+
+P5-03 remains blocked until this direct contradiction with the current Cloudflare testing
+documentation is resolved or explicitly reclassified without weakening Turnstile hostname/action
+enforcement, and the P5-02R live first POST, exact replay, changed-content conflict, public-artifact
+comparison, and privacy checks pass.
 
 A live synthetic Suggest probe may reveal a Turnstile testing, migration, persistence, or route-composition gap. Such a result is an audit finding to correct, not a reason to mark the audit successful.
 
