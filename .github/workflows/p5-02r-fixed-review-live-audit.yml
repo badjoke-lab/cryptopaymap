@@ -27,9 +27,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check fixed-review Submission schema
+        id: schema_probe
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node scripts/check-p5-02r-review-schema.mjs \
+            > p5-02r-review-schema.json \
+            2> p5-02r-review-schema-error.log
 
       - name: Run bounded fixed-review Suggest audit
         id: live_audit
+        if: steps.schema_probe.outcome == 'success'
         continue-on-error: true
         run: |
           node scripts/run-p5-02r-fixed-review-probe.mjs \
@@ -39,34 +54,49 @@ jobs:
       - name: Write bounded audit receipt
         if: always()
         env:
+          SCHEMA_OUTCOME: ${{ steps.schema_probe.outcome }}
           AUDIT_OUTCOME: ${{ steps.live_audit.outcome }}
           AUDITED_COMMIT: ${{ github.event.workflow_run.head_sha }}
           WORKFLOW_RUN_ID: ${{ github.run_id }}
         run: |
           node <<'NODE'
           const { existsSync, readFileSync, writeFileSync } = require('node:fs');
-          let result = null;
-          let resultParsed = false;
-          if (existsSync('p5-02r-fixed-review-live-audit.json')) {
+          function readJson(path) {
+            if (!existsSync(path)) return { parsed: false, value: null };
             try {
-              result = JSON.parse(readFileSync('p5-02r-fixed-review-live-audit.json', 'utf8'));
-              resultParsed = true;
+              return { parsed: true, value: JSON.parse(readFileSync(path, 'utf8')) };
             } catch {
-              result = null;
+              return { parsed: false, value: null };
             }
           }
-          const complete =
+          const schema = readJson('p5-02r-review-schema.json');
+          const audit = readJson('p5-02r-fixed-review-live-audit.json');
+          const schemaReady =
+            process.env.SCHEMA_OUTCOME === 'success' &&
+            schema.parsed &&
+            schema.value?.status === 'ready';
+          const auditComplete =
             process.env.AUDIT_OUTCOME === 'success' &&
-            resultParsed &&
-            result?.status === 'complete';
+            audit.parsed &&
+            audit.value?.status === 'complete';
+          const complete = schemaReady && auditComplete;
+          const result = schemaReady
+            ? audit.value
+            : {
+                status: 'failed',
+                failedStage: 'database_schema',
+                schema: schema.value,
+              };
           const receipt = {
             status: complete ? 'complete' : 'failed',
             commit: process.env.AUDITED_COMMIT,
             generatedAt: new Date().toISOString(),
             workflowRunId: process.env.WORKFLOW_RUN_ID,
             checks: {
+              databaseSchema: process.env.SCHEMA_OUTCOME,
+              schemaResultParsed: schema.parsed,
               liveJourney: process.env.AUDIT_OUTCOME,
-              resultParsed,
+              auditResultParsed: audit.parsed,
             },
             result,
           };
@@ -82,6 +112,8 @@ jobs:
         with:
           name: p5-02r-fixed-review-live-audit
           path: |
+            p5-02r-review-schema.json
+            p5-02r-review-schema-error.log
             p5-02r-fixed-review-live-audit.json
             p5-02r-fixed-review-live-audit-error.log
             p5-02r-fixed-review-live-audit-receipt.json
