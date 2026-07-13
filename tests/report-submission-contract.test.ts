@@ -68,7 +68,8 @@ function failedPaymentPayload() {
       paymentMethod: null,
       processor: null,
       context: 'hosted_checkout',
-      observedSteps: 'The checkout offered USDT, but the network was not identified and payment failed.',
+      observedSteps:
+        'The checkout offered USDT, but the network was not identified and payment failed.',
     },
     privateTransactionUrl: null,
     notes: null,
@@ -296,9 +297,8 @@ describe('P5-03A payment and problem report contract', () => {
       proposedCorrection: { kind: 'asset', assetSlug: 'usdc' },
     };
     expect(
-      problemReportSubmissionIntakeSchema.safeParse(
-        commonEnvelope('problem_report', mismatched),
-      ).success,
+      problemReportSubmissionIntakeSchema.safeParse(commonEnvelope('problem_report', mismatched))
+        .success,
     ).toBe(false);
 
     const privacyCorrection = {

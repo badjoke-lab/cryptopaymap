@@ -2,7 +2,12 @@ import { z } from 'zod';
 import { routeTypeValues } from '../db/schema/enums';
 import { paymentMethodValues } from '../db/schema/payment-registries';
 import { canonicalLocationSocialLinkSchema } from '../schemas/canonical-identity';
-import { countryCodeSchema, dateOnlySchema, httpsUrlSchema, publicSlugSchema } from '../schemas/core';
+import {
+  countryCodeSchema,
+  dateOnlySchema,
+  httpsUrlSchema,
+  publicSlugSchema,
+} from '../schemas/core';
 import {
   commonSubmissionIntakeSchema,
   submissionEvidenceUrlSchema,
@@ -334,7 +339,9 @@ export function normalizeParsedPaymentReportSubmissionIntake(
 export function normalizePaymentReportSubmissionIntake(
   raw: unknown,
 ): PaymentReportReviewProjection {
-  return normalizeParsedPaymentReportSubmissionIntake(paymentReportSubmissionIntakeSchema.parse(raw));
+  return normalizeParsedPaymentReportSubmissionIntake(
+    paymentReportSubmissionIntakeSchema.parse(raw),
+  );
 }
 
 export function normalizeParsedProblemReportSubmissionIntake(
@@ -360,7 +367,9 @@ export function normalizeParsedProblemReportSubmissionIntake(
 export function normalizeProblemReportSubmissionIntake(
   raw: unknown,
 ): ProblemReportReviewProjection {
-  return normalizeParsedProblemReportSubmissionIntake(problemReportSubmissionIntakeSchema.parse(raw));
+  return normalizeParsedProblemReportSubmissionIntake(
+    problemReportSubmissionIntakeSchema.parse(raw),
+  );
 }
 
 export function normalizeReportSubmissionIntake(raw: unknown): ReportReviewProjection {
