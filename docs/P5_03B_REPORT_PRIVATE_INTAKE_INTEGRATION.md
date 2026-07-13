@@ -1,7 +1,7 @@
 # P5-03B Report private intake integration
 
 **Implementation item:** P5-03B  
-**Status:** Active  
+**Status:** Completed through #195  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -199,6 +199,10 @@ P5-03B is complete when:
 - abuse-control composition is proved;
 - focused tests and schema checks pass;
 - no public route, form, target lookup, protected decision, canonical mutation, export, or publication behavior is added.
+
+## Completion result
+
+P5-03B is complete through #195. Both report families now reuse the P5-01 private intake service with deterministic replay/conflict behavior, contact separation, restricted-evidence separation, abuse-control composition, focused tests, and schema-check coverage.
 
 ## Next
 

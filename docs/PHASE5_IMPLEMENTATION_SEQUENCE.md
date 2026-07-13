@@ -1,7 +1,7 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-03B in progress  
+**Status:** Active — P5-03C in progress  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -76,7 +76,8 @@ P5-02Q  Configured Suggest review verification                          Complete
 P5-02R  Suggest integration and handoff audit                           Completed #185–#192
 P5-02   Suggest Place and Online Service                                Completed
 P5-03A  Payment/problem report contract and normalization                 Completed #194
-P5-03B  Idempotent payment/problem report private intake                   In progress
+P5-03B  Idempotent payment/problem report private intake                   Completed #195
+P5-03C  Canonical report target snapshot and Claim-context signals          In progress
 P5-03   Payment and problem reports                                     In progress
 ```
 
@@ -240,7 +241,7 @@ P5-02 completed when P5-02R recorded repository and fixed-review audit evidence 
 
 ## P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03B
+**Status:** In progress at P5-03C
 
 ### Goal
 
@@ -251,9 +252,9 @@ Accept target-aware reports about payment success, failure, and incorrect or pro
 ```text
 P5-03A — Payment/problem report contract and review-safe normalization     Completed #194
     ↓
-P5-03B — Idempotent private report intake integration                     In progress
+P5-03B — Idempotent private report intake integration                     Completed #195
     ↓
-P5-03C — Canonical target snapshot and Claim-context signals              Planned
+P5-03C — Canonical target snapshot and Claim-context signals              In progress
     ↓
 P5-03D — Protected report reviewer queue and detail entry                 Planned
     ↓

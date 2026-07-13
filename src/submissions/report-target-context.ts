@@ -211,9 +211,7 @@ export const reportTargetContextSignalReasonValues = [
   'same_processor_name',
   'problem_may_affect_payment_claim',
 ] as const;
-export const reportTargetContextSignalReasonSchema = z.enum(
-  reportTargetContextSignalReasonValues,
-);
+export const reportTargetContextSignalReasonSchema = z.enum(reportTargetContextSignalReasonValues);
 
 export const reportTargetContextResponseSchema = z
   .object({
@@ -405,7 +403,10 @@ export async function generateReportTargetContext(
   asOf = new Date(),
 ): Promise<ReportTargetContextResponse> {
   if (Number.isNaN(asOf.getTime())) {
-    throw new ReportTargetContextError('invalid_projection', 'Report target context time is invalid.');
+    throw new ReportTargetContextError(
+      'invalid_projection',
+      'Report target context time is invalid.',
+    );
   }
 
   let rawMaterial: ReportCanonicalTargetMaterial | null;
