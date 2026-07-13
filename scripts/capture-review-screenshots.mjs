@@ -8,6 +8,7 @@ const ROOT = process.cwd();
 const OUTPUT_ROOT = path.join(ROOT, 'artifacts', 'review-screenshots');
 const DEFAULT_BASE_URL = 'http://127.0.0.1:4173';
 const STAGING_PLACE_NAME = 'Staging Coffee Tokyo';
+const REPORT_TARGET_ID = '10000000-0000-4000-8000-000000000001';
 
 const DEVICES = {
   desktop: {
@@ -41,6 +42,21 @@ const COMMON_SCENARIOS = [
   ['support', '/support'],
   ['partners', '/partners'],
 ].map(([id, route]) => ({ id, route, action: 'none', fullPage: true }));
+
+COMMON_SCENARIOS.push(
+  {
+    id: 'report-payment',
+    route: `/report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
+    action: 'prepare-report-form',
+    fullPage: true,
+  },
+  {
+    id: 'report-problem',
+    route: `/report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
+    action: 'show-problem-report',
+    fullPage: true,
+  },
+);
 
 const DESKTOP_SCENARIOS = [
   {
@@ -149,10 +165,32 @@ async function expandPlaceSheet(page) {
   await page.locator('[data-sheet-state="expanded"]').waitFor({ state: 'visible' });
 }
 
+async function waitForReportForm(page) {
+  await page
+    .getByRole('heading', { name: 'What record are you reporting?', exact: true })
+    .waitFor({ state: 'visible' });
+  await page
+    .getByText('Verification ready for screenshot review', { exact: true })
+    .waitFor({ state: 'visible' });
+}
+
 async function runAction(page, action) {
   switch (action) {
     case 'none':
       return;
+    case 'prepare-report-form':
+      await waitForReportForm(page);
+      break;
+    case 'show-problem-report':
+      await waitForReportForm(page);
+      await page.getByLabel('Report type', { exact: true }).selectOption('problem_report');
+      await page
+        .getByRole('heading', {
+          name: 'Describe the incorrect or problematic information',
+          exact: true,
+        })
+        .waitFor({ state: 'visible' });
+      break;
     case 'open-mobile-menu':
       await page.getByRole('button', { name: 'Menu', exact: true }).click();
       await page
@@ -236,6 +274,37 @@ async function measurePage(page) {
   });
 }
 
+async function installReportScreenshotFixtures(page) {
+  await page.route('**/api/reports/config', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        siteKey: '1x00000000000000000000AA',
+        action: 'cpm_submission',
+      }),
+    });
+  });
+
+  await page.route('https://challenges.cloudflare.com/turnstile/v0/api.js**', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/javascript',
+      body: `
+        window.turnstile = {
+          render(container, options) {
+            container.innerHTML = '<div style="min-height:64px;border:1px solid #cbd5e1;border-radius:10px;padding:16px;display:flex;align-items:center;background:#f8fafc;color:#334155;font:600 14px system-ui">Verification ready for screenshot review</div>';
+            queueMicrotask(() => options.callback('screenshot-preview-token'));
+            return 'cpm-screenshot-widget';
+          },
+          reset() {},
+          remove() {},
+        };
+      `,
+    });
+  });
+}
+
 async function captureDevice(browser, deviceName, baseUrl) {
   const device = DEVICES[deviceName];
   const outputDir = path.join(OUTPUT_ROOT, deviceName);
@@ -251,6 +320,7 @@ async function captureDevice(browser, deviceName, baseUrl) {
     colorScheme: 'light',
   });
   const page = await context.newPage();
+  await installReportScreenshotFixtures(page);
   const records = [];
   const failures = [];
 
