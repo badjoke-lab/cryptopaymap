@@ -169,7 +169,11 @@ export const reportCanonicalTargetMaterialSchema = z
     }
 
     if (material.targetType === 'entity') {
-      if (material.targetId !== material.entity.id || material.selectedClaimId !== null) {
+      if (
+        material.targetId !== material.entity.id ||
+        material.location !== null ||
+        material.selectedClaimId !== null
+      ) {
         context.addIssue({
           code: 'custom',
           message: 'Entity target identity does not match the returned material.',
@@ -189,9 +193,16 @@ export const reportCanonicalTargetMaterialSchema = z
       }
     }
     if (material.targetType === 'claim') {
+      const selectedClaim = material.claims.find((claim) => claim.id === material.selectedClaimId);
+      const selectedLocationMatches =
+        selectedClaim !== undefined &&
+        (selectedClaim.locationId === null
+          ? material.location === null
+          : material.location !== null && material.location.id === selectedClaim.locationId);
       if (
         material.selectedClaimId !== material.targetId ||
-        !material.claims.some((claim) => claim.id === material.targetId)
+        selectedClaim === undefined ||
+        !selectedLocationMatches
       ) {
         context.addIssue({
           code: 'custom',

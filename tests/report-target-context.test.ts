@@ -361,6 +361,41 @@ describe('P5-03C report target context', () => {
       generateReportTargetContext(paymentReport(), backend(wrongTarget), generatedAt),
     ).rejects.toBeInstanceOf(ReportTargetContextError);
 
+    const ambiguousEntity: ReportCanonicalTargetMaterial = {
+      ...locationMaterial(),
+      targetType: 'entity',
+      targetId: entityId,
+      selectedClaimId: null,
+    };
+    await expect(
+      generateReportTargetContext(
+        paymentReport('entity', entityId),
+        backend(ambiguousEntity),
+        generatedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_response' });
+
+    const brandClaimWithLocation: ReportCanonicalTargetMaterial = {
+      ...locationMaterial({
+        claims: [
+          claim(claimId, {
+            locationId: null,
+            claimScope: 'brand_global',
+          }),
+        ],
+      }),
+      targetType: 'claim',
+      targetId: claimId,
+      selectedClaimId: claimId,
+    };
+    await expect(
+      generateReportTargetContext(
+        problemReport('claim', claimId),
+        backend(brandClaimWithLocation),
+        generatedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_response' });
+
     const wrongOwner = locationMaterial({
       claims: [claim(claimId, { entityId: otherClaimId })],
     });
