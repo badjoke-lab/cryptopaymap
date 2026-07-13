@@ -1,7 +1,7 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-03 ready to begin  
+**Status:** Active — P5-03A in progress  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -75,7 +75,8 @@ P5-02P  Public Suggest form and Turnstile browser wiring                 Complet
 P5-02Q  Configured Suggest review verification                          Completed #175–#183
 P5-02R  Suggest integration and handoff audit                           Completed #185–#192
 P5-02   Suggest Place and Online Service                                Completed
-P5-03   Payment and problem reports                                     Ready to begin
+P5-03A  Payment/problem report contract and normalization                 In progress
+P5-03   Payment and problem reports                                     In progress
 ```
 
 The fixed-review P5-02R deployment and live-audit receipts now record success for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`. The live journey proved HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, stable `/data/manifest.json` and `/version.json`, and bounded privacy-safe evidence. The fixed-review official-test-key metadata discrepancy is explicitly reclassified without weakening production/default hostname or action verification. P5-02 is complete and P5-03 may begin.
@@ -238,11 +239,33 @@ P5-02 completed when P5-02R recorded repository and fixed-review audit evidence 
 
 ## P5-03 — Payment and problem reports
 
-**Status:** Ready to begin
+**Status:** In progress at P5-03A
 
 ### Goal
 
 Accept target-aware reports about payment success, failure, and incorrect or problematic public information.
+
+### Current bounded sequence
+
+```text
+P5-03A — Payment/problem report contract and review-safe normalization     In progress
+    ↓
+P5-03B — Idempotent private report intake integration                     Planned
+    ↓
+P5-03C — Canonical target snapshot and Claim-context signals              Planned
+    ↓
+P5-03D — Protected report reviewer queue and detail entry                 Planned
+    ↓
+P5-03E — Positive payment Evidence and reconfirmation decision boundary   Planned
+    ↓
+P5-03F — Negative Evidence and priority-recheck decision boundary         Planned
+    ↓
+P5-03G — Problem correction and urgent visibility decision boundaries     Planned
+    ↓
+P5-03H — Public payment/problem report routes and forms                   Planned
+    ↓
+P5-03I — Configured review and integration audit                          Planned
+```
 
 ### Scope
 
