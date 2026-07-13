@@ -1,9 +1,9 @@
 name: Prepare P5-03G branch
 
 on:
-  push:
+  pull_request:
     branches:
-      - p5-03g-problem-decisions
+      - main
 
 permissions:
   contents: write
@@ -22,71 +22,43 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Synchronize type and tracking
+      - name: Synchronize tracking
         run: |
           python <<'PY'
           from pathlib import Path
 
-          def replace(path, old, new):
+          def replace_if_present(path, old, new):
               file = Path(path)
               text = file.read_text()
-              if old not in text:
-                  raise SystemExit(f'missing expected text in {path}: {old[:140]!r}')
-              file.write_text(text.replace(old, new))
+              if old in text:
+                  file.write_text(text.replace(old, new))
 
-          replace(
-              'src/admin/submissions/drizzle-problem-report-decision-backend.ts',
-              """import type {
-  ProblemReportDecisionBackend,
-  ProblemReportDecisionCommand,
-} from './problem-report-decision';""",
-              """import type {
-  ProblemReportDecisionBackend,
-  ProblemReportDecisionCommand,
-  ProblemReportDecisionState,
-} from './problem-report-decision';""",
-          )
-          replace(
-              'src/admin/submissions/drizzle-problem-report-decision-backend.ts',
-              """      let claim: Awaited<ReturnType<ProblemReportDecisionBackend['readState']>> extends infer _Never
-        ? never
-        : {
-            id: string;
-            entityId: string;
-            locationId: string | null;
-            claimStatus: 'candidate' | 'confirmed' | 'stale' | 'ended' | 'rejected';
-            visibility: 'public' | 'hidden' | 'temporarily_hidden';
-            updatedAt: string;
-          } | null = null;""",
-              """      let claim: ProblemReportDecisionState['claim'] = null;""",
-          )
-
-          replace(
+          replace_if_present(
               'docs/PROJECT_STATUS.md',
               'P5-03F — Negative Evidence and priority-recheck decision boundary',
               'P5-03G — Problem correction and urgent visibility decision boundaries',
           )
-          replace(
+          replace_if_present(
               'docs/PROJECT_STATUS.md',
               '- P5-03F negative Evidence and priority-recheck decision boundary is in progress.',
               '- P5-03F negative Evidence and priority-recheck decision boundary is complete through #199.\n- P5-03G problem correction and urgent visibility decision boundaries are in progress.',
           )
-          replace(
+          replace_if_present(
               'docs/PROJECT_STATUS.md',
               '3. P5-03 — Payment and problem reports — In progress at P5-03F',
               '3. P5-03 — Payment and problem reports — In progress at P5-03G',
           )
-          replace(
+          replace_if_present(
               'docs/PROJECT_STATUS.md',
               'P5-03F  Negative Evidence and priority-recheck decision                   In progress',
               'P5-03F  Negative Evidence and priority-recheck decision                   Completed #199\nP5-03G  Problem correction and urgent visibility decisions                  In progress',
           )
-          replace(
+          replace_if_present(
               'docs/PROJECT_STATUS.md',
               '35. `docs/P5_03F_NEGATIVE_EVIDENCE_AND_RECHECK_PRIORITY.md`;\n36. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.',
               '35. `docs/P5_03F_NEGATIVE_EVIDENCE_AND_RECHECK_PRIORITY.md`;\n36. `docs/P5_03G_PROBLEM_CORRECTION_AND_URGENT_VISIBILITY.md`;\n37. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.',
           )
-          replace(
+          replace_if_present(
               'docs/PROJECT_STATUS.md',
               """## Current active scope — P5-03F negative Evidence and recheck priority
 
@@ -120,26 +92,26 @@ Complete P5-03G authorization, strict request/event contracts, projection integr
 No repository blocker to P5-03G is known. Configured Cloudflare/Neon execution is intentionally deferred to P5-03I; retained Launch work remains unchanged and launch readiness is not claimed.""",
           )
 
-          replace('docs/IMPLEMENTATION_PLAN.md', '**Status:** In progress at P5-03F', '**Status:** In progress at P5-03G')
-          replace(
+          replace_if_present('docs/IMPLEMENTATION_PLAN.md', '**Status:** In progress at P5-03F', '**Status:** In progress at P5-03G')
+          replace_if_present(
               'docs/IMPLEMENTATION_PLAN.md',
               'P5-03F — Negative Evidence and priority-recheck decision boundary         In progress\n    ↓\nP5-03G — Problem correction and urgent visibility decision boundaries     Planned',
               'P5-03F — Negative Evidence and priority-recheck decision boundary         Completed #199\n    ↓\nP5-03G — Problem correction and urgent visibility decision boundaries     In progress',
           )
-          replace(
+          replace_if_present(
               'docs/IMPLEMENTATION_PLAN.md',
               'P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, P5-03D through #197, and P5-03E through #198. P5-03F owns the separately authorized, idempotent, atomic negative-Evidence decision and the non-mutating recheck-priority signal derived by the protected reconfirmation queue. It accepts only failed payment reports or `payment_failed` / `no_longer_accepts_crypto` problem reports, creates no public Evidence, and does not change Claim status, visibility, `nextReviewAt`, canonical fields, export, or publication. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.',
               'P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, P5-03D through #197, P5-03E through #198, and P5-03F through #199. P5-03G owns typed correction handoff, duplicate/no-change resolution, restricted urgent temporary hiding, and explicit mark-stale/end actions backed by accepted contradicting Evidence. It does not apply canonical corrections automatically, merge or delete canonical records, create public Evidence, or publish data. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.',
           )
 
-          replace('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', '**Status:** Active — P5-03F in progress', '**Status:** Active — P5-03G in progress')
-          replace('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', '**Status:** In progress at P5-03F', '**Status:** In progress at P5-03G')
-          replace(
+          replace_if_present('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', '**Status:** Active — P5-03F in progress', '**Status:** Active — P5-03G in progress')
+          replace_if_present('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', '**Status:** In progress at P5-03F', '**Status:** In progress at P5-03G')
+          replace_if_present(
               'docs/PHASE5_IMPLEMENTATION_SEQUENCE.md',
               'P5-03F  Negative Evidence and priority-recheck decision                   In progress\nP5-03   Payment and problem reports                                     In progress',
               'P5-03F  Negative Evidence and priority-recheck decision                   Completed #199\nP5-03G  Problem correction and urgent visibility decisions                  In progress\nP5-03   Payment and problem reports                                     In progress',
           )
-          replace(
+          replace_if_present(
               'docs/PHASE5_IMPLEMENTATION_SEQUENCE.md',
               'P5-03F — Negative Evidence and priority-recheck decision boundary         In progress\n    ↓\nP5-03G — Problem correction and urgent visibility decision boundaries     Planned',
               'P5-03F — Negative Evidence and priority-recheck decision boundary         Completed #199\n    ↓\nP5-03G — Problem correction and urgent visibility decision boundaries     In progress',
