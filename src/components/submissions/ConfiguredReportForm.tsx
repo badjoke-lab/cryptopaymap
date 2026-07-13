@@ -8,13 +8,15 @@ import { StatePanel } from '../ui/StatePanel';
 import { ReportForm, type ReportFormOption } from './ReportForm';
 
 export interface ConfiguredReportFormProps {
+  submissionType: ReportBrowserFormValues['submissionType'];
   assets: ReportFormOption[];
   networks: ReportFormOption[];
-  initialTargetType?: ReportBrowserFormValues['targetType'];
-  initialTargetId?: string;
+  initialTargetType?: ReportBrowserFormValues['targetType'] | undefined;
+  initialTargetId?: string | undefined;
 }
 
 export function ConfiguredReportForm({
+  submissionType,
   assets,
   networks,
   initialTargetType,
@@ -72,6 +74,7 @@ export function ConfiguredReportForm({
 
   return (
     <ReportForm
+      submissionType={submissionType}
       siteKey={configuration.siteKey}
       action={configuration.action}
       assets={assets}
