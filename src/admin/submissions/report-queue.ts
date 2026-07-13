@@ -66,9 +66,13 @@ export const reportSubmissionQueueItemSchema = z
   .strict()
   .superRefine((item, context) => {
     const paymentShape =
-      item.reportKind === 'payment_report' && item.paymentResult !== null && item.problemType === null;
+      item.reportKind === 'payment_report' &&
+      item.paymentResult !== null &&
+      item.problemType === null;
     const problemShape =
-      item.reportKind === 'problem_report' && item.problemType !== null && item.paymentResult === null;
+      item.reportKind === 'problem_report' &&
+      item.problemType !== null &&
+      item.paymentResult === null;
     if (!paymentShape && !problemShape) {
       context.addIssue({
         code: 'custom',
