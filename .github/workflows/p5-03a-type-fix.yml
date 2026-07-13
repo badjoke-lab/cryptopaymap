@@ -1,0 +1,79 @@
+name: Apply P5-03A JSON-safe correction fix
+
+on:
+  push:
+    branches:
+      - p5-03a-report-contract
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: ${{ !contains(github.event.head_commit.message, 'Make report corrections JSON-safe') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-03a-report-contract
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Patch contract, tests, and documentation
+        run: |
+          node <<'NODE'
+          const { readFileSync, writeFileSync } = require('node:fs');
+
+          function replaceRequired(path, pattern, replacement, label) {
+            const before = readFileSync(path, 'utf8');
+            if (!pattern.test(before)) throw new Error(`Missing expected block: ${label}`);
+            pattern.lastIndex = 0;
+            writeFileSync(path, before.replace(pattern, replacement));
+          }
+
+          replaceRequired(
+            'src/submissions/report-contract.ts',
+            /export const problemLocationProfileCorrectionSchema = z[\s\S]*?\n\nexport const problemReportCorrectionSchema/,
+            `export const problemLocationProfileCorrectionSchema = z\n  .object({\n    kind: z.literal('location_profile'),\n    addressLine: boundedPlainText(500).nullable(),\n    locality: boundedPlainText(120).nullable(),\n    region: boundedPlainText(120).nullable(),\n    postalCode: boundedPlainText(32).nullable(),\n    countryCode: countryCodeSchema.nullable(),\n    latitude: z.number().finite().min(-90).max(90).nullable(),\n    longitude: z.number().finite().min(-180).max(180).nullable(),\n    websiteUrl: httpsUrlSchema.nullable(),\n    phone: boundedPlainText(64).nullable(),\n    description: boundedPlainText(5_000).nullable(),\n    openingHours: boundedPlainText(2_000).nullable(),\n    amenities: z\n      .array(boundedPlainText(80))\n      .max(100)\n      .transform((values) => [...new Set(values)])\n      .nullable(),\n    socialLinks: z\n      .array(canonicalLocationSocialLinkSchema)\n      .max(30)\n      .superRefine((links, context) => {\n        const seen = new Set<string>();\n        links.forEach((link, index) => {\n          const key = \`${'${link.platform}:${link.url}'}\`;\n          if (seen.has(key)) {\n            context.addIssue({\n              code: 'custom',\n              path: [index],\n              message: 'Duplicate social links are not allowed.',\n            });\n          }\n          seen.add(key);\n        });\n      })\n      .nullable(),\n  })\n  .strict()\n  .superRefine((correction, context) => {\n    const proposedValues = [\n      correction.addressLine,\n      correction.locality,\n      correction.region,\n      correction.postalCode,\n      correction.countryCode,\n      correction.latitude,\n      correction.longitude,\n      correction.websiteUrl,\n      correction.phone,\n      correction.description,\n      correction.openingHours,\n      correction.amenities,\n      correction.socialLinks,\n    ];\n    if (proposedValues.every((value) => value === null)) {\n      context.addIssue({\n        code: 'custom',\n        message: 'Location profile corrections require at least one proposed field.',\n      });\n    }\n    if ((correction.latitude === null) !== (correction.longitude === null)) {\n      context.addIssue({\n        code: 'custom',\n        path: ['latitude'],\n        message: 'Latitude and longitude corrections must be supplied together.',\n      });\n    }\n  });\n\nexport const problemReportCorrectionSchema`,
+            'location correction schema',
+          );
+
+          const testPath = 'tests/report-submission-contract.test.ts';
+          let tests = readFileSync(testPath, 'utf8');
+          const helperAnchor = `function wrongNetworkProblemPayload() {`;
+          if (!tests.includes(helperAnchor)) throw new Error('Missing test helper anchor.');
+          tests = tests.replace(
+            helperAnchor,
+            `function locationProfileCorrection(overrides: Record<string, unknown> = {}) {\n  return {\n    kind: 'location_profile',\n    addressLine: null,\n    locality: null,\n    region: null,\n    postalCode: null,\n    countryCode: null,\n    latitude: null,\n    longitude: null,\n    websiteUrl: null,\n    phone: null,\n    description: null,\n    openingHours: null,\n    amenities: null,\n    socialLinks: null,\n    ...overrides,\n  };\n}\n\n${helperAnchor}`,
+          );
+          tests = tests.replace(
+            /proposedCorrection: \{\n        kind: 'location_profile',\n        addressLine: '2-3-4 Jingumae',\n        locality: 'Shibuya',\n        countryCode: 'jp',\n        latitude: 35\.67,\n        longitude: 139\.7,\n        amenities: \['wifi', 'wifi', 'outdoor seating'\],\n      \},/,
+            `proposedCorrection: locationProfileCorrection({\n        addressLine: '2-3-4 Jingumae',\n        locality: 'Shibuya',\n        countryCode: 'jp',\n        latitude: 35.67,\n        longitude: 139.7,\n        amenities: ['wifi', 'wifi', 'outdoor seating'],\n      }),`,
+          );
+          tests = tests.replace(
+            `proposedCorrection: { kind: 'location_profile', latitude: 35.67 },`,
+            `proposedCorrection: locationProfileCorrection({ latitude: 35.67 }),`,
+          );
+          tests = tests.replace(
+            `proposedCorrection: { kind: 'location_profile' },`,
+            `proposedCorrection: locationProfileCorrection(),`,
+          );
+          writeFileSync(testPath, tests);
+
+          replaceRequired(
+            'docs/P5_03A_REPORT_CONTRACT_AND_NORMALIZATION.md',
+            /- nullable fields may explicitly propose removal where later reviewer policy permits it\./,
+            '- `null` marks a field as not proposed; explicit removal semantics remain a later protected-review decision.',
+            'location correction null semantics',
+          );
+          NODE
+      - run: npm ci
+      - run: npm run format
+      - name: Commit type fix
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/submissions/report-contract.ts tests/report-submission-contract.test.ts docs/P5_03A_REPORT_CONTRACT_AND_NORMALIZATION.md
+          git commit -m 'Make report corrections JSON-safe'
+          git push origin HEAD:p5-03a-report-contract
