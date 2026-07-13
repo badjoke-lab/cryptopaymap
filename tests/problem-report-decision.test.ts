@@ -154,6 +154,7 @@ function failedPaymentState(): ProblemReportDecisionState {
       reviewStatus: 'accepted',
       polarity: 'contradicting',
       deletedAt: null,
+      negativeEvidenceDecisionRecorded: true,
     },
   };
 }
@@ -285,7 +286,26 @@ describe('P5-03G problem report decisions', () => {
     });
   });
 
-  it('resolves a duplicate only while the stored target still exists', async () => {
+  it('resolves a duplicate only while a distinct stored target still exists', async () => {
+    const selfDuplicate = problemState('duplicate');
+    selfDuplicate.originalPayload = {
+      ...(selfDuplicate.originalPayload as Record<string, unknown>),
+      duplicateTarget: { targetType: 'entity', targetId: entityId },
+    };
+    selfDuplicate.normalizedPayload = {
+      ...(selfDuplicate.normalizedPayload as Record<string, unknown>),
+      duplicateTarget: { targetType: 'entity', targetId: entityId },
+    };
+    await expect(
+      decideProblemReport(
+        fullContext,
+        backend(selfDuplicate).adapter,
+        submissionId,
+        ordinaryRequest('resolve_duplicate'),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'ineligible' });
+
     await expect(
       decideProblemReport(
         fullContext,
@@ -341,13 +361,58 @@ describe('P5-03G problem report decisions', () => {
     });
   });
 
-  it('requires accepted contradicting Evidence before marking stale or ending', async () => {
-    const invalid = failedPaymentState();
-    invalid.evidence = { ...invalid.evidence!, reviewStatus: 'pending' };
+  it('rejects urgent hiding when restricted evidence is absent', async () => {
+    const current = problemState('privacy_issue', {
+      claim: {
+        id: claimId,
+        entityId,
+        locationId: null,
+        claimStatus: 'confirmed',
+        visibility: 'public',
+        updatedAt: '2026-07-13T07:00:00.000Z',
+      },
+    });
+    current.originalPayload = {
+      ...(current.originalPayload as Record<string, unknown>),
+      privateEvidenceUrl: null,
+    };
+    current.normalizedPayload = {
+      ...(current.normalizedPayload as Record<string, unknown>),
+      restrictedEvidence: { privateEvidenceUrlPresent: false },
+    };
     await expect(
       decideProblemReport(
         fullContext,
-        backend(invalid).adapter,
+        backend(current).adapter,
+        submissionId,
+        urgentHideRequest(),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'ineligible' });
+  });
+
+  it('requires P5-03F accepted contradicting Evidence before stale or end', async () => {
+    const pending = failedPaymentState();
+    pending.evidence = { ...pending.evidence!, reviewStatus: 'pending' };
+    await expect(
+      decideProblemReport(
+        fullContext,
+        backend(pending).adapter,
+        submissionId,
+        negativeActionRequest('mark_stale'),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'ineligible' });
+
+    const unproven = failedPaymentState();
+    unproven.evidence = {
+      ...unproven.evidence!,
+      negativeEvidenceDecisionRecorded: false,
+    };
+    await expect(
+      decideProblemReport(
+        fullContext,
+        backend(unproven).adapter,
         submissionId,
         negativeActionRequest('mark_stale'),
         decidedAt,
@@ -373,6 +438,20 @@ describe('P5-03G problem report decisions', () => {
         decidedAt,
       ),
     ).resolves.toMatchObject({ claimStatus: 'ended', claimVisibility: 'public' });
+  });
+
+  it('rejects a mark-stale deadline that is not after the decision time', async () => {
+    const request = negativeActionRequest('mark_stale');
+    request.nextReviewAt = '2026-07-13T08:30:00.000Z';
+    await expect(
+      decideProblemReport(
+        fullContext,
+        backend(failedPaymentState()).adapter,
+        submissionId,
+        request,
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_request' });
   });
 
   it('replays identical operations and rejects changed-content UUID reuse', async () => {
