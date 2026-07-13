@@ -6,7 +6,7 @@ import {
 
 const targetId = '10000000-0000-4000-8000-000000000001';
 
-function entityClaim() {
+function entityClaim(): any {
   return {
     schemaVersion: 'submission-common-v1',
     submissionType: 'claim',
@@ -60,7 +60,7 @@ function entityClaim() {
       privacyNoticeAccepted: true,
       submissionTermsAccepted: true,
     },
-  } as const;
+  };
 }
 
 describe('P5-04A business claim contract', () => {
