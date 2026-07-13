@@ -6,6 +6,7 @@ import {
 } from '../../submissions/payment-report-evidence-contract';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type { PaymentReportEvidenceDecisionContext } from './authorization';
+import { paymentReportOriginalPayloadSchema } from '../../submissions/report-contract';
 import { paymentReportReviewProjectionSchema } from './report-detail';
 
 const timestampSchema = z.iso.datetime({ offset: true });
@@ -39,7 +40,8 @@ export const positivePaymentEvidenceRequestSchema = z
     evidenceClass: z.enum(['a', 'b']),
     evidenceVisibility: z.enum(['private', 'restricted']),
     independenceKey: independenceKeySchema.nullable(),
-    summary: safeTextSchema(1_000),
+    evidenceSummary: safeTextSchema(1_000),
+    publicSummary: safeTextSchema(1_000).nullable(),
     reviewerNote: safeTextSchema(1_000).nullable(),
     nextReviewAt: timestampSchema.nullable(),
   })
@@ -66,19 +68,44 @@ export const positivePaymentEvidenceRequestSchema = z
         message: 'Class A payment proof does not use a Class B independence key.',
       });
     }
-    if (request.decision === 'accept_and_reconfirm' && request.nextReviewAt === null) {
-      context.addIssue({
-        code: 'custom',
-        path: ['nextReviewAt'],
-        message: 'Reconfirmation requires a future next-review time.',
-      });
+    if (request.decision === 'accept_and_reconfirm') {
+      if (request.evidenceClass !== 'a') {
+        context.addIssue({
+          code: 'custom',
+          path: ['evidenceClass'],
+          message: 'A single Class B user report cannot reconfirm a Claim.',
+        });
+      }
+      if (request.nextReviewAt === null) {
+        context.addIssue({
+          code: 'custom',
+          path: ['nextReviewAt'],
+          message: 'Reconfirmation requires a future next-review time.',
+        });
+      }
+      if (request.publicSummary === null) {
+        context.addIssue({
+          code: 'custom',
+          path: ['publicSummary'],
+          message: 'Reconfirmation requires a separate publication-safe summary.',
+        });
+      }
     }
-    if (request.decision === 'accept_evidence' && request.nextReviewAt !== null) {
-      context.addIssue({
-        code: 'custom',
-        path: ['nextReviewAt'],
-        message: 'Evidence-only acceptance cannot assign a next-review time.',
-      });
+    if (request.decision === 'accept_evidence') {
+      if (request.nextReviewAt !== null) {
+        context.addIssue({
+          code: 'custom',
+          path: ['nextReviewAt'],
+          message: 'Evidence-only acceptance cannot assign a next-review time.',
+        });
+      }
+      if (request.publicSummary !== null) {
+        context.addIssue({
+          code: 'custom',
+          path: ['publicSummary'],
+          message: 'Evidence-only acceptance cannot write a public Verification summary.',
+        });
+      }
     }
   });
 
@@ -115,6 +142,7 @@ export interface PositivePaymentEvidenceState {
   targetId: string | null;
   workflowStatus: string;
   updatedAt: string;
+  originalPayload: unknown;
   normalizedPayload: unknown;
   payloadUpdatedAt: string;
   claim: {
@@ -163,7 +191,8 @@ export interface PositivePaymentEvidenceCommitCommand {
   independenceKey: string | null;
   sourceUrl: string | null;
   observedAt: Date;
-  summary: string;
+  evidenceSummary: string;
+  publicSummary: string | null;
   eventInternalNote: string;
   reviewerNote: string | null;
   decidedAt: Date;
@@ -247,12 +276,15 @@ function exactPaymentMatch(
   ) {
     return false;
   }
-  if (
-    payment.processor !== null &&
-    state.claim.processorName !== null &&
-    payment.processor.name.toLocaleLowerCase('en-US') !==
+  if (state.claim.routeType === 'processor_checkout') {
+    if (payment.processor === null || state.claim.processorName === null) return false;
+    if (
+      payment.processor.name.toLocaleLowerCase('en-US') !==
       state.claim.processorName.toLocaleLowerCase('en-US')
-  ) {
+    ) {
+      return false;
+    }
+  } else if (payment.processor !== null || state.claim.processorName !== null) {
     return false;
   }
   return state.claim.options.some(
@@ -397,10 +429,23 @@ export async function decidePositivePaymentEvidence(
     );
   }
   const projection = projectionResult.data;
+  const originalResult = paymentReportOriginalPayloadSchema.safeParse(state.originalPayload);
+  if (
+    !originalResult.success ||
+    originalResult.data.result !== 'successful' ||
+    originalResult.data.paymentDate !== projection.paymentDate
+  ) {
+    throw new PositivePaymentEvidenceError(
+      'invalid_projection',
+      'The original successful payment report could not be verified.',
+    );
+  }
+  const original = originalResult.data;
   const paymentMatch = exactPaymentMatch(state, projection);
   if (request.evidenceClass === 'a') {
     if (
       !projection.restrictedEvidence.privateTransactionUrlPresent ||
+      original.privateTransactionUrl === null ||
       !paymentMatch ||
       request.evidenceVisibility !== 'restricted'
     ) {
@@ -412,13 +457,15 @@ export async function decidePositivePaymentEvidence(
   }
   if (request.decision === 'accept_and_reconfirm') {
     if (
+      request.evidenceClass !== 'a' ||
+      request.publicSummary === null ||
       !paymentMatch ||
       request.nextReviewAt === null ||
       Date.parse(request.nextReviewAt) <= decidedAt.getTime()
     ) {
       throw new PositivePaymentEvidenceError(
         'ineligible',
-        'Reconfirmation requires an exact payment match and a future next-review time.',
+        'Reconfirmation requires Class A proof, an exact payment match, a publication-safe summary, and a future next-review time.',
       );
     }
   }
@@ -435,7 +482,8 @@ export async function decidePositivePaymentEvidence(
     claimId: request.claimId,
     decision: request.decision,
     verificationEventId,
-    summary: request.summary,
+    evidenceSummary: request.evidenceSummary,
+    publicSummary: request.publicSummary,
     reviewerNote: request.reviewerNote,
   });
 
@@ -460,9 +508,13 @@ export async function decidePositivePaymentEvidence(
       evidenceVisibility: request.evidenceVisibility,
       sourceType: request.evidenceClass === 'a' ? 'payment_proof' : 'user_submission',
       independenceKey: request.independenceKey,
-      sourceUrl: projection.evidenceLinks[0]?.url ?? null,
+      sourceUrl:
+        request.evidenceClass === 'a'
+          ? original.privateTransactionUrl
+          : (projection.evidenceLinks[0]?.url ?? null),
       observedAt: new Date(`${projection.paymentDate}T00:00:00.000Z`),
-      summary: request.summary,
+      evidenceSummary: request.evidenceSummary,
+      publicSummary: request.publicSummary,
       eventInternalNote,
       reviewerNote: request.reviewerNote,
       decidedAt,

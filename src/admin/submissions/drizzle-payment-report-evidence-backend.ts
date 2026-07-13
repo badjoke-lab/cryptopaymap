@@ -96,6 +96,7 @@ export function createDrizzlePositivePaymentEvidenceBackend(
           targetId: submissions.targetId,
           workflowStatus: submissions.workflowStatus,
           updatedAt: submissions.updatedAt,
+          originalPayload: submissionPayloads.originalPayload,
           normalizedPayload: submissionPayloads.normalizedPayload,
           payloadUpdatedAt: submissionPayloads.updatedAt,
           claimId: acceptanceClaims.id,
@@ -147,6 +148,7 @@ export function createDrizzlePositivePaymentEvidenceBackend(
         targetId: row.targetId,
         workflowStatus: row.workflowStatus,
         updatedAt: row.updatedAt.toISOString(),
+        originalPayload: row.originalPayload,
         normalizedPayload: row.normalizedPayload,
         payloadUpdatedAt: row.payloadUpdatedAt.toISOString(),
         claim: {
@@ -234,7 +236,7 @@ export function createDrizzlePositivePaymentEvidenceBackend(
           observedAt: command.observedAt,
           publishedAt: null,
           fetchedAt: command.decidedAt,
-          summary: command.summary,
+          summary: command.evidenceSummary,
           visibility: command.evidenceVisibility,
           reviewStatus: 'accepted',
           archiveUrl: null,
@@ -273,6 +275,12 @@ export function createDrizzlePositivePaymentEvidenceBackend(
       ];
 
       if (command.decision === 'accept_and_reconfirm' && command.verificationEventId !== null) {
+        if (command.publicSummary === null || command.nextReviewAt === null) {
+          throw new SubmissionPersistenceError(
+            'invalid_input',
+            'Reconfirmation persistence requires a public summary and next-review time.',
+          );
+        }
         const eventType = command.expectedClaimStatus === 'stale' ? 'restored' : 'reconfirmed';
         statements.push(
           database
@@ -296,7 +304,7 @@ export function createDrizzlePositivePaymentEvidenceBackend(
             toVisibility: null,
             reasonCode: 'successful_payment_report',
             effectiveAt: command.decidedAt,
-            publicSummary: command.summary,
+            publicSummary: command.publicSummary,
             internalNote: command.reviewerNote,
             actorType: 'system',
             actorId: null,

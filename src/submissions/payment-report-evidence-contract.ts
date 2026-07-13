@@ -22,7 +22,8 @@ export const positivePaymentEvidenceEventSchema = z
     claimId: z.uuid(),
     decision: positivePaymentEvidenceDecisionSchema,
     verificationEventId: z.uuid().nullable(),
-    summary: safeTextSchema(1_000),
+    evidenceSummary: safeTextSchema(1_000),
+    publicSummary: safeTextSchema(1_000).nullable(),
     reviewerNote: safeTextSchema(1_000).nullable(),
   })
   .strict();

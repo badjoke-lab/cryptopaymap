@@ -56,6 +56,8 @@ The decision requires:
 
 Reconfirmation additionally requires:
 
+- Class A restricted payment proof;
+- a separate publication-safe Verification summary;
 - submitted route, Asset, Network, and payment method to be present;
 - an exact current Claim payment-option match;
 - current active publication prerequisites in the atomic database guard;
@@ -74,9 +76,12 @@ Class A payment proof requires:
 Class B user-report Evidence requires:
 
 - a bounded reviewer-supplied independence key;
-- `visibility = private` or `restricted`.
+- `visibility = private` or `restricted`;
+- Evidence-only acceptance. A single Class B report cannot reconfirm a Claim.
 
-P5-03E never creates public Evidence directly.
+For Class A, the restricted transaction URL is read from the original private Submission payload and retained only on restricted Evidence. The normalized reviewer projection continues to expose presence only.
+
+P5-03E never creates public Evidence directly. Evidence summary and public Verification summary are separate fields so restricted review detail cannot become public by reuse.
 
 ## Atomic writes
 

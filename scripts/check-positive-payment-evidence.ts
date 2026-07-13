@@ -26,7 +26,8 @@ positivePaymentEvidenceRequestSchema.parse({
   evidenceClass: 'a',
   evidenceVisibility: 'restricted',
   independenceKey: null,
-  summary: 'A successful payment report supports the reviewed Claim.',
+  evidenceSummary: 'Restricted payment proof supports the reviewed Claim.',
+  publicSummary: 'The payment method was reconfirmed from restricted proof.',
   reviewerNote: 'Restricted transaction proof was reviewed privately.',
   nextReviewAt: '2027-01-09T05:00:00.000Z',
 });
@@ -38,7 +39,8 @@ positivePaymentEvidenceEventSchema.parse({
   claimId,
   decision: 'accept_and_reconfirm',
   verificationEventId: '60000000-0000-4000-8000-000000000001',
-  summary: 'A successful payment report supports the reviewed Claim.',
+  evidenceSummary: 'Restricted payment proof supports the reviewed Claim.',
+  publicSummary: 'The payment method was reconfirmed from restricted proof.',
   reviewerNote: 'Restricted transaction proof was reviewed privately.',
 });
 

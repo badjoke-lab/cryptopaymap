@@ -31,6 +31,22 @@ function state(
     targetId: entityId,
     workflowStatus: 'in_review',
     updatedAt: '2026-07-13T04:00:00.000Z',
+    originalPayload: {
+      schemaVersion: 'payment-report-v1',
+      result: 'successful',
+      paymentDate: '2026-07-12',
+      payment: {
+        assetSlug: 'btc',
+        networkSlug: 'bitcoin',
+        routeType: 'direct_wallet',
+        paymentMethod: 'onchain',
+        processor: null,
+        context: 'hosted_checkout',
+        observedSteps: 'Scanned the displayed wallet QR code.',
+      },
+      privateTransactionUrl: null,
+      notes: null,
+    },
     normalizedPayload: {
       reportKind: 'payment_report',
       targetType: 'entity',
@@ -97,7 +113,8 @@ function request(
     evidenceClass: 'b',
     evidenceVisibility: 'private',
     independenceKey: 'usage:payment-report-001',
-    summary: 'A successful BTC payment was reported on 2026-07-12.',
+    evidenceSummary: 'A successful BTC payment was reported on 2026-07-12.',
+    publicSummary: null,
     reviewerNote: null,
     nextReviewAt: null,
     ...overrides,
@@ -163,6 +180,10 @@ describe('P5-03E positive payment Evidence decision', () => {
 
   it('accepts restricted Class A proof and reconfirms an exact matching Claim', async () => {
     const current = state();
+    current.originalPayload = {
+      ...(current.originalPayload as Record<string, unknown>),
+      privateTransactionUrl: 'https://explorer.example/tx/restricted-proof',
+    };
     current.normalizedPayload = {
       ...(current.normalizedPayload as Record<string, unknown>),
       restrictedEvidence: { privateTransactionUrlPresent: true },
@@ -177,6 +198,7 @@ describe('P5-03E positive payment Evidence decision', () => {
         evidenceClass: 'a',
         evidenceVisibility: 'restricted',
         independenceKey: null,
+        publicSummary: 'The payment method was reconfirmed from restricted proof.',
         nextReviewAt: '2027-01-09T05:00:00.000Z',
       }),
       decidedAt,
@@ -197,6 +219,14 @@ describe('P5-03E positive payment Evidence decision', () => {
   it('restores a stale Claim after an exact successful payment match', async () => {
     const current = state();
     if (current.claim) current.claim.claimStatus = 'stale';
+    current.originalPayload = {
+      ...(current.originalPayload as Record<string, unknown>),
+      privateTransactionUrl: 'https://explorer.example/tx/stale-restoration-proof',
+    };
+    current.normalizedPayload = {
+      ...(current.normalizedPayload as Record<string, unknown>),
+      restrictedEvidence: { privateTransactionUrlPresent: true },
+    };
     const harness = backend(current);
     const receipt = await decidePositivePaymentEvidence(
       context,
@@ -205,6 +235,10 @@ describe('P5-03E positive payment Evidence decision', () => {
       request({
         expectedClaimStatus: 'stale',
         decision: 'accept_and_reconfirm',
+        evidenceClass: 'a',
+        evidenceVisibility: 'restricted',
+        independenceKey: null,
+        publicSummary: 'The stale Claim was restored from restricted payment proof.',
         nextReviewAt: '2027-01-09T05:00:00.000Z',
       }),
       decidedAt,
@@ -241,6 +275,14 @@ describe('P5-03E positive payment Evidence decision', () => {
     ).rejects.toMatchObject({ code: 'ineligible' });
 
     const mismatched = state();
+    mismatched.originalPayload = {
+      ...(mismatched.originalPayload as Record<string, unknown>),
+      privateTransactionUrl: 'https://explorer.example/tx/mismatch-proof',
+    };
+    mismatched.normalizedPayload = {
+      ...(mismatched.normalizedPayload as Record<string, unknown>),
+      restrictedEvidence: { privateTransactionUrlPresent: true },
+    };
     const mismatchedOption = mismatched.claim?.options[0];
     if (mismatchedOption === undefined) throw new Error('Expected one Claim payment option.');
     mismatchedOption.networkSlug = 'lightning';
@@ -251,11 +293,31 @@ describe('P5-03E positive payment Evidence decision', () => {
         submissionId,
         request({
           decision: 'accept_and_reconfirm',
+          evidenceClass: 'a',
+          evidenceVisibility: 'restricted',
+          independenceKey: null,
+          publicSummary: 'A publication-safe mismatch test summary.',
           nextReviewAt: '2027-01-09T05:00:00.000Z',
         }),
         decidedAt,
       ),
     ).rejects.toMatchObject({ code: 'ineligible' });
+  });
+
+  it('does not allow a single Class B report to reconfirm a Claim', async () => {
+    await expect(
+      decidePositivePaymentEvidence(
+        context,
+        backend().adapter,
+        submissionId,
+        request({
+          decision: 'accept_and_reconfirm',
+          publicSummary: 'This must not be accepted from one Class B report.',
+          nextReviewAt: '2027-01-09T05:00:00.000Z',
+        }),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_request' });
   });
 
   it('replays an identical request and rejects changed-content UUID reuse', async () => {
@@ -281,7 +343,7 @@ describe('P5-03E positive payment Evidence decision', () => {
         context,
         harness.adapter,
         submissionId,
-        request({ summary: 'Changed summary under the same request UUID.' }),
+        request({ evidenceSummary: 'Changed summary under the same request UUID.' }),
         decidedAt,
       ),
     ).rejects.toMatchObject({ code: 'idempotency_conflict' });
