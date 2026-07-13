@@ -1,7 +1,7 @@
 # P5-02R fixed-review database recovery
 
-**Status:** Active blocker recovery  
-**Last updated:** 2026-07-12
+**Status:** Completed  
+**Last updated:** 2026-07-13
 
 ## Confirmed evidence
 
@@ -58,3 +58,9 @@ Do not:
 - fabricate migration-ledger rows;
 - weaken Turnstile, rate-limit, privacy, or publication boundaries;
 - treat database connectivity readiness as proof that the private Submission schema exists.
+
+## Completion outcome
+
+A new empty fixed-review database was created and selected through the repository `DATABASE_URL` secret. The guarded initializer accepted the empty database, applied the full migration history, verified the P5-02 Submission schema and migration ledger, redeployed the fixed-review environment, and completed the bounded live audit.
+
+The legacy unmanaged database was not modified. The completion receipt for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d` records HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, and unchanged public artifacts.

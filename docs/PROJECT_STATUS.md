@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-12
+**Last verified:** 2026-07-13
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-02R — Suggest integration and handoff audit
+P5-03 — Payment and problem reports (bounded sequence definition next)
 
 ## Current repository state
 
@@ -35,7 +35,8 @@ P5-02R — Suggest integration and handoff audit
 - P5-02O public Suggest HTTP composition and safe response mapping are complete through #173.
 - P5-02P public Suggest form, browser Turnstile wiring, and scoped CSP are complete through #174.
 - P5-02Q configured Suggest review deployment and readiness verification are complete through #175–#183.
-- P5-02R Suggest integration and handoff audit is in progress.
+- P5-02R Suggest integration and handoff audit is complete through #185–#192.
+- P5-02 Suggest Place and Online Service is complete and handed off to P5-03.
 
 ## Fixed review environment
 
@@ -43,17 +44,17 @@ Review URL:
 
 `https://review.cryptopaymap-staging.pages.dev`
 
-The successful P5-02Q deployment receipt for main commit:
+The current fixed-review deployment receipt for main commit:
 
-`513dc7f543ac27fe512319a3cc24cc16c3de4302`
+`699cff048fa80113d3b05bcdf4f385c229a4d41d`
 
-records `status: deployed` and success for credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, Pages deployment, and configured verification.
+records `status: deployed` and success for credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, Pages deployment, and configured verification. The bounded P5-02R live-audit receipt for the same commit records `status: complete`.
 
 Deployment receipt state must still be checked whenever review-environment state matters. A later repository merge must not be assumed visible or configured correctly at the fixed URL until the receipt records the intended `main` commit and successful configured verification.
 
 ## Required current references
 
-Before P5-02 implementation or review, read:
+Before P5-03 implementation or review, read:
 
 1. `docs/IMPLEMENTATION_PLAN.md`;
 2. `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`;
@@ -91,8 +92,8 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 ## Phase 5 sequence
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
-2. P5-02 — Suggest Place and Online Service — In progress
-3. P5-03 — Payment and problem reports — Planned
+2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
+3. P5-03 — Payment and problem reports — Ready to begin
 4. P5-04 — Business and service claims — Planned
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
@@ -136,7 +137,7 @@ P5-02P  Public Suggest form and Turnstile browser wiring                  Comple
     ↓
 P5-02Q  Configured Suggest review verification                           Completed #175–#183
     ↓
-P5-02R  Suggest integration and handoff audit                            In progress
+P5-02R  Suggest integration and handoff audit                            Completed #185–#192
 ```
 
 ## P5-02Q completion evidence
@@ -156,21 +157,20 @@ The fixed-review receipt for commit `513dc7f543ac27fe512319a3cc24cc16c3de4302` p
 
 P5-02Q does not prove a successful public Suggest POST, deterministic live replay, changed-content live conflict, configured live 429 behavior, or protected reviewer execution.
 
-## Current active scope — P5-02R integration and handoff audit
+## P5-02R completion evidence
 
-P5-02R must audit P5-02A through P5-02Q as one boundary.
+The fixed-review deployment receipt records `status: deployed` for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`, with credentials, configured inputs, Durable Object Worker, Pages secrets, Pages deployment, and configured verification all successful.
 
-The current work must:
+The bounded live-audit receipt records `status: complete` for the same commit and proves:
 
-- verify browser, HTTP route, strict Suggest schema, provider composition, private persistence, reviewer projection, workflow transition, and accepted-as-Candidate contract continuity;
-- run one clearly synthetic fixed-review Suggest journey without real person or business data;
-- verify first POST acceptance, exact replay identity, and changed-content conflict at the public route boundary;
-- avoid logging the Turnstile token or returned status secret;
-- compare stable public review artifacts before and after live intake to confirm no automatic public mutation;
-- verify private/secret field exclusion from receipts, diagnostics, and public artifacts;
-- retain configured P5-02Q receipt evidence for the audited main commit or a later compatible main commit;
-- separate P5-03 handoff criteria from protected Admin and production Launch work;
-- document any discovered platform or contract gap and keep P5-03 blocked until it is corrected or explicitly reclassified.
+- fixed-review Submission schema and migration ledger verification succeeded;
+- first public Suggest POST returned HTTP 202 with the expected receipt shape;
+- exact replay returned HTTP 202 with the same public reference and status secret;
+- changed content under the same idempotency UUID returned HTTP 409 with the expected conflict shape;
+- `/data/manifest.json` and `/version.json` were unchanged;
+- no challenge token, returned status secret, private payload, contact data, raw edge identity, database value, or derived key entered the retained receipt.
+
+The Cloudflare dummy-token metadata discrepancy is explicitly reclassified only inside the fixed-review official-test-key boundary. Production/default hostname and action verification remain strict.
 
 ## P5-02R handoff gate
 
@@ -184,6 +184,8 @@ P5-03 may begin only after:
 6. no private or secret leakage is found;
 7. residual work is assigned to the correct later Phase 5 or Launch gate;
 8. the P5-02R audit records an explicit handoff decision.
+
+All eight conditions are satisfied by the deployment and live-audit receipts for commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`. P5-02 hands off to P5-03.
 
 ## Retained Launch work
 
@@ -203,28 +205,11 @@ Launch readiness must not be claimed until the relevant launch criteria and reta
 
 ## Next
 
-Complete P5-02R repository and fixed-review audit evidence. Then record the P5-02 handoff decision before P5-03 begins.
+Define and begin the first bounded P5-03 slice for target-aware payment and problem reports. P5-03 must reuse the P5-01 private Submission foundation and the P5-02 target conventions without adding direct canonical or public mutation.
 
 ## Blocked
 
-P5-02R directly validated Cloudflare's exact documented always-pass dummy token with the official
-test secret. Siteverify returned HTTP 200 and success but reported `hostname: example.com` with no
-action, rather than the documented and configured `hostname: localhost` and `action: test`. The
-same result occurred for JSON and `application/x-www-form-urlencoded`, each with and without a fresh
-UUID `idempotency_key`. The discrepancy is therefore transport-independent and not caused by the
-optional idempotency parameter. The corrected probe stopped before calling the application route and
-did not draw an intake or rate-limit conclusion.
-
-P5-03 remains blocked until this direct contradiction with the current Cloudflare testing
-documentation is resolved or explicitly reclassified without weakening Turnstile hostname/action
-enforcement, and the P5-02R live first POST, exact replay, changed-content conflict, public-artifact
-comparison, and privacy checks pass.
-
-A live synthetic Suggest probe may reveal a Turnstile testing, migration, persistence, or route-composition gap. Such a result is an audit finding to correct, not a reason to mark the audit successful.
-
-`CPM_USER_SUBMISSION_SOURCE_ID` and the Candidate-create allowlist remain required in configured environments for live accepted-as-Candidate execution. That configured protected journey remains Launch work unless explicitly brought into a later bounded slice.
-
-Production restore completion remains a Launch gate rather than a P5-02 repository blocker.
+No P5-02R blocker remains. P5-03 may begin. Retained Launch work remains unchanged and launch readiness is not claimed.
 
 ## Verification rule
 
