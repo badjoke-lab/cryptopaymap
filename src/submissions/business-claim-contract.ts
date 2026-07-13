@@ -117,10 +117,7 @@ export const businessClaimVerificationRequestSchema = z
         message: 'Official-social verification requires an official social URL.',
       });
     }
-    if (
-      request.method === 'assisted_verification' &&
-      request.assistedVerifierReference === null
-    ) {
+    if (request.method === 'assisted_verification' && request.assistedVerifierReference === null) {
       context.addIssue({
         code: 'custom',
         path: ['assistedVerifierReference'],
@@ -156,7 +153,10 @@ export const businessClaimLocationCorrectionSchema = z
     phone: boundedText(64).nullable(),
     description: boundedText(5_000).nullable(),
     openingHours: boundedText(2_000).nullable(),
-    amenities: z.array(boundedText(80)).max(100).transform((values) => [...new Set(values)]),
+    amenities: z
+      .array(boundedText(80))
+      .max(100)
+      .transform((values) => [...new Set(values)]),
     socialLinks: z
       .array(canonicalLocationSocialLinkSchema)
       .max(30)
@@ -303,9 +303,7 @@ export interface BusinessClaimReviewProjection {
   evidenceLinks: CommonSubmissionIntake['evidenceLinks'];
 }
 
-export type BusinessClaimSubmissionIntake = z.infer<
-  typeof businessClaimSubmissionIntakeSchema
->;
+export type BusinessClaimSubmissionIntake = z.infer<typeof businessClaimSubmissionIntakeSchema>;
 
 export function normalizeParsedBusinessClaimSubmissionIntake(
   intake: BusinessClaimSubmissionIntake,
@@ -322,8 +320,7 @@ export function normalizeParsedBusinessClaimSubmissionIntake(
       officialContactEmailPresent: payload.verification.officialContactEmail !== null,
       officialWebsiteUrl: payload.verification.officialWebsiteUrl,
       officialSocialUrl: payload.verification.officialSocialUrl,
-      assistedVerifierReferencePresent:
-        payload.verification.assistedVerifierReference !== null,
+      assistedVerifierReferencePresent: payload.verification.assistedVerifierReference !== null,
       privateProofPresent: payload.verification.privateProofUrl !== null,
     },
     proposedChanges: payload.proposedChanges,
