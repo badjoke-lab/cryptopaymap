@@ -61,7 +61,7 @@ const stored = persistence.snapshot()[0];
 if (committed.state !== 'committed' || replayed.state !== 'replayed') {
   throw new Error('Business Claim private intake replay contract failed.');
 }
-if (persistence.snapshot().length !== 1 || stored?.submissionType !== 'claim') {
+if (!stored || persistence.snapshot().length !== 1 || stored.submissionType !== 'claim') {
   throw new Error('Business Claim private intake persistence contract failed.');
 }
 if (JSON.stringify(stored.normalizedPayload).includes('officialContactEmail')) {
