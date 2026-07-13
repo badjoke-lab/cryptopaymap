@@ -1,7 +1,7 @@
 # P5-04B Business claim private intake integration
 
 **Implementation item:** P5-04B  
-**Status:** Active  
+**Status:** Active in #204  
 **Started:** 2026-07-13
 
 ## Purpose
