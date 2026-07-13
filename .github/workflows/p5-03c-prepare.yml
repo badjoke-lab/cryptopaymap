@@ -1,0 +1,140 @@
+name: Prepare P5-03C branch
+
+on:
+  push:
+    branches:
+      - p5-03c-report-target-context
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: ${{ !contains(github.event.head_commit.message, 'Prepare P5-03C branch') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-03c-report-target-context
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Advance tracking to P5-03C
+        run: |
+          node <<'NODE'
+          const { readFileSync, writeFileSync } = require('node:fs');
+
+          function update(path, transform) {
+            const before = readFileSync(path, 'utf8');
+            const after = transform(before);
+            if (after === before) throw new Error(`No changes produced for ${path}`);
+            writeFileSync(path, after);
+          }
+
+          function required(text, pattern, replacement, label) {
+            if (!pattern.test(text)) throw new Error(`Missing expected block: ${label}`);
+            pattern.lastIndex = 0;
+            return text.replace(pattern, replacement);
+          }
+
+          update('docs/PROJECT_STATUS.md', (input) => {
+            let text = input;
+            text = required(
+              text,
+              /P5-03B — Idempotent payment and problem report private intake integration/,
+              'P5-03C — Canonical report target snapshot and Claim-context signals',
+              'current item',
+            );
+            text = required(
+              text,
+              /- P5-03B idempotent payment\/problem report private intake integration is in progress\./,
+              '- P5-03B idempotent payment/problem report private intake integration is complete through #195.\n- P5-03C canonical report target snapshot and Claim-context signals are in progress.',
+              'repository state',
+            );
+            text = text.replace(
+              '3. P5-03 — Payment and problem reports — In progress at P5-03B',
+              '3. P5-03 — Payment and problem reports — In progress at P5-03C',
+            );
+            text = text.replace(
+              'P5-03B  Idempotent payment/problem report private intake                   In progress',
+              'P5-03B  Idempotent payment/problem report private intake                   Completed #195\nP5-03C  Canonical report target snapshot and Claim-context signals          In progress',
+            );
+            text = required(
+              text,
+              /## Current active scope — P5-03B report private intake integration[\s\S]*?## Next\n\n[\s\S]*?\n\n## Blocked/,
+              `## Current active scope — P5-03C report target context\n\nP5-03C resolves the existing Entity, Location, or Claim named by a private report and reduces public target identity, canonical path, public reportability, and exact Claim-context matches to a bounded protected-review response. It is read-only and adds no route, form, reviewer decision, Evidence action, priority change, visibility change, canonical mutation, export, or publication.\n\n## Next\n\nComplete P5-03C target identity validation, bounded public snapshot, Claim-context reasons, focused tests, and schema-check integration. Then proceed to P5-03D protected report reviewer queue and detail entry.\n\n## Blocked`,
+              'active scope',
+            );
+            text = text.replace('No P5-03B blocker is known.', 'No P5-03C blocker is known.');
+            return text;
+          });
+
+          update('docs/IMPLEMENTATION_PLAN.md', (input) => {
+            let text = input;
+            text = text.replace(
+              '| P5-03 | Payment and problem reports | In progress at P5-03B | P5-01, P5-02 target conventions |',
+              '| P5-03 | Payment and problem reports | In progress at P5-03C | P5-01, P5-02 target conventions |',
+            );
+            text = text.replace('**Status:** In progress at P5-03B', '**Status:** In progress at P5-03C');
+            text = text.replace(
+              'P5-03B — Idempotent private report intake integration                     In progress',
+              'P5-03B — Idempotent private report intake integration                     Completed #195',
+            );
+            text = text.replace(
+              'P5-03C — Canonical target snapshot and Claim-context signals              Planned',
+              'P5-03C — Canonical target snapshot and Claim-context signals              In progress',
+            );
+            text = required(
+              text,
+              /P5-03A is complete through #194\. P5-03B owns only private report persistence integration,[\s\S]*?export, or publication\./,
+              'P5-03A is complete through #194 and P5-03B is complete through #195. P5-03C owns only read-only target existence, public target snapshot, reportability, and exact Claim-context reasons. It does not add public routes/forms, reviewer decisions, Evidence acceptance, recheck-priority mutation, temporary hiding, canonical mutation, export, or publication.',
+              'current slice',
+            );
+            return text;
+          });
+
+          update('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', (input) => {
+            let text = input;
+            text = required(
+              text,
+              /\*\*Status:\*\* Active — P5-03B in progress/,
+              '**Status:** Active — P5-03C in progress',
+              'phase status',
+            );
+            text = text.replace(
+              'P5-03B  Idempotent payment/problem report private intake                   In progress',
+              'P5-03B  Idempotent payment/problem report private intake                   Completed #195\nP5-03C  Canonical report target snapshot and Claim-context signals          In progress',
+            );
+            text = text.replace('**Status:** In progress at P5-03B', '**Status:** In progress at P5-03C');
+            text = text.replace(
+              'P5-03B — Idempotent private report intake integration                     In progress',
+              'P5-03B — Idempotent private report intake integration                     Completed #195',
+            );
+            text = text.replace(
+              'P5-03C — Canonical target snapshot and Claim-context signals              Planned',
+              'P5-03C — Canonical target snapshot and Claim-context signals              In progress',
+            );
+            return text;
+          });
+
+          update('docs/P5_03B_REPORT_PRIVATE_INTAKE_INTEGRATION.md', (input) => {
+            let text = input.replace('**Status:** Active', '**Status:** Completed through #195');
+            text = required(
+              text,
+              /## Next\n\nProceed to P5-03C/,
+              '## Completion result\n\nP5-03B is complete through #195. Both report families now reuse the P5-01 private intake service with deterministic replay/conflict behavior, contact separation, restricted-evidence separation, abuse-control composition, focused tests, and schema-check coverage.\n\n## Next\n\nProceed to P5-03C',
+              'P5-03B completion',
+            );
+            return text;
+          });
+          NODE
+      - run: npm ci
+      - run: npm run format
+      - name: Commit prepared P5-03C branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/submissions/report-target-context.ts tests/report-target-context.test.ts scripts/check-report-target-context.ts docs/P5_03C_REPORT_TARGET_CONTEXT.md docs/P5_03B_REPORT_PRIVATE_INTAKE_INTEGRATION.md docs/PROJECT_STATUS.md docs/IMPLEMENTATION_PLAN.md docs/PHASE5_IMPLEMENTATION_SEQUENCE.md package.json
+          git commit -m 'Prepare P5-03C branch'
+          git push origin HEAD:p5-03c-report-target-context
