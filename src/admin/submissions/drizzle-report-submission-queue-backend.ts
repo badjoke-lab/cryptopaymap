@@ -31,8 +31,12 @@ export function createDrizzleReportSubmissionQueueBackend(
       const reportKind = sql<string>`${submissionPayloads.normalizedPayload} #>> '{reportKind}'`;
       const targetType = sql<string>`${submissionPayloads.normalizedPayload} #>> '{targetType}'`;
       const targetId = sql<string>`${submissionPayloads.normalizedPayload} #>> '{targetId}'`;
-      const paymentResult = sql<string | null>`${submissionPayloads.normalizedPayload} #>> '{result}'`;
-      const problemType = sql<string | null>`${submissionPayloads.normalizedPayload} #>> '{reportType}'`;
+      const paymentResult = sql<
+        string | null
+      >`${submissionPayloads.normalizedPayload} #>> '{result}'`;
+      const problemType = sql<
+        string | null
+      >`${submissionPayloads.normalizedPayload} #>> '{reportType}'`;
       const evidenceCount = sql<number>`coalesce(jsonb_array_length(${submissionPayloads.normalizedPayload} -> 'evidenceLinks'), 0)`;
 
       const rows = await database
