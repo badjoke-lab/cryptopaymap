@@ -163,7 +163,9 @@ export function createDrizzleReportTargetContextBackend(
               .select({ id: entities.id, name: entities.name })
               .from(entities)
               .where(and(inArray(entities.id, processorIds), isNull(entities.deletedAt)));
-      const processorNames = new Map(processorRows.map((processor) => [processor.id, processor.name]));
+      const processorNames = new Map(
+        processorRows.map((processor) => [processor.id, processor.name]),
+      );
 
       const optionRows =
         claimIds.length === 0
@@ -182,13 +184,17 @@ export function createDrizzleReportTargetContextBackend(
               .innerJoin(paymentMethods, eq(paymentMethods.id, claimAssets.paymentMethodId))
               .where(inArray(claimAssets.claimId, claimIds));
 
-      const optionsByClaim = new Map<string, ReportCanonicalTargetMaterial['claims'][number]['options']>();
+      const optionsByClaim = new Map<
+        string,
+        ReportCanonicalTargetMaterial['claims'][number]['options']
+      >();
       for (const option of optionRows) {
         const current = optionsByClaim.get(option.claimId) ?? [];
         current.push({
           assetSlug: option.assetSlug,
           networkSlug: option.networkSlug,
-          paymentMethod: option.paymentMethod as ReportCanonicalTargetMaterial['claims'][number]['options'][number]['paymentMethod'],
+          paymentMethod:
+            option.paymentMethod as ReportCanonicalTargetMaterial['claims'][number]['options'][number]['paymentMethod'],
           isPrimary: option.isPrimary,
         });
         optionsByClaim.set(option.claimId, current);
