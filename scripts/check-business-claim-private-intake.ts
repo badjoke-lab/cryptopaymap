@@ -64,8 +64,14 @@ if (committed.state !== 'committed' || replayed.state !== 'replayed') {
 if (!stored || persistence.snapshot().length !== 1 || stored.submissionType !== 'claim') {
   throw new Error('Business Claim private intake persistence contract failed.');
 }
-if (JSON.stringify(stored.normalizedPayload).includes('officialContactEmail')) {
-  throw new Error('Business Claim normalized payload exposed an official contact value.');
+const normalized = JSON.stringify(stored.normalizedPayload);
+if (
+  normalized.includes('encrypted-contact') ||
+  normalized.includes('private-authority-proof') ||
+  normalized.includes('"officialContactEmail":') ||
+  normalized.includes('"privateProofUrl":')
+) {
+  throw new Error('Business Claim normalized payload exposed a private value or key.');
 }
 if (stored.workflowStatus !== 'received') {
   throw new Error('Business Claim intake must remain in received review state.');
