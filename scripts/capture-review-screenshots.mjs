@@ -46,14 +46,14 @@ const COMMON_SCENARIOS = [
 COMMON_SCENARIOS.push(
   {
     id: 'report-payment',
-    route: `/report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
-    action: 'prepare-report-form',
+    route: `/payment-report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
+    action: 'prepare-payment-report',
     fullPage: true,
   },
   {
     id: 'report-problem',
     route: `/report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
-    action: 'show-problem-report',
+    action: 'prepare-problem-report',
     fullPage: true,
   },
 );
@@ -165,9 +165,12 @@ async function expandPlaceSheet(page) {
   await page.locator('[data-sheet-state="expanded"]').waitFor({ state: 'visible' });
 }
 
-async function waitForReportForm(page) {
+async function waitForReportForm(page, sectionHeading) {
   await page
     .getByRole('heading', { name: 'What record are you reporting?', exact: true })
+    .waitFor({ state: 'visible' });
+  await page
+    .getByRole('heading', { name: sectionHeading, exact: true })
     .waitFor({ state: 'visible' });
   await page
     .getByText('Verification ready for screenshot review', { exact: true })
@@ -178,18 +181,11 @@ async function runAction(page, action) {
   switch (action) {
     case 'none':
       return;
-    case 'prepare-report-form':
-      await waitForReportForm(page);
+    case 'prepare-payment-report':
+      await waitForReportForm(page, 'Describe the payment result');
       break;
-    case 'show-problem-report':
-      await waitForReportForm(page);
-      await page.getByLabel('Report type', { exact: true }).selectOption('problem_report');
-      await page
-        .getByRole('heading', {
-          name: 'Describe the incorrect or problematic information',
-          exact: true,
-        })
-        .waitFor({ state: 'visible' });
+    case 'prepare-problem-report':
+      await waitForReportForm(page, 'Describe the incorrect or problematic information');
       break;
     case 'open-mobile-menu':
       await page.getByRole('button', { name: 'Menu', exact: true }).click();
