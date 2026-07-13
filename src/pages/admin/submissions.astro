@@ -1,4 +1,5 @@
 ---
+import { ReportSubmissionQueue } from '../../components/admin/ReportSubmissionQueue';
 import { SuggestSubmissionQueue } from '../../components/admin/SuggestSubmissionQueue';
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
@@ -6,22 +7,37 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 <AdminLayout
   title="Submissions | CryptoPayMap Admin"
   heading="Submissions"
-  description="A protected read-only entry point for Suggest review. The queue exposes bounded normalized summaries only; original payloads, contact data, secrets, and internal notes are not returned."
+  description="Protected read-only entry points for Suggest, payment-report, and problem-report review. The queues expose bounded normalized summaries only; original payloads, contact data, secrets, restricted evidence URLs, and internal notes are not returned."
 >
   <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="submission-boundary-title">
     <p class="m-0 text-sm font-semibold text-brand-800">Submission review boundary</p>
     <h2 id="submission-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
-      Review normalized proposals and bounded overlap signals before any decision or mutation
+      Review normalized submissions and bounded context before any decision or mutation
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      This workspace is read-only. Duplicate decisions, Candidate creation, canonical target selection, linking, Evidence acceptance, canonical transactions, exports, and publication remain separate guarded operations.
+      These workspaces are read-only. Evidence acceptance, reconfirmation, recheck priority, visibility decisions, Candidate creation, canonical transactions, exports, and publication remain separate guarded operations.
     </p>
   </section>
 
-  <section class="mt-8" aria-labelledby="submission-queue-title">
+  <section class="mt-8" aria-labelledby="report-submission-queue-title">
     <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
       <div>
-        <p class="m-0 text-sm font-semibold text-brand-700">MVP-B intake</p>
+        <p class="m-0 text-sm font-semibold text-brand-700">P5-03 reports</p>
+        <h2 id="report-submission-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+          Payment and problem report queue
+        </h2>
+      </div>
+      <span class="rounded-pill border border-border bg-surface px-3 py-1 text-xs font-medium text-muted">
+        Protected read-only
+      </span>
+    </div>
+    <ReportSubmissionQueue client:load />
+  </section>
+
+  <section class="mt-12 border-t border-border pt-8" aria-labelledby="submission-queue-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-brand-700">P5-02 suggestions</p>
         <h2 id="submission-queue-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
           Suggest review queue
         </h2>
