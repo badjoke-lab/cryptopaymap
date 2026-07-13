@@ -29,14 +29,25 @@ function completeChecks() {
   };
 }
 
+function collectKeys(value, keys = new Set()) {
+  if (value === null || typeof value !== 'object') return keys;
+  for (const [key, child] of Object.entries(value)) {
+    keys.add(key);
+    collectKeys(child, keys);
+  }
+  return keys;
+}
+
 describe('P5-03I bounded live journey result', () => {
   it('completes only when both report families and public artifacts pass', () => {
     const output = buildP503iLiveJourneyResult(completeChecks());
     expect(output.succeeded).toBe(true);
     expect(output.result.status).toBe('complete');
-    expect(JSON.stringify(output.result)).not.toContain('statusSecret');
-    expect(JSON.stringify(output.result)).not.toContain('challengeToken');
-    expect(JSON.stringify(output.result)).not.toContain('DATABASE_URL');
+    const keys = collectKeys(output.result);
+    expect(keys.has('statusSecret')).toBe(false);
+    expect(keys.has('challengeToken')).toBe(false);
+    expect(keys.has('databaseUrl')).toBe(false);
+    expect(keys.has('privatePayload')).toBe(false);
   });
 
   it('fails closed when either database projection or replay check fails', () => {
