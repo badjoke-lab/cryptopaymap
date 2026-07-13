@@ -37,11 +37,14 @@ function pagesContext(
   } = {},
 ) {
   return {
-    request: new Request(`https://example.test/admin/api/reports/${submissionId}/problem-decision`, {
-      method: 'POST',
-      headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
-      body: overrides.body ?? JSON.stringify({ request: true }),
-    }),
+    request: new Request(
+      `https://example.test/admin/api/reports/${submissionId}/problem-decision`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
+        body: overrides.body ?? JSON.stringify({ request: true }),
+      },
+    ),
     env: {
       CPM_ADMIN_PROBLEM_DECISION_SUBJECTS:
         overrides.problemSubjects ?? JSON.stringify(['problem-reviewer']),
@@ -69,10 +72,7 @@ describe('P5-03G protected problem decision API', () => {
       {
         actorId: identity.actorId,
         actorType: identity.actorType,
-        capabilities: [
-          'submission:problem:decide',
-          'submission:urgent-visibility:decide',
-        ],
+        capabilities: ['submission:problem:decide', 'submission:urgent-visibility:decide'],
       },
       submissionId,
       { request: true },
