@@ -1,0 +1,47 @@
+{
+  "status": "complete",
+  "commit": "bd08118b63feab6349e125db300c6031f2653f84",
+  "generatedAt": "2026-07-13T12:57:11.479Z",
+  "workflowRunId": "29251788100",
+  "checks": {
+    "databaseSchema": "success",
+    "schemaResultParsed": true,
+    "liveJourney": "success",
+    "auditResultParsed": true
+  },
+  "result": {
+    "clientConfigurationHttpStatus": 200,
+    "paymentPageHttpStatus": 200,
+    "problemPageHttpStatus": 200,
+    "status": "complete",
+    "clientConfigurationMatches": true,
+    "publicPages": {
+      "paymentHeadersMatch": true,
+      "problemHeadersMatch": true
+    },
+    "paymentReport": {
+      "firstHttpStatus": 202,
+      "firstReceiptShapeMatches": true,
+      "replayHttpStatus": 202,
+      "replayReceiptShapeMatches": true,
+      "replayReferenceMatches": true,
+      "replayStatusSecretMatches": true,
+      "changedContentHttpStatus": 409,
+      "conflictShapeMatches": true,
+      "databaseProjectionMatches": true
+    },
+    "problemReport": {
+      "firstHttpStatus": 202,
+      "firstReceiptShapeMatches": true,
+      "replayHttpStatus": 202,
+      "replayReceiptShapeMatches": true,
+      "replayReferenceMatches": true,
+      "replayStatusSecretMatches": true,
+      "databaseProjectionMatches": true
+    },
+    "publicArtifactsUnchanged": {
+      "/data/manifest.json": true,
+      "/version.json": true
+    }
+  }
+}
