@@ -150,7 +150,11 @@ describe('P5-03D report Submission reviewer contracts', () => {
   it('loads a bounded report queue for an authorized reviewer', async () => {
     const response = await loadReportSubmissionQueue(
       context,
-      { async loadPage() { return queuePage(); } },
+      {
+        async loadPage() {
+          return queuePage();
+        },
+      },
       reportSubmissionQueueQuerySchema.parse({}),
       now,
     );
@@ -173,7 +177,11 @@ describe('P5-03D report Submission reviewer contracts', () => {
     await expect(
       loadReportSubmissionQueue(
         unauthorized,
-        { async loadPage() { return queuePage(); } },
+        {
+          async loadPage() {
+            return queuePage();
+          },
+        },
         reportSubmissionQueueQuerySchema.parse({}),
         now,
       ),
@@ -183,8 +191,16 @@ describe('P5-03D report Submission reviewer contracts', () => {
   it('loads normalized report detail and composes read-only target context', async () => {
     const response = await loadReportSubmissionReviewDetail(
       context,
-      { async loadDetail() { return detailData(); } },
-      { async loadTarget() { return targetMaterial(); } },
+      {
+        async loadDetail() {
+          return detailData();
+        },
+      },
+      {
+        async loadTarget() {
+          return targetMaterial();
+        },
+      },
       submissionId,
       now,
     );
@@ -215,8 +231,16 @@ describe('P5-03D report Submission reviewer contracts', () => {
     await expect(
       loadReportSubmissionReviewDetail(
         context,
-        { async loadDetail() { return invalid; } },
-        { async loadTarget() { return targetMaterial(); } },
+        {
+          async loadDetail() {
+            return invalid;
+          },
+        },
+        {
+          async loadTarget() {
+            return targetMaterial();
+          },
+        },
         submissionId,
         now,
       ),
