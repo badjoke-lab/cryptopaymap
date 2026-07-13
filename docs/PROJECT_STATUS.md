@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-03D — Protected report reviewer queue and detail entry
+P5-03E — Positive payment Evidence and reconfirmation decision boundary
 
 ## Current repository state
 
@@ -40,7 +40,8 @@ P5-03D — Protected report reviewer queue and detail entry
 - P5-03A payment/problem report contract and review-safe normalization is complete through #194.
 - P5-03B idempotent payment/problem report private intake integration is complete through #195.
 - P5-03C canonical report target snapshot and Claim-context signals are complete through #196.
-- P5-03D protected report reviewer queue and detail entry is in progress.
+- P5-03D protected report reviewer queue and detail entry is complete through #197.
+- P5-03E positive payment Evidence and reconfirmation decision boundary is in progress.
 
 ## Fixed review environment
 
@@ -95,7 +96,8 @@ Before P5-03 implementation or review, read:
 31. `docs/P5_03B_REPORT_PRIVATE_INTAKE_INTEGRATION.md`;
 32. `docs/P5_03C_REPORT_TARGET_CONTEXT.md`;
 33. `docs/P5_03D_REPORT_REVIEWER_ENTRY.md`;
-34. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+34. `docs/P5_03E_POSITIVE_PAYMENT_EVIDENCE.md`;
+35. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -103,7 +105,7 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
-3. P5-03 — Payment and problem reports — In progress at P5-03D
+3. P5-03 — Payment and problem reports — In progress at P5-03E
 4. P5-04 — Business and service claims — Planned
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
@@ -149,9 +151,10 @@ P5-02Q  Configured Suggest review verification                           Complet
     ↓
 P5-02R  Suggest integration and handoff audit                            Completed #185–#192
 P5-03A  Payment/problem report contract and normalization                 Completed #194
-P5-03B  Idempotent payment/problem report private intake                   Completed #195
-P5-03C  Canonical report target snapshot and Claim-context signals         Completed #196
-P5-03D  Protected report reviewer queue and detail entry                   In progress
+P5-03B  Idempotent payment/problem report private intake                  Completed #195
+P5-03C  Canonical report target snapshot and Claim-context signals        Completed #196
+P5-03D  Protected report reviewer queue and detail entry                  Completed #197
+P5-03E  Positive payment Evidence and reconfirmation decision             In progress
 ```
 
 ## P5-02Q completion evidence
@@ -217,19 +220,21 @@ Starting or completing Phase 5 does not waive retained Launch work, including:
 
 Launch readiness must not be claimed until the relevant launch criteria and retained Launch work are complete.
 
-## Current active scope — P5-03D protected report reviewer entry
+## Current active scope — P5-03E positive payment Evidence
 
-P5-03D connects private payment and problem reports to a protected read-only queue and detail workspace. It strictly revalidates normalized reports, requires stored target metadata to match the projection, composes the P5-03C canonical target context, exposes only bounded workflow events, and adds no Evidence acceptance, Claim-state change, recheck-priority mutation, visibility decision, correction application, canonical mutation, export, or publication.
+P5-03E adds a separately authorized, idempotent, atomic decision for a reviewed successful payment report to become accepted private or restricted supporting Evidence. Evidence-only acceptance resolves the Submission without changing the Claim. Reconfirmation is limited to Class A restricted payment proof with an exact current Claim payment match, a separate publication-safe summary, and a future next-review time.
 
-Repository implementation and GitHub validation proceed without Cloudflare or Neon operator actions. Configured Access, deployed Functions, and live database execution remain assigned to P5-03I.
+A single Class B user report can become private or restricted supporting Evidence but cannot reconfirm a Claim. Restricted transaction URLs remain private and are retained only on restricted Evidence linked back to the Submission. Evidence summaries and public Verification summaries are separate.
+
+Repository implementation and GitHub validation proceed without Cloudflare or Neon operator actions. Configured Access, deployed Functions, atomic live Neon execution, and integrated audit remain assigned to P5-03I.
 
 ## Next
 
-Complete P5-03D protected queue/detail contracts, Drizzle read backends, read-only administration UI, focused tests, schema validation, and built-artifact checks. Then proceed to P5-03E positive-payment Evidence and reconfirmation decision boundary.
+Complete P5-03E authorization, request and event contracts, atomic Evidence and optional reconfirmation persistence, idempotent replay, protected API, focused tests, schema validation, and tracking. Then proceed to P5-03F negative Evidence and priority-recheck decision boundary.
 
 ## Blocked
 
-No repository blocker to P5-03D is known. Configured Cloudflare/Neon execution is intentionally deferred to P5-03I; retained Launch work remains unchanged and launch readiness is not claimed.
+No repository blocker to P5-03E is known. Configured Cloudflare/Neon execution is intentionally deferred to P5-03I; retained Launch work remains unchanged and launch readiness is not claimed.
 
 ## Verification rule
 
