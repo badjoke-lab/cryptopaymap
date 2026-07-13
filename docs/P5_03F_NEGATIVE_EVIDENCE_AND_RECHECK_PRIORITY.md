@@ -1,7 +1,7 @@
 # P5-03F Negative Evidence and priority-recheck decision
 
 **Implementation item:** P5-03F  
-**Status:** Active  
+**Status:** Completed through #199  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -111,7 +111,7 @@ An already overdue confirmed Claim remains priority `0` and is not downgraded.
 
 Only non-deleted `confirmed` or `stale` Claims can consume queue pagination through this signal. Ended, rejected, or candidate Claims with retained historical Evidence do not occupy queue rows.
 
-A signal is considered resolved when a later Verification Event exists for the same Claim at or after the negative Evidence creation time. This clears the queue priority without deleting Evidence or rewriting the Submission event.
+A signal is considered resolved when a later `reconfirmed`, `restored`, `marked_stale`, `ended`, or `corrected` Verification Event exists for the same Claim at or after the negative Evidence creation time. Visibility-only events do not clear the signal. Resolution does not delete Evidence or rewrite the Submission event.
 
 ## Atomic writes
 
@@ -153,6 +153,10 @@ Configured Cloudflare Access and live Neon transaction execution remain deferred
 
 Repository validation covers schemas, authorization ordering, idempotent service behavior, atomic transaction construction, recheck-priority evaluation, unit tests, build, accessibility, staging artifacts, and migration drift. It does not prove configured Cloudflare Access or live Neon execution.
 
+## Completion result
+
+P5-03F completed through #199. Reviewed failed-payment and no-longer-accepts material can become accepted private or restricted contradicting Evidence, optionally create a non-mutating protected recheck-priority signal, and replay safely without automatically changing Claim state or publication.
+
 ## Next
 
-After P5-03F merges green, proceed to P5-03G for correction, closure, privacy, rights, duplicate, and urgent visibility decision boundaries.
+Proceed to P5-03G for correction, closure, privacy, rights, duplicate, and urgent visibility decision boundaries.

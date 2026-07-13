@@ -21,6 +21,8 @@ export interface SubmissionReviewAuthorizationEnvironment {
   CPM_ADMIN_SUBMISSION_CANDIDATE_SUBJECTS?: string;
   CPM_ADMIN_PAYMENT_EVIDENCE_SUBJECTS?: string;
   CPM_ADMIN_NEGATIVE_EVIDENCE_SUBJECTS?: string;
+  CPM_ADMIN_PROBLEM_DECISION_SUBJECTS?: string;
+  CPM_ADMIN_URGENT_VISIBILITY_SUBJECTS?: string;
   [key: string]: unknown;
 }
 
@@ -56,6 +58,16 @@ export interface NegativeReportEvidenceDecisionContext {
   actorId: string;
   actorType: 'human' | 'system';
   capabilities: ['submission:negative-evidence:decide'];
+}
+
+export type ProblemReportMutationCapability =
+  | 'submission:problem:decide'
+  | 'submission:urgent-visibility:decide';
+
+export interface ProblemReportMutationContext {
+  actorId: string;
+  actorType: 'human' | 'system';
+  capabilities: ProblemReportMutationCapability[];
 }
 
 export class SubmissionReviewAuthorizationError extends Error {
@@ -143,6 +155,24 @@ export function readNegativeReportEvidenceAuthorizationPolicy(
   );
 }
 
+export function readProblemReportDecisionAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(
+    environment.CPM_ADMIN_PROBLEM_DECISION_SUBJECTS,
+    'Problem report decision',
+  );
+}
+
+export function readUrgentVisibilityAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(
+    environment.CPM_ADMIN_URGENT_VISIBILITY_SUBJECTS,
+    'Urgent visibility decision',
+  );
+}
+
 export function authorizeSubmissionReviewRead(
   identity: AdminAccessIdentity,
   policy: SubmissionReviewAuthorizationPolicy,
@@ -225,5 +255,30 @@ export function authorizeNegativeReportEvidenceDecision(
     actorId: identity.actorId,
     actorType: identity.actorType,
     capabilities: ['submission:negative-evidence:decide'],
+  };
+}
+
+export function authorizeProblemReportMutation(
+  identity: AdminAccessIdentity,
+  problemPolicy: SubmissionReviewAuthorizationPolicy,
+  urgentPolicy: SubmissionReviewAuthorizationPolicy,
+): ProblemReportMutationContext {
+  const capabilities: ProblemReportMutationCapability[] = [];
+  if (problemPolicy.subjects.has(identity.subject)) {
+    capabilities.push('submission:problem:decide');
+  }
+  if (urgentPolicy.subjects.has(identity.subject)) {
+    capabilities.push('submission:urgent-visibility:decide');
+  }
+  if (capabilities.length === 0) {
+    throw new SubmissionReviewAuthorizationError(
+      'denied',
+      'The verified administration identity is not authorized for problem report decisions.',
+    );
+  }
+  return {
+    actorId: identity.actorId,
+    actorType: identity.actorType,
+    capabilities,
   };
 }

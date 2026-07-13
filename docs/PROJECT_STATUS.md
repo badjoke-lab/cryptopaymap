@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-03F — Negative Evidence and priority-recheck decision boundary
+P5-03G — Problem correction and urgent visibility decision boundaries
 
 ## Current repository state
 
@@ -42,7 +42,8 @@ P5-03F — Negative Evidence and priority-recheck decision boundary
 - P5-03C canonical report target snapshot and Claim-context signals are complete through #196.
 - P5-03D protected report reviewer queue and detail entry is complete through #197.
 - P5-03E positive payment Evidence and reconfirmation decision boundary is complete through #198.
-- P5-03F negative Evidence and priority-recheck decision boundary is in progress.
+- P5-03F negative Evidence and priority-recheck decision boundary is complete through #199.
+- P5-03G problem correction and urgent visibility decision boundaries are in progress.
 
 ## Fixed review environment
 
@@ -99,7 +100,8 @@ Before P5-03 implementation or review, read:
 33. `docs/P5_03D_REPORT_REVIEWER_ENTRY.md`;
 34. `docs/P5_03E_POSITIVE_PAYMENT_EVIDENCE.md`;
 35. `docs/P5_03F_NEGATIVE_EVIDENCE_AND_RECHECK_PRIORITY.md`;
-36. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+36. `docs/P5_03G_PROBLEM_CORRECTION_AND_URGENT_VISIBILITY.md`;
+37. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -107,7 +109,7 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
-3. P5-03 — Payment and problem reports — In progress at P5-03F
+3. P5-03 — Payment and problem reports — In progress at P5-03G
 4. P5-04 — Business and service claims — Planned
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
@@ -157,7 +159,8 @@ P5-03B  Idempotent payment/problem report private intake                  Comple
 P5-03C  Canonical report target snapshot and Claim-context signals        Completed #196
 P5-03D  Protected report reviewer queue and detail entry                  Completed #197
 P5-03E  Positive payment Evidence and reconfirmation decision             Completed #198
-P5-03F  Negative Evidence and priority-recheck decision                   In progress
+P5-03F  Negative Evidence and priority-recheck decision                   Completed #199
+P5-03G  Problem correction and urgent visibility decisions               In progress
 ```
 
 ## P5-02Q completion evidence
@@ -223,21 +226,21 @@ Starting or completing Phase 5 does not waive retained Launch work, including:
 
 Launch readiness must not be claimed until the relevant launch criteria and retained Launch work are complete.
 
-## Current active scope — P5-03F negative Evidence and recheck priority
+## Current active scope — P5-03G problem correction and urgent visibility
 
-P5-03F adds a separately authorized, idempotent, atomic decision for reviewed failed-payment and no-longer-accepts reports to become accepted private or restricted contradicting Evidence. Reviewers may also create a durable recheck-priority signal without changing Claim status, visibility, canonical fields, publication, or `nextReviewAt`.
+P5-03G adds separately authorized, idempotent, atomic operations for typed correction handoff, duplicate/no-change resolution, restricted urgent temporary hiding, and accepted-negative-Evidence Claim actions.
 
-The protected reconfirmation queue derives priority from accepted contradicting Evidence plus its durable Submission decision event. A later Verification Event resolves the priority signal without deleting Evidence or rewriting history.
+Correction approval remains a durable handoff and does not apply canonical fields. Closure, privacy, or rights reports may temporarily hide a public Claim only with restricted evidence and urgent permission. Mark-stale and end require accepted contradicting Evidence from P5-03F for the same Submission and Claim.
 
 Repository implementation and GitHub validation proceed without Cloudflare or Neon operator actions. Configured Access, deployed Functions, live Neon execution, and integrated audit remain assigned to P5-03I.
 
 ## Next
 
-Complete P5-03F authorization, request and event contracts, atomic negative Evidence persistence, recheck-priority integration, idempotent replay, protected API, focused tests, schema validation, and tracking. Then proceed to P5-03G correction and urgent visibility decision boundaries.
+Complete P5-03G authorization, strict request/event contracts, projection integrity, atomic persistence, deterministic replay, protected API, focused tests, schema validation, and tracking. Then proceed to P5-03H public payment/problem routes and forms.
 
 ## Blocked
 
-No repository blocker to P5-03F is known. Configured Cloudflare/Neon execution is intentionally deferred to P5-03I; retained Launch work remains unchanged and launch readiness is not claimed.
+No repository blocker to P5-03G is known. Configured Cloudflare/Neon execution is intentionally deferred to P5-03I; retained Launch work remains unchanged and launch readiness is not claimed.
 
 ## Verification rule
 

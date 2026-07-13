@@ -143,7 +143,7 @@ P4-18E closed the Phase 5 handoff gate while preserving unavailable configured-e
 |---|---|---|---|
 | P5-01 | Shared submission foundation | Completed through #150–#155 | P4-18E |
 | P5-02 | Suggest Place and Online Service | Completed through #156–#192 | P5-01 |
-| P5-03 | Payment and problem reports | In progress at P5-03C | P5-01, P5-02 target conventions |
+| P5-03 | Payment and problem reports | In progress at P5-03G | P5-01, P5-02 target conventions |
 | P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |
 | P5-05 | Photo and Media submission intake | Planned | P5-01, P3-10 Media review boundary |
 | P5-06 | Review workflow extensions | Planned | P5-02 through P5-05 |
@@ -403,7 +403,7 @@ P5-02 is complete and hands off to P5-03. Protected Admin execution, production 
 
 ### P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03F
+**Status:** In progress at P5-03G
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.
 
@@ -420,16 +420,16 @@ P5-03D — Protected report reviewer queue and detail entry                 Comp
     ↓
 P5-03E — Positive payment Evidence and reconfirmation decision boundary   Completed #198
     ↓
-P5-03F — Negative Evidence and priority-recheck decision boundary         In progress
+P5-03F — Negative Evidence and priority-recheck decision boundary         Completed #199
     ↓
-P5-03G — Problem correction and urgent visibility decision boundaries     Planned
+P5-03G — Problem correction and urgent visibility decision boundaries     In progress
     ↓
 P5-03H — Public payment/problem report routes and forms                   Planned
     ↓
 P5-03I — Configured review and integration audit                          Planned
 ```
 
-P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, P5-03D through #197, and P5-03E through #198. P5-03F owns the separately authorized, idempotent, atomic negative-Evidence decision and the non-mutating recheck-priority signal derived by the protected reconfirmation queue. It accepts only failed payment reports or `payment_failed` / `no_longer_accepts_crypto` problem reports, creates no public Evidence, and does not change Claim status, visibility, `nextReviewAt`, canonical fields, export, or publication. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.
+P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, P5-03D through #197, P5-03E through #198, and P5-03F through #199. P5-03G owns typed correction handoff, duplicate/no-change resolution, restricted urgent temporary hiding, and explicit mark-stale/end actions backed by accepted contradicting Evidence. It does not apply canonical corrections automatically, merge or delete canonical records, create public Evidence, or publish data. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.
 
 ### P5-04 — Business and service claims
 
