@@ -213,6 +213,41 @@ describe('P5-03F negative report Evidence decision', () => {
     ).rejects.toMatchObject({ code: 'invalid_projection' });
   });
 
+  it('rejects stored/normalized target or payment-detail mismatches', async () => {
+    const wrongTarget = state();
+    wrongTarget.normalizedPayload = {
+      ...(wrongTarget.normalizedPayload as Record<string, unknown>),
+      targetId: claimId,
+    };
+    await expect(
+      decideNegativeReportEvidence(
+        context,
+        backend(wrongTarget).adapter,
+        submissionId,
+        request(),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_projection' });
+
+    const wrongPayment = state();
+    wrongPayment.originalPayload = {
+      ...(wrongPayment.originalPayload as Record<string, unknown>),
+      payment: {
+        ...((wrongPayment.originalPayload as { payment: Record<string, unknown> }).payment),
+        networkSlug: 'lightning',
+      },
+    };
+    await expect(
+      decideNegativeReportEvidence(
+        context,
+        backend(wrongPayment).adapter,
+        submissionId,
+        request(),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_projection' });
+  });
+
   it('requires restricted source proof for Class A', async () => {
     await expect(
       decideNegativeReportEvidence(
