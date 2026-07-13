@@ -59,7 +59,8 @@ The decision requires:
 - persisted `payment_report` or `problem_report`;
 - exact `in_review` Submission state and timestamps;
 - strict original and normalized report schemas;
-- matching negative result/type, observation date, explanation where applicable, and restricted-evidence presence;
+- exact stored and normalized target identity;
+- matching negative result/type, payment details, observation date, notes or explanation, correction and duplicate fields where applicable, and restricted-evidence presence;
 - an existing non-deleted `confirmed` or `stale` Claim;
 - exact report-target ownership by Claim, Entity, or Location;
 - exact Claim status, visibility, and updated timestamp;
@@ -107,6 +108,8 @@ priority = 5
 ```
 
 An already overdue confirmed Claim remains priority `0` and is not downgraded.
+
+Only non-deleted `confirmed` or `stale` Claims can consume queue pagination through this signal. Ended, rejected, or candidate Claims with retained historical Evidence do not occupy queue rows.
 
 A signal is considered resolved when a later Verification Event exists for the same Claim at or after the negative Evidence creation time. This clears the queue priority without deleting Evidence or rewriting the Submission event.
 
