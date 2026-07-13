@@ -15,6 +15,7 @@ import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type {
   ProblemReportDecisionBackend,
   ProblemReportDecisionCommand,
+  ProblemReportDecisionState,
 } from './problem-report-decision';
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
@@ -107,16 +108,7 @@ export function createDrizzleProblemReportDecisionBackend(
       const submission = submissionRows[0];
       if (submission === undefined) return null;
 
-      let claim: Awaited<ReturnType<ProblemReportDecisionBackend['readState']>> extends infer _Never
-        ? never
-        : {
-            id: string;
-            entityId: string;
-            locationId: string | null;
-            claimStatus: 'candidate' | 'confirmed' | 'stale' | 'ended' | 'rejected';
-            visibility: 'public' | 'hidden' | 'temporarily_hidden';
-            updatedAt: string;
-          } | null = null;
+      let claim: ProblemReportDecisionState['claim'] = null;
       if (claimId !== null) {
         const claimRows = await database
           .select({
@@ -136,14 +128,7 @@ export function createDrizzleProblemReportDecisionBackend(
         }
       }
 
-      let evidenceState: {
-        id: string;
-        claimId: string | null;
-        submissionId: string | null;
-        reviewStatus: string;
-        polarity: string;
-        deletedAt: string | null;
-      } | null = null;
+      let evidenceState: ProblemReportDecisionState['evidence'] = null;
       if (evidenceId !== null) {
         const evidenceRows = await database
           .select({
