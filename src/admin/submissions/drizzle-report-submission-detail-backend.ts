@@ -1,9 +1,10 @@
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import { submissionEvents, submissionPayloads, submissions } from '../../db/schema';
-import type {
-  ReportSubmissionReviewDetailBackend,
-  ReportSubmissionReviewDetailData,
+import {
+  ReportSubmissionReviewDetailError,
+  type ReportSubmissionReviewDetailBackend,
+  type ReportSubmissionReviewDetailData,
 } from './report-detail';
 
 const eventLimit = 100;
@@ -28,7 +29,7 @@ export function createDrizzleReportSubmissionDetailBackend(
           normalizedPayload: submissionPayloads.normalizedPayload,
         })
         .from(submissions)
-        .innerJoin(submissionPayloads, eq(submissionPayloads.submissionId, submissions.id))
+        .leftJoin(submissionPayloads, eq(submissionPayloads.submissionId, submissions.id))
         .where(
           and(
             eq(submissions.id, submissionId),
@@ -37,13 +38,16 @@ export function createDrizzleReportSubmissionDetailBackend(
         )
         .limit(1);
       const row = rows[0];
+      if (row === undefined) return null;
       if (
-        row === undefined ||
         row.normalizedPayload === null ||
         row.targetType === null ||
         row.targetId === null
       ) {
-        return null;
+        throw new ReportSubmissionReviewDetailError(
+          'invalid_detail',
+          'The stored report Submission detail is incomplete.',
+        );
       }
 
       const eventRows = await database
