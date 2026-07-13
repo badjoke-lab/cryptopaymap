@@ -239,13 +239,7 @@ describe('P5-03F negative report Evidence decision', () => {
       decidedAt,
     );
     await expect(
-      decideNegativeReportEvidence(
-        context,
-        harness.adapter,
-        submissionId,
-        request(),
-        decidedAt,
-      ),
+      decideNegativeReportEvidence(context, harness.adapter, submissionId, request(), decidedAt),
     ).resolves.toMatchObject({ state: 'replayed', evidenceId: first.evidenceId });
 
     await expect(

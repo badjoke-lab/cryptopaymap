@@ -1,7 +1,7 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-03E in progress  
+**Status:** Active — P5-03F in progress  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -79,7 +79,8 @@ P5-03A  Payment/problem report contract and normalization                 Comple
 P5-03B  Idempotent payment/problem report private intake                   Completed #195
 P5-03C  Canonical report target snapshot and Claim-context signals          Completed #196
 P5-03D  Protected report reviewer queue and detail entry                   Completed #197
-P5-03E  Positive payment Evidence and reconfirmation decision              In progress
+P5-03E  Positive payment Evidence and reconfirmation decision              Completed #198
+P5-03F  Negative Evidence and priority-recheck decision                   In progress
 P5-03   Payment and problem reports                                     In progress
 ```
 
@@ -243,7 +244,7 @@ P5-02 completed when P5-02R recorded repository and fixed-review audit evidence 
 
 ## P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03E
+**Status:** In progress at P5-03F
 
 ### Goal
 
@@ -260,9 +261,9 @@ P5-03C — Canonical target snapshot and Claim-context signals              Comp
     ↓
 P5-03D — Protected report reviewer queue and detail entry                 Completed #197
     ↓
-P5-03E — Positive payment Evidence and reconfirmation decision boundary   In progress
+P5-03E — Positive payment Evidence and reconfirmation decision boundary   Completed #198
     ↓
-P5-03F — Negative Evidence and priority-recheck decision boundary         Planned
+P5-03F — Negative Evidence and priority-recheck decision boundary         In progress
     ↓
 P5-03G — Problem correction and urgent visibility decision boundaries     Planned
     ↓

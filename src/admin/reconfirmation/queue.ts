@@ -92,19 +92,9 @@ export function evaluateReconfirmationClaim(
     }
   }
 
-  if (
-    signalAt !== null &&
-    (claim.claimStatus === 'confirmed' || claim.claimStatus === 'stale')
-  ) {
+  if (signalAt !== null && (claim.claimStatus === 'confirmed' || claim.claimStatus === 'stale')) {
     const dueAt = new Date(signalAt);
-    return item(
-      claim,
-      'negative_evidence',
-      'review',
-      dueAt,
-      dayDelta(dueAt, asOf),
-      5,
-    );
+    return item(claim, 'negative_evidence', 'review', dueAt, dayDelta(dueAt, asOf), 5);
   }
 
   if (claim.claimStatus === 'stale') {

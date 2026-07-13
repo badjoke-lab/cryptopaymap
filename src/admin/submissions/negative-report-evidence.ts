@@ -390,7 +390,10 @@ export async function decideNegativeReportEvidence(
     );
   }
   if (state === null || state.claim === null) {
-    throw new NegativeReportEvidenceError('not_found', 'The negative report or Claim was not found.');
+    throw new NegativeReportEvidenceError(
+      'not_found',
+      'The negative report or Claim was not found.',
+    );
   }
   if (
     state.workflowStatus !== request.expectedStatus ||
@@ -438,8 +441,7 @@ export async function decideNegativeReportEvidence(
       actorId: context.actorId,
       actorType: context.actorType,
       decision: request.decision,
-      evidenceKind:
-        request.evidenceClass === 'a' ? 'payment_proof' : 'independent_user_report',
+      evidenceKind: request.evidenceClass === 'a' ? 'payment_proof' : 'independent_user_report',
       evidenceClass: request.evidenceClass,
       evidenceVisibility: request.evidenceVisibility,
       sourceType: request.evidenceClass === 'a' ? 'payment_proof' : 'user_submission',

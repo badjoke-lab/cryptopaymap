@@ -12,9 +12,7 @@ export const negativeReportEvidenceDecisionValues = [
   'accept_negative_evidence',
   'accept_and_prioritize_recheck',
 ] as const;
-export const negativeReportEvidenceDecisionSchema = z.enum(
-  negativeReportEvidenceDecisionValues,
-);
+export const negativeReportEvidenceDecisionSchema = z.enum(negativeReportEvidenceDecisionValues);
 
 export const negativeReportEvidenceEventSchema = z
   .object({

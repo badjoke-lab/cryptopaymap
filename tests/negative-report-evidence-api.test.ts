@@ -27,19 +27,24 @@ function receipt(): NegativeReportEvidenceReceipt {
   };
 }
 
-function pagesContext(overrides: {
-  identity?: unknown;
-  subjects?: string;
-  submissionId?: string | string[];
-  contentType?: string;
-  body?: string;
-} = {}) {
+function pagesContext(
+  overrides: {
+    identity?: unknown;
+    subjects?: string;
+    submissionId?: string | string[];
+    contentType?: string;
+    body?: string;
+  } = {},
+) {
   return {
-    request: new Request(`https://example.test/admin/api/reports/${submissionId}/negative-evidence`, {
-      method: 'POST',
-      headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
-      body: overrides.body ?? JSON.stringify({ request: true }),
-    }),
+    request: new Request(
+      `https://example.test/admin/api/reports/${submissionId}/negative-evidence`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
+        body: overrides.body ?? JSON.stringify({ request: true }),
+      },
+    ),
     env: {
       CPM_ADMIN_NEGATIVE_EVIDENCE_SUBJECTS:
         overrides.subjects ?? JSON.stringify(['negative-reviewer']),

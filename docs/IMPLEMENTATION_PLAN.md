@@ -403,7 +403,7 @@ P5-02 is complete and hands off to P5-03. Protected Admin execution, production 
 
 ### P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03E
+**Status:** In progress at P5-03F
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.
 
@@ -418,9 +418,9 @@ P5-03C — Canonical target snapshot and Claim-context signals              Comp
     ↓
 P5-03D — Protected report reviewer queue and detail entry                 Completed #197
     ↓
-P5-03E — Positive payment Evidence and reconfirmation decision boundary   In progress
+P5-03E — Positive payment Evidence and reconfirmation decision boundary   Completed #198
     ↓
-P5-03F — Negative Evidence and priority-recheck decision boundary         Planned
+P5-03F — Negative Evidence and priority-recheck decision boundary         In progress
     ↓
 P5-03G — Problem correction and urgent visibility decision boundaries     Planned
     ↓
@@ -429,7 +429,7 @@ P5-03H — Public payment/problem report routes and forms                   Plan
 P5-03I — Configured review and integration audit                          Planned
 ```
 
-P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, and P5-03D through #197. P5-03E owns the separately authorized, idempotent, atomic positive-payment Evidence decision. Evidence-only acceptance leaves the Claim unchanged. Reconfirmation requires Class A restricted payment proof, exact current Claim payment context, a separate publication-safe summary, and a future next-review time. A single Class B report cannot reconfirm a Claim. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.
+P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, P5-03D through #197, and P5-03E through #198. P5-03F owns the separately authorized, idempotent, atomic negative-Evidence decision and the non-mutating recheck-priority signal derived by the protected reconfirmation queue. It accepts only failed payment reports or `payment_failed` / `no_longer_accepts_crypto` problem reports, creates no public Evidence, and does not change Claim status, visibility, `nextReviewAt`, canonical fields, export, or publication. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.
 
 ### P5-04 — Business and service claims
 
