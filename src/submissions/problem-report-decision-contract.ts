@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { problemReportCorrectionSchema, problemReportDuplicateTargetSchema } from './report-contract';
+import {
+  problemReportCorrectionSchema,
+  problemReportDuplicateTargetSchema,
+} from './report-contract';
 
 const safeTextSchema = (maximum: number) =>
   z
