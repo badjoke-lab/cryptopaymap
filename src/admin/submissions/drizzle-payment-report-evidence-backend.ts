@@ -276,8 +276,7 @@ export function createDrizzlePositivePaymentEvidenceBackend(
 
       if (command.decision === 'accept_and_reconfirm' && command.verificationEventId !== null) {
         if (command.publicSummary === null || command.nextReviewAt === null) {
-          throw new SubmissionPersistenceError(
-            'invalid_input',
+          throw new Error(
             'Reconfirmation persistence requires a public summary and next-review time.',
           );
         }
