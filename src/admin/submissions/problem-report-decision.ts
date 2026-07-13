@@ -41,11 +41,7 @@ const sharedRequestShape = {
 const ordinaryDecisionSchema = z
   .object({
     ...sharedRequestShape,
-    operation: z.enum([
-      'approve_correction_handoff',
-      'resolve_duplicate',
-      'resolve_no_change',
-    ]),
+    operation: z.enum(['approve_correction_handoff', 'resolve_duplicate', 'resolve_no_change']),
     expectedSubmissionStatus: z.literal('in_review'),
     expectedSubmissionResolution: z.null(),
     claimId: z.null(),
@@ -250,7 +246,10 @@ export interface ProblemReportDecisionBackend {
     claimId: string | null,
     evidenceId: string | null,
   ): Promise<ProblemReportDecisionState | null>;
-  readDuplicateTargetExists(targetType: 'entity' | 'location' | 'claim', targetId: string): Promise<boolean>;
+  readDuplicateTargetExists(
+    targetType: 'entity' | 'location' | 'claim',
+    targetId: string,
+  ): Promise<boolean>;
   commitDecision(command: ProblemReportDecisionCommand): Promise<void>;
 }
 
@@ -331,7 +330,8 @@ function parseReportMaterial(state: ProblemReportDecisionState): ReportMaterial 
       projection.data.explanation !== original.data.explanation ||
       JSON.stringify(projection.data.proposedCorrection) !==
         JSON.stringify(original.data.proposedCorrection) ||
-      JSON.stringify(projection.data.duplicateTarget) !== JSON.stringify(original.data.duplicateTarget) ||
+      JSON.stringify(projection.data.duplicateTarget) !==
+        JSON.stringify(original.data.duplicateTarget) ||
       projection.data.restrictedEvidence.privateEvidenceUrlPresent !==
         (original.data.privateEvidenceUrl !== null)
     ) {
@@ -505,19 +505,36 @@ export async function decideProblemReport(
   const submissionIdResult = z.uuid().safeParse(submissionId);
   const requestResult = problemReportDecisionRequestSchema.safeParse(rawRequest);
   if (!submissionIdResult.success || !requestResult.success || Number.isNaN(decidedAt.getTime())) {
-    throw new ProblemReportDecisionError('invalid_request', 'The problem report decision is invalid.');
+    throw new ProblemReportDecisionError(
+      'invalid_request',
+      'The problem report decision is invalid.',
+    );
   }
   const request = requestResult.data;
   assertCapability(context, request.operation);
+  if (
+    request.operation === 'apply_negative_claim_action' &&
+    request.claimAction === 'mark_stale' &&
+    (request.nextReviewAt === null || Date.parse(request.nextReviewAt) <= decidedAt.getTime())
+  ) {
+    throw new ProblemReportDecisionError(
+      'invalid_request',
+      'Mark-stale requires a next-review time after the decision time.',
+    );
+  }
   const requestFingerprint = await sha256(request);
 
   let existing: ProblemReportDecisionEventRecord | null;
   try {
     existing = await backend.readDecisionEvent(request.requestId);
   } catch (error) {
-    throw new ProblemReportDecisionError('backend_failure', 'Problem decision replay check failed.', {
-      cause: error,
-    });
+    throw new ProblemReportDecisionError(
+      'backend_failure',
+      'Problem decision replay check failed.',
+      {
+        cause: error,
+      },
+    );
   }
   if (existing !== null) {
     return replayReceipt(
@@ -533,9 +550,13 @@ export async function decideProblemReport(
   try {
     state = await backend.readState(submissionIdResult.data, request.claimId, request.evidenceId);
   } catch (error) {
-    throw new ProblemReportDecisionError('backend_failure', 'Problem report state could not be loaded.', {
-      cause: error,
-    });
+    throw new ProblemReportDecisionError(
+      'backend_failure',
+      'Problem report state could not be loaded.',
+      {
+        cause: error,
+      },
+    );
   }
   if (state === null) {
     throw new ProblemReportDecisionError('not_found', 'The problem report was not found.');
@@ -569,11 +590,11 @@ export async function decideProblemReport(
   }
 
   const material = parseReportMaterial(state);
-  if (request.operation !== 'apply_negative_claim_action' && state.submissionType !== 'problem_report') {
-    throw new ProblemReportDecisionError(
-      'ineligible',
-      'This operation requires a problem report.',
-    );
+  if (
+    request.operation !== 'apply_negative_claim_action' &&
+    state.submissionType !== 'problem_report'
+  ) {
+    throw new ProblemReportDecisionError('ineligible', 'This operation requires a problem report.');
   }
   if (request.operation === 'approve_correction_handoff' && material.proposedCorrection === null) {
     throw new ProblemReportDecisionError(
@@ -617,7 +638,11 @@ export async function decideProblemReport(
     }
   }
   if (request.operation === 'apply_negative_claim_action') {
-    if (!['failed_payment', 'no_longer_accepts_crypto', 'payment_failed'].includes(material.reportType)) {
+    if (
+      !['failed_payment', 'no_longer_accepts_crypto', 'payment_failed'].includes(
+        material.reportType,
+      )
+    ) {
       throw new ProblemReportDecisionError(
         'ineligible',
         'Only reviewed negative payment Evidence can drive this Claim action.',
