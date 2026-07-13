@@ -1,0 +1,165 @@
+name: Prepare P5-03E payment integrity hardening
+
+on:
+  push:
+    branches:
+      - p5-03e-positive-payment-evidence
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-03e-positive-payment-evidence
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Harden original/normalized and Claim payment matching
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              file = Path(path)
+              text = file.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing expected text in {path}: {old[:120]!r}')
+              file.write_text(text.replace(old, new))
+
+          marker = """function exactPaymentMatch(
+  state: PositivePaymentEvidenceState,
+  projection: z.infer<typeof paymentReportReviewProjectionSchema>,
+): boolean {"""
+          helper = """function originalPaymentMatchesProjection(
+  original: z.infer<typeof paymentReportOriginalPayloadSchema>,
+  projection: z.infer<typeof paymentReportReviewProjectionSchema>,
+): boolean {
+  const originalProcessor = original.payment.processor;
+  const projectedProcessor = projection.payment.processor;
+  return (
+    original.result === projection.result &&
+    original.paymentDate === projection.paymentDate &&
+    original.payment.assetSlug === projection.payment.assetSlug &&
+    original.payment.networkSlug === projection.payment.networkSlug &&
+    original.payment.routeType === projection.payment.routeType &&
+    original.payment.paymentMethod === projection.payment.paymentMethod &&
+    original.payment.context === projection.payment.context &&
+    original.payment.observedSteps === projection.payment.observedSteps &&
+    original.notes === projection.notes &&
+    (original.privateTransactionUrl !== null) ===
+      projection.restrictedEvidence.privateTransactionUrlPresent &&
+    (originalProcessor === null
+      ? projectedProcessor === null
+      : projectedProcessor !== null &&
+        originalProcessor.name === projectedProcessor.name &&
+        originalProcessor.officialUrl === projectedProcessor.officialUrl)
+  );
+}
+
+""" + marker
+          replace('src/admin/submissions/payment-report-evidence.ts', marker, helper)
+
+          replace(
+              'src/admin/submissions/payment-report-evidence.ts',
+              """    !originalResult.success ||
+    originalResult.data.result !== 'successful' ||
+    originalResult.data.paymentDate !== projection.paymentDate
+  ) {""",
+              """    !originalResult.success ||
+    originalResult.data.result !== 'successful' ||
+    !originalPaymentMatchesProjection(originalResult.data, projection)
+  ) {""",
+          )
+          replace(
+              'src/admin/submissions/payment-report-evidence.ts',
+              """  const original = originalResult.data;
+  const paymentMatch = exactPaymentMatch(state, projection);
+  if (request.evidenceClass === 'a') {""",
+              """  const original = originalResult.data;
+  const paymentMatch = exactPaymentMatch(state, projection);
+  if (!paymentMatch) {
+    throw new PositivePaymentEvidenceError(
+      'ineligible',
+      'Supporting payment Evidence requires an exact current Claim payment match.',
+    );
+  }
+  if (request.evidenceClass === 'a') {""",
+          )
+
+          marker = """  it('replays an identical request and rejects changed-content UUID reuse', async () => {"""
+          test = """  it('rejects Class B Evidence when the reported payment does not exactly match the Claim', async () => {
+    const mismatched = state();
+    const option = mismatched.claim?.options[0];
+    if (option === undefined) throw new Error('Expected one Claim payment option.');
+    option.networkSlug = 'lightning';
+
+    await expect(
+      decidePositivePaymentEvidence(
+        context,
+        backend(mismatched).adapter,
+        submissionId,
+        request(),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'ineligible' });
+  });
+
+  it('rejects mismatched original and normalized payment details', async () => {
+    const mismatched = state();
+    mismatched.originalPayload = {
+      ...(mismatched.originalPayload as Record<string, unknown>),
+      payment: {
+        ...((mismatched.originalPayload as { payment: Record<string, unknown> }).payment),
+        networkSlug: 'lightning',
+      },
+    };
+
+    await expect(
+      decidePositivePaymentEvidence(
+        context,
+        backend(mismatched).adapter,
+        submissionId,
+        request(),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'invalid_projection' });
+  });
+
+""" + marker
+          replace('tests/positive-payment-evidence.test.ts', marker, test)
+
+          replace(
+              'docs/P5_03E_POSITIVE_PAYMENT_EVIDENCE.md',
+              """The decision requires:
+
+- a persisted `payment_report`;""",
+              """The decision requires:
+
+- a persisted `payment_report`;
+- exact consistency between original private payment fields and the normalized review projection;
+- an exact current Claim match for route, Asset, Network, payment method, and processor context;""",
+          )
+          replace(
+              'docs/P5_03E_POSITIVE_PAYMENT_EVIDENCE.md',
+              """- Evidence-only acceptance. A single Class B report cannot reconfirm a Claim.""",
+              """- Evidence-only acceptance. A single Class B report cannot reconfirm a Claim;
+- the same exact current Claim payment match required for all accepted positive Evidence.""",
+          )
+          PY
+      - run: npm run format
+      - run: git rm .github/workflows/p5-03e-integrity-fix.yml
+      - name: Commit hardening
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'P5-03E: harden payment Evidence integrity'
+          git push origin HEAD:p5-03e-positive-payment-evidence
