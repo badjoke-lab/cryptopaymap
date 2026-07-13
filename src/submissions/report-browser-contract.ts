@@ -205,7 +205,11 @@ function problemCorrection(values: ReportBrowserFormValues): unknown {
       amenities: null,
       socialLinks: null,
     };
-    return Object.values(correction).slice(1).every((value) => value === null) ? null : correction;
+    return Object.values(correction)
+      .slice(1)
+      .every((value) => value === null)
+      ? null
+      : correction;
   }
   if (values.problemType === 'other') {
     const description = optionalTrimmed(values.correctionValue);
