@@ -1,55 +1,43 @@
 {
-  "status": "failed",
-  "commit": "390319ab90a53a9ae3727f1cb5e0a5b839e27c08",
-  "generatedAt": "2026-07-12T15:47:04.153Z",
-  "workflowRunId": "29198846719",
+  "status": "complete",
+  "commit": "699cff048fa80113d3b05bcdf4f385c229a4d41d",
+  "generatedAt": "2026-07-13T01:39:06.939Z",
+  "workflowRunId": "29217830016",
   "checks": {
-    "databaseSchema": "failure",
+    "databaseSchema": "success",
     "schemaResultParsed": true,
-    "liveJourney": "skipped",
-    "auditResultParsed": false
+    "liveJourney": "success",
+    "auditResultParsed": true
   },
   "result": {
-    "status": "failed",
-    "failedStage": "database_schema",
-    "schema": {
-      "status": "schema_drift",
-      "tables": {
-        "submission_public_reference_counters": false,
-        "submissions": true,
-        "submission_payloads": false,
-        "submission_contacts": false,
-        "submission_events": false
-      },
-      "submissionColumns": {
-        "id": true,
-        "intake_request_id": false,
-        "request_fingerprint": false,
-        "public_id": false,
-        "submission_type": false,
-        "target_type": false,
-        "target_id": false,
-        "relationship": false,
-        "workflow_status": false,
-        "resolution": false,
-        "priority": false,
-        "status_token_hash": false,
-        "submitted_at": false,
-        "updated_at": true,
-        "resolved_at": false,
-        "withdrawn_at": false
-      },
-      "enums": {
-        "submission_event_actor_type": false,
-        "submission_relationship": false,
-        "submission_target_type": false,
-        "submission_type": false
-      },
-      "migrationLedger": {
-        "tableExists": false,
-        "migrationCount": null,
-        "submissionFoundationMigrationRecorded": false
-      }
+    "dummyTokenValidation": {
+      "requestFormat": "json",
+      "idempotencyIncluded": true,
+      "httpStatus": 200,
+      "success": true,
+      "hostname": "example.com",
+      "action": null,
+      "hostnameMatches": false,
+      "actionMatches": false
+    },
+    "status": "complete",
+    "firstPost": {
+      "httpStatus": 202,
+      "receiptShapeMatches": true
+    },
+    "exactReplay": {
+      "httpStatus": 202,
+      "receiptShapeMatches": true,
+      "publicReferenceMatches": true,
+      "statusSecretMatches": true
+    },
+    "changedContent": {
+      "httpStatus": 409,
+      "conflictShapeMatches": true
+    },
+    "publicArtifactsUnchanged": {
+      "/data/manifest.json": true,
+      "/version.json": true
     }
   }
 }
