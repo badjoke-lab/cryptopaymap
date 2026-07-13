@@ -8,48 +8,41 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-03I — Configured review and integration audit
+P5-04A — Business claim contract and review-safe normalization
 
 ## Current repository state
 
 - Phase 0 through Phase 4 are complete for the Phase 5 handoff.
 - P5-01 shared Submission foundation is complete through #150–#155.
 - P5-02 Suggest Place and Online Service is complete through #156–#192.
-- P5-03A payment/problem report contract and normalization is complete through #194.
-- P5-03B private report intake is complete through #195.
-- P5-03C target context is complete through #196.
-- P5-03D protected reviewer entry is complete through #197.
-- P5-03E positive payment Evidence decision is complete through #198.
-- P5-03F negative Evidence and recheck priority decision is complete through #199.
-- P5-03G correction and urgent visibility decisions are complete through #200.
-- P5-03H separate `/payment-report` and `/report` public routes and forms are complete through #201.
-- P5-03I configured review and integration audit is in progress.
+- P5-03 Payment and problem reports is complete through #194–#202.
+- P5-03I fixed-review deployment and live-audit receipts are complete for main commit `bd08118b63feab6349e125db300c6031f2653f84`.
+- P5-04A business Claim contract and review-safe normalization are in progress.
 
-## Fixed review environment
+## P5-03 configured completion evidence
 
-Review URL:
+The fixed-review receipt proves:
 
-`https://review.cryptopaymap-staging.pages.dev`
+- `/payment-report`, `/report`, and report client configuration returned HTTP 200 with required security boundaries;
+- synthetic payment and problem reports returned HTTP 202 with strict private receipt shapes;
+- exact payment and problem replay returned the same public references and status secrets;
+- changed payment content under the same request UUID returned HTTP 409;
+- configured Neon contained matching payment/problem normalized projections;
+- `/data/manifest.json` and `/version.json` remained unchanged;
+- retained evidence contains only bounded statuses and booleans.
 
-The last complete configured Suggest deployment/live-audit receipt belongs to main commit:
+## P5-04A active scope
 
-`699cff048fa80113d3b05bcdf4f385c229a4d41d`
+P5-04A defines:
 
-Later repository merges must not be assumed deployed or configured correctly until a new fixed-review receipt identifies the intended main commit and records successful checks.
-
-## P5-03I required evidence
-
-P5-03I must prove against the fixed review environment:
-
-1. the intended main commit is deployed;
-2. `/payment-report` and `/report` expose the expected runtime configuration and security headers;
-3. one synthetic payment report and one synthetic problem report are accepted;
-4. exact replay returns the same private receipt;
-5. changed content under the same request UUID returns the bounded conflict;
-6. protected reviewer reads can resolve both report families;
-7. stable public artifacts remain unchanged;
-8. retained receipts contain no challenge token, returned status secret, private payload, contact data, raw edge identity, database URL, or derived key;
-9. no automatic Evidence, Claim, canonical, export, or publication mutation occurs.
+- existing Entity or Location targets only;
+- owner, authorized representative, and authorized employee roles;
+- representative, Entity-profile, Location-profile, and payment-information scopes;
+- official-domain email, website-code, DNS TXT, official-social, and assisted-verification request methods;
+- protected contact and ownership-proof inputs;
+- bounded practical-profile and payment proposals;
+- review-safe normalization without contact email or proof URL values;
+- no automatic relationship approval, editing right, canonical mutation, export, or publication.
 
 ## Current references
 
@@ -58,40 +51,28 @@ P5-03I must prove against the fixed review environment:
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/DATA_MODEL.md`
 - `docs/SECURITY_AND_PRIVACY.md`
-- `docs/P5_03A_REPORT_CONTRACT_AND_NORMALIZATION.md`
-- `docs/P5_03B_REPORT_PRIVATE_INTAKE_INTEGRATION.md`
-- `docs/P5_03C_REPORT_TARGET_CONTEXT.md`
-- `docs/P5_03D_REPORT_REVIEWER_ENTRY.md`
-- `docs/P5_03E_POSITIVE_PAYMENT_EVIDENCE.md`
-- `docs/P5_03F_NEGATIVE_EVIDENCE_AND_RECHECK_PRIORITY.md`
-- `docs/P5_03G_PROBLEM_CORRECTION_AND_URGENT_VISIBILITY.md`
-- `docs/P5_03H_PUBLIC_REPORT_ROUTES_AND_FORMS.md`
 - `docs/P5_03I_CONFIGURED_REVIEW_AND_INTEGRATION_AUDIT.md`
-- `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`
+- `docs/P5_04A_BUSINESS_CLAIM_CONTRACT_AND_NORMALIZATION.md`
 
 ## Phase 5 sequence
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
-3. P5-03 — Payment and problem reports — In progress at P5-03I
-4. P5-04 — Business and service claims — Planned
+3. P5-03 — Payment and problem reports — Completed through #194–#202
+4. P5-04 — Business and service claims — In progress at P5-04A
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
-## Retained Launch work
-
-P5-03I does not waive retained Launch work, including production Access verification, production Turnstile behavior, configured live 429 timing, full protected Admin journeys, production migration/restore checks, R2 publication conditional writes, reconciliation, and restore drills.
-
 ## Next
 
-Implement the fixed-review deployment and bounded P5-03I live-audit chain. Do not hand off to P5-04 until the configured receipt records complete evidence for both public report families.
+Complete P5-04A strict parsing, method-specific verification-request guards, scope/target consistency, review-safe projection, focused tests, schema validation, and documentation. Then proceed to P5-04B private intake integration.
 
 ## Blocked
 
-No repository blocker is known. Configured Cloudflare/Neon execution may fail closed if the fixed review environment or required credentials are unavailable; such a failure must remain recorded as incomplete rather than converted into a pass.
+No repository blocker is known. Verification adapters, protected relationship decisions, public Claim routing, configured review, and production checks remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Repository checks alone do not prove live configuration or launch readiness.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Claim Submission is never equivalent to a verified representative relationship.
