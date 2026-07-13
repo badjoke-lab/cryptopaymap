@@ -30,15 +30,24 @@ function problemState(
   const correction =
     reportType === 'wrong_address'
       ? {
-          correctionType: 'location_profile' as const,
-          field: 'address_line' as const,
-          value: '2 Corrected Street',
+          kind: 'location_profile' as const,
+          addressLine: '2 Corrected Street',
+          locality: null,
+          region: null,
+          postalCode: null,
+          countryCode: null,
+          latitude: null,
+          longitude: null,
+          websiteUrl: null,
+          phone: null,
+          description: null,
+          openingHours: null,
+          amenities: null,
+          socialLinks: null,
         }
       : null;
   const duplicateTarget =
-    reportType === 'duplicate'
-      ? { targetType: 'entity' as const, targetId: duplicateId }
-      : null;
+    reportType === 'duplicate' ? { targetType: 'entity' as const, targetId: duplicateId } : null;
   return {
     submissionId,
     submissionType: 'problem_report',
@@ -54,10 +63,11 @@ function problemState(
       explanation: 'The current public information appears incorrect.',
       proposedCorrection: correction,
       duplicateTarget,
-      privateEvidenceUrl:
-        ['business_closed', 'privacy_issue', 'unauthorized_image'].includes(reportType)
-          ? 'https://evidence.example/private-case'
-          : null,
+      privateEvidenceUrl: ['business_closed', 'privacy_issue', 'unauthorized_image'].includes(
+        reportType,
+      )
+        ? 'https://evidence.example/private-case'
+        : null,
     },
     normalizedPayload: {
       reportKind: 'problem_report',
@@ -194,9 +204,7 @@ function urgentHideRequest(): ProblemReportDecisionRequest {
   };
 }
 
-function negativeActionRequest(
-  action: 'mark_stale' | 'end',
-): ProblemReportDecisionRequest {
+function negativeActionRequest(action: 'mark_stale' | 'end'): ProblemReportDecisionRequest {
   return {
     schemaVersion: 'problem-report-decision-v1',
     requestId,
