@@ -8,10 +8,7 @@ import {
   submissions,
 } from '../../db/schema';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
-import type {
-  NegativeReportEvidenceBackend,
-  NegativeReportEvidenceCommitCommand,
-} from './negative-report-evidence';
+import type { NegativeReportEvidenceBackend } from './negative-report-evidence';
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 const negativeSubmissionTypes = ['payment_report', 'problem_report'] as const;
