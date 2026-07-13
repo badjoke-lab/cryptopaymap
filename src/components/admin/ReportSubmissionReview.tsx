@@ -82,7 +82,10 @@ function ReviewDetail({ detail }: { detail: ReportSubmissionReviewDetailResponse
         <dl className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="Submission type" value={detail.submission.submissionType} />
           <Field label="Priority" value={detail.submission.priority} />
-          <Field label="Submitted" value={new Date(detail.submission.submittedAt).toLocaleString()} />
+          <Field
+            label="Submitted"
+            value={new Date(detail.submission.submittedAt).toLocaleString()}
+          />
           <Field label="Updated" value={new Date(detail.submission.updatedAt).toLocaleString()} />
         </dl>
       </section>
@@ -108,12 +111,15 @@ function ReviewDetail({ detail }: { detail: ReportSubmissionReviewDetailResponse
           <Field label="Entity status" value={target.entity.entityStatus} />
           <Field
             label="Location"
-            value={target.location ? target.location.name ?? target.location.slug : 'Not applicable'}
+            value={
+              target.location ? (target.location.name ?? target.location.slug) : 'Not applicable'
+            }
           />
         </dl>
         <div className="mt-5 rounded-control border border-border bg-canvas p-4 text-sm">
           <p className="m-0 font-semibold text-ink">
-            Publicly reachable: {detail.targetContext.reportability.publiclyReachable ? 'yes' : 'no'}
+            Publicly reachable:{' '}
+            {detail.targetContext.reportability.publiclyReachable ? 'yes' : 'no'}
           </p>
           <p className="mt-2 text-muted">
             {detail.targetContext.reportability.reasons.length > 0
@@ -137,10 +143,15 @@ function ReviewDetail({ detail }: { detail: ReportSubmissionReviewDetailResponse
             <Field label="Processor" value={projection.payment.processor?.name ?? 'Not supplied'} />
             <Field
               label="Restricted transaction URL"
-              value={projection.restrictedEvidence.privateTransactionUrlPresent ? 'Present' : 'Absent'}
+              value={
+                projection.restrictedEvidence.privateTransactionUrlPresent ? 'Present' : 'Absent'
+              }
             />
             <div className="sm:col-span-2 lg:col-span-3">
-              <Field label="Observed steps" value={projection.payment.observedSteps ?? 'Not supplied'} />
+              <Field
+                label="Observed steps"
+                value={projection.payment.observedSteps ?? 'Not supplied'}
+              />
             </div>
             <div className="sm:col-span-2 lg:col-span-3">
               <Field label="Notes" value={projection.notes ?? 'Not supplied'} />
@@ -184,7 +195,9 @@ function ReviewDetail({ detail }: { detail: ReportSubmissionReviewDetailResponse
       </section>
 
       <section className="rounded-card border border-border bg-surface p-6 shadow-sm">
-        <h2 className="m-0 text-xl font-semibold tracking-tight text-ink">Submitted evidence links</h2>
+        <h2 className="m-0 text-xl font-semibold tracking-tight text-ink">
+          Submitted evidence links
+        </h2>
         {projection.evidenceLinks.length === 0 ? (
           <p className="mt-3 text-sm text-muted">No public evidence links were submitted.</p>
         ) : (
@@ -211,7 +224,10 @@ function ReviewDetail({ detail }: { detail: ReportSubmissionReviewDetailResponse
         ) : (
           <div className="mt-4 grid gap-3">
             {detail.targetContext.claimSignals.map((signal) => (
-              <article key={signal.claimId} className="rounded-control border border-border bg-canvas p-4">
+              <article
+                key={signal.claimId}
+                className="rounded-control border border-border bg-canvas p-4"
+              >
                 <p className="m-0 break-all text-sm font-semibold text-ink">{signal.claimId}</p>
                 <p className="mt-2 text-sm text-muted">
                   {signal.claimStatus} · {signal.visibility}
@@ -229,10 +245,20 @@ function ReviewDetail({ detail }: { detail: ReportSubmissionReviewDetailResponse
           <p className="mt-3 text-sm text-muted">No bounded workflow events were returned.</p>
         ) : (
           <ol className="mt-4 grid gap-3 pl-5 text-sm">
-            {detail.events.map((event, index) => (
-              <li key={`${event.createdAt}:${index}`}>
-                <span className="font-medium text-ink">{event.action}</span> · {event.fromStatus ?? 'none'} →{' '}
-                {event.toStatus} · {event.actorType} · {new Date(event.createdAt).toLocaleString()}
+            {detail.events.map((event) => (
+              <li
+                key={[
+                  event.createdAt,
+                  event.action,
+                  event.fromStatus ?? 'none',
+                  event.toStatus,
+                  event.actorType,
+                  event.reasonCode ?? 'none',
+                ].join(':')}
+              >
+                <span className="font-medium text-ink">{event.action}</span> ·{' '}
+                {event.fromStatus ?? 'none'} → {event.toStatus} · {event.actorType} ·{' '}
+                {new Date(event.createdAt).toLocaleString()}
                 {event.reasonCode ? ` · ${event.reasonCode}` : ''}
               </li>
             ))}
@@ -260,14 +286,11 @@ export function ReportSubmissionReview({ submissionId }: { submissionId: string 
     }
     setState({ status: 'loading' });
     try {
-      const response = await fetch(
-        `/admin/api/reports/${encodeURIComponent(submissionId)}`,
-        {
-          cache: 'no-store',
-          credentials: 'same-origin',
-          headers: { Accept: 'application/json' },
-        },
-      );
+      const response = await fetch(`/admin/api/reports/${encodeURIComponent(submissionId)}`, {
+        cache: 'no-store',
+        credentials: 'same-origin',
+        headers: { Accept: 'application/json' },
+      });
       if (response.status === 403) {
         setState({ status: 'denied' });
         return;
