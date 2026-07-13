@@ -62,7 +62,9 @@ function QueueCard({ item }: { item: ReportSubmissionQueueItem }) {
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
             {item.publicId}
           </p>
-          <h3 className="mt-1 text-xl font-semibold tracking-tight text-ink">{reportLabel(item)}</h3>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-ink">
+            {reportLabel(item)}
+          </h3>
           <p className="mt-2 text-sm text-muted">
             {item.targetType} target · {item.targetId}
           </p>
