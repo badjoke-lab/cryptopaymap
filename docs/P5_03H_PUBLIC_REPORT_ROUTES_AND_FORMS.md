@@ -6,13 +6,16 @@
 
 ## Purpose
 
-P5-03H exposes target-aware payment and problem report intake through the existing private Submission foundation.
-
-The public boundary is:
+P5-03H exposes target-aware payment and problem report intake through the existing private Submission foundation while preserving the fixed public URL split:
 
 ```text
+/payment-report
+→ payment_report browser payload
+
 /report
-→ strict browser payload builder
+→ problem_report browser payload
+
+both
 → Turnstile
 → POST /api/reports
 → trusted Cloudflare edge identity
@@ -25,21 +28,38 @@ No public report changes Evidence, Claim, canonical, export, or publication stat
 
 ## Public routes
 
-### `GET /report`
+### `GET /payment-report`
 
-The form supports:
+The payment-result form supports:
 
-- payment success or failure;
+- successful or failed payment outcomes;
 - target type `entity`, `location`, or `claim`;
 - optional target prefill through `targetType` and `targetId` query parameters;
+- payment date;
 - asset, network, route, method, processor, context, and observed steps;
-- public Evidence links;
+- optional public Evidence links;
 - protected transaction or receipt URL;
-- no-longer-accepts, closure, payment failure, wrong asset/network/instructions/address, duplicate, rights, privacy, and other problem categories;
-- typed correction proposals allowed by the existing report contract;
 - private contact and follow-up permission;
 - privacy and submission acknowledgements;
 - private receipt display.
+
+The page is locked to `payment_report`; it does not expose a browser control that can switch the Submission family.
+
+### `GET /report`
+
+The problem-report form supports:
+
+- no-longer-accepts, closure, payment failure, wrong asset/network/instructions/address, duplicate, rights, privacy, and other problem categories;
+- target type `entity`, `location`, or `claim`;
+- optional target prefill through `targetType` and `targetId` query parameters;
+- typed correction proposals allowed by the existing report contract;
+- optional public Evidence links;
+- protected problem Evidence URL;
+- private contact and follow-up permission;
+- privacy and submission acknowledgements;
+- private receipt display.
+
+The page is locked to `problem_report`; it does not expose a browser control that can switch the Submission family.
 
 ### `GET /api/reports/config`
 
@@ -96,7 +116,7 @@ Public Evidence links and restricted evidence are separate fields.
 
 ## Turnstile and response headers
 
-`/report` receives the same bounded Turnstile Content Security Policy as `/suggest` in both static `_headers` and Pages response middleware:
+`/payment-report` and `/report` receive the same bounded Turnstile Content Security Policy as `/suggest` in both static `_headers` and Pages response middleware:
 
 ```text
 script-src challenges.cloudflare.com
@@ -106,7 +126,7 @@ form-action self
 frame-ancestors none
 ```
 
-The page is `no-store` with `no-referrer`.
+Both pages are `no-store` with `no-referrer`.
 
 ## Idempotency
 
@@ -118,6 +138,10 @@ same UUID + changed request content → conflict
 ```
 
 The browser generates a new UUID after HTTP `409`.
+
+## Repository screenshot boundary
+
+Representative screenshot capture injects only a synthetic client-safe configuration response and a non-networking Turnstile visual stub. It does not submit, persist, or mutate data. Desktop and mobile captures cover both `/payment-report` and `/report`.
 
 ## Boundaries
 
@@ -135,7 +159,7 @@ Configured Cloudflare, deployed Function, live Neon, real Turnstile, first accep
 
 ## Repository verification boundary
 
-Repository validation covers strict schemas, HTTP ordering, body limits, error mapping, private receipt shape, browser builders, build output, CSP, secret-marker absence, tests, accessibility, staging artifacts, and migration drift.
+Repository validation covers strict schemas, HTTP ordering, body limits, error mapping, private receipt shape, browser builders, separate route build output, CSP, secret-marker absence, tests, accessibility, staging artifacts, migration drift, and direct desktop/mobile screenshot inspection.
 
 ## Next
 
