@@ -138,6 +138,16 @@ export function createDrizzleProblemReportDecisionBackend(
             reviewStatus: evidence.reviewStatus,
             polarity: evidence.polarity,
             deletedAt: evidence.deletedAt,
+            negativeEvidenceDecisionRecorded: sql<boolean>`exists (
+              select 1
+              from ${submissionEvents}
+              where ${submissionEvents.submissionId} = ${submissionId}
+                and ${submissionEvents.action} = 'negative_report_evidence_decided'
+                and ${submissionEvents.reasonCode} in (
+                  'negative_evidence_accepted',
+                  'negative_evidence_recheck_priority'
+                )
+            )`,
           })
           .from(evidence)
           .where(eq(evidence.id, evidenceId))
@@ -221,13 +231,24 @@ export function createDrizzleProblemReportDecisionBackend(
         statements.push(
           database.execute(sql`
             select 1 / case when exists (
-              select 1 from ${acceptanceClaims}
+              select 1
+              from ${acceptanceClaims}
+              inner join ${submissions}
+                on ${submissions.id} = ${command.submissionId}
               where ${acceptanceClaims.id} = ${command.claimId}
                 and ${acceptanceClaims.claimStatus} = ${command.expectedClaimStatus}
                 and ${acceptanceClaims.visibility} = ${command.expectedClaimVisibility}
                 and ${acceptanceClaims.updatedAt} = ${command.expectedClaimUpdatedAt}
                 and ${acceptanceClaims.deletedAt} is null
-              for update
+                and (
+                  (${submissions.targetType} = 'claim'
+                    and ${submissions.targetId} = ${acceptanceClaims.id})
+                  or (${submissions.targetType} = 'entity'
+                    and ${submissions.targetId} = ${acceptanceClaims.entityId})
+                  or (${submissions.targetType} = 'location'
+                    and ${submissions.targetId} = ${acceptanceClaims.locationId})
+                )
+              for update of ${acceptanceClaims}
             ) then 1 else 0 end as problem_claim_guard
           `),
         );
@@ -244,6 +265,16 @@ export function createDrizzleProblemReportDecisionBackend(
                 and ${evidence.reviewStatus} = 'accepted'
                 and ${evidence.polarity} = 'contradicting'
                 and ${evidence.deletedAt} is null
+                and exists (
+                  select 1
+                  from ${submissionEvents}
+                  where ${submissionEvents.submissionId} = ${command.submissionId}
+                    and ${submissionEvents.action} = 'negative_report_evidence_decided'
+                    and ${submissionEvents.reasonCode} in (
+                      'negative_evidence_accepted',
+                      'negative_evidence_recheck_priority'
+                    )
+                )
               for share
             ) then 1 else 0 end as problem_evidence_guard
           `),
