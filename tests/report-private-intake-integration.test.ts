@@ -250,9 +250,10 @@ describe('P5-03B report private intake integration', () => {
     await intake.submit(problemRequestId, validProblemReport(), receivedAt);
 
     expect(persistence.snapshot()).toHaveLength(2);
-    expect(
-      persistence.snapshot().map((row) => row.normalizedPayload?.reportKind),
-    ).toEqual(['payment_report', 'problem_report']);
+    expect(persistence.snapshot().map((row) => row.normalizedPayload?.reportKind)).toEqual([
+      'payment_report',
+      'problem_report',
+    ]);
   });
 
   it('runs abuse controls before report parsing and private persistence', async () => {
