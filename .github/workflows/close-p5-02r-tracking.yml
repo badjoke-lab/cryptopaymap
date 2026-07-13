@@ -1,0 +1,150 @@
+name: Close P5-02R tracking
+
+on:
+  push:
+    branches:
+      - tracking/close-p5-02r-handoff
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: ${{ !contains(github.event.head_commit.message, 'Close P5-02R tracking') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out tracking branch
+        uses: actions/checkout@v4
+        with:
+          ref: tracking/close-p5-02r-handoff
+
+      - name: Update P5-02R completion tracking
+        run: |
+          node <<'NODE'
+          const { readFileSync, writeFileSync } = require('node:fs');
+
+          function update(path, transform) {
+            const before = readFileSync(path, 'utf8');
+            const after = transform(before);
+            if (after === before) throw new Error(`No changes produced for ${path}`);
+            writeFileSync(path, after);
+          }
+
+          function replaceRequired(text, pattern, replacement, label) {
+            if (!pattern.test(text)) throw new Error(`Missing expected block: ${label}`);
+            pattern.lastIndex = 0;
+            return text.replace(pattern, replacement);
+          }
+
+          update('docs/PROJECT_STATUS.md', (input) => {
+            let text = input;
+            text = replaceRequired(text, /\*\*Last verified:\*\* \d{4}-\d{2}-\d{2}/, '**Last verified:** 2026-07-13', 'project status date');
+            text = replaceRequired(
+              text,
+              /## Current implementation item\n\n[\s\S]*?\n\n## Current repository state/,
+              '## Current implementation item\n\nP5-03 — Payment and problem reports (bounded sequence definition next)\n\n## Current repository state',
+              'current implementation item',
+            );
+            text = replaceRequired(
+              text,
+              /- P5-02R Suggest integration and handoff audit is in progress\./,
+              '- P5-02R Suggest integration and handoff audit is complete through #185–#192.\n- P5-02 Suggest Place and Online Service is complete and handed off to P5-03.',
+              'P5-02R repository state',
+            );
+            text = text.replace('2. P5-02 — Suggest Place and Online Service — In progress', '2. P5-02 — Suggest Place and Online Service — Completed through #156–#192');
+            text = text.replace('3. P5-03 — Payment and problem reports — Planned', '3. P5-03 — Payment and problem reports — Ready to begin');
+            text = text.replace('P5-02R  Suggest integration and handoff audit                            In progress', 'P5-02R  Suggest integration and handoff audit                            Completed #185–#192');
+            text = replaceRequired(
+              text,
+              /## Current active scope — P5-02R integration and handoff audit[\s\S]*?## P5-02R handoff gate/,
+              `## P5-02R completion evidence\n\nThe fixed-review deployment receipt records \`status: deployed\` for main commit \`699cff048fa80113d3b05bcdf4f385c229a4d41d\`, with credentials, configured inputs, Durable Object Worker, Pages secrets, Pages deployment, and configured verification all successful.\n\nThe bounded live-audit receipt records \`status: complete\` for the same commit and proves:\n\n- fixed-review Submission schema and migration ledger verification succeeded;\n- first public Suggest POST returned HTTP 202 with the expected receipt shape;\n- exact replay returned HTTP 202 with the same public reference and status secret;\n- changed content under the same idempotency UUID returned HTTP 409 with the expected conflict shape;\n- \`/data/manifest.json\` and \`/version.json\` were unchanged;\n- no challenge token, returned status secret, private payload, contact data, raw edge identity, database value, or derived key entered the retained receipt.\n\nThe Cloudflare dummy-token metadata discrepancy is explicitly reclassified only inside the fixed-review official-test-key boundary. Production/default hostname and action verification remain strict.\n\n## P5-02R handoff gate`,
+              'P5-02R active scope',
+            );
+            text = text.replace(
+              '8. the P5-02R audit records an explicit handoff decision.\n\n## Retained Launch work',
+              '8. the P5-02R audit records an explicit handoff decision.\n\nAll eight conditions are satisfied by the deployment and live-audit receipts for commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`. P5-02 hands off to P5-03.\n\n## Retained Launch work',
+            );
+            text = replaceRequired(
+              text,
+              /## Next[\s\S]*?## Verification rule/,
+              `## Next\n\nDefine and begin the first bounded P5-03 slice for target-aware payment and problem reports. P5-03 must reuse the P5-01 private Submission foundation and the P5-02 target conventions without adding direct canonical or public mutation.\n\n## Blocked\n\nNo P5-02R blocker remains. P5-03 may begin. Retained Launch work remains unchanged and launch readiness is not claimed.\n\n## Verification rule`,
+              'project status next/blocked',
+            );
+            return text;
+          });
+
+          update('docs/IMPLEMENTATION_PLAN.md', (input) => {
+            let text = input;
+            text = replaceRequired(text, /\*\*Last updated:\*\* \d{4}-\d{2}-\d{2}/, '**Last updated:** 2026-07-13', 'implementation plan date');
+            text = text.replace('| P5-02 | Suggest Place and Online Service | In progress | P5-01 |', '| P5-02 | Suggest Place and Online Service | Completed through #156–#192 | P5-01 |');
+            text = text.replace('| P5-03 | Payment and problem reports | Planned | P5-01, P5-02 target conventions |', '| P5-03 | Payment and problem reports | Ready to begin | P5-01, P5-02 target conventions |');
+            text = text.replace('**Status:** In progress at P5-02R integration and handoff audit', '**Status:** Completed through #156–#192');
+            text = text.replace('Completed and active slices:', 'Completed slices:');
+            text = text.replace('P5-02R — Suggest integration and handoff audit                            In progress', 'P5-02R — Suggest integration and handoff audit                            Completed #185–#192');
+            text = replaceRequired(
+              text,
+              /P5-02R now audits:[\s\S]*?P5-03 remains blocked until this documentation contradiction is resolved or explicitly reclassified\nwithout weakening hostname\/action verification and the live replay\/conflict journey passes\./,
+              `P5-02R completed the integrated Suggest audit. The fixed-review deployment receipt records \`status: deployed\` for main commit \`699cff048fa80113d3b05bcdf4f385c229a4d41d\`. The bounded live-audit receipt for the same commit records \`status: complete\` and proves HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, stable public artifacts, and bounded privacy-safe evidence.\n\nThe fixed-review official-test-key path explicitly accommodates Cloudflare's observed dummy-token metadata only for the exact published test pair and exact dummy token. Production/default hostname and action verification remain strict.\n\nP5-02 is complete and hands off to P5-03. Protected Admin execution, production Turnstile behavior, configured live 429 timing, configured accepted-as-Candidate execution, production log inspection, and production migration/restore work remain assigned to their later Phase 5 or Launch gates.`,
+              'implementation plan P5-02R audit block',
+            );
+            text = text.replace('### P5-03 — Payment and problem reports\n\nAdd target-aware', '### P5-03 — Payment and problem reports\n\n**Status:** Ready to begin\n\nAdd target-aware');
+            return text;
+          });
+
+          update('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', (input) => {
+            let text = input;
+            text = replaceRequired(text, /\*\*Status:\*\* Active — P5-02 Suggest audit in progress/, '**Status:** Active — P5-03 ready to begin', 'Phase 5 status');
+            text = replaceRequired(text, /\*\*Last updated:\*\* \d{4}-\d{2}-\d{2}/, '**Last updated:** 2026-07-13', 'Phase 5 date');
+            text = text.replace('P5-02R  Suggest integration and handoff audit                           In progress', 'P5-02R  Suggest integration and handoff audit                           Completed #185–#192\nP5-02   Suggest Place and Online Service                                Completed\nP5-03   Payment and problem reports                                     Ready to begin');
+            text = replaceRequired(
+              text,
+              /The corrected fixed-review P5-02R probe directly validated[\s\S]*?and a successful live journey rerun\./,
+              `The fixed-review P5-02R deployment and live-audit receipts now record success for main commit \`699cff048fa80113d3b05bcdf4f385c229a4d41d\`. The live journey proved HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, stable \`/data/manifest.json\` and \`/version.json\`, and bounded privacy-safe evidence. The fixed-review official-test-key metadata discrepancy is explicitly reclassified without weakening production/default hostname or action verification. P5-02 is complete and P5-03 may begin.`,
+              'Phase 5 audit finding',
+            );
+            text = text.replace('The bounded P5-02 integration and handoff audit is now active.', 'The P5-02 integration and handoff audit is complete. P5-03 is ready to begin.');
+            text = text.replace('P5-02R — Suggest integration and handoff audit                        In progress', 'P5-02R — Suggest integration and handoff audit                        Completed #185–#192');
+            text = text.replace(
+              'P5-02 completes only when P5-02R records repository and fixed-review audit evidence and an explicit P5-03 handoff decision.',
+              'P5-02 completed when P5-02R recorded repository and fixed-review audit evidence and the explicit P5-03 handoff decision for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`.',
+            );
+            text = text.replace('### P5-03 — Payment and problem reports\n\n### Goal', '### P5-03 — Payment and problem reports\n\n**Status:** Ready to begin\n\n### Goal');
+            return text;
+          });
+
+          update('docs/P5_02R_SUGGEST_INTEGRATION_AND_HANDOFF_AUDIT.md', (input) => {
+            let text = input;
+            text = text.replace('**Status:** Active', '**Status:** Completed');
+            text = replaceRequired(text, /\*\*Last updated:\*\* \d{4}-\d{2}-\d{2}/, '**Last updated:** 2026-07-13', 'P5-02R date');
+            text = text.replace('513dc7f543ac27fe512319a3cc24cc16c3de4302', '699cff048fa80113d3b05bcdf4f385c229a4d41d');
+            text = replaceRequired(
+              text,
+              /## 2026-07-12 fixed-review audit finding[\s\S]*?## Completion result/,
+              `## 2026-07-13 completion evidence\n\nThe authoritative \`staging-review\` deployment receipt records \`status: deployed\` for main commit:\n\n\`699cff048fa80113d3b05bcdf4f385c229a4d41d\`\n\nAll configured checks succeeded for credentials, inputs, the rate-limit Durable Object Worker, Pages secrets, Pages deployment, runtime configuration, authenticated readiness, and Suggest CSP.\n\nThe guarded fresh fixed-review database initialization applied the complete repository migration history and verified the P5-02 Submission tables, required columns, enums, and Drizzle migration ledger. The unmanaged legacy database was not modified.\n\nThe bounded live-audit receipt records \`status: complete\` for the same main commit and workflow run \`29217830016\`. It proves:\n\n\`\`\`text\nfirst POST\n→ HTTP 202\n→ receipt shape valid\n\nexact replay\n→ HTTP 202\n→ receipt shape valid\n→ public reference identical\n→ status secret identical\n\nchanged content under the same UUID\n→ HTTP 409\n→ conflict shape valid\n\npublic artifacts\n→ /data/manifest.json unchanged\n→ /version.json unchanged\n\`\`\`\n\nThe retained receipt contains only bounded status codes, approved metadata, and comparison booleans. It does not contain the challenge token, test secret, returned status secret, public reference, request body, contact data, raw edge identity, database values, or derived keys.\n\nCloudflare Siteverify continues to return \`hostname: example.com\` and no action for the exact published dummy token. P5-02R explicitly reclassifies that discrepancy only inside the fixed-review official-test-key boundary, gated by the exact published test sitekey, exact published test secret, and exact dummy token. Production/default verification still requires configured hostname and action matches and remains fail closed.\n\nRepository checks remained green for the complete Suggest path, including strict schema reuse, private persistence, replay/conflict behavior, bounded HTTP mapping, protected review projection, guarded transitions, and accepted-as-Candidate transaction isolation.\n\n### Handoff decision\n\nP5-02 is complete and hands off to P5-03. This decision does not claim Launch readiness. Production Turnstile verification, production-domain hostname checks, protected Admin execution, configured accepted-as-Candidate execution, configured live 429 timing, production log inspection, production migration-state verification, and restore/reconciliation drills remain retained work.\n\n## Completion result`,
+              'P5-02R completion evidence',
+            );
+            text = replaceRequired(
+              text,
+              /## Completion result[\s\S]*$/,
+              `## Completion result\n\nP5-02R is complete. Repository and fixed-review evidence demonstrate that Suggest intake is a real private-review path with deterministic public-route replay/conflict behavior, preserved privacy boundaries, and no automatic public or canonical mutation.\n\nCompletion of P5-02R closes P5-02 for the P5-03 handoff. It does not close Phase 5 and does not claim Launch readiness.\n`,
+              'P5-02R completion result',
+            );
+            return text;
+          });
+
+          update('docs/P5_02R_FIXED_REVIEW_DATABASE_RECOVERY.md', (input) => {
+            let text = input;
+            text = text.replace('**Status:** Active blocker recovery', '**Status:** Completed');
+            text = replaceRequired(text, /\*\*Last updated:\*\* \d{4}-\d{2}-\d{2}/, '**Last updated:** 2026-07-13', 'database recovery date');
+            text += `\n## Completion outcome\n\nA new empty fixed-review database was created and selected through the repository \`DATABASE_URL\` secret. The guarded initializer accepted the empty database, applied the full migration history, verified the P5-02 Submission schema and migration ledger, redeployed the fixed-review environment, and completed the bounded live audit.\n\nThe legacy unmanaged database was not modified. The completion receipt for main commit \`699cff048fa80113d3b05bcdf4f385c229a4d41d\` records HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, and unchanged public artifacts.\n`;
+            return text;
+          });
+          NODE
+
+      - name: Commit tracking closure
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/PROJECT_STATUS.md docs/IMPLEMENTATION_PLAN.md docs/PHASE5_IMPLEMENTATION_SEQUENCE.md docs/P5_02R_SUGGEST_INTEGRATION_AND_HANDOFF_AUDIT.md docs/P5_02R_FIXED_REVIEW_DATABASE_RECOVERY.md
+          git commit -m 'Close P5-02R tracking and hand off to P5-03'
+          git push origin HEAD:tracking/close-p5-02r-handoff
