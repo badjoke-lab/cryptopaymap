@@ -23,7 +23,8 @@ for (const fragment of requiredSuggestFragments) {
 const requiredContributeFragments = [
   'Help improve verified payment information',
   'Open Suggest form',
-  'Payment and problem reports',
+  'Open Payment report',
+  'Open Problem report',
   'Claims and photos',
 ];
 
