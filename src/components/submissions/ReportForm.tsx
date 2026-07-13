@@ -12,8 +12,8 @@ import {
   EvidenceAndContactFields,
   PaymentReportFields,
   ProblemReportFields,
-  ReportTargetFields,
 } from './ReportFormFields';
+import { ReportTargetFields } from './ReportTargetFields';
 
 const turnstileScriptId = 'cpm-turnstile-api';
 const turnstileScriptUrl = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
@@ -286,7 +286,7 @@ export function ReportForm({
   const fieldProps = { values, assets, networks, update };
   return (
     <form className="grid gap-8" onSubmit={submit} noValidate>
-      <ReportTargetFields {...fieldProps} />
+      <ReportTargetFields values={values} update={update} />
       {submissionType === 'payment_report' ? (
         <PaymentReportFields {...fieldProps} />
       ) : (
@@ -336,7 +336,9 @@ export function ReportForm({
           className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitState === 'submitting' || challengeState === 'error'}
         >
-          {submitState === 'submitting' ? `Submitting ${formLabel.toLowerCase()}…` : `Submit ${formLabel.toLowerCase()} for review`}
+          {submitState === 'submitting'
+            ? `Submitting ${formLabel.toLowerCase()}…`
+            : `Submit ${formLabel.toLowerCase()} for review`}
         </button>
         <p className="m-0 text-sm leading-6 text-muted">
           A report never changes public data automatically. Review, Evidence decisions, Claim
