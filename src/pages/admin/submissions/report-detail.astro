@@ -1,0 +1,26 @@
+---
+import { ReportSubmissionReview } from '../../../components/admin/ReportSubmissionReview';
+import AdminLayout from '../../../layouts/AdminLayout.astro';
+
+const submissionId = Astro.url.searchParams.get('id');
+---
+
+<AdminLayout
+  title="Report review | CryptoPayMap Admin"
+  heading="Payment and problem report"
+  description="A protected read-only report workspace. Normalized report fields, bounded canonical target context, exact Claim-context signals, and workflow summaries are displayed without decision or mutation controls."
+>
+  <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="report-review-boundary-title">
+    <p class="m-0 text-sm font-semibold text-brand-800">P5-03D read-only boundary</p>
+    <h2 id="report-review-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
+      Review report context before any Evidence, recheck, visibility, or canonical decision
+    </h2>
+    <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
+      This page does not accept Evidence, reconfirm Claims, create rechecks, hide records, apply corrections, change canonical data, export, or publish. Those actions remain separate guarded operations.
+    </p>
+  </section>
+
+  <section class="mt-8" aria-label="Protected report detail">
+    <ReportSubmissionReview submissionId={submissionId} client:load />
+  </section>
+</AdminLayout>
