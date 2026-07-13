@@ -46,7 +46,7 @@ function applyPathSpecificHeaders(requestUrl: URL, headers: Headers): void {
     headers.set('X-Robots-Tag', reviewRobotsPolicy);
   }
 
-  if (isExactPath(pathname, '/suggest')) {
+  if (isExactPath(pathname, '/suggest') || isExactPath(pathname, '/report')) {
     headers.set('Content-Security-Policy', suggestContentSecurityPolicy);
     headers.set('Cache-Control', 'no-store');
     headers.set('Referrer-Policy', 'no-referrer');
