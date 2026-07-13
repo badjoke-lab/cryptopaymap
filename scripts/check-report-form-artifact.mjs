@@ -1,23 +1,48 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
-const reportPage = readFileSync(join('dist', 'report/index.html'), 'utf8');
+const paymentReportPage = readFileSync(join('dist', 'payment-report/index.html'), 'utf8');
+const problemReportPage = readFileSync(join('dist', 'report/index.html'), 'utf8');
 const contributePage = readFileSync(join('dist', 'contribute/index.html'), 'utf8');
 const headers = readFileSync(join('dist', '_headers'), 'utf8');
 const runtimeHeaderPolicy = readFileSync('src/http/pages-response-headers.ts', 'utf8');
 
-for (const fragment of [
-  'Report a payment result or problem',
-  'A report never changes public data automatically',
-  'Preparing the secure report form',
-  'Loading the review and verification configuration for this environment.',
+for (const [label, page, fragments] of [
+  [
+    'Payment report',
+    paymentReportPage,
+    [
+      'Report a payment result',
+      'The report remains private until reviewed.',
+      'Preparing the secure report form',
+      'Loading the review and verification configuration for this environment.',
+    ],
+  ],
+  [
+    'Problem report',
+    problemReportPage,
+    [
+      'Report a problem',
+      'A report never changes public data automatically.',
+      'Preparing the secure report form',
+      'Loading the review and verification configuration for this environment.',
+    ],
+  ],
 ]) {
-  if (!reportPage.includes(fragment)) {
-    throw new Error(`Missing Report form staging marker: ${fragment}`);
+  for (const fragment of fragments) {
+    if (!page.includes(fragment)) {
+      throw new Error(`Missing ${label} staging marker: ${fragment}`);
+    }
   }
 }
 
-for (const fragment of ['Payment and problem reports', 'Open Report form', 'Available now']) {
+for (const fragment of [
+  'I paid here',
+  'Open Payment report',
+  'Report a problem',
+  'Open Problem report',
+  'Available now',
+]) {
   if (!contributePage.includes(fragment)) {
     throw new Error(`Missing Report contribution marker: ${fragment}`);
   }
@@ -36,8 +61,13 @@ for (const fragment of [
   'statusTokenHash',
   'requestFingerprint',
 ]) {
-  if (reportPage.includes(fragment)) {
-    throw new Error(`Private or server-only Report marker found in HTML: ${fragment}`);
+  for (const [label, page] of [
+    ['Payment report', paymentReportPage],
+    ['Problem report', problemReportPage],
+  ]) {
+    if (page.includes(fragment)) {
+      throw new Error(`Private or server-only ${label} marker found in HTML: ${fragment}`);
+    }
   }
 }
 
@@ -49,12 +79,15 @@ const requiredCspFragments = [
   "frame-ancestors 'none'",
 ];
 
-if (!headers.includes('/report')) {
-  throw new Error('Missing static Report header path marker.');
+for (const path of ['/payment-report', '/report']) {
+  if (!headers.includes(path)) {
+    throw new Error(`Missing static Report header path marker: ${path}`);
+  }
+  if (!runtimeHeaderPolicy.includes(`isExactPath(pathname, '${path}')`)) {
+    throw new Error(`Missing Pages Function Report path header marker: ${path}`);
+  }
 }
-if (!runtimeHeaderPolicy.includes("isExactPath(pathname, '/report')")) {
-  throw new Error('Missing Pages Function Report path header marker.');
-}
+
 for (const fragment of requiredCspFragments) {
   if (!headers.includes(fragment)) {
     throw new Error(`Missing static Report Turnstile CSP marker: ${fragment}`);
@@ -64,4 +97,4 @@ for (const fragment of requiredCspFragments) {
   }
 }
 
-console.log('Report form and static/Function Turnstile CSP checks passed.');
+console.log('Payment/problem form and static/Function Turnstile CSP checks passed.');
