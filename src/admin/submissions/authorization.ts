@@ -19,6 +19,7 @@ export interface SubmissionReviewAuthorizationEnvironment {
   CPM_ADMIN_SUBMISSION_SUBJECTS?: string;
   CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS?: string;
   CPM_ADMIN_SUBMISSION_CANDIDATE_SUBJECTS?: string;
+  CPM_ADMIN_PAYMENT_EVIDENCE_SUBJECTS?: string;
   [key: string]: unknown;
 }
 
@@ -42,6 +43,12 @@ export interface SubmissionCandidateCreateContext {
   actorId: string;
   actorType: 'human' | 'system';
   capabilities: ['submission:candidate:create'];
+}
+
+export interface PaymentReportEvidenceDecisionContext {
+  actorId: string;
+  actorType: 'human' | 'system';
+  capabilities: ['submission:payment-evidence:decide'];
 }
 
 export class SubmissionReviewAuthorizationError extends Error {
@@ -111,6 +118,15 @@ export function readSubmissionCandidateAuthorizationPolicy(
   );
 }
 
+export function readPaymentReportEvidenceAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(
+    environment.CPM_ADMIN_PAYMENT_EVIDENCE_SUBJECTS,
+    'Positive payment Evidence decision',
+  );
+}
+
 export function authorizeSubmissionReviewRead(
   identity: AdminAccessIdentity,
   policy: SubmissionReviewAuthorizationPolicy,
@@ -159,5 +175,22 @@ export function authorizeSubmissionCandidateCreate(
     actorId: identity.actorId,
     actorType: identity.actorType,
     capabilities: ['submission:candidate:create'],
+  };
+}
+
+export function authorizePaymentReportEvidenceDecision(
+  identity: AdminAccessIdentity,
+  policy: SubmissionReviewAuthorizationPolicy,
+): PaymentReportEvidenceDecisionContext {
+  if (!policy.subjects.has(identity.subject)) {
+    throw new SubmissionReviewAuthorizationError(
+      'denied',
+      'The verified administration identity is not authorized to decide positive payment Evidence.',
+    );
+  }
+  return {
+    actorId: identity.actorId,
+    actorType: identity.actorType,
+    capabilities: ['submission:payment-evidence:decide'],
   };
 }

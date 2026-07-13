@@ -1,7 +1,7 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-03C in progress  
+**Status:** Active — P5-03E in progress  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -77,7 +77,9 @@ P5-02R  Suggest integration and handoff audit                           Complete
 P5-02   Suggest Place and Online Service                                Completed
 P5-03A  Payment/problem report contract and normalization                 Completed #194
 P5-03B  Idempotent payment/problem report private intake                   Completed #195
-P5-03C  Canonical report target snapshot and Claim-context signals          In progress
+P5-03C  Canonical report target snapshot and Claim-context signals          Completed #196
+P5-03D  Protected report reviewer queue and detail entry                   Completed #197
+P5-03E  Positive payment Evidence and reconfirmation decision              In progress
 P5-03   Payment and problem reports                                     In progress
 ```
 
@@ -241,7 +243,7 @@ P5-02 completed when P5-02R recorded repository and fixed-review audit evidence 
 
 ## P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03C
+**Status:** In progress at P5-03E
 
 ### Goal
 
@@ -254,11 +256,11 @@ P5-03A — Payment/problem report contract and review-safe normalization     Com
     ↓
 P5-03B — Idempotent private report intake integration                     Completed #195
     ↓
-P5-03C — Canonical target snapshot and Claim-context signals              In progress
+P5-03C — Canonical target snapshot and Claim-context signals              Completed #196
     ↓
-P5-03D — Protected report reviewer queue and detail entry                 Planned
+P5-03D — Protected report reviewer queue and detail entry                 Completed #197
     ↓
-P5-03E — Positive payment Evidence and reconfirmation decision boundary   Planned
+P5-03E — Positive payment Evidence and reconfirmation decision boundary   In progress
     ↓
 P5-03F — Negative Evidence and priority-recheck decision boundary         Planned
     ↓
