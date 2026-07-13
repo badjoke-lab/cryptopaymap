@@ -1,8 +1,8 @@
 # P5-02R Suggest integration and handoff audit
 
 **Implementation item:** P5-02R  
-**Status:** Active  
-**Last updated:** 2026-07-12
+**Status:** Completed  
+**Last updated:** 2026-07-13
 
 ## Purpose
 
@@ -23,7 +23,7 @@ P5-02R does not add a new public Submission type and does not broaden canonical 
 P5-02Q configured verification completed against fixed review main commit:
 
 ```text
-513dc7f543ac27fe512319a3cc24cc16c3de4302
+699cff048fa80113d3b05bcdf4f385c229a4d41d
 ```
 
 The deployment receipt records:
@@ -263,58 +263,50 @@ It must not report request body content, challenge token, status secret, databas
 
 A failed audit must not advance P5-03. The failure must be corrected or explicitly reclassified through a documented decision.
 
-## 2026-07-12 fixed-review audit finding
+## 2026-07-13 completion evidence
 
-Repository integration checks pass for the complete Suggest path, including strict schema reuse,
-private persistence, exact replay, changed-content conflict, bounded HTTP mapping, protected review
-projection, guarded transitions, and accepted-as-Candidate transaction isolation.
+The authoritative `staging-review` deployment receipt records `status: deployed` for main commit:
 
-The authoritative `staging-review` receipt records `status: deployed` for main commit
-`38da5d44605d8400a70ace4ba5a02ef7499823a1`, with all configured checks successful.
+`699cff048fa80113d3b05bcdf4f385c229a4d41d`
 
-The corrected live P5-02R probe directly submitted Cloudflare's exact documented always-pass dummy
-token to Siteverify with the official test secret before calling the application route. A four-request
-transport matrix covered JSON and `application/x-www-form-urlencoded`, each with and without a fresh
-UUID `idempotency_key`. All four independent requests found:
+All configured checks succeeded for credentials, inputs, the rate-limit Durable Object Worker, Pages secrets, Pages deployment, runtime configuration, authenticated readiness, and Suggest CSP.
+
+The guarded fresh fixed-review database initialization applied the complete repository migration history and verified the P5-02 Submission tables, required columns, enums, and Drizzle migration ledger. The unmanaged legacy database was not modified.
+
+The bounded live-audit receipt records `status: complete` for the same main commit and workflow run `29217830016`. It proves:
 
 ```text
-exact token: official documented dummy token (not printed by the probe)
-→ Cloudflare Siteverify success
-→ hostname example.com
-→ action absent
+first POST
+→ HTTP 202
+→ receipt shape valid
 
-configured application expectation
-→ hostname localhost
-→ action test
+exact replay
+→ HTTP 202
+→ receipt shape valid
+→ public reference identical
+→ status secret identical
 
-expected fixed-review metadata
-→ hostname localhost
-→ action test
+changed content under the same UUID
+→ HTTP 409
+→ conflict shape valid
+
+public artifacts
+→ /data/manifest.json unchanged
+→ /version.json unchanged
 ```
 
-This directly contradicts Cloudflare's current testing documentation, which specifies `localhost`
-and `test` for this exact dummy-token validation. The discrepancy is reproducible across both
-officially supported request formats and is independent of `idempotency_key`. Because the
-prerequisite metadata did not match, the corrected probe did not call `/api/suggest`; it therefore
-made no intake, replay, conflict, rate-limit, canonical-mutation, or publication claim.
+The retained receipt contains only bounded status codes, approved metadata, and comparison booleans. It does not contain the challenge token, test secret, returned status secret, public reference, request body, contact data, raw edge identity, database values, or derived keys.
 
-The synthetic request itself passes the repository's strict Suggest schema and uses only fictional
-Place content, no contact data, and an explicit P5-02R automated-review marker. No public receipt or
-status secret was returned.
+Cloudflare Siteverify continues to return `hostname: example.com` and no action for the exact published dummy token. P5-02R explicitly reclassifies that discrepancy only inside the fixed-review official-test-key boundary, gated by the exact published test sitekey, exact published test secret, and exact dummy token. Production/default verification still requires configured hostname and action matches and remains fail closed.
 
-The audit did not weaken Turnstile success, hostname, or action verification. Exact replay and
-changed-content live conflict therefore remain unproven, and P5-02 does not hand off to P5-03.
-The documented dummy-token metadata discrepancy must be resolved or explicitly reclassified without
-weakening production verification. The same fixed-review probe must then prove HTTP 202,
-deterministic replay identity, HTTP 409 changed-body conflict, and stable public artifacts.
+Repository checks remained green for the complete Suggest path, including strict schema reuse, private persistence, replay/conflict behavior, bounded HTTP mapping, protected review projection, guarded transitions, and accepted-as-Candidate transaction isolation.
 
-Receipt and repository scanning found no Turnstile token, returned status secret, private payload,
-contact data, raw edge identity, database value, or derived key in tracked diagnostics or public
-artifacts. Authenticated Actions log download was unavailable to the audit identity (`HTTP 403`), so
-production or privileged log-stream inspection remains retained Launch work and is not claimed here.
+### Handoff decision
+
+P5-02 is complete and hands off to P5-03. This decision does not claim Launch readiness. Production Turnstile verification, production-domain hostname checks, protected Admin execution, configured accepted-as-Candidate execution, configured live 429 timing, production log inspection, production migration-state verification, and restore/reconciliation drills remain retained work.
 
 ## Completion result
 
-P5-02R completes when the repository and fixed-review evidence demonstrate that Suggest intake is a real private-review path with deterministic public-route replay/conflict behavior, preserved privacy boundaries, and no automatic public/canonical mutation.
+P5-02R is complete. Repository and fixed-review evidence demonstrate that Suggest intake is a real private-review path with deterministic public-route replay/conflict behavior, preserved privacy boundaries, and no automatic public or canonical mutation.
 
 Completion of P5-02R closes P5-02 for the P5-03 handoff. It does not close Phase 5 and does not claim Launch readiness.

@@ -1,8 +1,8 @@
 # Phase 5 public submissions implementation sequence
 
 **Phase:** Phase 5 — Public submissions / MVP-B  
-**Status:** Active — P5-02 Suggest audit in progress  
-**Last updated:** 2026-07-12
+**Status:** Active — P5-03 ready to begin  
+**Last updated:** 2026-07-13
 
 ## Purpose
 
@@ -73,19 +73,14 @@ P5-02N  Turnstile environment binding                                   Complete
 P5-02O  Public Suggest HTTP route and safe response mapping              Completed #173
 P5-02P  Public Suggest form and Turnstile browser wiring                 Completed #174
 P5-02Q  Configured Suggest review verification                          Completed #175–#183
-P5-02R  Suggest integration and handoff audit                           In progress
+P5-02R  Suggest integration and handoff audit                           Completed #185–#192
+P5-02   Suggest Place and Online Service                                Completed
+P5-03   Payment and problem reports                                     Ready to begin
 ```
 
-The corrected fixed-review P5-02R probe directly validated Cloudflare's exact documented always-pass
-dummy token with the official test secret. Siteverify returned HTTP 200 and success but reported
-`hostname: example.com` with no action rather than the documented `localhost` and `test`. The probe
-reproduced this result for JSON and `application/x-www-form-urlencoded`, each with and without
-`idempotency_key`, so the discrepancy is transport-independent and not caused by that optional
-parameter. It stopped before the application route. P5-02 and P5-02R remain in progress, and P5-03
-remains blocked pending resolution or explicit reclassification of this documentation contradiction
-and a successful live journey rerun.
+The fixed-review P5-02R deployment and live-audit receipts now record success for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`. The live journey proved HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, stable `/data/manifest.json` and `/version.json`, and bounded privacy-safe evidence. The fixed-review official-test-key metadata discrepancy is explicitly reclassified without weakening production/default hostname or action verification. P5-02 is complete and P5-03 may begin.
 
-P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, the public Suggest HTTP route, the public Suggest form/browser wiring, and configured fixed-review verification. The bounded P5-02 integration and handoff audit is now active.
+P5-01 is repository-complete. P5-02 has established Suggest contract and normalization, private intake, read-only overlap signals, protected reviewer entry, guarded workflow transitions, information requests, time-bounded Hold, the accepted-as-Candidate transaction boundary, status-secret environment binding, contact protection, opaque bucket derivation, trusted edge identity extraction, distributed rate limiting, Turnstile environment binding, the public Suggest HTTP route, the public Suggest form/browser wiring, and configured fixed-review verification. The P5-02 integration and handoff audit is complete. P5-03 is ready to begin.
 
 ---
 
@@ -181,7 +176,7 @@ P5-02P — Public Suggest form and Turnstile browser wiring              Complet
     ↓
 P5-02Q — Configured Suggest review verification                       Completed #175–#183
     ↓
-P5-02R — Suggest integration and handoff audit                        In progress
+P5-02R — Suggest integration and handoff audit                        Completed #185–#192
 ```
 
 P5-02H must:
@@ -237,7 +232,7 @@ P4-18B must already provide safe operator handling and correction behavior for p
 
 A suggestion can move from public intake to protected review and resolve without directly changing a public record. A useful but insufficient suggestion may become a private Candidate.
 
-P5-02 completes only when P5-02R records repository and fixed-review audit evidence and an explicit P5-03 handoff decision.
+P5-02 completed when P5-02R recorded repository and fixed-review audit evidence and the explicit P5-03 handoff decision for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`.
 
 ---
 

@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-12
+**Last updated:** 2026-07-13
 
 This file tracks repository implementation work. GitHub `main`, merged pull requests, and actual CI results are authoritative when this file differs from repository reality.
 
@@ -142,8 +142,8 @@ P4-18E closed the Phase 5 handoff gate while preserving unavailable configured-e
 | ID | Item | Status | Depends on |
 |---|---|---|---|
 | P5-01 | Shared submission foundation | Completed through #150–#155 | P4-18E |
-| P5-02 | Suggest Place and Online Service | In progress | P5-01 |
-| P5-03 | Payment and problem reports | Planned | P5-01, P5-02 target conventions |
+| P5-02 | Suggest Place and Online Service | Completed through #156–#192 | P5-01 |
+| P5-03 | Payment and problem reports | Ready to begin | P5-01, P5-02 target conventions |
 | P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |
 | P5-05 | Photo and Media submission intake | Planned | P5-01, P3-10 Media review boundary |
 | P5-06 | Review workflow extensions | Planned | P5-02 through P5-05 |
@@ -192,11 +192,11 @@ Configured environment wiring remains required when the first public Suggest rou
 
 ### P5-02 — Suggest Place and Online Service
 
-**Status:** In progress at P5-02R integration and handoff audit
+**Status:** Completed through #156–#192
 
 P5-02 adds Suggest-specific intake, protected review entry, bounded review signals, and separately guarded reviewer operations without direct canonical or public mutation. Useful but insufficient submissions may become private Candidates only after an explicit protected decision transaction.
 
-Completed and active slices:
+Completed slices:
 
 ```text
 P5-02A — Suggest type-specific contract and review-safe normalization       Completed #156
@@ -233,7 +233,7 @@ P5-02P — Public Suggest form and Turnstile browser wiring                  Com
     ↓
 P5-02Q — Configured Suggest review verification                           Completed #175–#183
     ↓
-P5-02R — Suggest integration and handoff audit                            In progress
+P5-02R — Suggest integration and handoff audit                            Completed #185–#192
 ```
 
 P5-02A established:
@@ -395,28 +395,15 @@ P5-02Q established:
 
 The fixed-review receipt for main commit `513dc7f543ac27fe512319a3cc24cc16c3de4302` records `status: deployed` and successful configured checks. It proves runtime configuration, Neon query reachability, Durable Object reachability, Pages deployment, and deployed Suggest CSP. It does not prove a successful public Suggest POST, deterministic live replay, changed-content live conflict, configured live 429 behavior, or protected reviewer execution.
 
-P5-02R now audits:
+P5-02R completed the integrated Suggest audit. The fixed-review deployment receipt records `status: deployed` for main commit `699cff048fa80113d3b05bcdf4f385c229a4d41d`. The bounded live-audit receipt for the same commit records `status: complete` and proves HTTP 202 first acceptance, identical HTTP 202 replay, HTTP 409 changed-content conflict, stable public artifacts, and bounded privacy-safe evidence.
 
-- P5-02A through P5-02Q contract continuity;
-- one clearly synthetic fixed-review Suggest intake without real person or business data;
-- first public-route acceptance, exact replay, and changed-content conflict;
-- public artifact equality before and after intake;
-- private and secret field exclusion from receipts, diagnostics, and public output;
-- separation of protected Admin, production Turnstile, live 429, and configured accepted-as-Candidate work into explicit later gates;
-- the final P5-03 handoff decision.
+The fixed-review official-test-key path explicitly accommodates Cloudflare's observed dummy-token metadata only for the exact published test pair and exact dummy token. Production/default hostname and action verification remain strict.
 
-P5-02 remains in progress until P5-02R records repository and fixed-review audit evidence and an explicit handoff decision.
-
-The corrected 2026-07-12 fixed-review audit directly validated Cloudflare's exact documented
-always-pass dummy token with the official test secret. Siteverify returned HTTP 200 and success but
-reported `hostname: example.com` with no action rather than the documented `localhost` and `test`.
-The result was identical for JSON and `application/x-www-form-urlencoded`, each with and without
-`idempotency_key`, so the discrepancy is transport-independent and not caused by that optional
-parameter. The probe stopped before the application route. P5-02R and P5-02 remain in progress, and
-P5-03 remains blocked until this documentation contradiction is resolved or explicitly reclassified
-without weakening hostname/action verification and the live replay/conflict journey passes.
+P5-02 is complete and hands off to P5-03. Protected Admin execution, production Turnstile behavior, configured live 429 timing, configured accepted-as-Candidate execution, production log inspection, and production migration/restore work remain assigned to their later Phase 5 or Launch gates.
 
 ### P5-03 — Payment and problem reports
+
+**Status:** Ready to begin
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.
 
