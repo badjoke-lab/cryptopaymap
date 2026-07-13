@@ -43,6 +43,7 @@ declare global {
 export type { ReportFormOption } from './ReportFormControls';
 
 export interface ReportFormProps {
+  submissionType: ReportBrowserFormValues['submissionType'];
   siteKey: string;
   action: string;
   assets: ReportFormOption[];
@@ -113,6 +114,7 @@ function loadTurnstileScript(onReady: () => void, onError: () => void): () => vo
 }
 
 export function ReportForm({
+  submissionType,
   siteKey,
   action,
   assets,
@@ -120,9 +122,15 @@ export function ReportForm({
   initialTargetType = 'entity',
   initialTargetId = '',
 }: ReportFormProps) {
-  const [values, setValues] = useState<ReportBrowserFormValues>(() =>
-    emptyReportBrowserFormValues(todayDate(), initialTargetType, initialTargetId),
-  );
+  const [values, setValues] = useState<ReportBrowserFormValues>(() => {
+    const initialValues = emptyReportBrowserFormValues(
+      todayDate(),
+      initialTargetType,
+      initialTargetId,
+    );
+    initialValues.submissionType = submissionType;
+    return initialValues;
+  });
   const [challengeToken, setChallengeToken] = useState<string | null>(null);
   const [challengeState, setChallengeState] = useState<'loading' | 'ready' | 'error'>(
     siteKey && action ? 'loading' : 'error',
@@ -251,11 +259,13 @@ export function ReportForm({
     }
   }
 
+  const formLabel = submissionType === 'payment_report' ? 'Payment report' : 'Problem report';
+
   if (receipt) {
     return (
       <StatePanel
         tone="success"
-        title="Report received"
+        title={`${formLabel} received`}
         description="Save both values below. The status secret is shown only in this receipt and is needed for private follow-up."
         action={
           <div className="grid gap-3 text-left">
@@ -277,7 +287,7 @@ export function ReportForm({
   return (
     <form className="grid gap-8" onSubmit={submit} noValidate>
       <ReportTargetFields {...fieldProps} />
-      {values.submissionType === 'payment_report' ? (
+      {submissionType === 'payment_report' ? (
         <PaymentReportFields {...fieldProps} />
       ) : (
         <ProblemReportFields {...fieldProps} />
@@ -326,7 +336,7 @@ export function ReportForm({
           className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
           disabled={submitState === 'submitting' || challengeState === 'error'}
         >
-          {submitState === 'submitting' ? 'Submitting report…' : 'Submit report for review'}
+          {submitState === 'submitting' ? `Submitting ${formLabel.toLowerCase()}…` : `Submit ${formLabel.toLowerCase()} for review`}
         </button>
         <p className="m-0 text-sm leading-6 text-muted">
           A report never changes public data automatically. Review, Evidence decisions, Claim
