@@ -230,7 +230,12 @@ function parseNegativeProjection(
       !originalResult.success ||
       projectionResult.data.result !== 'failed' ||
       originalResult.data.result !== 'failed' ||
+      projectionResult.data.targetType !== state.targetType ||
+      projectionResult.data.targetId !== state.targetId ||
       projectionResult.data.paymentDate !== originalResult.data.paymentDate ||
+      JSON.stringify(projectionResult.data.payment) !==
+        JSON.stringify(originalResult.data.payment) ||
+      projectionResult.data.notes !== originalResult.data.notes ||
       projectionResult.data.restrictedEvidence.privateTransactionUrlPresent !==
         (originalResult.data.privateTransactionUrl !== null)
     ) {
@@ -261,9 +266,15 @@ function parseNegativeProjection(
       !projectionResult.success ||
       !originalResult.success ||
       !['no_longer_accepts_crypto', 'payment_failed'].includes(projectionResult.data.reportType) ||
+      projectionResult.data.targetType !== state.targetType ||
+      projectionResult.data.targetId !== state.targetId ||
       projectionResult.data.reportType !== originalResult.data.reportType ||
       projectionResult.data.observedAt !== originalResult.data.observedAt ||
       projectionResult.data.explanation !== originalResult.data.explanation ||
+      JSON.stringify(projectionResult.data.proposedCorrection) !==
+        JSON.stringify(originalResult.data.proposedCorrection) ||
+      JSON.stringify(projectionResult.data.duplicateTarget) !==
+        JSON.stringify(originalResult.data.duplicateTarget) ||
       projectionResult.data.restrictedEvidence.privateEvidenceUrlPresent !==
         (originalResult.data.privateEvidenceUrl !== null)
     ) {
