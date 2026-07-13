@@ -130,7 +130,13 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
             isNull(entities.deletedAt),
             or(isNull(acceptanceClaims.locationId), isNull(locations.deletedAt)),
             or(
-              hasSignal,
+              and(
+                or(
+                  eq(acceptanceClaims.claimStatus, 'confirmed'),
+                  eq(acceptanceClaims.claimStatus, 'stale'),
+                ),
+                hasSignal,
+              ),
               eq(acceptanceClaims.claimStatus, 'stale'),
               and(
                 eq(acceptanceClaims.claimStatus, 'confirmed'),
