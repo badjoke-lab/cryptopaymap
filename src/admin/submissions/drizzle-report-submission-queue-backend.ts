@@ -33,9 +33,7 @@ export interface ReportSubmissionQueueIdentityRow {
   normalizedTargetId: string;
 }
 
-export function assertReportSubmissionQueueIdentity(
-  row: ReportSubmissionQueueIdentityRow,
-): void {
+export function assertReportSubmissionQueueIdentity(row: ReportSubmissionQueueIdentityRow): void {
   if (
     row.submissionType !== row.normalizedReportKind ||
     row.storedTargetType !== row.normalizedTargetType ||
