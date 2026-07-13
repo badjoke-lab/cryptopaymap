@@ -133,23 +133,22 @@ export const problemReportDuplicateTargetSchema = z
 export const problemLocationProfileCorrectionSchema = z
   .object({
     kind: z.literal('location_profile'),
-    addressLine: boundedPlainText(500).nullable().optional(),
-    locality: boundedPlainText(120).nullable().optional(),
-    region: boundedPlainText(120).nullable().optional(),
-    postalCode: boundedPlainText(32).nullable().optional(),
-    countryCode: countryCodeSchema.optional(),
-    latitude: z.number().finite().min(-90).max(90).nullable().optional(),
-    longitude: z.number().finite().min(-180).max(180).nullable().optional(),
-    websiteUrl: httpsUrlSchema.nullable().optional(),
-    phone: boundedPlainText(64).nullable().optional(),
-    description: boundedPlainText(5_000).nullable().optional(),
-    openingHours: boundedPlainText(2_000).nullable().optional(),
+    addressLine: boundedPlainText(500).nullable(),
+    locality: boundedPlainText(120).nullable(),
+    region: boundedPlainText(120).nullable(),
+    postalCode: boundedPlainText(32).nullable(),
+    countryCode: countryCodeSchema.nullable(),
+    latitude: z.number().finite().min(-90).max(90).nullable(),
+    longitude: z.number().finite().min(-180).max(180).nullable(),
+    websiteUrl: httpsUrlSchema.nullable(),
+    phone: boundedPlainText(64).nullable(),
+    description: boundedPlainText(5_000).nullable(),
+    openingHours: boundedPlainText(2_000).nullable(),
     amenities: z
       .array(boundedPlainText(80))
       .max(100)
       .transform((values) => [...new Set(values)])
-      .nullable()
-      .optional(),
+      .nullable(),
     socialLinks: z
       .array(canonicalLocationSocialLinkSchema)
       .max(30)
@@ -167,20 +166,32 @@ export const problemLocationProfileCorrectionSchema = z
           seen.add(key);
         });
       })
-      .nullable()
-      .optional(),
+      .nullable(),
   })
   .strict()
   .superRefine((correction, context) => {
-    if (Object.keys(correction).length === 1) {
+    const proposedValues = [
+      correction.addressLine,
+      correction.locality,
+      correction.region,
+      correction.postalCode,
+      correction.countryCode,
+      correction.latitude,
+      correction.longitude,
+      correction.websiteUrl,
+      correction.phone,
+      correction.description,
+      correction.openingHours,
+      correction.amenities,
+      correction.socialLinks,
+    ];
+    if (proposedValues.every((value) => value === null)) {
       context.addIssue({
         code: 'custom',
         message: 'Location profile corrections require at least one proposed field.',
       });
     }
-    const hasLatitude = Object.hasOwn(correction, 'latitude');
-    const hasLongitude = Object.hasOwn(correction, 'longitude');
-    if (hasLatitude !== hasLongitude) {
+    if ((correction.latitude === null) !== (correction.longitude === null)) {
       context.addIssue({
         code: 'custom',
         path: ['latitude'],

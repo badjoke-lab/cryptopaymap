@@ -76,6 +76,26 @@ function failedPaymentPayload() {
   };
 }
 
+function locationProfileCorrection(overrides: Record<string, unknown> = {}) {
+  return {
+    kind: 'location_profile',
+    addressLine: null,
+    locality: null,
+    region: null,
+    postalCode: null,
+    countryCode: null,
+    latitude: null,
+    longitude: null,
+    websiteUrl: null,
+    phone: null,
+    description: null,
+    openingHours: null,
+    amenities: null,
+    socialLinks: null,
+    ...overrides,
+  };
+}
+
 function wrongNetworkProblemPayload() {
   return {
     schemaVersion: 'problem-report-v1',
@@ -239,15 +259,14 @@ describe('P5-03A payment and problem report contract', () => {
       reportType: 'wrong_address',
       observedAt: '2026-07-11',
       explanation: 'The listed address points to the previous branch location.',
-      proposedCorrection: {
-        kind: 'location_profile',
+      proposedCorrection: locationProfileCorrection({
         addressLine: '2-3-4 Jingumae',
         locality: 'Shibuya',
         countryCode: 'jp',
         latitude: 35.67,
         longitude: 139.7,
         amenities: ['wifi', 'wifi', 'outdoor seating'],
-      },
+      }),
       duplicateTarget: null,
       privateEvidenceUrl: null,
     });
@@ -276,7 +295,7 @@ describe('P5-03A payment and problem report contract', () => {
       problemReportSubmissionIntakeSchema.safeParse(
         commonEnvelope('problem_report', {
           ...base,
-          proposedCorrection: { kind: 'location_profile', latitude: 35.67 },
+          proposedCorrection: locationProfileCorrection({ latitude: 35.67 }),
         }),
       ).success,
     ).toBe(false);
@@ -284,7 +303,7 @@ describe('P5-03A payment and problem report contract', () => {
       problemReportSubmissionIntakeSchema.safeParse(
         commonEnvelope('problem_report', {
           ...base,
-          proposedCorrection: { kind: 'location_profile' },
+          proposedCorrection: locationProfileCorrection(),
         }),
       ).success,
     ).toBe(false);

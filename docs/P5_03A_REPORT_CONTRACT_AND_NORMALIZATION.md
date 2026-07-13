@@ -201,7 +201,7 @@ Rules:
 - country codes use the shared ISO alpha-2 normalization;
 - amenities are deduplicated;
 - social links reuse the canonical social-link schema and reject duplicates;
-- nullable fields may explicitly propose removal where later reviewer policy permits it.
+- `null` marks a field as not proposed; explicit removal semantics remain a later protected-review decision.
 
 P5-03A does not decide whether a proposed removal is accepted or whether a target class supports every field. Those decisions belong to protected target validation and canonical application slices.
 
