@@ -362,7 +362,10 @@ export async function decidePositivePaymentEvidence(
     );
   }
   if (state === null || state.submissionType !== 'payment_report' || state.claim === null) {
-    throw new PositivePaymentEvidenceError('not_found', 'The payment report or Claim was not found.');
+    throw new PositivePaymentEvidenceError(
+      'not_found',
+      'The payment report or Claim was not found.',
+    );
   }
   if (
     state.workflowStatus !== request.expectedStatus ||
@@ -452,8 +455,7 @@ export async function decidePositivePaymentEvidence(
       actorId: context.actorId,
       actorType: context.actorType,
       decision: request.decision,
-      evidenceKind:
-        request.evidenceClass === 'a' ? 'payment_proof' : 'independent_user_report',
+      evidenceKind: request.evidenceClass === 'a' ? 'payment_proof' : 'independent_user_report',
       evidenceClass: request.evidenceClass,
       evidenceVisibility: request.evidenceVisibility,
       sourceType: request.evidenceClass === 'a' ? 'payment_proof' : 'user_submission',

@@ -117,7 +117,12 @@ export function createDrizzlePositivePaymentEvidenceBackend(
           entities,
           and(eq(entities.id, acceptanceClaims.processorId), isNull(entities.deletedAt)),
         )
-        .where(and(eq(submissions.id, submissionId), inArray(submissions.submissionType, paymentReportTypes)))
+        .where(
+          and(
+            eq(submissions.id, submissionId),
+            inArray(submissions.submissionType, paymentReportTypes),
+          ),
+        )
         .limit(1);
       const row = rows[0];
       if (row === undefined) return null;

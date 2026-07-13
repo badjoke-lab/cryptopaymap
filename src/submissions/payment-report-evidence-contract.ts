@@ -12,9 +12,7 @@ export const positivePaymentEvidenceDecisionValues = [
   'accept_evidence',
   'accept_and_reconfirm',
 ] as const;
-export const positivePaymentEvidenceDecisionSchema = z.enum(
-  positivePaymentEvidenceDecisionValues,
-);
+export const positivePaymentEvidenceDecisionSchema = z.enum(positivePaymentEvidenceDecisionValues);
 
 export const positivePaymentEvidenceEventSchema = z
   .object({
@@ -31,13 +29,13 @@ export const positivePaymentEvidenceEventSchema = z
 
 export type PositivePaymentEvidenceEvent = z.infer<typeof positivePaymentEvidenceEventSchema>;
 
-export function serializePositivePaymentEvidenceEvent(
-  event: PositivePaymentEvidenceEvent,
-): string {
+export function serializePositivePaymentEvidenceEvent(event: PositivePaymentEvidenceEvent): string {
   return JSON.stringify(positivePaymentEvidenceEventSchema.parse(event));
 }
 
-export function parsePositivePaymentEvidenceEvent(value: string | null): PositivePaymentEvidenceEvent | null {
+export function parsePositivePaymentEvidenceEvent(
+  value: string | null,
+): PositivePaymentEvidenceEvent | null {
   if (value === null) return null;
   try {
     const result = positivePaymentEvidenceEventSchema.safeParse(JSON.parse(value));

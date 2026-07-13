@@ -43,7 +43,7 @@ function state(
         routeType: 'direct_wallet',
         paymentMethod: 'onchain',
         processor: null,
-        context: 'in_person',
+        context: 'hosted_checkout',
         observedSteps: 'Scanned the displayed wallet QR code.',
       },
       notes: null,
@@ -241,7 +241,9 @@ describe('P5-03E positive payment Evidence decision', () => {
     ).rejects.toMatchObject({ code: 'ineligible' });
 
     const mismatched = state();
-    if (mismatched.claim) mismatched.claim.options[0].networkSlug = 'lightning';
+    const mismatchedOption = mismatched.claim?.options[0];
+    if (mismatchedOption === undefined) throw new Error('Expected one Claim payment option.');
+    mismatchedOption.networkSlug = 'lightning';
     await expect(
       decidePositivePaymentEvidence(
         context,
