@@ -18,11 +18,7 @@ function entityClaim(): any {
     originalPayload: {
       schemaVersion: 'business-claim-v1',
       claimantRole: 'owner',
-      requestedScopes: [
-        'representative_relationship',
-        'entity_profile',
-        'payment_information',
-      ],
+      requestedScopes: ['representative_relationship', 'entity_profile', 'payment_information'],
       verification: {
         method: 'official_domain_email',
         officialDomain: 'merchant.example',
@@ -72,11 +68,7 @@ describe('P5-04A business claim contract', () => {
       targetType: 'entity',
       targetId,
       claimantRole: 'owner',
-      requestedScopes: [
-        'representative_relationship',
-        'entity_profile',
-        'payment_information',
-      ],
+      requestedScopes: ['representative_relationship', 'entity_profile', 'payment_information'],
       verification: {
         method: 'official_domain_email',
         officialDomain: 'merchant.example',
@@ -141,10 +133,7 @@ describe('P5-04A business claim contract', () => {
   it('accepts a location claim with profile scope but rejects entity profile changes', () => {
     const input = structuredClone(entityClaim());
     input.targetType = 'location';
-    input.originalPayload.requestedScopes = [
-      'representative_relationship',
-      'location_profile',
-    ];
+    input.originalPayload.requestedScopes = ['representative_relationship', 'location_profile'];
     input.originalPayload.proposedChanges.entity = null;
     input.originalPayload.proposedChanges.paymentProposals = null;
     input.originalPayload.proposedChanges.location = {
