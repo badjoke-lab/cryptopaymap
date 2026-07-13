@@ -143,7 +143,7 @@ P4-18E closed the Phase 5 handoff gate while preserving unavailable configured-e
 |---|---|---|---|
 | P5-01 | Shared submission foundation | Completed through #150–#155 | P4-18E |
 | P5-02 | Suggest Place and Online Service | Completed through #156–#192 | P5-01 |
-| P5-03 | Payment and problem reports | In progress at P5-03B | P5-01, P5-02 target conventions |
+| P5-03 | Payment and problem reports | In progress at P5-03C | P5-01, P5-02 target conventions |
 | P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |
 | P5-05 | Photo and Media submission intake | Planned | P5-01, P3-10 Media review boundary |
 | P5-06 | Review workflow extensions | Planned | P5-02 through P5-05 |
@@ -403,7 +403,7 @@ P5-02 is complete and hands off to P5-03. Protected Admin execution, production 
 
 ### P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03B
+**Status:** In progress at P5-03C
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.
 
@@ -412,9 +412,9 @@ Current bounded sequence:
 ```text
 P5-03A — Payment/problem report contract and review-safe normalization     Completed #194
     ↓
-P5-03B — Idempotent private report intake integration                     In progress
+P5-03B — Idempotent private report intake integration                     Completed #195
     ↓
-P5-03C — Canonical target snapshot and Claim-context signals              Planned
+P5-03C — Canonical target snapshot and Claim-context signals              In progress
     ↓
 P5-03D — Protected report reviewer queue and detail entry                 Planned
     ↓
@@ -429,7 +429,7 @@ P5-03H — Public payment/problem report routes and forms                   Plan
 P5-03I — Configured review and integration audit                          Planned
 ```
 
-P5-03A is complete through #194. P5-03B owns only private report persistence integration, deterministic replay/conflict behavior, contact separation, and abuse-control composition through the P5-01 service boundary. It does not add public routes/forms, target lookup, Evidence acceptance, recheck priority mutation, temporary hiding, canonical mutation, export, or publication.
+P5-03A is complete through #194 and P5-03B is complete through #195. P5-03C owns only read-only target existence, public target snapshot, reportability, and exact Claim-context reasons. It does not add public routes/forms, reviewer decisions, Evidence acceptance, recheck-priority mutation, temporary hiding, canonical mutation, export, or publication.
 
 ### P5-04 — Business and service claims
 
