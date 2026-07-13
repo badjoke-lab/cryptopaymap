@@ -20,6 +20,7 @@ export interface SubmissionReviewAuthorizationEnvironment {
   CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS?: string;
   CPM_ADMIN_SUBMISSION_CANDIDATE_SUBJECTS?: string;
   CPM_ADMIN_PAYMENT_EVIDENCE_SUBJECTS?: string;
+  CPM_ADMIN_NEGATIVE_EVIDENCE_SUBJECTS?: string;
   [key: string]: unknown;
 }
 
@@ -49,6 +50,12 @@ export interface PaymentReportEvidenceDecisionContext {
   actorId: string;
   actorType: 'human' | 'system';
   capabilities: ['submission:payment-evidence:decide'];
+}
+
+export interface NegativeReportEvidenceDecisionContext {
+  actorId: string;
+  actorType: 'human' | 'system';
+  capabilities: ['submission:negative-evidence:decide'];
 }
 
 export class SubmissionReviewAuthorizationError extends Error {
@@ -127,6 +134,15 @@ export function readPaymentReportEvidenceAuthorizationPolicy(
   );
 }
 
+export function readNegativeReportEvidenceAuthorizationPolicy(
+  environment: SubmissionReviewAuthorizationEnvironment,
+): SubmissionReviewAuthorizationPolicy {
+  return readSubjectPolicy(
+    environment.CPM_ADMIN_NEGATIVE_EVIDENCE_SUBJECTS,
+    'Negative report Evidence decision',
+  );
+}
+
 export function authorizeSubmissionReviewRead(
   identity: AdminAccessIdentity,
   policy: SubmissionReviewAuthorizationPolicy,
@@ -192,5 +208,22 @@ export function authorizePaymentReportEvidenceDecision(
     actorId: identity.actorId,
     actorType: identity.actorType,
     capabilities: ['submission:payment-evidence:decide'],
+  };
+}
+
+export function authorizeNegativeReportEvidenceDecision(
+  identity: AdminAccessIdentity,
+  policy: SubmissionReviewAuthorizationPolicy,
+): NegativeReportEvidenceDecisionContext {
+  if (!policy.subjects.has(identity.subject)) {
+    throw new SubmissionReviewAuthorizationError(
+      'denied',
+      'The verified administration identity is not authorized to decide negative report Evidence.',
+    );
+  }
+  return {
+    actorId: identity.actorId,
+    actorType: identity.actorType,
+    capabilities: ['submission:negative-evidence:decide'],
   };
 }
