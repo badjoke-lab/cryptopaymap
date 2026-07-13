@@ -1,0 +1,61 @@
+name: Prepare P5-03E fixes
+
+on:
+  push:
+    branches:
+      - p5-03e-positive-payment-evidence
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: p5-03e-positive-payment-evidence
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Correct focused test fixture and strict indexing
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          path = Path('tests/positive-payment-evidence.test.ts')
+          text = path.read_text()
+          old_context = "        context: 'in_person',"
+          new_context = "        context: 'hosted_checkout',"
+          if old_context not in text:
+              raise SystemExit('expected invalid payment context fixture was not found')
+          text = text.replace(old_context, new_context)
+          old_index = "    const mismatched = state();\n    if (mismatched.claim) mismatched.claim.options[0].networkSlug = 'lightning';"
+          new_index = "    const mismatched = state();\n    const mismatchedOption = mismatched.claim?.options[0];\n    if (mismatchedOption === undefined) throw new Error('Expected one Claim payment option.');\n    mismatchedOption.networkSlug = 'lightning';"
+          if old_index not in text:
+              raise SystemExit('expected unsafe payment option indexing was not found')
+          path.write_text(text.replace(old_index, new_index))
+          PY
+
+      - name: Format repository changes
+        run: npm run format
+
+      - name: Remove one-shot preparation workflow
+        run: git rm .github/workflows/p5-03e-fix.yml
+
+      - name: Commit prepared branch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'P5-03E: fix validation fixtures and formatting'
+          git push origin HEAD:p5-03e-positive-payment-evidence
