@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-03C — Canonical report target snapshot and Claim-context signals
+P5-03D — Protected report reviewer queue and detail entry
 
 ## Current repository state
 
@@ -39,7 +39,8 @@ P5-03C — Canonical report target snapshot and Claim-context signals
 - P5-02 Suggest Place and Online Service is complete and handed off to P5-03.
 - P5-03A payment/problem report contract and review-safe normalization is complete through #194.
 - P5-03B idempotent payment/problem report private intake integration is complete through #195.
-- P5-03C canonical report target snapshot and Claim-context signals are in progress.
+- P5-03C canonical report target snapshot and Claim-context signals are complete through #196.
+- P5-03D protected report reviewer queue and detail entry is in progress.
 
 ## Fixed review environment
 
@@ -54,6 +55,8 @@ The current fixed-review deployment receipt for main commit:
 records `status: deployed` and success for credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, Pages deployment, and configured verification. The bounded P5-02R live-audit receipt for the same commit records `status: complete`.
 
 Deployment receipt state must still be checked whenever review-environment state matters. A later repository merge must not be assumed visible or configured correctly at the fixed URL until the receipt records the intended `main` commit and successful configured verification.
+
+P5-03 repository implementation may continue while Cloudflare and Neon operator access is unavailable. P5-03 configured Access, deployed Functions, live Neon execution, and integrated public-route verification remain assigned to P5-03I and must not be inferred from repository checks.
 
 ## Required current references
 
@@ -88,7 +91,11 @@ Before P5-03 implementation or review, read:
 27. `docs/P5_02P_SUGGEST_FORM_TURNSTILE.md`;
 28. `docs/P5_02Q_CONFIGURED_SUGGEST_REVIEW_VERIFICATION.md`;
 29. `docs/P5_02R_SUGGEST_INTEGRATION_AND_HANDOFF_AUDIT.md`;
-30. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
+30. `docs/P5_03A_REPORT_CONTRACT_AND_NORMALIZATION.md`;
+31. `docs/P5_03B_REPORT_PRIVATE_INTAKE_INTEGRATION.md`;
+32. `docs/P5_03C_REPORT_TARGET_CONTEXT.md`;
+33. `docs/P5_03D_REPORT_REVIEWER_ENTRY.md`;
+34. `docs/P4_18_E_LIVE_REVIEW_AND_HANDOFF_AUDIT.md`.
 
 Media work must also read `docs/MEDIA_POLICY.md`.
 
@@ -96,14 +103,14 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
-3. P5-03 — Payment and problem reports — In progress at P5-03C
+3. P5-03 — Payment and problem reports — In progress at P5-03D
 4. P5-04 — Business and service claims — Planned
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
-## P5-02 execution sequence
+## P5-02 and P5-03 execution sequence
 
 ```text
 P5-02A  Suggest type-specific contract and review-safe normalization       Completed #156
@@ -143,7 +150,8 @@ P5-02Q  Configured Suggest review verification                           Complet
 P5-02R  Suggest integration and handoff audit                            Completed #185–#192
 P5-03A  Payment/problem report contract and normalization                 Completed #194
 P5-03B  Idempotent payment/problem report private intake                   Completed #195
-P5-03C  Canonical report target snapshot and Claim-context signals          In progress
+P5-03C  Canonical report target snapshot and Claim-context signals         Completed #196
+P5-03D  Protected report reviewer queue and detail entry                   In progress
 ```
 
 ## P5-02Q completion evidence
@@ -209,17 +217,19 @@ Starting or completing Phase 5 does not waive retained Launch work, including:
 
 Launch readiness must not be claimed until the relevant launch criteria and retained Launch work are complete.
 
-## Current active scope — P5-03C report target context
+## Current active scope — P5-03D protected report reviewer entry
 
-P5-03C resolves the existing Entity, Location, or Claim named by a private report and reduces public target identity, canonical path, public reportability, and exact Claim-context matches to a bounded protected-review response. It is read-only and adds no route, form, reviewer decision, Evidence action, priority change, visibility change, canonical mutation, export, or publication.
+P5-03D connects private payment and problem reports to a protected read-only queue and detail workspace. It strictly revalidates normalized reports, requires stored target metadata to match the projection, composes the P5-03C canonical target context, exposes only bounded workflow events, and adds no Evidence acceptance, Claim-state change, recheck-priority mutation, visibility decision, correction application, canonical mutation, export, or publication.
+
+Repository implementation and GitHub validation proceed without Cloudflare or Neon operator actions. Configured Access, deployed Functions, and live database execution remain assigned to P5-03I.
 
 ## Next
 
-Complete P5-03C target identity validation, bounded public snapshot, Claim-context reasons, focused tests, and schema-check integration. Then proceed to P5-03D protected report reviewer queue and detail entry.
+Complete P5-03D protected queue/detail contracts, Drizzle read backends, read-only administration UI, focused tests, schema validation, and built-artifact checks. Then proceed to P5-03E positive-payment Evidence and reconfirmation decision boundary.
 
 ## Blocked
 
-No P5-03C blocker is known. Retained Launch work remains unchanged and launch readiness is not claimed.
+No repository blocker to P5-03D is known. Configured Cloudflare/Neon execution is intentionally deferred to P5-03I; retained Launch work remains unchanged and launch readiness is not claimed.
 
 ## Verification rule
 
