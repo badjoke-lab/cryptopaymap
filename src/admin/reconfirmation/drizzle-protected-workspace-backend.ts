@@ -1,6 +1,13 @@
 import { and, asc, eq, isNull, lte, or, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
-import { acceptanceClaims, entities, locations } from '../../db/schema';
+import {
+  acceptanceClaims,
+  entities,
+  evidence,
+  locations,
+  submissionEvents,
+  verificationEvents,
+} from '../../db/schema';
 import {
   evaluateReconfirmationClaim,
   type ReconfirmationClaimSnapshot,
@@ -37,16 +44,61 @@ function decorate(
   };
 }
 
+function negativeEvidenceSignalAt() {
+  return sql<Date | null>`(
+    select max(${evidence.createdAt})
+    from ${evidence}
+    inner join ${submissionEvents}
+      on ${submissionEvents.submissionId} = ${evidence.submissionId}
+    where ${evidence.claimId} = ${acceptanceClaims.id}
+      and ${evidence.reviewStatus} = 'accepted'
+      and ${evidence.polarity} = 'contradicting'
+      and ${evidence.deletedAt} is null
+      and ${submissionEvents.action} = 'negative_report_evidence_decided'
+      and ${submissionEvents.reasonCode} = 'negative_evidence_recheck_priority'
+      and not exists (
+        select 1
+        from ${verificationEvents}
+        where ${verificationEvents.claimId} = ${acceptanceClaims.id}
+          and ${verificationEvents.effectiveAt} >= ${evidence.createdAt}
+      )
+  )`;
+}
+
+function hasNegativeEvidenceSignal() {
+  return sql<boolean>`exists (
+    select 1
+    from ${evidence}
+    inner join ${submissionEvents}
+      on ${submissionEvents.submissionId} = ${evidence.submissionId}
+    where ${evidence.claimId} = ${acceptanceClaims.id}
+      and ${evidence.reviewStatus} = 'accepted'
+      and ${evidence.polarity} = 'contradicting'
+      and ${evidence.deletedAt} is null
+      and ${submissionEvents.action} = 'negative_report_evidence_decided'
+      and ${submissionEvents.reasonCode} = 'negative_evidence_recheck_priority'
+      and not exists (
+        select 1
+        from ${verificationEvents}
+        where ${verificationEvents.claimId} = ${acceptanceClaims.id}
+          and ${verificationEvents.effectiveAt} >= ${evidence.createdAt}
+      )
+  )`;
+}
+
 export function createDrizzleProtectedReconfirmationWorkspaceBackend(
   database: CryptoPayMapDatabase,
 ): ProtectedReconfirmationWorkspaceBackend {
   return {
     async loadQueue(query, asOf) {
       const dueSoonCutoff = new Date(asOf.getTime() + query.dueSoonDays * 86_400_000);
+      const signalAt = negativeEvidenceSignalAt();
+      const hasSignal = hasNegativeEvidenceSignal();
       const priority = sql<number>`case
         when ${acceptanceClaims.claimStatus} = 'confirmed'
           and ${acceptanceClaims.nextReviewAt} is not null
           and ${acceptanceClaims.nextReviewAt} <= ${asOf} then 0
+        when ${hasSignal} then 5
         when ${acceptanceClaims.claimStatus} = 'confirmed'
           and ${acceptanceClaims.nextReviewAt} is null then 10
         when ${acceptanceClaims.claimStatus} = 'stale' then 100
@@ -62,6 +114,7 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
           nextReviewAt: acceptanceClaims.nextReviewAt,
           updatedAt: acceptanceClaims.updatedAt,
           deletedAt: acceptanceClaims.deletedAt,
+          negativeEvidenceAt: signalAt,
           entityName: entities.name,
           entityType: entities.entityType,
           locationName: locations.name,
@@ -77,6 +130,7 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
             isNull(entities.deletedAt),
             or(isNull(acceptanceClaims.locationId), isNull(locations.deletedAt)),
             or(
+              hasSignal,
               eq(acceptanceClaims.claimStatus, 'stale'),
               and(
                 eq(acceptanceClaims.claimStatus, 'confirmed'),
@@ -103,9 +157,12 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
             updatedAt: row.updatedAt.toISOString(),
             deletedAt: iso(row.deletedAt),
           };
-          const item = evaluateReconfirmationClaim(snapshot, asOf, {
-            dueSoonDays: query.dueSoonDays,
-          });
+          const item = evaluateReconfirmationClaim(
+            snapshot,
+            asOf,
+            { dueSoonDays: query.dueSoonDays },
+            iso(row.negativeEvidenceAt),
+          );
           return item === null
             ? null
             : decorate(item, {
@@ -122,6 +179,7 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
     },
 
     async loadDetail(claimId, asOf, dueSoonDays) {
+      const signalAt = negativeEvidenceSignalAt();
       const rows = await database
         .select({
           id: acceptanceClaims.id,
@@ -142,6 +200,7 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
           nextReviewAt: acceptanceClaims.nextReviewAt,
           updatedAt: acceptanceClaims.updatedAt,
           deletedAt: acceptanceClaims.deletedAt,
+          negativeEvidenceAt: signalAt,
           entityName: entities.name,
           entityType: entities.entityType,
           entityWebsiteUrl: entities.websiteUrl,
@@ -177,7 +236,12 @@ export function createDrizzleProtectedReconfirmationWorkspaceBackend(
         updatedAt: row.updatedAt.toISOString(),
         deletedAt: iso(row.deletedAt),
       };
-      const queueItem = evaluateReconfirmationClaim(snapshot, asOf, { dueSoonDays });
+      const queueItem = evaluateReconfirmationClaim(
+        snapshot,
+        asOf,
+        { dueSoonDays },
+        iso(row.negativeEvidenceAt),
+      );
 
       return {
         generatedAt: asOf.toISOString(),
