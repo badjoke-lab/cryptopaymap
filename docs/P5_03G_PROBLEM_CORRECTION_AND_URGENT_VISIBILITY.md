@@ -26,6 +26,7 @@ urgent visibility permission
 ```text
 urgent visibility permission
 + P5-03F accepted contradicting Evidence
++ P5-03F durable negative-Evidence decision event
 → explicit mark-stale or end decision
 ```
 
@@ -64,6 +65,7 @@ The operation resolves the Submission as approved and stores the typed correctio
 
 - `reportType = duplicate`;
 - a strict stored duplicate target;
+- a target different from the report target itself;
 - a current non-deleted Entity, Location, or Claim target;
 - an atomic target-existence guard at commit.
 
@@ -95,7 +97,7 @@ Claim status is unchanged. The operation cannot end a Claim.
 
 ### Negative Evidence Claim action
 
-`apply_negative_claim_action` operates only after P5-03F has already resolved a failed payment or negative payment problem report and created accepted contradicting Evidence linked to the same Submission and Claim.
+`apply_negative_claim_action` operates only after P5-03F has already resolved a failed payment or negative payment problem report and created accepted contradicting Evidence linked to the same Submission and Claim. The P5-03F durable `negative_report_evidence_decided` event must also exist with an accepted-negative-Evidence reason. A generic contradicting Evidence row is insufficient.
 
 Allowed actions are:
 
@@ -104,7 +106,7 @@ confirmed → stale
 confirmed|stale → ended
 ```
 
-Mark-stale requires a future `nextReviewAt`. End requires an ended reason and clears `nextReviewAt`.
+Mark-stale requires a `nextReviewAt` after the actual decision time. End requires an ended reason and clears `nextReviewAt`.
 
 The atomic outcome includes a status Verification Event and a `contradiction` Evidence relationship. A retained Submission event supplies idempotent replay and operator attribution.
 
@@ -121,7 +123,9 @@ Every decision revalidates:
 - proposed correction;
 - duplicate target;
 - restricted-evidence presence;
-- exact Submission, payload, Claim, and Evidence versions required by the operation.
+- exact Submission, payload, Claim, and Evidence versions required by the operation;
+- exact report-target-to-Claim ownership again at commit;
+- P5-03F negative-Evidence event provenance for Claim status actions.
 
 A malformed or divergent projection fails closed.
 
