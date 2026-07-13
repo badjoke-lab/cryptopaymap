@@ -403,7 +403,7 @@ P5-02 is complete and hands off to P5-03. Protected Admin execution, production 
 
 ### P5-03 — Payment and problem reports
 
-**Status:** In progress at P5-03C
+**Status:** In progress at P5-03E
 
 Add target-aware positive and negative payment reports plus factual, privacy, rights, duplicate, and other problem reports. Reports create review material and may trigger recheck priority; they do not automatically change Claim state.
 
@@ -414,11 +414,11 @@ P5-03A — Payment/problem report contract and review-safe normalization     Com
     ↓
 P5-03B — Idempotent private report intake integration                     Completed #195
     ↓
-P5-03C — Canonical target snapshot and Claim-context signals              In progress
+P5-03C — Canonical target snapshot and Claim-context signals              Completed #196
     ↓
-P5-03D — Protected report reviewer queue and detail entry                 Planned
+P5-03D — Protected report reviewer queue and detail entry                 Completed #197
     ↓
-P5-03E — Positive payment Evidence and reconfirmation decision boundary   Planned
+P5-03E — Positive payment Evidence and reconfirmation decision boundary   In progress
     ↓
 P5-03F — Negative Evidence and priority-recheck decision boundary         Planned
     ↓
@@ -429,7 +429,7 @@ P5-03H — Public payment/problem report routes and forms                   Plan
 P5-03I — Configured review and integration audit                          Planned
 ```
 
-P5-03A is complete through #194 and P5-03B is complete through #195. P5-03C owns only read-only target existence, public target snapshot, reportability, and exact Claim-context reasons. It does not add public routes/forms, reviewer decisions, Evidence acceptance, recheck-priority mutation, temporary hiding, canonical mutation, export, or publication.
+P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, and P5-03D through #197. P5-03E owns the separately authorized, idempotent, atomic positive-payment Evidence decision. Evidence-only acceptance leaves the Claim unchanged. Reconfirmation requires Class A restricted payment proof, exact current Claim payment context, a separate publication-safe summary, and a future next-review time. A single Class B report cannot reconfirm a Claim. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.
 
 ### P5-04 — Business and service claims
 
