@@ -1,0 +1,65 @@
+name: Prepare P5-03E tracking
+
+on:
+  push:
+    branches:
+      - p5-03e-positive-payment-evidence
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-03e-positive-payment-evidence
+          fetch-depth: 0
+      - name: Synchronize implementation tracking
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              file = Path(path)
+              text = file.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing tracking text in {path}: {old!r}')
+              file.write_text(text.replace(old, new))
+
+          replace('docs/IMPLEMENTATION_PLAN.md', '**Status:** In progress at P5-03C', '**Status:** In progress at P5-03E')
+          replace(
+              'docs/IMPLEMENTATION_PLAN.md',
+              'P5-03C — Canonical target snapshot and Claim-context signals              In progress\n    ↓\nP5-03D — Protected report reviewer queue and detail entry                 Planned\n    ↓\nP5-03E — Positive payment Evidence and reconfirmation decision boundary   Planned',
+              'P5-03C — Canonical target snapshot and Claim-context signals              Completed #196\n    ↓\nP5-03D — Protected report reviewer queue and detail entry                 Completed #197\n    ↓\nP5-03E — Positive payment Evidence and reconfirmation decision boundary   In progress',
+          )
+          replace(
+              'docs/IMPLEMENTATION_PLAN.md',
+              'P5-03A is complete through #194 and P5-03B is complete through #195. P5-03C owns only read-only target existence, public target snapshot, reportability, and exact Claim-context reasons. It does not add public routes/forms, reviewer decisions, Evidence acceptance, recheck-priority mutation, temporary hiding, canonical mutation, export, or publication.',
+              'P5-03A is complete through #194, P5-03B through #195, P5-03C through #196, and P5-03D through #197. P5-03E owns the separately authorized, idempotent, atomic positive-payment Evidence decision. Evidence-only acceptance leaves the Claim unchanged. Reconfirmation requires Class A restricted payment proof, exact current Claim payment context, a separate publication-safe summary, and a future next-review time. A single Class B report cannot reconfirm a Claim. Configured Cloudflare Access and live Neon execution remain deferred to P5-03I.',
+          )
+
+          replace('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', '**Status:** Active — P5-03C in progress', '**Status:** Active — P5-03E in progress')
+          replace(
+              'docs/PHASE5_IMPLEMENTATION_SEQUENCE.md',
+              'P5-03C  Canonical report target snapshot and Claim-context signals          In progress\nP5-03   Payment and problem reports                                     In progress',
+              'P5-03C  Canonical report target snapshot and Claim-context signals          Completed #196\nP5-03D  Protected report reviewer queue and detail entry                   Completed #197\nP5-03E  Positive payment Evidence and reconfirmation decision              In progress\nP5-03   Payment and problem reports                                     In progress',
+          )
+          replace('docs/PHASE5_IMPLEMENTATION_SEQUENCE.md', '**Status:** In progress at P5-03C', '**Status:** In progress at P5-03E')
+          replace(
+              'docs/PHASE5_IMPLEMENTATION_SEQUENCE.md',
+              'P5-03C — Canonical target snapshot and Claim-context signals              In progress\n    ↓\nP5-03D — Protected report reviewer queue and detail entry                 Planned\n    ↓\nP5-03E — Positive payment Evidence and reconfirmation decision boundary   Planned',
+              'P5-03C — Canonical target snapshot and Claim-context signals              Completed #196\n    ↓\nP5-03D — Protected report reviewer queue and detail entry                 Completed #197\n    ↓\nP5-03E — Positive payment Evidence and reconfirmation decision boundary   In progress',
+          )
+          PY
+      - name: Remove one-shot workflow
+        run: git rm .github/workflows/p5-03e-tracking.yml
+      - name: Commit tracking
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m 'P5-03E: synchronize implementation tracking'
+          git push origin HEAD:p5-03e-positive-payment-evidence
