@@ -17,11 +17,7 @@ for (const fragment of [
   }
 }
 
-for (const fragment of [
-  'Payment and problem reports',
-  'Open Report form',
-  'Available now',
-]) {
+for (const fragment of ['Payment and problem reports', 'Open Report form', 'Available now']) {
   if (!contributePage.includes(fragment)) {
     throw new Error(`Missing Report contribution marker: ${fragment}`);
   }
