@@ -147,7 +147,9 @@ describe('P5-03D protected report reviewer APIs', () => {
 
   it('denies report queue access before the loader runs', async () => {
     const loadQueue = vi.fn(async () => queueResponse());
-    const response = await createReportQueueHandler({ loadQueue })(queueContext({ identity: null }));
+    const response = await createReportQueueHandler({ loadQueue })(
+      queueContext({ identity: null }),
+    );
 
     expect(response.status).toBe(403);
     await expect(response.json()).resolves.toEqual({ error: 'report_queue_denied' });
