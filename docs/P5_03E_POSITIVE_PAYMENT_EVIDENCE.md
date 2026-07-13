@@ -127,6 +127,10 @@ P5-03E does not add:
 
 Configured Cloudflare Access and live Neon execution remain deferred to P5-03I during repository-only development.
 
+## Repository verification boundary
+
+Repository validation covers strict schemas, authorization ordering, idempotent service behavior, atomic transaction construction, migration drift, unit tests, build, accessibility, and staging artifacts. It does not prove configured Cloudflare Access or live Neon transaction execution. Those remain explicit P5-03I gates.
+
 ## Next
 
 After P5-03E merges green, proceed to P5-03F for negative Evidence and priority-recheck decisions. A failed payment report must never use this positive Evidence boundary.
