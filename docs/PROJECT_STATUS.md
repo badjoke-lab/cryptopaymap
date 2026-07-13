@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-03A — Payment and problem report contract and review-safe normalization
+P5-03B — Idempotent payment and problem report private intake integration
 
 ## Current repository state
 
@@ -37,7 +37,8 @@ P5-03A — Payment and problem report contract and review-safe normalization
 - P5-02Q configured Suggest review deployment and readiness verification are complete through #175–#183.
 - P5-02R Suggest integration and handoff audit is complete through #185–#192.
 - P5-02 Suggest Place and Online Service is complete and handed off to P5-03.
-- P5-03A payment/problem report contract and review-safe normalization is in progress.
+- P5-03A payment/problem report contract and review-safe normalization is complete through #194.
+- P5-03B idempotent payment/problem report private intake integration is in progress.
 
 ## Fixed review environment
 
@@ -94,7 +95,7 @@ Media work must also read `docs/MEDIA_POLICY.md`.
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
-3. P5-03 — Payment and problem reports — In progress at P5-03A
+3. P5-03 — Payment and problem reports — In progress at P5-03B
 4. P5-04 — Business and service claims — Planned
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
@@ -139,7 +140,8 @@ P5-02P  Public Suggest form and Turnstile browser wiring                  Comple
 P5-02Q  Configured Suggest review verification                           Completed #175–#183
     ↓
 P5-02R  Suggest integration and handoff audit                            Completed #185–#192
-P5-03A  Payment/problem report contract and normalization                 In progress
+P5-03A  Payment/problem report contract and normalization                 Completed #194
+P5-03B  Idempotent payment/problem report private intake                   In progress
 ```
 
 ## P5-02Q completion evidence
@@ -205,17 +207,17 @@ Starting or completing Phase 5 does not waive retained Launch work, including:
 
 Launch readiness must not be claimed until the relevant launch criteria and retained Launch work are complete.
 
-## Current active scope — P5-03A report contract and normalization
+## Current active scope — P5-03B report private intake integration
 
-P5-03A defines strict target-aware `payment_report` and `problem_report` payloads on top of P5-01. It requires an existing Entity, Location, or Claim target, preserves explicit payment uncertainty, separates restricted evidence URLs from review-safe projections, defines bounded correction proposals, and adds no route, reviewer decision, canonical mutation, export, or publication behavior.
+P5-03B composes the strict P5-03A payment/problem report parser with the P5-01 private Submission service. It owns private original-payload persistence, review-safe normalized payload persistence, deterministic replay/conflict behavior, contact separation, and existing abuse-control ordering. It adds no public route, target lookup, reviewer decision, Evidence acceptance, priority change, temporary hiding, canonical mutation, export, or publication behavior.
 
 ## Next
 
-Complete P5-03A contract, normalization, focused tests, and schema-check integration. Then proceed to P5-03B private report intake integration.
+Complete P5-03B private-intake service, focused integration tests, schema-check integration, and non-mutation proof. Then proceed to P5-03C canonical target snapshot and Claim-context signals.
 
 ## Blocked
 
-No P5-03A blocker is known. Retained Launch work remains unchanged and launch readiness is not claimed.
+No P5-03B blocker is known. Retained Launch work remains unchanged and launch readiness is not claimed.
 
 ## Verification rule
 
