@@ -80,11 +80,9 @@ const [payment, problem] = persistence.snapshot();
 if (
   paymentReceipt.state !== 'committed' ||
   problemReceipt.state !== 'committed' ||
-  payment?.submissionType !== 'payment_report' ||
-  payment.normalizedPayload?.reportKind !== 'payment_report' ||
+  payment?.normalizedPayload?.reportKind !== 'payment_report' ||
   payment.normalizedPayload?.result !== 'successful' ||
-  problem?.submissionType !== 'problem_report' ||
-  problem.normalizedPayload?.reportKind !== 'problem_report' ||
+  problem?.normalizedPayload?.reportKind !== 'problem_report' ||
   problem.normalizedPayload?.reportType !== 'wrong_network' ||
   JSON.stringify(payment.normalizedPayload).includes('private-review-reference') ||
   JSON.stringify(problem.normalizedPayload).includes('/private/network-proof')
