@@ -1,7 +1,7 @@
 # P5-03A Payment and problem report contract and normalization boundary
 
 **Implementation item:** P5-03A  
-**Status:** Active  
+**Status:** Completed through #194  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -326,6 +326,10 @@ P5-03A is complete when:
 - focused tests and schema checks pass;
 - tracking identifies the next bounded P5-03 slice;
 - no route, form, target lookup, Evidence decision, priority mutation, temporary hiding, canonical mutation, export, or publication behavior is added.
+
+## Completion result
+
+P5-03A is complete through #194. Strict payment/problem report parsing, JSON-safe review normalization, privacy separation, focused tests, schema-check integration, and the bounded P5-03 sequence passed repository validation.
 
 ## Next
 
