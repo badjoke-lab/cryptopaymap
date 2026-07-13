@@ -238,6 +238,8 @@ P5-02 completed when P5-02R recorded repository and fixed-review audit evidence 
 
 ## P5-03 — Payment and problem reports
 
+**Status:** Ready to begin
+
 ### Goal
 
 Accept target-aware reports about payment success, failure, and incorrect or problematic public information.

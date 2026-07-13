@@ -44,17 +44,17 @@ Review URL:
 
 `https://review.cryptopaymap-staging.pages.dev`
 
-The successful P5-02Q deployment receipt for main commit:
+The current fixed-review deployment receipt for main commit:
 
-`513dc7f543ac27fe512319a3cc24cc16c3de4302`
+`699cff048fa80113d3b05bcdf4f385c229a4d41d`
 
-records `status: deployed` and success for credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, Pages deployment, and configured verification.
+records `status: deployed` and success for credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, Pages deployment, and configured verification. The bounded P5-02R live-audit receipt for the same commit records `status: complete`.
 
 Deployment receipt state must still be checked whenever review-environment state matters. A later repository merge must not be assumed visible or configured correctly at the fixed URL until the receipt records the intended `main` commit and successful configured verification.
 
 ## Required current references
 
-Before P5-02 implementation or review, read:
+Before P5-03 implementation or review, read:
 
 1. `docs/IMPLEMENTATION_PLAN.md`;
 2. `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`;
