@@ -233,7 +233,7 @@ describe('P5-03F negative report Evidence decision', () => {
     wrongPayment.originalPayload = {
       ...(wrongPayment.originalPayload as Record<string, unknown>),
       payment: {
-        ...((wrongPayment.originalPayload as { payment: Record<string, unknown> }).payment),
+        ...(wrongPayment.originalPayload as { payment: Record<string, unknown> }).payment,
         networkSlug: 'lightning',
       },
     };
