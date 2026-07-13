@@ -29,6 +29,7 @@ export const problemReportDecisionEventSchema = z
     reportType: z.string().trim().min(1).max(96),
     claimId: z.uuid().nullable(),
     evidenceId: z.uuid().nullable(),
+    verificationEventId: z.uuid().nullable(),
     claimAction: problemReportClaimActionSchema.nullable(),
     proposedCorrection: problemReportCorrectionSchema.nullable(),
     duplicateTarget: problemReportDuplicateTargetSchema.nullable(),
