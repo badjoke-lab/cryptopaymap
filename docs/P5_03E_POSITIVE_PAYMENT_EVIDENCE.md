@@ -1,7 +1,7 @@
 # P5-03E Positive payment Evidence and reconfirmation decision
 
 **Implementation item:** P5-03E  
-**Status:** Active  
+**Status:** Completed through #198  
 **Last updated:** 2026-07-13
 
 ## Purpose
@@ -131,6 +131,10 @@ Configured Cloudflare Access and live Neon execution remain deferred to P5-03I d
 
 Repository validation covers strict schemas, authorization ordering, idempotent service behavior, atomic transaction construction, migration drift, unit tests, build, accessibility, and staging artifacts. It does not prove configured Cloudflare Access or live Neon transaction execution. Those remain explicit P5-03I gates.
 
+## Completion result
+
+P5-03E completed through #198. Positive Evidence-only acceptance, Class A-only reconfirmation, exact Claim payment guards, private/public summary separation, atomic persistence, idempotent replay, and bounded API behavior are merged.
+
 ## Next
 
-After P5-03E merges green, proceed to P5-03F for negative Evidence and priority-recheck decisions. A failed payment report must never use this positive Evidence boundary.
+Proceed to P5-03F for negative Evidence and priority-recheck decisions. A failed payment report must never use the positive Evidence boundary.

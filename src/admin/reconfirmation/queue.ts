@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export const reconfirmationQueueReasonValues = [
   'overdue',
+  'negative_evidence',
   'missing_deadline',
   'stale_review',
   'due_soon',
@@ -76,10 +77,25 @@ export function evaluateReconfirmationClaim(
   input: ReconfirmationClaimSnapshot,
   asOf: Date,
   options: ReconfirmationQueueOptions = { dueSoonDays: 30 },
+  negativeEvidenceAt: string | null = null,
 ): ReconfirmationQueueItem | null {
   const claim = reconfirmationClaimSnapshotSchema.parse(input);
   const parsedOptions = reconfirmationQueueOptionsSchema.parse(options);
+  const signalAt = z.iso.datetime({ offset: true }).nullable().parse(negativeEvidenceAt);
   if (claim.deletedAt !== null) return null;
+
+  if (claim.claimStatus === 'confirmed' && claim.nextReviewAt !== null) {
+    const dueAt = new Date(claim.nextReviewAt);
+    const daysUntilReview = dayDelta(dueAt, asOf);
+    if (dueAt.getTime() <= asOf.getTime()) {
+      return item(claim, 'overdue', 'mark_stale', dueAt, daysUntilReview, 0);
+    }
+  }
+
+  if (signalAt !== null && (claim.claimStatus === 'confirmed' || claim.claimStatus === 'stale')) {
+    const dueAt = new Date(signalAt);
+    return item(claim, 'negative_evidence', 'review', dueAt, dayDelta(dueAt, asOf), 5);
+  }
 
   if (claim.claimStatus === 'stale') {
     const dueAt = claim.nextReviewAt === null ? null : new Date(claim.nextReviewAt);
@@ -100,9 +116,6 @@ export function evaluateReconfirmationClaim(
 
   const dueAt = new Date(claim.nextReviewAt);
   const daysUntilReview = dayDelta(dueAt, asOf);
-  if (dueAt.getTime() <= asOf.getTime()) {
-    return item(claim, 'overdue', 'mark_stale', dueAt, daysUntilReview, 0);
-  }
   if (daysUntilReview <= parsedOptions.dueSoonDays) {
     return item(claim, 'due_soon', 'review', dueAt, daysUntilReview, 200 + daysUntilReview);
   }
