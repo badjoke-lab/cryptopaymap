@@ -15,18 +15,48 @@ export interface ConfiguredReportFormProps {
   initialTargetId?: string | undefined;
 }
 
+interface ResolvedTarget {
+  targetType: ReportBrowserFormValues['targetType'];
+  targetId: string;
+}
+
+function readBrowserTarget(fallback: ResolvedTarget): ResolvedTarget {
+  const parameters = new URLSearchParams(window.location.search);
+  const requestedType = parameters.get('targetType');
+  const targetType =
+    requestedType === 'location' || requestedType === 'claim' || requestedType === 'entity'
+      ? requestedType
+      : fallback.targetType;
+  const requestedId = parameters.get('targetId')?.trim();
+
+  return {
+    targetType,
+    targetId: requestedId && requestedId.length > 0 ? requestedId : fallback.targetId,
+  };
+}
+
 export function ConfiguredReportForm({
   submissionType,
   assets,
   networks,
-  initialTargetType,
-  initialTargetId,
+  initialTargetType = 'entity',
+  initialTargetId = '',
 }: ConfiguredReportFormProps) {
   const [configuration, setConfiguration] = useState<ReportClientConfiguration | null>(null);
   const [state, setState] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [target, setTarget] = useState<ResolvedTarget>({
+    targetType: initialTargetType,
+    targetId: initialTargetId,
+  });
 
   useEffect(() => {
     const controller = new AbortController();
+    setTarget(
+      readBrowserTarget({
+        targetType: initialTargetType,
+        targetId: initialTargetId,
+      }),
+    );
 
     async function loadConfiguration() {
       try {
@@ -50,7 +80,7 @@ export function ConfiguredReportForm({
 
     void loadConfiguration();
     return () => controller.abort();
-  }, []);
+  }, [initialTargetId, initialTargetType]);
 
   if (state === 'loading') {
     return (
@@ -79,8 +109,8 @@ export function ConfiguredReportForm({
       action={configuration.action}
       assets={assets}
       networks={networks}
-      initialTargetType={initialTargetType}
-      initialTargetId={initialTargetId}
+      initialTargetType={target.targetType}
+      initialTargetId={target.targetId}
     />
   );
 }
