@@ -1,8 +1,8 @@
 # P5-04A Business claim contract and review-safe normalization
 
 **Implementation item:** P5-04A  
-**Status:** Active  
-**Started:** 2026-07-13
+**Status:** Completed through #203  
+**Completed:** 2026-07-13
 
 ## Purpose
 
@@ -90,6 +90,12 @@ The contract can carry:
 
 The contract deliberately excludes status, visibility, verification result, ownership status, canonical version, export, and publication fields.
 
+## Completion evidence
+
+P5-04A merged as #203 at main commit `60f68868fdb5a434be4b1ffa816c16efcaee6c71` after Foundation validation, Migration drift, Staging review validation, and representative screenshot capture all succeeded.
+
+Focused validation proves method-specific requirements, Entity/Location scope consistency, payment proposal reuse, fixed representative relationship, and exclusion of official contact email and private proof URL values from the review-safe projection.
+
 ## Security and authority boundary
 
 A successfully parsed or persisted Claim means only:
@@ -111,4 +117,4 @@ public record changed
 
 ## Next
 
-P5-04B will integrate the strict Claim parser and review-safe normalized projection with idempotent private Submission persistence. Verification state, adapters, protected reviewer entry, relationship decisions, expiration/revocation, public route, and configured audit remain separate later slices.
+P5-04B integrates the strict Claim parser and review-safe normalized projection with idempotent private Submission persistence. Verification state, adapters, protected reviewer entry, relationship decisions, expiration/revocation, public route, and configured audit remain separate later slices.
