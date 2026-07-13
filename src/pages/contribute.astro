@@ -17,7 +17,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   </header>
 
   <section class="safe-area-inline page-container grid gap-5 pb-12 sm:grid-cols-2 sm:pb-16 lg:grid-cols-3">
-    <article class="rounded-card border border-border bg-surface p-6 shadow-sm sm:col-span-2 lg:col-span-1">
+    <article class="rounded-card border border-border bg-surface p-6 shadow-sm">
       <p class="m-0 text-sm font-semibold text-brand-700">Available now</p>
       <h2 class="mt-2 text-xl font-semibold text-ink">Suggest a place or service</h2>
       <p class="mt-3 text-sm leading-6 text-muted">
@@ -31,12 +31,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </a>
     </article>
 
-    <article class="rounded-card border border-border bg-canvas p-6">
-      <p class="m-0 text-sm font-semibold text-muted">Planned</p>
+    <article class="rounded-card border border-border bg-surface p-6 shadow-sm">
+      <p class="m-0 text-sm font-semibold text-brand-700">Available now</p>
       <h2 class="mt-2 text-xl font-semibold text-ink">Payment and problem reports</h2>
       <p class="mt-3 text-sm leading-6 text-muted">
-        Target-aware payment confirmations, failures, factual corrections, privacy reports, and other problems are planned for later Phase 5 work.
+        Report successful or failed payments, factual corrections, duplicate records, closure, privacy, rights, or other problems for protected review.
       </p>
+      <a
+        class="motion-feedback mt-5 inline-flex min-h-11 items-center rounded-control bg-brand-600 px-4 py-2 font-semibold text-white no-underline hover:bg-brand-700"
+        href="/report"
+      >
+        Open Report form
+      </a>
     </article>
 
     <article class="rounded-card border border-border bg-canvas p-6">
