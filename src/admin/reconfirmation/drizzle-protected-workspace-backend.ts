@@ -60,6 +60,7 @@ function negativeEvidenceSignalAt() {
         select 1
         from ${verificationEvents}
         where ${verificationEvents.claimId} = ${acceptanceClaims.id}
+          and ${verificationEvents.eventType} in ('reconfirmed', 'restored', 'marked_stale', 'ended', 'corrected')
           and ${verificationEvents.effectiveAt} >= ${evidence.createdAt}
       )
   )`;
@@ -81,6 +82,7 @@ function hasNegativeEvidenceSignal() {
         select 1
         from ${verificationEvents}
         where ${verificationEvents.claimId} = ${acceptanceClaims.id}
+          and ${verificationEvents.eventType} in ('reconfirmed', 'restored', 'marked_stale', 'ended', 'corrected')
           and ${verificationEvents.effectiveAt} >= ${evidence.createdAt}
       )
   )`;
