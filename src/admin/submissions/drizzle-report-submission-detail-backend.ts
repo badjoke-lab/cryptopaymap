@@ -39,11 +39,7 @@ export function createDrizzleReportSubmissionDetailBackend(
         .limit(1);
       const row = rows[0];
       if (row === undefined) return null;
-      if (
-        row.normalizedPayload === null ||
-        row.targetType === null ||
-        row.targetId === null
-      ) {
+      if (row.normalizedPayload === null || row.targetType === null || row.targetId === null) {
         throw new ReportSubmissionReviewDetailError(
           'invalid_detail',
           'The stored report Submission detail is incomplete.',
