@@ -41,6 +41,7 @@ export const reportSubmissionQueueQuerySchema = z
   .object({
     statuses: z
       .array(submissionWorkflowStatusSchema)
+      .min(1)
       .max(submissionWorkflowStatusValues.length)
       .default([...actionableReportSubmissionStatuses]),
     limit: z.number().int().min(1).max(50).default(25),
