@@ -12,7 +12,10 @@ const targetId = '30000000-0000-4000-8000-000000000001';
 const receivedAt = new Date('2026-07-13T00:00:00.000Z');
 const hmacKey = new Uint8Array(32).fill(9);
 
-function commonEnvelope(submissionType: 'payment_report' | 'problem_report', originalPayload: unknown) {
+function commonEnvelope<Payload>(
+  submissionType: 'payment_report' | 'problem_report',
+  originalPayload: Payload,
+) {
   return {
     schemaVersion: 'submission-common-v1',
     submissionType,
