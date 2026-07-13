@@ -193,6 +193,7 @@ export interface ProblemReportDecisionState {
     reviewStatus: string;
     polarity: string;
     deletedAt: string | null;
+    negativeEvidenceDecisionRecorded: boolean;
   } | null;
 }
 
@@ -609,6 +610,15 @@ export async function decideProblemReport(
         'Duplicate resolution requires a stored duplicate target.',
       );
     }
+    if (
+      material.duplicateTarget.targetType === state.targetType &&
+      material.duplicateTarget.targetId === state.targetId
+    ) {
+      throw new ProblemReportDecisionError(
+        'ineligible',
+        'A report target cannot be resolved as a duplicate of itself.',
+      );
+    }
     let duplicateExists: boolean;
     try {
       duplicateExists = await backend.readDuplicateTargetExists(
@@ -655,11 +665,12 @@ export async function decideProblemReport(
       state.evidence.submissionId !== submissionIdResult.data ||
       state.evidence.reviewStatus !== 'accepted' ||
       state.evidence.polarity !== 'contradicting' ||
-      state.evidence.deletedAt !== null
+      state.evidence.deletedAt !== null ||
+      !state.evidence.negativeEvidenceDecisionRecorded
     ) {
       throw new ProblemReportDecisionError(
         'ineligible',
-        'The selected accepted contradicting Evidence is not valid for this report and Claim.',
+        'The selected P5-03F accepted contradicting Evidence is not valid for this report and Claim.',
       );
     }
   }
