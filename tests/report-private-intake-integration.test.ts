@@ -112,10 +112,6 @@ describe('P5-03B report private intake integration', () => {
 
     expect(receipt.state).toBe('committed');
     expect(stored).toMatchObject({
-      submissionType: 'payment_report',
-      targetType: 'location',
-      targetId,
-      relationship: null,
       workflowStatus: 'received',
       originalPayload: {
         originalPayload: validPaymentReport().originalPayload,
@@ -152,12 +148,11 @@ describe('P5-03B report private intake integration', () => {
 
     expect(receipt.state).toBe('committed');
     expect(stored).toMatchObject({
-      submissionType: 'problem_report',
-      targetType: 'location',
-      targetId,
       workflowStatus: 'received',
       normalizedPayload: {
         reportKind: 'problem_report',
+        targetType: 'location',
+        targetId,
         reportType: 'wrong_network',
         proposedCorrection: {
           kind: 'network',
@@ -255,10 +250,9 @@ describe('P5-03B report private intake integration', () => {
     await intake.submit(problemRequestId, validProblemReport(), receivedAt);
 
     expect(persistence.snapshot()).toHaveLength(2);
-    expect(persistence.snapshot().map((row) => row.submissionType)).toEqual([
-      'payment_report',
-      'problem_report',
-    ]);
+    expect(
+      persistence.snapshot().map((row) => row.normalizedPayload?.reportKind),
+    ).toEqual(['payment_report', 'problem_report']);
   });
 
   it('runs abuse controls before report parsing and private persistence', async () => {
