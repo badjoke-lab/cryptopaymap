@@ -1,0 +1,155 @@
+name: P5-03I fixed review live audit
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Staging review deploy
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      contains(github.event.workflow_run.head_commit.message, '[run-p5-03i-audit]'))
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out audited main commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check fixed-review Submission schema
+        id: schema_probe
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node scripts/check-p5-02r-review-schema.mjs \
+            > p5-03i-review-schema.json \
+            2> p5-03i-review-schema-error.log
+
+      - name: Run bounded fixed-review report audit
+        id: live_audit
+        if: steps.schema_probe.outcome == 'success'
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node scripts/run-p5-03i-fixed-review-probe.mjs \
+            > p5-03i-fixed-review-live-audit.json \
+            2> p5-03i-fixed-review-live-audit-error.log
+
+      - name: Write bounded audit receipt
+        if: always()
+        env:
+          SCHEMA_OUTCOME: ${{ steps.schema_probe.outcome }}
+          AUDIT_OUTCOME: ${{ steps.live_audit.outcome }}
+          AUDITED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          node <<'NODE'
+          const { existsSync, readFileSync, writeFileSync } = require('node:fs');
+          function readJson(path) {
+            if (!existsSync(path)) return { parsed: false, value: null };
+            try {
+              return { parsed: true, value: JSON.parse(readFileSync(path, 'utf8')) };
+            } catch {
+              return { parsed: false, value: null };
+            }
+          }
+          const schema = readJson('p5-03i-review-schema.json');
+          const audit = readJson('p5-03i-fixed-review-live-audit.json');
+          const schemaReady =
+            process.env.SCHEMA_OUTCOME === 'success' &&
+            schema.parsed &&
+            schema.value?.status === 'ready';
+          const auditComplete =
+            process.env.AUDIT_OUTCOME === 'success' &&
+            audit.parsed &&
+            audit.value?.status === 'complete';
+          const complete = schemaReady && auditComplete;
+          const result = schemaReady
+            ? audit.value
+            : {
+                status: 'failed',
+                failedStage: 'database_schema',
+                schema: schema.value,
+              };
+          const receipt = {
+            status: complete ? 'complete' : 'failed',
+            commit: process.env.AUDITED_COMMIT,
+            generatedAt: new Date().toISOString(),
+            workflowRunId: process.env.WORKFLOW_RUN_ID,
+            checks: {
+              databaseSchema: process.env.SCHEMA_OUTCOME,
+              schemaResultParsed: schema.parsed,
+              liveJourney: process.env.AUDIT_OUTCOME,
+              auditResultParsed: audit.parsed,
+            },
+            result,
+          };
+          writeFileSync(
+            'p5-03i-fixed-review-live-audit-receipt.json',
+            `${JSON.stringify(receipt, null, 2)}\n`,
+          );
+          NODE
+
+      - name: Upload bounded audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-03i-fixed-review-live-audit
+          path: |
+            p5-03i-review-schema.json
+            p5-03i-review-schema-error.log
+            p5-03i-fixed-review-live-audit.json
+            p5-03i-fixed-review-live-audit-error.log
+            p5-03i-fixed-review-live-audit-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish audit receipt to status branch
+        if: always()
+        env:
+          STATUS_WORKTREE: ${{ runner.temp }}/cryptopaymap-p5-03i-audit-status
+        run: |
+          set -euo pipefail
+          rm -rf "$STATUS_WORKTREE"
+          git fetch origin staging-review:refs/remotes/origin/staging-review
+          git worktree add --detach "$STATUS_WORKTREE" refs/remotes/origin/staging-review
+          trap 'git worktree remove --force "$STATUS_WORKTREE" >/dev/null 2>&1 || true' EXIT
+
+          mkdir -p "$STATUS_WORKTREE/config/staging-review"
+          cp p5-03i-fixed-review-live-audit-receipt.json \
+            "$STATUS_WORKTREE/config/staging-review/p5-03i-live-audit-receipt.json"
+
+          git -C "$STATUS_WORKTREE" config user.name 'github-actions[bot]'
+          git -C "$STATUS_WORKTREE" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$STATUS_WORKTREE" add config/staging-review/p5-03i-live-audit-receipt.json
+          if git -C "$STATUS_WORKTREE" diff --cached --quiet; then
+            echo 'P5-03I audit receipt is unchanged.'
+            exit 0
+          fi
+          git -C "$STATUS_WORKTREE" commit -m 'Record P5-03I fixed-review live audit receipt'
+          git -C "$STATUS_WORKTREE" push origin HEAD:staging-review
+
+      - name: Enforce live audit success
+        if: always()
+        run: |
+          node -e "const r=require('./p5-03i-fixed-review-live-audit-receipt.json'); if(r.status!=='complete') process.exit(1)"
