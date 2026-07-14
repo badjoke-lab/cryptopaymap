@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-04H3 — Protected Business Claim field-application reviewer flow and integration audit
+P5-05A — Photo and Media submission contract and review-safe normalization
 
 ## Current repository state
 
@@ -25,13 +25,15 @@ P5-04H3 — Protected Business Claim field-application reviewer flow and integra
 - P5-04F verification execution and bounded result recording completed in #211 at main commit `3ffe59c0e2d773c11cff066adcaf1cb1d099e76d`.
 - P5-04G representative-relationship decisions completed in #212 at main commit `dc1649cea5731bf12dd8a86ec6fba894be6c1def`.
 - P5-04H1 strict field-level decision and canonical projection completed in #213 at main commit `3d1b2f65101dd0b4a432e52b5ad32476cbcf8467`.
-- P5-04H2 durable exact-state canonical persistence, private payment drafts, provenance, receipts, replay, and rollback completed through #214.
+- P5-04H2 durable exact-state canonical persistence, private payment drafts, provenance, receipts, replay, and rollback completed in #214 at main commit `01beaf5b7fa0611f77730bd5ff6e5a0855616bf3`.
+- P5-04H3 protected reviewer workspace/API, one-time application guard, and integration audit completed through #215.
 - Draft #204 was closed as superseded because it predated the #206 privacy boundary and tested nonexistent persistence metadata.
-- P5-04H3 protected reviewer flow and integration audit are next.
+- P5-04 Business and service claims are repository-complete.
+- P5-05 Photo and Media submission intake is next.
 
-## P5-04 completed foundations
+## P5-04 completion result
 
-P5-04A through P5-04H2 now provide:
+P5-04A through P5-04H3 provide:
 
 - existing Entity or Location Claim targets only;
 - owner, authorized representative, and authorized employee roles;
@@ -55,27 +57,33 @@ P5-04A through P5-04H2 now provide:
 - durable private application receipts and field-level provenance;
 - exact-state atomic Entity and Location updates;
 - bounded private payment drafts without direct public-claim creation;
+- protected current-versus-proposed reviewer workspace and GET/POST API;
+- exact relationship and canonical version binding;
+- UUID idempotency-key binding and deterministic replay;
+- one durable field application per Claim Submission, enforced before projection and inside the atomic database guard;
+- bounded authorization, validation, stale, conflict, and unavailable responses;
 - replay recovery and full rollback on conflicts;
-- no account permission, unrelated-field mutation, export, or publication.
+- no account permission, unrelated-field mutation, public Claim route, export, or publication.
 
-## P5-04H3 active scope
+## P5-05A active scope
 
-P5-04H3 adds:
+P5-05A will establish:
 
-- a protected operator request and response contract for H1 projection and H2 persistence;
-- reviewer-safe current-versus-proposed field presentation;
-- explicit complete accept/reject decisions without arbitrary replacement values;
-- exact Submission, relationship, and canonical version tokens;
-- one protected application endpoint/service boundary;
-- bounded success, replay, stale, conflict, authorization, and validation responses;
-- integration tests spanning Claim intake through verification, relationship approval, field decisions, and canonical application;
-- an audit proving no public Claim route, account grant, implicit editing right, export, publication, or private-value leakage.
+- Photo and Media Submission types and strict request contracts;
+- existing Entity or Location targets only;
+- evidence-image, owner-verification-proof, and public-gallery-candidate purpose separation;
+- photographer, rights-holder, permission, capture-date, description, and Media-role fields;
+- bounded image-count and metadata limits by Submission context;
+- quarantine storage references without public object exposure;
+- review-safe normalization that excludes storage credentials, status secrets, contact data, EXIF, GPS, wallet, receipt, and other protected material;
+- no automatic Media creation, public visibility, gallery placement, export, or publication.
 
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
 - `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`
 - `docs/SUBMISSION_WORKFLOW.md`
+- `docs/MEDIA_POLICY.md`
 - `docs/DATA_MODEL.md`
 - `docs/SECURITY_AND_PRIVACY.md`
 - `docs/P5_04A_BUSINESS_CLAIM_CONTRACT_AND_NORMALIZATION.md`
@@ -86,26 +94,27 @@ P5-04H3 adds:
 - `docs/P5_04F_BUSINESS_CLAIM_VERIFICATION_EXECUTION.md`
 - `docs/P5_04G_BUSINESS_CLAIM_RELATIONSHIP_DECISIONS.md`
 - `docs/P5_04H_BUSINESS_CLAIM_FIELD_APPLICATION.md`
+- `docs/P5_04H3_BUSINESS_CLAIM_REVIEWER_FLOW.md`
 
 ## Phase 5 sequence
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
-4. P5-04 — Business and service claims — In progress at P5-04H3
-5. P5-05 — Photo and Media submission intake — Planned
+4. P5-04 — Business and service claims — Completed through #203–#215
+5. P5-05 — Photo and Media submission intake — In progress at P5-05A
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Implement and validate the protected P5-04H3 reviewer request/response boundary, operator-safe field decision workspace model, H1/H2 integration service, complete Business Claim chain audit, focused integration tests, executable schema validation, and protected staging-review evidence.
+Implement and validate P5-05A Photo and Media submission contracts, purpose and rights separation, target-aware review-safe normalization, private quarantine-reference boundaries, focused privacy and leakage tests, and executable schema validation.
 
 ## Blocked
 
-No repository blocker is known. Account permissions, public Claim routing, configured production review, public export activation, and broader Claim lifecycle operations remain separate later slices.
+No repository blocker is known. R2 upload signing, binary validation, asynchronous image processing, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A verified representative relationship grants no editing right, and a field proposal changes canonical data only through a separately authorized P5-04H application transaction.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Submission never publishes Media automatically, and a verified representative relationship grants no account or editing right.
