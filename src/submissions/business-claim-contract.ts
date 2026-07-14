@@ -115,38 +115,90 @@ export const businessClaimVerificationRequestSchema = z
     }
   });
 
+export const businessClaimEntityFieldValues = [
+  'name',
+  'legalName',
+  'websiteUrl',
+  'countryCode',
+] as const;
+export const businessClaimEntityFieldSchema = z.enum(businessClaimEntityFieldValues);
+
 export const businessClaimEntityCorrectionSchema = z
   .object({
-    name: boundedText(160).optional(),
-    legalName: boundedText(200).nullable().optional(),
-    websiteUrl: httpsUrlSchema.nullable().optional(),
-    countryCode: countryCodeSchema.nullable().optional(),
+    changedFields: z
+      .array(businessClaimEntityFieldSchema)
+      .min(1)
+      .max(businessClaimEntityFieldValues.length)
+      .transform((values) => [...new Set(values)]),
+    name: boundedText(160).nullable(),
+    legalName: boundedText(200).nullable(),
+    websiteUrl: httpsUrlSchema.nullable(),
+    countryCode: countryCodeSchema.nullable(),
   })
   .strict()
-  .refine(
-    (correction) => Object.keys(correction).length > 0,
-    'Entity corrections require at least one proposed field.',
-  );
+  .superRefine((correction, context) => {
+    for (const field of businessClaimEntityFieldValues) {
+      const changed = correction.changedFields.includes(field);
+      const value = correction[field];
+      if (!changed && value !== null) {
+        context.addIssue({
+          code: 'custom',
+          path: [field],
+          message: 'Unchanged Entity fields must use null placeholders.',
+        });
+      }
+    }
+    if (correction.changedFields.includes('name') && correction.name === null) {
+      context.addIssue({
+        code: 'custom',
+        path: ['name'],
+        message: 'Entity name cannot be cleared.',
+      });
+    }
+  });
+
+export const businessClaimLocationFieldValues = [
+  'name',
+  'addressLine',
+  'locality',
+  'region',
+  'postalCode',
+  'countryCode',
+  'latitude',
+  'longitude',
+  'websiteUrl',
+  'phone',
+  'description',
+  'openingHours',
+  'amenities',
+  'socialLinks',
+] as const;
+export const businessClaimLocationFieldSchema = z.enum(businessClaimLocationFieldValues);
 
 export const businessClaimLocationCorrectionSchema = z
   .object({
-    name: boundedText(160).nullable().optional(),
-    addressLine: boundedText(500).nullable().optional(),
-    locality: boundedText(120).nullable().optional(),
-    region: boundedText(120).nullable().optional(),
-    postalCode: boundedText(32).nullable().optional(),
-    countryCode: countryCodeSchema.optional(),
-    latitude: z.number().finite().min(-90).max(90).optional(),
-    longitude: z.number().finite().min(-180).max(180).optional(),
-    websiteUrl: httpsUrlSchema.nullable().optional(),
-    phone: boundedText(64).nullable().optional(),
-    description: boundedText(5_000).nullable().optional(),
-    openingHours: boundedText(2_000).nullable().optional(),
+    changedFields: z
+      .array(businessClaimLocationFieldSchema)
+      .min(1)
+      .max(businessClaimLocationFieldValues.length)
+      .transform((values) => [...new Set(values)]),
+    name: boundedText(160).nullable(),
+    addressLine: boundedText(500).nullable(),
+    locality: boundedText(120).nullable(),
+    region: boundedText(120).nullable(),
+    postalCode: boundedText(32).nullable(),
+    countryCode: countryCodeSchema.nullable(),
+    latitude: z.number().finite().min(-90).max(90).nullable(),
+    longitude: z.number().finite().min(-180).max(180).nullable(),
+    websiteUrl: httpsUrlSchema.nullable(),
+    phone: boundedText(64).nullable(),
+    description: boundedText(5_000).nullable(),
+    openingHours: boundedText(2_000).nullable(),
     amenities: z
       .array(boundedText(80))
       .max(100)
       .transform((values) => [...new Set(values)])
-      .optional(),
+      .nullable(),
     socialLinks: z
       .array(canonicalLocationSocialLinkSchema)
       .max(30)
@@ -164,23 +216,50 @@ export const businessClaimLocationCorrectionSchema = z
           seen.add(key);
         });
       })
-      .optional(),
+      .nullable(),
   })
   .strict()
   .superRefine((correction, context) => {
-    if (Object.keys(correction).length === 0) {
+    for (const field of businessClaimLocationFieldValues) {
+      const changed = correction.changedFields.includes(field);
+      const value = correction[field];
+      if (!changed && value !== null) {
+        context.addIssue({
+          code: 'custom',
+          path: [field],
+          message: 'Unchanged Location fields must use null placeholders.',
+        });
+      }
+    }
+
+    if (
+      correction.changedFields.includes('countryCode') &&
+      correction.countryCode === null
+    ) {
       context.addIssue({
         code: 'custom',
-        message: 'Location corrections require at least one proposed field.',
+        path: ['countryCode'],
+        message: 'Location country code cannot be cleared.',
       });
     }
-    const hasLatitude = correction.latitude !== undefined;
-    const hasLongitude = correction.longitude !== undefined;
-    if (hasLatitude !== hasLongitude) {
+
+    const changesLatitude = correction.changedFields.includes('latitude');
+    const changesLongitude = correction.changedFields.includes('longitude');
+    if (changesLatitude !== changesLongitude) {
+      context.addIssue({
+        code: 'custom',
+        path: ['changedFields'],
+        message: 'Latitude and longitude corrections must be requested together.',
+      });
+    }
+    if (
+      changesLatitude &&
+      (correction.latitude === null || correction.longitude === null)
+    ) {
       context.addIssue({
         code: 'custom',
         path: ['latitude'],
-        message: 'Latitude and longitude corrections must be supplied together.',
+        message: 'Latitude and longitude corrections require a complete coordinate pair.',
       });
     }
   });
@@ -225,7 +304,10 @@ export const businessClaimSubmissionIntakeSchema = commonSubmissionIntakeSchema
         });
       } else if (verification.officialDomain !== null) {
         const domain = emailDomain(intake.contact.email);
-        if (domain !== verification.officialDomain && !domain.endsWith(`.${verification.officialDomain}`)) {
+        if (
+          domain !== verification.officialDomain &&
+          !domain.endsWith(`.${verification.officialDomain}`)
+        ) {
           context.addIssue({
             code: 'custom',
             path: ['contact', 'email'],
