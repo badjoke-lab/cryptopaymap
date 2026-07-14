@@ -31,15 +31,7 @@ function pngChunk(type: string, data: number[]): number[] {
 }
 
 function png(width: number, height: number): Uint8Array {
-  const ihdr = [
-    ...uint32Be(width),
-    ...uint32Be(height),
-    8,
-    2,
-    0,
-    0,
-    0,
-  ];
+  const ihdr = [...uint32Be(width), ...uint32Be(height), 8, 2, 0, 0, 0];
   return Uint8Array.from([
     0x89,
     0x50,
