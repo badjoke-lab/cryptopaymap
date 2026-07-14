@@ -8,7 +8,9 @@ import type {
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
-function record(row: typeof quarantineUploadReservations.$inferSelect): PhotoUploadReservationRecord {
+function record(
+  row: typeof quarantineUploadReservations.$inferSelect,
+): PhotoUploadReservationRecord {
   return {
     id: row.id,
     intakeRequestId: row.intakeRequestId,
@@ -41,9 +43,7 @@ export function createDrizzlePhotoUploadReservationPersistence(
         return { insertedCount: 0, reservations: [] };
       }
       if (
-        command.reservations.some(
-          (reservation) => reservation.intakeRequestId !== intakeRequestId,
-        )
+        command.reservations.some((reservation) => reservation.intakeRequestId !== intakeRequestId)
       ) {
         throw new Error('Reservation creation must use one intake request ID.');
       }
