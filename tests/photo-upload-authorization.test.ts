@@ -178,10 +178,7 @@ describe('P5-05C Photo quarantine upload authorization', () => {
     });
     expect(persistence.list()).toHaveLength(2);
 
-    const replay = await service.authorize(
-      validRequest(),
-      new Date('2026-07-15T00:01:00.000Z'),
-    );
+    const replay = await service.authorize(validRequest(), new Date('2026-07-15T00:01:00.000Z'));
     expect(replay.state).toBe('replayed');
     expect(replay.uploads).toHaveLength(2);
   });
