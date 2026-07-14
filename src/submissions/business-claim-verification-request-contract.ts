@@ -4,10 +4,17 @@ import { ownershipVerificationMethodSchema } from './business-claim-contract';
 const timestampSchema = z.iso.datetime({ offset: true });
 const nullableUrlSchema = z.url().max(2_048).nullable();
 
+export const businessClaimVerificationExpiryHoursSchema = z.union([
+  z.literal(24),
+  z.literal(72),
+  z.literal(168),
+]);
+
 export const businessClaimVerificationRequestEventPayloadSchema = z
   .object({
     schemaVersion: z.literal('business-claim-verification-request-event-v1'),
     preparationId: z.uuid(),
+    expectedUpdatedAt: timestampSchema,
     targetType: z.enum(['entity', 'location']),
     targetId: z.uuid(),
     method: ownershipVerificationMethodSchema,
@@ -17,6 +24,7 @@ export const businessClaimVerificationRequestEventPayloadSchema = z
     protectedContactPresent: z.boolean(),
     privateProofPresent: z.boolean(),
     assistedVerifierReferencePresent: z.boolean(),
+    expiresInHours: businessClaimVerificationExpiryHoursSchema,
     expiresAt: timestampSchema,
   })
   .strict()
