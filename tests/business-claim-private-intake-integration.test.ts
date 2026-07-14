@@ -140,7 +140,9 @@ describe('P5-04B business claim private intake integration', () => {
       emailHash: 'e'.repeat(64),
       contactAllowed: true,
     });
-    expect(JSON.stringify(stored?.originalPayload)).not.toContain('representative@merchant.example');
+    expect(JSON.stringify(stored?.originalPayload)).not.toContain(
+      'representative@merchant.example',
+    );
     expect(JSON.stringify(stored?.normalizedPayload)).not.toContain(
       'representative@merchant.example',
     );
