@@ -85,11 +85,7 @@ function queuePage(): BusinessClaimSubmissionQueuePageData {
         targetType: 'entity',
         targetId: entityId,
         claimantRole: 'owner',
-        requestedScopes: [
-          'representative_relationship',
-          'entity_profile',
-          'payment_information',
-        ],
+        requestedScopes: ['representative_relationship', 'entity_profile', 'payment_information'],
         verificationMethod: 'official_domain_email',
         workflowStatus: 'received',
         resolution: null,
@@ -188,7 +184,11 @@ describe('P5-04D Business Claim Submission reviewer contracts', () => {
   it('loads a bounded Business Claim queue for an authorized reviewer', async () => {
     const response = await loadBusinessClaimSubmissionQueue(
       context,
-      { async loadPage() { return queuePage(); } },
+      {
+        async loadPage() {
+          return queuePage();
+        },
+      },
       businessClaimSubmissionQueueQuerySchema.parse({}),
       now,
     );
@@ -212,7 +212,11 @@ describe('P5-04D Business Claim Submission reviewer contracts', () => {
     await expect(
       loadBusinessClaimSubmissionQueue(
         unauthorized,
-        { async loadPage() { return queuePage(); } },
+        {
+          async loadPage() {
+            return queuePage();
+          },
+        },
         businessClaimSubmissionQueueQuerySchema.parse({}),
         now,
       ),
@@ -222,8 +226,16 @@ describe('P5-04D Business Claim Submission reviewer contracts', () => {
   it('loads normalized Claim detail and composes read-only target context', async () => {
     const response = await loadBusinessClaimSubmissionReviewDetail(
       context,
-      { async loadDetail() { return detailData(); } },
-      { async loadTarget() { return targetMaterial(); } },
+      {
+        async loadDetail() {
+          return detailData();
+        },
+      },
+      {
+        async loadTarget() {
+          return targetMaterial();
+        },
+      },
       submissionId,
       now,
     );
@@ -244,8 +256,16 @@ describe('P5-04D Business Claim Submission reviewer contracts', () => {
     await expect(
       loadBusinessClaimSubmissionReviewDetail(
         context,
-        { async loadDetail() { return invalid; } },
-        { async loadTarget() { return targetMaterial(); } },
+        {
+          async loadDetail() {
+            return invalid;
+          },
+        },
+        {
+          async loadTarget() {
+            return targetMaterial();
+          },
+        },
         submissionId,
         now,
       ),
@@ -255,8 +275,16 @@ describe('P5-04D Business Claim Submission reviewer contracts', () => {
   it('strictly rejects protected values in the reviewer response', async () => {
     const valid = await loadBusinessClaimSubmissionReviewDetail(
       context,
-      { async loadDetail() { return detailData(); } },
-      { async loadTarget() { return targetMaterial(); } },
+      {
+        async loadDetail() {
+          return detailData();
+        },
+      },
+      {
+        async loadTarget() {
+          return targetMaterial();
+        },
+      },
       submissionId,
       now,
     );
@@ -269,7 +297,9 @@ describe('P5-04D Business Claim Submission reviewer contracts', () => {
       originalPayload: { private: true },
     };
 
-    expect(businessClaimSubmissionReviewDetailResponseSchema.safeParse(candidate).success).toBe(false);
+    expect(businessClaimSubmissionReviewDetailResponseSchema.safeParse(candidate).success).toBe(
+      false,
+    );
   });
 
   it('rejects queue rows whose stored identity differs from normalized Claim identity', () => {
