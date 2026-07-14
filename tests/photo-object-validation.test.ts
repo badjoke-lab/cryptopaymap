@@ -53,15 +53,7 @@ function png(width = 640, height = 480): Uint8Array {
     0x0a,
     0x1a,
     0x0a,
-    ...pngChunk('IHDR', [
-      ...uint32Be(width),
-      ...uint32Be(height),
-      8,
-      2,
-      0,
-      0,
-      0,
-    ]),
+    ...pngChunk('IHDR', [...uint32Be(width), ...uint32Be(height), 8, 2, 0, 0, 0]),
     ...pngChunk('IDAT', [0]),
     ...pngChunk('IEND', []),
   ]);
@@ -123,35 +115,28 @@ async function setup(body = png()) {
     objects,
     service: createPhotoObjectValidationService({
       reservations,
-      targets: {
-        async targetExists() {
-          return true;
-        },
-      },
+      targets: { async targetExists() { return true; } },
       objects,
     }),
   };
 }
 
 describe('P5-05D private photo object validation', () => {
-  it('validates object existence, metadata, bytes, dimensions, and content hash without exposing private storage state in the receipt', async () => {
+  it('validates private context, bytes, dimensions, and hash without receipt leakage', async () => {
     const fixture = await setup();
     const result = await fixture.service.validate(requestFor(fixture.body), validatedAt);
-
     expect(result.receipt).toMatchObject({
       schemaVersion: 'photo-object-validation-receipt-v1',
       intakeRequestId,
       targetType: 'location',
       targetId,
-      media: [
-        {
-          quarantineUploadId,
-          mimeType: 'image/png',
-          byteSize: fixture.body.byteLength,
-          width: 640,
-          height: 480,
-        },
-      ],
+      media: [{
+        quarantineUploadId,
+        mimeType: 'image/png',
+        byteSize: fixture.body.byteLength,
+        width: 640,
+        height: 480,
+      }],
     });
     expect(result.receipt.media[0]?.contentHash).toMatch(/^[a-f0-9]{64}$/);
     expect(result.objects[0]).toMatchObject({
@@ -159,41 +144,34 @@ describe('P5-05D private photo object validation', () => {
       privateObjectKey: photoQuarantineObjectKey(quarantineUploadId),
       body: fixture.body,
     });
-
     const serialized = JSON.stringify(result.receipt);
-    expect(serialized).not.toContain('privateObjectKey');
-    expect(serialized).not.toContain('quarantine/photos/');
-    expect(serialized).not.toContain('customMetadata');
-    expect(serialized).not.toContain('body');
-    expect(serialized).not.toContain('signedUrl');
-    expect(serialized).not.toContain('originalFilename');
+    for (const forbidden of [
+      'privateObjectKey',
+      'quarantine/photos/',
+      'customMetadata',
+      'body',
+      'signedUrl',
+      'originalFilename',
+    ]) {
+      expect(serialized).not.toContain(forbidden);
+    }
   });
 
-  it('rejects missing or deleted canonical targets before object inspection', async () => {
+  it('rejects unavailable targets before object inspection', async () => {
     const fixture = await setup();
     let reads = 0;
     const service = createPhotoObjectValidationService({
       reservations: fixture.reservations,
-      targets: {
-        async targetExists() {
-          return false;
-        },
-      },
-      objects: {
-        async readPrivateObject() {
-          reads += 1;
-          return null;
-        },
-      },
+      targets: { async targetExists() { return false; } },
+      objects: { async readPrivateObject() { reads += 1; return null; } },
     });
-
     await expect(service.validate(requestFor(fixture.body), validatedAt)).rejects.toMatchObject({
       code: 'target_unavailable',
     });
     expect(reads).toBe(0);
   });
 
-  it('rejects mismatched, expired, or consumed reservation state with bounded errors', async () => {
+  it('rejects mismatched, expired, and consumed reservations', async () => {
     const fixture = await setup();
     const changed = requestFor(fixture.body);
     changed.media[0] = {
@@ -205,11 +183,9 @@ describe('P5-05D private photo object validation', () => {
     await expect(fixture.service.validate(changed, validatedAt)).rejects.toMatchObject({
       code: 'reservation_conflict',
     });
-
     await expect(
       fixture.service.validate(requestFor(fixture.body), new Date('2026-07-15T00:10:00.000Z')),
     ).rejects.toMatchObject({ code: 'reservation_unavailable' });
-
     fixture.reservations.markConsumed(quarantineUploadId);
     await expect(
       fixture.service.validate(requestFor(fixture.body), new Date('2026-07-15T00:06:00.000Z')),
@@ -217,70 +193,68 @@ describe('P5-05D private photo object validation', () => {
   });
 
   it('rejects missing objects, metadata drift, and byte-size mismatches', async () => {
-    const fixture = await setup();
-    fixture.objects.delete(photoQuarantineObjectKey(quarantineUploadId));
-    await expect(fixture.service.validate(requestFor(fixture.body), validatedAt)).rejects.toMatchObject(
-      { code: 'object_missing' },
-    );
+    const missing = await setup();
+    missing.objects.delete(photoQuarantineObjectKey(quarantineUploadId));
+    await expect(
+      missing.service.validate(requestFor(missing.body), validatedAt),
+    ).rejects.toMatchObject({ code: 'object_missing' });
 
-    const metadataFixture = await setup();
-    metadataFixture.objects.put({
+    const metadata = await setup();
+    metadata.objects.put({
       key: photoQuarantineObjectKey(quarantineUploadId),
-      body: metadataFixture.body,
-      byteSize: metadataFixture.body.byteLength,
+      body: metadata.body,
+      byteSize: metadata.body.byteLength,
       contentType: 'image/png',
       customMetadata: {
-        ...metadataFor(metadataFixture.body),
+        ...metadataFor(metadata.body),
         'cpm-target-id': '20000000-0000-4000-8000-000000000002',
       },
     });
     await expect(
-      metadataFixture.service.validate(requestFor(metadataFixture.body), validatedAt),
+      metadata.service.validate(requestFor(metadata.body), validatedAt),
     ).rejects.toMatchObject({ code: 'object_metadata_mismatch' });
 
-    const sizeFixture = await setup();
-    sizeFixture.objects.put({
+    const size = await setup();
+    size.objects.put({
       key: photoQuarantineObjectKey(quarantineUploadId),
-      body: sizeFixture.body,
-      byteSize: sizeFixture.body.byteLength - 1,
+      body: size.body,
+      byteSize: size.body.byteLength - 1,
       contentType: 'image/png',
-      customMetadata: metadataFor(sizeFixture.body),
+      customMetadata: metadataFor(size.body),
     });
-    await expect(
-      sizeFixture.service.validate(requestFor(sizeFixture.body), validatedAt),
-    ).rejects.toMatchObject({ code: 'byte_size_mismatch' });
+    await expect(size.service.validate(requestFor(size.body), validatedAt)).rejects.toMatchObject({
+      code: 'byte_size_mismatch',
+    });
   });
 
-  it('rejects disguised files and declared MIME mismatches', async () => {
+  it('rejects disguised files and actual-signature MIME mismatches', async () => {
     const disguised = Uint8Array.from([0x50, 0x4b, 0x03, 0x04, 1, 2, 3, 4]);
     const fixture = await setup(disguised);
     await expect(
       fixture.service.validate(requestFor(disguised), validatedAt),
-    ).rejects.toMatchObject({
-      code: 'unsupported_file',
-    });
+    ).rejects.toMatchObject({ code: 'unsupported_file' });
 
-    const pngFixture = await setup();
-    const request = requestFor(pngFixture.body);
+    const mismatch = await setup();
+    const request = requestFor(mismatch.body);
     request.media[0] = {
       quarantineUploadId,
       purpose: 'public_gallery_candidate',
       declaredMimeType: 'image/jpeg',
-      declaredByteSize: pngFixture.body.byteLength,
+      declaredByteSize: mismatch.body.byteLength,
     };
-    pngFixture.objects.put({
+    mismatch.objects.put({
       key: photoQuarantineObjectKey(quarantineUploadId),
-      body: pngFixture.body,
-      byteSize: pngFixture.body.byteLength,
+      body: mismatch.body,
+      byteSize: mismatch.body.byteLength,
       contentType: 'image/jpeg',
-      customMetadata: metadataFor(pngFixture.body),
+      customMetadata: metadataFor(mismatch.body),
     });
-    await expect(pngFixture.service.validate(request, validatedAt)).rejects.toMatchObject({
+    await expect(mismatch.service.validate(request, validatedAt)).rejects.toMatchObject({
       code: 'object_metadata_mismatch',
     });
   });
 
-  it('rejects duplicate validation IDs and more than the allowed total declaration', () => {
+  it('rejects duplicate IDs and permits the exact Photos total limit', () => {
     const body = png();
     const item = {
       quarantineUploadId,
@@ -288,47 +262,38 @@ describe('P5-05D private photo object validation', () => {
       declaredMimeType: 'image/png',
       declaredByteSize: body.byteLength,
     };
-    expect(
-      photoObjectValidationRequestSchema.safeParse({
-        ...requestFor(body),
-        media: [item, item],
-      }).success,
-    ).toBe(false);
-
-    expect(
-      photoObjectValidationRequestSchema.safeParse({
-        ...requestFor(body),
-        media: Array.from({ length: 8 }, (_, index) => ({
-          ...item,
-          quarantineUploadId: `30000000-0000-4000-8000-${(index + 1).toString().padStart(12, '0')}`,
-          declaredByteSize: 5_000_000,
-        })),
-      }).success,
-    ).toBe(true);
+    expect(photoObjectValidationRequestSchema.safeParse({
+      ...requestFor(body),
+      media: [item, item],
+    }).success).toBe(false);
+    expect(photoObjectValidationRequestSchema.safeParse({
+      ...requestFor(body),
+      media: Array.from({ length: 8 }, (_, index) => ({
+        ...item,
+        quarantineUploadId: `30000000-0000-4000-8000-${(index + 1).toString().padStart(12, '0')}`,
+        declaredByteSize: 5_000_000,
+      })),
+    }).success).toBe(true);
   });
 
-  it('bounds R2 reads before allocating oversized object bodies', async () => {
+  it('bounds R2 reads before allocating oversized bodies', async () => {
     let bodyReads = 0;
     const store = createR2PhotoQuarantineObjectStore({
       async get(key) {
         return {
           key,
           size: 5_000_001,
-          async arrayBuffer() {
-            bodyReads += 1;
-            return new ArrayBuffer(0);
-          },
+          async arrayBuffer() { bodyReads += 1; return new ArrayBuffer(0); },
         };
       },
     });
-
     await expect(
       store.readPrivateObject(photoQuarantineObjectKey(quarantineUploadId), 5_000_000),
     ).rejects.toMatchObject({ code: 'object_too_large' });
     expect(bodyReads).toBe(0);
   });
 
-  it('normalizes R2 object bodies and private metadata without signed URL material', async () => {
+  it('normalizes R2 bodies and metadata without signed URL material', async () => {
     const body = png(32, 24);
     const store = createR2PhotoQuarantineObjectStore({
       async get(key) {
@@ -337,13 +302,10 @@ describe('P5-05D private photo object validation', () => {
           size: body.byteLength,
           httpMetadata: { contentType: 'image/png' },
           customMetadata: metadataFor(body),
-          async arrayBuffer() {
-            return body.slice().buffer;
-          },
+          async arrayBuffer() { return body.slice().buffer; },
         };
       },
     });
-
     const object = await store.readPrivateObject(
       photoQuarantineObjectKey(quarantineUploadId),
       body.byteLength,
