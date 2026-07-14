@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-14
+**Last verified:** 2026-07-15
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05B — Idempotent private Photos intake and quarantine reservation linkage
+P5-05C — Next bounded Photo and Media intake slice
 
 ## Current repository state
 
@@ -29,7 +29,8 @@ P5-05B — Idempotent private Photos intake and quarantine reservation linkage
 - P5-04H3 protected reviewer workspace/API, one-time application guard, and integration audit completed in #215 at main commit `5a8d6a1d40db415931a11941e2a23869157eacfd`.
 - P5-04 Business and service claims are repository-complete.
 - P5-05A Photo and Media contracts and review-safe normalization completed through #216.
-- P5-05B idempotent private Photos intake and quarantine reservation linkage are next.
+- P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
+- P5-05C is next; its exact bounded scope must be established from the remaining P5-05 contract before implementation begins.
 
 ## P5-05A completion result
 
@@ -48,9 +49,9 @@ P5-05A provides:
 - rejection of storage keys, signed URLs, original filenames, EXIF, GPS, wallet, receipt, status-secret, and undeclared fields;
 - no R2 access, Media creation, canonical mutation, export, or publication.
 
-## P5-05B active scope
+## P5-05B completion result
 
-P5-05B will add:
+P5-05B provides:
 
 - idempotent private Photos Submission intake;
 - one durable Submission and normalized payload transaction;
@@ -86,14 +87,14 @@ P5-05B will add:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05B
+5. P5-05 — Photo and Media submission intake — In progress at P5-05C; P5-05B completed #217
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Implement and validate P5-05B private Photos intake, quarantine reservation ownership and expiry guards, atomic Submission linkage, deterministic replay/conflict handling, private status-token issuance, privacy/leakage tests, and executable schema validation.
+Define the next bounded P5-05C slice from the remaining upload authorization, private object validation, processing, and protected Media handoff contract. Do not treat P5-05B reservation intake as R2 signing, binary validation, Media creation, or publication.
 
 ## Blocked
 
