@@ -115,11 +115,7 @@ function entityState(): BusinessClaimFieldApplicationState {
       targetType: 'entity',
       targetId: entityId,
       claimantRole: 'owner',
-      requestedScopes: [
-        'representative_relationship',
-        'entity_profile',
-        'payment_information',
-      ],
+      requestedScopes: ['representative_relationship', 'entity_profile', 'payment_information'],
       verification: {
         method: 'dns_txt',
         officialDomain: 'merchant.example',
@@ -341,9 +337,7 @@ describe('P5-04H2 Business Claim field application persistence', () => {
       appliedAt: appliedAt.toISOString(),
     });
     expect(fixture.commits).toHaveLength(1);
-    expect(fixture.commits[0]?.projection.entityApplication?.after.name).toBe(
-      'Updated Merchant',
-    );
+    expect(fixture.commits[0]?.projection.entityApplication?.after.name).toBe('Updated Merchant');
     expect(fixture.commits[0]?.projection.paymentApplication?.acceptedProposals).toHaveLength(1);
 
     const replay = await applyBusinessClaimFieldApplication(
@@ -401,9 +395,7 @@ describe('P5-04H2 Business Claim field application persistence', () => {
       acceptedPaymentDraftCount: 0,
       canonicalMutationCommitted: false,
     });
-    expect(fixture.events.get(requestId)?.reasonCode).toBe(
-      'field_decisions_reviewed_no_changes',
-    );
+    expect(fixture.events.get(requestId)?.reasonCode).toBe('field_decisions_reviewed_no_changes');
   });
 
   it('rejects changed-content replay and unauthorized persistence', async () => {
@@ -448,9 +440,7 @@ describe('P5-04H2 Business Claim field application persistence', () => {
 
   it('maps atomic persistence conflicts to bounded conflict errors', async () => {
     const fixture = backend(entityState());
-    fixture.failWith(
-      new SubmissionPersistenceError('conflict', 'simulated exact-state conflict'),
-    );
+    fixture.failWith(new SubmissionPersistenceError('conflict', 'simulated exact-state conflict'));
     await expect(
       applyBusinessClaimFieldApplication(
         context,
