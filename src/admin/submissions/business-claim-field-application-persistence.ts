@@ -44,6 +44,9 @@ export interface BusinessClaimFieldApplicationPersistenceBackend
   readApplicationEvent(
     requestId: string,
   ): Promise<BusinessClaimFieldApplicationPersistenceEventRecord | null>;
+  readSubmissionApplicationEvent?(
+    submissionId: string,
+  ): Promise<BusinessClaimFieldApplicationPersistenceEventRecord | null>;
   commitApplication(command: BusinessClaimFieldApplicationCommitCommand): Promise<void>;
 }
 
@@ -170,19 +173,34 @@ export async function applyBusinessClaimFieldApplication(
     return replayReceipt(existingEvent, submissionIdResult.data, request, context.actorId);
   }
 
-  let projection: BusinessClaimFieldApplicationProjection;
-  try {
-    projection = await projectBusinessClaimFieldApplication(
-      context,
-      backend,
-      submissionIdResult.data,
-      request,
-      appliedAt,
-    );
-  } catch (error) {
-    if (error instanceof BusinessClaimFieldApplicationPersistenceError) throw error;
-    throw error;
+  let priorSubmissionApplication: BusinessClaimFieldApplicationPersistenceEventRecord | null = null;
+  if (backend.readSubmissionApplicationEvent !== undefined) {
+    try {
+      priorSubmissionApplication = await backend.readSubmissionApplicationEvent(
+        submissionIdResult.data,
+      );
+    } catch (error) {
+      throw new BusinessClaimFieldApplicationPersistenceError(
+        'backend_failure',
+        'The Submission application-state check failed.',
+        { cause: error },
+      );
+    }
   }
+  if (priorSubmissionApplication !== null) {
+    throw new BusinessClaimFieldApplicationPersistenceError(
+      'conflict',
+      'The Business Claim Submission already has a durable field application.',
+    );
+  }
+
+  const projection = await projectBusinessClaimFieldApplication(
+    context,
+    backend,
+    submissionIdResult.data,
+    request,
+    appliedAt,
+  );
 
   const eventPayload: BusinessClaimFieldApplicationEventPayload = {
     schemaVersion: 'business-claim-field-application-event-v1',
