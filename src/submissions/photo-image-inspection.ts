@@ -41,7 +41,10 @@ export class PhotoImageInspectionError extends Error {
 
 function ensureRange(bytes: Uint8Array, offset: number, length: number): void {
   if (!Number.isInteger(offset) || !Number.isInteger(length) || offset < 0 || length < 0) {
-    throw new PhotoImageInspectionError('corrupt_file', 'Image structure contains an invalid range.');
+    throw new PhotoImageInspectionError(
+      'corrupt_file',
+      'Image structure contains an invalid range.',
+    );
   }
   if (offset + length > bytes.byteLength) {
     throw new PhotoImageInspectionError('corrupt_file', 'Image structure is truncated.');
@@ -65,11 +68,7 @@ function uint16Le(bytes: Uint8Array, offset: number): number {
 
 function uint24Le(bytes: Uint8Array, offset: number): number {
   ensureRange(bytes, offset, 3);
-  return (
-    (bytes[offset] ?? 0) |
-    ((bytes[offset + 1] ?? 0) << 8) |
-    ((bytes[offset + 2] ?? 0) << 16)
-  );
+  return (bytes[offset] ?? 0) | ((bytes[offset + 1] ?? 0) << 8) | ((bytes[offset + 2] ?? 0) << 16);
 }
 
 function uint32Be(bytes: Uint8Array, offset: number): number {
@@ -99,7 +98,10 @@ function uint64BeSafe(bytes: Uint8Array, offset: number): number {
   const low = uint32Be(bytes, offset + 4);
   const value = high * 0x100000000 + low;
   if (!Number.isSafeInteger(value)) {
-    throw new PhotoImageInspectionError('corrupt_file', 'Image box size exceeds safe integer limits.');
+    throw new PhotoImageInspectionError(
+      'corrupt_file',
+      'Image box size exceeds safe integer limits.',
+    );
   }
   return value;
 }
@@ -464,7 +466,10 @@ function inspectHeif(bytes: Uint8Array): DecodedPhotoImage {
   }
   const brandSet = new Set(brands);
   if (['msf1', 'hevs', 'hevm'].some((brand) => brandSet.has(brand))) {
-    throw new PhotoImageInspectionError('animated_media', 'HEIF image sequences are not supported.');
+    throw new PhotoImageInspectionError(
+      'animated_media',
+      'HEIF image sequences are not supported.',
+    );
   }
   const heicBrands = ['heic', 'heix', 'hevc', 'hevx', 'heim', 'heis'];
   const heifBrands = ['mif1', 'heif'];
@@ -474,7 +479,10 @@ function inspectHeif(bytes: Uint8Array): DecodedPhotoImage {
       ? 'image/heif'
       : null;
   if (mimeType === null) {
-    throw new PhotoImageInspectionError('unsupported_format', 'ISO media file is not supported HEIC or HEIF.');
+    throw new PhotoImageInspectionError(
+      'unsupported_format',
+      'ISO media file is not supported HEIC or HEIF.',
+    );
   }
   const largest = dimensions
     .filter((value) => value.width > 0 && value.height > 0)
@@ -521,5 +529,8 @@ export function inspectPhotoImage(bytes: Uint8Array): DecodedPhotoImage {
   if (bytes.byteLength >= 12 && ascii(bytes, 4, 4) === 'ftyp') {
     return inspectHeif(bytes);
   }
-  throw new PhotoImageInspectionError('unsupported_format', 'Image file signature is not supported.');
+  throw new PhotoImageInspectionError(
+    'unsupported_format',
+    'Image file signature is not supported.',
+  );
 }
