@@ -1,8 +1,9 @@
 # P5-05A Photo and Media submission contract and normalization
 
 **Implementation item:** P5-05A  
-**Status:** Active  
-**Started:** 2026-07-14
+**Status:** Completed through #216  
+**Started:** 2026-07-14  
+**Completed:** 2026-07-14
 
 ## Purpose
 
@@ -102,6 +103,12 @@ P5-05A does not:
 - choose a cover image;
 - change a canonical Entity or Location;
 - export or publish Media.
+
+## Completion evidence
+
+Pull request #216 adds strict reusable Media-item, rights-declaration, Photos-intake, and review-projection schemas; explicit purpose/role constraints; target and count limits; declared file type and size bounds; unique opaque quarantine references; privacy-safe normalization; focused purpose, rights, size, duplicate, unsupported-format, forbidden-field, and leakage tests; and an executable runtime schema check.
+
+Final implementation head `77769b0c7253f258b0f3d1b4285e447ae2702398` passed Foundation validation, Migration drift, Staging review validation, and representative screenshot capture.
 
 ## Completion gate
 
