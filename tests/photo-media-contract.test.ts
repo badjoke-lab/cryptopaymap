@@ -143,9 +143,8 @@ describe('P5-05A Photo and Media submission contract', () => {
 
   it('rejects role-purpose mismatches and non-publishable gallery rights', () => {
     expect(
-      submissionMediaItemSchema.safeParse(
-        galleryItem({ role: 'owner_verification_proof' }),
-      ).success,
+      submissionMediaItemSchema.safeParse(galleryItem({ role: 'owner_verification_proof' }))
+        .success,
     ).toBe(false);
     expect(
       submissionMediaItemSchema.safeParse(
@@ -165,14 +164,11 @@ describe('P5-05A Photo and Media submission contract', () => {
 
   it('rejects unsupported formats, oversized files, duplicate uploads, and more than eight items', () => {
     expect(
-      submissionMediaItemSchema.safeParse(
-        galleryItem({ declaredMimeType: 'image/svg+xml' }),
-      ).success,
+      submissionMediaItemSchema.safeParse(galleryItem({ declaredMimeType: 'image/svg+xml' }))
+        .success,
     ).toBe(false);
     expect(
-      submissionMediaItemSchema.safeParse(
-        galleryItem({ declaredByteSize: 5_000_001 }),
-      ).success,
+      submissionMediaItemSchema.safeParse(galleryItem({ declaredByteSize: 5_000_001 })).success,
     ).toBe(false);
     expect(
       photosSubmissionIntakeSchema.safeParse(validIntake([galleryItem(), galleryItem()])).success,
