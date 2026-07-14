@@ -82,7 +82,10 @@ export const businessClaimRelationshipDecisionEventPayloadSchema = z
           message: 'Relationship approval requires a passed verification result.',
         });
       }
-      if (payload.approvedScope !== 'representative_relationship' || payload.relationship === null) {
+      if (
+        payload.approvedScope !== 'representative_relationship' ||
+        payload.relationship === null
+      ) {
         context.addIssue({
           code: 'custom',
           path: ['relationship'],
