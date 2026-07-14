@@ -4,6 +4,7 @@ import {
   photosSubmissionIntakeSchema,
   submissionMediaItemSchema,
 } from '../src/submissions/photo-media-contract';
+import './check-photo-private-intake';
 
 const intake = {
   schemaVersion: 'submission-common-v1',

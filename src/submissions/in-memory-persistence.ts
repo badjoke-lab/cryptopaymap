@@ -16,8 +16,22 @@ interface StoredSubmission extends SubmissionPersistenceReplayRecord {
   contact: CreateSubmissionPersistenceCommand['contact'];
 }
 
+interface StoredQuarantineReservation {
+  id: string;
+  intakeRequestId: string;
+  purpose: 'evidence_image' | 'owner_verification_proof' | 'public_gallery_candidate';
+  expiresAt: Date;
+  consumedBySubmissionId: string | null;
+  consumedAt: Date | null;
+}
+
 export function createInMemorySubmissionPersistenceBackend(): SubmissionPersistenceBackend & {
   snapshot(): StoredSubmission[];
+  seedQuarantineReservation(
+    reservation: Omit<StoredQuarantineReservation, 'consumedBySubmissionId' | 'consumedAt'> &
+      Partial<Pick<StoredQuarantineReservation, 'consumedBySubmissionId' | 'consumedAt'>>,
+  ): void;
+  reservationSnapshot(): StoredQuarantineReservation[];
 } {
   const counters = new Map<number, number>();
   const submissionsById = new Map<string, StoredSubmission>();
@@ -25,6 +39,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
   const submissionIdByPublicId = new Map<string, string>();
   const publicIds = new Set<string>();
   const statusTokenHashes = new Set<string>();
+  const quarantineReservations = new Map<string, StoredQuarantineReservation>();
 
   return {
     async allocatePublicReference(year) {
@@ -83,6 +98,25 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         );
       }
 
+      const reservationIds = command.quarantineUploadIds ?? [];
+      const reservations = reservationIds.map((id) => quarantineReservations.get(id));
+      if (
+        reservations.some(
+          (reservation) =>
+            reservation === undefined ||
+            reservation.intakeRequestId !== command.intakeRequestId ||
+            reservation.purpose !== 'public_gallery_candidate' ||
+            reservation.expiresAt.getTime() <= command.submittedAt.getTime() ||
+            reservation.consumedBySubmissionId !== null ||
+            reservation.consumedAt !== null,
+        )
+      ) {
+        throw new SubmissionPersistenceError(
+          'conflict',
+          'Submission persistence conflicted with current private state.',
+        );
+      }
+
       const stored: StoredSubmission = {
         submissionId: command.id,
         publicId: command.publicId,
@@ -104,6 +138,11 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
       submissionIdByPublicId.set(command.publicId, command.id);
       publicIds.add(command.publicId);
       statusTokenHashes.add(command.statusTokenHash);
+      for (const reservation of reservations) {
+        if (reservation === undefined) continue;
+        reservation.consumedBySubmissionId = command.id;
+        reservation.consumedAt = command.submittedAt;
+      }
 
       return {
         submissionId: command.id,
@@ -153,6 +192,23 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         normalizedPayload:
           stored.normalizedPayload === null ? null : structuredClone(stored.normalizedPayload),
         contact: stored.contact === null ? null : { ...stored.contact },
+      }));
+    },
+
+    seedQuarantineReservation(reservation) {
+      quarantineReservations.set(reservation.id, {
+        ...reservation,
+        expiresAt: new Date(reservation.expiresAt),
+        consumedBySubmissionId: reservation.consumedBySubmissionId ?? null,
+        consumedAt: reservation.consumedAt ? new Date(reservation.consumedAt) : null,
+      });
+    },
+
+    reservationSnapshot() {
+      return [...quarantineReservations.values()].map((reservation) => ({
+        ...reservation,
+        expiresAt: new Date(reservation.expiresAt),
+        consumedAt: reservation.consumedAt ? new Date(reservation.consumedAt) : null,
       }));
     },
   };

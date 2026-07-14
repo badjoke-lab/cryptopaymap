@@ -43,6 +43,7 @@ export interface CreateSubmissionPersistenceCommand {
   contact: SubmissionContactPersistenceInput | null;
   actorId: string;
   actorType: SubmissionEventActorType;
+  quarantineUploadIds?: string[];
 }
 
 export interface CreateSubmissionPersistenceReceipt {

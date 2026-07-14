@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-14
+**Last verified:** 2026-07-15
 
 ## Current phase
 

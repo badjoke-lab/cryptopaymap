@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from 'drizzle-orm';
+import { and, desc, eq, inArray, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
   submissionContacts,
@@ -6,6 +6,7 @@ import {
   submissionPayloads,
   submissionPublicReferenceCounters,
   submissions,
+  quarantineUploadReservations,
 } from '../db/schema';
 import { formatSubmissionPublicId } from './contract';
 import { parseSubmissionHoldEventPayload } from './hold-contract';
@@ -220,6 +221,29 @@ export function createDrizzleSubmissionPersistenceBackend(
           createdAt: command.submittedAt,
         }),
       );
+
+      if (command.quarantineUploadIds !== undefined) {
+        const reservationIds = command.quarantineUploadIds;
+        statements.push(
+          database.execute(sql`
+            with consumed as (
+              update ${quarantineUploadReservations}
+              set
+                ${quarantineUploadReservations.consumedBySubmissionId} = ${command.id},
+                ${quarantineUploadReservations.consumedAt} = ${command.submittedAt}
+              where ${inArray(quarantineUploadReservations.id, reservationIds)}
+                and ${quarantineUploadReservations.intakeRequestId} = ${command.intakeRequestId}
+                and ${quarantineUploadReservations.purpose} = 'public_gallery_candidate'
+                and ${quarantineUploadReservations.expiresAt} > ${command.submittedAt}
+                and ${quarantineUploadReservations.consumedBySubmissionId} is null
+                and ${quarantineUploadReservations.consumedAt} is null
+              returning ${quarantineUploadReservations.id}
+            )
+            select 1 / case when count(*) = ${reservationIds.length} then 1 else 0 end
+            from consumed
+          `),
+        );
+      }
 
       try {
         await database.batch(statements as unknown as DatabaseBatchInput);

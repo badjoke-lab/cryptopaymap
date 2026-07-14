@@ -49,6 +49,16 @@ export const submissionEventActorTypeEnum = pgEnum(
   submissionEventActorTypeValues,
 );
 
+export const quarantineUploadReservationPurposeValues = [
+  'evidence_image',
+  'owner_verification_proof',
+  'public_gallery_candidate',
+] as const;
+export const quarantineUploadReservationPurposeEnum = pgEnum(
+  'quarantine_upload_reservation_purpose',
+  quarantineUploadReservationPurposeValues,
+);
+
 export const submissionPublicReferenceCounters = pgTable(
   'submission_public_reference_counters',
   {
@@ -218,6 +228,38 @@ export const submissionEvents = pgTable(
   ],
 );
 
+export const quarantineUploadReservations = pgTable(
+  'quarantine_upload_reservations',
+  {
+    id: uuid('id').primaryKey(),
+    intakeRequestId: uuid('intake_request_id').notNull(),
+    purpose: quarantineUploadReservationPurposeEnum('purpose').notNull(),
+    expiresAt: timestamp('expires_at', { withTimezone: true }).notNull(),
+    consumedBySubmissionId: uuid('consumed_by_submission_id').references(() => submissions.id, {
+      onDelete: 'restrict',
+    }),
+    consumedAt: timestamp('consumed_at', { withTimezone: true }),
+    createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  },
+  (table) => [
+    index('quarantine_upload_reservations_owner_expiry_idx').on(
+      table.intakeRequestId,
+      table.expiresAt,
+    ),
+    index('quarantine_upload_reservations_consumed_submission_idx').on(
+      table.consumedBySubmissionId,
+    ),
+    check(
+      'quarantine_upload_reservations_consumption_pair',
+      sql`(${table.consumedBySubmissionId} is null and ${table.consumedAt} is null) or (${table.consumedBySubmissionId} is not null and ${table.consumedAt} is not null)`,
+    ),
+    check(
+      'quarantine_upload_reservations_time_order',
+      sql`${table.createdAt} < ${table.expiresAt} and (${table.consumedAt} is null or ${table.createdAt} <= ${table.consumedAt})`,
+    ),
+  ],
+);
+
 export type Submission = typeof submissions.$inferSelect;
 export type NewSubmission = typeof submissions.$inferInsert;
 export type SubmissionPayload = typeof submissionPayloads.$inferSelect;
@@ -226,3 +268,5 @@ export type SubmissionContact = typeof submissionContacts.$inferSelect;
 export type NewSubmissionContact = typeof submissionContacts.$inferInsert;
 export type SubmissionEvent = typeof submissionEvents.$inferSelect;
 export type NewSubmissionEvent = typeof submissionEvents.$inferInsert;
+export type QuarantineUploadReservation = typeof quarantineUploadReservations.$inferSelect;
+export type NewQuarantineUploadReservation = typeof quarantineUploadReservations.$inferInsert;

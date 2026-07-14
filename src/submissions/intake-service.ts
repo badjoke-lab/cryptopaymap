@@ -50,6 +50,7 @@ export interface SubmissionPrivateIntakeService {
 export interface ParsedSubmissionPrivateIntake {
   intake: CommonSubmissionIntake;
   normalizedPayload: Record<string, unknown> | null;
+  quarantineUploadIds?: string[];
 }
 
 export interface SubmissionIntakeParser {
@@ -133,6 +134,7 @@ export function createSubmissionPrivateIntakeService(
       let parsedRequestId: string;
       let intake: CommonSubmissionIntake;
       let normalizedPayload: Record<string, unknown> | null;
+      let quarantineUploadIds: string[] | undefined;
       try {
         parsedRequestId = requestIdSchema.parse(requestId);
         const parsed = intakeParser.parse(rawInput);
@@ -141,6 +143,7 @@ export function createSubmissionPrivateIntakeService(
           parsed.normalizedPayload === null
             ? null
             : submissionOriginalPayloadSchema.parse(parsed.normalizedPayload);
+        quarantineUploadIds = parsed.quarantineUploadIds;
       } catch (error) {
         throw new SubmissionIntakeError(
           'invalid_request',
@@ -199,6 +202,7 @@ export function createSubmissionPrivateIntakeService(
           contact,
           actorId,
           actorType: 'submitter',
+          ...(quarantineUploadIds === undefined ? {} : { quarantineUploadIds }),
         });
 
         return {
