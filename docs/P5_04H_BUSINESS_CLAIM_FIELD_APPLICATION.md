@@ -1,8 +1,9 @@
 # P5-04H Business Claim field-proposal review and canonical application
 
 **Implementation item:** P5-04H1  
-**Status:** Active  
-**Started:** 2026-07-14
+**Status:** Completed through #213  
+**Started:** 2026-07-14  
+**Completed:** 2026-07-14
 
 ## Purpose
 
@@ -13,8 +14,8 @@ P5-04H does not treat a verified representative relationship as editing permissi
 ## Delivery slices
 
 ```text
-P5-04H1 — strict field-level decision and projection contract
-P5-04H2 — durable exact-state canonical persistence and provenance
+P5-04H1 — strict field-level decision and projection contract — completed through #213
+P5-04H2 — durable exact-state canonical persistence and provenance — next
 P5-04H3 — protected reviewer API/workspace and integration audit
 ```
 
@@ -131,6 +132,10 @@ P5-04H does not:
 ## H1 completion gate
 
 An authorized reviewer can create one strict, deterministic application projection that partitions every submitted Entity, Location, and payment proposal into accepted or rejected decisions, copies only submitted values, validates exact canonical before/after records, and rejects stale, malformed, unauthorized, incomplete, invented, or leaking requests.
+
+## Completion evidence
+
+Pull request #213 adds dedicated field-application authorization, strict Entity, Location, and payment decision contracts, exact approved-relationship and target-state loading interfaces, deterministic request fingerprints, canonical before/after validation, proposal-only value projection, complete accept/reject partitions, no-op and stale-target rejection, protected-value exclusion, focused tests, and an executable schema check.
 
 ## Next
 
