@@ -232,10 +232,7 @@ export const businessClaimLocationCorrectionSchema = z
       }
     }
 
-    if (
-      correction.changedFields.includes('countryCode') &&
-      correction.countryCode === null
-    ) {
+    if (correction.changedFields.includes('countryCode') && correction.countryCode === null) {
       context.addIssue({
         code: 'custom',
         path: ['countryCode'],
@@ -252,10 +249,7 @@ export const businessClaimLocationCorrectionSchema = z
         message: 'Latitude and longitude corrections must be requested together.',
       });
     }
-    if (
-      changesLatitude &&
-      (correction.latitude === null || correction.longitude === null)
-    ) {
+    if (changesLatitude && (correction.latitude === null || correction.longitude === null)) {
       context.addIssue({
         code: 'custom',
         path: ['latitude'],
