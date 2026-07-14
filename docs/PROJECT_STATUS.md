@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05D — Private object existence and byte-level validation
+P5-05E — Controlled private photo processing and protected Media handoff
 
 ## Current repository state
 
@@ -31,7 +31,8 @@ P5-05D — Private object existence and byte-level validation
 - P5-05A Photo and Media contracts and review-safe normalization completed through #216.
 - P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
 - P5-05C photo quarantine upload authorization and durable reservation issuance completed in #218.
-- P5-05D is next; its bounded scope is private object existence and byte-level validation before any processing or protected Media handoff.
+- P5-05D private object existence and byte-level validation completed in #219.
+- P5-05E is next; its bounded scope is controlled private processing and protected Media handoff without public approval or publication.
 
 ## P5-05A completion result
 
@@ -76,6 +77,21 @@ P5-05C provides:
 - signer-failure retry without duplicate reservation creation;
 - no signed URL persistence, R2 credentials, binary validation, Media creation, or publication.
 
+## P5-05D completion result
+
+P5-05D provides:
+
+- exact active Entity or Location target validation;
+- exact unexpired and unconsumed quarantine reservation-set validation;
+- bounded private object reads that reject oversized provider metadata before body allocation;
+- exact private key, content-type, signed metadata, and byte-size matching;
+- structural JPEG, PNG, WebP, HEIC, and HEIF inspection;
+- rejection of corrupted, animated, executable, archive, document, unsupported, and disguised files;
+- 20,000-pixel axis and 100,000,000-pixel total safety limits;
+- SHA-256 content hashes and a leakage-safe validation receipt;
+- injectable decoding and R2-compatible storage boundaries;
+- no production R2 binding, EXIF removal, derivative generation, Media creation, canonical mutation, export, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -96,6 +112,7 @@ P5-05C provides:
 - `docs/P5_05A_PHOTO_MEDIA_CONTRACT_AND_NORMALIZATION.md`
 - `docs/P5_05B_PHOTO_PRIVATE_INTAKE.md`
 - `docs/P5_05C_PHOTO_UPLOAD_AUTHORIZATION.md`
+- `docs/P5_05D_PHOTO_OBJECT_VALIDATION.md`
 
 ## Phase 5 sequence
 
@@ -103,19 +120,19 @@ P5-05C provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05D; P5-05C completed #218
+5. P5-05 — Photo and Media submission intake — In progress at P5-05E; P5-05D completed #219
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Implement P5-05D private object existence and byte-level validation. It must validate actual byte size, file signature, decoding, safe dimensions, object metadata, reservation and target relationships, and content hashes before processing or protected Media handoff.
+Define and implement P5-05E controlled private processing and protected Media handoff. It must re-verify the P5-05D content hash or consume the exact validated byte set before metadata stripping, orientation normalization, resizing, derivative creation, or any private Media record is produced.
 
 ## Blocked
 
-No repository blocker is known. Production R2 signing, public route wiring, asynchronous image processing, protected Media handoff, public Media approval, export activation, and production review remain separate later slices.
+No repository blocker is known. Production R2 binding, asynchronous processing infrastructure, public route wiring, protected Media reviewer execution, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Submission never publishes Media automatically, and opaque quarantine references never expose persistent storage credentials or public object URLs.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Structural validation is not a display-safe derivative, a Submission never publishes Media automatically, and opaque quarantine references never expose persistent storage credentials or public object URLs.
