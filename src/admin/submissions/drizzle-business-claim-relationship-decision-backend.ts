@@ -66,9 +66,7 @@ export function createDrizzleBusinessClaimRelationshipDecisionBackend(
         .limit(1);
       const preparation = preparationRows[0];
 
-      const mapEvent = (
-        event: typeof execution | typeof preparation,
-      ) =>
+      const mapEvent = (event: typeof execution | typeof preparation) =>
         event === undefined
           ? null
           : {
