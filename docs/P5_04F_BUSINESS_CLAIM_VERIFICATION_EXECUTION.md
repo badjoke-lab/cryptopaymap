@@ -1,8 +1,9 @@
 # P5-04F Business Claim verification execution and result recording
 
 **Implementation item:** P5-04F  
-**Status:** Active  
-**Started:** 2026-07-14
+**Status:** Completed through #211  
+**Started:** 2026-07-14  
+**Completed:** 2026-07-14
 
 ## Purpose
 
@@ -10,7 +11,7 @@ Execute one unexpired P5-04E verification preparation through a bounded method a
 
 ## Authorization boundary
 
-P5-04F must use a dedicated verification-execution capability separate from:
+P5-04F uses a dedicated verification-execution capability separate from:
 
 - protected Submission read access;
 - ordinary Claim workflow transitions;
@@ -43,10 +44,11 @@ One execution requires:
 - one execution request UUID;
 - the expected prepared method;
 - the expected preparation expiry timestamp;
+- the expected Submission update timestamp;
 - the authorized executor identity;
 - a bounded execution timestamp.
 
-The service must confirm that:
+The service confirms that:
 
 - the Submission still exists and is a business Claim;
 - its workflow status remains `in_review`;
@@ -70,12 +72,11 @@ The result may include:
 - bounded result code;
 - adapter identifier and version;
 - execution and observation timestamps;
-- expiry status;
 - retryable boolean;
 - privacy-safe summary;
 - opaque provider reference hash when required for audit correlation.
 
-The result must not include:
+The result does not include:
 
 - plaintext contact email;
 - private proof URL or content;
@@ -90,7 +91,7 @@ The result must not include:
 
 Execution writes one private audit event atomically.
 
-The event must bind:
+The event binds:
 
 - execution UUID;
 - preparation event ID;
@@ -102,7 +103,7 @@ The event must bind:
 - executor identity;
 - execution timestamp.
 
-An identical retry replays the stored result. Reuse of the same execution UUID with changed Submission, preparation, method, or input fingerprint fails as an idempotency conflict.
+An identical retry replays the stored result. Reuse of the same execution UUID with changed Submission, preparation, method, expected state, or expiry fails as an idempotency conflict.
 
 ## Failure behavior
 
@@ -114,7 +115,8 @@ P5-04F fails closed for:
 - method mismatch;
 - Submission or target mismatch;
 - non-`in_review` workflow state;
-- unavailable protected material;
+- unavailable adapters;
+- adapter exceptions;
 - malformed adapter output;
 - persistence conflict;
 - private-value leakage in result material.
@@ -137,8 +139,12 @@ P5-04F does not:
 
 ## Completion gate
 
-An authorized executor can run each supported prepared method through a bounded adapter and obtain one validated, idempotent, privacy-safe result while expired, mismatched, unauthorized, malformed, or conflicting executions fail without partial persistence or authority changes.
+An authorized executor can run every supported prepared method through a bounded adapter and obtain one validated, idempotent, privacy-safe result while expired, mismatched, unauthorized, malformed, or conflicting executions fail without partial persistence or authority changes.
+
+## Completion evidence
+
+Pull request #211 merged to `main` as `3ffe59c0e2d773c11cff066adcaf1cb1d099e76d` after successful Foundation validation, migration drift validation, staging review validation, and representative screenshot capture. Foundation validation covered formatting, lint, Astro and TypeScript checks, runtime schemas, migration history, unit and component tests, static build, accessibility, Phase 1 file checks, and staging artifact checks.
 
 ## Next
 
-P5-04G will convert reviewed verification results into separately authorized representative-relationship decisions. Canonical proposal application remains a later independent slice.
+P5-04G converts reviewed verification results into separately authorized representative-relationship decisions. Canonical proposal application remains a later independent slice.
