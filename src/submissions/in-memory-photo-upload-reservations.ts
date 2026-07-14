@@ -37,9 +37,7 @@ export function createInMemoryPhotoUploadReservationPersistence(): PhotoUploadRe
         return { insertedCount: 0, reservations: [] };
       }
       if (
-        command.reservations.some(
-          (reservation) => reservation.intakeRequestId !== intakeRequestId,
-        )
+        command.reservations.some((reservation) => reservation.intakeRequestId !== intakeRequestId)
       ) {
         throw new Error('Reservation creation must use one intake request ID.');
       }
@@ -47,7 +45,12 @@ export function createInMemoryPhotoUploadReservationPersistence(): PhotoUploadRe
       const existing = byRequest(intakeRequestId);
       const expectedIds = command.reservations.map((reservation) => reservation.id);
       if (existing.length > 0) {
-        if (!exactIds(existing.map((reservation) => reservation.id), expectedIds)) {
+        if (
+          !exactIds(
+            existing.map((reservation) => reservation.id),
+            expectedIds,
+          )
+        ) {
           throw new Error('Reservation request conflicts with existing private state.');
         }
         return { insertedCount: 0, reservations: existing };
