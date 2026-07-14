@@ -20,7 +20,10 @@ export const businessClaimVerificationAdapterResultSchema = z
     observedAt: timestampSchema,
     retryable: z.boolean(),
     summary: z.string().trim().min(1).max(500),
-    providerReferenceHash: z.string().regex(/^sha256:[a-f0-9]{64}$/).nullable(),
+    providerReferenceHash: z
+      .string()
+      .regex(/^sha256:[a-f0-9]{64}$/)
+      .nullable(),
   })
   .strict();
 
@@ -41,7 +44,10 @@ export const businessClaimVerificationResultEventPayloadSchema = z
     observedAt: timestampSchema,
     retryable: z.boolean(),
     summary: z.string().trim().min(1).max(500),
-    providerReferenceHash: z.string().regex(/^sha256:[a-f0-9]{64}$/).nullable(),
+    providerReferenceHash: z
+      .string()
+      .regex(/^sha256:[a-f0-9]{64}$/)
+      .nullable(),
   })
   .strict();
 
