@@ -53,7 +53,15 @@ function png(width = 640, height = 480): Uint8Array {
     0x0a,
     0x1a,
     0x0a,
-    ...pngChunk('IHDR', [...uint32Be(width), ...uint32Be(height), 8, 2, 0, 0, 0]),
+    ...pngChunk('IHDR', [
+      ...uint32Be(width),
+      ...uint32Be(height),
+      8,
+      2,
+      0,
+      0,
+      0,
+    ]),
     ...pngChunk('IDAT', [0]),
     ...pngChunk('IEND', []),
   ]);
@@ -189,8 +197,10 @@ describe('P5-05D private photo object validation', () => {
     const fixture = await setup();
     const changed = requestFor(fixture.body);
     changed.media[0] = {
-      ...changed.media[0],
       quarantineUploadId: '30000000-0000-4000-8000-000000000002',
+      purpose: 'public_gallery_candidate',
+      declaredMimeType: 'image/png',
+      declaredByteSize: fixture.body.byteLength,
     };
     await expect(fixture.service.validate(changed, validatedAt)).rejects.toMatchObject({
       code: 'reservation_conflict',
@@ -209,9 +219,9 @@ describe('P5-05D private photo object validation', () => {
   it('rejects missing objects, metadata drift, and byte-size mismatches', async () => {
     const fixture = await setup();
     fixture.objects.delete(photoQuarantineObjectKey(quarantineUploadId));
-    await expect(
-      fixture.service.validate(requestFor(fixture.body), validatedAt),
-    ).rejects.toMatchObject({ code: 'object_missing' });
+    await expect(fixture.service.validate(requestFor(fixture.body), validatedAt)).rejects.toMatchObject(
+      { code: 'object_missing' },
+    );
 
     const metadataFixture = await setup();
     metadataFixture.objects.put({
@@ -244,15 +254,19 @@ describe('P5-05D private photo object validation', () => {
   it('rejects disguised files and declared MIME mismatches', async () => {
     const disguised = Uint8Array.from([0x50, 0x4b, 0x03, 0x04, 1, 2, 3, 4]);
     const fixture = await setup(disguised);
-    await expect(fixture.service.validate(requestFor(disguised), validatedAt)).rejects.toMatchObject({
+    await expect(
+      fixture.service.validate(requestFor(disguised), validatedAt),
+    ).rejects.toMatchObject({
       code: 'unsupported_file',
     });
 
     const pngFixture = await setup();
     const request = requestFor(pngFixture.body);
     request.media[0] = {
-      ...request.media[0],
+      quarantineUploadId,
+      purpose: 'public_gallery_candidate',
       declaredMimeType: 'image/jpeg',
+      declaredByteSize: pngFixture.body.byteLength,
     };
     pngFixture.objects.put({
       key: photoQuarantineObjectKey(quarantineUploadId),
@@ -266,7 +280,7 @@ describe('P5-05D private photo object validation', () => {
     });
   });
 
-  it('rejects duplicate validation IDs and preserves the Photos total declaration limit', () => {
+  it('rejects duplicate validation IDs and more than the allowed total declaration', () => {
     const body = png();
     const item = {
       quarantineUploadId,
@@ -286,9 +300,7 @@ describe('P5-05D private photo object validation', () => {
         ...requestFor(body),
         media: Array.from({ length: 8 }, (_, index) => ({
           ...item,
-          quarantineUploadId: `30000000-0000-4000-8000-${(index + 1)
-            .toString()
-            .padStart(12, '0')}`,
+          quarantineUploadId: `30000000-0000-4000-8000-${(index + 1).toString().padStart(12, '0')}`,
           declaredByteSize: 5_000_000,
         })),
       }).success,
