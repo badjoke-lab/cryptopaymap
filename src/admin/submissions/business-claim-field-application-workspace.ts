@@ -14,7 +14,10 @@ import {
   canonicalLocationSocialLinkSchema,
 } from '../../schemas/canonical-identity';
 import type { BusinessClaimFieldApplicationContext } from './business-claim-field-application-authorization';
-import type { BusinessClaimFieldApplicationPersistenceBackend } from './business-claim-field-application-persistence';
+import type {
+  BusinessClaimFieldApplicationPersistenceBackend,
+  BusinessClaimFieldApplicationPersistenceEventRecord,
+} from './business-claim-field-application-persistence';
 
 const timestampSchema = z.iso.datetime({ offset: true });
 const fieldValueSchema = z.union([
@@ -201,13 +204,15 @@ export async function loadBusinessClaimFieldApplicationWorkspace(
   }
 
   let state: Awaited<ReturnType<BusinessClaimFieldApplicationPersistenceBackend['loadState']>>;
-  let priorApplication: Awaited<
-    ReturnType<BusinessClaimFieldApplicationPersistenceBackend['readSubmissionApplicationEvent']>
-  >;
+  let priorApplication: BusinessClaimFieldApplicationPersistenceEventRecord | null;
   try {
+    const priorApplicationPromise =
+      backend.readSubmissionApplicationEvent === undefined
+        ? Promise.resolve(null)
+        : backend.readSubmissionApplicationEvent(submissionIdResult.data);
     [state, priorApplication] = await Promise.all([
       backend.loadState(submissionIdResult.data, relationshipIdResult.data),
-      backend.readSubmissionApplicationEvent(submissionIdResult.data),
+      priorApplicationPromise,
     ]);
   } catch (error) {
     throw new BusinessClaimFieldApplicationWorkspaceError(
