@@ -70,8 +70,7 @@ export function createDrizzleBusinessClaimSubmissionDetailBackend(
           submittedAt: row.submittedAt.toISOString(),
           updatedAt: row.updatedAt.toISOString(),
         },
-        projection:
-          row.normalizedPayload as BusinessClaimSubmissionReviewDetailData['projection'],
+        projection: row.normalizedPayload as BusinessClaimSubmissionReviewDetailData['projection'],
         events: boundedEvents.map((event) => ({
           fromStatus: event.fromStatus,
           toStatus: event.toStatus,
