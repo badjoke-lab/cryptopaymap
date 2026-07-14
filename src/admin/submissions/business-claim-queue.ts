@@ -37,7 +37,10 @@ const businessClaimQueueRequestedScopesSchema = z
   .max(4)
   .superRefine((scopes, context) => {
     if (new Set(scopes).size !== scopes.length) {
-      context.addIssue({ code: 'custom', message: 'Business Claim requested scopes must be unique.' });
+      context.addIssue({
+        code: 'custom',
+        message: 'Business Claim requested scopes must be unique.',
+      });
     }
     if (!scopes.includes('representative_relationship')) {
       context.addIssue({
@@ -223,7 +226,10 @@ export async function loadBusinessClaimSubmissionQueue(
     );
   }
   if (Number.isNaN(asOf.getTime())) {
-    throw new BusinessClaimSubmissionQueueError('invalid_query', 'Business Claim queue time is invalid.');
+    throw new BusinessClaimSubmissionQueueError(
+      'invalid_query',
+      'Business Claim queue time is invalid.',
+    );
   }
 
   let page: BusinessClaimSubmissionQueuePageData;
