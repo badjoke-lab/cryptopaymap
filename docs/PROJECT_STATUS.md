@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05C — Next bounded Photo and Media intake slice
+P5-05C — Photo quarantine upload authorization and durable reservation issuance
 
 ## Current repository state
 
@@ -30,7 +30,7 @@ P5-05C — Next bounded Photo and Media intake slice
 - P5-04 Business and service claims are repository-complete.
 - P5-05A Photo and Media contracts and review-safe normalization completed through #216.
 - P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
-- P5-05C is next; its exact bounded scope must be established from the remaining P5-05 contract before implementation begins.
+- P5-05C is in progress with a bounded upload-authorization contract and durable reservation-issuance boundary.
 
 ## P5-05A completion result
 
@@ -62,6 +62,18 @@ P5-05B provides:
 - private status-token issuance without plaintext persistence;
 - no Media Asset, Media File, derivative, public URL, review approval, export, or publication creation.
 
+## P5-05C active scope
+
+P5-05C adds:
+
+- a strict one-to-eight item Photos upload-authorization request;
+- deterministic opaque reservation UUIDs bound to canonical request content;
+- durable reservation creation through the existing P5-05B table;
+- transaction-serialized exact replay and changed-content conflict behavior;
+- short-lived provider-neutral HTTPS PUT authorization;
+- signed content-type and private validation metadata headers;
+- no signed URL persistence, R2 credentials, binary validation, Media creation, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -73,13 +85,15 @@ P5-05B provides:
 - `docs/P5_04A_BUSINESS_CLAIM_CONTRACT_AND_NORMALIZATION.md`
 - `docs/P5_04B_BUSINESS_CLAIM_PRIVATE_INTAKE.md`
 - `docs/P5_04C_BUSINESS_CLAIM_TARGET_CONTEXT.md`
-- `docs/P5_04D_BUSINESS_CLAIM_REVIEWER_ENTRY.md`
+- `docs/P5_04D_BUSINESS_CLAIM_SUBMISSION_REVIEWER_ENTRY.md`
 - `docs/P5_04E_BUSINESS_CLAIM_REVIEW_TRANSITIONS.md`
 - `docs/P5_04F_BUSINESS_CLAIM_VERIFICATION_EXECUTION.md`
 - `docs/P5_04G_BUSINESS_CLAIM_RELATIONSHIP_DECISIONS.md`
 - `docs/P5_04H_BUSINESS_CLAIM_FIELD_APPLICATION.md`
 - `docs/P5_04H3_BUSINESS_CLAIM_REVIEWER_FLOW.md`
 - `docs/P5_05A_PHOTO_MEDIA_CONTRACT_AND_NORMALIZATION.md`
+- `docs/P5_05B_PHOTO_PRIVATE_INTAKE.md`
+- `docs/P5_05C_PHOTO_UPLOAD_AUTHORIZATION.md`
 
 ## Phase 5 sequence
 
@@ -94,12 +108,12 @@ P5-05B provides:
 
 ## Next
 
-Define the next bounded P5-05C slice from the remaining upload authorization, private object validation, processing, and protected Media handoff contract. Do not treat P5-05B reservation intake as R2 signing, binary validation, Media creation, or publication.
+Complete P5-05C repository validation and merge. P5-05D then owns private object existence and byte-level validation before any processing or protected Media handoff.
 
 ## Blocked
 
-No repository blocker is known. R2 upload signing, binary validation, asynchronous image processing, public Media approval, export activation, and production review remain separate later slices.
+No repository blocker is known. Production R2 signing, public route wiring, binary validation, asynchronous image processing, protected Media handoff, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Submission never publishes Media automatically, and opaque quarantine references never expose storage credentials or public object URLs.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Submission never publishes Media automatically, and opaque quarantine references never expose persistent storage credentials or public object URLs.
