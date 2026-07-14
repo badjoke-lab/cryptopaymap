@@ -115,7 +115,11 @@ async function setup(body = png()) {
     objects,
     service: createPhotoObjectValidationService({
       reservations,
-      targets: { async targetExists() { return true; } },
+      targets: {
+        async targetExists() {
+          return true;
+        },
+      },
       objects,
     }),
   };
@@ -130,13 +134,15 @@ describe('P5-05D private photo object validation', () => {
       intakeRequestId,
       targetType: 'location',
       targetId,
-      media: [{
-        quarantineUploadId,
-        mimeType: 'image/png',
-        byteSize: fixture.body.byteLength,
-        width: 640,
-        height: 480,
-      }],
+      media: [
+        {
+          quarantineUploadId,
+          mimeType: 'image/png',
+          byteSize: fixture.body.byteLength,
+          width: 640,
+          height: 480,
+        },
+      ],
     });
     expect(result.receipt.media[0]?.contentHash).toMatch(/^[a-f0-9]{64}$/);
     expect(result.objects[0]).toMatchObject({
@@ -162,8 +168,17 @@ describe('P5-05D private photo object validation', () => {
     let reads = 0;
     const service = createPhotoObjectValidationService({
       reservations: fixture.reservations,
-      targets: { async targetExists() { return false; } },
-      objects: { async readPrivateObject() { reads += 1; return null; } },
+      targets: {
+        async targetExists() {
+          return false;
+        },
+      },
+      objects: {
+        async readPrivateObject() {
+          reads += 1;
+          return null;
+        },
+      },
     });
     await expect(service.validate(requestFor(fixture.body), validatedAt)).rejects.toMatchObject({
       code: 'target_unavailable',
@@ -262,18 +277,22 @@ describe('P5-05D private photo object validation', () => {
       declaredMimeType: 'image/png',
       declaredByteSize: body.byteLength,
     };
-    expect(photoObjectValidationRequestSchema.safeParse({
-      ...requestFor(body),
-      media: [item, item],
-    }).success).toBe(false);
-    expect(photoObjectValidationRequestSchema.safeParse({
-      ...requestFor(body),
-      media: Array.from({ length: 8 }, (_, index) => ({
-        ...item,
-        quarantineUploadId: `30000000-0000-4000-8000-${(index + 1).toString().padStart(12, '0')}`,
-        declaredByteSize: 5_000_000,
-      })),
-    }).success).toBe(true);
+    expect(
+      photoObjectValidationRequestSchema.safeParse({
+        ...requestFor(body),
+        media: [item, item],
+      }).success,
+    ).toBe(false);
+    expect(
+      photoObjectValidationRequestSchema.safeParse({
+        ...requestFor(body),
+        media: Array.from({ length: 8 }, (_, index) => ({
+          ...item,
+          quarantineUploadId: `30000000-0000-4000-8000-${(index + 1).toString().padStart(12, '0')}`,
+          declaredByteSize: 5_000_000,
+        })),
+      }).success,
+    ).toBe(true);
   });
 
   it('bounds R2 reads before allocating oversized bodies', async () => {
@@ -283,7 +302,10 @@ describe('P5-05D private photo object validation', () => {
         return {
           key,
           size: 5_000_001,
-          async arrayBuffer() { bodyReads += 1; return new ArrayBuffer(0); },
+          async arrayBuffer() {
+            bodyReads += 1;
+            return new ArrayBuffer(0);
+          },
         };
       },
     });
@@ -302,7 +324,9 @@ describe('P5-05D private photo object validation', () => {
           size: body.byteLength,
           httpMetadata: { contentType: 'image/png' },
           customMetadata: metadataFor(body),
-          async arrayBuffer() { return body.slice().buffer; },
+          async arrayBuffer() {
+            return body.slice().buffer;
+          },
         };
       },
     });
