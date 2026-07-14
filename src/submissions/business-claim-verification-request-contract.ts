@@ -56,10 +56,7 @@ export const businessClaimVerificationRequestEventPayloadSchema = z
         message: 'Official-social preparation requires an official social URL.',
       });
     }
-    if (
-      payload.method === 'assisted_verification' &&
-      !payload.assistedVerifierReferencePresent
-    ) {
+    if (payload.method === 'assisted_verification' && !payload.assistedVerifierReferencePresent) {
       context.addIssue({
         code: 'custom',
         message: 'Assisted verification preparation requires a protected verifier reference.',
