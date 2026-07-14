@@ -71,7 +71,6 @@ export const businessClaimVerificationRequestSchema = z
   .object({
     method: ownershipVerificationMethodSchema,
     officialDomain: officialDomainSchema.nullable(),
-    officialContactEmail: z.email().max(320).nullable(),
     officialWebsiteUrl: httpsUrlSchema.nullable(),
     officialSocialUrl: httpsUrlSchema.nullable(),
     assistedVerifierReference: boundedText(200).nullable(),
@@ -79,22 +78,12 @@ export const businessClaimVerificationRequestSchema = z
   })
   .strict()
   .superRefine((request, context) => {
-    if (request.method === 'official_domain_email') {
-      if (request.officialDomain === null || request.officialContactEmail === null) {
-        context.addIssue({
-          code: 'custom',
-          message: 'Official-domain email verification requires a domain and contact email.',
-        });
-      } else {
-        const domain = emailDomain(request.officialContactEmail);
-        if (domain !== request.officialDomain && !domain.endsWith(`.${request.officialDomain}`)) {
-          context.addIssue({
-            code: 'custom',
-            path: ['officialContactEmail'],
-            message: 'The official contact email must belong to the declared official domain.',
-          });
-        }
-      }
+    if (request.method === 'official_domain_email' && request.officialDomain === null) {
+      context.addIssue({
+        code: 'custom',
+        path: ['officialDomain'],
+        message: 'Official-domain email verification requires an official domain.',
+      });
     }
     if (request.method === 'website_code' && request.officialWebsiteUrl === null) {
       context.addIssue({
@@ -128,35 +117,36 @@ export const businessClaimVerificationRequestSchema = z
 
 export const businessClaimEntityCorrectionSchema = z
   .object({
-    name: boundedText(160).nullable(),
-    legalName: boundedText(200).nullable(),
-    websiteUrl: httpsUrlSchema.nullable(),
-    countryCode: countryCodeSchema.nullable(),
+    name: boundedText(160).optional(),
+    legalName: boundedText(200).nullable().optional(),
+    websiteUrl: httpsUrlSchema.nullable().optional(),
+    countryCode: countryCodeSchema.nullable().optional(),
   })
   .strict()
   .refine(
-    (correction) => Object.values(correction).some((value) => value !== null),
+    (correction) => Object.keys(correction).length > 0,
     'Entity corrections require at least one proposed field.',
   );
 
 export const businessClaimLocationCorrectionSchema = z
   .object({
-    name: boundedText(160).nullable(),
-    addressLine: boundedText(500).nullable(),
-    locality: boundedText(120).nullable(),
-    region: boundedText(120).nullable(),
-    postalCode: boundedText(32).nullable(),
-    countryCode: countryCodeSchema.nullable(),
-    latitude: z.number().finite().min(-90).max(90).nullable(),
-    longitude: z.number().finite().min(-180).max(180).nullable(),
-    websiteUrl: httpsUrlSchema.nullable(),
-    phone: boundedText(64).nullable(),
-    description: boundedText(5_000).nullable(),
-    openingHours: boundedText(2_000).nullable(),
+    name: boundedText(160).nullable().optional(),
+    addressLine: boundedText(500).nullable().optional(),
+    locality: boundedText(120).nullable().optional(),
+    region: boundedText(120).nullable().optional(),
+    postalCode: boundedText(32).nullable().optional(),
+    countryCode: countryCodeSchema.optional(),
+    latitude: z.number().finite().min(-90).max(90).optional(),
+    longitude: z.number().finite().min(-180).max(180).optional(),
+    websiteUrl: httpsUrlSchema.nullable().optional(),
+    phone: boundedText(64).nullable().optional(),
+    description: boundedText(5_000).nullable().optional(),
+    openingHours: boundedText(2_000).nullable().optional(),
     amenities: z
       .array(boundedText(80))
       .max(100)
-      .transform((values) => [...new Set(values)]),
+      .transform((values) => [...new Set(values)])
+      .optional(),
     socialLinks: z
       .array(canonicalLocationSocialLinkSchema)
       .max(30)
@@ -173,35 +163,20 @@ export const businessClaimLocationCorrectionSchema = z
           }
           seen.add(key);
         });
-      }),
+      })
+      .optional(),
   })
   .strict()
   .superRefine((correction, context) => {
-    const scalarValues = [
-      correction.name,
-      correction.addressLine,
-      correction.locality,
-      correction.region,
-      correction.postalCode,
-      correction.countryCode,
-      correction.latitude,
-      correction.longitude,
-      correction.websiteUrl,
-      correction.phone,
-      correction.description,
-      correction.openingHours,
-    ];
-    if (
-      scalarValues.every((value) => value === null) &&
-      correction.amenities.length === 0 &&
-      correction.socialLinks.length === 0
-    ) {
+    if (Object.keys(correction).length === 0) {
       context.addIssue({
         code: 'custom',
         message: 'Location corrections require at least one proposed field.',
       });
     }
-    if ((correction.latitude === null) !== (correction.longitude === null)) {
+    const hasLatitude = correction.latitude !== undefined;
+    const hasLongitude = correction.longitude !== undefined;
+    if (hasLatitude !== hasLongitude) {
       context.addIssue({
         code: 'custom',
         path: ['latitude'],
@@ -239,7 +214,27 @@ export const businessClaimSubmissionIntakeSchema = commonSubmissionIntakeSchema
   })
   .strict()
   .superRefine((intake, context) => {
-    const { requestedScopes, proposedChanges } = intake.originalPayload;
+    const { requestedScopes, proposedChanges, verification } = intake.originalPayload;
+
+    if (verification.method === 'official_domain_email') {
+      if (intake.contact === null || !intake.contact.contactAllowed) {
+        context.addIssue({
+          code: 'custom',
+          path: ['contact'],
+          message: 'Official-domain email verification requires protected follow-up contact.',
+        });
+      } else if (verification.officialDomain !== null) {
+        const domain = emailDomain(intake.contact.email);
+        if (domain !== verification.officialDomain && !domain.endsWith(`.${verification.officialDomain}`)) {
+          context.addIssue({
+            code: 'custom',
+            path: ['contact', 'email'],
+            message: 'The protected contact email must belong to the declared official domain.',
+          });
+        }
+      }
+    }
+
     if (intake.targetType === 'entity') {
       if (requestedScopes.includes('location_profile') || proposedChanges.location !== null) {
         context.addIssue({
@@ -292,7 +287,7 @@ export interface BusinessClaimReviewProjection {
   verification: Readonly<{
     method: z.infer<typeof ownershipVerificationMethodSchema>;
     officialDomain: string | null;
-    officialContactEmailPresent: boolean;
+    protectedContactPresent: boolean;
     officialWebsiteUrl: string | null;
     officialSocialUrl: string | null;
     assistedVerifierReferencePresent: boolean;
@@ -317,7 +312,7 @@ export function normalizeParsedBusinessClaimSubmissionIntake(
     verification: {
       method: payload.verification.method,
       officialDomain: payload.verification.officialDomain,
-      officialContactEmailPresent: payload.verification.officialContactEmail !== null,
+      protectedContactPresent: intake.contact !== null,
       officialWebsiteUrl: payload.verification.officialWebsiteUrl,
       officialSocialUrl: payload.verification.officialSocialUrl,
       assistedVerifierReferencePresent: payload.verification.assistedVerifierReference !== null,
