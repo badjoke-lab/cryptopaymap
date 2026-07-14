@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, desc, eq, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   entities,
@@ -50,6 +50,20 @@ function mapEvent(
   };
 }
 
+function eventSelection() {
+  return {
+    eventId: submissionEvents.id,
+    submissionId: submissionEvents.submissionId,
+    fromStatus: submissionEvents.fromStatus,
+    toStatus: submissionEvents.toStatus,
+    action: submissionEvents.action,
+    reasonCode: submissionEvents.reasonCode,
+    actorId: submissionEvents.actorId,
+    internalNote: submissionEvents.internalNote,
+    createdAt: submissionEvents.createdAt,
+  };
+}
+
 export function createDrizzleBusinessClaimFieldApplicationBackend(
   database: CryptoPayMapDatabase,
 ): BusinessClaimFieldApplicationPersistenceBackend {
@@ -74,17 +88,7 @@ export function createDrizzleBusinessClaimFieldApplicationBackend(
       if (submission === undefined) return null;
 
       const relationshipRows = await database
-        .select({
-          eventId: submissionEvents.id,
-          submissionId: submissionEvents.submissionId,
-          fromStatus: submissionEvents.fromStatus,
-          toStatus: submissionEvents.toStatus,
-          action: submissionEvents.action,
-          reasonCode: submissionEvents.reasonCode,
-          actorId: submissionEvents.actorId,
-          internalNote: submissionEvents.internalNote,
-          createdAt: submissionEvents.createdAt,
-        })
+        .select(eventSelection())
         .from(submissionEvents)
         .where(eq(submissionEvents.id, relationshipDecisionId))
         .limit(1);
@@ -202,19 +206,24 @@ export function createDrizzleBusinessClaimFieldApplicationBackend(
 
     async readApplicationEvent(requestId) {
       const rows = await database
-        .select({
-          eventId: submissionEvents.id,
-          submissionId: submissionEvents.submissionId,
-          fromStatus: submissionEvents.fromStatus,
-          toStatus: submissionEvents.toStatus,
-          action: submissionEvents.action,
-          reasonCode: submissionEvents.reasonCode,
-          actorId: submissionEvents.actorId,
-          internalNote: submissionEvents.internalNote,
-          createdAt: submissionEvents.createdAt,
-        })
+        .select(eventSelection())
         .from(submissionEvents)
         .where(eq(submissionEvents.id, requestId))
+        .limit(1);
+      return mapEvent(rows[0]);
+    },
+
+    async readSubmissionApplicationEvent(submissionId) {
+      const rows = await database
+        .select(eventSelection())
+        .from(submissionEvents)
+        .where(
+          and(
+            eq(submissionEvents.submissionId, submissionId),
+            eq(submissionEvents.action, 'business_claim_fields_applied'),
+          ),
+        )
+        .orderBy(desc(submissionEvents.createdAt))
         .limit(1);
       return mapEvent(rows[0]);
     },
@@ -230,6 +239,12 @@ export function createDrizzleBusinessClaimFieldApplicationBackend(
               and ${submissions.workflowStatus} = 'resolved'
               and ${submissions.resolution} = 'approved'
               and ${submissions.updatedAt} = ${command.expectedSubmissionUpdatedAt}
+              and not exists (
+                select 1
+                from ${submissionEvents}
+                where ${submissionEvents.submissionId} = ${command.submissionId}
+                  and ${submissionEvents.action} = 'business_claim_fields_applied'
+              )
           ) then 1 else 0 end`,
         }),
       ];
