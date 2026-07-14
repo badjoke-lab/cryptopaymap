@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-04E — Business Claim review transitions and verification-request preparation
+P5-04F — Business Claim verification execution and bounded result recording
 
 ## Current repository state
 
@@ -21,48 +21,41 @@ P5-04E — Business Claim review transitions and verification-request preparatio
 - P5-04B idempotent private business Claim intake integration completed in #207 at main commit `cb55ad961f213fd8a6e5f86e81a16abd486505cb`.
 - P5-04C protected canonical target context and bounded read-only Claim review signals completed in #208 at main commit `80d30b21cb92475b309f7501f2d27c32b06935f3`.
 - P5-04D protected business Claim reviewer queue and detail entry completed in #209 at main commit `ec2048faea97ce3efdc4710d42ea9cf83135d0b6`.
+- P5-04E exact-state review transitions and verification-request preparation completed in #210 at main commit `e1369049529055939dc955318e76a2a3005df7b4`.
 - Draft #204 was closed as superseded because it predated the #206 privacy boundary and tested nonexistent persistence metadata.
-- P5-04E exact-state review transitions and verification-request preparation are now active.
+- P5-04F verification execution and bounded result recording are now active.
 
 ## P5-04 completed foundations
 
-P5-04A through P5-04D now provide:
+P5-04A through P5-04E now provide:
 
 - existing Entity or Location Claim targets only;
 - owner, authorized representative, and authorized employee roles;
 - representative, Entity-profile, Location-profile, and payment-information scopes;
-- official-domain email, website-code, DNS TXT, official-social, and assisted-verification request methods;
-- official-domain contact through the protected contact boundary rather than plaintext payload storage;
+- official-domain email, website-code, DNS TXT, official-social, and assisted-verification methods;
+- protected contact and proof boundaries without plaintext review payload leakage;
 - bounded practical-profile and payment proposals;
-- explicit changed-field semantics for omission, nullable clearing, and empty-list replacement;
-- complete coordinate-pair requirements;
-- review-safe normalization without contact email, proof URL, or assisted-verifier reference values;
-- atomic private original and normalized payload persistence;
-- separate encrypted and hashed contact persistence;
-- deterministic status-secret replay and changed-content conflict;
-- rate-limit and challenge composition before Claim intake;
-- validated Entity or Location canonical target snapshots;
-- target, parent, and Claim ownership consistency checks;
-- bounded official-identity, field, payment-context, and lifecycle signals;
-- explicit non-conclusive coverage semantics;
-- a separately authorized protected Claim Submission queue and detail entry;
-- bounded workflow-event summaries and protected-material presence flags;
-- fail-closed handling without private verification values;
-- received-only workflow state without verified authority or editing permission;
-- no automatic relationship approval, canonical mutation, export, or publication.
+- explicit changed-field semantics and complete coordinate-pair requirements;
+- atomic private Claim intake with replay/conflict behavior;
+- validated canonical target snapshots and advisory comparison signals;
+- a separately authorized protected Claim queue and detail entry;
+- exact-state Claim review transitions with atomic audit events;
+- separately authorized, idempotent verification-request preparation;
+- method-specific protected prerequisites and privacy-safe preparation receipts;
+- no verified authority, representative relationship, canonical mutation, export, or publication.
 
-## P5-04E active scope
+## P5-04F active scope
 
-P5-04E adds:
+P5-04F adds:
 
-- separately authorized Claim workflow mutation capability;
-- exact expected-state and concurrency guards;
-- bounded operational transitions among received, triage, in-review, needs-information, and on-hold states;
-- atomic Submission and audit-event persistence;
-- deterministic idempotency and changed-content conflict handling;
-- bounded verification-request preparation matched to the normalized method;
-- protected-value exclusion from reviewer responses and audit summaries;
-- no provider execution, verified authority, representative relationship, canonical mutation, export, or publication.
+- a dedicated verification-execution authorization capability;
+- strict prepared-request loading and expiry validation;
+- bounded adapters for all five verification methods;
+- privacy-safe outcomes: passed, failed, inconclusive, and provider error;
+- idempotent execution UUIDs and changed-content conflict handling;
+- atomic private result-event persistence;
+- adapter output validation and private-value leakage rejection;
+- no representative relationship, editing right, terminal workflow decision, canonical mutation, export, or publication.
 
 ## Current references
 
@@ -76,13 +69,14 @@ P5-04E adds:
 - `docs/P5_04C_BUSINESS_CLAIM_TARGET_CONTEXT.md`
 - `docs/P5_04D_BUSINESS_CLAIM_REVIEWER_ENTRY.md`
 - `docs/P5_04E_BUSINESS_CLAIM_REVIEW_TRANSITIONS.md`
+- `docs/P5_04F_BUSINESS_CLAIM_VERIFICATION_EXECUTION.md`
 
 ## Phase 5 sequence
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
-4. P5-04 — Business and service claims — In progress at P5-04E
+4. P5-04 — Business and service claims — In progress at P5-04F
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
@@ -90,12 +84,12 @@ P5-04E adds:
 
 ## Next
 
-Implement and validate P5-04E exact-state transition contracts, separate authorization, idempotent atomic persistence, audit events, verification-request preparation, protected-value leakage rejection, focused tests, and executable schema validation. Provider-specific execution and representative-relationship decisions remain later separately authorized slices.
+Implement and validate P5-04F execution authorization, prepared-request loading, strict adapter contracts, expiration and method checks, idempotent private result persistence, leakage rejection, focused tests, and executable schema validation. Representative-relationship decisions remain a later separately authorized slice.
 
 ## Blocked
 
-No repository blocker is known. Verification-provider execution, protected relationship decisions, public Claim routing, configured review, and production checks remain separate later slices.
+No repository blocker is known. Provider configuration, protected relationship decisions, public Claim routing, configured review, and production checks remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A prepared verification request remains unexecuted, grants no authority, and grants no editing right.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A passed verification result remains review material only and grants no authority or editing right.
