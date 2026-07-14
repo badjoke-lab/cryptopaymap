@@ -23,8 +23,7 @@ export const businessClaimFieldApplicationEventPayloadSchema = z
       });
     }
     if (
-      payload.request.expectedRelationshipDecisionId !==
-      payload.projection.relationshipDecisionId
+      payload.request.expectedRelationshipDecisionId !== payload.projection.relationshipDecisionId
     ) {
       context.addIssue({
         code: 'custom',
