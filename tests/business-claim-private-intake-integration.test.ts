@@ -38,7 +38,7 @@ function validBusinessClaim() {
         officialDomain: 'merchant.example',
         officialWebsiteUrl: 'https://merchant.example',
         officialSocialUrl: null,
-        assistedVerifierReference: null,
+        assistedVerifierReference: 'assisted-case-123',
         privateProofUrl: 'https://evidence.example/private-authority-proof',
       },
       proposedChanges: {
@@ -111,7 +111,7 @@ describe('P5-04B business claim private intake integration', () => {
           officialDomain: 'merchant.example',
           protectedContactPresent: true,
           officialWebsiteUrl: 'https://merchant.example',
-          assistedVerifierReferencePresent: false,
+          assistedVerifierReferencePresent: true,
           privateProofPresent: true,
         },
       },
@@ -123,7 +123,7 @@ describe('P5-04B business claim private intake integration', () => {
     expect(normalized).not.toContain('representative@merchant.example');
     expect(normalized).not.toContain('private-authority-proof');
     expect(normalized).not.toContain('encrypted-claim-contact');
-    expect(normalized).not.toContain('assistedVerifierReference');
+    expect(normalized).not.toContain('assisted-case-123');
     expect(normalized).not.toContain('privateProofUrl');
   });
 
