@@ -61,7 +61,7 @@ assisted_verification
 
 Method-specific minimums are enforced:
 
-- official-domain email requires a declared domain and an email on that domain or subdomain;
+- official-domain email requires a declared domain and protected follow-up contact on that domain or a subdomain;
 - website code requires an official HTTPS website URL;
 - DNS TXT requires an official domain;
 - official social verification requires an official social URL;
@@ -71,14 +71,15 @@ P5-04A records the requested method only. It does not issue a code, query DNS, a
 
 ## Private values
 
+Official-domain email is not stored inside `submission_payloads.original_payload`. It must use the common protected contact field so P5-04B can persist it through the existing encrypted `submission_contacts` boundary.
+
 The original private payload may contain:
 
-- official contact email;
 - protected proof URL;
 - assisted verifier reference;
 - authority statement.
 
-The review-safe normalized projection never contains the contact email or proof URL. It exposes only bounded review signals such as method, declared public domain/URLs, and presence booleans.
+The review-safe normalized projection never contains the contact email, proof URL, or assisted verifier reference value. It exposes only bounded review signals such as method, declared public domain or URLs, and presence booleans.
 
 ## Proposed changes
 
@@ -86,7 +87,10 @@ The contract can carry:
 
 - bounded Entity profile corrections;
 - bounded Location practical-profile corrections;
+- explicit empty arrays for clearing amenities or social links;
 - structured payment proposals using the existing Asset, Network, route, method, processor, How-to-pay, and restriction contract.
+
+Each profile correction includes a bounded `changedFields` list. Fields outside that list must contain null placeholders, so hidden undeclared values cannot enter review. A listed nullable field may use null to request clearing; a listed list field may use an empty array. Country code and Entity name cannot be cleared. Coordinate corrections require both latitude and longitude.
 
 The contract deliberately excludes status, visibility, verification result, ownership status, canonical version, export, and publication fields.
 
@@ -111,4 +115,4 @@ public record changed
 
 ## Next
 
-P5-04B will integrate the strict Claim parser and review-safe normalized projection with idempotent private Submission persistence. Verification state, adapters, protected reviewer entry, relationship decisions, expiration/revocation, public route, and configured audit remain separate later slices.
+P5-04B will integrate the strict Claim parser and review-safe normalized projection with idempotent private Submission persistence and encrypted contact handling. Verification state, adapters, protected reviewer entry, relationship decisions, expiration/revocation, public route, and configured audit remain separate later slices.

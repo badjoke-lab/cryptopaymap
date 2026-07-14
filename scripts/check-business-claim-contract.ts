@@ -9,16 +9,18 @@ const claim = {
   targetType: 'entity',
   targetId: '10000000-0000-4000-8000-000000000001',
   relationship: 'owner_or_authorized_representative',
-  contact: null,
+  contact: {
+    email: 'owner@merchant.example',
+    contactAllowed: true,
+  },
   evidenceLinks: [],
   originalPayload: {
     schemaVersion: 'business-claim-v1',
     claimantRole: 'authorized_representative',
     requestedScopes: ['representative_relationship'],
     verification: {
-      method: 'dns_txt',
+      method: 'official_domain_email',
       officialDomain: 'merchant.example',
-      officialContactEmail: null,
       officialWebsiteUrl: 'https://merchant.example',
       officialSocialUrl: null,
       assistedVerifierReference: null,
@@ -39,11 +41,15 @@ const claim = {
 
 businessClaimSubmissionIntakeSchema.parse(claim);
 const projection = normalizeBusinessClaimSubmissionIntake(claim);
-if (projection.verification.officialContactEmailPresent) {
-  throw new Error('Unexpected official contact email exposure state.');
+if (!projection.verification.protectedContactPresent) {
+  throw new Error('Expected protected claim contact presence signal.');
 }
-if ('privateProofUrl' in projection.verification) {
-  throw new Error('Private ownership proof must not enter the review-safe projection.');
+if ('email' in projection.verification || 'privateProofUrl' in projection.verification) {
+  throw new Error('Private ownership contact or proof must not enter the review-safe projection.');
+}
+const serialized = JSON.stringify(projection);
+if (serialized.includes('owner@merchant.example')) {
+  throw new Error('Protected contact value leaked into the review-safe projection.');
 }
 
 console.log('P5-04A business claim contract and review-safe projection are valid.');
