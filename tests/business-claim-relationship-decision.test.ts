@@ -33,6 +33,20 @@ const context: BusinessClaimRelationshipDecisionContext = {
 
 type Outcome = 'passed' | 'failed' | 'inconclusive' | 'provider_error';
 
+interface StateOptions {
+  outcome?: Outcome;
+  projectionValue?: unknown;
+  expiresAt?: string;
+  updatedAt?: string;
+}
+
+interface RequestOptions {
+  decision?: 'approve_relationship' | 'not_approved';
+  outcome?: Outcome;
+  expiresAt?: string;
+  overrides?: Record<string, unknown>;
+}
+
 function resultCode(outcome: Outcome): string {
   return outcome === 'passed' ? 'challenge_confirmed' : `${outcome}_result`;
 }
@@ -121,12 +135,7 @@ function executionEvent(
   };
 }
 
-function state(options: {
-  outcome?: Outcome;
-  projectionValue?: unknown;
-  expiresAt?: string;
-  updatedAt?: string;
-} = {}): BusinessClaimRelationshipDecisionState {
+function state(options: StateOptions = {}): BusinessClaimRelationshipDecisionState {
   const outcome = options.outcome ?? 'passed';
   const expiresAt = options.expiresAt ?? preparationExpiresAt;
   return {
@@ -168,12 +177,7 @@ function backend(initialState: BusinessClaimRelationshipDecisionState) {
   return { service, commits };
 }
 
-function request(options: {
-  decision?: 'approve_relationship' | 'not_approved';
-  outcome?: Outcome;
-  expiresAt?: string;
-  overrides?: Record<string, unknown>;
-} = {}) {
+function request(options: RequestOptions = {}) {
   const decision = options.decision ?? 'approve_relationship';
   const outcome = options.outcome ?? 'passed';
   const reasonCode =
