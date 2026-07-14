@@ -6,6 +6,38 @@ import {
 
 const targetId = '10000000-0000-4000-8000-000000000001';
 
+function entityCorrection(changedFields: string[], values: Record<string, unknown> = {}) {
+  return {
+    changedFields,
+    name: null,
+    legalName: null,
+    websiteUrl: null,
+    countryCode: null,
+    ...values,
+  };
+}
+
+function locationCorrection(changedFields: string[], values: Record<string, unknown> = {}) {
+  return {
+    changedFields,
+    name: null,
+    addressLine: null,
+    locality: null,
+    region: null,
+    postalCode: null,
+    countryCode: null,
+    latitude: null,
+    longitude: null,
+    websiteUrl: null,
+    phone: null,
+    description: null,
+    openingHours: null,
+    amenities: null,
+    socialLinks: null,
+    ...values,
+  };
+}
+
 function entityClaim(): any {
   return {
     schemaVersion: 'submission-common-v1',
@@ -31,11 +63,11 @@ function entityClaim(): any {
         privateProofUrl: 'https://evidence.example/private-owner-proof',
       },
       proposedChanges: {
-        entity: {
+        entity: entityCorrection(['name', 'websiteUrl', 'countryCode'], {
           name: 'Merchant Example',
           websiteUrl: 'https://merchant.example',
           countryCode: 'JP',
-        },
+        }),
         location: null,
         paymentProposals: [
           {
@@ -120,11 +152,14 @@ describe('P5-04A business claim contract', () => {
   it('rejects location changes on an entity-targeted claim', () => {
     const input = structuredClone(entityClaim());
     input.originalPayload.requestedScopes.push('location_profile');
-    input.originalPayload.proposedChanges.location = {
-      addressLine: '1 Example Street',
-      locality: 'Tokyo',
-      countryCode: 'JP',
-    };
+    input.originalPayload.proposedChanges.location = locationCorrection(
+      ['addressLine', 'locality', 'countryCode'],
+      {
+        addressLine: '1 Example Street',
+        locality: 'Tokyo',
+        countryCode: 'JP',
+      },
+    );
     expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
   });
 
@@ -134,18 +169,21 @@ describe('P5-04A business claim contract', () => {
     input.originalPayload.requestedScopes = ['representative_relationship', 'location_profile'];
     input.originalPayload.proposedChanges.entity = null;
     input.originalPayload.proposedChanges.paymentProposals = null;
-    input.originalPayload.proposedChanges.location = {
-      addressLine: '2 Corrected Street',
-      countryCode: 'JP',
-      amenities: [],
-      socialLinks: [],
-    };
+    input.originalPayload.proposedChanges.location = locationCorrection(
+      ['addressLine', 'countryCode', 'amenities', 'socialLinks'],
+      {
+        addressLine: '2 Corrected Street',
+        countryCode: 'JP',
+        amenities: [],
+        socialLinks: [],
+      },
+    );
     expect(businessClaimSubmissionIntakeSchema.parse(input).targetType).toBe('location');
 
     input.originalPayload.requestedScopes.push('entity_profile');
-    input.originalPayload.proposedChanges.entity = {
+    input.originalPayload.proposedChanges.entity = entityCorrection(['name'], {
       name: 'Wrongly scoped entity change',
-    };
+    });
     expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
   });
 
@@ -155,7 +193,15 @@ describe('P5-04A business claim contract', () => {
     input.originalPayload.requestedScopes = ['representative_relationship', 'location_profile'];
     input.originalPayload.proposedChanges.entity = null;
     input.originalPayload.proposedChanges.paymentProposals = null;
-    input.originalPayload.proposedChanges.location = { latitude: 35.6812 };
+    input.originalPayload.proposedChanges.location = locationCorrection(['latitude'], {
+      latitude: 35.6812,
+    });
+    expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
+  });
+
+  it('rejects hidden values outside changedFields', () => {
+    const input = entityClaim();
+    input.originalPayload.proposedChanges.entity.legalName = 'Hidden legal name';
     expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
   });
 
