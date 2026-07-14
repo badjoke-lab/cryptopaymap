@@ -7,10 +7,7 @@ import {
 import { parseBusinessClaimRelationshipDecisionEventPayload } from '../../submissions/business-claim-relationship-decision-contract';
 import { businessClaimReviewProjectionSchema } from '../../submissions/business-claim-target-context';
 import { suggestPaymentProposalSchema } from '../../submissions/suggest-contract';
-import {
-  canonicalEntitySchema,
-  canonicalLocationSchema,
-} from '../../schemas/canonical-identity';
+import { canonicalEntitySchema, canonicalLocationSchema } from '../../schemas/canonical-identity';
 import type { BusinessClaimFieldApplicationContext } from './business-claim-field-application-authorization';
 
 const timestampSchema = z.iso.datetime({ offset: true });
