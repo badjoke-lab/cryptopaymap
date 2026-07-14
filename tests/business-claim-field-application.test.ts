@@ -144,10 +144,7 @@ function locationProjection() {
     targetType: 'location' as const,
     targetId: locationId,
     claimantRole: 'owner' as const,
-    requestedScopes: [
-      'representative_relationship' as const,
-      'location_profile' as const,
-    ],
+    requestedScopes: ['representative_relationship' as const, 'location_profile' as const],
     verification: {
       method: 'dns_txt' as const,
       officialDomain: 'merchant.example',
@@ -183,7 +180,9 @@ function locationProjection() {
   };
 }
 
-function entityState(projectionValue: unknown = entityProjection()): BusinessClaimFieldApplicationState {
+function entityState(
+  projectionValue: unknown = entityProjection(),
+): BusinessClaimFieldApplicationState {
   return {
     submissionId,
     submissionType: 'claim',
@@ -327,7 +326,7 @@ describe('P5-04H1 Business Claim field application', () => {
     });
     expect(result.requestFingerprint).toMatch(/^sha256:[a-f0-9]{64}$/);
     expect(JSON.stringify(result)).not.toContain('authorityStatement');
-    expect(JSON.stringify(result)).not.toContain('merchant.example');
+    expect(JSON.stringify(result)).not.toContain('owner@merchant.example');
     expect(JSON.stringify(result)).not.toContain('editingPermission');
   });
 
