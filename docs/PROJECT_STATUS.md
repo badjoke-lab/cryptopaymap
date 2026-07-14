@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-04H2 — Business Claim durable field application and provenance
+P5-04H3 — Protected Business Claim field-application reviewer flow and integration audit
 
 ## Current repository state
 
@@ -24,13 +24,14 @@ P5-04H2 — Business Claim durable field application and provenance
 - P5-04E exact-state review transitions and verification-request preparation completed in #210 at main commit `e1369049529055939dc955318e76a2a3005df7b4`.
 - P5-04F verification execution and bounded result recording completed in #211 at main commit `3ffe59c0e2d773c11cff066adcaf1cb1d099e76d`.
 - P5-04G representative-relationship decisions completed in #212 at main commit `dc1649cea5731bf12dd8a86ec6fba894be6c1def`.
-- P5-04H1 strict field-level decision and canonical projection completed through #213.
+- P5-04H1 strict field-level decision and canonical projection completed in #213 at main commit `3d1b2f65101dd0b4a432e52b5ad32476cbcf8467`.
+- P5-04H2 durable exact-state canonical persistence, private payment drafts, provenance, receipts, replay, and rollback completed through #214.
 - Draft #204 was closed as superseded because it predated the #206 privacy boundary and tested nonexistent persistence metadata.
-- P5-04H2 durable canonical application and provenance are next.
+- P5-04H3 protected reviewer flow and integration audit are next.
 
 ## P5-04 completed foundations
 
-P5-04A through P5-04H1 now provide:
+P5-04A through P5-04H2 now provide:
 
 - existing Entity or Location Claim targets only;
 - owner, authorized representative, and authorized employee roles;
@@ -51,19 +52,24 @@ P5-04A through P5-04H1 now provide:
 - complete Entity, Location, and payment accept/reject partitions;
 - proposal-only value copying with canonical before/after validation;
 - deterministic application fingerprints and stale/no-op rejection;
-- no automatic canonical persistence, account permission, export, or publication.
-
-## P5-04H2 active scope
-
-P5-04H2 adds:
-
-- durable application receipt and provenance persistence;
-- exact canonical Entity and Location state guards;
-- accepted payment-record or canonical payment-draft persistence;
-- one atomic transaction for canonical mutations, provenance, and private audit events;
-- deterministic request UUID replay and changed-content conflicts;
-- rollback for stale, duplicate, malformed, or partially failing applications;
+- durable private application receipts and field-level provenance;
+- exact-state atomic Entity and Location updates;
+- bounded private payment drafts without direct public-claim creation;
+- replay recovery and full rollback on conflicts;
 - no account permission, unrelated-field mutation, export, or publication.
+
+## P5-04H3 active scope
+
+P5-04H3 adds:
+
+- a protected operator request and response contract for H1 projection and H2 persistence;
+- reviewer-safe current-versus-proposed field presentation;
+- explicit complete accept/reject decisions without arbitrary replacement values;
+- exact Submission, relationship, and canonical version tokens;
+- one protected application endpoint/service boundary;
+- bounded success, replay, stale, conflict, authorization, and validation responses;
+- integration tests spanning Claim intake through verification, relationship approval, field decisions, and canonical application;
+- an audit proving no public Claim route, account grant, implicit editing right, export, publication, or private-value leakage.
 
 ## Current references
 
@@ -86,7 +92,7 @@ P5-04H2 adds:
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
-4. P5-04 — Business and service claims — In progress at P5-04H2
+4. P5-04 — Business and service claims — In progress at P5-04H3
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
@@ -94,11 +100,11 @@ P5-04H2 adds:
 
 ## Next
 
-Implement and validate P5-04H2 durable exact-state Entity, Location, and payment application persistence, provenance, audit receipts, replay recovery, atomic rollback, focused tests, and executable schema validation.
+Implement and validate the protected P5-04H3 reviewer request/response boundary, operator-safe field decision workspace model, H1/H2 integration service, complete Business Claim chain audit, focused integration tests, executable schema validation, and protected staging-review evidence.
 
 ## Blocked
 
-No repository blocker is known. Account permissions, public Claim routing, configured review, production checks, and broader Claim lifecycle operations remain separate later slices.
+No repository blocker is known. Account permissions, public Claim routing, configured production review, public export activation, and broader Claim lifecycle operations remain separate later slices.
 
 ## Verification rule
 
