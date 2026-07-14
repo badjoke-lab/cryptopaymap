@@ -1,8 +1,9 @@
 # P5-04G Business Claim representative-relationship decisions
 
 **Implementation item:** P5-04G  
-**Status:** Active  
-**Started:** 2026-07-14
+**Status:** Completed through #212  
+**Started:** 2026-07-14  
+**Completed:** 2026-07-14
 
 ## Purpose
 
@@ -10,7 +11,7 @@ Convert reviewed P5-04F verification results into a separately authorized decisi
 
 ## Authorization boundary
 
-P5-04G must use a dedicated relationship-decision capability separate from:
+P5-04G uses a dedicated relationship-decision capability separate from:
 
 - protected Claim read access;
 - ordinary Claim workflow transitions;
@@ -76,7 +77,7 @@ Revocation, expiry, transfer, and account-permission management remain later sep
 
 ## Scope boundary
 
-P5-04G may approve only the representative-relationship scope requested in the normalized Claim. Entity-profile, Location-profile, and payment-information proposals remain pending canonical review and are not applied by the relationship decision.
+P5-04G approves only the representative-relationship scope requested in the normalized Claim. Entity-profile, Location-profile, and payment-information proposals remain pending canonical review and are not applied by the relationship decision.
 
 The relationship record is not an account, session, API credential, or editing permission.
 
@@ -85,9 +86,11 @@ The relationship record is not an account, session, API credential, or editing p
 Approval or non-approval is one atomic transaction covering:
 
 - exact-state Submission resolution;
-- relationship creation when approved;
+- private relationship creation when approved;
 - decision event creation;
 - audit metadata.
+
+The initial private relationship is stored as a strict versioned decision-event payload bound to the exact verification chain. No public or canonical relationship table is introduced by this slice.
 
 An identical retry replays the stored decision. Reuse of the same decision UUID with changed Submission, verification result, target, decision, reason, or approved scope fails as an idempotency conflict.
 
@@ -101,7 +104,6 @@ P5-04G fails closed for:
 - malformed normalized Claim projections;
 - missing representative scope;
 - missing, malformed, mismatched, or non-passed verification results;
-- duplicate active relationships with incompatible identity;
 - changed-content idempotency conflicts;
 - transaction or response-validation failure;
 - private-value leakage into the decision response or audit summary.
@@ -124,6 +126,10 @@ P5-04G does not:
 ## Completion gate
 
 An independently authorized decision maker can approve one exact passed verification result into a private, idempotent representative relationship or resolve the Claim as not approved, while stale, mismatched, unauthorized, malformed, or conflicting decisions fail atomically and no editing or canonical mutation occurs.
+
+## Completion evidence
+
+Pull request #212 adds dedicated decision authorization, strict request, receipt, relationship, and event contracts, exact Projection/preparation/execution-chain validation, atomic guarded Drizzle persistence, deterministic replay, non-approval handling, protected-value rejection, focused unit tests, and an executable schema check.
 
 ## Next
 
