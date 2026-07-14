@@ -1,8 +1,9 @@
 # P5-05C Photo quarantine upload authorization
 
 **Implementation item:** P5-05C  
-**Status:** In progress  
-**Started:** 2026-07-15
+**Status:** Completed through #218  
+**Started:** 2026-07-15  
+**Completed:** 2026-07-15
 
 ## Purpose
 
@@ -94,9 +95,11 @@ P5-05C does not add:
 - protected Media review handoff;
 - approval, canonical mutation, export, publication, or deployment.
 
-## Completion gate
+## Completion evidence
 
-P5-05C is complete when a valid Photos authorization request can create one private reservation set, produce bounded transient PUT instructions through a replaceable authorizer, replay safely, conflict on changed content, reject expired or consumed reservations, and expose no persistent storage credential or public Media state.
+Pull request #218 adds the upload-authorization contract, deterministic opaque reservation issuance, Drizzle and in-memory persistence adapters, provider-neutral signer boundary, signed-header verification, exact replay and changed-content conflict behavior, expiry and consumption guards, executable schema validation, and focused privacy and concurrency tests.
+
+The implementation validation passed format, lint, Astro and TypeScript checks, executable schemas, migration drift, 217 test files and 1,072 tests, build, accessibility, Phase 1 checks, and staging validation. The final documentation-head workflow results are recorded on #218.
 
 ## Next bounded item
 
