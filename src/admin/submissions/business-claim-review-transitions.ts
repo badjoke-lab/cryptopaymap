@@ -27,9 +27,7 @@ export const businessClaimReviewReasonCodeValues = [
   'information_received',
   'hold_released',
 ] as const;
-export const businessClaimReviewReasonCodeSchema = z.enum(
-  businessClaimReviewReasonCodeValues,
-);
+export const businessClaimReviewReasonCodeSchema = z.enum(businessClaimReviewReasonCodeValues);
 
 const expectedStatusSchema = z.enum([
   'received',
