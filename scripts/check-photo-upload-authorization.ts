@@ -4,6 +4,7 @@ import {
   photoQuarantineObjectKey,
   photoUploadAuthorizationRequestSchema,
 } from '../src/submissions/photo-upload-authorization';
+import './check-photo-object-validation';
 
 const parsed = photoUploadAuthorizationRequestSchema.parse({
   schemaVersion: 'photo-upload-authorization-v1',
