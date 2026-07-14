@@ -13,9 +13,7 @@ const context = authorizeBusinessClaimFieldApplication(
     email: null,
   },
   readBusinessClaimFieldApplicationAuthorizationPolicy({
-    CPM_ADMIN_CLAIM_FIELD_APPLICATION_SUBJECTS: JSON.stringify([
-      'runtime-field-reviewer',
-    ]),
+    CPM_ADMIN_CLAIM_FIELD_APPLICATION_SUBJECTS: JSON.stringify(['runtime-field-reviewer']),
   }),
 );
 
