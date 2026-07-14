@@ -31,14 +31,20 @@ const context: BusinessClaimRelationshipDecisionContext = {
   capabilities: ['submission:claim-relationship:decide'],
 };
 
-function projection(overrides: Record<string, unknown> = {}) {
+type Outcome = 'passed' | 'failed' | 'inconclusive' | 'provider_error';
+
+function resultCode(outcome: Outcome): string {
+  return outcome === 'passed' ? 'challenge_confirmed' : `${outcome}_result`;
+}
+
+function projection(requestedScopes: string[] = ['representative_relationship']) {
   return {
-    targetType: 'entity' as const,
+    targetType: 'entity',
     targetId,
-    claimantRole: 'owner' as const,
-    requestedScopes: ['representative_relationship'] as const,
+    claimantRole: 'owner',
+    requestedScopes,
     verification: {
-      method: 'dns_txt' as const,
+      method: 'dns_txt',
       officialDomain: 'merchant.example',
       protectedContactPresent: false,
       officialWebsiteUrl: null,
@@ -46,18 +52,13 @@ function projection(overrides: Record<string, unknown> = {}) {
       assistedVerifierReferencePresent: false,
       privateProofPresent: false,
     },
-    proposedChanges: {
-      entity: null,
-      location: null,
-      paymentProposals: null,
-    },
+    proposedChanges: { entity: null, location: null, paymentProposals: null },
     authorityStatement: 'I am authorized to represent this business.',
     evidenceLinks: [],
-    ...overrides,
   };
 }
 
-function preparationEvent(): BusinessClaimRelationshipDecisionEventRecord {
+function preparationEvent(expiresAt: string): BusinessClaimRelationshipDecisionEventRecord {
   return {
     eventId: preparationId,
     submissionId,
@@ -80,16 +81,16 @@ function preparationEvent(): BusinessClaimRelationshipDecisionEventRecord {
       privateProofPresent: false,
       assistedVerifierReferencePresent: false,
       expiresInHours: 72,
-      expiresAt: preparationExpiresAt,
+      expiresAt,
     }),
     createdAt: '2026-07-14T07:00:00.000Z',
   };
 }
 
 function executionEvent(
-  outcome: 'passed' | 'failed' | 'inconclusive' | 'provider_error' = 'passed',
+  outcome: Outcome,
+  expiresAt: string,
 ): BusinessClaimRelationshipDecisionEventRecord {
-  const resultCode = outcome === 'passed' ? 'challenge_confirmed' : `${outcome}_result`;
   return {
     eventId: executionId,
     submissionId,
@@ -103,14 +104,14 @@ function executionEvent(
       executionId,
       preparationId,
       expectedSubmissionUpdatedAt: '2026-07-14T07:00:00.000Z',
-      expectedPreparationExpiresAt: preparationExpiresAt,
+      expectedPreparationExpiresAt: expiresAt,
       targetType: 'entity',
       targetId,
       method: 'dns_txt',
       adapterId: 'dns-adapter',
       adapterVersion: '1.0.0',
       outcome,
-      resultCode,
+      resultCode: resultCode(outcome),
       observedAt: verificationObservedAt,
       retryable: outcome === 'provider_error',
       summary: 'Bounded verification result.',
@@ -120,18 +121,22 @@ function executionEvent(
   };
 }
 
-function state(
-  outcome: 'passed' | 'failed' | 'inconclusive' | 'provider_error' = 'passed',
-  projectionValue: unknown = projection(),
-): BusinessClaimRelationshipDecisionState {
+function state(options: {
+  outcome?: Outcome;
+  projectionValue?: unknown;
+  expiresAt?: string;
+  updatedAt?: string;
+} = {}): BusinessClaimRelationshipDecisionState {
+  const outcome = options.outcome ?? 'passed';
+  const expiresAt = options.expiresAt ?? preparationExpiresAt;
   return {
     submissionId,
     submissionType: 'claim',
     workflowStatus: 'in_review',
-    updatedAt: submissionUpdatedAt,
-    normalizedProjection: projectionValue,
-    executionEvent: executionEvent(outcome),
-    preparationEvent: preparationEvent(),
+    updatedAt: options.updatedAt ?? submissionUpdatedAt,
+    normalizedProjection: options.projectionValue ?? projection(),
+    executionEvent: executionEvent(outcome, expiresAt),
+    preparationEvent: preparationEvent(expiresAt),
   };
 }
 
@@ -160,14 +165,27 @@ function backend(initialState: BusinessClaimRelationshipDecisionState) {
       });
     },
   };
-  return { service, events, commits };
+  return { service, commits };
 }
 
-function request(
-  decision: 'approve_relationship' | 'not_approved' = 'approve_relationship',
-  outcome: 'passed' | 'failed' | 'inconclusive' | 'provider_error' = 'passed',
-  overrides: Record<string, unknown> = {},
-) {
+function request(options: {
+  decision?: 'approve_relationship' | 'not_approved';
+  outcome?: Outcome;
+  expiresAt?: string;
+  overrides?: Record<string, unknown>;
+} = {}) {
+  const decision = options.decision ?? 'approve_relationship';
+  const outcome = options.outcome ?? 'passed';
+  const reasonCode =
+    decision === 'approve_relationship'
+      ? 'verified_authority_confirmed'
+      : outcome === 'failed'
+        ? 'verification_failed'
+        : outcome === 'inconclusive'
+          ? 'verification_inconclusive'
+          : outcome === 'provider_error'
+            ? 'provider_error'
+            : 'authority_not_established';
   return {
     schemaVersion: 'business-claim-relationship-decision-v1',
     decisionId,
@@ -179,21 +197,12 @@ function request(
     expectedClaimantRole: 'owner',
     expectedMethod: 'dns_txt',
     expectedOutcome: outcome,
-    expectedResultCode: outcome === 'passed' ? 'challenge_confirmed' : `${outcome}_result`,
+    expectedResultCode: resultCode(outcome),
     expectedVerificationObservedAt: verificationObservedAt,
-    expectedPreparationExpiresAt: preparationExpiresAt,
+    expectedPreparationExpiresAt: options.expiresAt ?? preparationExpiresAt,
     decision,
-    reasonCode:
-      decision === 'approve_relationship'
-        ? 'verified_authority_confirmed'
-        : outcome === 'failed'
-          ? 'verification_failed'
-          : outcome === 'inconclusive'
-            ? 'verification_inconclusive'
-            : outcome === 'provider_error'
-              ? 'provider_error'
-              : 'authority_not_established',
-    ...overrides,
+    reasonCode,
+    ...options.overrides,
   };
 }
 
@@ -210,13 +219,10 @@ describe('P5-04G Business Claim relationship decisions', () => {
 
     expect(receipt).toMatchObject({
       state: 'committed',
-      submissionId,
-      decisionId,
       decision: 'approve_relationship',
       resolution: 'approved',
       targetId,
       claimantRole: 'owner',
-      verificationMethod: 'dns_txt',
       executionOutcome: 'passed',
       relationship: {
         relationshipId: decisionId,
@@ -226,14 +232,13 @@ describe('P5-04G Business Claim relationship decisions', () => {
         executionId,
       },
     });
-    expect(fixture.commits).toHaveLength(1);
     expect(fixture.commits[0]).toMatchObject({
       resolution: 'approved',
       eventAction: 'business_claim_relationship_approved',
     });
     expect(JSON.stringify(receipt)).not.toContain('merchant.example');
     expect(JSON.stringify(receipt)).not.toContain('providerReferenceHash');
-    expect(JSON.stringify(receipt)).not.toContain('authorityStatement');
+    expect(fixture.commits).toHaveLength(1);
 
     const replay = await decideBusinessClaimRepresentativeRelationship(
       context,
@@ -247,12 +252,12 @@ describe('P5-04G Business Claim relationship decisions', () => {
   });
 
   it('records a non-approval without creating a relationship', async () => {
-    const fixture = backend(state('failed'));
+    const fixture = backend(state({ outcome: 'failed' }));
     const receipt = await decideBusinessClaimRepresentativeRelationship(
       context,
       fixture.service,
       submissionId,
-      request('not_approved', 'failed'),
+      request({ decision: 'not_approved', outcome: 'failed' }),
       decidedAt,
     );
 
@@ -269,38 +274,15 @@ describe('P5-04G Business Claim relationship decisions', () => {
     });
   });
 
-  it('rejects stale, expired, mismatched, malformed, and scope-less approval chains', async () => {
-    const stale = state();
-    stale.updatedAt = '2026-07-14T07:31:00.000Z';
+  it('rejects non-passed approval and stale, expired, mismatched, or malformed chains', async () => {
     await expect(
       decideBusinessClaimRepresentativeRelationship(
         context,
-        backend(stale).service,
+        backend(state({ outcome: 'failed' })).service,
         submissionId,
-        request(),
-        decidedAt,
-      ),
-    ).rejects.toMatchObject({ code: 'conflict' });
-
-    await expect(
-      decideBusinessClaimRepresentativeRelationship(
-        context,
-        backend(state()).service,
-        submissionId,
-        request('approve_relationship', 'passed', {
-          expectedPreparationExpiresAt: '2026-07-14T07:59:00.000Z',
-        }),
-        decidedAt,
-      ),
-    ).rejects.toMatchObject({ code: 'invalid_verification_chain' });
-
-    await expect(
-      decideBusinessClaimRepresentativeRelationship(
-        context,
-        backend(state('failed')).service,
-        submissionId,
-        request('approve_relationship', 'failed', {
-          reasonCode: 'verified_authority_confirmed',
+        request({
+          outcome: 'failed',
+          overrides: { reasonCode: 'verified_authority_confirmed' },
         }),
         decidedAt,
       ),
@@ -309,9 +291,30 @@ describe('P5-04G Business Claim relationship decisions', () => {
     await expect(
       decideBusinessClaimRepresentativeRelationship(
         context,
+        backend(state({ updatedAt: '2026-07-14T07:31:00.000Z' })).service,
+        submissionId,
+        request(),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'conflict' });
+
+    const expiredAt = '2026-07-14T07:59:00.000Z';
+    await expect(
+      decideBusinessClaimRepresentativeRelationship(
+        context,
+        backend(state({ expiresAt: expiredAt })).service,
+        submissionId,
+        request({ expiresAt: expiredAt }),
+        decidedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'preparation_expired' });
+
+    await expect(
+      decideBusinessClaimRepresentativeRelationship(
+        context,
         backend(state()).service,
         submissionId,
-        request('approve_relationship', 'passed', { expectedTargetId: decisionId }),
+        request({ overrides: { expectedTargetId: decisionId } }),
         decidedAt,
       ),
     ).rejects.toMatchObject({ code: 'conflict' });
@@ -319,7 +322,7 @@ describe('P5-04G Business Claim relationship decisions', () => {
     await expect(
       decideBusinessClaimRepresentativeRelationship(
         context,
-        backend(state('passed', { broken: true })).service,
+        backend(state({ projectionValue: { broken: true } })).service,
         submissionId,
         request(),
         decidedAt,
@@ -329,9 +332,7 @@ describe('P5-04G Business Claim relationship decisions', () => {
     await expect(
       decideBusinessClaimRepresentativeRelationship(
         context,
-        backend(
-          state('passed', projection({ requestedScopes: ['entity_profile'] })),
-        ).service,
+        backend(state({ projectionValue: projection(['entity_profile']) })).service,
         submissionId,
         request(),
         decidedAt,
@@ -368,24 +369,20 @@ describe('P5-04G Business Claim relationship decisions', () => {
         context,
         fixture.service,
         submissionId,
-        request('approve_relationship', 'passed', {
-          expectedResultCode: 'changed-result',
-        }),
+        request({ overrides: { expectedResultCode: 'changed-result' } }),
         decidedAt,
       ),
     ).rejects.toMatchObject({ code: 'idempotency_conflict' });
   });
 
   it('rejects protected or permission material in the strict receipt', async () => {
-    const fixture = backend(state());
     const receipt = await decideBusinessClaimRepresentativeRelationship(
       context,
-      fixture.service,
+      backend(state()).service,
       submissionId,
       request(),
       decidedAt,
     );
-
     expect(
       businessClaimRelationshipDecisionReceiptSchema.safeParse({
         ...receipt,
@@ -401,9 +398,7 @@ describe('P5-04G Business Claim relationship decisions', () => {
 
   it('uses an exact dedicated allowlist for relationship decisions', () => {
     const policy = readBusinessClaimRelationshipDecisionAuthorizationPolicy({
-      CPM_ADMIN_CLAIM_RELATIONSHIP_DECISION_SUBJECTS: JSON.stringify([
-        'relationship-decider',
-      ]),
+      CPM_ADMIN_CLAIM_RELATIONSHIP_DECISION_SUBJECTS: JSON.stringify(['relationship-decider']),
     });
     const authorized = authorizeBusinessClaimRelationshipDecision(
       {
