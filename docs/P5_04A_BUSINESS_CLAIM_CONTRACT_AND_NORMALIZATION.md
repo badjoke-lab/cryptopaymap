@@ -90,7 +90,7 @@ The contract can carry:
 - explicit empty arrays for clearing amenities or social links;
 - structured payment proposals using the existing Asset, Network, route, method, processor, How-to-pay, and restriction contract.
 
-Optional correction fields distinguish “not proposed” from a deliberate nullable or empty-list correction. Coordinate corrections require a complete latitude/longitude pair.
+Each profile correction includes a bounded `changedFields` list. Fields outside that list must contain null placeholders, so hidden undeclared values cannot enter review. A listed nullable field may use null to request clearing; a listed list field may use an empty array. Country code and Entity name cannot be cleared. Coordinate corrections require both latitude and longitude.
 
 The contract deliberately excludes status, visibility, verification result, ownership status, canonical version, export, and publication fields.
 
