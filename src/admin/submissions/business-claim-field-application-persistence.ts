@@ -148,11 +148,7 @@ export async function applyBusinessClaimFieldApplication(
   }
   const submissionIdResult = z.uuid().safeParse(submissionId);
   const requestResult = businessClaimFieldApplicationRequestSchema.safeParse(rawRequest);
-  if (
-    !submissionIdResult.success ||
-    !requestResult.success ||
-    Number.isNaN(appliedAt.getTime())
-  ) {
+  if (!submissionIdResult.success || !requestResult.success || Number.isNaN(appliedAt.getTime())) {
     throw new BusinessClaimFieldApplicationPersistenceError(
       'invalid_request',
       'The durable Business Claim field application request is invalid.',
@@ -220,12 +216,7 @@ export async function applyBusinessClaimFieldApplication(
         );
       }
       if (racedEvent !== null) {
-        return replayReceipt(
-          racedEvent,
-          submissionIdResult.data,
-          request,
-          context.actorId,
-        );
+        return replayReceipt(racedEvent, submissionIdResult.data, request, context.actorId);
       }
       throw new BusinessClaimFieldApplicationPersistenceError(
         'conflict',
