@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-04G — Business Claim representative-relationship decisions
+P5-04H2 — Business Claim durable field application and provenance
 
 ## Current repository state
 
@@ -23,12 +23,14 @@ P5-04G — Business Claim representative-relationship decisions
 - P5-04D protected business Claim reviewer queue and detail entry completed in #209 at main commit `ec2048faea97ce3efdc4710d42ea9cf83135d0b6`.
 - P5-04E exact-state review transitions and verification-request preparation completed in #210 at main commit `e1369049529055939dc955318e76a2a3005df7b4`.
 - P5-04F verification execution and bounded result recording completed in #211 at main commit `3ffe59c0e2d773c11cff066adcaf1cb1d099e76d`.
+- P5-04G representative-relationship decisions completed in #212 at main commit `dc1649cea5731bf12dd8a86ec6fba894be6c1def`.
+- P5-04H1 strict field-level decision and canonical projection completed through #213.
 - Draft #204 was closed as superseded because it predated the #206 privacy boundary and tested nonexistent persistence metadata.
-- P5-04G representative-relationship decisions are now active.
+- P5-04H2 durable canonical application and provenance are next.
 
 ## P5-04 completed foundations
 
-P5-04A through P5-04F now provide:
+P5-04A through P5-04H1 now provide:
 
 - existing Entity or Location Claim targets only;
 - owner, authorized representative, and authorized employee roles;
@@ -40,24 +42,28 @@ P5-04A through P5-04F now provide:
 - validated canonical target snapshots and advisory comparison signals;
 - a separately authorized protected Claim queue and detail entry;
 - exact-state Claim review transitions with atomic audit events;
-- separately authorized, idempotent verification-request preparation;
-- separately authorized execution of unexpired prepared verification through strict method adapters;
-- privacy-safe passed, failed, inconclusive, and provider-error outcomes;
-- atomic idempotent verification-result events;
-- no representative relationship, editing right, canonical mutation, export, or publication.
+- separately authorized verification preparation and execution;
+- privacy-safe verification outcomes;
+- separately authorized relationship approval or non-approval;
+- a private active representative relationship without account or editing permission;
+- exact-state Submission resolution and deterministic decision replay;
+- dedicated field-application authorization separate from relationship decisions;
+- complete Entity, Location, and payment accept/reject partitions;
+- proposal-only value copying with canonical before/after validation;
+- deterministic application fingerprints and stale/no-op rejection;
+- no automatic canonical persistence, account permission, export, or publication.
 
-## P5-04G active scope
+## P5-04H2 active scope
 
-P5-04G adds:
+P5-04H2 adds:
 
-- dedicated representative-relationship decision authorization;
-- exact passed-result ownership, target, method, preparation, execution, and state validation;
-- approve-relationship and not-approved decisions;
-- a private verified representative-relationship record without account or editing permission;
-- exact-state Submission resolution and decision audit events;
-- idempotent atomic persistence and incompatible-relationship conflict handling;
-- private-value leakage rejection;
-- no proposed-field application, public Evidence, export, or publication.
+- durable application receipt and provenance persistence;
+- exact canonical Entity and Location state guards;
+- accepted payment-record or canonical payment-draft persistence;
+- one atomic transaction for canonical mutations, provenance, and private audit events;
+- deterministic request UUID replay and changed-content conflicts;
+- rollback for stale, duplicate, malformed, or partially failing applications;
+- no account permission, unrelated-field mutation, export, or publication.
 
 ## Current references
 
@@ -73,13 +79,14 @@ P5-04G adds:
 - `docs/P5_04E_BUSINESS_CLAIM_REVIEW_TRANSITIONS.md`
 - `docs/P5_04F_BUSINESS_CLAIM_VERIFICATION_EXECUTION.md`
 - `docs/P5_04G_BUSINESS_CLAIM_RELATIONSHIP_DECISIONS.md`
+- `docs/P5_04H_BUSINESS_CLAIM_FIELD_APPLICATION.md`
 
 ## Phase 5 sequence
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
-4. P5-04 — Business and service claims — In progress at P5-04G
+4. P5-04 — Business and service claims — In progress at P5-04H2
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
@@ -87,12 +94,12 @@ P5-04G adds:
 
 ## Next
 
-Implement and validate P5-04G decision authorization, exact passed-result loading, relationship and decision contracts, atomic idempotent persistence, duplicate/conflict handling, leakage rejection, focused tests, and executable schema validation. Canonical proposal application remains a later separately authorized slice.
+Implement and validate P5-04H2 durable exact-state Entity, Location, and payment application persistence, provenance, audit receipts, replay recovery, atomic rollback, focused tests, and executable schema validation.
 
 ## Blocked
 
-No repository blocker is known. Account permissions, canonical proposal application, public Claim routing, configured review, and production checks remain separate later slices.
+No repository blocker is known. Account permissions, public Claim routing, configured review, production checks, and broader Claim lifecycle operations remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A verified representative relationship remains private and grants no editing right until a later account-permission capability exists.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A verified representative relationship grants no editing right, and a field proposal changes canonical data only through a separately authorized P5-04H application transaction.
