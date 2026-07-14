@@ -86,11 +86,7 @@ function state(): BusinessClaimFieldApplicationState {
       targetType: 'entity',
       targetId: entityId,
       claimantRole: 'owner',
-      requestedScopes: [
-        'representative_relationship',
-        'entity_profile',
-        'payment_information',
-      ],
+      requestedScopes: ['representative_relationship', 'entity_profile', 'payment_information'],
       verification: {
         method: 'dns_txt',
         officialDomain: 'merchant.example',
@@ -230,9 +226,7 @@ describe('P5-04H3 Business Claim field application workspace', () => {
 
   it('fails closed when the relationship target does not match the Claim', async () => {
     const invalidState = state();
-    invalidState.relationshipEvent = relationshipEvent(
-      '20000000-0000-4000-8000-000000000099',
-    );
+    invalidState.relationshipEvent = relationshipEvent('20000000-0000-4000-8000-000000000099');
     await expect(
       loadBusinessClaimFieldApplicationWorkspace(
         context,
