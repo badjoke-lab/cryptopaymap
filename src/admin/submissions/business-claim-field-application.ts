@@ -10,8 +10,6 @@ import { suggestPaymentProposalSchema } from '../../submissions/suggest-contract
 import {
   canonicalEntitySchema,
   canonicalLocationSchema,
-  type CanonicalEntityInput,
-  type CanonicalLocationInput,
 } from '../../schemas/canonical-identity';
 import type { BusinessClaimFieldApplicationContext } from './business-claim-field-application-authorization';
 
@@ -266,7 +264,11 @@ function projectEntityApplication(
     return null;
   }
   requireScope(projection, 'entity_profile');
-  if (decision === null || request.expectedEntityUpdatedAt === null || state.entityTarget === null) {
+  if (
+    decision === null ||
+    request.expectedEntityUpdatedAt === null ||
+    state.entityTarget === null
+  ) {
     throw new BusinessClaimFieldApplicationError(
       'invalid_decision',
       'Entity proposals require a complete field decision and exact Entity version.',
@@ -499,7 +501,11 @@ export async function projectBusinessClaimFieldApplication(
   }
   const submissionIdResult = z.uuid().safeParse(submissionId);
   const requestResult = businessClaimFieldApplicationRequestSchema.safeParse(rawRequest);
-  if (!submissionIdResult.success || !requestResult.success || Number.isNaN(generatedAt.getTime())) {
+  if (
+    !submissionIdResult.success ||
+    !requestResult.success ||
+    Number.isNaN(generatedAt.getTime())
+  ) {
     throw new BusinessClaimFieldApplicationError(
       'invalid_request',
       'The Business Claim field application request is invalid.',
@@ -533,7 +539,9 @@ export async function projectBusinessClaimFieldApplication(
       'The Business Claim is not at the exact approved state reviewed by the applicant.',
     );
   }
-  const projectionResult = businessClaimReviewProjectionSchema.safeParse(state.normalizedProjection);
+  const projectionResult = businessClaimReviewProjectionSchema.safeParse(
+    state.normalizedProjection,
+  );
   if (!projectionResult.success) {
     throw new BusinessClaimFieldApplicationError(
       'invalid_claim',
