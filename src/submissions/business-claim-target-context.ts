@@ -168,11 +168,7 @@ export const businessClaimCanonicalTargetMaterialSchema = z
     });
   });
 
-export const businessClaimFieldComparisonValues = [
-  'same',
-  'different',
-  'clear_requested',
-] as const;
+export const businessClaimFieldComparisonValues = ['same', 'different', 'clear_requested'] as const;
 export const businessClaimFieldComparisonSchema = z.enum(businessClaimFieldComparisonValues);
 
 export const businessClaimIdentityComparisonValues = [
@@ -593,10 +589,7 @@ export async function generateBusinessClaimTargetContext(
     },
     identityComparisons: {
       officialDomain: domainComparison(claim.verification.officialDomain, canonicalWebsite),
-      officialWebsite: websiteComparison(
-        claim.verification.officialWebsiteUrl,
-        canonicalWebsite,
-      ),
+      officialWebsite: websiteComparison(claim.verification.officialWebsiteUrl, canonicalWebsite),
       officialSocial: socialComparison(claim.verification.officialSocialUrl, material),
     },
     fieldComparisons: {
