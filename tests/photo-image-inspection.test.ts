@@ -34,7 +34,15 @@ function pngChunk(type: string, data: number[]): number[] {
 }
 
 function png(width: number, height: number): Uint8Array {
-  const ihdr = [...uint32Be(width), ...uint32Be(height), 8, 2, 0, 0, 0];
+  const ihdr = [
+    ...uint32Be(width),
+    ...uint32Be(height),
+    8,
+    2,
+    0,
+    0,
+    0,
+  ];
   return Uint8Array.from([
     0x89,
     0x50,
@@ -116,15 +124,7 @@ function box(type: string, payload: number[]): number[] {
 }
 
 function heif(width: number, height: number, brand: 'heic' | 'mif1'): Uint8Array {
-  const ftyp = box('ftyp', [
-    ...ascii(brand),
-    0,
-    0,
-    0,
-    0,
-    ...ascii('mif1'),
-    ...ascii(brand),
-  ]);
+  const ftyp = box('ftyp', [...ascii(brand), 0, 0, 0, 0, ...ascii('mif1'), ...ascii(brand)]);
   const ispe = box('ispe', [0, 0, 0, 0, ...uint32Be(width), ...uint32Be(height)]);
   const ipco = box('ipco', ispe);
   const iprp = box('iprp', ipco);
@@ -170,20 +170,20 @@ describe('P5-05D photo image inspection', () => {
     const corrupted = png(20, 10);
     corrupted[corrupted.length - 1] = (corrupted[corrupted.length - 1] ?? 0) ^ 0xff;
     expect(() => inspectPhotoImage(corrupted)).toThrowError(
-      expect.objectContaining({ code: 'corrupt_file' } satisfies Partial<PhotoImageInspectionError>),
+      expect.objectContaining({ code: 'corrupt_file' }),
     );
 
     expect(() => inspectPhotoImage(jpeg(20, 10).slice(0, -2))).toThrowError(
-      expect.objectContaining({ code: 'corrupt_file' } satisfies Partial<PhotoImageInspectionError>),
+      expect.objectContaining({ code: 'corrupt_file' }),
     );
   });
 
   it('rejects animated WebP and unsafe pixel dimensions', () => {
     expect(() => inspectPhotoImage(webp(100, 100, true))).toThrowError(
-      expect.objectContaining({ code: 'animated_media' } satisfies Partial<PhotoImageInspectionError>),
+      expect.objectContaining({ code: 'animated_media' }),
     );
     expect(() => inspectPhotoImage(png(20_001, 10))).toThrowError(
-      expect.objectContaining({ code: 'unsafe_dimensions' } satisfies Partial<PhotoImageInspectionError>),
+      expect.objectContaining({ code: 'unsafe_dimensions' }),
     );
   });
 
@@ -196,13 +196,13 @@ describe('P5-05D photo image inspection', () => {
       expect(() => inspectPhotoImage(bytes)).toThrowError(
         expect.objectContaining({
           code: 'unsafe_file_type',
-        } satisfies Partial<PhotoImageInspectionError>),
+        }),
       );
     }
     expect(() => inspectPhotoImage(Uint8Array.from([1, 2, 3, 4]))).toThrowError(
       expect.objectContaining({
         code: 'unsupported_format',
-      } satisfies Partial<PhotoImageInspectionError>),
+      }),
     );
   });
 });
