@@ -1,8 +1,9 @@
 # P5-05D private photo object validation
 
 **Implementation item:** P5-05D  
-**Status:** In progress  
-**Started:** 2026-07-15
+**Status:** Completed through #219  
+**Started:** 2026-07-15  
+**Completed:** 2026-07-15
 
 ## Purpose
 
@@ -96,9 +97,21 @@ P5-05D does not add:
 - protected reviewer queue or Media decision execution;
 - canonical mutation, export, publication, or deployment.
 
-## Completion gate
+## Completion evidence
 
-P5-05D is complete when supported private objects can be read within declared limits, matched to exact target and reservation context, structurally decoded, dimension-checked, content-hashed, rejected safely on mismatches, and projected without storage leakage. The final documentation head must pass Foundation validation, Migration drift, Staging review validation, and representative screenshot capture.
+Pull request #219 adds the strict validation contract, canonical target reader, exact reservation-set guard, bounded in-memory and R2-compatible object readers, supported still-image structural inspection, safe dimensions, SHA-256 hashing, leakage-safe receipts, executable schema checks, and focused mismatch and failure tests.
+
+Implementation head `322943c110090e147ae9d038042c168cf0759f81` passed:
+
+- format and lint;
+- Astro and TypeScript;
+- executable runtime and submission schema checks;
+- migration history and drift;
+- 219 test files and 1,084 tests;
+- build, accessibility, Phase 1, and staging artifact checks;
+- Foundation validation, Migration drift, Staging review validation, and representative screenshot capture.
+
+No migration was required. The implementation reuses the P5-05B reservation model and does not persist validation receipts or private bytes.
 
 ## Next bounded item
 
