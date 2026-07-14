@@ -40,11 +40,7 @@ function workspace(): BusinessClaimFieldApplicationWorkspaceResponse {
       targetId: entityId,
       updatedAt: entityUpdatedAt,
     },
-    requestedScopes: [
-      'representative_relationship',
-      'entity_profile',
-      'payment_information',
-    ],
+    requestedScopes: ['representative_relationship', 'entity_profile', 'payment_information'],
     entityFields: [
       {
         field: 'name',
@@ -193,9 +189,7 @@ describe('P5-04H3 protected Business Claim field application API', () => {
 
   it('rejects denied subjects, invalid idempotency keys, and relationship mismatches', async () => {
     const handlers = createBusinessClaimFieldApplicationHandlers({ now: () => now });
-    const denied = await handlers.get(
-      pagesContext(new Request(url()), ['different-subject']),
-    );
+    const denied = await handlers.get(pagesContext(new Request(url()), ['different-subject']));
     expect(denied.status).toBe(403);
 
     const invalidKey = await handlers.post(
@@ -214,17 +208,14 @@ describe('P5-04H3 protected Business Claim field application API', () => {
 
     const mismatch = await handlers.post(
       pagesContext(
-        new Request(
-          url('30000000-0000-4000-8000-000000000099'),
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Idempotency-Key': requestId,
-            },
-            body: JSON.stringify(validBody()),
+        new Request(url('30000000-0000-4000-8000-000000000099'), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Idempotency-Key': requestId,
           },
-        ),
+          body: JSON.stringify(validBody()),
+        }),
       ),
     );
     expect(mismatch.status).toBe(409);
@@ -233,10 +224,7 @@ describe('P5-04H3 protected Business Claim field application API', () => {
   it('maps durable one-time and stale-state conflicts to a bounded 409 response', async () => {
     const handlers = createBusinessClaimFieldApplicationHandlers({
       writeApplication: async () => {
-        throw new BusinessClaimFieldApplicationPersistenceError(
-          'conflict',
-          'already applied',
-        );
+        throw new BusinessClaimFieldApplicationPersistenceError('conflict', 'already applied');
       },
       now: () => now,
     });
