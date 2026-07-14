@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05C — Next bounded Photo and Media intake slice
+P5-05D — Private object existence and byte-level validation
 
 ## Current repository state
 
@@ -30,7 +30,8 @@ P5-05C — Next bounded Photo and Media intake slice
 - P5-04 Business and service claims are repository-complete.
 - P5-05A Photo and Media contracts and review-safe normalization completed through #216.
 - P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
-- P5-05C is next; its exact bounded scope must be established from the remaining P5-05 contract before implementation begins.
+- P5-05C photo quarantine upload authorization and durable reservation issuance completed in #218.
+- P5-05D is next; its bounded scope is private object existence and byte-level validation before any processing or protected Media handoff.
 
 ## P5-05A completion result
 
@@ -62,6 +63,19 @@ P5-05B provides:
 - private status-token issuance without plaintext persistence;
 - no Media Asset, Media File, derivative, public URL, review approval, export, or publication creation.
 
+## P5-05C completion result
+
+P5-05C provides:
+
+- a strict one-to-eight item Photos upload-authorization request;
+- deterministic opaque reservation UUIDs bound to canonical request content;
+- durable reservation creation through the existing P5-05B table;
+- transaction-serialized exact replay and changed-content conflict behavior;
+- short-lived provider-neutral HTTPS PUT authorization;
+- signed content-type and private validation metadata headers;
+- signer-failure retry without duplicate reservation creation;
+- no signed URL persistence, R2 credentials, binary validation, Media creation, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -80,6 +94,8 @@ P5-05B provides:
 - `docs/P5_04H_BUSINESS_CLAIM_FIELD_APPLICATION.md`
 - `docs/P5_04H3_BUSINESS_CLAIM_REVIEWER_FLOW.md`
 - `docs/P5_05A_PHOTO_MEDIA_CONTRACT_AND_NORMALIZATION.md`
+- `docs/P5_05B_PHOTO_PRIVATE_INTAKE.md`
+- `docs/P5_05C_PHOTO_UPLOAD_AUTHORIZATION.md`
 
 ## Phase 5 sequence
 
@@ -87,19 +103,19 @@ P5-05B provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05C; P5-05B completed #217
+5. P5-05 — Photo and Media submission intake — In progress at P5-05D; P5-05C completed #218
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Define the next bounded P5-05C slice from the remaining upload authorization, private object validation, processing, and protected Media handoff contract. Do not treat P5-05B reservation intake as R2 signing, binary validation, Media creation, or publication.
+Implement P5-05D private object existence and byte-level validation. It must validate actual byte size, file signature, decoding, safe dimensions, object metadata, reservation and target relationships, and content hashes before processing or protected Media handoff.
 
 ## Blocked
 
-No repository blocker is known. R2 upload signing, binary validation, asynchronous image processing, public Media approval, export activation, and production review remain separate later slices.
+No repository blocker is known. Production R2 signing, public route wiring, asynchronous image processing, protected Media handoff, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Submission never publishes Media automatically, and opaque quarantine references never expose storage credentials or public object URLs.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A Submission never publishes Media automatically, and opaque quarantine references never expose persistent storage credentials or public object URLs.
