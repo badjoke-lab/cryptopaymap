@@ -1,10 +1,11 @@
 import { z } from 'zod';
 import {
   businessClaimantRoleSchema,
-  businessClaimReviewProjectionSchema,
   businessClaimTargetTypeSchema,
   ownershipVerificationMethodSchema,
+  type BusinessClaimReviewProjection,
 } from '../../submissions/business-claim-contract';
+import { businessClaimReviewProjectionSchema } from '../../submissions/business-claim-target-context';
 import { parseBusinessClaimVerificationRequestEventPayload } from '../../submissions/business-claim-verification-request-contract';
 import {
   businessClaimVerificationOutcomeSchema,
@@ -68,7 +69,9 @@ export const businessClaimRelationshipDecisionRequestSchema = z
     }
 
     if (request.decision === 'not_approved') {
-      const allowedReasons = nonApprovalReasonsByOutcome[request.expectedOutcome] as readonly string[];
+      const allowedReasons = nonApprovalReasonsByOutcome[
+        request.expectedOutcome
+      ] as readonly string[];
       if (!allowedReasons.includes(request.reasonCode)) {
         context.addIssue({
           code: 'custom',
@@ -250,10 +253,12 @@ function validateVerificationChain(
   submissionId: string,
   request: BusinessClaimRelationshipDecisionRequest,
 ): {
-  projection: z.infer<typeof businessClaimReviewProjectionSchema>;
+  projection: BusinessClaimReviewProjection;
   verificationObservedAt: string;
 } {
-  const projectionResult = businessClaimReviewProjectionSchema.safeParse(state.normalizedProjection);
+  const projectionResult = businessClaimReviewProjectionSchema.safeParse(
+    state.normalizedProjection,
+  );
   if (!projectionResult.success) {
     throw new BusinessClaimRelationshipDecisionError(
       'invalid_projection',
