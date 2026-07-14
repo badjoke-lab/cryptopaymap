@@ -56,7 +56,10 @@ function preparationPayload(method: VerificationMethod, expiresAt = preparationE
   };
 }
 
-function state(method: VerificationMethod, expiresAt = preparationExpiresAt): BusinessClaimVerificationExecutionState {
+function state(
+  method: VerificationMethod,
+  expiresAt = preparationExpiresAt,
+): BusinessClaimVerificationExecutionState {
   return {
     submissionId,
     submissionType: 'claim',
@@ -105,7 +108,10 @@ function backend(initialState: BusinessClaimVerificationExecutionState) {
   return { service, events, commits };
 }
 
-function adapter(method: VerificationMethod, result: unknown): BusinessClaimVerificationMethodAdapter {
+function adapter(
+  method: VerificationMethod,
+  result: unknown,
+): BusinessClaimVerificationMethodAdapter {
   return {
     method,
     adapterId: `test-${method}`,
