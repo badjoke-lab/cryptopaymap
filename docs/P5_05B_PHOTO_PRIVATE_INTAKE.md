@@ -1,8 +1,9 @@
 # P5-05B private Photos intake and quarantine linkage
 
 **Implementation item:** P5-05B  
-**Status:** In progress  
+**Status:** Completed through #217
 **Started:** 2026-07-15
+**Completed:** 2026-07-15
 
 ## Purpose
 
@@ -40,9 +41,11 @@ Status-secret plaintext is returned only on accepted intake or deterministic rep
 
 P5-05B does not add R2 signing or access, binary upload, MIME-byte inspection, image decoding, EXIF processing, derivative generation, Media Asset or Media File creation, approval, gallery ordering, canonical mutation, export, publication, or deployment.
 
-## Validation
+## Completion evidence
 
-Focused tests cover commit, deterministic replay, changed-content conflict, protected contact and status-secret leakage, ownership, expiry, purpose, prior-consumption rollback, and competing consumption. The schema check executes the exported reservation schema and Photos private-intake service. Migration and full repository checks are recorded before completion.
+Pull request #217 adds the private Photos intake, minimum reservation model, migration 0024, atomic conditional consumption, shared contact and status-secret handling, executable schema validation, and focused commit, replay, changed-content conflict, ownership, expiry, purpose, prior-consumption, concurrency, rollback, and leakage tests.
+
+The final implementation validation passed `npm run quality` with a sandbox-safe Wrangler log path. This covered format, lint, Astro type checking, executable schemas, migration drift, 216 test files and 1,064 tests, build, accessibility, and staging validation. GitHub Actions results for the final documentation head are recorded on #217.
 
 ## Next bounded item
 

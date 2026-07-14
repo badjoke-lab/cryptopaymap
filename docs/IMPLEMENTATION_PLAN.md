@@ -145,7 +145,7 @@ P4-18E closed the Phase 5 handoff gate while preserving unavailable configured-e
 | P5-02 | Suggest Place and Online Service | Completed through #156–#192 | P5-01 |
 | P5-03 | Payment and problem reports | In progress at P5-03G | P5-01, P5-02 target conventions |
 | P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |
-| P5-05 | Photo and Media submission intake | In progress at P5-05B | P5-01, P3-10 Media review boundary |
+| P5-05 | Photo and Media submission intake | In progress at P5-05C; P5-05B completed #217 | P5-01, P3-10 Media review boundary |
 | P5-06 | Review workflow extensions | Planned | P5-02 through P5-05 |
 | P5-07 | Canonical application transactions and retention | Planned | P5-06, P4-18B correction boundary |
 | P5-08 | MVP-B integration audit | Planned | P5-01 through P5-07 |
