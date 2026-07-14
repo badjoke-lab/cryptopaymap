@@ -147,7 +147,11 @@ export const submissionMediaItemSchema = z
           message: 'Public-gallery candidates require explicit public-display permission.',
         });
       }
-      if (!['submitted_with_permission', 'licensed', 'public_domain'].includes(item.rights.rightsStatus)) {
+      if (
+        !['submitted_with_permission', 'licensed', 'public_domain'].includes(
+          item.rights.rightsStatus,
+        )
+      ) {
         context.addIssue({
           code: 'custom',
           path: ['rights', 'rightsStatus'],
