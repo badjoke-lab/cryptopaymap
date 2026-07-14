@@ -24,9 +24,9 @@ P5-04H2 — Business Claim durable field application and provenance
 - P5-04E exact-state review transitions and verification-request preparation completed in #210 at main commit `e1369049529055939dc955318e76a2a3005df7b4`.
 - P5-04F verification execution and bounded result recording completed in #211 at main commit `3ffe59c0e2d773c11cff066adcaf1cb1d099e76d`.
 - P5-04G representative-relationship decisions completed in #212 at main commit `dc1649cea5731bf12dd8a86ec6fba894be6c1def`.
-- P5-04H1 strict field-level decision and canonical projection completed through #213.
+- P5-04H1 strict field-level decision and canonical projection completed in #213 at main commit `3d1b2f65101dd0b4a432e52b5ad32476cbcf8467`.
 - Draft #204 was closed as superseded because it predated the #206 privacy boundary and tested nonexistent persistence metadata.
-- P5-04H2 durable canonical application and provenance are next.
+- P5-04H2 durable canonical application and provenance are now active.
 
 ## P5-04 completed foundations
 
