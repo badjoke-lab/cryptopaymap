@@ -1,8 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  inspectPhotoImage,
-  PhotoImageInspectionError,
-} from '../src/submissions/photo-image-inspection';
+import { inspectPhotoImage } from '../src/submissions/photo-image-inspection';
 
 function uint32Be(value: number): number[] {
   return [(value >>> 24) & 0xff, (value >>> 16) & 0xff, (value >>> 8) & 0xff, value & 0xff];
