@@ -13,7 +13,10 @@ function entityClaim(): any {
     targetType: 'entity',
     targetId,
     relationship: 'owner_or_authorized_representative',
-    contact: null,
+    contact: {
+      email: 'owner@merchant.example',
+      contactAllowed: true,
+    },
     evidenceLinks: [],
     originalPayload: {
       schemaVersion: 'business-claim-v1',
@@ -22,7 +25,6 @@ function entityClaim(): any {
       verification: {
         method: 'official_domain_email',
         officialDomain: 'merchant.example',
-        officialContactEmail: 'owner@merchant.example',
         officialWebsiteUrl: 'https://merchant.example',
         officialSocialUrl: null,
         assistedVerifierReference: null,
@@ -31,7 +33,6 @@ function entityClaim(): any {
       proposedChanges: {
         entity: {
           name: 'Merchant Example',
-          legalName: null,
           websiteUrl: 'https://merchant.example',
           countryCode: 'JP',
         },
@@ -72,7 +73,7 @@ describe('P5-04A business claim contract', () => {
       verification: {
         method: 'official_domain_email',
         officialDomain: 'merchant.example',
-        officialContactEmailPresent: true,
+        protectedContactPresent: true,
         officialWebsiteUrl: 'https://merchant.example',
         officialSocialUrl: null,
         assistedVerifierReferencePresent: false,
@@ -85,10 +86,18 @@ describe('P5-04A business claim contract', () => {
     expect(serialized).not.toContain('private-owner-proof');
   });
 
-  it('requires official email to belong to the declared domain', () => {
-    const input = structuredClone(entityClaim());
-    input.originalPayload.verification.officialContactEmail = 'owner@unrelated.example';
-    expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
+  it('requires official email to use protected contact storage and match the declared domain', () => {
+    const missingContact = structuredClone(entityClaim());
+    missingContact.contact = null;
+    expect(() => businessClaimSubmissionIntakeSchema.parse(missingContact)).toThrow();
+
+    const noFollowUp = structuredClone(entityClaim());
+    noFollowUp.contact.contactAllowed = false;
+    expect(() => businessClaimSubmissionIntakeSchema.parse(noFollowUp)).toThrow();
+
+    const wrongDomain = structuredClone(entityClaim());
+    wrongDomain.contact.email = 'owner@unrelated.example';
+    expect(() => businessClaimSubmissionIntakeSchema.parse(wrongDomain)).toThrow();
   });
 
   it('requires method-specific verification material', () => {
@@ -112,43 +121,22 @@ describe('P5-04A business claim contract', () => {
     const input = structuredClone(entityClaim());
     input.originalPayload.requestedScopes.push('location_profile');
     input.originalPayload.proposedChanges.location = {
-      name: 'Branch',
       addressLine: '1 Example Street',
       locality: 'Tokyo',
-      region: null,
-      postalCode: null,
       countryCode: 'JP',
-      latitude: null,
-      longitude: null,
-      websiteUrl: null,
-      phone: null,
-      description: null,
-      openingHours: null,
-      amenities: [],
-      socialLinks: [],
     };
     expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
   });
 
-  it('accepts a location claim with profile scope but rejects entity profile changes', () => {
+  it('accepts a location claim with profile scope and explicit clear-list proposals', () => {
     const input = structuredClone(entityClaim());
     input.targetType = 'location';
     input.originalPayload.requestedScopes = ['representative_relationship', 'location_profile'];
     input.originalPayload.proposedChanges.entity = null;
     input.originalPayload.proposedChanges.paymentProposals = null;
     input.originalPayload.proposedChanges.location = {
-      name: null,
       addressLine: '2 Corrected Street',
-      locality: 'Tokyo',
-      region: null,
-      postalCode: null,
       countryCode: 'JP',
-      latitude: null,
-      longitude: null,
-      websiteUrl: null,
-      phone: null,
-      description: null,
-      openingHours: null,
       amenities: [],
       socialLinks: [],
     };
@@ -157,10 +145,17 @@ describe('P5-04A business claim contract', () => {
     input.originalPayload.requestedScopes.push('entity_profile');
     input.originalPayload.proposedChanges.entity = {
       name: 'Wrongly scoped entity change',
-      legalName: null,
-      websiteUrl: null,
-      countryCode: null,
     };
+    expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
+  });
+
+  it('requires coordinate corrections as a complete pair', () => {
+    const input = structuredClone(entityClaim());
+    input.targetType = 'location';
+    input.originalPayload.requestedScopes = ['representative_relationship', 'location_profile'];
+    input.originalPayload.proposedChanges.entity = null;
+    input.originalPayload.proposedChanges.paymentProposals = null;
+    input.originalPayload.proposedChanges.location = { latitude: 35.6812 };
     expect(() => businessClaimSubmissionIntakeSchema.parse(input)).toThrow();
   });
 
