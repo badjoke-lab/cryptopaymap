@@ -1,8 +1,9 @@
 # P5-04C Business claim target context and read-only signals
 
 **Implementation item:** P5-04C  
-**Status:** Active  
-**Started:** 2026-07-14
+**Status:** Completed through #208  
+**Started:** 2026-07-14  
+**Completed:** 2026-07-14
 
 ## Purpose
 
@@ -19,7 +20,7 @@ targetType = entity | location
 targetId = existing canonical UUID
 ```
 
-The service must not require or return:
+The service does not require or return:
 
 - plaintext contact email;
 - private proof URL;
@@ -30,7 +31,7 @@ The service must not require or return:
 
 ## Canonical target snapshot
 
-The bounded response may include:
+The bounded response includes only validated review material such as:
 
 - target Entity identity, type, status, visibility, official website, country, and update version;
 - target Location identity, parent Entity, status, visibility, address, coordinates, website, practical profile, and update version when the target is a Location;
@@ -38,27 +39,27 @@ The bounded response may include:
 - canonical public path when one can be derived safely;
 - explicit coverage metadata.
 
-A Location target must belong to the returned Entity. An Entity target must not be represented as a Location target.
+A Location target must belong to the returned Entity. An Entity target cannot be represented as a Location target. Claim context must belong to the same canonical target boundary.
 
 ## Read-only signals
 
-P5-04C may derive bounded reviewer signals for:
+P5-04C derives bounded reviewer signals for:
 
 - target identity and scope consistency;
-- official-domain comparison between protected contact metadata and canonical website identity without returning the email value;
+- official-domain comparison against canonical website identity without returning the contact email;
 - official website comparison;
-- official social-link comparison when the Claim method uses an official social account;
-- proposed Entity-field differences;
-- proposed Location-field differences;
-- proposed payment-information differences against relevant canonical Claims;
-- target visibility or lifecycle conditions that require reviewer caution;
+- official social-link comparison when canonical Location social data is available;
+- proposed Entity-field comparisons;
+- proposed Location-field comparisons, including explicit clear requests;
+- payment proposal similarities against relevant canonical Claims;
+- target visibility and lifecycle cautions;
 - incomplete comparison coverage.
 
 Signals are advisory review material only. They do not prove ownership, authority, business control, payment acceptance, or factual correctness.
 
 ## Coverage semantics
 
-The response must state whether target lookup and each comparison class completed.
+The response states whether target lookup and each comparison class completed.
 
 A zero-match result is not automatically conclusive. The initial contract uses:
 
@@ -75,11 +76,12 @@ The protected service fails closed for:
 - malformed normalized Claim projection;
 - missing canonical target;
 - target/parent mismatch;
+- Claim ownership mismatch;
 - backend failure;
 - malformed canonical material;
 - malformed response projection.
 
-Failures use bounded codes and must not expose SQL, configuration, protected contact, private proof, or internal stack content.
+Failures use bounded codes and do not expose SQL, configuration, protected contact, private proof, or internal stack content.
 
 ## Non-effects
 
@@ -93,10 +95,14 @@ P5-04C does not:
 - change Submission workflow state;
 - create export or publication state.
 
+## Completion evidence
+
+Pull request #208 completed with successful formatting, lint, Astro and TypeScript checks, runtime schema checks including the executable P5-04C check, migration drift validation, unit and component tests, build validation, accessibility checks, staging artifact validation, and representative screenshot capture.
+
 ## Completion gate
 
 Given a valid received business Claim, a protected caller can obtain one validated canonical target snapshot and bounded read-only comparison signals while all private verification values remain outside the response and no state changes occur.
 
 ## Next
 
-P5-04D will expose the validated P5-04C context through a protected Claim reviewer queue and detail entry. Ownership-verification decisions remain later separately authorized slices.
+P5-04D exposes the validated P5-04C context through a protected Claim reviewer queue and detail entry. Ownership-verification decisions remain later separately authorized slices.
