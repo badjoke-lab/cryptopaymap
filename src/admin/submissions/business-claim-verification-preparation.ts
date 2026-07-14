@@ -1,9 +1,9 @@
 import { z } from 'zod';
 import {
-  businessClaimReviewProjectionSchema,
   ownershipVerificationMethodSchema,
   type BusinessClaimReviewProjection,
 } from '../../submissions/business-claim-contract';
+import { businessClaimReviewProjectionSchema } from '../../submissions/business-claim-target-context';
 import {
   businessClaimVerificationExpiryHoursSchema,
   parseBusinessClaimVerificationRequestEventPayload,
@@ -190,11 +190,7 @@ export async function prepareBusinessClaimVerificationRequest(
 
   const submissionIdResult = z.uuid().safeParse(submissionId);
   const requestResult = businessClaimVerificationPreparationRequestSchema.safeParse(rawRequest);
-  if (
-    !submissionIdResult.success ||
-    !requestResult.success ||
-    Number.isNaN(preparedAt.getTime())
-  ) {
+  if (!submissionIdResult.success || !requestResult.success || Number.isNaN(preparedAt.getTime())) {
     throw new BusinessClaimVerificationPreparationError(
       'invalid_request',
       'The Business Claim verification preparation request is invalid.',
