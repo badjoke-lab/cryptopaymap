@@ -1,9 +1,8 @@
 # P5-04D Business claim protected reviewer entry
 
 **Implementation item:** P5-04D  
-**Status:** Completed through #209  
-**Started:** 2026-07-14  
-**Completed:** 2026-07-14
+**Status:** Active  
+**Started:** 2026-07-14
 
 ## Purpose
 
@@ -11,7 +10,7 @@ Expose received business Claim submissions to authorized reviewers through a bou
 
 ## Authorization boundary
 
-P5-04D uses a protected Submission-read capability separate from public intake, private submitter status access, workflow transitions, ownership-verification decisions, canonical mutation, export, and publication.
+P5-04D must use a protected Submission-read capability separate from public intake, private submitter status access, workflow transitions, ownership-verification decisions, canonical mutation, export, and publication.
 
 Unauthorized callers receive no queue, detail, target context, contact data, ownership proof, or existence signal beyond the established bounded Admin failure contract.
 
@@ -83,10 +82,6 @@ Reviewer actions remain separately authorized later slices.
 
 An authorized reviewer can list eligible business Claim submissions and open one validated detail view containing the review-safe proposal and P5-04C target context, while unauthorized callers and malformed records fail closed and no state changes occur.
 
-## Completion evidence
-
-Pull request #209 completed with successful formatting, lint, Astro and TypeScript checks, runtime schema checks, migration drift validation, unit and component tests, build validation, accessibility checks, staging artifact validation, staging review validation, and representative screenshot capture.
-
 ## Next
 
-P5-04E adds exact-state guarded Claim review transitions and verification-request preparation without recording a verified representative relationship. Provider-specific verification execution and relationship decisions remain separate later slices.
+P5-04E will add exact-state guarded Claim review transitions and verification-request preparation without recording a verified representative relationship. Provider-specific verification execution and relationship decisions remain separate later slices.
