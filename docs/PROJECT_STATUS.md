@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-04D — Business claim protected reviewer queue and detail entry
+P5-04E — Business Claim review transitions and verification-request preparation
 
 ## Current repository state
 
@@ -20,12 +20,13 @@ P5-04D — Business claim protected reviewer queue and detail entry
 - P5-04A business Claim contract and normalization were established in #203 and privacy/correction semantics were hardened in #206 at main commit `944773ad8a4c1bcc25de3f3f0745917d37def4e3`.
 - P5-04B idempotent private business Claim intake integration completed in #207 at main commit `cb55ad961f213fd8a6e5f86e81a16abd486505cb`.
 - P5-04C protected canonical target context and bounded read-only Claim review signals completed in #208 at main commit `80d30b21cb92475b309f7501f2d27c32b06935f3`.
+- P5-04D protected business Claim reviewer queue and detail entry completed in #209 at main commit `ec2048faea97ce3efdc4710d42ea9cf83135d0b6`.
 - Draft #204 was closed as superseded because it predated the #206 privacy boundary and tested nonexistent persistence metadata.
-- P5-04D protected business Claim reviewer queue and detail entry are now active.
+- P5-04E exact-state review transitions and verification-request preparation are now active.
 
 ## P5-04 completed foundations
 
-P5-04A through P5-04C now provide:
+P5-04A through P5-04D now provide:
 
 - existing Entity or Location Claim targets only;
 - owner, authorized representative, and authorized employee roles;
@@ -44,21 +45,24 @@ P5-04A through P5-04C now provide:
 - target, parent, and Claim ownership consistency checks;
 - bounded official-identity, field, payment-context, and lifecycle signals;
 - explicit non-conclusive coverage semantics;
-- fail-closed protected errors without private verification material;
+- a separately authorized protected Claim Submission queue and detail entry;
+- bounded workflow-event summaries and protected-material presence flags;
+- fail-closed handling without private verification values;
 - received-only workflow state without verified authority or editing permission;
 - no automatic relationship approval, canonical mutation, export, or publication.
 
-## P5-04D active scope
+## P5-04E active scope
 
-P5-04D adds:
+P5-04E adds:
 
-- a separately authorized protected Claim Submission queue;
-- bounded queue metadata without contact, proof, authority statement, or arbitrary payload exposure;
-- a strict protected detail response containing the P5-04A review-safe projection;
-- P5-04C canonical target context composition;
-- bounded workflow-event summaries;
-- fail-closed handling for malformed, missing, mismatched, or unauthorized records;
-- read-only behavior with no workflow, authority, canonical, export, or publication effects.
+- separately authorized Claim workflow mutation capability;
+- exact expected-state and concurrency guards;
+- bounded operational transitions among received, triage, in-review, needs-information, and on-hold states;
+- atomic Submission and audit-event persistence;
+- deterministic idempotency and changed-content conflict handling;
+- bounded verification-request preparation matched to the normalized method;
+- protected-value exclusion from reviewer responses and audit summaries;
+- no provider execution, verified authority, representative relationship, canonical mutation, export, or publication.
 
 ## Current references
 
@@ -71,13 +75,14 @@ P5-04D adds:
 - `docs/P5_04B_BUSINESS_CLAIM_PRIVATE_INTAKE.md`
 - `docs/P5_04C_BUSINESS_CLAIM_TARGET_CONTEXT.md`
 - `docs/P5_04D_BUSINESS_CLAIM_REVIEWER_ENTRY.md`
+- `docs/P5_04E_BUSINESS_CLAIM_REVIEW_TRANSITIONS.md`
 
 ## Phase 5 sequence
 
 1. P5-01 — Shared submission foundation — Completed through #150–#155
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
-4. P5-04 — Business and service claims — In progress at P5-04D
+4. P5-04 — Business and service claims — In progress at P5-04E
 5. P5-05 — Photo and Media submission intake — Planned
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
@@ -85,12 +90,12 @@ P5-04D adds:
 
 ## Next
 
-Implement and validate P5-04D protected queue and detail schemas, repository interfaces, authorization, target-context composition, private-value leakage rejection, focused tests, and executable schema validation. Then proceed to separately guarded Claim review transitions and verification-request preparation.
+Implement and validate P5-04E exact-state transition contracts, separate authorization, idempotent atomic persistence, audit events, verification-request preparation, protected-value leakage rejection, focused tests, and executable schema validation. Provider-specific execution and representative-relationship decisions remain later separately authorized slices.
 
 ## Blocked
 
-No repository blocker is known. Ownership-verification adapters, protected relationship decisions, public Claim routing, configured review, and production checks remain separate later slices.
+No repository blocker is known. Verification-provider execution, protected relationship decisions, public Claim routing, configured review, and production checks remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A committed Claim Submission remains unverified and grants no editing right.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A prepared verification request remains unexecuted, grants no authority, and grants no editing right.
