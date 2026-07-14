@@ -1,8 +1,9 @@
 # P5-04B Business claim private intake integration
 
 **Implementation item:** P5-04B  
-**Status:** Active  
-**Started:** 2026-07-14
+**Status:** Completed through #207  
+**Started:** 2026-07-14  
+**Completed:** 2026-07-14
 
 ## Purpose
 
@@ -98,6 +99,10 @@ It does not create:
 - accepted Evidence;
 - export or publication state.
 
+## Completion evidence
+
+Pull request #207 completed with successful formatting, lint, Astro and TypeScript checks, runtime schema checks, migration drift validation, unit and component tests, build validation, accessibility checks, staging artifact validation, and representative screenshot capture.
+
 ## Next
 
-P5-04C will add protected canonical target context and bounded read-only signals needed for Claim review before any ownership-verification decision is possible.
+P5-04C adds protected canonical target context and bounded read-only signals needed for Claim review before any ownership-verification decision is possible.
