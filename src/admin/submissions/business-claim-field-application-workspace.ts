@@ -229,7 +229,9 @@ export async function loadBusinessClaimFieldApplicationWorkspace(
     );
   }
 
-  const projectionResult = businessClaimReviewProjectionSchema.safeParse(state.normalizedProjection);
+  const projectionResult = businessClaimReviewProjectionSchema.safeParse(
+    state.normalizedProjection,
+  );
   if (!projectionResult.success) {
     throw new BusinessClaimFieldApplicationWorkspaceError(
       'invalid_workspace',
