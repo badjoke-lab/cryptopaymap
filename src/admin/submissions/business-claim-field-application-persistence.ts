@@ -44,7 +44,7 @@ export interface BusinessClaimFieldApplicationPersistenceBackend
   readApplicationEvent(
     requestId: string,
   ): Promise<BusinessClaimFieldApplicationPersistenceEventRecord | null>;
-  readSubmissionApplicationEvent(
+  readSubmissionApplicationEvent?(
     submissionId: string,
   ): Promise<BusinessClaimFieldApplicationPersistenceEventRecord | null>;
   commitApplication(command: BusinessClaimFieldApplicationCommitCommand): Promise<void>;
@@ -173,17 +173,19 @@ export async function applyBusinessClaimFieldApplication(
     return replayReceipt(existingEvent, submissionIdResult.data, request, context.actorId);
   }
 
-  let priorSubmissionApplication: BusinessClaimFieldApplicationPersistenceEventRecord | null;
-  try {
-    priorSubmissionApplication = await backend.readSubmissionApplicationEvent(
-      submissionIdResult.data,
-    );
-  } catch (error) {
-    throw new BusinessClaimFieldApplicationPersistenceError(
-      'backend_failure',
-      'The Submission application-state check failed.',
-      { cause: error },
-    );
+  let priorSubmissionApplication: BusinessClaimFieldApplicationPersistenceEventRecord | null = null;
+  if (backend.readSubmissionApplicationEvent !== undefined) {
+    try {
+      priorSubmissionApplication = await backend.readSubmissionApplicationEvent(
+        submissionIdResult.data,
+      );
+    } catch (error) {
+      throw new BusinessClaimFieldApplicationPersistenceError(
+        'backend_failure',
+        'The Submission application-state check failed.',
+        { cause: error },
+      );
+    }
   }
   if (priorSubmissionApplication !== null) {
     throw new BusinessClaimFieldApplicationPersistenceError(
