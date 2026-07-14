@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05C — Photo quarantine upload authorization and durable reservation issuance
+P5-05D — Private object existence and byte-level validation
 
 ## Current repository state
 
@@ -30,7 +30,8 @@ P5-05C — Photo quarantine upload authorization and durable reservation issuanc
 - P5-04 Business and service claims are repository-complete.
 - P5-05A Photo and Media contracts and review-safe normalization completed through #216.
 - P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
-- P5-05C is in progress with a bounded upload-authorization contract and durable reservation-issuance boundary.
+- P5-05C photo quarantine upload authorization and durable reservation issuance completed in #218.
+- P5-05D is next; its bounded scope is private object existence and byte-level validation before any processing or protected Media handoff.
 
 ## P5-05A completion result
 
@@ -62,9 +63,9 @@ P5-05B provides:
 - private status-token issuance without plaintext persistence;
 - no Media Asset, Media File, derivative, public URL, review approval, export, or publication creation.
 
-## P5-05C active scope
+## P5-05C completion result
 
-P5-05C adds:
+P5-05C provides:
 
 - a strict one-to-eight item Photos upload-authorization request;
 - deterministic opaque reservation UUIDs bound to canonical request content;
@@ -72,6 +73,7 @@ P5-05C adds:
 - transaction-serialized exact replay and changed-content conflict behavior;
 - short-lived provider-neutral HTTPS PUT authorization;
 - signed content-type and private validation metadata headers;
+- signer-failure retry without duplicate reservation creation;
 - no signed URL persistence, R2 credentials, binary validation, Media creation, or publication.
 
 ## Current references
@@ -101,18 +103,18 @@ P5-05C adds:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05C; P5-05B completed #217
+5. P5-05 — Photo and Media submission intake — In progress at P5-05D; P5-05C completed #218
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Complete P5-05C repository validation and merge. P5-05D then owns private object existence and byte-level validation before any processing or protected Media handoff.
+Implement P5-05D private object existence and byte-level validation. It must validate actual byte size, file signature, decoding, safe dimensions, object metadata, reservation and target relationships, and content hashes before processing or protected Media handoff.
 
 ## Blocked
 
-No repository blocker is known. Production R2 signing, public route wiring, binary validation, asynchronous image processing, protected Media handoff, public Media approval, export activation, and production review remain separate later slices.
+No repository blocker is known. Production R2 signing, public route wiring, asynchronous image processing, protected Media handoff, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
