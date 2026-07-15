@@ -1,0 +1,30 @@
+name: P5-05J focused diagnostics
+
+on:
+  push:
+    branches:
+      - p5-05j-private-validation-processing-execution
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Check focused formatting
+        run: npx biome format --max-diagnostics=200 src/submissions/cloudflare-images-photo-processor.ts src/submissions/photo-post-intake-object-validation.ts
+      - name: Check focused lint
+        run: npx biome lint --max-diagnostics=200 src/submissions/cloudflare-images-photo-processor.ts src/submissions/photo-post-intake-object-validation.ts
+      - name: Check focused TypeScript
+        run: npm run check
