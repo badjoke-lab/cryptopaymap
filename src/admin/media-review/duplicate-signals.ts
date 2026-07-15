@@ -1,12 +1,6 @@
 import { z } from 'zod';
-import {
-  mediaReviewStatusValues,
-  mediaVisibilityValues,
-} from '../../db/schema';
-import {
-  mediaReviewSubjectSchema,
-  type MediaReviewSubject,
-} from './decision';
+import { mediaReviewStatusValues, mediaVisibilityValues } from '../../db/schema';
+import { mediaReviewSubjectSchema, type MediaReviewSubject } from './decision';
 
 export const MAX_MEDIA_DUPLICATE_MATCHES = 25;
 
@@ -23,7 +17,10 @@ export const mediaDuplicateMatchSchema = z
 
 export const mediaDuplicateSignalsSchema = z
   .object({
-    sourceOriginalContentHash: z.string().regex(/^[a-f0-9]{64}$/).nullable(),
+    sourceOriginalContentHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .nullable(),
     matches: z.array(mediaDuplicateMatchSchema).max(MAX_MEDIA_DUPLICATE_MATCHES),
     hasMore: z.boolean(),
     automaticDecision: z.literal(false),
