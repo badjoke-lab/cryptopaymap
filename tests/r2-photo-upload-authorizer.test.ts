@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   createR2PhotoUploadAuthorizer,
   createR2PhotoUploadAuthorizerFromEnvironment,
-  R2PhotoUploadAuthorizationError,
   R2PhotoUploadAuthorizerConfigurationError,
 } from '../src/submissions/r2-photo-upload-authorizer';
 
@@ -53,15 +52,23 @@ async function sha256(value: string): Promise<string> {
   );
 }
 
+function copyArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  return copy.buffer;
+}
+
 async function hmac(keyBytes: Uint8Array, value: string): Promise<Uint8Array> {
   const key = await crypto.subtle.importKey(
     'raw',
-    keyBytes,
+    copyArrayBuffer(keyBytes),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign'],
   );
-  return new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)));
+  return new Uint8Array(
+    await crypto.subtle.sign('HMAC', key, copyArrayBuffer(new TextEncoder().encode(value))),
+  );
 }
 
 async function verifySignature(
@@ -186,13 +193,13 @@ describe('P5-05I configured R2 photo upload authorizer', () => {
     const authorizer = createR2PhotoUploadAuthorizer(configuration, { now: () => now });
     await expect(
       authorizer.authorizeUpload({ ...command(), objectKey: 'public/photos/example.jpg' }),
-    ).rejects.toMatchObject<R2PhotoUploadAuthorizationError>({ code: 'invalid_command' });
+    ).rejects.toMatchObject({ code: 'invalid_command' });
     await expect(
       authorizer.authorizeUpload(command(new Date(now.getTime() + 16 * 60 * 1_000))),
-    ).rejects.toMatchObject<R2PhotoUploadAuthorizationError>({ code: 'authorization_expired' });
+    ).rejects.toMatchObject({ code: 'authorization_expired' });
     await expect(
       authorizer.authorizeUpload(command(new Date(now.getTime() - 1_000))),
-    ).rejects.toMatchObject<R2PhotoUploadAuthorizationError>({ code: 'authorization_expired' });
+    ).rejects.toMatchObject({ code: 'authorization_expired' });
   });
 
   it('reads only strict server-side R2 configuration', async () => {

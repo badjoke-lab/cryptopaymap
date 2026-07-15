@@ -16,7 +16,13 @@ const metadataValueSchema = z
   .string()
   .min(1)
   .max(1_024)
-  .refine((value) => !/[\u0000-\u001f\u007f]/.test(value));
+  .refine((value) => {
+    for (const character of value) {
+      const code = character.charCodeAt(0);
+      if (code < 32 || code === 127) return false;
+    }
+    return true;
+  });
 
 export const r2PhotoUploadAuthorizerEnvironmentSchema = z
   .object({
@@ -31,7 +37,17 @@ export const r2PhotoUploadAuthorizerEnvironmentSchema = z
       .min(16)
       .max(128)
       .regex(/^[A-Za-z0-9]+$/),
-    CPM_R2_SECRET_ACCESS_KEY: z.string().min(32).max(256).regex(/^\S+$/),
+    CPM_R2_SECRET_ACCESS_KEY: z
+      .string()
+      .min(32)
+      .max(256)
+      .refine((value) => {
+        for (const character of value) {
+          const code = character.charCodeAt(0);
+          if (code < 33 || code > 126) return false;
+        }
+        return true;
+      }),
   })
   .strict();
 
@@ -95,15 +111,25 @@ async function sha256Hex(value: string): Promise<string> {
   return bytesToHex(new Uint8Array(digest));
 }
 
+function copyArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  return copy.buffer;
+}
+
 async function hmacSha256(keyBytes: Uint8Array, value: string): Promise<Uint8Array> {
   const key = await crypto.subtle.importKey(
     'raw',
-    keyBytes,
+    copyArrayBuffer(keyBytes),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign'],
   );
-  const signature = await crypto.subtle.sign('HMAC', key, textEncoder.encode(value));
+  const signature = await crypto.subtle.sign(
+    'HMAC',
+    key,
+    copyArrayBuffer(textEncoder.encode(value)),
+  );
   return new Uint8Array(signature);
 }
 

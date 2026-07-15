@@ -12,6 +12,8 @@ const targetId = '20000000-0000-4000-8000-000000000001';
 const submissionId = '40000000-0000-4000-8000-000000000001';
 const declaredMimeType = 'image/jpeg' as const;
 const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xd9]);
+const uploadBuffer = new ArrayBuffer(bytes.byteLength);
+new Uint8Array(uploadBuffer).set(bytes);
 
 const reservationPersistence = createInMemoryPhotoUploadReservationPersistence();
 const authorizer = createR2PhotoUploadAuthorizer(
@@ -44,21 +46,19 @@ const authorization = await authorizationService.authorize(
   now,
 );
 
-let uploadedObject:
-  | {
-      urlHost: string;
-      objectPath: string;
-      byteSize: number;
-      contentType: string | null;
-      reservationId: string | null;
-    }
-  | undefined;
+const uploadedObjects: Array<{
+  urlHost: string;
+  objectPath: string;
+  byteSize: number;
+  contentType: string | null;
+  reservationId: string | null;
+}> = [];
 
 await uploadAuthorizedPhotoFiles(
   authorization,
   [
     {
-      body: new Blob([bytes], { type: declaredMimeType }),
+      body: new Blob([uploadBuffer], { type: declaredMimeType }),
       declaredMimeType,
       declaredByteSize: bytes.byteLength,
     },
@@ -78,13 +78,13 @@ await uploadAuthorizedPhotoFiles(
       if (!(body instanceof Blob) || body.size !== bytes.byteLength) {
         throw new Error('Synthetic upload body was not the exact bounded Blob.');
       }
-      uploadedObject = {
+      uploadedObjects.push({
         urlHost: url.host,
         objectPath: url.pathname,
         byteSize: body.size,
         contentType: headers.get('content-type'),
         reservationId: headers.get('x-amz-meta-cpm-reservation-id'),
-      };
+      });
       return new Response(null, { status: 200 });
     },
   },
@@ -92,6 +92,7 @@ await uploadAuthorizedPhotoFiles(
 
 const reservation = reservationPersistence.list()[0];
 const upload = authorization.uploads[0];
+const uploadedObject = uploadedObjects[0];
 if (reservation === undefined || upload === undefined || uploadedObject === undefined) {
   throw new Error('Synthetic upload did not produce one private reservation and object receipt.');
 }
