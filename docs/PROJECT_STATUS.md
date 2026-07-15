@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-06 — Review workflow extensions
+P5-06B — Common review entry for reports and Photos
 
 ## Current repository state
 
@@ -39,7 +39,8 @@ P5-06 — Review workflow extensions
 - P5-05I configured R2 SigV4 upload signing and synthetic direct-upload/private-intake audit completed in #225.
 - P5-05J configured post-intake validation, Cloudflare Images processing, private derivative writes, and protected Media handoff execution completed in #227.
 - P5-05 Photo and Media submission intake is repository-complete through #227.
-- P5-06 review workflow extensions are next.
+- P5-06A cross-submission review workflow inventory completed in #228.
+- P5-06B common review entry for reports and Photos is next.
 
 ## P5-05A completion result
 
@@ -193,6 +194,19 @@ P5-05J provides:
 - 231 test files and 1,130 tests passing at implementation head `a49ce9af9fb4b35989d670d8535708290d322657`;
 - no Media approval, public copy, canonical mutation, export activation, publication, deployment, or launch claim.
 
+## P5-06A completion result
+
+P5-06A provides:
+
+- a repository-backed capability matrix for Suggest, payment/problem reports, Business Claims, Photos, protected Media review, and private status;
+- confirmation that all public intake persists `received` as the initial workflow state;
+- confirmation that report decision services require reviewed state but no report transition path was implemented in P5-03;
+- confirmation that Photos have Media review but no parent Submission lifecycle or resolution synchronization;
+- identification of missing Suggest resume and ordinary terminal outcomes;
+- separation of P5-06 review workflow work from P5-07 canonical application and retention;
+- the bounded P5-06B through P5-06F implementation sequence;
+- no runtime mutation, migration, endpoint, UI, canonical change, Media approval, export, publication, deployment, or launch claim.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -220,6 +234,7 @@ P5-05J provides:
 - `docs/P5_05H_PHOTO_BROWSER_UPLOAD_ORCHESTRATION.md`
 - `docs/P5_05I_R2_SIGNING_AND_DIRECT_UPLOAD_AUDIT.md`
 - `docs/P5_05J_PRIVATE_VALIDATION_PROCESSING_EXECUTION.md`
+- `docs/P5_06A_REVIEW_WORKFLOW_INVENTORY.md`
 
 ## Phase 5 sequence
 
@@ -228,18 +243,18 @@ P5-05J provides:
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
 5. P5-05 — Photo and Media submission intake — Completed through #216–#227
-6. P5-06 — Review workflow extensions — Planned
+6. P5-06 — Review workflow extensions — In progress at P5-06B; P5-06A completed #228
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Begin P5-06 with an exact cross-submission review workflow inventory. Reconcile the common reviewer diff, information-request, time-bounded hold, partial-decision, duplicate/no-change, and private-status capabilities already implemented in Suggest, Reports, Business Claims, and Photos before adding any new mutation surface.
+Implement P5-06B common review entry for `payment_report`, `problem_report`, and `photos`: exact-state guarded `received → triage` and `triage → in_review`, reuse of the P5-01 atomic transition and Audit boundary, protected report controls, and a parent Photos Submission workspace. P5-06B adds no final decision, Media decision, canonical mutation, export, or publication.
 
 ## Blocked
 
-No repository blocker is known. P5-06 must first identify real cross-submission review gaps without duplicating the completed type-specific reviewer flows. Privacy-content analysis, public Media approval, export activation, production deployment, and production review remain separate later work.
+No repository blocker is known. P5-06A identified one critical reachability gap: report decision services require reviewed state while public report intake persists `received` and no P5-03 transition path exists. P5-06B closes review entry before later information, hold, terminal-resolution, and Photos parent-resolution work.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. P5-05J proves configured private validation and processing contracts in repository CI; it does not prove configured production execution, Media approval, public availability, or launch readiness.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. P5-06A is a repository inventory; P5-06B must prove protected transition reachability without using out-of-band database mutation or performing P5-07 canonical application work.
