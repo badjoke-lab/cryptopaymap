@@ -99,11 +99,7 @@ function authorizationRequest(
     authorization: validAuthorization(),
   },
 ): Request {
-  return jsonRequest(
-    'https://example.test/api/photos/upload-authorizations',
-    body,
-    idempotencyKey,
-  );
+  return jsonRequest('https://example.test/api/photos/upload-authorizations', body, idempotencyKey);
 }
 
 function intakeRequest(
