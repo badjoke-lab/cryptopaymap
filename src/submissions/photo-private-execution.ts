@@ -4,7 +4,10 @@ import {
   photoObjectValidationRequestSchema,
   type PhotoObjectValidationResult,
 } from './photo-object-validation';
-import type { PhotoMediaHandoffPersistence } from './photo-private-processing';
+import type {
+  PhotoMediaHandoffPersistence,
+  PhotoProcessingSubmissionContext,
+} from './photo-private-processing';
 import {
   photoPrivateProcessingRequestSchema,
   type PhotoPrivateProcessingReceipt,
@@ -96,7 +99,7 @@ export function createPhotoPrivateExecutionService(
         );
       }
 
-      let context;
+      let context: PhotoProcessingSubmissionContext | null;
       try {
         context = await dependencies.contexts.loadSubmissionContext(request.submissionId);
       } catch (error) {
