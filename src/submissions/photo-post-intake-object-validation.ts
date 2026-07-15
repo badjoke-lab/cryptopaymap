@@ -2,29 +2,32 @@ import { z } from 'zod';
 import {
   inspectPhotoImage,
   PhotoImageInspectionError,
+  type DecodedPhotoImage,
 } from './photo-image-inspection';
 import {
   photoObjectValidationReceiptSchema,
   photoObjectValidationRequestSchema,
-  photoQuarantineObjectKey,
   PhotoObjectValidationError,
   PhotoQuarantineObjectStoreError,
-  type PhotoObjectValidationDependencies,
+  type PhotoImageDecoder,
   type PhotoObjectValidationReceipt,
+  type PhotoQuarantineObjectStore,
+  type PhotoUploadTargetReader,
   type ValidatedPhotoObject,
 } from './photo-object-validation';
+import {
+  photoQuarantineObjectKey,
+  type PhotoUploadReservationPersistence,
+  type PhotoUploadReservationRecord,
+} from './photo-upload-authorization';
 
-const maximumObjectBytes = 5_000_000;
-const maximumDimension = 20_000;
-const maximumPixels = 100_000_000;
-const submissionIdSchema = z.string().uuid();
+const submissionIdSchema = z.uuid();
 
-function parseDate(value: string, code: 'reservation_conflict' | 'invalid_request'): Date {
-  const parsed = new Date(value);
-  if (Number.isNaN(parsed.getTime())) {
-    throw new PhotoObjectValidationError(code, 'Private photo chronology is invalid.');
-  }
-  return parsed;
+export interface PhotoPostIntakeObjectValidationDependencies {
+  reservations: Pick<PhotoUploadReservationPersistence, 'readByIntakeRequestId'>;
+  targets: PhotoUploadTargetReader;
+  objects: PhotoQuarantineObjectStore;
+  decoder?: PhotoImageDecoder;
 }
 
 function copyArrayBuffer(bytes: Uint8Array): ArrayBuffer {
@@ -33,29 +36,25 @@ function copyArrayBuffer(bytes: Uint8Array): ArrayBuffer {
   return copy.buffer;
 }
 
+function bytesToHex(bytes: Uint8Array): string {
+  return [...bytes].map((value) => value.toString(16).padStart(2, '0')).join('');
+}
+
 async function sha256(bytes: Uint8Array): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', copyArrayBuffer(bytes));
-  return [...new Uint8Array(digest)]
-    .map((value) => value.toString(16).padStart(2, '0'))
-    .join('');
+  return bytesToHex(new Uint8Array(digest));
 }
 
 function expectedMetadata(
-  intakeRequestId: string,
-  targetType: 'entity' | 'location',
-  targetId: string,
-  item: {
-    quarantineUploadId: string;
-    purpose: 'public_gallery_candidate';
-    declaredByteSize: number;
-  },
+  request: z.infer<typeof photoObjectValidationRequestSchema>,
+  item: z.infer<typeof photoObjectValidationRequestSchema>['media'][number],
 ): Record<string, string> {
   return {
     'cpm-schema-version': 'photo-upload-v1',
     'cpm-reservation-id': item.quarantineUploadId,
-    'cpm-intake-request-id': intakeRequestId,
-    'cpm-target-type': targetType,
-    'cpm-target-id': targetId,
+    'cpm-intake-request-id': request.intakeRequestId,
+    'cpm-target-type': request.targetType,
+    'cpm-target-id': request.targetId,
     'cpm-purpose': item.purpose,
     'cpm-declared-byte-size': item.declaredByteSize.toString(),
   };
@@ -78,43 +77,75 @@ function exactMetadataMatches(
   );
 }
 
-function mapObjectStoreError(error: unknown): PhotoObjectValidationError {
-  if (error instanceof PhotoQuarantineObjectStoreError) {
+function assertConsumedReservationSet(
+  reservations: PhotoUploadReservationRecord[],
+  request: z.infer<typeof photoObjectValidationRequestSchema>,
+  submissionId: string,
+  validatedAt: Date,
+): void {
+  const expectedIds = request.media.map((item) => item.quarantineUploadId).sort();
+  const actualIds = reservations.map((reservation) => reservation.id).sort();
+  if (
+    expectedIds.length !== actualIds.length ||
+    expectedIds.some((id, index) => id !== actualIds[index])
+  ) {
+    throw new PhotoObjectValidationError(
+      'reservation_conflict',
+      'The post-intake photo validation request does not match its private reservation set.',
+    );
+  }
+
+  for (const reservation of reservations) {
+    const consumedAt = reservation.consumedAt === null ? Number.NaN : Date.parse(reservation.consumedAt);
+    const expiresAt = Date.parse(reservation.expiresAt);
+    if (
+      reservation.intakeRequestId !== request.intakeRequestId ||
+      reservation.purpose !== 'public_gallery_candidate' ||
+      reservation.consumedBySubmissionId !== submissionId ||
+      !Number.isFinite(consumedAt) ||
+      !Number.isFinite(expiresAt) ||
+      consumedAt > validatedAt.getTime() ||
+      consumedAt > expiresAt
+    ) {
+      throw new PhotoObjectValidationError(
+        'reservation_unavailable',
+        'The private upload reservation is not consumed by the expected Photos Submission.',
+      );
+    }
+  }
+}
+
+function mapInspectionError(error: PhotoImageInspectionError): PhotoObjectValidationError {
+  if (error.code === 'unsafe_dimensions') {
     return new PhotoObjectValidationError(
-      error.code === 'object_too_large' ? 'object_too_large' : 'object_conflict',
-      'The private photo object could not be read safely.',
+      'unsafe_dimensions',
+      'The uploaded photo dimensions are not safe to process.',
+      { cause: error },
+    );
+  }
+  if (
+    error.code === 'unsupported_format' ||
+    error.code === 'unsafe_file_type' ||
+    error.code === 'animated_media'
+  ) {
+    return new PhotoObjectValidationError(
+      'unsupported_file',
+      'The uploaded object is not a supported still-image file.',
       { cause: error },
     );
   }
   return new PhotoObjectValidationError(
-    'object_conflict',
-    'The private photo object could not be read safely.',
-    { cause: error },
-  );
-}
-
-function mapInspectionError(error: unknown): PhotoObjectValidationError {
-  if (error instanceof PhotoImageInspectionError) {
-    const code =
-      error.code === 'unsupported_media'
-        ? 'unsupported_media'
-        : error.code === 'dimension_limit'
-          ? 'dimension_limit'
-          : 'malformed_image';
-    return new PhotoObjectValidationError(code, 'The private photo bytes failed inspection.', {
-      cause: error,
-    });
-  }
-  return new PhotoObjectValidationError(
-    'malformed_image',
-    'The private photo bytes failed inspection.',
+    'decode_failed',
+    'The uploaded photo could not be decoded safely.',
     { cause: error },
   );
 }
 
 export function createPhotoPostIntakeObjectValidationService(
-  dependencies: PhotoObjectValidationDependencies,
+  dependencies: PhotoPostIntakeObjectValidationDependencies,
 ) {
+  const decoder: PhotoImageDecoder = dependencies.decoder ?? { decode: inspectPhotoImage };
+
   return {
     async validateForSubmission(
       rawInput: unknown,
@@ -124,6 +155,13 @@ export function createPhotoPostIntakeObjectValidationService(
       receipt: PhotoObjectValidationReceipt;
       objects: ValidatedPhotoObject[];
     }> {
+      if (!(validatedAt instanceof Date) || Number.isNaN(validatedAt.getTime())) {
+        throw new PhotoObjectValidationError(
+          'invalid_request',
+          'Post-intake private photo validation time is invalid.',
+        );
+      }
+
       let request: z.infer<typeof photoObjectValidationRequestSchema>;
       let submissionId: string;
       try {
@@ -136,158 +174,119 @@ export function createPhotoPostIntakeObjectValidationService(
           { cause: error },
         );
       }
-      if (!(validatedAt instanceof Date) || Number.isNaN(validatedAt.getTime())) {
-        throw new PhotoObjectValidationError(
-          'invalid_request',
-          'Post-intake private photo validation time is invalid.',
-        );
-      }
 
       let targetExists: boolean;
+      let reservations: PhotoUploadReservationRecord[];
       try {
-        targetExists = await dependencies.targetReader.targetExists(
-          request.targetType,
-          request.targetId,
-        );
+        [targetExists, reservations] = await Promise.all([
+          dependencies.targets.targetExists(request.targetType, request.targetId),
+          dependencies.reservations.readByIntakeRequestId(request.intakeRequestId),
+        ]);
       } catch (error) {
         throw new PhotoObjectValidationError(
-          'target_unavailable',
-          'The private photo target could not be checked.',
+          'storage_failed',
+          'Post-intake private photo validation context could not be read.',
           { cause: error },
         );
       }
       if (!targetExists) {
         throw new PhotoObjectValidationError(
           'target_unavailable',
-          'The private photo target is unavailable.',
+          'The requested photo target is unavailable.',
         );
       }
+      assertConsumedReservationSet(reservations, request, submissionId, validatedAt);
 
-      let reservations;
-      try {
-        reservations = await Promise.all(
-          request.media.map((item) =>
-            dependencies.persistence.readReservation(item.quarantineUploadId),
-          ),
-        );
-      } catch (error) {
-        throw new PhotoObjectValidationError(
-          'reservation_conflict',
-          'The consumed private upload reservations could not be loaded.',
-          { cause: error },
-        );
-      }
-      if (reservations.some((reservation) => reservation === null)) {
-        throw new PhotoObjectValidationError(
-          'reservation_conflict',
-          'A consumed private upload reservation is unavailable.',
-        );
-      }
-
-      const objects: ValidatedPhotoObject[] = [];
-      for (const [index, item] of request.media.entries()) {
-        const reservation = reservations[index];
-        if (reservation === null || reservation === undefined) {
-          throw new PhotoObjectValidationError(
-            'reservation_conflict',
-            'A consumed private upload reservation is unavailable.',
-          );
-        }
-        const consumedAt =
-          reservation.consumedAt === null
-            ? null
-            : parseDate(reservation.consumedAt.toISOString(), 'reservation_conflict');
-        const expiresAt = parseDate(reservation.expiresAt.toISOString(), 'reservation_conflict');
-        if (
-          reservation.id !== item.quarantineUploadId ||
-          reservation.intakeRequestId !== request.intakeRequestId ||
-          reservation.purpose !== item.purpose ||
-          reservation.consumedBySubmissionId !== submissionId ||
-          consumedAt === null ||
-          consumedAt.getTime() > validatedAt.getTime() ||
-          consumedAt.getTime() > expiresAt.getTime()
-        ) {
-          throw new PhotoObjectValidationError(
-            'reservation_conflict',
-            'The private upload reservation is not consumed by the expected Photos Submission.',
-          );
-        }
-
+      const validatedObjects: ValidatedPhotoObject[] = [];
+      for (const item of request.media) {
         const privateObjectKey = photoQuarantineObjectKey(item.quarantineUploadId);
         let object;
         try {
-          object = await dependencies.objectStore.readPrivateObject(
+          object = await dependencies.objects.readPrivateObject(
             privateObjectKey,
-            Math.min(maximumObjectBytes, item.declaredByteSize + 1),
+            item.declaredByteSize,
           );
         } catch (error) {
-          throw mapObjectStoreError(error);
+          if (
+            error instanceof PhotoQuarantineObjectStoreError &&
+            error.code === 'object_too_large'
+          ) {
+            throw new PhotoObjectValidationError(
+              'byte_size_mismatch',
+              'The uploaded photo exceeds its declared byte size.',
+              { cause: error },
+            );
+          }
+          throw new PhotoObjectValidationError(
+            'storage_failed',
+            'The private photo object could not be read.',
+            { cause: error },
+          );
         }
         if (object === null) {
           throw new PhotoObjectValidationError(
             'object_missing',
-            'The private photo object is unavailable.',
+            'A required private photo object was not found.',
           );
         }
         if (
           object.key !== privateObjectKey ||
-          object.byteSize !== item.declaredByteSize ||
-          object.body.byteLength !== item.declaredByteSize ||
           object.contentType !== item.declaredMimeType ||
-          !exactMetadataMatches(
-            object.customMetadata,
-            expectedMetadata(request.intakeRequestId, request.targetType, request.targetId, item),
-          )
+          !exactMetadataMatches(object.customMetadata, expectedMetadata(request, item))
         ) {
           throw new PhotoObjectValidationError(
-            'object_conflict',
-            'The private photo object does not match its consumed reservation.',
+            'object_metadata_mismatch',
+            'The uploaded photo does not match its private authorization metadata.',
           );
-        }
-
-        let inspected;
-        try {
-          inspected = inspectPhotoImage(object.body);
-        } catch (error) {
-          throw mapInspectionError(error);
         }
         if (
-          inspected.mimeType !== item.declaredMimeType ||
-          inspected.animated ||
-          inspected.width > maximumDimension ||
-          inspected.height > maximumDimension ||
-          inspected.width * inspected.height > maximumPixels
+          object.byteSize !== item.declaredByteSize ||
+          object.body.byteLength !== item.declaredByteSize ||
+          object.byteSize !== object.body.byteLength
         ) {
           throw new PhotoObjectValidationError(
-            inspected.width > maximumDimension ||
-              inspected.height > maximumDimension ||
-              inspected.width * inspected.height > maximumPixels
-              ? 'dimension_limit'
-              : 'object_conflict',
-            'The private photo object exceeds its post-intake validation boundary.',
+            'byte_size_mismatch',
+            'The uploaded photo byte size does not match its declaration.',
           );
         }
 
-        objects.push({
+        let decoded: DecodedPhotoImage;
+        try {
+          decoded = await decoder.decode(object.body);
+        } catch (error) {
+          if (error instanceof PhotoImageInspectionError) throw mapInspectionError(error);
+          throw new PhotoObjectValidationError(
+            'decode_failed',
+            'The uploaded photo could not be decoded safely.',
+            { cause: error },
+          );
+        }
+        if (decoded.mimeType !== item.declaredMimeType) {
+          throw new PhotoObjectValidationError(
+            'object_metadata_mismatch',
+            'The uploaded photo signature does not match its declared content type.',
+          );
+        }
+
+        validatedObjects.push({
           quarantineUploadId: item.quarantineUploadId,
           privateObjectKey,
-          mimeType: inspected.mimeType,
-          byteSize: object.byteSize,
-          width: inspected.width,
-          height: inspected.height,
-          contentHash: await sha256(object.body),
           body: object.body,
+          mimeType: decoded.mimeType,
+          byteSize: object.byteSize,
+          width: decoded.width,
+          height: decoded.height,
+          contentHash: await sha256(object.body),
         });
       }
 
       const receipt = photoObjectValidationReceiptSchema.parse({
         schemaVersion: 'photo-object-validation-receipt-v1',
-        state: 'validated',
         intakeRequestId: request.intakeRequestId,
         targetType: request.targetType,
         targetId: request.targetId,
         validatedAt: validatedAt.toISOString(),
-        media: objects.map((object) => ({
+        media: validatedObjects.map((object) => ({
           quarantineUploadId: object.quarantineUploadId,
           mimeType: object.mimeType,
           byteSize: object.byteSize,
@@ -296,7 +295,7 @@ export function createPhotoPostIntakeObjectValidationService(
           contentHash: object.contentHash,
         })),
       });
-      return { receipt, objects };
+      return { receipt, objects: validatedObjects };
     },
   };
 }
