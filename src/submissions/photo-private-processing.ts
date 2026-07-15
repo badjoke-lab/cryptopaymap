@@ -9,10 +9,10 @@ import {
   photosReviewProjectionSchema,
   publicGalleryMediaRoleSchema,
   submissionMediaMimeTypeSchema,
+  type PhotosReviewProjection,
 } from './photo-media-contract';
 import {
   photoObjectValidationReceiptSchema,
-  type PhotoObjectValidationResult,
   type ValidatedPhotoObject,
 } from './photo-object-validation';
 import { photoQuarantineObjectKey } from './photo-upload-authorization';
@@ -360,57 +360,44 @@ function assertReplay(
   return receiptFromEvent(existing, 'replayed');
 }
 
-async function requestFingerprint(
-  request: PhotoPrivateProcessingRequest,
-  context: PhotoProcessingSubmissionContext,
-): Promise<string> {
-  const normalized = photosReviewProjectionSchema.parse(context.normalizedPayload);
+async function requestFingerprint(request: PhotoPrivateProcessingRequest): Promise<string> {
   return sha256Text(
     JSON.stringify({
       schemaVersion: request.schemaVersion,
       processingRequestId: request.processingRequestId,
       submissionId: request.submissionId,
       processorVersion: request.processorVersion,
-      submissionUpdatedAt: context.updatedAt,
-      intakeRequestId: request.validation.receipt.intakeRequestId,
-      targetType: request.validation.receipt.targetType,
-      targetId: request.validation.receipt.targetId,
-      validatedAt: request.validation.receipt.validatedAt,
-      media: normalized.media.map((item) => {
-        const validated = request.validation.receipt.media.find(
-          (candidate) => candidate.quarantineUploadId === item.quarantineUploadId,
-        );
-        return {
-          quarantineUploadId: item.quarantineUploadId,
-          role: item.role,
-          declaredMimeType: item.declaredMimeType,
-          declaredByteSize: item.declaredByteSize,
-          capturedAt: item.capturedAt,
-          description: item.description,
-          suggestedAltText: item.suggestedAltText,
-          photographerPresent: item.photographerPresent,
-          rightsStatus: item.rightsStatus,
-          rightsHolderPresent: item.rightsHolderPresent,
-          permissionReferencePresent: item.permissionReferencePresent,
-          licenseName: item.licenseName,
-          licenseUrl: item.licenseUrl,
-          publicDisplayPermission: item.publicDisplayPermission,
-          validatedMimeType: validated?.mimeType,
-          validatedByteSize: validated?.byteSize,
-          width: validated?.width,
-          height: validated?.height,
-          contentHash: validated?.contentHash,
-        };
-      }),
+      receipt: request.validation.receipt,
+      objects: request.validation.objects.map((object) => ({
+        quarantineUploadId: object.quarantineUploadId,
+        privateObjectKey: object.privateObjectKey,
+        mimeType: object.mimeType,
+        byteSize: object.byteSize,
+        width: object.width,
+        height: object.height,
+        contentHash: object.contentHash,
+      })),
     }),
   );
+}
+
+function parseNormalizedPayload(value: unknown): PhotosReviewProjection {
+  const parsed = photosReviewProjectionSchema.safeParse(value);
+  if (!parsed.success) {
+    throw new PhotoPrivateProcessingError(
+      'submission_unavailable',
+      'The Photos Submission is unavailable for private processing.',
+      { cause: parsed.error },
+    );
+  }
+  return parsed.data;
 }
 
 async function assertValidationMatches(
   request: PhotoPrivateProcessingRequest,
   context: PhotoProcessingSubmissionContext,
-): Promise<Map<string, ValidatedPhotoObject>> {
-  const normalized = photosReviewProjectionSchema.parse(context.normalizedPayload);
+): Promise<{ normalized: PhotosReviewProjection; objects: Map<string, ValidatedPhotoObject> }> {
+  const normalized = parseNormalizedPayload(context.normalizedPayload);
   const receipt = request.validation.receipt;
   const objects = request.validation.objects;
 
@@ -504,7 +491,7 @@ async function assertValidationMatches(
     }
   }
 
-  return objectById;
+  return { normalized, objects: objectById };
 }
 
 function mapInspectionError(error: unknown): PhotoPrivateProcessingError {
@@ -526,7 +513,15 @@ async function validateDerivative(
   derivative: PhotoProcessedDerivative,
   source: ValidatedPhotoObject,
 ): Promise<PhotoProcessedDerivative & { contentHash: string }> {
-  const parsed = photoProcessedDerivativeSchema.parse(derivative);
+  const result = photoProcessedDerivativeSchema.safeParse(derivative);
+  if (!result.success) {
+    throw new PhotoPrivateProcessingError(
+      'derivative_invalid',
+      'The private photo processor returned an invalid derivative contract.',
+      { cause: result.error },
+    );
+  }
+  const parsed = result.data;
   const maximumBytes = parsed.variant === 'display' ? MAX_DISPLAY_BYTES : MAX_THUMBNAIL_BYTES;
   const maximumDimension =
     parsed.variant === 'display' ? MAX_DISPLAY_DIMENSION : MAX_THUMBNAIL_DIMENSION;
@@ -563,10 +558,7 @@ async function validateDerivative(
   return { ...parsed, contentHash: await sha256(parsed.body) };
 }
 
-async function cleanupCreated(
-  store: PrivatePhotoDerivativeStore,
-  keys: string[],
-): Promise<void> {
+async function cleanupCreated(store: PrivatePhotoDerivativeStore, keys: string[]): Promise<void> {
   await Promise.allSettled(keys.map((key) => store.deletePrivateDerivative(key)));
 }
 
@@ -574,7 +566,10 @@ export function createPhotoPrivateProcessingService(
   dependencies: PhotoPrivateProcessingServiceDependencies,
 ) {
   return {
-    async process(rawInput: unknown, processedAt = new Date()): Promise<PhotoPrivateProcessingReceipt> {
+    async process(
+      rawInput: unknown,
+      processedAt = new Date(),
+    ): Promise<PhotoPrivateProcessingReceipt> {
       validateDate(processedAt);
       let request: PhotoPrivateProcessingRequest;
       try {
@@ -587,7 +582,23 @@ export function createPhotoPrivateProcessingService(
         );
       }
 
-      const eventId = await deterministicUuid('photo-media-handoff-event-v1', request.processingRequestId);
+      const eventId = await deterministicUuid(
+        'photo-media-handoff-event-v1',
+        request.processingRequestId,
+      );
+      const fingerprint = await requestFingerprint(request);
+      let existing: PhotoMediaHandoffEventPayload | null;
+      try {
+        existing = await dependencies.persistence.readHandoffEvent(eventId);
+      } catch (error) {
+        throw new PhotoPrivateProcessingError(
+          'persistence_conflict',
+          'The private photo processing replay state could not be loaded.',
+          { cause: error },
+        );
+      }
+      if (existing !== null) return assertReplay(existing, request, fingerprint);
+
       let context: PhotoProcessingSubmissionContext | null;
       try {
         context = await dependencies.persistence.loadSubmissionContext(request.submissionId);
@@ -605,12 +616,9 @@ export function createPhotoPrivateProcessingService(
         );
       }
 
-      const fingerprint = await requestFingerprint(request, context);
-      const existing = await dependencies.persistence.readHandoffEvent(eventId);
-      if (existing !== null) return assertReplay(existing, request, fingerprint);
-
-      const objectById = await assertValidationMatches(request, context);
-      const normalized = photosReviewProjectionSchema.parse(context.normalizedPayload);
+      const validated = await assertValidationMatches(request, context);
+      const normalized = validated.normalized;
+      const objectById = validated.objects;
       const createdKeys: string[] = [];
       const assets: PhotoMediaAssetInsert[] = [];
       const files: PhotoMediaFileInsert[] = [];
@@ -639,15 +647,27 @@ export function createPhotoPrivateProcessingService(
               { cause: error },
             );
           }
-          const parsedOutput = z.array(photoProcessedDerivativeSchema).length(2).parse(processorOutput);
-          const variants = new Map(parsedOutput.map((candidate) => [candidate.variant, candidate]));
+          const outputResult = z.array(photoProcessedDerivativeSchema).length(2).safeParse(processorOutput);
+          if (!outputResult.success) {
+            throw new PhotoPrivateProcessingError(
+              'derivative_invalid',
+              'The private photo processor must return exactly two valid derivatives.',
+              { cause: outputResult.error },
+            );
+          }
+          const variants = new Map(
+            outputResult.data.map((candidate) => [candidate.variant, candidate]),
+          );
           if (variants.size !== 2 || !variants.has('display') || !variants.has('thumbnail')) {
             throw new PhotoPrivateProcessingError(
               'derivative_invalid',
               'The private photo processor must return one display and one thumbnail derivative.',
             );
           }
-          const display = await validateDerivative(variants.get('display') as PhotoProcessedDerivative, source);
+          const display = await validateDerivative(
+            variants.get('display') as PhotoProcessedDerivative,
+            source,
+          );
           const thumbnail = await validateDerivative(
             variants.get('thumbnail') as PhotoProcessedDerivative,
             source,
@@ -663,9 +683,18 @@ export function createPhotoPrivateProcessingService(
             'photo-media-asset-v1',
             `${context.id}:${item.quarantineUploadId}`,
           );
-          const originalFileId = await deterministicUuid('photo-media-file-original-v1', mediaAssetId);
-          const displayFileId = await deterministicUuid('photo-media-file-display-v1', mediaAssetId);
-          const thumbnailFileId = await deterministicUuid('photo-media-file-thumbnail-v1', mediaAssetId);
+          const originalFileId = await deterministicUuid(
+            'photo-media-file-original-v1',
+            mediaAssetId,
+          );
+          const displayFileId = await deterministicUuid(
+            'photo-media-file-display-v1',
+            mediaAssetId,
+          );
+          const thumbnailFileId = await deterministicUuid(
+            'photo-media-file-thumbnail-v1',
+            mediaAssetId,
+          );
           const displayKey = privateMediaDerivativeKey(mediaAssetId, {
             id: displayFileId,
             contentHash: display.contentHash,
