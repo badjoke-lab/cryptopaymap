@@ -1,16 +1,15 @@
 name: P5-06B1 format diagnostics
 
 on:
-  push:
+  pull_request:
     branches:
-      - p5-06b1-review-entry-api
+      - main
 
 permissions:
   contents: write
 
 jobs:
   diagnose:
-    if: ${{ !contains(github.event.head_commit.message, 'apply focused formatting') }}
     runs-on: ubuntu-24.04
     steps:
       - name: Check out branch
@@ -41,11 +40,8 @@ jobs:
         run: |
           set +e
           npm run check > p5-06b1-check.log 2>&1
-          echo "$?" > p5-06b1-check.exit
           npm run schema:check > p5-06b1-schema.log 2>&1
-          echo "$?" > p5-06b1-schema.exit
           npx vitest run tests/submission-review-entry.test.ts tests/submission-review-entry-api.test.ts > p5-06b1-tests.log 2>&1
-          echo "$?" > p5-06b1-tests.exit
           exit 0
       - name: Upload focused diagnostics
         uses: actions/upload-artifact@v4
