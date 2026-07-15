@@ -11,6 +11,8 @@ export const photoDirectUploadAuditInputSchema = z
     authorizationHttpStatus: z.number().int().min(0).max(599),
     authorizationReceiptValid: z.boolean(),
     authorizationPrivateScopeMatches: z.boolean(),
+    corsPreflightHttpStatus: z.number().int().min(0).max(599),
+    corsPolicyMatches: z.boolean(),
     directPutHttpStatus: z.number().int().min(0).max(599),
     objectHeadHttpStatus: z.number().int().min(0).max(599),
     storedObjectMatches: z.boolean(),
@@ -30,6 +32,7 @@ export const photoDirectUploadAuditFailureCodeSchema = z.enum([
   'photos_page_headers',
   'upload_authorization',
   'authorization_scope',
+  'cors_policy',
   'direct_put',
   'stored_object',
   'private_intake',
@@ -43,7 +46,7 @@ export const photoDirectUploadAuditResultSchema = photoDirectUploadAuditInputSch
   .extend({
     schemaVersion: z.literal('photo-direct-upload-audit-v1'),
     status: z.enum(['complete', 'failed']),
-    failedChecks: z.array(photoDirectUploadAuditFailureCodeSchema).max(11),
+    failedChecks: z.array(photoDirectUploadAuditFailureCodeSchema).max(12),
   })
   .strict();
 
@@ -68,6 +71,9 @@ export function buildPhotoDirectUploadAuditResult(rawInput: PhotoDirectUploadAud
   }
   if (!input.authorizationPrivateScopeMatches) {
     failedChecks.push('authorization_scope');
+  }
+  if (![200, 204].includes(input.corsPreflightHttpStatus) || !input.corsPolicyMatches) {
+    failedChecks.push('cors_policy');
   }
   if (![200, 201, 204].includes(input.directPutHttpStatus)) {
     failedChecks.push('direct_put');
