@@ -19,6 +19,10 @@ import {
   type QuarantineUploadAuthorizer,
 } from './photo-upload-authorization';
 import { createSubmissionRateLimitBucketDeriverFromEnvironment } from './rate-limit-bucket-environment';
+import {
+  createR2PhotoQuarantineUploadAuthorizerFromEnvironment,
+  type R2PhotoUploadEnvironment,
+} from './r2-photo-upload-environment';
 import { createSubmissionStatusSecretProviderFromEnvironment } from './status-secret-environment';
 import { createSubmissionTurnstileConfigurationFromEnvironment } from './turnstile-environment';
 
@@ -44,13 +48,14 @@ const rateLimitPolicySchema = z
   });
 
 export type PhotoHttpEnvironment = Readonly<
-  Record<string, unknown> & {
-    DATABASE_URL?: unknown;
-    SUBMISSION_RATE_LIMIT_BUCKETS?: unknown;
-    CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS?: unknown;
-    CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS?: unknown;
-    PHOTO_UPLOAD_AUTHORIZER?: unknown;
-  }
+  R2PhotoUploadEnvironment &
+    Record<string, unknown> & {
+      DATABASE_URL?: unknown;
+      SUBMISSION_RATE_LIMIT_BUCKETS?: unknown;
+      CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS?: unknown;
+      CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS?: unknown;
+      PHOTO_UPLOAD_AUTHORIZER?: unknown;
+    }
 >;
 
 export class PhotoHttpEnvironmentConfigurationError extends Error {
@@ -71,6 +76,13 @@ function isDurableObjectNamespace(
 function isQuarantineUploadAuthorizer(value: unknown): value is QuarantineUploadAuthorizer {
   if (value === null || typeof value !== 'object') return false;
   return typeof (value as Record<string, unknown>).authorizeUpload === 'function';
+}
+
+function uploadAuthorizer(environment: PhotoHttpEnvironment): QuarantineUploadAuthorizer {
+  if (isQuarantineUploadAuthorizer(environment.PHOTO_UPLOAD_AUTHORIZER)) {
+    return environment.PHOTO_UPLOAD_AUTHORIZER;
+  }
+  return createR2PhotoQuarantineUploadAuthorizerFromEnvironment(environment);
 }
 
 function commonRuntime(environment: PhotoHttpEnvironment) {
@@ -102,9 +114,7 @@ export function createPhotoUploadAuthorizationHttpRuntimeFromEnvironment(
   environment: PhotoHttpEnvironment,
 ): PhotoUploadAuthorizationHttpRuntime {
   try {
-    if (!isQuarantineUploadAuthorizer(environment.PHOTO_UPLOAD_AUTHORIZER)) {
-      throw new PhotoHttpEnvironmentConfigurationError();
-    }
+    const authorizer = uploadAuthorizer(environment);
     const common = commonRuntime(environment);
     return {
       bucketDeriver: common.bucketDeriver,
@@ -112,7 +122,7 @@ export function createPhotoUploadAuthorizationHttpRuntimeFromEnvironment(
       challengeVerifier: common.challengeVerifier,
       uploadAuthorizations: createPhotoUploadAuthorizationService({
         persistence: createDrizzlePhotoUploadReservationPersistence(common.database),
-        authorizer: environment.PHOTO_UPLOAD_AUTHORIZER,
+        authorizer,
       }),
     };
   } catch (error) {
