@@ -167,7 +167,7 @@ if (
   privateReceipt.state !== 'committed' ||
   privateReceipt.publicId !== 'CPM-S-2026-000001' ||
   consumedReservation?.consumedBySubmissionId !== submissionId ||
-  consumedReservation.consumedAt?.toISOString() !== '2026-07-15T12:30:01.000Z'
+  consumedReservation?.consumedAt?.toISOString() !== '2026-07-15T12:30:01.000Z'
 ) {
   throw new Error('Synthetic private intake did not atomically consume the upload reservation.');
 }
