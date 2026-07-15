@@ -1,7 +1,7 @@
 # P5-06A cross-submission review workflow inventory
 
 **Implementation item:** P5-06A  
-**Status:** In progress  
+**Status:** Completed in PR #228  
 **Last updated:** 2026-07-15
 
 ## Purpose
