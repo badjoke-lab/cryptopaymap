@@ -30,6 +30,10 @@ for (const fragment of [
   'CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_BASE64URL',
   'CPM_SUBMISSION_EMAIL_HASH_HMAC_KEY_BASE64URL',
   'CPM_SUBMISSION_RATE_LIMIT_BUCKET_HMAC_KEY_BASE64URL',
+  'CPM_R2_ACCOUNT_ID',
+  'CPM_R2_PHOTO_QUARANTINE_BUCKET',
+  'CPM_R2_ACCESS_KEY_ID',
+  'CPM_R2_SECRET_ACCESS_KEY',
   'DATABASE_URL',
   'SUBMISSION_RATE_LIMIT_BUCKETS',
   'PHOTO_UPLOAD_AUTHORIZER',
@@ -66,4 +70,4 @@ for (const fragment of [
   }
 }
 
-console.log('Photos form, contribution entry, and direct-upload CSP checks passed.');
+console.log('Photos form, contribution entry, R2 leakage, and direct-upload CSP checks passed.');

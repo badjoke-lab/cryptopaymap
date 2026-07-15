@@ -1,3 +1,4 @@
+import './check-photo-r2-direct-upload';
 import {
   buildPhotoAuthorizationRequest,
   buildPhotoSubmissionIntake,
