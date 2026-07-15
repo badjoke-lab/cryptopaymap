@@ -396,6 +396,7 @@ function parseNormalizedPayload(value: unknown): PhotosReviewProjection {
 async function assertValidationMatches(
   request: PhotoPrivateProcessingRequest,
   context: PhotoProcessingSubmissionContext,
+  processedAt: Date,
 ): Promise<{ normalized: PhotosReviewProjection; objects: Map<string, ValidatedPhotoObject> }> {
   const normalized = parseNormalizedPayload(context.normalizedPayload);
   const receipt = request.validation.receipt;
@@ -475,8 +476,8 @@ async function assertValidationMatches(
       reservation.purpose !== 'public_gallery_candidate' ||
       reservation.consumedBySubmissionId !== context.id ||
       reservation.consumedAt === null ||
-      validationTime > Date.parse(reservation.expiresAt) ||
-      validationTime > Date.parse(reservation.consumedAt)
+      validationTime > processedAt.getTime() ||
+      validationTime > Date.parse(reservation.expiresAt)
     ) {
       throw new PhotoPrivateProcessingError(
         'validation_conflict',
@@ -616,7 +617,7 @@ export function createPhotoPrivateProcessingService(
         );
       }
 
-      const validated = await assertValidationMatches(request, context);
+      const validated = await assertValidationMatches(request, context, processedAt);
       const normalized = validated.normalized;
       const objectById = validated.objects;
       const createdKeys: string[] = [];
