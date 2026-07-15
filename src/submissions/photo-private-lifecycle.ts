@@ -323,7 +323,8 @@ export function createPhotoPrivateCleanupService(dependencies: {
           referenceType: candidate.referenceType,
           referenceId: candidate.referenceId,
           reason: candidate.reason,
-          outcome: failedObjectCount > 0 ? 'partial' : deletedObjectCount > 0 ? 'deleted' : 'replayed',
+          outcome:
+            failedObjectCount > 0 ? 'partial' : deletedObjectCount > 0 ? 'deleted' : 'replayed',
           deletedObjectCount,
           missingObjectCount,
           failedObjectCount,
