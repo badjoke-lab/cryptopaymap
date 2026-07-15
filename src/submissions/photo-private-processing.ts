@@ -647,7 +647,10 @@ export function createPhotoPrivateProcessingService(
               { cause: error },
             );
           }
-          const outputResult = z.array(photoProcessedDerivativeSchema).length(2).safeParse(processorOutput);
+          const outputResult = z
+            .array(photoProcessedDerivativeSchema)
+            .length(2)
+            .safeParse(processorOutput);
           if (!outputResult.success) {
             throw new PhotoPrivateProcessingError(
               'derivative_invalid',
