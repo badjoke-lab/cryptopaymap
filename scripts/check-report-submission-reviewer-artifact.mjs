@@ -10,7 +10,7 @@ const requiredPages = [
     markers: [
       'Payment and problem report',
       'P5-06B review-entry boundary',
-      'P5-06B protected review entry',
+      'Protected report review-entry controls',
       'Protected report detail',
     ],
   },
