@@ -39,7 +39,10 @@ function StatusPanel({
   action?: ReactNode;
 }) {
   return (
-    <section className="rounded-card border border-border bg-surface p-5 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-border bg-surface p-5 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex items-start gap-4">
         <span
           className="flex size-11 shrink-0 items-center justify-center rounded-control bg-canvas text-muted"
@@ -76,7 +79,8 @@ function nextAction(detail: ReportSubmissionReviewDetailResponse): {
       action: 'begin_review',
       expectedStatus: 'triage',
       label: 'Begin review',
-      description: 'Move this triaged report into protected review so typed decisions become reachable.',
+      description:
+        'Move this triaged report into protected review so typed decisions become reachable.',
     };
   }
   return null;
@@ -117,7 +121,9 @@ export function ReportReviewEntryControls({ submissionId }: { submissionId: stri
         return;
       }
       const result = reportSubmissionReviewDetailResponseSchema.safeParse(await response.json());
-      setDetailState(result.success ? { status: 'ready', detail: result.data } : { status: 'error' });
+      setDetailState(
+        result.success ? { status: 'ready', detail: result.data } : { status: 'error' },
+      );
     } catch {
       setDetailState({ status: 'error' });
     }
@@ -171,7 +177,8 @@ export function ReportReviewEntryControls({ submissionId }: { submissionId: stri
           setMutationState({
             status: 'failed',
             request,
-            message: 'The Submission changed before this transition was applied. Reload the current state.',
+            message:
+              'The Submission changed before this transition was applied. Reload the current state.',
           });
           return;
         }
@@ -249,7 +256,10 @@ export function ReportReviewEntryControls({ submissionId }: { submissionId: stri
 
   const transition = nextAction(detailState.detail);
   return (
-    <section className="rounded-card border border-brand-600 bg-brand-50 p-5 shadow-sm" aria-live="polite">
+    <section
+      className="rounded-card border border-brand-600 bg-brand-50 p-5 shadow-sm"
+      aria-live="polite"
+    >
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-800">
@@ -259,7 +269,8 @@ export function ReportReviewEntryControls({ submissionId }: { submissionId: stri
             Current state: {detailState.detail.submission.workflowStatus.replaceAll('_', ' ')}
           </h2>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-            These controls only move the private Submission into the normal review workflow. They do not accept Evidence, decide the report, change canonical data, export, or publish.
+            These controls only move the private Submission into the normal review workflow. They do
+            not accept Evidence, decide the report, change canonical data, export, or publish.
           </p>
         </div>
         <span className="rounded-pill border border-brand-200 bg-white px-3 py-1 text-xs font-semibold text-brand-800">
@@ -281,7 +292,10 @@ export function ReportReviewEntryControls({ submissionId }: { submissionId: stri
         <div className="mt-4 rounded-control border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
           <p className="m-0">{mutationState.message}</p>
           <div className="mt-3 flex flex-wrap gap-3">
-            <Button variant="secondary" onClick={() => void submitTransition(mutationState.request)}>
+            <Button
+              variant="secondary"
+              onClick={() => void submitTransition(mutationState.request)}
+            >
               Retry same request
             </Button>
             <Button variant="ghost" onClick={() => void loadDetail()}>
