@@ -1,0 +1,132 @@
+name: P5-05J finalize status
+
+on:
+  push:
+    branches:
+      - p5-05j-private-validation-processing-execution
+
+permissions:
+  contents: write
+
+jobs:
+  finalize:
+    if: ${{ !contains(github.event.head_commit.message, 'finalize P5-05J repository status') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: p5-05j-private-validation-processing-execution
+          fetch-depth: 0
+      - name: Apply exact status updates
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('docs/PROJECT_STATUS.md')
+          text = path.read_text()
+          replacements = [
+              (
+                  'P5-05J — Configured private object validation and processing execution',
+                  'P5-06 — Review workflow extensions',
+              ),
+              (
+                  '- P5-05J is next; its bounded scope is configured private-object reading, validation, image processing, and protected Media handoff execution without Media approval, public copy, canonical mutation, export, or publication.',
+                  '- P5-05J configured post-intake validation, Cloudflare Images processing, private derivative writes, and protected Media handoff execution completed in #227.\n- P5-05 Photo and Media submission intake is repository-complete through #227.\n- P5-06 review workflow extensions are next.',
+              ),
+              (
+                  '- `docs/P5_05I_R2_SIGNING_AND_DIRECT_UPLOAD_AUDIT.md`',
+                  '- `docs/P5_05I_R2_SIGNING_AND_DIRECT_UPLOAD_AUDIT.md`\n- `docs/P5_05J_PRIVATE_VALIDATION_PROCESSING_EXECUTION.md`',
+              ),
+              (
+                  '5. P5-05 — Photo and Media submission intake — In progress at P5-05J; P5-05I completed #225',
+                  '5. P5-05 — Photo and Media submission intake — Completed through #216–#227',
+              ),
+              (
+                  'Define and implement P5-05J configured private object validation and processing execution. The bounded path must read only the canonical private quarantine object through the configured R2 binding, enforce the completed P5-05D byte and metadata checks, execute a configured metadata-stripping and orientation-normalizing processor, persist only bounded private derivatives, and perform the completed P5-05E protected Media handoff. It must remain idempotent and fail closed without approving Media, copying objects publicly, mutating canonical records, activating exports, or publishing data.',
+                  'Begin P5-06 with an exact cross-submission review workflow inventory. Reconcile the common reviewer diff, information-request, time-bounded hold, partial-decision, duplicate/no-change, and private-status capabilities already implemented in Suggest, Reports, Business Claims, and Photos before adding any new mutation surface.',
+              ),
+              (
+                  'No repository blocker is known. Privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, production deployment, and production review remain separate later slices.',
+                  'No repository blocker is known. P5-06 must first identify real cross-submission review gaps without duplicating the completed type-specific reviewer flows. Privacy-content analysis, public Media approval, export activation, production deployment, and production review remain separate later work.',
+              ),
+              (
+                  'Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Configured R2 signing and a successful private upload/intake audit do not prove object validity, image safety, review approval, public availability, or launch readiness.',
+                  'Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. P5-05J proves configured private validation and processing contracts in repository CI; it does not prove configured production execution, Media approval, public availability, or launch readiness.',
+              ),
+          ]
+          for old, new in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'expected one PROJECT_STATUS match, found {count}: {old[:80]}')
+              text = text.replace(old, new)
+
+          marker = '''## P5-05I completion result
+
+P5-05I provides:
+
+- a dependency-free Web Crypto AWS SigV4 signer for the Cloudflare R2 S3 endpoint;
+- strict server-only R2 account, bucket, access-key, and secret-key configuration;
+- one short-lived signed `PUT` for only the deterministic private quarantine object;
+- exact binding of content type, host, and all required private validation metadata headers;
+- removal of arbitrary upload-authorizer environment injection from public runtime composition;
+- independent signature recomputation and object-path tampering tests;
+- bounded expiry and private-key-scope rejection;
+- an executable synthetic browser-style direct upload followed by real private Photos intake and atomic reservation consumption;
+- privacy-safe audit output and built-HTML leakage checks;
+- all required Foundation, migration, staging-review, and screenshot workflows passing for implementation head `e60a5cb659111c0a182ee84afe0540de2be848da`;
+- no automatic object validation, image processing, Media approval, public copy, canonical mutation, export, or publication.
+'''
+          addition = marker + '''
+## P5-05J completion result
+
+P5-05J provides:
+
+- an exact post-intake validator restricted to reservations consumed by one exact Photos Submission;
+- corrected consumption, validation, expiry, and processing chronology;
+- configured private R2 quarantine reads and private derivative writes;
+- configured Cloudflare Images scale-down WebP processing with metadata removal and animation disabled;
+- independent derivative MIME, dimensions, still-image, metadata-chunk, and hash validation;
+- one protected execution service from private Submission context through P5-05D validation and P5-05E Media handoff;
+- strict fail-closed environment composition without public execution exposure;
+- executable schema integration and focused chronology, processing, and orchestration tests;
+- 231 test files and 1,130 tests passing at implementation head `a49ce9af9fb4b35989d670d8535708290d322657`;
+- no Media approval, public copy, canonical mutation, export activation, publication, deployment, or launch claim.
+'''
+          if text.count(marker) != 1:
+              raise SystemExit('expected one P5-05I completion block')
+          text = text.replace(marker, addition)
+          path.write_text(text)
+
+          plan = Path('docs/IMPLEMENTATION_PLAN.md')
+          plan_text = plan.read_text()
+          plan_replacements = [
+              (
+                  '| P5-03 | Payment and problem reports | In progress at P5-03G | P5-01, P5-02 target conventions |',
+                  '| P5-03 | Payment and problem reports | Completed through #194–#202 | P5-01, P5-02 target conventions |',
+              ),
+              (
+                  '| P5-04 | Business and service claims | Planned | P5-01, practical-profile correction path |',
+                  '| P5-04 | Business and service claims | Completed through #203–#215 | P5-01, practical-profile correction path |',
+              ),
+              (
+                  '| P5-05 | Photo and Media submission intake | In progress at P5-05C; P5-05B completed #217 | P5-01, P3-10 Media review boundary |',
+                  '| P5-05 | Photo and Media submission intake | Completed through #216–#227 | P5-01, P3-10 Media review boundary |',
+              ),
+          ]
+          for old, new in plan_replacements:
+              count = plan_text.count(old)
+              if count != 1:
+                  raise SystemExit(f'expected one IMPLEMENTATION_PLAN match, found {count}: {old}')
+              plan_text = plan_text.replace(old, new)
+          plan.write_text(plan_text)
+
+          Path('.github/workflows/p5-05j-finalize-status.yml').unlink()
+      - name: Commit finalized status
+        shell: bash
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add docs/PROJECT_STATUS.md docs/IMPLEMENTATION_PLAN.md .github/workflows/p5-05j-finalize-status.yml
+          git commit -m "P5-05J finalize P5-05J repository status"
+          git push origin HEAD:p5-05j-private-validation-processing-execution
