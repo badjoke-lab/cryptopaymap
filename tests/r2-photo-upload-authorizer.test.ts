@@ -46,9 +46,7 @@ describe('P5-05I R2 photo upload signer', () => {
     const url = new URL(first.uploadUrl);
     expect(url.protocol).toBe('https:');
     expect(url.hostname).toBe('0123456789abcdef0123456789abcdef.r2.cloudflarestorage.com');
-    expect(url.pathname).toBe(
-      `/cpm-photo-quarantine/quarantine/photos/v1/${reservationId}`,
-    );
+    expect(url.pathname).toBe(`/cpm-photo-quarantine/quarantine/photos/v1/${reservationId}`);
     expect(url.searchParams.get('X-Amz-Algorithm')).toBe('AWS4-HMAC-SHA256');
     expect(url.searchParams.get('X-Amz-Date')).toBe('20260715T130000Z');
     expect(url.searchParams.get('X-Amz-Expires')).toBe('600');
@@ -58,9 +56,7 @@ describe('P5-05I R2 photo upload signer', () => {
     expect(url.searchParams.get('X-Amz-Signature')).toMatch(/^[a-f0-9]{64}$/);
     expect(url.searchParams.get('X-Amz-SignedHeaders')).toContain('content-type');
     expect(url.searchParams.get('X-Amz-SignedHeaders')).toContain('x-amz-content-sha256');
-    expect(url.searchParams.get('X-Amz-SignedHeaders')).toContain(
-      'x-amz-meta-cpm-reservation-id',
-    );
+    expect(url.searchParams.get('X-Amz-SignedHeaders')).toContain('x-amz-meta-cpm-reservation-id');
 
     expect(first.requiredHeaders).toEqual({
       'content-type': 'image/jpeg',
