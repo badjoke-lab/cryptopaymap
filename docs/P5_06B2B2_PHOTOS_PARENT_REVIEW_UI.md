@@ -1,6 +1,6 @@
 # P5-06B2B2 Photos parent reviewer UI
 
-**Status:** In progress
+**Status:** Implemented in PR #232; validation pending
 
 ## Purpose
 
