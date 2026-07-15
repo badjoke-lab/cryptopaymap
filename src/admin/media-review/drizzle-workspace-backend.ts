@@ -2,10 +2,7 @@ import { and, asc, desc, eq, isNull, ne, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import { mediaAssets, mediaFiles } from '../../db/schema';
 import type { MediaReviewSubject } from './decision';
-import {
-  MAX_MEDIA_DUPLICATE_MATCHES,
-  projectMediaDuplicateSignals,
-} from './duplicate-signals';
+import { MAX_MEDIA_DUPLICATE_MATCHES, projectMediaDuplicateSignals } from './duplicate-signals';
 import type {
   MediaReviewDetailResponse,
   MediaReviewQueueItem,
