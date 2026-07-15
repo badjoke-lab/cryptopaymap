@@ -1,0 +1,272 @@
+name: P5-05I fixed review photo upload audit
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - Staging review deploy
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  audit:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      contains(github.event.workflow_run.head_commit.message, '[run-p5-05i-audit]'))
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out audited main commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Verify configured Photos storage inputs
+        id: configured_inputs
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_PHOTO_R2_ACCESS_KEY_ID: ${{ secrets.CPM_PHOTO_R2_ACCESS_KEY_ID }}
+          CPM_PHOTO_R2_SECRET_ACCESS_KEY: ${{ secrets.CPM_PHOTO_R2_SECRET_ACCESS_KEY }}
+          CPM_PHOTO_R2_QUARANTINE_BUCKET: ${{ secrets.CPM_PHOTO_R2_QUARANTINE_BUCKET }}
+        run: |
+          set -euo pipefail
+          required=(
+            CLOUDFLARE_API_TOKEN
+            CLOUDFLARE_ACCOUNT_ID
+            DATABASE_URL
+            CPM_PHOTO_R2_ACCESS_KEY_ID
+            CPM_PHOTO_R2_SECRET_ACCESS_KEY
+            CPM_PHOTO_R2_QUARANTINE_BUCKET
+          )
+          missing=()
+          for key in "${required[@]}"; do
+            if [ -z "${!key:-}" ]; then
+              missing+=("$key")
+            fi
+          done
+          printf '%s\n' "${missing[@]}" > p5-05i-missing-inputs.txt
+          if [ "${#missing[@]}" -gt 0 ]; then
+            printf 'Missing configured input: %s\n' "${missing[@]}"
+            exit 1
+          fi
+          printf '::add-mask::%s\n' "$CPM_PHOTO_R2_ACCESS_KEY_ID"
+          printf '::add-mask::%s\n' "$CPM_PHOTO_R2_SECRET_ACCESS_KEY"
+          printf '::add-mask::%s\n' "$CPM_PHOTO_R2_QUARANTINE_BUCKET"
+
+      - name: Synchronize Photos R2 Pages secrets
+        id: pages_secrets
+        if: steps.configured_inputs.outcome == 'success'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CPM_PHOTO_R2_ACCESS_KEY_ID: ${{ secrets.CPM_PHOTO_R2_ACCESS_KEY_ID }}
+          CPM_PHOTO_R2_SECRET_ACCESS_KEY: ${{ secrets.CPM_PHOTO_R2_SECRET_ACCESS_KEY }}
+          CPM_PHOTO_R2_QUARANTINE_BUCKET: ${{ secrets.CPM_PHOTO_R2_QUARANTINE_BUCKET }}
+        run: |
+          set -euo pipefail
+          trap 'rm -f p5-05i-pages-secrets.json' EXIT
+          node <<'NODE'
+          const { writeFileSync } = require('node:fs');
+          const values = {
+            CPM_PHOTO_R2_ACCOUNT_ID: process.env.CLOUDFLARE_ACCOUNT_ID,
+            CPM_PHOTO_R2_ACCESS_KEY_ID: process.env.CPM_PHOTO_R2_ACCESS_KEY_ID,
+            CPM_PHOTO_R2_SECRET_ACCESS_KEY: process.env.CPM_PHOTO_R2_SECRET_ACCESS_KEY,
+            CPM_PHOTO_R2_QUARANTINE_BUCKET: process.env.CPM_PHOTO_R2_QUARANTINE_BUCKET,
+          };
+          for (const value of Object.values(values)) console.log(`::add-mask::${value}`);
+          writeFileSync('p5-05i-pages-secrets.json', `${JSON.stringify(values)}\n`, { mode: 0o600 });
+          NODE
+          npx wrangler pages secret bulk p5-05i-pages-secrets.json \
+            --project-name cryptopaymap-staging \
+            --env preview
+
+      - name: Configure exact fixed-review R2 CORS
+        id: r2_cors
+        if: steps.configured_inputs.outcome == 'success'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CPM_PHOTO_R2_QUARANTINE_BUCKET: ${{ secrets.CPM_PHOTO_R2_QUARANTINE_BUCKET }}
+        run: |
+          set -euo pipefail
+          cat > p5-05i-r2-cors.json <<'JSON'
+          {
+            "rules": [
+              {
+                "allowed": {
+                  "origins": ["https://review.cryptopaymap-staging.pages.dev"],
+                  "methods": ["PUT"],
+                  "headers": [
+                    "content-type",
+                    "x-amz-content-sha256",
+                    "x-amz-meta-*"
+                  ]
+                },
+                "exposeHeaders": ["etag"],
+                "maxAgeSeconds": 600
+              }
+            ]
+          }
+          JSON
+          npx wrangler r2 bucket cors set "$CPM_PHOTO_R2_QUARANTINE_BUCKET" \
+            --file p5-05i-r2-cors.json
+          npx wrangler r2 bucket cors list "$CPM_PHOTO_R2_QUARANTINE_BUCKET" \
+            > p5-05i-r2-cors-list.txt
+
+      - name: Build fixed-review artifact
+        id: build
+        if: steps.pages_secrets.outcome == 'success' && steps.r2_cors.outcome == 'success'
+        continue-on-error: true
+        run: npm run staging:review:build
+
+      - name: Redeploy audited commit with Photos secrets
+        id: deploy
+        if: steps.build.outcome == 'success'
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler pages deploy dist \
+            --project-name cryptopaymap-staging \
+            --branch review \
+            > p5-05i-pages-deploy.log 2>&1
+
+      - name: Run bounded direct-upload audit
+        id: live_audit
+        if: steps.deploy.outcome == 'success'
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_PHOTO_R2_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CPM_PHOTO_R2_ACCESS_KEY_ID: ${{ secrets.CPM_PHOTO_R2_ACCESS_KEY_ID }}
+          CPM_PHOTO_R2_SECRET_ACCESS_KEY: ${{ secrets.CPM_PHOTO_R2_SECRET_ACCESS_KEY }}
+          CPM_PHOTO_R2_QUARANTINE_BUCKET: ${{ secrets.CPM_PHOTO_R2_QUARANTINE_BUCKET }}
+          CPM_P5_05I_REVIEW_URL: https://review.cryptopaymap-staging.pages.dev
+          CPM_P5_05I_EXPECTED_SITE_KEY: 1x00000000000000000000AA
+          CPM_P5_05I_EXPECTED_ACTION: submission_intake
+        run: |
+          npx tsx scripts/run-p5-05i-fixed-review-probe.ts \
+            > p5-05i-fixed-review-photo-upload-audit.json \
+            2> p5-05i-fixed-review-photo-upload-audit-error.log
+
+      - name: Write bounded audit receipt
+        if: always()
+        env:
+          INPUT_OUTCOME: ${{ steps.configured_inputs.outcome }}
+          SECRET_OUTCOME: ${{ steps.pages_secrets.outcome }}
+          CORS_OUTCOME: ${{ steps.r2_cors.outcome }}
+          BUILD_OUTCOME: ${{ steps.build.outcome }}
+          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
+          AUDIT_OUTCOME: ${{ steps.live_audit.outcome }}
+          AUDITED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && github.sha || github.event.workflow_run.head_sha }}
+          WORKFLOW_RUN_ID: ${{ github.run_id }}
+        run: |
+          node <<'NODE'
+          const { existsSync, readFileSync, writeFileSync } = require('node:fs');
+          function readJson(path) {
+            if (!existsSync(path)) return { parsed: false, value: null };
+            try {
+              return { parsed: true, value: JSON.parse(readFileSync(path, 'utf8')) };
+            } catch {
+              return { parsed: false, value: null };
+            }
+          }
+          const audit = readJson('p5-05i-fixed-review-photo-upload-audit.json');
+          const checks = {
+            configuredInputs: process.env.INPUT_OUTCOME,
+            pagesSecrets: process.env.SECRET_OUTCOME,
+            r2Cors: process.env.CORS_OUTCOME,
+            fixedReviewBuild: process.env.BUILD_OUTCOME,
+            pagesDeployment: process.env.DEPLOY_OUTCOME,
+            liveAudit: process.env.AUDIT_OUTCOME,
+            auditResultParsed: audit.parsed,
+          };
+          const complete =
+            checks.configuredInputs === 'success' &&
+            checks.pagesSecrets === 'success' &&
+            checks.r2Cors === 'success' &&
+            checks.fixedReviewBuild === 'success' &&
+            checks.pagesDeployment === 'success' &&
+            checks.liveAudit === 'success' &&
+            checks.auditResultParsed &&
+            audit.value?.status === 'complete';
+          const missingInputs = existsSync('p5-05i-missing-inputs.txt')
+            ? readFileSync('p5-05i-missing-inputs.txt', 'utf8').split(/\r?\n/).filter(Boolean)
+            : [];
+          const receipt = {
+            schemaVersion: 'p5-05i-fixed-review-photo-upload-audit-receipt-v1',
+            status: complete ? 'complete' : 'failed',
+            commit: process.env.AUDITED_COMMIT,
+            generatedAt: new Date().toISOString(),
+            workflowRunId: process.env.WORKFLOW_RUN_ID,
+            checks,
+            result: audit.value,
+            ...(missingInputs.length > 0 ? { missingInputs } : {}),
+          };
+          writeFileSync(
+            'p5-05i-fixed-review-photo-upload-audit-receipt.json',
+            `${JSON.stringify(receipt, null, 2)}\n`,
+          );
+          NODE
+
+      - name: Upload bounded audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-05i-fixed-review-photo-upload-audit
+          path: |
+            p5-05i-fixed-review-photo-upload-audit.json
+            p5-05i-fixed-review-photo-upload-audit-error.log
+            p5-05i-fixed-review-photo-upload-audit-receipt.json
+            p5-05i-r2-cors-list.txt
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish audit receipt to status branch
+        if: always()
+        env:
+          STATUS_WORKTREE: ${{ runner.temp }}/cryptopaymap-p5-05i-audit-status
+        run: |
+          set -euo pipefail
+          rm -rf "$STATUS_WORKTREE"
+          git fetch origin staging-review:refs/remotes/origin/staging-review
+          git worktree add --detach "$STATUS_WORKTREE" refs/remotes/origin/staging-review
+          trap 'git worktree remove --force "$STATUS_WORKTREE" >/dev/null 2>&1 || true' EXIT
+
+          mkdir -p "$STATUS_WORKTREE/config/staging-review"
+          cp p5-05i-fixed-review-photo-upload-audit-receipt.json \
+            "$STATUS_WORKTREE/config/staging-review/p5-05i-photo-upload-audit-receipt.json"
+
+          git -C "$STATUS_WORKTREE" config user.name 'github-actions[bot]'
+          git -C "$STATUS_WORKTREE" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C "$STATUS_WORKTREE" add config/staging-review/p5-05i-photo-upload-audit-receipt.json
+          if git -C "$STATUS_WORKTREE" diff --cached --quiet; then
+            echo 'P5-05I audit receipt is unchanged.'
+            exit 0
+          fi
+          git -C "$STATUS_WORKTREE" commit -m 'Record P5-05I photo upload audit receipt'
+          git -C "$STATUS_WORKTREE" push origin HEAD:staging-review
+
+      - name: Enforce configured upload audit success
+        if: always()
+        run: |
+          node -e "const r=require('./p5-05i-fixed-review-photo-upload-audit-receipt.json'); if(r.status!=='complete') process.exit(1)"
