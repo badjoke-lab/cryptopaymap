@@ -13,6 +13,8 @@ function completeInput() {
     authorizationHttpStatus: 200,
     authorizationReceiptValid: true,
     authorizationPrivateScopeMatches: true,
+    corsPreflightHttpStatus: 204,
+    corsPolicyMatches: true,
     directPutHttpStatus: 200,
     objectHeadHttpStatus: 200,
     storedObjectMatches: true,
@@ -43,6 +45,7 @@ describe('P5-05I direct-upload audit result', () => {
     const { succeeded, result } = buildPhotoDirectUploadAuditResult({
       ...completeInput(),
       authorizationPrivateScopeMatches: false,
+      corsPolicyMatches: false,
       storedObjectMatches: false,
       automaticMediaAbsent: false,
       publicArtifactsUnchanged: { '/data/manifest.json': false },
@@ -53,6 +56,7 @@ describe('P5-05I direct-upload audit result', () => {
     expect(result.status).toBe('failed');
     expect(result.failedChecks).toEqual([
       'authorization_scope',
+      'cors_policy',
       'stored_object',
       'automatic_media_boundary',
       'public_artifacts',
