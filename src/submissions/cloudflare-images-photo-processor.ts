@@ -1,8 +1,5 @@
 import { inspectPhotoImage, PhotoImageInspectionError } from './photo-image-inspection';
-import type {
-  PhotoPrivateProcessor,
-  PhotoProcessedDerivative,
-} from './photo-private-processing';
+import type { PhotoPrivateProcessor, PhotoProcessedDerivative } from './photo-private-processing';
 
 export interface CloudflareImagesTransformOptions {
   width: number;
@@ -76,7 +73,10 @@ function streamFromBytes(bytes: Uint8Array): ReadableStream<Uint8Array> {
   return new Blob([copy.buffer]).stream() as ReadableStream<Uint8Array>;
 }
 
-async function readBoundedResponse(response: Response, maximumBytes: number): Promise<Uint8Array> {
+async function readBoundedResponse(
+  response: Response,
+  maximumBytes: number,
+): Promise<Uint8Array<ArrayBuffer>> {
   const declaredLength = response.headers.get('content-length');
   if (declaredLength !== null) {
     const parsed = Number(declaredLength);
@@ -120,7 +120,7 @@ async function readBoundedResponse(response: Response, maximumBytes: number): Pr
       'Cloudflare Images returned an empty private derivative.',
     );
   }
-  const body = new Uint8Array(total);
+  const body = new Uint8Array(new ArrayBuffer(total));
   let offset = 0;
   for (const chunk of chunks) {
     body.set(chunk, offset);
