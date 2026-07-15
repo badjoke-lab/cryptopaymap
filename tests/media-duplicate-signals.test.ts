@@ -9,11 +9,7 @@ const currentSubject = {
   id: '10000000-0000-4000-8000-000000000001',
 };
 
-function candidate(
-  mediaAssetId: string,
-  subjectId: string,
-  createdAt: string,
-) {
+function candidate(mediaAssetId: string, subjectId: string, createdAt: string) {
   return {
     mediaAssetId,
     subject: { type: 'location' as const, id: subjectId },
@@ -25,22 +21,18 @@ function candidate(
 
 describe('P5-05F Media duplicate signals', () => {
   it('projects exact original-hash matches as bounded manual-review signals', () => {
-    const result = projectMediaDuplicateSignals(
-      currentSubject,
-      'a'.repeat(64),
-      [
-        candidate(
-          '20000000-0000-4000-8000-000000000001',
-          currentSubject.id,
-          '2026-07-15T02:00:00.000Z',
-        ),
-        candidate(
-          '20000000-0000-4000-8000-000000000002',
-          '10000000-0000-4000-8000-000000000002',
-          '2026-07-15T03:00:00.000Z',
-        ),
-      ],
-    );
+    const result = projectMediaDuplicateSignals(currentSubject, 'a'.repeat(64), [
+      candidate(
+        '20000000-0000-4000-8000-000000000001',
+        currentSubject.id,
+        '2026-07-15T02:00:00.000Z',
+      ),
+      candidate(
+        '20000000-0000-4000-8000-000000000002',
+        '10000000-0000-4000-8000-000000000002',
+        '2026-07-15T03:00:00.000Z',
+      ),
+    ]);
 
     expect(result).toEqual({
       sourceOriginalContentHash: 'a'.repeat(64),
