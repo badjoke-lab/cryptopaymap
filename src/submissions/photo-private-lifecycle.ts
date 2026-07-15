@@ -24,7 +24,10 @@ export const photoPrivateCleanupObjectSchema = z
     storageScope: z.enum(['quarantine', 'private']),
     storageKey: z.string().trim().min(1).max(1_024),
     mimeType: z.string().trim().min(1).max(127),
-    contentHash: z.string().regex(/^[a-f0-9]{64}$/).nullable(),
+    contentHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .nullable(),
   })
   .strict()
   .superRefine((object, context) => {
@@ -117,13 +120,12 @@ export const photoPrivateCleanupCandidateSchema = z
       context.addIssue({
         code: 'custom',
         path: ['referenceType'],
-        message: 'Terminal Media cleanup must reference its exact photo Media Asset and Submission.',
+        message:
+          'Terminal Media cleanup must reference its exact photo Media Asset and Submission.',
       });
     }
 
-    const keys = candidate.objects.map(
-      (object) => `${object.storageScope}:${object.storageKey}`,
-    );
+    const keys = candidate.objects.map((object) => `${object.storageScope}:${object.storageKey}`);
     if (new Set(keys).size !== keys.length) {
       context.addIssue({
         code: 'custom',
@@ -321,12 +323,7 @@ export function createPhotoPrivateCleanupService(dependencies: {
           referenceType: candidate.referenceType,
           referenceId: candidate.referenceId,
           reason: candidate.reason,
-          outcome:
-            failedObjectCount > 0
-              ? 'partial'
-              : deletedObjectCount > 0
-                ? 'deleted'
-                : 'replayed',
+          outcome: failedObjectCount > 0 ? 'partial' : deletedObjectCount > 0 ? 'deleted' : 'replayed',
           deletedObjectCount,
           missingObjectCount,
           failedObjectCount,
