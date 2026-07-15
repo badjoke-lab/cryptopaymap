@@ -74,7 +74,12 @@ export class CloudflareImagesPhotoProcessorError extends Error {
 function streamFromBytes(bytes: Uint8Array): ReadableStream<Uint8Array> {
   const copy = new Uint8Array(bytes.byteLength);
   copy.set(bytes);
-  return new Blob([copy.buffer]).stream() as ReadableStream<Uint8Array>;
+  return new ReadableStream<Uint8Array>({
+    start(controller) {
+      controller.enqueue(copy);
+      controller.close();
+    },
+  });
 }
 
 async function readBoundedResponse(
