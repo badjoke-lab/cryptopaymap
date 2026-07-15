@@ -1,10 +1,7 @@
-import {
-  inspectPhotoImage,
-  PhotoImageInspectionError,
-} from './photo-image-inspection';
+import { inspectPhotoImage, PhotoImageInspectionError } from './photo-image-inspection';
 import type {
   PhotoPrivateProcessor,
-  ProcessedPrivatePhotoDerivative,
+  PhotoProcessedDerivative,
 } from './photo-private-processing';
 
 export interface CloudflareImagesTransformOptions {
@@ -137,11 +134,7 @@ function ascii(bytes: Uint8Array, start: number, length: number): string {
 }
 
 function assertMetadataFreeStillWebp(bytes: Uint8Array): void {
-  if (
-    bytes.byteLength < 20 ||
-    ascii(bytes, 0, 4) !== 'RIFF' ||
-    ascii(bytes, 8, 4) !== 'WEBP'
-  ) {
+  if (bytes.byteLength < 20 || ascii(bytes, 0, 4) !== 'RIFF' || ascii(bytes, 8, 4) !== 'WEBP') {
     throw new CloudflareImagesPhotoProcessorError(
       'invalid_output',
       'Cloudflare Images output is not a valid WebP container.',
@@ -184,7 +177,7 @@ async function transform(
   binding: CloudflareImagesBindingLike,
   source: Uint8Array,
   policy: DerivativePolicy,
-): Promise<ProcessedPrivatePhotoDerivative> {
+): Promise<PhotoProcessedDerivative> {
   let output: CloudflareImagesOutputLike;
   try {
     output = await binding
@@ -247,6 +240,8 @@ async function transform(
     body,
     width: inspected.width,
     height: inspected.height,
+    metadataStripped: true,
+    orientationNormalized: true,
   };
 }
 
@@ -261,16 +256,10 @@ export function createCloudflareImagesPhotoPrivateProcessor(
   }
 
   return {
-    async process(source) {
-      const derivatives = await Promise.all(
-        derivativePolicies.map((policy) => transform(binding, source.body, policy)),
+    async process(command) {
+      return Promise.all(
+        derivativePolicies.map((policy) => transform(binding, command.source.body, policy)),
       );
-      return {
-        processorVersion: 'cloudflare-images-binding-v1',
-        metadataStripped: true,
-        orientationNormalized: true,
-        derivatives,
-      };
     },
   };
 }
