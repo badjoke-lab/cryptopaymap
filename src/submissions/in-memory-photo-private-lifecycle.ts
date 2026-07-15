@@ -35,15 +35,13 @@ export function createInMemoryPhotoPrivateObjectLifecycleStore(
     },
 
     list() {
-      return [...objects]
-        .sort()
-        .map((value) => {
-          const separator = value.indexOf(':');
-          return {
-            storageScope: value.slice(0, separator) as 'quarantine' | 'private',
-            storageKey: value.slice(separator + 1),
-          };
-        });
+      return [...objects].sort().map((value) => {
+        const separator = value.indexOf(':');
+        return {
+          storageScope: value.slice(0, separator) as 'quarantine' | 'private',
+          storageKey: value.slice(separator + 1),
+        };
+      });
     },
   };
 }
