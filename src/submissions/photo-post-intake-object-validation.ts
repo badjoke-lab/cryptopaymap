@@ -11,6 +11,7 @@ import {
   PhotoQuarantineObjectStoreError,
   type PhotoImageDecoder,
   type PhotoObjectValidationReceipt,
+  type PhotoQuarantineObject,
   type PhotoQuarantineObjectStore,
   type PhotoUploadTargetReader,
   type ValidatedPhotoObject,
@@ -201,7 +202,7 @@ export function createPhotoPostIntakeObjectValidationService(
       const validatedObjects: ValidatedPhotoObject[] = [];
       for (const item of request.media) {
         const privateObjectKey = photoQuarantineObjectKey(item.quarantineUploadId);
-        let object;
+        let object: PhotoQuarantineObject | null;
         try {
           object = await dependencies.objects.readPrivateObject(
             privateObjectKey,
