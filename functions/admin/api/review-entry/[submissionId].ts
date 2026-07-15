@@ -1,19 +1,19 @@
-import { withAdminSecurityHeaders } from '../../../../../src/admin/access/config';
-import { createDrizzleReviewEntryBackend } from '../../../../../src/admin/submissions/drizzle-review-entry-backend';
+import { withAdminSecurityHeaders } from '../../../../src/admin/access/config';
+import { createDrizzleReviewEntryBackend } from '../../../../src/admin/submissions/drizzle-review-entry-backend';
 import {
   SubmissionReviewEntryAuthorizationError,
   authorizeSubmissionReviewEntry,
   readSubmissionReviewEntryAuthorizationPolicy,
   type SubmissionReviewEntryAuthorizationEnvironment,
-} from '../../../../../src/admin/submissions/review-entry-authorization';
+} from '../../../../src/admin/submissions/review-entry-authorization';
 import {
   ReviewEntryError,
   applySubmissionReviewEntry,
   type ReviewEntryReceipt,
-} from '../../../../../src/admin/submissions/review-entry';
-import { readProtectedAdminIdentity } from '../../../../../src/admin/dashboard/identity-context';
-import { createDatabase } from '../../../../../src/db/client';
-import { requiredDatabaseEnvironmentSchema } from '../../../../../src/schemas/environment';
+} from '../../../../src/admin/submissions/review-entry';
+import { readProtectedAdminIdentity } from '../../../../src/admin/dashboard/identity-context';
+import { createDatabase } from '../../../../src/db/client';
+import { requiredDatabaseEnvironmentSchema } from '../../../../src/schemas/environment';
 
 interface ReviewEntryEnvironment extends SubmissionReviewEntryAuthorizationEnvironment {
   DATABASE_URL?: string;
