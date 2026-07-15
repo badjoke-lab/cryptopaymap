@@ -7,7 +7,6 @@ import {
 } from '../src/submissions/photo-browser-contract';
 import {
   authorizeAndUploadPhotos,
-  PhotoBrowserRequestError,
   submitUploadedPhotos,
 } from '../src/submissions/photo-browser-orchestration';
 
@@ -81,13 +80,12 @@ describe('P5-05H direct upload orchestration', () => {
       [{ body: bytes, declaredMimeType: 'image/png', declaredByteSize: 4 }],
       { fetcher },
     );
+    expect(uploadReceipt.uploads[0]?.quarantineUploadId).toBe(reservationId);
+
     const submission = buildPhotoSubmissionIntake(formValues, [reservationId]);
-    const receipt = await submitUploadedPhotos(
-      requestId,
-      'intake-turnstile-token',
-      submission,
-      { fetcher },
-    );
+    const receipt = await submitUploadedPhotos(requestId, 'intake-turnstile-token', submission, {
+      fetcher,
+    });
 
     expect(receipt.submissionReference).toBe('CPM-S-2026-000123');
     expect(fetcher).toHaveBeenCalledTimes(3);
@@ -161,6 +159,10 @@ describe('P5-05H direct upload orchestration', () => {
         ],
         { fetcher },
       ),
-    ).rejects.toEqual(new PhotoBrowserRequestError('photo_rate_limited', 429, 12));
+    ).rejects.toMatchObject({
+      code: 'photo_rate_limited',
+      status: 429,
+      retryAfterSeconds: 12,
+    });
   });
 });
