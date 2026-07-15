@@ -9,6 +9,7 @@ import {
   mediaVisibilityValues,
 } from '../../db/schema';
 import { mediaReviewSubjectSchema } from './decision';
+import { mediaDuplicateSignalsSchema } from './duplicate-signals';
 
 export const mediaReviewReadContextSchema = z
   .object({
@@ -92,6 +93,7 @@ export const mediaReviewDetailResponseSchema = z
       createdAt: z.iso.datetime({ offset: true }),
     }),
     files: z.array(mediaReviewWorkspaceFileSchema).max(3),
+    duplicateSignals: mediaDuplicateSignalsSchema.optional(),
   })
   .strict();
 
