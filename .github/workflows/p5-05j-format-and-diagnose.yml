@@ -1,0 +1,76 @@
+name: P5-05J format and diagnose
+
+on:
+  push:
+    branches:
+      - p5-05j-private-validation-processing-execution
+
+permissions:
+  contents: write
+
+jobs:
+  format-and-diagnose:
+    if: ${{ !contains(github.event.head_commit.message, 'apply repository formatting') }}
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: p5-05j-private-validation-processing-execution
+          fetch-depth: 0
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Apply focused formatting
+        run: |
+          npx biome format --write \
+            src/submissions/cloudflare-images-photo-processor.ts \
+            src/submissions/photo-post-intake-object-validation.ts \
+            src/submissions/photo-private-processing.ts \
+            src/submissions/photo-private-execution.ts \
+            src/submissions/photo-private-execution-environment.ts \
+            tests/photo-post-intake-object-validation.test.ts \
+            tests/cloudflare-images-photo-processor.test.ts \
+            tests/photo-private-execution.test.ts
+      - name: Capture focused diagnostics
+        shell: bash
+        run: |
+          set +e
+          npx biome lint --max-diagnostics=200 \
+            src/submissions/cloudflare-images-photo-processor.ts \
+            src/submissions/photo-post-intake-object-validation.ts \
+            src/submissions/photo-private-processing.ts \
+            src/submissions/photo-private-execution.ts \
+            src/submissions/photo-private-execution-environment.ts \
+            tests/photo-post-intake-object-validation.test.ts \
+            tests/cloudflare-images-photo-processor.test.ts \
+            tests/photo-private-execution.test.ts > p5-05j-lint.log 2>&1
+          npm run check > p5-05j-check.log 2>&1
+          exit 0
+      - name: Upload focused diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: p5-05j-format-diagnostics
+          path: p5-05j-*.log
+          if-no-files-found: error
+      - name: Remove temporary workflow and commit
+        shell: bash
+        run: |
+          rm .github/workflows/p5-05j-format-and-diagnose.yml
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/submissions/cloudflare-images-photo-processor.ts \
+            src/submissions/photo-post-intake-object-validation.ts \
+            src/submissions/photo-private-processing.ts \
+            src/submissions/photo-private-execution.ts \
+            src/submissions/photo-private-execution-environment.ts \
+            tests/photo-post-intake-object-validation.test.ts \
+            tests/cloudflare-images-photo-processor.test.ts \
+            tests/photo-private-execution.test.ts \
+            .github/workflows/p5-05j-format-and-diagnose.yml
+          git commit -m "P5-05J apply repository formatting"
+          git push origin HEAD:p5-05j-private-validation-processing-execution
