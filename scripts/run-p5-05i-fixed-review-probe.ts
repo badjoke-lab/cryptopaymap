@@ -133,8 +133,7 @@ function isUploadReceipt(value: unknown, requestId: string): value is UploadRece
 
 function cspMatches(value: string | null): boolean {
   return (
-    value !== null &&
-    value.includes('https://challenges.cloudflare.com') &&
+    value?.includes('https://challenges.cloudflare.com') === true &&
     value.includes('https://*.r2.cloudflarestorage.com') &&
     value.includes("form-action 'self'") &&
     value.includes("frame-ancestors 'none'")
@@ -142,10 +141,12 @@ function cspMatches(value: string | null): boolean {
 }
 
 function commaValues(value: string | null): string[] {
-  return value
-    ?.split(',')
-    .map((part) => part.trim().toLowerCase())
-    .filter(Boolean) ?? [];
+  return (
+    value
+      ?.split(',')
+      .map((part) => part.trim().toLowerCase())
+      .filter(Boolean) ?? []
+  );
 }
 
 async function readJson(response: Response): Promise<unknown> {
@@ -329,8 +330,12 @@ async function main() {
         },
       });
       checks.corsPreflightHttpStatus = preflightResponse.status;
-      const allowedMethods = commaValues(preflightResponse.headers.get('access-control-allow-methods'));
-      const allowedHeaders = commaValues(preflightResponse.headers.get('access-control-allow-headers'));
+      const allowedMethods = commaValues(
+        preflightResponse.headers.get('access-control-allow-methods'),
+      );
+      const allowedHeaders = commaValues(
+        preflightResponse.headers.get('access-control-allow-headers'),
+      );
       checks.corsPolicyMatches =
         preflightResponse.headers.get('access-control-allow-origin') === baseUrl.origin &&
         allowedMethods.includes('put') &&
