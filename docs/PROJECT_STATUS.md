@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05I — Configured Photos object-storage signing and direct-upload integration audit
+P5-05J — Configured private object validation and processing execution
 
 ## Current repository state
 
@@ -36,7 +36,8 @@ P5-05I — Configured Photos object-storage signing and direct-upload integratio
 - P5-05F exact original-hash review signals and retention-safe private object cleanup completed in #221.
 - P5-05G public upload-authorization and private-intake HTTP boundaries completed in #222.
 - P5-05H browser `/photos` form and direct-upload orchestration completed in #223.
-- P5-05I is next; its bounded scope is configured private object-storage signing and binding plus a synthetic direct-upload integration audit without automatic processing, Media approval, or publication.
+- P5-05I configured R2 SigV4 upload signing and synthetic direct-upload/private-intake audit completed in #225.
+- P5-05J is next; its bounded scope is configured private-object reading, validation, image processing, and protected Media handoff execution without Media approval, public copy, canonical mutation, export, or publication.
 
 ## P5-05A completion result
 
@@ -159,6 +160,22 @@ P5-05H provides:
 - Photos-specific Turnstile and bounded R2 endpoint CSP;
 - no binary proxy, configured production signer, automatic processing, Media approval, canonical mutation, export, or publication.
 
+## P5-05I completion result
+
+P5-05I provides:
+
+- a dependency-free Web Crypto AWS SigV4 signer for the Cloudflare R2 S3 endpoint;
+- strict server-only R2 account, bucket, access-key, and secret-key configuration;
+- one short-lived signed `PUT` for only the deterministic private quarantine object;
+- exact binding of content type, host, and all required private validation metadata headers;
+- removal of arbitrary upload-authorizer environment injection from public runtime composition;
+- independent signature recomputation and object-path tampering tests;
+- bounded expiry and private-key-scope rejection;
+- an executable synthetic browser-style direct upload followed by real private Photos intake and atomic reservation consumption;
+- privacy-safe audit output and built-HTML leakage checks;
+- all required Foundation, migration, staging-review, and screenshot workflows passing for implementation head `e60a5cb659111c0a182ee84afe0540de2be848da`;
+- no automatic object validation, image processing, Media approval, public copy, canonical mutation, export, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -184,6 +201,7 @@ P5-05H provides:
 - `docs/P5_05F_PHOTO_DUPLICATE_SIGNALS_AND_PRIVATE_LIFECYCLE.md`
 - `docs/P5_05G_PHOTO_PUBLIC_HTTP_BOUNDARIES.md`
 - `docs/P5_05H_PHOTO_BROWSER_UPLOAD_ORCHESTRATION.md`
+- `docs/P5_05I_R2_SIGNING_AND_DIRECT_UPLOAD_AUDIT.md`
 
 ## Phase 5 sequence
 
@@ -191,19 +209,19 @@ P5-05H provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05I; P5-05H completed #223
+5. P5-05 — Photo and Media submission intake — In progress at P5-05J; P5-05I completed #225
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Define and implement P5-05I configured private object-storage signing and binding plus a bounded direct-upload integration audit. The configured path must produce browser-compatible, short-lived HTTPS `PUT` authorizations for only the deterministic private quarantine object, bind the exact content type and required private validation metadata, and prove one synthetic upload plus private intake without logging credentials, signed URLs, file bytes, contact data, or status secrets. Successful audit must not automatically validate, process, approve, copy publicly, mutate canonical records, export, or publish Media.
+Define and implement P5-05J configured private object validation and processing execution. The bounded path must read only the canonical private quarantine object through the configured R2 binding, enforce the completed P5-05D byte and metadata checks, execute a configured metadata-stripping and orientation-normalizing processor, persist only bounded private derivatives, and perform the completed P5-05E protected Media handoff. It must remain idempotent and fail closed without approving Media, copying objects publicly, mutating canonical records, activating exports, or publishing data.
 
 ## Blocked
 
-No repository blocker is known. Configured image codec and processing execution, privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, production deployment, and production review remain separate later slices.
+No repository blocker is known. Privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, production deployment, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A browser Photos success creates only private quarantine uploads and one private Submission receipt; it does not create approved or public Media automatically.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Configured R2 signing and a successful private upload/intake audit do not prove object validity, image safety, review approval, public availability, or launch readiness.
