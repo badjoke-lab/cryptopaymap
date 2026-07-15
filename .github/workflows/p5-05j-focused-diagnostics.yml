@@ -1,9 +1,9 @@
 name: P5-05J focused diagnostics
 
 on:
-  push:
+  pull_request:
     branches:
-      - p5-05j-private-validation-processing-execution
+      - main
   workflow_dispatch:
 
 permissions:
