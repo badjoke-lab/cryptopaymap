@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { asc, eq, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
   mediaAssets,
@@ -52,7 +52,12 @@ export function createDrizzlePhotoMediaHandoffPersistence(
         row.targetId === null ||
         row.normalizedPayload === null ||
         !processableStatuses.has(
-          row.workflowStatus as 'received' | 'triage' | 'in_review' | 'needs_information' | 'on_hold',
+          row.workflowStatus as
+            | 'received'
+            | 'triage'
+            | 'in_review'
+            | 'needs_information'
+            | 'on_hold',
         )
       ) {
         return null;
@@ -129,6 +134,12 @@ export function createDrizzlePhotoMediaHandoffPersistence(
               and ${submissions.submissionType} = 'photos'
               and ${submissions.updatedAt} = ${command.expectedSubmissionUpdatedAt}
               and ${submissions.workflowStatus} = ${command.expectedWorkflowStatus}
+          )
+          and not exists (
+            select 1
+            from ${submissionEvents}
+            where ${submissionEvents.submissionId} = ${command.submissionId}
+              and ${submissionEvents.action} = 'photo_media_handoff_created'
           )
           and not exists (
             select 1 from ${submissionEvents}
