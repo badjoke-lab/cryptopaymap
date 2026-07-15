@@ -69,9 +69,9 @@ describe('P5-05H Photos browser contract', () => {
   it('detects supported declared types without trusting unsupported extensions', () => {
     expect(detectPhotoDeclaredMimeType({ name: 'counter.JPG', type: '' })).toBe('image/jpeg');
     expect(detectPhotoDeclaredMimeType({ name: 'counter.heic', type: '' })).toBe('image/heic');
-    expect(detectPhotoDeclaredMimeType({ name: 'counter.bin', type: 'application/octet-stream' })).toBe(
-      null,
-    );
+    expect(
+      detectPhotoDeclaredMimeType({ name: 'counter.bin', type: 'application/octet-stream' }),
+    ).toBe(null);
   });
 
   it('rejects mismatched reservation sets and incomplete rights declarations', () => {
