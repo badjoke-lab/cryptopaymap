@@ -35,8 +35,7 @@ const request = photoPrivateProcessingRequestSchema.parse({
     objects: [
       {
         quarantineUploadId: '50000000-0000-4000-8000-000000000001',
-        privateObjectKey:
-          'quarantine/photos/v1/50000000-0000-4000-8000-000000000001',
+        privateObjectKey: 'quarantine/photos/v1/50000000-0000-4000-8000-000000000001',
         body: Uint8Array.from([1, 2, 3, 4]),
         mimeType: 'image/png',
         byteSize: 4,
