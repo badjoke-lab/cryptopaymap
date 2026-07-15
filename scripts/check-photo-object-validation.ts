@@ -7,6 +7,7 @@ import {
 } from '../src/submissions/photo-object-validation';
 import { createR2PhotoQuarantineObjectStore } from '../src/submissions/r2-photo-quarantine-object-store';
 import './check-photo-http';
+import './check-photo-private-execution';
 import './check-photo-private-lifecycle';
 import './check-photo-private-processing';
 

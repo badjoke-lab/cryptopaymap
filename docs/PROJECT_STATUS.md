@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05J — Configured private object validation and processing execution
+P5-06 — Review workflow extensions
 
 ## Current repository state
 
@@ -37,7 +37,9 @@ P5-05J — Configured private object validation and processing execution
 - P5-05G public upload-authorization and private-intake HTTP boundaries completed in #222.
 - P5-05H browser `/photos` form and direct-upload orchestration completed in #223.
 - P5-05I configured R2 SigV4 upload signing and synthetic direct-upload/private-intake audit completed in #225.
-- P5-05J is next; its bounded scope is configured private-object reading, validation, image processing, and protected Media handoff execution without Media approval, public copy, canonical mutation, export, or publication.
+- P5-05J configured post-intake validation, Cloudflare Images processing, private derivative writes, and protected Media handoff execution completed in #227.
+- P5-05 Photo and Media submission intake is repository-complete through #227.
+- P5-06 review workflow extensions are next.
 
 ## P5-05A completion result
 
@@ -176,6 +178,21 @@ P5-05I provides:
 - all required Foundation, migration, staging-review, and screenshot workflows passing for implementation head `e60a5cb659111c0a182ee84afe0540de2be848da`;
 - no automatic object validation, image processing, Media approval, public copy, canonical mutation, export, or publication.
 
+## P5-05J completion result
+
+P5-05J provides:
+
+- an exact post-intake validator restricted to reservations consumed by one exact Photos Submission;
+- corrected consumption, validation, expiry, and processing chronology;
+- configured private R2 quarantine reads and private derivative writes;
+- configured Cloudflare Images scale-down WebP processing with metadata removal and animation disabled;
+- independent derivative MIME, dimensions, still-image, metadata-chunk, and hash validation;
+- one protected execution service from private Submission context through P5-05D validation and P5-05E Media handoff;
+- strict fail-closed environment composition without public execution exposure;
+- executable schema integration and focused chronology, processing, and orchestration tests;
+- 231 test files and 1,130 tests passing at implementation head `a49ce9af9fb4b35989d670d8535708290d322657`;
+- no Media approval, public copy, canonical mutation, export activation, publication, deployment, or launch claim.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -202,6 +219,7 @@ P5-05I provides:
 - `docs/P5_05G_PHOTO_PUBLIC_HTTP_BOUNDARIES.md`
 - `docs/P5_05H_PHOTO_BROWSER_UPLOAD_ORCHESTRATION.md`
 - `docs/P5_05I_R2_SIGNING_AND_DIRECT_UPLOAD_AUDIT.md`
+- `docs/P5_05J_PRIVATE_VALIDATION_PROCESSING_EXECUTION.md`
 
 ## Phase 5 sequence
 
@@ -209,19 +227,19 @@ P5-05I provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05J; P5-05I completed #225
+5. P5-05 — Photo and Media submission intake — Completed through #216–#227
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Define and implement P5-05J configured private object validation and processing execution. The bounded path must read only the canonical private quarantine object through the configured R2 binding, enforce the completed P5-05D byte and metadata checks, execute a configured metadata-stripping and orientation-normalizing processor, persist only bounded private derivatives, and perform the completed P5-05E protected Media handoff. It must remain idempotent and fail closed without approving Media, copying objects publicly, mutating canonical records, activating exports, or publishing data.
+Begin P5-06 with an exact cross-submission review workflow inventory. Reconcile the common reviewer diff, information-request, time-bounded hold, partial-decision, duplicate/no-change, and private-status capabilities already implemented in Suggest, Reports, Business Claims, and Photos before adding any new mutation surface.
 
 ## Blocked
 
-No repository blocker is known. Privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, production deployment, and production review remain separate later slices.
+No repository blocker is known. P5-06 must first identify real cross-submission review gaps without duplicating the completed type-specific reviewer flows. Privacy-content analysis, public Media approval, export activation, production deployment, and production review remain separate later work.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Configured R2 signing and a successful private upload/intake audit do not prove object validity, image safety, review approval, public availability, or launch readiness.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. P5-05J proves configured private validation and processing contracts in repository CI; it does not prove configured production execution, Media approval, public availability, or launch readiness.
