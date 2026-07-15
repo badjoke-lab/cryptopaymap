@@ -24,6 +24,7 @@ export interface PhotoBrowserFile {
 }
 
 export interface PhotoBrowserMediaValues {
+  browserId: string;
   file: PhotoBrowserFile;
   role: z.infer<typeof publicGalleryMediaRoleSchema>;
   capturedAt: string;

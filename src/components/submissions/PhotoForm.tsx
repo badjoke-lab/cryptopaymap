@@ -7,6 +7,8 @@ import {
   parsePhotoUploadReceipt,
   type PhotoBrowserFormValues,
   type PhotoBrowserMediaValues,
+  type PhotoSubmissionIntake,
+  type PhotoUploadAuthorization,
   type PhotoUploadedReservation,
 } from '../../submissions/photo-browser-contract';
 import { StatePanel } from '../ui/StatePanel';
@@ -117,6 +119,7 @@ function errorMessage(errorCode: string, retryAfter: string | null): string {
 
 function newMediaValue(file: File): PhotoBrowserMediaValues {
   return {
+    browserId: crypto.randomUUID(),
     file,
     role: 'gallery',
     capturedAt: '',
@@ -311,7 +314,7 @@ export function PhotoForm({
     }
 
     requestIdRef.current ??= crypto.randomUUID();
-    let authorization;
+    let authorization: PhotoUploadAuthorization;
     try {
       authorization = buildPhotoUploadAuthorizationFromBrowserForm(values, requestIdRef.current);
     } catch (error) {
@@ -409,7 +412,7 @@ export function PhotoForm({
       return;
     }
 
-    let submission;
+    let submission: PhotoSubmissionIntake;
     try {
       submission = buildPhotosSubmissionIntakeFromBrowserForm(values, uploadedReservations);
     } catch (error) {
@@ -548,7 +551,7 @@ export function PhotoForm({
         <div className="grid gap-5">
           {values.media.map((item, index) => (
             <article
-              key={`${item.file.name}-${index}`}
+              key={item.browserId}
               className="grid gap-4 rounded-card border border-border bg-canvas p-4"
             >
               <div>

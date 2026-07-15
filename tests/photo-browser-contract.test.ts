@@ -19,6 +19,7 @@ function validValues(): PhotoBrowserFormValues {
   values.submissionTermsAccepted = true;
   values.media = [
     {
+      browserId: 'browser-photo-1',
       file: { name: 'shop.jpg', type: 'image/jpeg', size: 1_024 },
       role: 'exterior',
       capturedAt: '2026-07-15',
