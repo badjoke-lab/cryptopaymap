@@ -178,7 +178,11 @@ function mapPhotoUploadAuthorizationError(error: unknown): Response {
 function mapPhotoPrivateIntakeError(error: unknown): Response {
   if (error instanceof SubmissionAbuseControlError) {
     if (error.code === 'rate_limited') {
-      return jsonResponse(429, { error: 'photo_rate_limited' }, boundedRetryAfter(error.retryAfterSeconds));
+      return jsonResponse(
+        429,
+        { error: 'photo_rate_limited' },
+        boundedRetryAfter(error.retryAfterSeconds),
+      );
     }
     if (error.code === 'abuse_request_invalid' || error.code === 'challenge_rejected') {
       return jsonResponse(400, { error: 'photo_request_invalid' });
