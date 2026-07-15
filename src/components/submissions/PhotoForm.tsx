@@ -187,7 +187,9 @@ export function PhotoForm({
   const [flowState, setFlowState] = useState<FlowState>('idle');
   const [messages, setMessages] = useState<string[]>([]);
   const [flowError, setFlowError] = useState('');
-  const [uploadedReservations, setUploadedReservations] = useState<PhotoUploadedReservation[] | null>(null);
+  const [uploadedReservations, setUploadedReservations] = useState<
+    PhotoUploadedReservation[] | null
+  >(null);
   const [receipt, setReceipt] = useState<PhotoReceipt | null>(null);
   const turnstileContainerRef = useRef<HTMLDivElement | null>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -374,7 +376,9 @@ export function PhotoForm({
       setUploadedReservations(
         uploadReceipt.uploads.map((upload, index) => ({
           quarantineUploadId: upload.quarantineUploadId,
-          declaredMimeType: values.media[index]?.file.type.toLowerCase() as PhotoUploadedReservation['declaredMimeType'],
+          declaredMimeType: values.media[
+            index
+          ]?.file.type.toLowerCase() as PhotoUploadedReservation['declaredMimeType'],
           declaredByteSize: upload.declaredByteSize,
         })),
       );
@@ -445,7 +449,9 @@ export function PhotoForm({
       resetChallenge();
     } catch {
       setFlowState('error');
-      setFlowError('The private Submission could not be completed. Complete verification and retry.');
+      setFlowError(
+        'The private Submission could not be completed. Complete verification and retry.',
+      );
       resetChallenge();
     }
   }
@@ -482,7 +488,9 @@ export function PhotoForm({
             <select
               className={inputClass}
               value={values.targetType}
-              onChange={(event) => update('targetType', event.currentTarget.value as 'entity' | 'location')}
+              onChange={(event) =>
+                update('targetType', event.currentTarget.value as 'entity' | 'location')
+              }
             >
               <option value="location">Physical location</option>
               <option value="entity">Entity or online service</option>
@@ -504,12 +512,17 @@ export function PhotoForm({
               className={inputClass}
               value={values.relationship}
               onChange={(event) =>
-                update('relationship', event.currentTarget.value as PhotoBrowserFormValues['relationship'])
+                update(
+                  'relationship',
+                  event.currentTarget.value as PhotoBrowserFormValues['relationship'],
+                )
               }
             >
               <option value="customer">Customer</option>
               <option value="employee">Employee</option>
-              <option value="owner_or_authorized_representative">Owner or authorized representative</option>
+              <option value="owner_or_authorized_representative">
+                Owner or authorized representative
+              </option>
               <option value="independent_researcher">Independent researcher</option>
               <option value="other">Other</option>
             </select>
@@ -529,56 +542,156 @@ export function PhotoForm({
           />
         </label>
         <p className="m-0 text-sm leading-6 text-muted">
-          Files upload directly to private quarantine. The application API receives only opaque reservation UUIDs and declared review metadata.
+          Files upload directly to private quarantine. The application API receives only opaque
+          reservation UUIDs and declared review metadata.
         </p>
         <div className="grid gap-5">
           {values.media.map((item, index) => (
-            <article key={`${item.file.name}-${index}`} className="grid gap-4 rounded-card border border-border bg-canvas p-4">
+            <article
+              key={`${item.file.name}-${index}`}
+              className="grid gap-4 rounded-card border border-border bg-canvas p-4"
+            >
               <div>
-                <p className="m-0 font-semibold text-ink">{index + 1}. {item.file.name}</p>
-                <p className="mt-1 text-sm text-muted">{item.file.type || 'Unknown type'} · {Math.ceil(item.file.size / 1024)} KiB</p>
+                <p className="m-0 font-semibold text-ink">
+                  {index + 1}. {item.file.name}
+                </p>
+                <p className="mt-1 text-sm text-muted">
+                  {item.file.type || 'Unknown type'} · {Math.ceil(item.file.size / 1024)} KiB
+                </p>
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="grid gap-2 text-sm font-medium text-ink">
                   Intended role
-                  <select className={inputClass} value={item.role} onChange={(event) => updateMedia(index, 'role', event.currentTarget.value as PhotoBrowserMediaValues['role'])}>
-                    {roleOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                  <select
+                    className={inputClass}
+                    value={item.role}
+                    onChange={(event) =>
+                      updateMedia(
+                        index,
+                        'role',
+                        event.currentTarget.value as PhotoBrowserMediaValues['role'],
+                      )
+                    }
+                  >
+                    {roleOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 <label className="grid gap-2 text-sm font-medium text-ink">
                   Capture date (optional)
-                  <input className={inputClass} type="date" value={item.capturedAt} onChange={(event) => updateMedia(index, 'capturedAt', event.currentTarget.value)} />
+                  <input
+                    className={inputClass}
+                    type="date"
+                    value={item.capturedAt}
+                    onChange={(event) =>
+                      updateMedia(index, 'capturedAt', event.currentTarget.value)
+                    }
+                  />
                 </label>
                 <label className="grid gap-2 text-sm font-medium text-ink sm:col-span-2">
                   Description (optional)
-                  <textarea className={inputClass} rows={3} maxLength={1000} value={item.description} onChange={(event) => updateMedia(index, 'description', event.currentTarget.value)} />
+                  <textarea
+                    className={inputClass}
+                    rows={3}
+                    maxLength={1000}
+                    value={item.description}
+                    onChange={(event) =>
+                      updateMedia(index, 'description', event.currentTarget.value)
+                    }
+                  />
                 </label>
                 <label className="grid gap-2 text-sm font-medium text-ink sm:col-span-2">
                   Suggested alt text (optional)
-                  <input className={inputClass} maxLength={500} value={item.suggestedAltText} onChange={(event) => updateMedia(index, 'suggestedAltText', event.currentTarget.value)} />
+                  <input
+                    className={inputClass}
+                    maxLength={500}
+                    value={item.suggestedAltText}
+                    onChange={(event) =>
+                      updateMedia(index, 'suggestedAltText', event.currentTarget.value)
+                    }
+                  />
                 </label>
                 <label className="grid gap-2 text-sm font-medium text-ink">
                   Rights basis
-                  <select className={inputClass} value={item.rightsStatus} onChange={(event) => updateMedia(index, 'rightsStatus', event.currentTarget.value as PhotoBrowserMediaValues['rightsStatus'])}>
+                  <select
+                    className={inputClass}
+                    value={item.rightsStatus}
+                    onChange={(event) =>
+                      updateMedia(
+                        index,
+                        'rightsStatus',
+                        event.currentTarget.value as PhotoBrowserMediaValues['rightsStatus'],
+                      )
+                    }
+                  >
                     <option value="submitted_with_permission">Submitted with permission</option>
                     <option value="licensed">Licensed</option>
                     <option value="public_domain">Public domain</option>
                   </select>
                 </label>
                 <div className="grid gap-2 text-sm text-ink">
-                  <label className="flex items-center gap-2"><input type="checkbox" checked={item.photographerPresent} onChange={(event) => updateMedia(index, 'photographerPresent', event.currentTarget.checked)} /> I am the photographer</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" checked={item.rightsHolderPresent} onChange={(event) => updateMedia(index, 'rightsHolderPresent', event.currentTarget.checked)} /> Rights holder is participating</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" checked={item.permissionReferencePresent} onChange={(event) => updateMedia(index, 'permissionReferencePresent', event.currentTarget.checked)} /> Permission reference is available</label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={item.photographerPresent}
+                      onChange={(event) =>
+                        updateMedia(index, 'photographerPresent', event.currentTarget.checked)
+                      }
+                    />{' '}
+                    I am the photographer
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={item.rightsHolderPresent}
+                      onChange={(event) =>
+                        updateMedia(index, 'rightsHolderPresent', event.currentTarget.checked)
+                      }
+                    />{' '}
+                    Rights holder is participating
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={item.permissionReferencePresent}
+                      onChange={(event) =>
+                        updateMedia(
+                          index,
+                          'permissionReferencePresent',
+                          event.currentTarget.checked,
+                        )
+                      }
+                    />{' '}
+                    Permission reference is available
+                  </label>
                 </div>
                 {item.rightsStatus === 'licensed' ? (
                   <>
                     <label className="grid gap-2 text-sm font-medium text-ink">
                       License name
-                      <input className={inputClass} maxLength={160} value={item.licenseName} onChange={(event) => updateMedia(index, 'licenseName', event.currentTarget.value)} />
+                      <input
+                        className={inputClass}
+                        maxLength={160}
+                        value={item.licenseName}
+                        onChange={(event) =>
+                          updateMedia(index, 'licenseName', event.currentTarget.value)
+                        }
+                      />
                     </label>
                     <label className="grid gap-2 text-sm font-medium text-ink">
                       License URL
-                      <input className={inputClass} type="url" maxLength={2048} value={item.licenseUrl} onChange={(event) => updateMedia(index, 'licenseUrl', event.currentTarget.value)} />
+                      <input
+                        className={inputClass}
+                        type="url"
+                        maxLength={2048}
+                        value={item.licenseUrl}
+                        onChange={(event) =>
+                          updateMedia(index, 'licenseUrl', event.currentTarget.value)
+                        }
+                      />
                     </label>
                   </>
                 ) : null}
@@ -592,26 +705,55 @@ export function PhotoForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <label className="grid gap-2 text-sm font-medium text-ink">
             Contact email (optional)
-            <input className={inputClass} type="email" maxLength={320} value={values.contactEmail} onChange={(event) => update('contactEmail', event.currentTarget.value)} />
+            <input
+              className={inputClass}
+              type="email"
+              maxLength={320}
+              value={values.contactEmail}
+              onChange={(event) => update('contactEmail', event.currentTarget.value)}
+            />
           </label>
           <label className="flex items-center gap-2 self-end pb-3 text-sm text-ink">
-            <input type="checkbox" checked={values.contactAllowed} onChange={(event) => update('contactAllowed', event.currentTarget.checked)} /> CryptoPayMap may contact me about this Submission
+            <input
+              type="checkbox"
+              checked={values.contactAllowed}
+              onChange={(event) => update('contactAllowed', event.currentTarget.checked)}
+            />{' '}
+            CryptoPayMap may contact me about this Submission
           </label>
           <label className="grid gap-2 text-sm font-medium text-ink sm:col-span-2">
             Note for reviewers (optional)
-            <textarea className={inputClass} rows={4} maxLength={2000} value={values.submitterNote} onChange={(event) => update('submitterNote', event.currentTarget.value)} />
+            <textarea
+              className={inputClass}
+              rows={4}
+              maxLength={2000}
+              value={values.submitterNote}
+              onChange={(event) => update('submitterNote', event.currentTarget.value)}
+            />
           </label>
         </div>
       </Section>
 
       <Section eyebrow="4. Verify and submit" title="Complete the private two-step upload">
         <label className="flex items-start gap-3 text-sm leading-6 text-ink">
-          <input className="mt-1 h-4 w-4" type="checkbox" checked={values.privacyNoticeAccepted} onChange={(event) => update('privacyNoticeAccepted', event.currentTarget.checked)} />
-          I have read the privacy notice and understand that originals and derivatives remain private until separately reviewed.
+          <input
+            className="mt-1 h-4 w-4"
+            type="checkbox"
+            checked={values.privacyNoticeAccepted}
+            onChange={(event) => update('privacyNoticeAccepted', event.currentTarget.checked)}
+          />
+          I have read the privacy notice and understand that originals and derivatives remain
+          private until separately reviewed.
         </label>
         <label className="flex items-start gap-3 text-sm leading-6 text-ink">
-          <input className="mt-1 h-4 w-4" type="checkbox" checked={values.submissionTermsAccepted} onChange={(event) => update('submissionTermsAccepted', event.currentTarget.checked)} />
-          I accept the submission terms and confirm that I have the stated rights and public-display permission.
+          <input
+            className="mt-1 h-4 w-4"
+            type="checkbox"
+            checked={values.submissionTermsAccepted}
+            onChange={(event) => update('submissionTermsAccepted', event.currentTarget.checked)}
+          />
+          I accept the submission terms and confirm that I have the stated rights and public-display
+          permission.
         </label>
         <div ref={turnstileContainerRef} className="min-h-16" />
         {uploadedReservations !== null ? (
@@ -621,9 +763,23 @@ export function PhotoForm({
             description="Complete the fresh verification challenge, then submit the opaque reservations for private review. Changing the form will require a new upload."
           />
         ) : null}
-        {challengeState === 'error' ? <p className="m-0 text-sm font-medium text-danger" role="alert">Verification is unavailable. Reload the page or try again later.</p> : null}
-        {messages.length > 0 ? <ul className="m-0 grid gap-1 pl-5 text-sm text-danger" role="alert">{messages.map((message) => <li key={message}>{message}</li>)}</ul> : null}
-        {flowError ? <p className="m-0 text-sm font-medium text-danger" role="alert">{flowError}</p> : null}
+        {challengeState === 'error' ? (
+          <p className="m-0 text-sm font-medium text-danger" role="alert">
+            Verification is unavailable. Reload the page or try again later.
+          </p>
+        ) : null}
+        {messages.length > 0 ? (
+          <ul className="m-0 grid gap-1 pl-5 text-sm text-danger" role="alert">
+            {messages.map((message) => (
+              <li key={message}>{message}</li>
+            ))}
+          </ul>
+        ) : null}
+        {flowError ? (
+          <p className="m-0 text-sm font-medium text-danger" role="alert">
+            {flowError}
+          </p>
+        ) : null}
         <button
           type="submit"
           className="motion-feedback inline-flex min-h-11 items-center justify-center rounded-control bg-brand-600 px-5 py-2.5 font-semibold text-white hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-60"
@@ -640,7 +796,9 @@ export function PhotoForm({
                   : 'Submit uploaded photos for review'}
         </button>
         <p className="m-0 text-sm leading-6 text-muted">
-          This form never approves or publishes Media automatically. Validation, processing, rights/privacy review, gallery placement, canonical changes, export, and publication remain separate operations.
+          This form never approves or publishes Media automatically. Validation, processing,
+          rights/privacy review, gallery placement, canonical changes, export, and publication
+          remain separate operations.
         </p>
       </Section>
     </form>

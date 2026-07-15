@@ -169,8 +169,7 @@ export function buildPhotosSubmissionIntakeFromBrowserForm(
             permissionReferencePresent: item.permissionReferencePresent,
             licenseName:
               item.rightsStatus === 'licensed' ? optionalTrimmed(item.licenseName) : null,
-            licenseUrl:
-              item.rightsStatus === 'licensed' ? optionalTrimmed(item.licenseUrl) : null,
+            licenseUrl: item.rightsStatus === 'licensed' ? optionalTrimmed(item.licenseUrl) : null,
             publicDisplayPermission: true,
           },
         };
