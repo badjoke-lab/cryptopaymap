@@ -61,9 +61,7 @@ async function hmac(keyBytes: Uint8Array, value: string): Promise<Uint8Array> {
     false,
     ['sign'],
   );
-  return new Uint8Array(
-    await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)),
-  );
+  return new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)));
 }
 
 async function verifySignature(
@@ -76,7 +74,12 @@ async function verifySignature(
   const credential = url.searchParams.get('X-Amz-Credential');
   const signedHeaders = url.searchParams.get('X-Amz-SignedHeaders');
   const actualSignature = url.searchParams.get('X-Amz-Signature');
-  if (amzDate === null || credential === null || signedHeaders === null || actualSignature === null) {
+  if (
+    amzDate === null ||
+    credential === null ||
+    signedHeaders === null ||
+    actualSignature === null
+  ) {
     return false;
   }
   const credentialScope = credential.split('/').slice(1).join('/');
@@ -102,12 +105,9 @@ async function verifySignature(
     signedHeaders,
     'UNSIGNED-PAYLOAD',
   ].join('\n');
-  const stringToSign = [
-    'AWS4-HMAC-SHA256',
-    amzDate,
-    credentialScope,
-    await sha256(request),
-  ].join('\n');
+  const stringToSign = ['AWS4-HMAC-SHA256', amzDate, credentialScope, await sha256(request)].join(
+    '\n',
+  );
   const encoder = new TextEncoder();
   const dateKey = await hmac(encoder.encode(`AWS4${secretAccessKey}`), dateStamp);
   const regionKey = await hmac(dateKey, 'auto');

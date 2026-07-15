@@ -8,7 +8,9 @@ import type {
 const maximumPresignSeconds = 15 * 60;
 const privatePhotoObjectKeySchema = z
   .string()
-  .regex(/^quarantine\/photos\/v1\/[0-9a-f]{8}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+  .regex(
+    /^quarantine\/photos\/v1\/[0-9a-f]{8}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i,
+  );
 const metadataKeySchema = z.string().regex(/^[a-z0-9][a-z0-9-]{0,127}$/);
 const metadataValueSchema = z
   .string()
@@ -24,7 +26,11 @@ export const r2PhotoUploadAuthorizerEnvironmentSchema = z
       .min(3)
       .max(63)
       .regex(/^[a-z0-9][a-z0-9-]*[a-z0-9]$/),
-    CPM_R2_ACCESS_KEY_ID: z.string().min(16).max(128).regex(/^[A-Za-z0-9]+$/),
+    CPM_R2_ACCESS_KEY_ID: z
+      .string()
+      .min(16)
+      .max(128)
+      .regex(/^[A-Za-z0-9]+$/),
     CPM_R2_SECRET_ACCESS_KEY: z.string().min(32).max(256).regex(/^\S+$/),
   })
   .strict();
@@ -70,8 +76,9 @@ export class R2PhotoUploadAuthorizationError extends Error {
 const textEncoder = new TextEncoder();
 
 function awsEncode(value: string): string {
-  return encodeURIComponent(value).replace(/[!'()*]/g, (character) =>
-    `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+  return encodeURIComponent(value).replace(
+    /[!'()*]/g,
+    (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
   );
 }
 
@@ -154,10 +161,10 @@ function validateCommand(command: QuarantineUploadAuthorizationCommand): {
     const declaredMimeType = z
       .enum(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'])
       .parse(command.declaredMimeType);
-    const metadataEntries = Object.entries(command.metadata).map(([key, value]) => [
-      metadataKeySchema.parse(key.toLowerCase()),
-      metadataValueSchema.parse(value),
-    ] as const);
+    const metadataEntries = Object.entries(command.metadata).map(
+      ([key, value]) =>
+        [metadataKeySchema.parse(key.toLowerCase()), metadataValueSchema.parse(value)] as const,
+    );
     if (metadataEntries.length < 1 || metadataEntries.length > 16) {
       throw new Error('Invalid metadata count.');
     }
