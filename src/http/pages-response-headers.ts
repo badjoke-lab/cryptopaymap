@@ -11,6 +11,19 @@ export const suggestContentSecurityPolicy = [
   "frame-ancestors 'none'",
 ].join('; ');
 
+export const photoContentSecurityPolicy = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com",
+  'frame-src https://challenges.cloudflare.com',
+  "connect-src 'self' https://*.r2.cloudflarestorage.com",
+  "img-src 'self' data:",
+  "style-src 'self' 'unsafe-inline'",
+  "font-src 'self'",
+  "base-uri 'none'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join('; ');
+
 const reviewRobotsPolicy = 'noindex, nofollow, noarchive';
 
 function isFixedReviewHostname(hostname: string): boolean {
@@ -44,6 +57,13 @@ function applyPathSpecificHeaders(requestUrl: URL, headers: Headers): void {
 
   if (isFixedReviewHostname(requestUrl.hostname)) {
     headers.set('X-Robots-Tag', reviewRobotsPolicy);
+  }
+
+  if (isExactPath(pathname, '/photos')) {
+    headers.set('Content-Security-Policy', photoContentSecurityPolicy);
+    headers.set('Cache-Control', 'no-store');
+    headers.set('Referrer-Policy', 'no-referrer');
+    return;
   }
 
   if (
