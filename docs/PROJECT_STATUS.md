@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05F — Photo duplicate signals and private upload lifecycle cleanup
+P5-05G — Public Photos upload authorization and private intake HTTP boundaries
 
 ## Current repository state
 
@@ -33,7 +33,8 @@ P5-05F — Photo duplicate signals and private upload lifecycle cleanup
 - P5-05C photo quarantine upload authorization and durable reservation issuance completed in #218.
 - P5-05D private object existence and byte-level validation completed in #219.
 - P5-05E controlled private processing and protected Media handoff completed in #220.
-- P5-05F is next; its bounded scope is review-only duplicate content-hash signals plus retention and cleanup of abandoned, rejected, superseded, or completed private uploads.
+- P5-05F exact original-hash review signals and retention-safe private object cleanup completed in #221.
+- P5-05G is next; its bounded scope is public Photos upload-authorization and private-intake HTTP boundaries without browser form wiring, automatic processing, Media approval, or publication.
 
 ## P5-05A completion result
 
@@ -110,6 +111,22 @@ P5-05E provides:
 - cleanup of newly staged derivatives after failed database handoff;
 - no production codec or R2 binding, Media approval, public storage copy, canonical mutation, export, or publication.
 
+## P5-05F completion result
+
+P5-05F provides:
+
+- exact original SHA-256 matches as protected Media review signals;
+- same-target and different-target match context without contributor or storage disclosure;
+- a strict maximum of 25 unique matches and no automatic duplicate, misuse, rights, or rejection decision;
+- retention candidates for expired unconsumed authorization objects;
+- 30-day terminal cleanup for closed Photos Submissions without a Media handoff;
+- 30-day terminal cleanup for rejected or superseded P5-05 Media;
+- canonical quarantine/private object-key validation before deletion;
+- explicit rejection of public-scope, pending, accepted, or unrelated Media cleanup;
+- idempotent R2-compatible deletion and partial-failure reporting;
+- limited database hash, decision, target, and audit metadata retention after object deletion;
+- no perceptual hashing, known-abuse provider, scheduler, production R2 binding, public route, canonical mutation, export, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -132,6 +149,7 @@ P5-05E provides:
 - `docs/P5_05C_PHOTO_UPLOAD_AUTHORIZATION.md`
 - `docs/P5_05D_PHOTO_OBJECT_VALIDATION.md`
 - `docs/P5_05E_PHOTO_PRIVATE_PROCESSING_AND_MEDIA_HANDOFF.md`
+- `docs/P5_05F_PHOTO_DUPLICATE_SIGNALS_AND_PRIVATE_LIFECYCLE.md`
 
 ## Phase 5 sequence
 
@@ -139,19 +157,19 @@ P5-05E provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05F; P5-05E completed #220
+5. P5-05 — Photo and Media submission intake — In progress at P5-05G; P5-05F completed #221
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Define and implement P5-05F duplicate content-hash signals and private upload lifecycle cleanup. Exact or near-existing hashes must remain review signals rather than automatic misuse conclusions, and cleanup must distinguish active review material from expired authorization, abandoned upload, rejected Media, superseded derivative, and completed retention states.
+Define and implement P5-05G public Photos upload-authorization and private-intake HTTP boundaries. The routes must reuse trusted edge identity, Turnstile, distributed rate limiting, bounded JSON and content-type checks, opaque idempotency identity, protected contact handling, status-secret issuance, and privacy-safe error mapping. Direct object upload remains scoped and private; successful intake must not process, approve, publish, or mutate canonical Media automatically.
 
 ## Blocked
 
-No repository blocker is known. Production codec and R2 binding, asynchronous processing infrastructure, public Photos route and browser wiring, privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, and production review remain separate later slices.
+No repository blocker is known. Production R2 signing/binding, configured image codec and processing execution, browser `/photos` form and direct-upload orchestration, privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A private derivative and pending Media handoff are not public approval, duplicate hashes are review signals rather than proof of misuse, and opaque private storage references never become public object URLs through Submission intake.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Exact hashes are review signals rather than proof of misuse, private object deletion does not remove required audit metadata, and no public Photos HTTP request may create approved or public Media automatically.

@@ -1,7 +1,8 @@
-import { and, asc, desc, eq, isNull, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNull, ne, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import { mediaAssets, mediaFiles } from '../../db/schema';
 import type { MediaReviewSubject } from './decision';
+import { MAX_MEDIA_DUPLICATE_MATCHES, projectMediaDuplicateSignals } from './duplicate-signals';
 import type {
   MediaReviewDetailResponse,
   MediaReviewQueueItem,
@@ -132,6 +133,48 @@ export function createDrizzleMediaReviewWorkspaceBackend(
         .where(eq(mediaFiles.mediaAssetId, mediaAssetId))
         .orderBy(asc(mediaFiles.variant), asc(mediaFiles.id));
 
+      const subject = subjectFromRow(row);
+      const originalFile = fileRows.find((file) => file.variant === 'original');
+      let duplicateSignals = projectMediaDuplicateSignals(subject, null, []);
+      if (originalFile !== undefined) {
+        const duplicateRows = await database
+          .select({
+            mediaAssetId: mediaAssets.id,
+            reviewStatus: mediaAssets.reviewStatus,
+            visibility: mediaAssets.visibility,
+            entityId: mediaAssets.entityId,
+            locationId: mediaAssets.locationId,
+            claimId: mediaAssets.claimId,
+            evidenceId: mediaAssets.evidenceId,
+            submissionId: mediaAssets.submissionId,
+            sourceRecordId: mediaAssets.sourceRecordId,
+            createdAt: mediaAssets.createdAt,
+          })
+          .from(mediaFiles)
+          .innerJoin(mediaAssets, eq(mediaAssets.id, mediaFiles.mediaAssetId))
+          .where(
+            and(
+              eq(mediaFiles.variant, 'original'),
+              eq(mediaFiles.contentHash, originalFile.contentHash),
+              ne(mediaAssets.id, mediaAssetId),
+              isNull(mediaAssets.deletedAt),
+            ),
+          )
+          .orderBy(desc(mediaAssets.createdAt), asc(mediaAssets.id))
+          .limit(MAX_MEDIA_DUPLICATE_MATCHES + 1);
+        duplicateSignals = projectMediaDuplicateSignals(
+          subject,
+          originalFile.contentHash,
+          duplicateRows.map((duplicate) => ({
+            mediaAssetId: duplicate.mediaAssetId,
+            subject: subjectFromRow(duplicate),
+            reviewStatus: duplicate.reviewStatus,
+            visibility: duplicate.visibility,
+            createdAt: duplicate.createdAt.toISOString(),
+          })),
+        );
+      }
+
       const detail: MediaReviewDetailResponse = {
         generatedAt: asOf.toISOString(),
         media: {
@@ -141,7 +184,7 @@ export function createDrizzleMediaReviewWorkspaceBackend(
           reviewStatus: row.reviewStatus,
           rightsStatus: row.rightsStatus,
           visibility: row.visibility,
-          subject: subjectFromRow(row),
+          subject,
           altText: row.altText,
           displayOrder: row.displayOrder,
           fileCount: fileRows.length,
@@ -167,6 +210,7 @@ export function createDrizzleMediaReviewWorkspaceBackend(
           contentHash: file.contentHash,
           createdAt: file.createdAt.toISOString(),
         })),
+        duplicateSignals,
       };
       return detail;
     },
