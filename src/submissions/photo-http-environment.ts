@@ -79,8 +79,7 @@ function commonRuntime(environment: PhotoHttpEnvironment) {
   });
   const rateLimitPolicy = rateLimitPolicySchema.parse({
     CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: environment.CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS,
-    CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS:
-      environment.CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS,
+    CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: environment.CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS,
   });
   if (!isDurableObjectNamespace(environment.SUBMISSION_RATE_LIMIT_BUCKETS)) {
     throw new PhotoHttpEnvironmentConfigurationError();
