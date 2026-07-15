@@ -219,10 +219,7 @@ export function PhotoForm({
 
   const locked = pending !== null || flowState === 'authorizing' || flowState === 'submitting';
 
-  const updateBase = <Key extends keyof PhotoBaseValues>(
-    key: Key,
-    value: PhotoBaseValues[Key],
-  ) => {
+  const updateBase = <Key extends keyof PhotoBaseValues>(key: Key, value: PhotoBaseValues[Key]) => {
     setBaseValues((current) => ({ ...current, [key]: value }));
     setMessages([]);
     setSubmitError('');
@@ -235,9 +232,7 @@ export function PhotoForm({
   ) => {
     setPhotos((current) =>
       current.map((photo, photoIndex) =>
-        photoIndex === index
-          ? { ...photo, values: { ...photo.values, [key]: value } }
-          : photo,
+        photoIndex === index ? { ...photo, values: { ...photo.values, [key]: value } } : photo,
       ),
     );
     setMessages([]);
@@ -490,8 +485,8 @@ export function PhotoForm({
               }}
             />
             <p className="m-0 text-sm leading-6 text-muted">
-              JPEG, PNG, WebP, HEIC, or HEIF. Maximum 5 MB each, 40 MB total. Files upload
-              directly to private quarantine and never pass through the application JSON route.
+              JPEG, PNG, WebP, HEIC, or HEIF. Maximum 5 MB each, 40 MB total. Files upload directly
+              to private quarantine and never pass through the application JSON route.
             </p>
             <p className="m-0 text-sm font-medium text-ink">
               {photos.length} of {maximumPhotoCount} selected · {Math.ceil(totalBytes / 1024)} KiB
@@ -565,11 +560,7 @@ export function PhotoForm({
               value={photo.values.rightsStatus}
               options={rightsOptions}
               onChange={(value) =>
-                updatePhoto(
-                  index,
-                  'rightsStatus',
-                  value as PhotoBrowserMediaValues['rightsStatus'],
-                )
+                updatePhoto(index, 'rightsStatus', value as PhotoBrowserMediaValues['rightsStatus'])
               }
             />
             <Checkbox
@@ -655,16 +646,15 @@ export function PhotoForm({
           disabled={locked}
           onChange={(value) => updateBase('submissionTermsAccepted', value)}
         >
-          I accept the submission terms and confirm that I am submitting these photos in good
-          faith.
+          I accept the submission terms and confirm that I am submitting these photos in good faith.
         </Checkbox>
 
         {pending !== null ? (
           <div className="rounded-control border border-brand-200 bg-brand-50 p-4 text-sm leading-6 text-ink">
             <p className="m-0 font-semibold">Private uploads completed</p>
             <p className="mt-2 mb-0">
-              Complete the verification challenge again, then finalize the private Submission
-              before the authorization expires at {new Date(pending.expiresAt).toLocaleString()}.
+              Complete the verification challenge again, then finalize the private Submission before
+              the authorization expires at {new Date(pending.expiresAt).toLocaleString()}.
             </p>
           </div>
         ) : null}
