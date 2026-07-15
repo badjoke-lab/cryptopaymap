@@ -17,7 +17,14 @@ function ascii(value: string): number[] {
 }
 
 function webp(width: number, height: number): Uint8Array<ArrayBuffer> {
-  const payload = [0, 0, 0, 0, ...uint32Le(width - 1).slice(0, 3), ...uint32Le(height - 1).slice(0, 3)];
+  const payload = [
+    0,
+    0,
+    0,
+    0,
+    ...uint32Le(width - 1).slice(0, 3),
+    ...uint32Le(height - 1).slice(0, 3),
+  ];
   const chunk = [...ascii('VP8X'), ...uint32Le(payload.length), ...payload];
   return Uint8Array.from([
     ...ascii('RIFF'),

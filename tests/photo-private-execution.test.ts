@@ -65,7 +65,8 @@ function context(): PhotoProcessingSubmissionContext {
 
 describe('P5-05J protected private photo execution', () => {
   it('builds the exact post-intake validation request before protected processing', async () => {
-    const validationCalls: Array<{ request: unknown; submissionId: unknown; validatedAt?: Date }> = [];
+    const validationCalls: Array<{ request: unknown; submissionId: unknown; validatedAt?: Date }> =
+      [];
     const processingCalls: Array<{ request: unknown; processedAt?: Date }> = [];
     const body = Uint8Array.from([1, 2, 3]);
     const validation = {
