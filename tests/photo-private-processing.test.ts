@@ -8,9 +8,12 @@ import {
   type PhotoMediaHandoffPersistence,
   type PhotoPrivateProcessingRequest,
   type PhotoPrivateProcessor,
+  type PhotoProcessedDerivative,
   type PhotoProcessingSubmissionContext,
 } from '../src/submissions/photo-private-processing';
 import { photoQuarantineObjectKey } from '../src/submissions/photo-upload-authorization';
+
+type Bytes = Uint8Array<ArrayBuffer>;
 
 const submissionId = '10000000-0000-4000-8000-000000000001';
 const intakeRequestId = '20000000-0000-4000-8000-000000000001';
@@ -54,7 +57,7 @@ function pngChunk(type: string, data: number[]): number[] {
   ];
 }
 
-function png(width: number, height: number): Uint8Array {
+function png(width: number, height: number): Bytes {
   return Uint8Array.from([
     0x89,
     0x50,
@@ -70,7 +73,7 @@ function png(width: number, height: number): Uint8Array {
   ]);
 }
 
-function webp(width: number, height: number, animated = false): Uint8Array {
+function webp(width: number, height: number, animated = false): Bytes {
   const payload = [
     animated ? 0x02 : 0x00,
     0,
@@ -89,9 +92,7 @@ function webp(width: number, height: number, animated = false): Uint8Array {
 }
 
 async function hash(bytes: Uint8Array): Promise<string> {
-  const digest = new Uint8Array(
-    await crypto.subtle.digest('SHA-256', Uint8Array.from(bytes)),
-  );
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', Uint8Array.from(bytes)));
   return [...digest].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
@@ -100,7 +101,7 @@ class MemoryPersistence implements PhotoMediaHandoffPersistence {
   readonly commits: PhotoMediaHandoffCommitCommand[] = [];
   failCommit = false;
 
-  constructor(readonly context: PhotoProcessingSubmissionContext | null) {}
+  constructor(public context: PhotoProcessingSubmissionContext | null) {}
 
   async loadSubmissionContext() {
     return this.context === null ? null : structuredClone(this.context);
@@ -113,7 +114,9 @@ class MemoryPersistence implements PhotoMediaHandoffPersistence {
 
   async commitHandoff(command: PhotoMediaHandoffCommitCommand) {
     if (this.failCommit) throw new Error('commit failed');
-    if (this.events.has(command.eventId)) throw new Error('duplicate event');
+    if (this.events.size > 0 || this.events.has(command.eventId)) {
+      throw new Error('Submission already has a Media handoff');
+    }
     if (
       this.context === null ||
       command.submissionId !== this.context.id ||
@@ -127,12 +130,10 @@ class MemoryPersistence implements PhotoMediaHandoffPersistence {
   }
 }
 
-function processor(overrides: Partial<PhotoPrivateProcessor> = {}): PhotoPrivateProcessor & {
-  calls: number;
-} {
+function processor(): PhotoPrivateProcessor & { calls: number } {
   const result: PhotoPrivateProcessor & { calls: number } = {
     calls: 0,
-    async process() {
+    async process(): Promise<PhotoProcessedDerivative[]> {
       result.calls += 1;
       return [
         {
@@ -155,7 +156,6 @@ function processor(overrides: Partial<PhotoPrivateProcessor> = {}): PhotoPrivate
         },
       ];
     },
-    ...overrides,
   };
   return result;
 }
@@ -244,7 +244,7 @@ async function fixture() {
       ],
     },
   };
-  return { body, contentHash, context, request };
+  return { contentHash, context, request };
 }
 
 function leakText(value: unknown): string {
@@ -297,7 +297,7 @@ describe('P5-05E private photo processing and Media handoff', () => {
     expect(leakText(receipt)).not.toContain('body');
   });
 
-  it('replays the same request without reprocessing or rewriting derivatives', async () => {
+  it('replays without reprocessing even if the Submission version later changes', async () => {
     const { context, request } = await fixture();
     const persistence = new MemoryPersistence(context);
     const derivatives = createInMemoryPrivatePhotoDerivativeStore();
@@ -309,7 +309,12 @@ describe('P5-05E private photo processing and Media handoff', () => {
     });
 
     const committed = await service.process(request, processedAt);
-    const replayed = await service.process(request, new Date('2026-07-15T01:00:00.000Z'));
+    persistence.context = {
+      ...context,
+      workflowStatus: 'triage',
+      updatedAt: '2026-07-15T01:00:00.000Z',
+    };
+    const replayed = await service.process(request, new Date('2026-07-15T02:00:00.000Z'));
 
     expect(committed.state).toBe('committed');
     expect(replayed).toEqual({ ...committed, state: 'replayed' });
@@ -321,10 +326,9 @@ describe('P5-05E private photo processing and Media handoff', () => {
   it('rejects changed content under the same processing request identity', async () => {
     const { context, request } = await fixture();
     const persistence = new MemoryPersistence(context);
-    const derivatives = createInMemoryPrivatePhotoDerivativeStore();
     const service = createPhotoPrivateProcessingService({
       persistence,
-      derivatives,
+      derivatives: createInMemoryPrivatePhotoDerivativeStore(),
       processor: processor(),
     });
     await service.process(request, processedAt);
@@ -337,7 +341,11 @@ describe('P5-05E private photo processing and Media handoff', () => {
   it('re-hashes the exact validated bytes before invoking the processor', async () => {
     const { context, request } = await fixture();
     const changed = structuredClone(request);
-    changed.validation.objects[0]!.body[0] ^= 0xff;
+    const changedObject = changed.validation.objects[0];
+    if (changedObject === undefined) throw new Error('fixture object is missing');
+    const changedBody = Uint8Array.from(changedObject.body);
+    changedBody[0] = (changedBody[0] ?? 0) ^ 0xff;
+    changedObject.body = changedBody;
     const privateProcessor = processor();
     const service = createPhotoPrivateProcessingService({
       persistence: new MemoryPersistence(context),
@@ -353,8 +361,7 @@ describe('P5-05E private photo processing and Media handoff', () => {
 
   it('requires reservations consumed by the exact Photos Submission after validation', async () => {
     const { context, request } = await fixture();
-    context.reservations[0]!.consumedBySubmissionId =
-      '10000000-0000-4000-8000-000000000099';
+    context.reservations[0]!.consumedBySubmissionId = '10000000-0000-4000-8000-000000000099';
     const service = createPhotoPrivateProcessingService({
       persistence: new MemoryPersistence(context),
       derivatives: createInMemoryPrivatePhotoDerivativeStore(),
@@ -370,7 +377,7 @@ describe('P5-05E private photo processing and Media handoff', () => {
     const { context, request } = await fixture();
     const cases: PhotoPrivateProcessor[] = [
       {
-        async process() {
+        async process(): Promise<PhotoProcessedDerivative[]> {
           return [
             {
               variant: 'display',
@@ -394,7 +401,7 @@ describe('P5-05E private photo processing and Media handoff', () => {
         },
       },
       {
-        async process() {
+        async process(): Promise<PhotoProcessedDerivative[]> {
           return [
             {
               variant: 'display',
@@ -418,7 +425,7 @@ describe('P5-05E private photo processing and Media handoff', () => {
         },
       },
       {
-        async process() {
+        async process(): Promise<PhotoProcessedDerivative[]> {
           return [
             {
               variant: 'display',
@@ -442,7 +449,7 @@ describe('P5-05E private photo processing and Media handoff', () => {
         },
       },
       {
-        async process() {
+        async process(): Promise<PhotoProcessedDerivative[]> {
           return [
             {
               variant: 'display',
@@ -499,7 +506,32 @@ describe('P5-05E private photo processing and Media handoff', () => {
     expect(persistence.commits).toHaveLength(0);
   });
 
-  it('fails closed when the Photos Submission is absent or terminal', async () => {
+  it('prevents a second processing identity from creating duplicate Media', async () => {
+    const { context, request } = await fixture();
+    const persistence = new MemoryPersistence(context);
+    const derivatives = createInMemoryPrivatePhotoDerivativeStore();
+    const privateProcessor = processor();
+    const service = createPhotoPrivateProcessingService({
+      persistence,
+      derivatives,
+      processor: privateProcessor,
+    });
+    await service.process(request, processedAt);
+
+    await expect(
+      service.process(
+        {
+          ...request,
+          processingRequestId: '30000000-0000-4000-8000-000000000002',
+        },
+        new Date('2026-07-15T00:07:00.000Z'),
+      ),
+    ).rejects.toMatchObject({ code: 'persistence_conflict' });
+    expect(persistence.commits).toHaveLength(1);
+    expect(derivatives.snapshot()).toHaveLength(2);
+  });
+
+  it('fails closed when the Photos Submission is absent or malformed', async () => {
     const { context, request } = await fixture();
     const missing = createPhotoPrivateProcessingService({
       persistence: new MemoryPersistence(null),
@@ -510,16 +542,17 @@ describe('P5-05E private photo processing and Media handoff', () => {
       code: 'submission_unavailable',
     });
 
-    const terminal = structuredClone(context) as PhotoProcessingSubmissionContext;
-    terminal.workflowStatus = 'received';
-    const persistence = new MemoryPersistence(terminal);
-    persistence.context!.submissionType = 'photos';
-    persistence.context!.normalizedPayload = null;
-    const invalid = createPhotoPrivateProcessingService({
-      persistence,
+    const malformedContext: PhotoProcessingSubmissionContext = {
+      ...context,
+      normalizedPayload: null,
+    };
+    const malformed = createPhotoPrivateProcessingService({
+      persistence: new MemoryPersistence(malformedContext),
       derivatives: createInMemoryPrivatePhotoDerivativeStore(),
       processor: processor(),
     });
-    await expect(invalid.process(request, processedAt)).rejects.toBeInstanceOf(Error);
+    await expect(malformed.process(request, processedAt)).rejects.toMatchObject({
+      code: 'submission_unavailable',
+    });
   });
 });
