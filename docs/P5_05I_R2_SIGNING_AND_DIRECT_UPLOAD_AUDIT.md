@@ -1,7 +1,7 @@
 # P5-05I configured R2 signing and direct-upload audit
 
 **Implementation item:** P5-05I  
-**Status:** In progress  
+**Status:** Completed in PR #225  
 **Last updated:** 2026-07-15
 
 ## Purpose
@@ -99,28 +99,31 @@ The safe audit result contains only:
 
 It rejects any result containing an access key, secret-key marker, signature parameter, status secret, request UUID, or reservation UUID.
 
+## Completion result
+
+P5-05I provides:
+
+- a dependency-free Web Crypto AWS SigV4 signer for the Cloudflare R2 S3 endpoint;
+- strict server-only R2 account, bucket, access-key, and secret-key configuration;
+- one short-lived signed `PUT` for the deterministic private quarantine object only;
+- exact binding of content type, host, and all private validation metadata headers;
+- removal of arbitrary upload-authorizer environment injection from public runtime composition;
+- independent signature recomputation and object-path tampering tests;
+- bounded expiry and private-key-scope rejection;
+- an executable synthetic browser-style direct upload followed by real private Photos intake and atomic reservation consumption;
+- privacy-safe audit output and built-HTML leakage checks;
+- no automatic object validation, image processing, Media approval, public copy, canonical mutation, export, or publication.
+
 ## Validation
 
-P5-05I adds:
+Final implementation head `e60a5cb659111c0a182ee84afe0540de2be848da` passed all required workflows:
 
-- deterministic SigV4 URL and header tests;
-- independent signature recomputation;
-- object-path tampering rejection;
-- strict environment configuration tests;
-- expiry and private-key-scope rejection;
-- executable synthetic direct-upload and private-intake audit;
-- built HTML leakage checks for all R2 configuration names;
-- full repository format, lint, Astro/TypeScript, schema, migration, unit, build, accessibility, staging, and screenshot workflows.
+- Foundation validation;
+- Migration drift;
+- Staging review validation;
+- Capture representative review screenshots.
 
-## Required result
-
-- short-lived HTTPS `PUT` authorization for only the deterministic private quarantine key;
-- exact `content-type` and required `x-amz-meta-*` header binding;
-- strict account, bucket, access-key, and secret-key environment configuration;
-- no arbitrary production authorizer injection;
-- deterministic signing tests and malformed-configuration rejection;
-- a synthetic upload/intake audit with privacy-safe receipts;
-- no credential, signed-URL, file-byte, contact, or status-secret logging.
+Foundation validation passed formatting, lint, Astro and TypeScript, executable runtime schemas, migration history, all unit and component tests, static build, accessibility, Phase 1 files, and staging artifact checks.
 
 ## Explicit exclusions
 
