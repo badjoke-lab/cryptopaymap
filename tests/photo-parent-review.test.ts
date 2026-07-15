@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { createPhotoDetailHandler } from '../functions/admin/api/photo-submissions/[submissionId]';
 import { createPhotoQueueHandler } from '../functions/admin/api/photo-submissions';
+import type { SubmissionReviewContext } from '../src/admin/submissions/authorization';
 import {
   loadPhotoSubmissionDetail,
   loadPhotoSubmissionQueue,
@@ -18,10 +19,10 @@ const identity = {
   subject: 'reviewer-subject',
   email: 'reviewer@example.com',
 };
-const reviewContext = {
+const reviewContext: SubmissionReviewContext = {
   actorId: identity.actorId,
   actorType: identity.actorType,
-  capabilities: ['submission:read'] as const,
+  capabilities: ['submission:read'],
 };
 
 function queuePage(): PhotoSubmissionQueuePageData {
@@ -142,12 +143,7 @@ describe('P5-06B2B Photos parent review', () => {
       pagesContext(`https://example.test/admin/api/photo-submissions/${submissionId}`),
     );
     expect(detailResponse.status).toBe(200);
-    expect(loadDetail).toHaveBeenCalledWith(
-      reviewContext,
-      submissionId,
-      expect.any(Object),
-      now,
-    );
+    expect(loadDetail).toHaveBeenCalledWith(reviewContext, submissionId, expect.any(Object), now);
 
     const invalid = await createPhotoDetailHandler({ loadDetail })(
       pagesContext('https://example.test/admin/api/photo-submissions/invalid', [submissionId]),
