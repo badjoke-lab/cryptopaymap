@@ -46,10 +46,7 @@ function validPhotoSubmission() {
     targetType: 'location',
     targetId,
     relationship: 'customer',
-    contact: {
-      email: 'submitter@example.com',
-      contactAllowed: true,
-    },
+    contact: { email: 'submitter@example.com', contactAllowed: true },
     evidenceLinks: [],
     originalPayload: {
       schemaVersion: 'photo-media-v1',
@@ -83,14 +80,8 @@ function validPhotoSubmission() {
   };
 }
 
-function authorizationRequest(
-  body: unknown = {
-    challengeToken: 'turnstile-token',
-    authorization: validAuthorization(),
-  },
-  idempotencyKey = requestId,
-) {
-  return new Request('https://example.test/api/photos/upload-authorizations', {
+function jsonRequest(url: string, body: unknown, idempotencyKey = requestId): Request {
+  return new Request(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
@@ -99,6 +90,20 @@ function authorizationRequest(
     },
     body: JSON.stringify(body),
   });
+}
+
+function authorizationRequest(
+  idempotencyKey = requestId,
+  body: unknown = {
+    challengeToken: 'turnstile-token',
+    authorization: validAuthorization(),
+  },
+): Request {
+  return jsonRequest(
+    'https://example.test/api/photos/upload-authorizations',
+    body,
+    idempotencyKey,
+  );
 }
 
 function intakeRequest(
@@ -106,22 +111,13 @@ function intakeRequest(
     challengeToken: 'turnstile-token',
     submission: validPhotoSubmission(),
   },
-  idempotencyKey = requestId,
-) {
-  return new Request('https://example.test/api/photos', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json; charset=utf-8',
-      'Idempotency-Key': idempotencyKey,
-      'CF-Connecting-IP': '203.0.113.10',
-    },
-    body: JSON.stringify(body),
-  });
+): Request {
+  return jsonRequest('https://example.test/api/photos', body);
 }
 
-function pagesContext(inputRequest: Request): PhotoHttpPagesContext<Record<string, unknown>> {
+function pagesContext(request: Request): PhotoHttpPagesContext<Record<string, unknown>> {
   return {
-    request: inputRequest,
+    request,
     env: {},
     params: {},
     data: {},
@@ -148,7 +144,7 @@ const authorizationReceipt: PhotoUploadAuthorizationReceipt = {
   ],
 };
 
-function uploadRuntimeFixture(options?: {
+function uploadFixture(options?: {
   rateLimitOutcome?: 'allow' | 'deny' | 'unavailable';
   challengeOutcome?: 'allow' | 'deny' | 'unavailable';
   authorizationError?: Error;
@@ -177,7 +173,7 @@ function uploadRuntimeFixture(options?: {
   });
   const authorize = vi.fn(async () => {
     order.push('authorize');
-    if (options?.authorizationError) throw options.authorizationError;
+    if (options?.authorizationError !== undefined) throw options.authorizationError;
     return structuredClone(authorizationReceipt);
   });
   const runtime: PhotoUploadAuthorizationHttpRuntime = {
@@ -186,23 +182,18 @@ function uploadRuntimeFixture(options?: {
     challengeVerifier: { verify },
     uploadAuthorizations: { authorize },
   };
-  return { runtime, order, deriveBucketKey, consume, verify, authorize };
-}
-
-function uploadHandlerFor(options?: Parameters<typeof uploadRuntimeFixture>[0]) {
-  const fixture = uploadRuntimeFixture(options);
-  const runtimeFromEnvironment = vi.fn(() => fixture.runtime);
+  const runtimeFromEnvironment = vi.fn(() => runtime);
   const handler = createPhotoUploadAuthorizationHttpHandler({
     runtimeFromEnvironment,
     now: () => now,
   });
-  return { handler, runtimeFromEnvironment, ...fixture };
+  return { handler, runtimeFromEnvironment, order, deriveBucketKey, consume, verify, authorize };
 }
 
-function intakeRuntimeFixture(submitError?: Error) {
+function intakeFixture(submitError?: Error) {
   const deriveBucketKey = vi.fn(async () => opaqueBucket);
   const submit = vi.fn(async () => {
-    if (submitError) throw submitError;
+    if (submitError !== undefined) throw submitError;
     return {
       state: 'committed' as const,
       publicId: 'CPM-S-2026-000123',
@@ -214,22 +205,17 @@ function intakeRuntimeFixture(submitError?: Error) {
     bucketDeriver: { deriveBucketKey },
     intake: { submit } satisfies AbuseControlledSubmissionIntakeService,
   };
-  return { runtime, deriveBucketKey, submit };
-}
-
-function intakeHandlerFor(submitError?: Error) {
-  const fixture = intakeRuntimeFixture(submitError);
-  const runtimeFromEnvironment = vi.fn(() => fixture.runtime);
+  const runtimeFromEnvironment = vi.fn(() => runtime);
   const handler = createPhotoPrivateIntakeHttpHandler({
     runtimeFromEnvironment,
     now: () => now,
   });
-  return { handler, runtimeFromEnvironment, ...fixture };
+  return { handler, runtimeFromEnvironment, deriveBucketKey, submit };
 }
 
 describe('P5-05G public Photos HTTP boundaries', () => {
-  it('authorizes private uploads only after edge, rate-limit, and challenge checks', async () => {
-    const fixture = uploadHandlerFor();
+  it('authorizes a private upload only after edge, rate-limit, and challenge checks', async () => {
+    const fixture = uploadFixture();
     const response = await fixture.handler(pagesContext(authorizationRequest()));
 
     expect(response.status).toBe(200);
@@ -253,12 +239,10 @@ describe('P5-05G public Photos HTTP boundaries', () => {
     expect(fixture.authorize).toHaveBeenCalledWith(validAuthorization(), now);
   });
 
-  it('requires the idempotency header to match the authorization intake identity', async () => {
-    const fixture = uploadHandlerFor();
+  it('requires the header identity to match the authorization intake identity', async () => {
+    const fixture = uploadFixture();
     const response = await fixture.handler(
-      pagesContext(
-        authorizationRequest(undefined, '10000000-0000-4000-8000-000000000002'),
-      ),
+      pagesContext(authorizationRequest('10000000-0000-4000-8000-000000000002')),
     );
 
     expect(response.status).toBe(400);
@@ -266,34 +250,34 @@ describe('P5-05G public Photos HTTP boundaries', () => {
     expect(fixture.runtimeFromEnvironment).not.toHaveBeenCalled();
   });
 
-  it('maps upload rate-limit, challenge, and reservation conflicts to bounded errors', async () => {
-    const limited = uploadHandlerFor({ rateLimitOutcome: 'deny' });
+  it('maps upload abuse and reservation failures to bounded public errors', async () => {
+    const limited = uploadFixture({ rateLimitOutcome: 'deny' });
     const limitedResponse = await limited.handler(pagesContext(authorizationRequest()));
     expect(limitedResponse.status).toBe(429);
     expect(limitedResponse.headers.get('Retry-After')).toBe('17');
     expect(limited.verify).not.toHaveBeenCalled();
     expect(limited.authorize).not.toHaveBeenCalled();
 
-    const challenged = uploadHandlerFor({ challengeOutcome: 'deny' });
+    const challenged = uploadFixture({ challengeOutcome: 'deny' });
     const challengeResponse = await challenged.handler(pagesContext(authorizationRequest()));
     expect(challengeResponse.status).toBe(400);
     expect(challenged.authorize).not.toHaveBeenCalled();
 
-    const conflicted = uploadHandlerFor({
+    const conflicted = uploadFixture({
       authorizationError: new PhotoUploadAuthorizationError(
         'idempotency_conflict',
         'private reservation detail',
       ),
     });
     const conflictResponse = await conflicted.handler(pagesContext(authorizationRequest()));
-    expect(conflictResponse.status).toBe(409);
     const conflictText = await conflictResponse.text();
+    expect(conflictResponse.status).toBe(409);
     expect(JSON.parse(conflictText)).toEqual({ error: 'photo_request_conflict' });
     expect(conflictText).not.toContain('private reservation detail');
   });
 
-  it('creates only a private Submission receipt through the intake route', async () => {
-    const fixture = intakeHandlerFor();
+  it('returns only the private Submission receipt from intake', async () => {
+    const fixture = intakeFixture();
     const response = await fixture.handler(pagesContext(intakeRequest()));
 
     expect(response.status).toBe(202);
@@ -318,25 +302,25 @@ describe('P5-05G public Photos HTTP boundaries', () => {
     });
   });
 
-  it('maps private intake rate-limit and idempotency errors without internal detail', async () => {
-    const limited = await intakeHandlerFor(
+  it('maps intake rate-limit and idempotency failures without private detail', async () => {
+    const limited = await intakeFixture(
       new SubmissionAbuseControlError('rate_limited', 'private rate detail', 11),
     ).handler(pagesContext(intakeRequest()));
     expect(limited.status).toBe(429);
     expect(limited.headers.get('Retry-After')).toBe('11');
     await expect(limited.json()).resolves.toEqual({ error: 'photo_rate_limited' });
 
-    const conflict = await intakeHandlerFor(
+    const conflict = await intakeFixture(
       new SubmissionIntakeError('idempotency_conflict', 'private submission detail'),
     ).handler(pagesContext(intakeRequest()));
+    const conflictText = await conflict.text();
     expect(conflict.status).toBe(409);
-    const text = await conflict.text();
-    expect(JSON.parse(text)).toEqual({ error: 'photo_request_conflict' });
-    expect(text).not.toContain('private submission detail');
+    expect(JSON.parse(conflictText)).toEqual({ error: 'photo_request_conflict' });
+    expect(conflictText).not.toContain('private submission detail');
   });
 
   it('rejects unsupported media, oversized bodies, and undeclared storage fields early', async () => {
-    const unsupportedFixture = intakeHandlerFor();
+    const unsupportedFixture = intakeFixture();
     const unsupported = intakeRequest();
     const unsupportedHeaders = new Headers(unsupported.headers);
     unsupportedHeaders.set('Content-Type', 'text/plain');
@@ -352,7 +336,7 @@ describe('P5-05G public Photos HTTP boundaries', () => {
     expect(unsupportedResponse.status).toBe(415);
     expect(unsupportedFixture.runtimeFromEnvironment).not.toHaveBeenCalled();
 
-    const oversizedFixture = uploadHandlerFor();
+    const oversizedFixture = uploadFixture();
     const oversizedResponse = await oversizedFixture.handler(
       pagesContext(
         new Request('https://example.test/api/photos/upload-authorizations', {
@@ -369,10 +353,10 @@ describe('P5-05G public Photos HTTP boundaries', () => {
     expect(oversizedResponse.status).toBe(413);
     expect(oversizedFixture.runtimeFromEnvironment).not.toHaveBeenCalled();
 
-    const leakedFixture = uploadHandlerFor();
+    const leakedFixture = uploadFixture();
     const leakedResponse = await leakedFixture.handler(
       pagesContext(
-        authorizationRequest({
+        authorizationRequest(requestId, {
           challengeToken: 'turnstile-token',
           authorization: {
             ...validAuthorization(),
@@ -385,8 +369,8 @@ describe('P5-05G public Photos HTTP boundaries', () => {
     expect(leakedFixture.runtimeFromEnvironment).not.toHaveBeenCalled();
   });
 
-  it('fails closed when trusted Cloudflare edge identity is missing', async () => {
-    const fixture = intakeHandlerFor();
+  it('fails closed without trusted Cloudflare edge identity', async () => {
+    const fixture = intakeFixture();
     const input = intakeRequest();
     const headers = new Headers(input.headers);
     headers.delete('CF-Connecting-IP');
