@@ -96,7 +96,8 @@ function assertConsumedReservationSet(
   }
 
   for (const reservation of reservations) {
-    const consumedAt = reservation.consumedAt === null ? Number.NaN : Date.parse(reservation.consumedAt);
+    const consumedAt =
+      reservation.consumedAt === null ? Number.NaN : Date.parse(reservation.consumedAt);
     const expiresAt = Date.parse(reservation.expiresAt);
     if (
       reservation.intakeRequestId !== request.intakeRequestId ||
