@@ -1,14 +1,4 @@
-import {
-  and,
-  asc,
-  eq,
-  inArray,
-  isNull,
-  lte,
-  notExists,
-  or,
-  sql,
-} from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull, lte, notExists, or, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
   mediaAssets,
@@ -178,10 +168,7 @@ export function createDrizzlePhotoPrivateCleanupCandidateReader(
         .from(mediaAssets)
         .innerJoin(
           submissionEvents,
-          and(
-            eq(submissionEvents.action, 'photo_media_handoff_created'),
-            handoffContainsAsset,
-          ),
+          and(eq(submissionEvents.action, 'photo_media_handoff_created'), handoffContainsAsset),
         )
         .innerJoin(submissions, eq(submissions.id, submissionEvents.submissionId))
         .where(
@@ -233,16 +220,20 @@ export function createDrizzlePhotoPrivateCleanupCandidateReader(
         if (row.handoffPayload === null) {
           throw new Error('Photo Media handoff payload is missing.');
         }
-        const payload = photoMediaHandoffEventPayloadSchema.parse(
-          JSON.parse(row.handoffPayload),
-        );
-        const handoffItem = payload.media.find(
-          (item) => item.mediaAssetId === row.mediaAssetId,
-        );
+        const payload = photoMediaHandoffEventPayloadSchema.parse(JSON.parse(row.handoffPayload));
+        const handoffItem = payload.media.find((item) => item.mediaAssetId === row.mediaAssetId);
         if (handoffItem === undefined || payload.submissionId !== row.submissionId) {
           throw new Error('Photo Media handoff payload does not match its terminal Media Asset.');
         }
-        const files = filesByMedia.get(row.mediaAssetId) ?? [];
+        const files = (filesByMedia.get(row.mediaAssetId) ?? []).map((file) => {
+          if (file.storageScope !== 'quarantine' && file.storageScope !== 'private') {
+            throw new Error('Photo private cleanup selected a public Media file.');
+          }
+          return {
+            ...file,
+            storageScope: file.storageScope,
+          };
+        });
         if (files.length === 0) continue;
         candidates.push({
           referenceType: 'media_asset',
@@ -253,10 +244,7 @@ export function createDrizzlePhotoPrivateCleanupCandidateReader(
           mediaAssetId: row.mediaAssetId,
           objects: files.map((file) => ({
             objectRefId: file.id,
-            reservationId:
-              file.storageScope === 'quarantine'
-                ? handoffItem.quarantineUploadId
-                : null,
+            reservationId: file.storageScope === 'quarantine' ? handoffItem.quarantineUploadId : null,
             mediaAssetId: row.mediaAssetId,
             mediaFileId: file.id,
             variant: file.variant,
