@@ -244,7 +244,8 @@ export function createDrizzlePhotoPrivateCleanupCandidateReader(
           mediaAssetId: row.mediaAssetId,
           objects: files.map((file) => ({
             objectRefId: file.id,
-            reservationId: file.storageScope === 'quarantine' ? handoffItem.quarantineUploadId : null,
+            reservationId:
+              file.storageScope === 'quarantine' ? handoffItem.quarantineUploadId : null,
             mediaAssetId: row.mediaAssetId,
             mediaFileId: file.id,
             variant: file.variant,
