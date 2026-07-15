@@ -152,11 +152,9 @@ async function readEvent(
   try {
     return await backend.readEvent(requestId);
   } catch (error) {
-    throw new ReviewEntryError(
-      'backend_failure',
-      'The review-entry replay check failed.',
-      { cause: error },
-    );
+    throw new ReviewEntryError('backend_failure', 'The review-entry replay check failed.', {
+      cause: error,
+    });
   }
 }
 

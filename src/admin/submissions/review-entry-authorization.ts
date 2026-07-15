@@ -31,7 +31,11 @@ export interface SubmissionReviewEntryContext {
 }
 
 export class SubmissionReviewEntryAuthorizationError extends Error {
-  constructor(readonly code: 'configuration' | 'denied', message: string, options?: ErrorOptions) {
+  constructor(
+    readonly code: 'configuration' | 'denied',
+    message: string,
+    options?: ErrorOptions,
+  ) {
     super(message, options);
     this.name = 'SubmissionReviewEntryAuthorizationError';
   }

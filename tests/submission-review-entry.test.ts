@@ -92,31 +92,32 @@ function request(
 }
 
 describe('P5-06B1 common Submission review entry', () => {
-  it.each(['payment_report', 'problem_report', 'photos'] as const)(
-    'moves a %s Submission from received to triage',
-    async (submissionType) => {
-      const backend = new InMemoryBackend(submissionType);
+  it.each([
+    'payment_report',
+    'problem_report',
+    'photos',
+  ] as const)('moves a %s Submission from received to triage', async (submissionType) => {
+    const backend = new InMemoryBackend(submissionType);
 
-      const receipt = await applySubmissionReviewEntry(
-        context(),
-        backend,
-        submissionId,
-        request(submissionType),
-        changedAt,
-      );
+    const receipt = await applySubmissionReviewEntry(
+      context(),
+      backend,
+      submissionId,
+      request(submissionType),
+      changedAt,
+    );
 
-      expect(receipt).toEqual({
-        state: 'committed',
-        submissionId,
-        submissionType,
-        fromStatus: 'received',
-        toStatus: 'triage',
-        action: 'begin_triage',
-        changedAt: changedAt.toISOString(),
-      });
-      expect(backend.state?.workflowStatus).toBe('triage');
-    },
-  );
+    expect(receipt).toEqual({
+      state: 'committed',
+      submissionId,
+      submissionType,
+      fromStatus: 'received',
+      toStatus: 'triage',
+      action: 'begin_triage',
+      changedAt: changedAt.toISOString(),
+    });
+    expect(backend.state?.workflowStatus).toBe('triage');
+  });
 
   it('moves a report from triage to in_review', async () => {
     const backend = new InMemoryBackend('payment_report', 'triage');

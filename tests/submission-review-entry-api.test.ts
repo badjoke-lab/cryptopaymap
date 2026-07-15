@@ -87,9 +87,7 @@ describe('P5-06B1 protected Submission review-entry API', () => {
 
   it('denies missing identity and fails closed when authorization is not configured', async () => {
     const runReviewEntry = vi.fn();
-    const denied = await createReviewEntryHandler({ runReviewEntry })(
-      context({ identity: null }),
-    );
+    const denied = await createReviewEntryHandler({ runReviewEntry })(context({ identity: null }));
     expect(denied.status).toBe(403);
     await expect(denied.json()).resolves.toEqual({ error: 'submission_review_entry_denied' });
 
