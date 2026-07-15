@@ -8,11 +8,9 @@ import {
 } from './photo-browser-contract';
 import { photosSubmissionIntakeSchema, type PhotosSubmissionIntake } from './photo-media-contract';
 
-const publicErrorSchema = z
-  .object({
-    error: z.string().min(1).max(128),
-  })
-  .strict();
+const publicErrorSchema = z.object({
+  error: z.string().min(1).max(128),
+});
 
 export class PhotoBrowserRequestError extends Error {
   constructor(
