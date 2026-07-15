@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05E — Controlled private photo processing and protected Media handoff
+P5-05F — Photo duplicate signals and private upload lifecycle cleanup
 
 ## Current repository state
 
@@ -32,7 +32,8 @@ P5-05E — Controlled private photo processing and protected Media handoff
 - P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
 - P5-05C photo quarantine upload authorization and durable reservation issuance completed in #218.
 - P5-05D private object existence and byte-level validation completed in #219.
-- P5-05E is next; its bounded scope is controlled private processing and protected Media handoff without public approval or publication.
+- P5-05E controlled private processing and protected Media handoff completed in #220.
+- P5-05F is next; its bounded scope is review-only duplicate content-hash signals plus retention and cleanup of abandoned, rejected, superseded, or completed private uploads.
 
 ## P5-05A completion result
 
@@ -92,6 +93,23 @@ P5-05D provides:
 - injectable decoding and R2-compatible storage boundaries;
 - no production R2 binding, EXIF removal, derivative generation, Media creation, canonical mutation, export, or publication.
 
+## P5-05E completion result
+
+P5-05E provides:
+
+- exact Photos Submission, target, normalized item, validated byte, and consumed reservation matching;
+- immediate SHA-256 re-verification before processing;
+- an injectable controlled processor contract requiring metadata removal and orientation normalization;
+- bounded, structurally revalidated JPEG or WebP display and thumbnail derivatives;
+- canonical private derivative keys and idempotent R2-compatible writes;
+- deterministic Media Asset/File and private handoff-event identities;
+- one private pending `public_gallery_candidate` Media Asset per submitted item;
+- quarantine original plus private display and thumbnail Media Files;
+- Submission-scoped atomic persistence and one-handoff-per-Submission protection;
+- replay that remains stable after later Submission workflow updates;
+- cleanup of newly staged derivatives after failed database handoff;
+- no production codec or R2 binding, Media approval, public storage copy, canonical mutation, export, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -113,6 +131,7 @@ P5-05D provides:
 - `docs/P5_05B_PHOTO_PRIVATE_INTAKE.md`
 - `docs/P5_05C_PHOTO_UPLOAD_AUTHORIZATION.md`
 - `docs/P5_05D_PHOTO_OBJECT_VALIDATION.md`
+- `docs/P5_05E_PHOTO_PRIVATE_PROCESSING_AND_MEDIA_HANDOFF.md`
 
 ## Phase 5 sequence
 
@@ -120,19 +139,19 @@ P5-05D provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05E; P5-05D completed #219
+5. P5-05 — Photo and Media submission intake — In progress at P5-05F; P5-05E completed #220
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Define and implement P5-05E controlled private processing and protected Media handoff. It must re-verify the P5-05D content hash or consume the exact validated byte set before metadata stripping, orientation normalization, resizing, derivative creation, or any private Media record is produced.
+Define and implement P5-05F duplicate content-hash signals and private upload lifecycle cleanup. Exact or near-existing hashes must remain review signals rather than automatic misuse conclusions, and cleanup must distinguish active review material from expired authorization, abandoned upload, rejected Media, superseded derivative, and completed retention states.
 
 ## Blocked
 
-No repository blocker is known. Production R2 binding, asynchronous processing infrastructure, public route wiring, protected Media reviewer execution, public Media approval, export activation, and production review remain separate later slices.
+No repository blocker is known. Production codec and R2 binding, asynchronous processing infrastructure, public Photos route and browser wiring, privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Structural validation is not a display-safe derivative, a Submission never publishes Media automatically, and opaque quarantine references never expose persistent storage credentials or public object URLs.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A private derivative and pending Media handoff are not public approval, duplicate hashes are review signals rather than proof of misuse, and opaque private storage references never become public object URLs through Submission intake.
