@@ -42,8 +42,9 @@ export class R2PhotoUploadAuthorizerError extends Error {
 }
 
 function encodeRfc3986(value: string): string {
-  return encodeURIComponent(value).replace(/[!'()*]/g, (character) =>
-    `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
+  return encodeURIComponent(value).replace(
+    /[!'()*]/g,
+    (character) => `%${character.charCodeAt(0).toString(16).toUpperCase()}`,
   );
 }
 
@@ -62,14 +63,17 @@ async function sha256(value: string): Promise<string> {
 }
 
 async function hmac(key: Uint8Array, value: string): Promise<Uint8Array> {
+  const material = new Uint8Array(key);
   const imported = await crypto.subtle.importKey(
     'raw',
-    key.slice().buffer,
+    material.buffer,
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign'],
   );
-  return new Uint8Array(await crypto.subtle.sign('HMAC', imported, new TextEncoder().encode(value)));
+  return new Uint8Array(
+    await crypto.subtle.sign('HMAC', imported, new TextEncoder().encode(value)),
+  );
 }
 
 async function signingKey(secret: string, dateStamp: string): Promise<Uint8Array> {
