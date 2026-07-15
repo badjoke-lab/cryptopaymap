@@ -7,18 +7,23 @@ const requiredPages = [
   },
   {
     path: 'dist/admin/submissions/report-detail/index.html',
-    markers: ['Payment and problem report', 'P5-03D read-only boundary', 'Protected report detail'],
+    markers: [
+      'Payment and problem report',
+      'P5-06B review-entry boundary',
+      'P5-06B protected review entry',
+      'Protected report detail',
+    ],
   },
 ];
 
 for (const page of requiredPages) {
   if (!existsSync(page.path)) {
-    throw new Error(`Missing P5-03D built page: ${page.path}`);
+    throw new Error(`Missing P5-06B2A built page: ${page.path}`);
   }
   const html = readFileSync(page.path, 'utf8');
   for (const marker of page.markers) {
     if (!html.includes(marker)) {
-      throw new Error(`Missing P5-03D marker ${JSON.stringify(marker)} in ${page.path}`);
+      throw new Error(`Missing P5-06B2A marker ${JSON.stringify(marker)} in ${page.path}`);
     }
   }
   for (const forbidden of ['statusTokenHash', 'encryptedEmail', 'requestFingerprint']) {
@@ -28,4 +33,4 @@ for (const page of requiredPages) {
   }
 }
 
-console.log('P5-03D report reviewer artifacts are present and bounded.');
+console.log('P5-06B2A report reviewer artifacts are present and bounded.');
