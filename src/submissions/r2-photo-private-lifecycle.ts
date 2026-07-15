@@ -20,17 +20,14 @@ export function createR2PhotoPrivateObjectLifecycleStore(
         if (existing === null) return 'missing';
         await bucket.delete(storageKey);
         if ((await bucket.head(storageKey)) !== null) {
-          throw new PhotoPrivateLifecycleStoreError(
-            'Private photo object remained after cleanup.',
-          );
+          throw new PhotoPrivateLifecycleStoreError('Private photo object remained after cleanup.');
         }
         return 'deleted';
       } catch (error) {
         if (error instanceof PhotoPrivateLifecycleStoreError) throw error;
-        throw new PhotoPrivateLifecycleStoreError(
-          'Private photo object cleanup failed.',
-          { cause: error },
-        );
+        throw new PhotoPrivateLifecycleStoreError('Private photo object cleanup failed.', {
+          cause: error,
+        });
       }
     },
   };
