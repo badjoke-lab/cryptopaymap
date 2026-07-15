@@ -1,4 +1,8 @@
-import { inspectPhotoImage, PhotoImageInspectionError } from './photo-image-inspection';
+import {
+  inspectPhotoImage,
+  PhotoImageInspectionError,
+  type DecodedPhotoImage,
+} from './photo-image-inspection';
 import type { PhotoPrivateProcessor, PhotoProcessedDerivative } from './photo-private-processing';
 
 export interface CloudflareImagesTransformOptions {
@@ -145,12 +149,8 @@ function assertMetadataFreeStillWebp(bytes: Uint8Array): void {
   let offset = 12;
   while (offset + 8 <= bytes.byteLength) {
     const type = ascii(bytes, offset, 4);
-    const size =
-      bytes[offset + 4]! |
-      (bytes[offset + 5]! << 8) |
-      (bytes[offset + 6]! << 16) |
-      (bytes[offset + 7]! << 24);
-    if (size < 0 || forbiddenChunks.has(type)) {
+    const size = new DataView(bytes.buffer, bytes.byteOffset + offset + 4, 4).getUint32(0, true);
+    if (forbiddenChunks.has(type)) {
       throw new CloudflareImagesPhotoProcessorError(
         'invalid_output',
         'Cloudflare Images output retained forbidden metadata or animation.',
@@ -212,7 +212,7 @@ async function transform(
   const body = await readBoundedResponse(response, policy.maximumBytes);
   assertMetadataFreeStillWebp(body);
 
-  let inspected;
+  let inspected: DecodedPhotoImage;
   try {
     inspected = inspectPhotoImage(body);
   } catch (error) {
