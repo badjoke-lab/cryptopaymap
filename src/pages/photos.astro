@@ -1,0 +1,39 @@
+---
+import { ConfiguredPhotoForm } from '../components/submissions/ConfiguredPhotoForm';
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const requestedTargetType = Astro.url.searchParams.get('targetType');
+const initialTargetType = requestedTargetType === 'location' ? 'location' : 'entity';
+const initialTargetId = Astro.url.searchParams.get('targetId') ?? '';
+---
+
+<BaseLayout
+  title="Add photos — CryptoPayMap"
+  description="Upload your own or properly licensed photos directly to private quarantine for CryptoPayMap Media review."
+>
+  <header class="safe-area-inline page-container py-10 sm:py-14">
+    <p class="m-0 text-sm font-semibold text-brand-700">Contribute</p>
+    <h1 class="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-ink sm:text-4xl">
+      Add photos for private review
+    </h1>
+    <p class="mt-4 max-w-3xl text-base leading-7 text-muted">
+      Submit one to eight photos for an existing business, online service, or location. Files upload directly to private quarantine. A successful upload does not approve or publish any image automatically.
+    </p>
+    <div class="mt-5 flex flex-wrap gap-3 text-sm">
+      <a class="font-semibold text-brand-700" href="/methodology">How verification works</a>
+      <a class="font-semibold text-brand-700" href="/privacy">Privacy notice</a>
+      <a class="font-semibold text-brand-700" href="/terms">Submission terms</a>
+      <a class="font-semibold text-brand-700" href="/sources-and-licenses">Image rights</a>
+    </div>
+  </header>
+
+  <section class="safe-area-inline page-container pb-12 sm:pb-16">
+    <div class="mx-auto max-w-4xl">
+      <ConfiguredPhotoForm
+        initialTargetType={initialTargetType}
+        initialTargetId={initialTargetId}
+        client:load
+      />
+    </div>
+  </section>
+</BaseLayout>

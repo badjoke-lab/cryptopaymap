@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-05H — Browser Photos form and direct-upload orchestration
+P5-05I — Configured Photos object-storage signing and direct-upload integration audit
 
 ## Current repository state
 
@@ -35,7 +35,8 @@ P5-05H — Browser Photos form and direct-upload orchestration
 - P5-05E controlled private processing and protected Media handoff completed in #220.
 - P5-05F exact original-hash review signals and retention-safe private object cleanup completed in #221.
 - P5-05G public upload-authorization and private-intake HTTP boundaries completed in #222.
-- P5-05H is next; its bounded scope is the browser `/photos` form and direct-upload orchestration without configured automatic processing, Media approval, or publication.
+- P5-05H browser `/photos` form and direct-upload orchestration completed in #223.
+- P5-05I is next; its bounded scope is configured private object-storage signing and binding plus a synthetic direct-upload integration audit without automatic processing, Media approval, or publication.
 
 ## P5-05A completion result
 
@@ -142,6 +143,22 @@ P5-05G provides:
 - bounded `no-store` responses and privacy-safe error mapping;
 - no browser form, binary proxy, configured production object binding, automatic processing, Media approval, canonical mutation, export, or publication.
 
+## P5-05H completion result
+
+P5-05H provides:
+
+- the public `/photos` page and an available Photos entry from `/contribute`;
+- client-safe Turnstile configuration through `GET /api/photos/config`;
+- strict browser file, metadata, rights, contact, and acknowledgement contracts;
+- one stable opaque request UUID across authorization, direct upload, retry, and final intake;
+- separate Turnstile verification for upload authorization and final private intake;
+- exact returned `PUT` method and required-header direct uploads;
+- local byte-size and content-type consistency checks before each upload;
+- final Submission JSON containing only opaque reservation UUIDs and declared review metadata;
+- private Submission reference and status secret retained only in the in-memory receipt UI;
+- Photos-specific Turnstile and bounded R2 endpoint CSP;
+- no binary proxy, configured production signer, automatic processing, Media approval, canonical mutation, export, or publication.
+
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
@@ -166,6 +183,7 @@ P5-05G provides:
 - `docs/P5_05E_PHOTO_PRIVATE_PROCESSING_AND_MEDIA_HANDOFF.md`
 - `docs/P5_05F_PHOTO_DUPLICATE_SIGNALS_AND_PRIVATE_LIFECYCLE.md`
 - `docs/P5_05G_PHOTO_PUBLIC_HTTP_BOUNDARIES.md`
+- `docs/P5_05H_PHOTO_BROWSER_UPLOAD_ORCHESTRATION.md`
 
 ## Phase 5 sequence
 
@@ -173,19 +191,19 @@ P5-05G provides:
 2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
 3. P5-03 — Payment and problem reports — Completed through #194–#202
 4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — In progress at P5-05H; P5-05G completed #222
+5. P5-05 — Photo and Media submission intake — In progress at P5-05I; P5-05H completed #223
 6. P5-06 — Review workflow extensions — Planned
 7. P5-07 — Canonical application transactions and retention — Planned
 8. P5-08 — MVP-B integration audit — Planned
 
 ## Next
 
-Define and implement P5-05H browser `/photos` form and direct-upload orchestration. The client must obtain one opaque idempotency identity, pass Turnstile, request upload authorizations, upload each file directly with the exact returned method and headers, submit only the opaque reservation UUIDs and declared metadata, and display the private Submission reference and status secret without persisting them insecurely. Client retry must preserve request identity and must not proxy binary objects through the application route.
+Define and implement P5-05I configured private object-storage signing and binding plus a bounded direct-upload integration audit. The configured path must produce browser-compatible, short-lived HTTPS `PUT` authorizations for only the deterministic private quarantine object, bind the exact content type and required private validation metadata, and prove one synthetic upload plus private intake without logging credentials, signed URLs, file bytes, contact data, or status secrets. Successful audit must not automatically validate, process, approve, copy publicly, mutate canonical records, export, or publish Media.
 
 ## Blocked
 
-No repository blocker is known. Production object-storage signing and binding, configured image codec and processing execution, privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, deployment, and production review remain separate later slices.
+No repository blocker is known. Configured image codec and processing execution, privacy-content analysis, protected Media reviewer execution, public Media approval, export activation, production deployment, and production review remain separate later slices.
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Public Photos HTTP success creates only upload reservations or a private Submission receipt; it does not create approved or public Media automatically.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. A browser Photos success creates only private quarantine uploads and one private Submission receipt; it does not create approved or public Media automatically.
