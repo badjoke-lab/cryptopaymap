@@ -6,16 +6,16 @@ import {
   RefreshCw,
   ShieldAlert,
 } from 'lucide-react';
-import { useCallback, useEffect, useState, type ReactNode } from 'react';
+import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import {
-  photoSubmissionDetailResponseSchema,
   type PhotoSubmissionDetailResponse,
+  photoSubmissionDetailResponseSchema,
 } from '../../admin/submissions/photo-parent';
 import {
-  reviewEntryReceiptSchema,
-  reviewEntryRequestSchema,
   type ReviewEntryReceipt,
   type ReviewEntryRequest,
+  reviewEntryReceiptSchema,
+  reviewEntryRequestSchema,
 } from '../../admin/submissions/review-entry';
 import { Button } from '../ui/Button';
 
@@ -283,9 +283,9 @@ export function PhotoSubmissionReview({ submissionId }: { submissionId: string |
               Current state: {detail.submission.workflowStatus.replaceAll('_', ' ')}
             </h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
-              Review entry changes only the private parent Submission state. It does not approve Media,
-              copy public objects, resolve the parent Submission, mutate canonical data, export, or
-              publish.
+              Review entry changes only the private parent Submission state. It does not approve
+              Media, copy public objects, resolve the parent Submission, mutate canonical data,
+              export, or publish.
             </p>
           </div>
           <span className="rounded-pill border border-brand-200 bg-white px-3 py-1 text-xs font-semibold text-brand-800">
@@ -390,9 +390,9 @@ export function PhotoSubmissionReview({ submissionId }: { submissionId: string |
           </span>
         </div>
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
-          {detail.projection.media.map((item, index) => (
+          {detail.projection.media.map((item) => (
             <article
-              key={`${item.role}-${index}`}
+              key={item.quarantineUploadId}
               className="rounded-control border border-border bg-canvas p-4"
             >
               <div className="flex items-center gap-3">
@@ -446,14 +446,16 @@ export function PhotoSubmissionReview({ submissionId }: { submissionId: string |
       </section>
 
       <section className="rounded-card border border-border bg-surface p-5 shadow-sm">
-        <h2 className="m-0 text-xl font-semibold tracking-tight text-ink">Parent workflow history</h2>
+        <h2 className="m-0 text-xl font-semibold tracking-tight text-ink">
+          Parent workflow history
+        </h2>
         {detail.events.length === 0 ? (
           <p className="mt-3 text-sm text-muted">No bounded workflow event is available.</p>
         ) : (
           <ol className="mt-4 grid gap-3">
-            {detail.events.map((event, index) => (
+            {detail.events.map((event) => (
               <li
-                key={`${event.createdAt}-${event.action}-${index}`}
+                key={`${event.createdAt}-${event.action}-${event.toStatus}`}
                 className="rounded-control border border-border bg-canvas p-4 text-sm"
               >
                 <p className="m-0 font-semibold text-ink">
