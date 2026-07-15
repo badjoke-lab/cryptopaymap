@@ -25,7 +25,8 @@ const requiredContributeFragments = [
   'Open Suggest form',
   'Open Payment report',
   'Open Problem report',
-  'Claims and photos',
+  'Open Photos form',
+  'Business claims',
 ];
 
 for (const fragment of requiredContributeFragments) {
