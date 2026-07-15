@@ -9,6 +9,7 @@ import {
 import { photoQuarantineObjectKey } from '../src/submissions/photo-upload-authorization';
 
 const reservationId = '10000000-0000-4000-8000-000000000001';
+const expiredReservationId = '10000000-0000-4000-8000-000000000002';
 const submissionId = '20000000-0000-4000-8000-000000000001';
 const mediaAssetId = '30000000-0000-4000-8000-000000000001';
 const originalFileId = '40000000-0000-4000-8000-000000000001';
@@ -22,20 +23,20 @@ const displayKey = privateMediaDerivativeKey(mediaAssetId, {
 
 const expiredAuthorization: PhotoPrivateCleanupCandidate = {
   referenceType: 'reservation',
-  referenceId: reservationId,
+  referenceId: expiredReservationId,
   reason: 'expired_authorization',
   eligibleAt: '2026-07-14T00:00:00.000Z',
   submissionId: null,
   mediaAssetId: null,
   objects: [
     {
-      objectRefId: reservationId,
-      reservationId,
+      objectRefId: expiredReservationId,
+      reservationId: expiredReservationId,
       mediaAssetId: null,
       mediaFileId: null,
       variant: 'original',
       storageScope: 'quarantine',
-      storageKey: photoQuarantineObjectKey(reservationId),
+      storageKey: photoQuarantineObjectKey(expiredReservationId),
       mimeType: 'application/octet-stream',
       contentHash: null,
     },
@@ -93,6 +94,10 @@ function reader(candidates: PhotoPrivateCleanupCandidate[]) {
 describe('P5-05F private photo lifecycle cleanup', () => {
   it('deletes only eligible private objects and emits a leakage-safe receipt', async () => {
     const objects = createInMemoryPhotoPrivateObjectLifecycleStore([
+      {
+        storageScope: 'quarantine',
+        storageKey: photoQuarantineObjectKey(expiredReservationId),
+      },
       { storageScope: 'quarantine', storageKey: photoQuarantineObjectKey(reservationId) },
       { storageScope: 'private', storageKey: displayKey },
     ]);
@@ -105,7 +110,7 @@ describe('P5-05F private photo lifecycle cleanup', () => {
 
     expect(receipt.state).toBe('completed');
     expect(receipt.candidateCount).toBe(2);
-    expect(receipt.deletedObjectCount).toBe(2);
+    expect(receipt.deletedObjectCount).toBe(3);
     expect(receipt.failedObjectCount).toBe(0);
     expect(objects.list()).toEqual([]);
     expect(JSON.stringify(receipt)).not.toContain('quarantine/photos');
@@ -128,9 +133,7 @@ describe('P5-05F private photo lifecycle cleanup', () => {
 
   it('rejects a terminal candidate before its 30-day retention boundary', async () => {
     const service = createPhotoPrivateCleanupService({
-      candidates: reader([
-        { ...rejectedMedia, eligibleAt: '2026-07-01T00:00:00.000Z' },
-      ]),
+      candidates: reader([{ ...rejectedMedia, eligibleAt: '2026-07-01T00:00:00.000Z' }]),
       objects: createInMemoryPhotoPrivateObjectLifecycleStore(),
     });
 
