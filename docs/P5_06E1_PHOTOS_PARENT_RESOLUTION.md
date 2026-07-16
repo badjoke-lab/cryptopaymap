@@ -1,7 +1,7 @@
 # P5-06E1 Photos parent resolution service and private status
 
 **Implementation item:** P5-06E1  
-**Status:** Active  
+**Status:** Active — service/API boundary  
 **Last updated:** 2026-07-16
 
 ## Purpose
