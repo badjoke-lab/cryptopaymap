@@ -73,7 +73,9 @@ function outcomeLabel(value: 'approved' | 'partially_approved' | 'not_approved' 
 
 function readinessDescription(preview: PhotoParentResolutionPreviewResponse): string {
   if (preview.readiness === 'pending') {
-    return `${preview.pendingCount} child Media decision${preview.pendingCount === 1 ? '' : 's'} remain pending. The parent cannot be resolved yet.`;
+    return preview.pendingCount === 1
+      ? '1 child Media decision remains pending. The parent cannot be resolved yet.'
+      : `${preview.pendingCount} child Media decisions remain pending. The parent cannot be resolved yet.`;
   }
   if (preview.readiness === 'not_in_review') {
     return `The parent is currently ${preview.workflowStatus.replaceAll('_', ' ')}. It must be in review before aggregate resolution.`;
