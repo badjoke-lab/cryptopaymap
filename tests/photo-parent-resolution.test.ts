@@ -18,7 +18,7 @@ const decisionIds = [
   '60000000-0000-4000-8000-000000000002',
 ];
 const submissionUpdatedAt = '2026-07-16T05:00:00.000Z';
-const decidedAt = ['2026-07-16T05:01:00.000Z', '2026-07-16T05:02:00.000Z'];
+const decidedAt = ['2026-07-16T05:01:00.000Z', '2026-07-16T05:02:00.000Z'] as const;
 const changedAt = new Date('2026-07-16T05:03:00.000Z');
 const context = {
   actorId: 'reviewer:photos',
@@ -197,7 +197,7 @@ describe('P5-06E Photos parent resolution', () => {
 
     await expect(
       resolvePhotoParentSubmission(context, backend, submissionId, requestFor(state), changedAt),
-    ).rejects.toMatchObject<Partial<PhotoParentResolutionError>>({ code: 'ineligible' });
+    ).rejects.toMatchObject({ code: 'ineligible' });
     expect(backend.commits).toHaveLength(0);
   });
 
@@ -206,7 +206,9 @@ describe('P5-06E Photos parent resolution', () => {
     const backend = createBackend(state);
     const request = requestFor(state);
     const expectedMedia = structuredClone(request.expectedMedia);
-    expectedMedia[0].expectedMediaUpdatedAt = '2026-07-16T04:59:00.000Z';
+    const firstExpectedMedia = expectedMedia[0];
+    if (firstExpectedMedia === undefined) throw new Error('Expected Media snapshot is missing.');
+    firstExpectedMedia.expectedMediaUpdatedAt = '2026-07-16T04:59:00.000Z';
 
     await expect(
       resolvePhotoParentSubmission(
@@ -216,7 +218,7 @@ describe('P5-06E Photos parent resolution', () => {
         { ...request, expectedMedia },
         changedAt,
       ),
-    ).rejects.toMatchObject<Partial<PhotoParentResolutionError>>({ code: 'conflict' });
+    ).rejects.toMatchObject({ code: 'conflict' });
   });
 
   it('replays the same request and rejects changed content under the same UUID', async () => {
@@ -250,7 +252,7 @@ describe('P5-06E Photos parent resolution', () => {
         requestFor(state, { publicMessage: 'Changed public content.' }),
         changedAt,
       ),
-    ).rejects.toMatchObject<Partial<PhotoParentResolutionError>>({
+    ).rejects.toMatchObject({
       code: 'idempotency_conflict',
     });
   });
@@ -277,7 +279,7 @@ describe('P5-06E Photos parent resolution', () => {
         requestFor(state),
         changedAt,
       ),
-    ).rejects.toMatchObject<Partial<PhotoParentResolutionError>>({ code: 'unauthorized' });
+    ).rejects.toMatchObject({ code: 'unauthorized' });
     expect(backend.commits).toHaveLength(0);
   });
 });
