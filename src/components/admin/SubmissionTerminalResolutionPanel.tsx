@@ -1,10 +1,4 @@
-import {
-  AlertTriangle,
-  CheckCircle2,
-  FileX2,
-  RefreshCw,
-  ShieldAlert,
-} from 'lucide-react';
+import { AlertTriangle, CheckCircle2, FileX2, RefreshCw, ShieldAlert } from 'lucide-react';
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
 import { suggestSubmissionReviewDetailResponseSchema } from '../../admin/submissions/detail';
 import { photoSubmissionDetailResponseSchema } from '../../admin/submissions/photo-parent';
@@ -20,12 +14,7 @@ type SourceKind = 'suggest' | 'report' | 'photos';
 type TerminalSubmissionType = 'suggest' | 'payment_report' | 'problem_report' | 'photos';
 type TerminalAction = 'not_approved' | 'duplicate' | 'no_change' | 'withdrawn';
 type ActiveStatus = 'received' | 'triage' | 'in_review' | 'needs_information' | 'on_hold';
-type WorkflowStatus =
-  | ActiveStatus
-  | 'resolved'
-  | 'duplicate'
-  | 'rejected_spam'
-  | 'withdrawn';
+type WorkflowStatus = ActiveStatus | 'resolved' | 'duplicate' | 'rejected_spam' | 'withdrawn';
 
 interface Snapshot {
   submissionId: string;
@@ -421,9 +410,9 @@ export function SubmissionTerminalResolutionPanel({
             Current state: {snapshot.workflowStatus.replaceAll('_', ' ')}
           </h2>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Terminal actions close only the private Submission. They do not delete retained Evidence or
-            Media, mutate canonical records, export, or publish. Public status receives only the bounded
-            public message below.
+            Terminal actions close only the private Submission. They do not delete retained Evidence
+            or Media, mutate canonical records, export, or publish. Public status receives only the
+            bounded public message below.
           </p>
         </div>
         <span className="rounded-pill border border-red-200 bg-white px-3 py-1 text-xs font-semibold text-red-800">
