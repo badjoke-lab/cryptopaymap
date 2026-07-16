@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-15
+**Last verified:** 2026-07-16
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-06B — Common review entry for reports and Photos
+P5-06D — Common terminal resolution
 
 ## Current repository state
 
@@ -16,245 +16,60 @@ P5-06B — Common review entry for reports and Photos
 - P5-01 shared Submission foundation is complete through #150–#155.
 - P5-02 Suggest Place and Online Service is complete through #156–#192.
 - P5-03 Payment and problem reports is complete through #194–#202.
-- P5-03I fixed-review deployment and live-audit receipts are complete for main commit `bd08118b63feab6349e125db300c6031f2653f84`.
-- P5-04A business Claim contract and normalization were established in #203 and privacy/correction semantics were hardened in #206 at main commit `944773ad8a4c1bcc25de3f3f0745917d37def4e3`.
-- P5-04B idempotent private business Claim intake integration completed in #207 at main commit `cb55ad961f213fd8a6e5f86e81a16abd486505cb`.
-- P5-04C protected canonical target context and bounded read-only Claim review signals completed in #208 at main commit `80d30b21cb92475b309f7501f2d27c32b06935f3`.
-- P5-04D protected business Claim reviewer queue and detail entry completed in #209 at main commit `ec2048faea97ce3efdc4710d42ea9cf83135d0b6`.
-- P5-04E exact-state review transitions and verification-request preparation completed in #210 at main commit `e1369049529055939dc955318e76a2a3005df7b4`.
-- P5-04F verification execution and bounded result recording completed in #211 at main commit `3ffe59c0e2d773c11cff066adcaf1cb1d099e76d`.
-- P5-04G representative-relationship decisions completed in #212 at main commit `dc1649cea5731bf12dd8a86ec6fba894be6c1def`.
-- P5-04H1 strict field-level decision and canonical projection completed in #213 at main commit `3d1b2f65101dd0b4a432e52b5ad32476cbcf8467`.
-- P5-04H2 durable exact-state canonical persistence, private payment drafts, provenance, receipts, replay, and rollback completed in #214 at main commit `01beaf5b7fa0611f77730bd5ff6e5a0855616bf3`.
-- P5-04H3 protected reviewer workspace/API, one-time application guard, and integration audit completed in #215 at main commit `5a8d6a1d40db415931a11941e2a23869157eacfd`.
-- P5-04 Business and service claims are repository-complete.
-- P5-05A Photo and Media contracts and review-safe normalization completed through #216.
-- P5-05B idempotent private Photos intake and quarantine reservation linkage completed in #217.
-- P5-05C photo quarantine upload authorization and durable reservation issuance completed in #218.
-- P5-05D private object existence and byte-level validation completed in #219.
-- P5-05E controlled private processing and protected Media handoff completed in #220.
-- P5-05F exact original-hash review signals and retention-safe private object cleanup completed in #221.
-- P5-05G public upload-authorization and private-intake HTTP boundaries completed in #222.
-- P5-05H browser `/photos` form and direct-upload orchestration completed in #223.
-- P5-05I configured R2 SigV4 upload signing and synthetic direct-upload/private-intake audit completed in #225.
-- P5-05J configured post-intake validation, Cloudflare Images processing, private derivative writes, and protected Media handoff execution completed in #227.
-- P5-05 Photo and Media submission intake is repository-complete through #227.
+- P5-04 Business and service claims is complete through #203–#215.
+- P5-05 Photo and Media submission intake is complete through #216–#227.
 - P5-06A cross-submission review workflow inventory completed in #228.
-- P5-06B common review entry for reports and Photos is next.
+- P5-06B common review entry completed through #229–#232.
+- P5-06C1 common information-request, Hold, and resume service/API completed in #233.
+- P5-06C2 Suggest, report, and Photos reviewer controls completed in #234.
+- P5-06C information, Hold, and resume coverage is repository-complete.
 
-## P5-05A completion result
+## Latest verified main
 
-P5-05A provides:
+```text
+ce4e056835dba6f3d0122852998e704489f1adb3
+```
 
-- explicit evidence-image, owner-verification-proof, and public-gallery-candidate purposes;
-- strict purpose-to-role compatibility;
-- Photos-route restriction to public-gallery candidates only;
-- exact existing Entity or Location UUID targets;
-- one to eight unique opaque quarantine upload UUIDs;
-- declared JPEG, PNG, WebP, HEIC, and HEIF types;
-- a 5,000,000-byte declared per-item limit;
-- submitted-permission, licensed, and public-domain gallery rights declarations;
-- explicit public-display permission intent without publication approval;
-- privacy-safe review normalization;
-- rejection of storage keys, signed URLs, original filenames, EXIF, GPS, wallet, receipt, status-secret, and undeclared fields;
-- no R2 access, Media creation, canonical mutation, export, or publication.
+The following pull-request workflows passed for the P5-06C2 implementation head before #234 merged:
 
-## P5-05B completion result
+- Foundation validation;
+- Migration drift;
+- Staging review validation;
+- representative review screenshots.
 
-P5-05B provides:
+Foundation validation included formatting, lint, Astro and TypeScript checks, runtime-schema checks, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
 
-- idempotent private Photos Submission intake;
-- one durable Submission and normalized payload transaction;
-- private contact encryption/hash handling through the shared Submission boundary;
-- validation that every opaque upload UUID refers to an existing unexpired quarantine reservation owned by the same intake attempt;
-- atomic reservation consumption or linkage without public storage-key exposure;
-- deterministic replay and changed-content conflicts;
-- private status-token issuance without plaintext persistence;
-- no Media Asset, Media File, derivative, public URL, review approval, export, or publication creation.
+## Active pull request
 
-## P5-05C completion result
+None.
 
-P5-05C provides:
+## Next
 
-- a strict one-to-eight item Photos upload-authorization request;
-- deterministic opaque reservation UUIDs bound to canonical request content;
-- durable reservation creation through the existing P5-05B table;
-- transaction-serialized exact replay and changed-content conflict behavior;
-- short-lived provider-neutral HTTPS PUT authorization;
-- signed content-type and private validation metadata headers;
-- signer-failure retry without duplicate reservation creation;
-- no signed URL persistence, R2 credentials, binary validation, Media creation, or publication.
+Implement P5-06D common terminal resolution only where an existing type-specific operation has not already resolved the Submission:
 
-## P5-05D completion result
+```text
+not_approved
+duplicate
+no_change
+withdrawn
+```
 
-P5-05D provides:
+P5-06D must preserve report-specific duplicate and no-change decisions, require an exact duplicate target where applicable, retain useful Evidence and Media, project only bounded public-safe resolution text, and perform no P5-07 canonical application or export work.
 
-- exact active Entity or Location target validation;
-- exact unexpired and unconsumed quarantine reservation-set validation;
-- bounded private object reads that reject oversized provider metadata before body allocation;
-- exact private key, content-type, signed metadata, and byte-size matching;
-- structural JPEG, PNG, WebP, HEIC, and HEIF inspection;
-- rejection of corrupted, animated, executable, archive, document, unsupported, and disguised files;
-- 20,000-pixel axis and 100,000,000-pixel total safety limits;
-- SHA-256 content hashes and a leakage-safe validation receipt;
-- injectable decoding and R2-compatible storage boundaries;
-- no production R2 binding, EXIF removal, derivative generation, Media creation, canonical mutation, export, or publication.
+## Blocked
 
-## P5-05E completion result
+No repository blocker is known.
 
-P5-05E provides:
+## Verification rule
 
-- exact Photos Submission, target, normalized item, validated byte, and consumed reservation matching;
-- immediate SHA-256 re-verification before processing;
-- an injectable controlled processor contract requiring metadata removal and orientation normalization;
-- bounded, structurally revalidated JPEG or WebP display and thumbnail derivatives;
-- canonical private derivative keys and idempotent R2-compatible writes;
-- deterministic Media Asset/File and private handoff-event identities;
-- one private pending `public_gallery_candidate` Media Asset per submitted item;
-- quarantine original plus private display and thumbnail Media Files;
-- Submission-scoped atomic persistence and one-handoff-per-Submission protection;
-- replay that remains stable after later Submission workflow updates;
-- cleanup of newly staged derivatives after failed database handoff;
-- no production codec or R2 binding, Media approval, public storage copy, canonical mutation, export, or publication.
-
-## P5-05F completion result
-
-P5-05F provides:
-
-- exact original SHA-256 matches as protected Media review signals;
-- same-target and different-target match context without contributor or storage disclosure;
-- a strict maximum of 25 unique matches and no automatic duplicate, misuse, rights, or rejection decision;
-- retention candidates for expired unconsumed authorization objects;
-- 30-day terminal cleanup for closed Photos Submissions without a Media handoff;
-- 30-day terminal cleanup for rejected or superseded P5-05 Media;
-- canonical quarantine/private object-key validation before deletion;
-- explicit rejection of public-scope, pending, accepted, or unrelated Media cleanup;
-- idempotent R2-compatible deletion and partial-failure reporting;
-- limited database hash, decision, target, and audit metadata retention after object deletion;
-- no perceptual hashing, known-abuse provider, scheduler, production R2 binding, public route, canonical mutation, export, or publication.
-
-## P5-05G completion result
-
-P5-05G provides:
-
-- `POST /api/photos/upload-authorizations` and `POST /api/photos`;
-- strict JSON media type and a streamed 128 KiB request limit;
-- UUID idempotency identities and exact upload-authorization request matching;
-- trusted Cloudflare edge identity and opaque distributed rate-limit buckets;
-- rate limiting before Turnstile verification and private service invocation;
-- separate upload-authorization and private-intake runtime composition;
-- reuse of protected contact, status-secret, reservation, and private Submission persistence boundaries;
-- bounded `no-store` responses and privacy-safe error mapping;
-- no browser form, binary proxy, configured production object binding, automatic processing, Media approval, canonical mutation, export, or publication.
-
-## P5-05H completion result
-
-P5-05H provides:
-
-- the public `/photos` page and an available Photos entry from `/contribute`;
-- client-safe Turnstile configuration through `GET /api/photos/config`;
-- strict browser file, metadata, rights, contact, and acknowledgement contracts;
-- one stable opaque request UUID across authorization, direct upload, retry, and final intake;
-- separate Turnstile verification for upload authorization and final private intake;
-- exact returned `PUT` method and required-header direct uploads;
-- local byte-size and content-type consistency checks before each upload;
-- final Submission JSON containing only opaque reservation UUIDs and declared review metadata;
-- private Submission reference and status secret retained only in the in-memory receipt UI;
-- Photos-specific Turnstile and bounded R2 endpoint CSP;
-- no binary proxy, configured production signer, automatic processing, Media approval, canonical mutation, export, or publication.
-
-## P5-05I completion result
-
-P5-05I provides:
-
-- a dependency-free Web Crypto AWS SigV4 signer for the Cloudflare R2 S3 endpoint;
-- strict server-only R2 account, bucket, access-key, and secret-key configuration;
-- one short-lived signed `PUT` for only the deterministic private quarantine object;
-- exact binding of content type, host, and all required private validation metadata headers;
-- removal of arbitrary upload-authorizer environment injection from public runtime composition;
-- independent signature recomputation and object-path tampering tests;
-- bounded expiry and private-key-scope rejection;
-- an executable synthetic browser-style direct upload followed by real private Photos intake and atomic reservation consumption;
-- privacy-safe audit output and built-HTML leakage checks;
-- all required Foundation, migration, staging-review, and screenshot workflows passing for implementation head `e60a5cb659111c0a182ee84afe0540de2be848da`;
-- no automatic object validation, image processing, Media approval, public copy, canonical mutation, export, or publication.
-
-## P5-05J completion result
-
-P5-05J provides:
-
-- an exact post-intake validator restricted to reservations consumed by one exact Photos Submission;
-- corrected consumption, validation, expiry, and processing chronology;
-- configured private R2 quarantine reads and private derivative writes;
-- configured Cloudflare Images scale-down WebP processing with metadata removal and animation disabled;
-- independent derivative MIME, dimensions, still-image, metadata-chunk, and hash validation;
-- one protected execution service from private Submission context through P5-05D validation and P5-05E Media handoff;
-- strict fail-closed environment composition without public execution exposure;
-- executable schema integration and focused chronology, processing, and orchestration tests;
-- 231 test files and 1,130 tests passing at implementation head `a49ce9af9fb4b35989d670d8535708290d322657`;
-- no Media approval, public copy, canonical mutation, export activation, publication, deployment, or launch claim.
-
-## P5-06A completion result
-
-P5-06A provides:
-
-- a repository-backed capability matrix for Suggest, payment/problem reports, Business Claims, Photos, protected Media review, and private status;
-- confirmation that all public intake persists `received` as the initial workflow state;
-- confirmation that report decision services require reviewed state but no report transition path was implemented in P5-03;
-- confirmation that Photos have Media review but no parent Submission lifecycle or resolution synchronization;
-- identification of missing Suggest resume and ordinary terminal outcomes;
-- separation of P5-06 review workflow work from P5-07 canonical application and retention;
-- the bounded P5-06B through P5-06F implementation sequence;
-- no runtime mutation, migration, endpoint, UI, canonical change, Media approval, export, publication, deployment, or launch claim.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. If this file differs from GitHub reality, GitHub is authoritative and this file must be corrected in the next bounded pull request.
 
 ## Current references
 
 - `docs/IMPLEMENTATION_PLAN.md`
 - `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`
-- `docs/SUBMISSION_WORKFLOW.md`
-- `docs/MEDIA_POLICY.md`
-- `docs/DATA_MODEL.md`
-- `docs/SECURITY_AND_PRIVACY.md`
-- `docs/P5_04A_BUSINESS_CLAIM_CONTRACT_AND_NORMALIZATION.md`
-- `docs/P5_04B_BUSINESS_CLAIM_PRIVATE_INTAKE.md`
-- `docs/P5_04C_BUSINESS_CLAIM_TARGET_CONTEXT.md`
-- `docs/P5_04D_BUSINESS_CLAIM_REVIEWER_ENTRY.md`
-- `docs/P5_04E_BUSINESS_CLAIM_REVIEW_TRANSITIONS.md`
-- `docs/P5_04F_BUSINESS_CLAIM_VERIFICATION_EXECUTION.md`
-- `docs/P5_04G_BUSINESS_CLAIM_RELATIONSHIP_DECISIONS.md`
-- `docs/P5_04H_BUSINESS_CLAIM_FIELD_APPLICATION.md`
-- `docs/P5_04H3_BUSINESS_CLAIM_REVIEWER_FLOW.md`
-- `docs/P5_05A_PHOTO_MEDIA_CONTRACT_AND_NORMALIZATION.md`
-- `docs/P5_05B_PHOTO_PRIVATE_INTAKE.md`
-- `docs/P5_05C_PHOTO_UPLOAD_AUTHORIZATION.md`
-- `docs/P5_05D_PHOTO_OBJECT_VALIDATION.md`
-- `docs/P5_05E_PHOTO_PRIVATE_PROCESSING_AND_MEDIA_HANDOFF.md`
-- `docs/P5_05F_PHOTO_DUPLICATE_SIGNALS_AND_PRIVATE_LIFECYCLE.md`
-- `docs/P5_05G_PHOTO_PUBLIC_HTTP_BOUNDARIES.md`
-- `docs/P5_05H_PHOTO_BROWSER_UPLOAD_ORCHESTRATION.md`
-- `docs/P5_05I_R2_SIGNING_AND_DIRECT_UPLOAD_AUDIT.md`
-- `docs/P5_05J_PRIVATE_VALIDATION_PROCESSING_EXECUTION.md`
 - `docs/P5_06A_REVIEW_WORKFLOW_INVENTORY.md`
-
-## Phase 5 sequence
-
-1. P5-01 — Shared submission foundation — Completed through #150–#155
-2. P5-02 — Suggest Place and Online Service — Completed through #156–#192
-3. P5-03 — Payment and problem reports — Completed through #194–#202
-4. P5-04 — Business and service claims — Completed through #203–#215
-5. P5-05 — Photo and Media submission intake — Completed through #216–#227
-6. P5-06 — Review workflow extensions — In progress at P5-06B; P5-06A completed #228
-7. P5-07 — Canonical application transactions and retention — Planned
-8. P5-08 — MVP-B integration audit — Planned
-
-## Next
-
-Implement P5-06B common review entry for `payment_report`, `problem_report`, and `photos`: exact-state guarded `received → triage` and `triage → in_review`, reuse of the P5-01 atomic transition and Audit boundary, protected report controls, and a parent Photos Submission workspace. P5-06B adds no final decision, Media decision, canonical mutation, export, or publication.
-
-## Blocked
-
-No repository blocker is known. P5-06A identified one critical reachability gap: report decision services require reviewed state while public report intake persists `received` and no P5-03 transition path exists. P5-06B closes review entry before later information, hold, terminal-resolution, and Photos parent-resolution work.
-
-## Verification rule
-
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. P5-06A is a repository inventory; P5-06B must prove protected transition reachability without using out-of-band database mutation or performing P5-07 canonical application work.
+- `docs/P5_06C1_COMMON_REVIEW_FOLLOWUP.md`
+- `docs/P5_06C2_REVIEW_FOLLOWUP_UI.md`
+- `docs/SUBMISSION_WORKFLOW.md`
+- `docs/SECURITY_AND_PRIVACY.md`
