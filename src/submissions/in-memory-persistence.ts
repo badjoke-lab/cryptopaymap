@@ -6,6 +6,7 @@ import {
   type SubmissionPersistenceReplayRecord,
   type TransitionSubmissionPersistenceCommand,
 } from './persistence';
+import { parseSubmissionTerminalResolutionEventPayload } from './terminal-resolution-contract';
 import { assertSubmissionWorkflowTransition } from './workflow';
 
 interface StoredSubmission extends SubmissionPersistenceReplayRecord {
@@ -14,6 +15,7 @@ interface StoredSubmission extends SubmissionPersistenceReplayRecord {
   originalPayload: Record<string, unknown>;
   normalizedPayload: Record<string, unknown> | null;
   contact: CreateSubmissionPersistenceCommand['contact'];
+  terminalPublicMessage: string | null;
 }
 
 interface StoredQuarantineReservation {
@@ -80,7 +82,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         resolution: stored.resolution,
         statusTokenHash: stored.statusTokenHash,
         requestedAction: null,
-        publicMessage: null,
+        publicMessage: stored.terminalPublicMessage,
         nextReviewAt: null,
       };
     },
@@ -132,6 +134,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
             ? null
             : structuredClone(command.normalizedPayload),
         contact: command.contact === null ? null : { ...command.contact },
+        terminalPublicMessage: null,
       };
       submissionsById.set(command.id, stored);
       submissionIdByRequest.set(command.intakeRequestId, command.id);
@@ -175,6 +178,11 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
       stored.workflowStatus = command.toStatus;
       stored.resolution = command.resolution;
       stored.updatedAt = command.changedAt;
+      const terminalPayload = parseSubmissionTerminalResolutionEventPayload(command.internalNote);
+      stored.terminalPublicMessage =
+        terminalPayload !== null && terminalPayload.resolution === command.resolution
+          ? terminalPayload.publicMessage
+          : null;
 
       return {
         submissionId: command.submissionId,
