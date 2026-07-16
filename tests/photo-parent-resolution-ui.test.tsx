@@ -87,6 +87,11 @@ function readyPreview(): PhotoParentResolutionPreviewResponse {
 
 function pendingPreview(): PhotoParentResolutionPreviewResponse {
   const ready = readyPreview();
+  const approvedMedia = ready.media[0];
+  const rejectedMedia = ready.media[1];
+  if (approvedMedia === undefined || rejectedMedia === undefined) {
+    throw new Error('Expected preview Media snapshots are missing.');
+  }
   return {
     ...ready,
     readiness: 'pending',
@@ -95,9 +100,9 @@ function pendingPreview(): PhotoParentResolutionPreviewResponse {
     rejectedCount: 0,
     pendingCount: 1,
     media: [
-      ready.media[0],
+      approvedMedia,
       {
-        ...ready.media[1],
+        ...rejectedMedia,
         mediaUpdatedAt: submissionUpdatedAt,
         reviewStatus: 'pending',
         publicDecision: 'pending',
@@ -120,8 +125,11 @@ describe('P5-06E2 Photos parent resolution reviewer controls', () => {
   it('submits only the exact server-projected child snapshot', async () => {
     const user = userEvent.setup();
     const publicMessage = 'One submitted photo was approved and one was not approved.';
+    const initialPreview = readyPreview();
+    const exactRequest = initialPreview.expectedRequest;
+    if (exactRequest === null) throw new Error('Expected ready request snapshot is missing.');
     const resolvedPreview: PhotoParentResolutionPreviewResponse = {
-      ...readyPreview(),
+      ...initialPreview,
       workflowStatus: 'resolved',
       currentResolution: 'partially_approved',
       readiness: 'resolved',
@@ -130,7 +138,7 @@ describe('P5-06E2 Photos parent resolution reviewer controls', () => {
     const fetchMock = vi
       .fn<typeof fetch>()
       .mockResolvedValueOnce(
-        new Response(JSON.stringify(readyPreview()), {
+        new Response(JSON.stringify(initialPreview), {
           status: 200,
           headers: { 'Content-Type': 'application/json' },
         }),
@@ -191,7 +199,7 @@ describe('P5-06E2 Photos parent resolution reviewer controls', () => {
       expectedSubmissionStatus: 'in_review',
       expectedSubmissionUpdatedAt: submissionUpdatedAt,
       expectedHandoffEventId: handoffEventId,
-      expectedMedia: readyPreview().expectedRequest?.expectedMedia,
+      expectedMedia: exactRequest.expectedMedia,
       publicMessage,
       internalNote: null,
     });
