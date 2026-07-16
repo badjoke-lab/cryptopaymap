@@ -38,6 +38,20 @@ export const submissionTerminalReasonCodeValues = [
 ] as const;
 export const submissionTerminalReasonCodeSchema = z.enum(submissionTerminalReasonCodeValues);
 
+const reasonCodesByAction = {
+  not_approved: [
+    'insufficient_evidence',
+    'unverifiable',
+    'out_of_scope',
+    'policy_not_met',
+    'hold_expired',
+    'other',
+  ],
+  duplicate: ['duplicate_submission'],
+  no_change: ['already_current', 'no_material_difference', 'other'],
+  withdrawn: ['submitter_requested', 'superseded_by_submitter', 'other'],
+} as const;
+
 export const submissionTerminalResolutionEventPayloadSchema = z
   .object({
     schemaVersion: z.literal('submission-terminal-resolution-event-v1'),
@@ -62,6 +76,14 @@ export const submissionTerminalResolutionEventPayloadSchema = z
         code: 'custom',
         path: ['resolution'],
         message: 'Terminal-resolution action and resolution must match.',
+      });
+    }
+    const allowedReasons = reasonCodesByAction[payload.action] as readonly string[];
+    if (!allowedReasons.includes(payload.reasonCode)) {
+      context.addIssue({
+        code: 'custom',
+        path: ['reasonCode'],
+        message: 'Terminal-resolution reason code does not belong to this action.',
       });
     }
     const hasDuplicateReference =
