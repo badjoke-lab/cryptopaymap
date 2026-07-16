@@ -54,9 +54,7 @@ describe('P5-06E Photos private status projection', () => {
         decision: 'rejected' as const,
       },
     ];
-    const service = createSubmissionPrivateStatusService(
-      backend(issued.tokenHash, mediaDecisions),
-    );
+    const service = createSubmissionPrivateStatusService(backend(issued.tokenHash, mediaDecisions));
 
     const result = await service.read(publicId, issued.secret);
 

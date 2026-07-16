@@ -107,7 +107,9 @@ export type PhotoParentResolutionEventPayload = z.infer<
 >;
 
 export function photoParentMediaReference(mediaAssetId: string): string {
-  return photoParentMediaReferenceSchema.parse(`MEDIA-${z.uuid().parse(mediaAssetId).toUpperCase()}`);
+  return photoParentMediaReferenceSchema.parse(
+    `MEDIA-${z.uuid().parse(mediaAssetId).toUpperCase()}`,
+  );
 }
 
 export function serializePhotoParentResolutionEventPayload(

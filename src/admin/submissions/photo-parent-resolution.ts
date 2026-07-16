@@ -75,7 +75,11 @@ export const photoParentResolutionReceiptSchema = z
       .array(
         z
           .object({
-            mediaReference: z.string().min(8).max(80).regex(/^[A-Z0-9_-]+$/),
+            mediaReference: z
+              .string()
+              .min(8)
+              .max(80)
+              .regex(/^[A-Z0-9_-]+$/),
             decision: z.enum(['approved', 'rejected']),
           })
           .strict(),
@@ -221,7 +225,12 @@ function resolutionForMedia(media: PhotoParentMediaDecisionSnapshot[]): {
   const approvedCount = media.filter((item) => item.decision === 'approved').length;
   const rejectedCount = media.length - approvedCount;
   if (rejectedCount === 0) {
-    return { resolution: 'approved', reasonCode: 'all_media_approved', approvedCount, rejectedCount };
+    return {
+      resolution: 'approved',
+      reasonCode: 'all_media_approved',
+      approvedCount,
+      rejectedCount,
+    };
   }
   if (approvedCount === 0) {
     return {
@@ -292,7 +301,9 @@ function replayReceipt(
   return receiptFromPayload('replayed', payload, event.createdAt);
 }
 
-function buildMediaSnapshots(state: PhotoParentResolutionState): PhotoParentMediaDecisionSnapshot[] {
+function buildMediaSnapshots(
+  state: PhotoParentResolutionState,
+): PhotoParentMediaDecisionSnapshot[] {
   if (state.handoff === null) {
     throw new PhotoParentResolutionError(
       'ineligible',
@@ -448,7 +459,13 @@ export async function resolvePhotoParentSubmission(
 
   const existing = await readEvent(backend, request.requestId);
   if (existing !== null) {
-    return replayReceipt(existing, submissionIdResult.data, request, context.actorId, requestFingerprint);
+    return replayReceipt(
+      existing,
+      submissionIdResult.data,
+      request,
+      context.actorId,
+      requestFingerprint,
+    );
   }
 
   const state = await readState(backend, submissionIdResult.data);

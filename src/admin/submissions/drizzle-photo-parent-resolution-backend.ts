@@ -1,11 +1,6 @@
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
-import {
-  mediaAssets,
-  mediaReviewDecisions,
-  submissionEvents,
-  submissions,
-} from '../../db/schema';
+import { mediaAssets, mediaReviewDecisions, submissionEvents, submissions } from '../../db/schema';
 import { photoMediaHandoffEventPayloadSchema } from '../../submissions/photo-private-processing';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
 import { assertSubmissionWorkflowTransition } from '../../submissions/workflow';

@@ -12,10 +12,7 @@ const submissionId = '10000000-0000-4000-8000-000000000001';
 const handoffEventId = '20000000-0000-4000-8000-000000000001';
 const requestId = '30000000-0000-4000-8000-000000000001';
 const entityId = '40000000-0000-4000-8000-000000000001';
-const mediaIds = [
-  '50000000-0000-4000-8000-000000000001',
-  '50000000-0000-4000-8000-000000000002',
-];
+const mediaIds = ['50000000-0000-4000-8000-000000000001', '50000000-0000-4000-8000-000000000002'];
 const decisionIds = [
   '60000000-0000-4000-8000-000000000001',
   '60000000-0000-4000-8000-000000000002',
@@ -48,7 +45,7 @@ function makeState(
     },
     media: statuses.map((status, index) => ({
       mediaAssetId: mediaIds[index] ?? mediaIds[0],
-      updatedAt: status === 'pending' ? submissionUpdatedAt : decidedAt[index] ?? decidedAt[0],
+      updatedAt: status === 'pending' ? submissionUpdatedAt : (decidedAt[index] ?? decidedAt[0]),
       reviewStatus: status,
       purpose: status === 'accepted' ? 'public_gallery' : 'public_gallery_candidate',
       visibility: status === 'accepted' ? 'public' : 'private',
@@ -141,7 +138,12 @@ function createBackend(initialState: PhotoParentResolutionState): PhotoParentRes
 
 describe('P5-06E Photos parent resolution', () => {
   it.each([
-    { statuses: ['accepted', 'accepted'] as const, resolution: 'approved', approved: 2, rejected: 0 },
+    {
+      statuses: ['accepted', 'accepted'] as const,
+      resolution: 'approved',
+      approved: 2,
+      rejected: 0,
+    },
     {
       statuses: ['accepted', 'rejected'] as const,
       resolution: 'partially_approved',
