@@ -387,7 +387,8 @@ export function SubmissionReviewFollowupPanel({
         <div className="mt-4 flex items-start gap-3 rounded-control border border-green-200 bg-green-50 p-4 text-sm text-green-900">
           <CheckCircle2 className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
           <p className="m-0">
-            {actionLabel(mutationState.action)} {mutationState.replayed ? 'replayed safely' : 'committed'}.
+            {actionLabel(mutationState.action)}{' '}
+            {mutationState.replayed ? 'replayed safely' : 'committed'}.
             {mutationState.nextReviewAt
               ? ` Next review: ${new Date(mutationState.nextReviewAt).toLocaleString()}.`
               : ''}
@@ -399,10 +400,7 @@ export function SubmissionReviewFollowupPanel({
         <div className="mt-4 rounded-control border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
           <p className="m-0">{mutationState.message}</p>
           <div className="mt-3 flex flex-wrap gap-3">
-            <Button
-              variant="secondary"
-              onClick={() => void submitRequest(mutationState.request)}
-            >
+            <Button variant="secondary" onClick={() => void submitRequest(mutationState.request)}>
               Retry same request
             </Button>
             <Button variant="ghost" onClick={() => void loadCurrent()}>
@@ -451,9 +449,7 @@ export function SubmissionReviewFollowupPanel({
                 type="submit"
                 loading={isSubmitting}
                 disabled={
-                  isSubmitting ||
-                  !requestedAction.trim() ||
-                  !informationPublicMessage.trim()
+                  isSubmitting || !requestedAction.trim() || !informationPublicMessage.trim()
                 }
               >
                 Request information

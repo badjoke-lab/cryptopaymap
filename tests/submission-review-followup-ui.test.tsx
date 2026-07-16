@@ -73,7 +73,9 @@ function reportDetail(
   };
 }
 
-function photoDetail(workflowStatus: 'needs_information' | 'on_hold'): PhotoSubmissionDetailResponse {
+function photoDetail(
+  workflowStatus: 'needs_information' | 'on_hold',
+): PhotoSubmissionDetailResponse {
   return {
     generatedAt: initialUpdatedAt,
     submission: {
@@ -158,7 +160,10 @@ describe('P5-06C2 common review follow-up controls', () => {
 
     render(<SubmissionReviewFollowupPanel sourceKind="report" submissionId={submissionId} />);
 
-    await user.type(await screen.findByLabelText('Requested action'), 'Provide the official privacy contact.');
+    await user.type(
+      await screen.findByLabelText('Requested action'),
+      'Provide the official privacy contact.',
+    );
     await user.type(
       screen.getAllByLabelText('Public status message')[0]!,
       'Please provide the official privacy contact.',
