@@ -2,6 +2,7 @@
 import { ReportReviewEntryControls } from '../../../components/admin/ReportReviewEntryControls';
 import { ReportSubmissionReview } from '../../../components/admin/ReportSubmissionReview';
 import { SubmissionReviewFollowupPanel } from '../../../components/admin/SubmissionReviewFollowupPanel';
+import { SubmissionTerminalResolutionPanel } from '../../../components/admin/SubmissionTerminalResolutionPanel';
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 
 const submissionId = Astro.url.searchParams.get('id');
@@ -10,15 +11,15 @@ const submissionId = Astro.url.searchParams.get('id');
 <AdminLayout
   title="Report review | CryptoPayMap Admin"
   heading="Payment and problem report"
-  description="A protected report workspace with bounded review entry and common information, Hold, and resume controls. Normalized report fields, canonical target context, Claim-context signals, typed decisions, and canonical mutation remain separate."
+  description="A protected report workspace with bounded review entry, information, Hold, resume, and eligible common terminal-resolution controls. Normalized report fields, canonical target context, Claim-context signals, typed decisions, and canonical mutation remain separate."
 >
   <section class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6" aria-labelledby="report-review-boundary-title">
-    <p class="m-0 text-sm font-semibold text-brand-800">P5-06B and P5-06C workflow boundary</p>
+    <p class="m-0 text-sm font-semibold text-brand-800">P5-06B through P5-06D workflow boundary</p>
     <h2 id="report-review-boundary-title" class="mt-1 text-xl font-semibold tracking-tight text-ink">
-      Move a private report into review, request information, pause, or resume safely
+      Move a private report through review or close it without bypassing typed decisions
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      These controls change only the private Submission workflow state. They do not accept Evidence, reconfirm Claims, create rechecks, hide records, apply corrections, change canonical data, export, or publish. Those actions remain separate guarded operations.
+      These controls change only the private Submission workflow state. Common terminal controls expose not-approved and withdrawal only; Problem Report duplicate and no-change remain owned by the typed P5-03G decision boundary. No control here accepts Evidence, reconfirms Claims, creates rechecks, hides records, applies corrections, changes canonical data, exports, or publishes.
     </p>
   </section>
 
@@ -28,6 +29,10 @@ const submissionId = Astro.url.searchParams.get('id');
 
   <section class="mt-8" aria-label="Protected report information Hold and resume controls">
     <SubmissionReviewFollowupPanel sourceKind="report" submissionId={submissionId} client:load />
+  </section>
+
+  <section class="mt-8" aria-label="Protected report terminal-resolution controls">
+    <SubmissionTerminalResolutionPanel sourceKind="report" submissionId={submissionId} client:load />
   </section>
 
   <section class="mt-8" aria-label="Protected report detail">
