@@ -1,70 +1,26 @@
 name: P5-06E scoped integration fix
 
 on:
-  push:
+  pull_request:
     branches:
-      - p5-06e-photo-parent-resolution
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 permissions:
   contents: write
 
 jobs:
   fix:
-    if: github.actor != 'github-actions[bot]'
+    if: github.head_ref == 'p5-06e-photo-parent-resolution' && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
           ref: p5-06e-photo-parent-resolution
-      - name: Connect Photos private-status projection
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          path = Path('src/submissions/drizzle-persistence.ts')
-          content = path.read_text()
-          content = content.replace(
-              "import { parseSubmissionInformationRequestEventPayload } from './information-request-contract';\n",
-              "import { parseSubmissionInformationRequestEventPayload } from './information-request-contract';\nimport { parsePhotoParentResolutionEventPayload } from './photo-parent-resolution-contract';\n",
-          )
-          content = content.replace(
-              "      let nextReviewAt: string | null = null;\n",
-              "      let nextReviewAt: string | null = null;\n      let mediaDecisions: Array<{\n        mediaReference: string;\n        decision: 'pending' | 'approved' | 'rejected';\n      }> = [];\n",
-          )
-          content = content.replace(
-              "                'submission_withdrawn',\n",
-              "                'submission_withdrawn',\n                'photo_parent_resolution_decided',\n",
-          )
-          old = """        const payload = parseSubmissionTerminalResolutionEventPayload(
-          eventRows[0]?.internalNote ?? null,
-        );
-        if (payload !== null && payload.resolution === row.resolution) {
-          publicMessage = payload.publicMessage;
-        }
-"""
-          new = """        const eventNote = eventRows[0]?.internalNote ?? null;
-        const terminalPayload = parseSubmissionTerminalResolutionEventPayload(eventNote);
-        const photoPayload = parsePhotoParentResolutionEventPayload(eventNote);
-        if (terminalPayload !== null && terminalPayload.resolution === row.resolution) {
-          publicMessage = terminalPayload.publicMessage;
-        } else if (photoPayload !== null && photoPayload.resolution === row.resolution) {
-          publicMessage = photoPayload.publicMessage;
-          mediaDecisions = photoPayload.media.map(({ mediaReference, decision }) => ({
-            mediaReference,
-            decision,
-          }));
-        }
-"""
-          if old not in content:
-              raise SystemExit('terminal projection block was not found')
-          content = content.replace(old, new)
-          content = content.replace(
-              "        nextReviewAt,\n      };\n",
-              "        nextReviewAt,\n        mediaDecisions,\n      };\n",
-              1,
-          )
-          path.write_text(content)
-          PY
       - uses: actions/setup-node@v4
         with:
           node-version: 24
@@ -87,7 +43,7 @@ jobs:
           tests/photo-parent-resolution.test.ts
           tests/photo-parent-resolution-api.test.ts
           tests/photo-parent-private-status.test.ts
-      - name: Commit integration and formatting
+      - name: Commit formatting
         run: |
           if git diff --quiet; then
             exit 0
@@ -109,5 +65,5 @@ jobs:
             tests/photo-parent-resolution.test.ts \
             tests/photo-parent-resolution-api.test.ts \
             tests/photo-parent-private-status.test.ts
-          git commit -m "P5-06E connect private status and apply formatting"
+          git commit -m "P5-06E apply repository formatting"
           git push origin HEAD:p5-06e-photo-parent-resolution
