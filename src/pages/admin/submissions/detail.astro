@@ -1,5 +1,6 @@
 ---
 import { SubmissionReviewFollowupPanel } from '../../../components/admin/SubmissionReviewFollowupPanel';
+import { SubmissionTerminalResolutionPanel } from '../../../components/admin/SubmissionTerminalResolutionPanel';
 import { SuggestAcceptedCandidatePanel } from '../../../components/admin/SuggestAcceptedCandidatePanel';
 import { SuggestSubmissionReview } from '../../../components/admin/SuggestSubmissionReview';
 import { SuggestReviewTransitionPanel } from '../../../components/admin/SuggestReviewTransitionPanel';
@@ -11,7 +12,7 @@ const submissionId = Astro.url.searchParams.get('id');
 <AdminLayout
   title="Suggest review | CryptoPayMap Admin"
   heading="Suggest review"
-  description="Inspect the normalized Suggest proposal, review bounded overlap signals, apply exact-state workflow transitions, request bounded additional information, place review on a time-bounded Hold, resume review explicitly, or preserve a useful incomplete Suggest as a private Candidate."
+  description="Inspect the normalized Suggest proposal, review bounded overlap signals, apply exact-state workflow transitions, request bounded additional information, place review on a time-bounded Hold, resume review explicitly, preserve useful incomplete material as a private Candidate, or close the private Submission with an eligible terminal outcome."
 >
   <section
     class="rounded-card border border-brand-600 bg-brand-50 p-5 sm:p-6"
@@ -25,7 +26,7 @@ const submissionId = Astro.url.searchParams.get('id');
       Read-only signals remain separate from exact-state workflow transitions
     </h2>
     <p class="mt-3 max-w-3xl text-sm leading-6 text-muted">
-      Zero signals are non-conclusive. Review entry, information requests, time-bounded Hold, explicit resume, and accepted-as-Candidate remain separate protected operations. None of them accepts Evidence, changes canonical records, exports, or publishes automatically.
+      Zero signals are non-conclusive. Review entry, information requests, time-bounded Hold, explicit resume, accepted-as-Candidate, and terminal resolution remain separate protected operations. None of them accepts Evidence, changes canonical records, exports, or publishes automatically.
     </p>
     <div class="mt-5">
       <a
@@ -102,6 +103,26 @@ const submissionId = Astro.url.searchParams.get('id');
       </p>
       <SuggestAcceptedCandidatePanel client:load />
     </section>
+  </section>
+
+  <section class="mt-8" aria-labelledby="suggest-terminal-resolution-title">
+    <div class="mb-5 flex flex-wrap items-end justify-between gap-3">
+      <div>
+        <p class="m-0 text-sm font-semibold text-red-700">P5-06D common boundary</p>
+        <h2
+          id="suggest-terminal-resolution-title"
+          class="mt-1 text-2xl font-semibold tracking-tight text-ink"
+        >
+          Terminal resolution
+        </h2>
+      </div>
+      <span
+        class="rounded-pill border border-red-200 bg-red-50 px-3 py-1 text-xs font-medium text-red-800"
+      >
+        Private Submission closure
+      </span>
+    </div>
+    <SubmissionTerminalResolutionPanel sourceKind="suggest" submissionId={submissionId} client:load />
   </section>
 
   <section class="mt-8" aria-labelledby="suggest-review-workspace-title">
