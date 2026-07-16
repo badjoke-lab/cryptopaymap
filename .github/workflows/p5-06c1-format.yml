@@ -1,0 +1,35 @@
+name: P5-06C1 scoped formatting
+
+on:
+  push:
+    branches:
+      - p5-06c1-common-review-followup
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-06c1-common-review-followup
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format P5-06C1 files
+        run: npx biome format --write src/admin/submissions/review-followup.ts tests/submission-review-followup.test.ts
+      - name: Commit formatting
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/admin/submissions/review-followup.ts tests/submission-review-followup.test.ts
+          git commit -m "P5-06C1 apply repository formatting"
+          git push origin HEAD:p5-06c1-common-review-followup
