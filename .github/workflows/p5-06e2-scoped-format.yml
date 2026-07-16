@@ -1,0 +1,73 @@
+name: P5-06E2 scoped formatting
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    if: github.head_ref == 'p5-06e2-photo-parent-resolution-ui' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-06e2-photo-parent-resolution-ui
+      - name: Register preview schema check
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('package.json')
+          content = path.read_text()
+          old = 'tsx scripts/check-photo-parent-resolution.ts && tsx scripts/check-positive-payment-evidence.ts'
+          new = 'tsx scripts/check-photo-parent-resolution.ts && tsx scripts/check-photo-parent-resolution-preview.ts && tsx scripts/check-positive-payment-evidence.ts'
+          if old not in content:
+              raise SystemExit('P5-06E checker insertion point was not found')
+          path.write_text(content.replace(old, new))
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format P5-06E2 files
+        run: >-
+          npx biome format --write
+          package.json
+          functions/admin/api/photo-submissions/[submissionId]/parent-resolution.ts
+          scripts/check-photo-parent-resolution-preview.ts
+          scripts/check-report-submission-reviewer-artifact.mjs
+          src/admin/submissions/photo-parent-resolution-preview.ts
+          src/components/admin/PhotoParentResolutionPanel.tsx
+          src/pages/admin/submissions/photo-detail.astro
+          tests/photo-parent-resolution-preview-api.test.ts
+          tests/photo-parent-resolution-preview.test.ts
+          tests/photo-parent-resolution-ui.test.tsx
+      - name: Commit integration and formatting
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            package.json \
+            functions/admin/api/photo-submissions/[submissionId]/parent-resolution.ts \
+            scripts/check-photo-parent-resolution-preview.ts \
+            scripts/check-report-submission-reviewer-artifact.mjs \
+            src/admin/submissions/photo-parent-resolution-preview.ts \
+            src/components/admin/PhotoParentResolutionPanel.tsx \
+            src/pages/admin/submissions/photo-detail.astro \
+            tests/photo-parent-resolution-preview-api.test.ts \
+            tests/photo-parent-resolution-preview.test.ts \
+            tests/photo-parent-resolution-ui.test.tsx
+          git commit -m "P5-06E2 register preview check and apply formatting"
+          git push origin HEAD:p5-06e2-photo-parent-resolution-ui
