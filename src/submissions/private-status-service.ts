@@ -66,8 +66,7 @@ export function createSubmissionPrivateStatusService(
         publicId: record.publicId,
         statusLabel: publicStatusLabelForSubmission(record.workflowStatus, record.resolution),
         requestedAction: exposesFollowUpText ? record.requestedAction : null,
-        publicMessage:
-          exposesFollowUpText || exposesTerminalText ? record.publicMessage : null,
+        publicMessage: exposesFollowUpText || exposesTerminalText ? record.publicMessage : null,
         nextReviewAt: record.workflowStatus === 'on_hold' ? record.nextReviewAt : null,
         linkedPublicRecord: null,
         mediaDecisions: [],

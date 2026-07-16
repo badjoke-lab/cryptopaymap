@@ -179,7 +179,10 @@ export class SubmissionTerminalResolutionError extends Error {
   }
 }
 
-const eligibility: Record<SubmissionTerminalResolutionRequest['action'], readonly SubmissionType[]> = {
+const eligibility: Record<
+  SubmissionTerminalResolutionRequest['action'],
+  readonly SubmissionType[]
+> = {
   not_approved: ['suggest', 'payment_report', 'problem_report'],
   duplicate: ['suggest', 'photos'],
   no_change: ['suggest', 'photos'],
