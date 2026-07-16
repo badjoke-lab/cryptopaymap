@@ -4,20 +4,20 @@ import { join } from 'node:path';
 const detailPage = readFileSync(join('dist', 'admin/submissions/detail/index.html'), 'utf8');
 
 const requiredFragments = [
-  'Submitter follow-up boundary',
-  'Request additional information',
-  'in review → needs information',
-  'Only bounded requested-action text and a public status message are projected to the submitter.',
+  'P5-06C common boundary',
+  'Information, Hold, and resume',
+  'Exact-state guarded',
+  'request bounded additional information',
 ];
 
 for (const fragment of requiredFragments) {
   if (!detailPage.includes(fragment)) {
-    throw new Error(`Missing Suggest information-request staging marker: ${fragment}`);
+    throw new Error(`Missing common Suggest information-request staging marker: ${fragment}`);
   }
 }
 
 const forbiddenFragments = [
-  'CPM_ADMIN_SUBMISSION_TRANSITION_SUBJECTS',
+  'CPM_ADMIN_SUBMISSION_REVIEW_FOLLOWUP_SUBJECTS',
   'DATABASE_URL',
   'internalNote',
   'statusTokenHash',
@@ -32,4 +32,4 @@ for (const fragment of forbiddenFragments) {
   }
 }
 
-console.log('Suggest information-request staging artifact checks passed.');
+console.log('Common Suggest information-request staging artifact checks passed.');
