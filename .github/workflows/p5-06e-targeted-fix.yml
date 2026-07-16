@@ -1,0 +1,81 @@
+name: P5-06E targeted type fix
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.head_ref == 'p5-06e-photo-parent-resolution' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-06e-photo-parent-resolution
+      - name: Apply targeted fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          status_path = Path('src/submissions/private-status-service.ts')
+          status = status_path.read_text()
+          status = status.replace(
+              '        mediaDecisions: record.mediaDecisions,\n',
+              '        mediaDecisions: record.mediaDecisions ?? [],\n',
+          )
+          status_path.write_text(status)
+
+          test_path = Path('tests/photo-parent-resolution.test.ts')
+          test = test_path.read_text()
+          test = test.replace(
+              "]\nconst decisionIds = [",
+              "] as const;\nconst decisionIds = [",
+              1,
+          )
+          test = test.replace(
+              "]\nconst submissionUpdatedAt =",
+              "] as const;\nconst submissionUpdatedAt =",
+              1,
+          )
+          test = test.replace(
+              "const decidedAt = ['2026-07-16T05:01:00.000Z', '2026-07-16T05:02:00.000Z'];",
+              "const decidedAt = ['2026-07-16T05:01:00.000Z', '2026-07-16T05:02:00.000Z'] as const;",
+          )
+          test = test.replace(
+              '.toMatchObject<Partial<PhotoParentResolutionError>>(',
+              '.toMatchObject(',
+          )
+          test = test.replace(
+              "    expectedMedia[0].expectedMediaUpdatedAt = '2026-07-16T04:59:00.000Z';\n",
+              "    const firstExpectedMedia = expectedMedia[0];\n    if (firstExpectedMedia === undefined) throw new Error('Expected Media snapshot is missing.');\n    firstExpectedMedia.expectedMediaUpdatedAt = '2026-07-16T04:59:00.000Z';\n",
+          )
+          test_path.write_text(test)
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: >-
+          npx biome format --write
+          src/submissions/private-status-service.ts
+          tests/photo-parent-resolution.test.ts
+      - name: Commit fixes
+        run: |
+          if git diff --quiet; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/submissions/private-status-service.ts tests/photo-parent-resolution.test.ts
+          git commit -m "P5-06E fix private-status fallback and test types"
+          git push origin HEAD:p5-06e-photo-parent-resolution
