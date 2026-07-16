@@ -59,11 +59,15 @@ export function createSubmissionPrivateStatusService(
       if (!verified) notAvailable();
 
       const exposesFollowUpText = ['needs_information', 'on_hold'].includes(record.workflowStatus);
+      const exposesTerminalText = ['resolved', 'duplicate', 'withdrawn'].includes(
+        record.workflowStatus,
+      );
       return submissionPublicStatusProjectionSchema.parse({
         publicId: record.publicId,
         statusLabel: publicStatusLabelForSubmission(record.workflowStatus, record.resolution),
         requestedAction: exposesFollowUpText ? record.requestedAction : null,
-        publicMessage: exposesFollowUpText ? record.publicMessage : null,
+        publicMessage:
+          exposesFollowUpText || exposesTerminalText ? record.publicMessage : null,
         nextReviewAt: record.workflowStatus === 'on_hold' ? record.nextReviewAt : null,
         linkedPublicRecord: null,
         mediaDecisions: [],
