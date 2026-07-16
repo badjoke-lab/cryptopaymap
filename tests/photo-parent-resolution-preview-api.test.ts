@@ -15,11 +15,7 @@ const identity = {
 };
 
 function context(
-  overrides: {
-    identity?: unknown;
-    subjects?: string;
-    submissionId?: string | string[];
-  } = {},
+  overrides: { identity?: unknown; subjects?: string; submissionId?: string | string[] } = {},
 ) {
   return {
     request: new Request(

@@ -16,10 +16,7 @@ const decisionIds = [
   '50000000-0000-4000-8000-000000000002',
 ] as const;
 const submissionUpdatedAt = '2026-07-16T06:20:00.000Z';
-const decisionTimes = [
-  '2026-07-16T06:21:00.000Z',
-  '2026-07-16T06:22:00.000Z',
-] as const;
+const decisionTimes = ['2026-07-16T06:21:00.000Z', '2026-07-16T06:22:00.000Z'] as const;
 const changedAt = '2026-07-16T06:23:00.000Z';
 
 function readyPreview(): PhotoParentResolutionPreviewResponse {
@@ -219,6 +216,8 @@ describe('P5-06E2 Photos parent resolution reviewer controls', () => {
     await screen.findByText(/1 child Media decision remains pending/i);
     expect(screen.getByText(/1 approved · 0 rejected · 1 pending/i)).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Resolve Photos parent' })).not.toBeInTheDocument();
-    expect(screen.getByText(/No P5-06E parent-resolution request is available/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/No P5-06E parent-resolution request is available/i),
+    ).toBeInTheDocument();
   });
 });

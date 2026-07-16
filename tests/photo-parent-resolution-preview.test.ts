@@ -17,10 +17,7 @@ const decisionIds = [
   '50000000-0000-4000-8000-000000000002',
 ] as const;
 const updatedAt = '2026-07-16T06:00:00.000Z';
-const decisionTimes = [
-  '2026-07-16T05:58:00.000Z',
-  '2026-07-16T05:59:00.000Z',
-] as const;
+const decisionTimes = ['2026-07-16T05:58:00.000Z', '2026-07-16T05:59:00.000Z'] as const;
 const generatedAt = new Date('2026-07-16T06:01:00.000Z');
 const context = {
   actorId: 'reviewer:photos',

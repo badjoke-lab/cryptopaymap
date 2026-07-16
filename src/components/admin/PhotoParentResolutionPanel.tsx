@@ -67,9 +67,7 @@ function StatusPanel({
   );
 }
 
-function outcomeLabel(
-  value: 'approved' | 'partially_approved' | 'not_approved' | null,
-): string {
+function outcomeLabel(value: 'approved' | 'partially_approved' | 'not_approved' | null): string {
   return value === null ? 'Not available' : value.replaceAll('_', ' ');
 }
 
@@ -300,8 +298,8 @@ export function PhotoParentResolutionPanel({ submissionId }: { submissionId: str
           <CheckCircle2 className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
           <p className="m-0">
             Parent resolution {mutationState.receipt.state}: {mutationState.receipt.resolution}.{' '}
-            {mutationState.receipt.approvedCount} approved and{' '}
-            {mutationState.receipt.rejectedCount} rejected.
+            {mutationState.receipt.approvedCount} approved and {mutationState.receipt.rejectedCount}{' '}
+            rejected.
           </p>
         </div>
       ) : null}

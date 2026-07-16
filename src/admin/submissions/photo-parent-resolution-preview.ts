@@ -11,7 +11,11 @@ const timestampSchema = z.iso.datetime({ offset: true });
 
 export const photoParentResolutionPreviewMediaSchema = z
   .object({
-    mediaReference: z.string().min(8).max(80).regex(/^[A-Z0-9_-]+$/),
+    mediaReference: z
+      .string()
+      .min(8)
+      .max(80)
+      .regex(/^[A-Z0-9_-]+$/),
     mediaAssetId: z.uuid(),
     mediaUpdatedAt: timestampSchema,
     reviewStatus: z.enum(['pending', 'accepted', 'rejected']),
@@ -79,15 +83,11 @@ export const photoParentResolutionPreviewResponseSchema = z
   .object({
     submissionId: z.uuid(),
     workflowStatus: z.string().trim().min(1).max(64),
-    currentResolution: z
-      .enum(['approved', 'partially_approved', 'not_approved'])
-      .nullable(),
+    currentResolution: z.enum(['approved', 'partially_approved', 'not_approved']).nullable(),
     expectedSubmissionUpdatedAt: timestampSchema,
     handoffEventId: z.uuid().nullable(),
     readiness: z.enum(['ready', 'pending', 'not_in_review', 'resolved', 'blocked']),
-    derivedResolution: z
-      .enum(['approved', 'partially_approved', 'not_approved'])
-      .nullable(),
+    derivedResolution: z.enum(['approved', 'partially_approved', 'not_approved']).nullable(),
     approvedCount: z.number().int().min(0).max(8),
     rejectedCount: z.number().int().min(0).max(8),
     pendingCount: z.number().int().min(0).max(8),
