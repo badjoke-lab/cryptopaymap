@@ -1,8 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import {
-  loadPhotoParentResolutionPreview,
-  type PhotoParentResolutionPreviewResponse,
-} from '../src/admin/submissions/photo-parent-resolution-preview';
+import { loadPhotoParentResolutionPreview } from '../src/admin/submissions/photo-parent-resolution-preview';
 import type {
   PhotoParentResolutionBackend,
   PhotoParentResolutionState,
@@ -112,7 +109,7 @@ describe('P5-06E2 Photos parent resolution preview', () => {
       generatedAt,
     );
 
-    expect(result).toMatchObject<Partial<PhotoParentResolutionPreviewResponse>>({
+    expect(result).toMatchObject({
       submissionId,
       workflowStatus: 'in_review',
       readiness: 'ready',
@@ -158,7 +155,6 @@ describe('P5-06E2 Photos parent resolution preview', () => {
       submissionId,
       generatedAt,
     );
-
     expect(result).toMatchObject({
       readiness: 'pending',
       derivedResolution: null,
@@ -180,12 +176,7 @@ describe('P5-06E2 Photos parent resolution preview', () => {
 
     const resolved = await loadPhotoParentResolutionPreview(
       context,
-      backend(
-        state(['approved'], {
-          workflowStatus: 'resolved',
-          resolution: 'approved',
-        }),
-      ),
+      backend(state(['approved'], { workflowStatus: 'resolved', resolution: 'approved' })),
       submissionId,
       generatedAt,
     );
@@ -200,19 +191,13 @@ describe('P5-06E2 Photos parent resolution preview', () => {
   it('blocks inconsistent handoff or child state instead of manufacturing a request', async () => {
     const inconsistent = state(['approved', 'rejected']);
     inconsistent.media = inconsistent.media.slice(0, 1);
-
     const result = await loadPhotoParentResolutionPreview(
       context,
       backend(inconsistent),
       submissionId,
       generatedAt,
     );
-
-    expect(result).toMatchObject({
-      readiness: 'blocked',
-      expectedRequest: null,
-      media: [],
-    });
+    expect(result).toMatchObject({ readiness: 'blocked', expectedRequest: null, media: [] });
   });
 
   it('fails authorization before reading parent state', async () => {
@@ -226,7 +211,6 @@ describe('P5-06E2 Photos parent resolution preview', () => {
         throw new Error('not used');
       },
     };
-
     await expect(
       loadPhotoParentResolutionPreview(
         { actorId: 'reviewer:nope', actorType: 'human', capabilities: [] as never },
