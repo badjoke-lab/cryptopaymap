@@ -180,7 +180,10 @@ function assertSubmissionType(
   request: ReviewFollowupRequest,
 ): ReviewFollowupState {
   if (state === null || state.submissionType !== request.submissionType) {
-    throw new ReviewFollowupError('not_found', 'The requested review follow-up Submission was not found.');
+    throw new ReviewFollowupError(
+      'not_found',
+      'The requested review follow-up Submission was not found.',
+    );
   }
   return state;
 }

@@ -74,7 +74,9 @@ class InMemoryBackend implements ReviewFollowupBackend {
   }
 }
 
-function informationRequest(submissionType: 'suggest' | 'payment_report' | 'problem_report' | 'photos') {
+function informationRequest(
+  submissionType: 'suggest' | 'payment_report' | 'problem_report' | 'photos',
+) {
   return {
     schemaVersion: 'submission-review-followup-v1' as const,
     requestId,
@@ -103,32 +105,34 @@ function holdRequest(submissionType: 'suggest' | 'payment_report' | 'problem_rep
 }
 
 describe('P5-06C1 common Submission review follow-up', () => {
-  it.each(['suggest', 'payment_report', 'problem_report', 'photos'] as const)(
-    'requests information for a %s Submission using the existing private-status event shape',
-    async (submissionType) => {
-      const backend = new InMemoryBackend(submissionType);
-      const receipt = await applySubmissionReviewFollowup(
-        context(),
-        backend,
-        submissionId,
-        informationRequest(submissionType),
-        changedAt,
-      );
+  it.each([
+    'suggest',
+    'payment_report',
+    'problem_report',
+    'photos',
+  ] as const)('requests information for a %s Submission using the existing private-status event shape', async (submissionType) => {
+    const backend = new InMemoryBackend(submissionType);
+    const receipt = await applySubmissionReviewFollowup(
+      context(),
+      backend,
+      submissionId,
+      informationRequest(submissionType),
+      changedAt,
+    );
 
-      expect(receipt).toMatchObject({
-        state: 'committed',
-        submissionType,
-        action: 'request_information',
-        fromStatus: 'in_review',
-        toStatus: 'needs_information',
-      });
-      expect(backend.state?.workflowStatus).toBe('needs_information');
-      expect(backend.events.get(requestId)?.action).toBe('submission_information_requested');
-      expect(backend.events.get(requestId)?.internalNote).toContain(
-        'suggest-information-request-event-v1',
-      );
-    },
-  );
+    expect(receipt).toMatchObject({
+      state: 'committed',
+      submissionType,
+      action: 'request_information',
+      fromStatus: 'in_review',
+      toStatus: 'needs_information',
+    });
+    expect(backend.state?.workflowStatus).toBe('needs_information');
+    expect(backend.events.get(requestId)?.action).toBe('submission_information_requested');
+    expect(backend.events.get(requestId)?.internalNote).toContain(
+      'suggest-information-request-event-v1',
+    );
+  });
 
   it('resumes from needs_information without retaining request text on the resume event', async () => {
     const backend = new InMemoryBackend('photos', 'needs_information');
