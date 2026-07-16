@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SubmissionPersistenceError } from '../src/submissions/persistence';
 import {
-  PhotoParentResolutionError,
   resolvePhotoParentSubmission,
   type PhotoParentResolutionBackend,
   type PhotoParentResolutionCommitCommand,
