@@ -12,6 +12,7 @@ import { formatSubmissionPublicId } from './contract';
 import { parseSubmissionHoldEventPayload } from './hold-contract';
 import { parseSubmissionInformationRequestEventPayload } from './information-request-contract';
 import { SubmissionPersistenceError, type SubmissionPersistenceBackend } from './persistence';
+import { parseSubmissionTerminalResolutionEventPayload } from './terminal-resolution-contract';
 import { assertSubmissionWorkflowTransition } from './workflow';
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
@@ -151,6 +152,31 @@ export function createDrizzleSubmissionPersistenceBackend(
           requestedAction = payload.requiredAction;
           publicMessage = payload.publicMessage;
           nextReviewAt = payload.nextReviewAt;
+        }
+      }
+
+      if (['resolved', 'duplicate', 'withdrawn'].includes(row.workflowStatus)) {
+        const eventRows = await database
+          .select({ internalNote: submissionEvents.internalNote })
+          .from(submissionEvents)
+          .where(
+            and(
+              eq(submissionEvents.submissionId, row.submissionId),
+              inArray(submissionEvents.action, [
+                'submission_not_approved',
+                'submission_duplicate_resolved',
+                'submission_no_change_resolved',
+                'submission_withdrawn',
+              ]),
+            ),
+          )
+          .orderBy(desc(submissionEvents.createdAt), desc(submissionEvents.id))
+          .limit(1);
+        const payload = parseSubmissionTerminalResolutionEventPayload(
+          eventRows[0]?.internalNote ?? null,
+        );
+        if (payload !== null && payload.resolution === row.resolution) {
+          publicMessage = payload.publicMessage;
         }
       }
 
