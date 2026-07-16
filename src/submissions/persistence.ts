@@ -70,6 +70,10 @@ export interface SubmissionPrivateStatusRecord {
   requestedAction: string | null;
   publicMessage: string | null;
   nextReviewAt: string | null;
+  mediaDecisions: Array<{
+    mediaReference: string;
+    decision: 'pending' | 'approved' | 'rejected';
+  }>;
 }
 
 export interface TransitionSubmissionPersistenceCommand {
