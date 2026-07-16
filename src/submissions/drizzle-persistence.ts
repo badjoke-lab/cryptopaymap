@@ -11,6 +11,7 @@ import {
 import { formatSubmissionPublicId } from './contract';
 import { parseSubmissionHoldEventPayload } from './hold-contract';
 import { parseSubmissionInformationRequestEventPayload } from './information-request-contract';
+import { parsePhotoParentResolutionEventPayload } from './photo-parent-resolution-contract';
 import { SubmissionPersistenceError, type SubmissionPersistenceBackend } from './persistence';
 import { parseSubmissionTerminalResolutionEventPayload } from './terminal-resolution-contract';
 import { assertSubmissionWorkflowTransition } from './workflow';
@@ -113,6 +114,10 @@ export function createDrizzleSubmissionPersistenceBackend(
       let requestedAction: string | null = null;
       let publicMessage: string | null = null;
       let nextReviewAt: string | null = null;
+      let mediaDecisions: Array<{
+        mediaReference: string;
+        decision: 'pending' | 'approved' | 'rejected';
+      }> = [];
 
       if (row.workflowStatus === 'needs_information') {
         const eventRows = await database
@@ -167,16 +172,23 @@ export function createDrizzleSubmissionPersistenceBackend(
                 'submission_duplicate_resolved',
                 'submission_no_change_resolved',
                 'submission_withdrawn',
+                'photo_parent_resolution_decided',
               ]),
             ),
           )
           .orderBy(desc(submissionEvents.createdAt), desc(submissionEvents.id))
           .limit(1);
-        const payload = parseSubmissionTerminalResolutionEventPayload(
-          eventRows[0]?.internalNote ?? null,
-        );
-        if (payload !== null && payload.resolution === row.resolution) {
-          publicMessage = payload.publicMessage;
+        const eventNote = eventRows[0]?.internalNote ?? null;
+        const terminalPayload = parseSubmissionTerminalResolutionEventPayload(eventNote);
+        const photoPayload = parsePhotoParentResolutionEventPayload(eventNote);
+        if (terminalPayload !== null && terminalPayload.resolution === row.resolution) {
+          publicMessage = terminalPayload.publicMessage;
+        } else if (photoPayload !== null && photoPayload.resolution === row.resolution) {
+          publicMessage = photoPayload.publicMessage;
+          mediaDecisions = photoPayload.media.map(({ mediaReference, decision }) => ({
+            mediaReference,
+            decision,
+          }));
         }
       }
 
@@ -188,6 +200,7 @@ export function createDrizzleSubmissionPersistenceBackend(
         requestedAction,
         publicMessage,
         nextReviewAt,
+        mediaDecisions,
       };
     },
 

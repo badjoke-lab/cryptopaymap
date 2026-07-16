@@ -69,7 +69,7 @@ export function createSubmissionPrivateStatusService(
         publicMessage: exposesFollowUpText || exposesTerminalText ? record.publicMessage : null,
         nextReviewAt: record.workflowStatus === 'on_hold' ? record.nextReviewAt : null,
         linkedPublicRecord: null,
-        mediaDecisions: [],
+        mediaDecisions: record.mediaDecisions ?? [],
         permittedActions: permittedActionsForStatus(record.workflowStatus),
       });
     },

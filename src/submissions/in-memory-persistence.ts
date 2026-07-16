@@ -84,6 +84,7 @@ export function createInMemorySubmissionPersistenceBackend(): SubmissionPersiste
         requestedAction: null,
         publicMessage: stored.terminalPublicMessage,
         nextReviewAt: null,
+        mediaDecisions: [],
       };
     },
 
