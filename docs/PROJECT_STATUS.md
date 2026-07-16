@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-06D — Common terminal resolution
+P5-06E — Photos parent resolution and partial outcomes
 
 ## Current repository state
 
@@ -20,17 +20,18 @@ P5-06D — Common terminal resolution
 - P5-05 Photo and Media submission intake is complete through #216–#227.
 - P5-06A cross-submission review workflow inventory completed in #228.
 - P5-06B common review entry completed through #229–#232.
-- P5-06C1 common information-request, Hold, and resume service/API completed in #233.
-- P5-06C2 Suggest, report, and Photos reviewer controls completed in #234.
-- P5-06C information, Hold, and resume coverage is repository-complete.
+- P5-06C information-request, Hold, resume services, and reviewer controls completed through #233–#234.
+- P5-06D1 common terminal-resolution service, persistence, protected API, replay safety, duplicate-target guards, and private-status projection completed in #236.
+- P5-06D2 Suggest, report, and Photos terminal-resolution reviewer controls completed in #237.
+- P5-06D common terminal resolution is repository-complete.
 
 ## Latest verified main
 
 ```text
-ce4e056835dba6f3d0122852998e704489f1adb3
+823062fad3567d71425976cf15bf1d579cdfd11c
 ```
 
-The following pull-request workflows passed for the P5-06C2 implementation head before #234 merged:
+The following pull-request workflows passed for the P5-06D2 implementation head before #237 merged:
 
 - Foundation validation;
 - Migration drift;
@@ -45,16 +46,15 @@ None.
 
 ## Next
 
-Implement P5-06D common terminal resolution only where an existing type-specific operation has not already resolved the Submission:
+Implement P5-06E Photos parent resolution and partial outcomes:
 
-```text
-not_approved
-duplicate
-no_change
-withdrawn
-```
+- require durable decisions for every submitted child Media item before full parent resolution;
+- produce `partially_approved` for mixed accepted and rejected Media;
+- produce `not_approved` when all submitted Media are rejected;
+- keep canonical mutation and publication inside the existing P3-10 boundary;
+- expose private-status Media decisions without storage keys, reviewer identity, or private proof.
 
-P5-06D must preserve report-specific duplicate and no-change decisions, require an exact duplicate target where applicable, retain useful Evidence and Media, project only bounded public-safe resolution text, and perform no P5-07 canonical application or export work.
+P5-06E must not perform P5-07 canonical application or export work.
 
 ## Blocked
 
@@ -69,7 +69,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/IMPLEMENTATION_PLAN.md`
 - `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`
 - `docs/P5_06A_REVIEW_WORKFLOW_INVENTORY.md`
-- `docs/P5_06C1_COMMON_REVIEW_FOLLOWUP.md`
-- `docs/P5_06C2_REVIEW_FOLLOWUP_UI.md`
+- `docs/P5_06D1_COMMON_TERMINAL_RESOLUTION.md`
+- `docs/P5_06D2_TERMINAL_RESOLUTION_UI.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
