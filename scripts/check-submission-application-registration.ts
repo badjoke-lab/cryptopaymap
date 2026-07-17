@@ -56,9 +56,7 @@ if (
 }
 
 const policy = readSubmissionApplicationRegistrationAuthorizationPolicy({
-  CPM_ADMIN_SUBMISSION_APPLICATION_REGISTRATION_SUBJECTS: JSON.stringify([
-    'application-reviewer',
-  ]),
+  CPM_ADMIN_SUBMISSION_APPLICATION_REGISTRATION_SUBJECTS: JSON.stringify(['application-reviewer']),
 });
 const context = authorizeSubmissionApplicationRegistration(
   {

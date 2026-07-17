@@ -34,11 +34,14 @@ function context(
   } = {},
 ) {
   return {
-    request: new Request(`https://example.test/admin/api/application-registration/${submissionId}`, {
-      method: 'POST',
-      headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
-      body: JSON.stringify(overrides.requestBody ?? body()),
-    }),
+    request: new Request(
+      `https://example.test/admin/api/application-registration/${submissionId}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
+        body: JSON.stringify(overrides.requestBody ?? body()),
+      },
+    ),
     env: {
       CPM_ADMIN_SUBMISSION_APPLICATION_REGISTRATION_SUBJECTS:
         overrides.subjects ?? JSON.stringify(['application-reviewer']),

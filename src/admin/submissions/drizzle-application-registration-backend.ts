@@ -34,7 +34,9 @@ function receipt(
   return kind === null || ids.length === 0 ? null : { kind, ids };
 }
 
-function mapRecord(row: typeof submissionApplications.$inferSelect): SubmissionApplicationRegistrationRecord {
+function mapRecord(
+  row: typeof submissionApplications.$inferSelect,
+): SubmissionApplicationRegistrationRecord {
   return {
     registrationRequestId: row.registrationRequestId,
     applicationId: row.id,

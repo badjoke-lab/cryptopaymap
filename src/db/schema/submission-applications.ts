@@ -33,7 +33,12 @@ export const submissionApplicationKindValues = [
 ] as const;
 
 export const submissionApplicationStatusValues = ['pending', 'committed', 'failed'] as const;
-export const submissionPublicationStatusValues = ['blocked', 'pending', 'committed', 'failed'] as const;
+export const submissionPublicationStatusValues = [
+  'blocked',
+  'pending',
+  'committed',
+  'failed',
+] as const;
 export const submissionApplicationReceiptKindValues = [
   'submission_event',
   'candidate_promotion_decision',
@@ -84,7 +89,8 @@ export const submissionApplications = pgTable(
       .notNull()
       .references(() => submissions.id, { onDelete: 'restrict' }),
     submissionType: submissionTypeEnum('submission_type').notNull(),
-    sourceDecisionKind: submissionApplicationSourceDecisionKindEnum('source_decision_kind').notNull(),
+    sourceDecisionKind:
+      submissionApplicationSourceDecisionKindEnum('source_decision_kind').notNull(),
     sourceDecisionEventId: uuid('source_decision_event_id')
       .notNull()
       .references(() => submissionEvents.id, { onDelete: 'restrict' }),

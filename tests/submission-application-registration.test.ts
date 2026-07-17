@@ -161,8 +161,7 @@ function stateFor(scenario: Scenario): SubmissionApplicationRegistrationState {
       createdAt: updatedAt,
     },
     candidatePromotionDecisionId: scenario.candidatePromotionDecisionId ?? null,
-    businessClaimFieldApplicationEventId:
-      scenario.businessClaimFieldApplicationEventId ?? null,
+    businessClaimFieldApplicationEventId: scenario.businessClaimFieldApplicationEventId ?? null,
   };
 }
 
@@ -245,43 +244,42 @@ function createBackend(initialState: SubmissionApplicationRegistrationState) {
 }
 
 describe('P5-07B1 Submission application registration', () => {
-  it.each(scenarios)(
-    'derives $applicationStatus/$publicationStatus for $sourceDecisionKind',
-    async (scenario) => {
-      const backend = createBackend(stateFor(scenario));
-      const receipt = await registerSubmissionApplication(
-        context,
-        backend,
-        submissionId,
-        requestFor(scenario.sourceDecisionKind),
-        registeredAt,
-      );
+  it.each(
+    scenarios,
+  )('derives $applicationStatus/$publicationStatus for $sourceDecisionKind', async (scenario) => {
+    const backend = createBackend(stateFor(scenario));
+    const receipt = await registerSubmissionApplication(
+      context,
+      backend,
+      submissionId,
+      requestFor(scenario.sourceDecisionKind),
+      registeredAt,
+    );
 
-      expect(receipt).toMatchObject({
-        state: 'committed',
-        submissionId,
-        submissionType: scenario.submissionType,
-        sourceDecisionKind: scenario.sourceDecisionKind,
-        sourceDecisionEventId: sourceEventId,
-        applicationKind: scenario.applicationKind,
-        applicationStatus: scenario.applicationStatus,
-        publicationStatus: scenario.publicationStatus,
-      });
-      expect(receipt.applicationReceipt).toEqual(
-        scenario.receiptKind === null
-          ? null
-          : { kind: scenario.receiptKind, ids: [scenario.receiptId] },
-      );
-      expect(receipt.publicationReceipt).toBeNull();
-      expect(backend.commits).toHaveLength(1);
-      expect(backend.commits[0]).toMatchObject({
-        submissionId,
-        expectedSubmissionUpdatedAt: new Date(updatedAt),
-        applicationStatus: scenario.applicationStatus,
-        publicationStatus: scenario.publicationStatus,
-      });
-    },
-  );
+    expect(receipt).toMatchObject({
+      state: 'committed',
+      submissionId,
+      submissionType: scenario.submissionType,
+      sourceDecisionKind: scenario.sourceDecisionKind,
+      sourceDecisionEventId: sourceEventId,
+      applicationKind: scenario.applicationKind,
+      applicationStatus: scenario.applicationStatus,
+      publicationStatus: scenario.publicationStatus,
+    });
+    expect(receipt.applicationReceipt).toEqual(
+      scenario.receiptKind === null
+        ? null
+        : { kind: scenario.receiptKind, ids: [scenario.receiptId] },
+    );
+    expect(receipt.publicationReceipt).toBeNull();
+    expect(backend.commits).toHaveLength(1);
+    expect(backend.commits[0]).toMatchObject({
+      submissionId,
+      expectedSubmissionUpdatedAt: new Date(updatedAt),
+      applicationStatus: scenario.applicationStatus,
+      publicationStatus: scenario.publicationStatus,
+    });
+  });
 
   it('rejects a mismatched type, action, resolution, or stale Submission version', async () => {
     const scenario = scenarios[2];
