@@ -1,8 +1,8 @@
 {
   "status": "deployed",
-  "commit": "0581e679d7a5b56ba39b27b9d76687d6264a8e71",
+  "commit": "0c92fe0ea23a806166bc86260d5d1a1ca8295564",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-17T15:15:18.889Z",
+  "generatedAt": "2026-07-17T15:24:21.758Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "success",
