@@ -1,0 +1,57 @@
+name: P5-06F audit integration
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.head_ref == 'p5-06f-cross-submission-integration-audit' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-06f-cross-submission-integration-audit
+          fetch-depth: 0
+      - name: Register audit command
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('package.json')
+          data = json.loads(path.read_text())
+          marker = ' && tsx scripts/check-photo-parent-resolution-preview.ts'
+          addition = marker + ' && tsx scripts/check-p5-06-cross-submission-audit.ts'
+          command = data['scripts']['schema:check']
+          if 'check-p5-06-cross-submission-audit.ts' not in command:
+              if marker not in command:
+                  raise SystemExit('schema:check insertion marker is missing')
+              data['scripts']['schema:check'] = command.replace(marker, addition, 1)
+          path.write_text(json.dumps(data, indent=2) + '\n')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format P5-06F files
+        run: npx biome format --write package.json scripts/check-p5-06-cross-submission-audit.ts docs/P5_06F_CROSS_SUBMISSION_INTEGRATION_AUDIT.md
+      - name: Commit integration
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add package.json scripts/check-p5-06-cross-submission-audit.ts docs/P5_06F_CROSS_SUBMISSION_INTEGRATION_AUDIT.md
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "P5-06F: register and format integration audit"
+          git push origin HEAD:p5-06f-cross-submission-integration-audit
