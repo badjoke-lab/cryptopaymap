@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-16
+**Last verified:** 2026-07-17
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-06E — Photos parent resolution and partial outcomes
+P5-07 — Canonical application transactions and retention
 
 ## Current repository state
 
@@ -21,24 +21,25 @@ P5-06E — Photos parent resolution and partial outcomes
 - P5-06A cross-submission review workflow inventory completed in #228.
 - P5-06B common review entry completed through #229–#232.
 - P5-06C information-request, Hold, resume services, and reviewer controls completed through #233–#234.
-- P5-06D1 common terminal-resolution service, persistence, protected API, replay safety, duplicate-target guards, and private-status projection completed in #236.
-- P5-06D2 Suggest, report, and Photos terminal-resolution reviewer controls completed in #237.
-- P5-06D common terminal resolution is repository-complete.
+- P5-06D common terminal-resolution service and reviewer controls completed through #236–#237.
+- P5-06E Photos parent resolution, partial outcomes, private-status projection, preview, and reviewer controls completed through #239–#240.
+- P5-06F cross-submission integration audit completed in #241.
+- P5-06 review workflow extensions are repository-complete.
 
 ## Latest verified main
 
 ```text
-823062fad3567d71425976cf15bf1d579cdfd11c
+0581e679d7a5b56ba39b27b9d76687d6264a8e71
 ```
 
-The following pull-request workflows passed for the P5-06D2 implementation head before #237 merged:
+The following pull-request workflows passed for the final P5-06F implementation head before #241 merged:
 
 - Foundation validation;
 - Migration drift;
 - Staging review validation;
 - representative review screenshots.
 
-Foundation validation included formatting, lint, Astro and TypeScript checks, runtime-schema checks, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
+Foundation validation included formatting, lint, Astro and TypeScript checks, all runtime-schema checks including the P5-06F cross-submission audit, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
 
 ## Active pull request
 
@@ -46,15 +47,19 @@ None.
 
 ## Next
 
-Implement P5-06E Photos parent resolution and partial outcomes:
+Begin P5-07 canonical application transactions and retention from an explicit inventory of the approved-decision sources delivered by P5-02 through P5-06.
 
-- require durable decisions for every submitted child Media item before full parent resolution;
-- produce `partially_approved` for mixed accepted and rejected Media;
-- produce `not_approved` when all submitted Media are rejected;
-- keep canonical mutation and publication inside the existing P3-10 boundary;
-- expose private-status Media decisions without storage keys, reviewer identity, or private proof.
+P5-07 must:
 
-P5-06E must not perform P5-07 canonical application or export work.
+- derive explicit application plans from approved decisions;
+- require exact canonical state or version expectations;
+- preserve field-level provenance and reviewer identity;
+- apply canonical create or update work atomically and replay safely;
+- keep Claim, Claim Asset, practical-profile, and Media boundaries distinct;
+- keep public export and release separate;
+- define contact, payload, evidence, proof, and upload retention or deletion behavior.
+
+No P5-07 slice may infer approval from intake alone or publish directly outside the normal export and release boundary.
 
 ## Blocked
 
@@ -71,5 +76,8 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_06A_REVIEW_WORKFLOW_INVENTORY.md`
 - `docs/P5_06D1_COMMON_TERMINAL_RESOLUTION.md`
 - `docs/P5_06D2_TERMINAL_RESOLUTION_UI.md`
+- `docs/P5_06E1_PHOTOS_PARENT_RESOLUTION.md`
+- `docs/P5_06E2_PHOTOS_PARENT_RESOLUTION_UI.md`
+- `docs/P5_06F_CROSS_SUBMISSION_INTEGRATION_AUDIT.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
