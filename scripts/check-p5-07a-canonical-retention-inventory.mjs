@@ -96,7 +96,7 @@ requireMarkers('src/admin/submissions/drizzle-problem-report-decision-backend.ts
   'database.insert(verificationEvents)',
   "claimStatus: 'stale'",
   "claimStatus: 'ended'",
-  "visibility: 'temporarily_hidden'",
+  "toVisibility: 'temporarily_hidden'",
 ]);
 rejectMarkers('src/admin/submissions/drizzle-problem-report-decision-backend.ts', [
   '.update(entities)',
@@ -113,8 +113,8 @@ requireMarkers('src/admin/submissions/business-claim-field-application.ts', [
   'hasAcceptedChanges',
 ]);
 requireMarkers('src/admin/submissions/drizzle-business-claim-field-application-backend.ts', [
-  "and ${submissions.workflowStatus} = 'resolved'",
-  "and ${submissions.resolution} = 'approved'",
+  'and $' + "{submissions.workflowStatus} = 'resolved'",
+  'and $' + "{submissions.resolution} = 'approved'",
   '.update(entities)',
   '.update(locations)',
   "action: 'business_claim_fields_applied'",
