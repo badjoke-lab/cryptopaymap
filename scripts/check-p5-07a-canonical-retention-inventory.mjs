@@ -11,7 +11,10 @@ function assert(condition, message) {
 function requireMarkers(path, markers) {
   const source = read(path);
   for (const marker of markers) {
-    assert(source.includes(marker), `${path} no longer contains required inventory marker ${JSON.stringify(marker)}.`);
+    assert(
+      source.includes(marker),
+      `${path} no longer contains required inventory marker ${JSON.stringify(marker)}.`,
+    );
   }
   return source;
 }
@@ -19,24 +22,31 @@ function requireMarkers(path, markers) {
 function rejectMarkers(path, markers) {
   const source = read(path);
   for (const marker of markers) {
-    assert(!source.includes(marker), `${path} unexpectedly contains excluded inventory marker ${JSON.stringify(marker)}.`);
+    assert(
+      !source.includes(marker),
+      `${path} unexpectedly contains excluded inventory marker ${JSON.stringify(marker)}.`,
+    );
   }
   return source;
 }
 
-const candidatePromotion = requireMarkers('src/admin/promotion/drizzle-candidate-promotion-backend.ts', [
-  'database.insert(entities)',
-  'database.insert(locations)',
-  'database.insert(acceptanceClaims)',
-  'database.insert(claimAssets)',
-  'database.insert(provenanceLinks)',
-  "candidateStatus: 'promoted'",
-  "claimStatus: 'candidate'",
-  "visibility: 'hidden'",
-  'requestFingerprint',
-]);
+const candidatePromotion = requireMarkers(
+  'src/admin/promotion/drizzle-candidate-promotion-backend.ts',
+  [
+    'database.insert(entities)',
+    'database.insert(locations)',
+    'database.insert(acceptanceClaims)',
+    'database.insert(claimAssets)',
+    'database.insert(provenanceLinks)',
+    "candidateStatus: 'promoted'",
+    "claimStatus: 'candidate'",
+    "visibility: 'hidden'",
+    'requestFingerprint',
+  ],
+);
 assert(
-  candidatePromotion.includes('expectedCandidateUpdatedAt') && candidatePromotion.includes('sourceRecordIds'),
+  candidatePromotion.includes('expectedCandidateUpdatedAt') &&
+    candidatePromotion.includes('sourceRecordIds'),
   'Candidate promotion no longer proves exact Candidate and source-set guards.',
 );
 
@@ -132,14 +142,17 @@ rejectMarkers('src/admin/media-review/drizzle-batch.ts', [
 ]);
 
 const submissionSchema = requireMarkers('src/db/schema/submissions.ts', [
-  "export const submissionPayloads = pgTable(",
-  "export const submissionContacts = pgTable(",
+  'export const submissionPayloads = pgTable(',
+  'export const submissionContacts = pgTable(',
   "retentionUntil: timestamp('retention_until'",
   "index('submission_contacts_retention_idx')",
 ]);
 const payloadStart = submissionSchema.indexOf('export const submissionPayloads = pgTable(');
 const contactStart = submissionSchema.indexOf('export const submissionContacts = pgTable(');
-assert(payloadStart >= 0 && contactStart > payloadStart, 'Submission payload/contact schema boundaries are missing.');
+assert(
+  payloadStart >= 0 && contactStart > payloadStart,
+  'Submission payload/contact schema boundaries are missing.',
+);
 const payloadSchema = submissionSchema.slice(payloadStart, contactStart);
 assert(
   !payloadSchema.includes('retentionUntil') && !payloadSchema.includes('deletedAt'),
@@ -159,11 +172,7 @@ requireMarkers('src/submissions/photo-private-lifecycle.ts', [
   "'superseded_media'",
   'deletePrivateObject',
 ]);
-rejectMarkers('src/submissions/photo-private-lifecycle.ts', [
-  'scheduled(',
-  'cron(',
-  'onScheduled',
-]);
+rejectMarkers('src/submissions/photo-private-lifecycle.ts', ['scheduled(', 'cron(', 'onScheduled']);
 
 const workflowPolicy = requireMarkers('docs/SUBMISSION_WORKFLOW.md', [
   '## 17. Canonical transaction',
@@ -197,7 +206,10 @@ for (const path of applicationSources) {
     'exportReleaseActivation',
     'publicReleaseActivated',
   ]) {
-    assert(!source.includes(forbidden), `${path} now mixes canonical application with ${forbidden}.`);
+    assert(
+      !source.includes(forbidden),
+      `${path} now mixes canonical application with ${forbidden}.`,
+    );
   }
 }
 
