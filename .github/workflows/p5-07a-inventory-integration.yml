@@ -1,0 +1,57 @@
+name: P5-07A inventory integration
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.head_ref == 'p5-07a-canonical-retention-inventory' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-07a-canonical-retention-inventory
+          fetch-depth: 0
+      - name: Register inventory audit
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('package.json')
+          data = json.loads(path.read_text())
+          command = data['scripts']['schema:check']
+          marker = ' && tsx scripts/check-p5-06-cross-submission-audit.ts'
+          addition = marker + ' && node scripts/check-p5-07a-canonical-retention-inventory.mjs'
+          if 'check-p5-07a-canonical-retention-inventory.mjs' not in command:
+              if marker not in command:
+                  raise SystemExit('P5-06F schema-check marker is missing')
+              data['scripts']['schema:check'] = command.replace(marker, addition, 1)
+          path.write_text(json.dumps(data, indent=2) + '\n')
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format P5-07A files
+        run: npx biome format --write package.json scripts/check-p5-07a-canonical-retention-inventory.mjs docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md
+      - name: Commit integration
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add package.json scripts/check-p5-07a-canonical-retention-inventory.mjs docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m "P5-07A: register and format canonical inventory"
+          git push origin HEAD:p5-07a-canonical-retention-inventory
