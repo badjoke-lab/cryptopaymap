@@ -1,7 +1,7 @@
 # P5-06F cross-submission integration audit
 
 **Implementation item:** P5-06F  
-**Status:** Active — repository audit  
+**Status:** Completed in PR #241  
 **Last updated:** 2026-07-17
 
 ## Purpose
