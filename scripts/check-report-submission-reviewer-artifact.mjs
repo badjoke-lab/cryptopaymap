@@ -36,9 +36,10 @@ const requiredPages = [
     path: 'dist/admin/submissions/photo-detail/index.html',
     markers: [
       'Photos parent Submission',
-      'P5-06B through P5-06D Photos workflow boundary',
+      'P5-06B through P5-06E Photos workflow boundary',
       'Protected Photos parent detail and review-entry controls',
       'Protected Photos information Hold and resume controls',
+      'Protected Photos aggregate parent-resolution controls',
       'Protected Photos terminal-resolution controls',
     ],
   },
@@ -46,12 +47,12 @@ const requiredPages = [
 
 for (const page of requiredPages) {
   if (!existsSync(page.path)) {
-    throw new Error(`Missing P5-06D2 built page: ${page.path}`);
+    throw new Error(`Missing P5-06E2 built page: ${page.path}`);
   }
   const html = readFileSync(page.path, 'utf8');
   for (const marker of page.markers) {
     if (!html.includes(marker)) {
-      throw new Error(`Missing P5-06D2 marker ${JSON.stringify(marker)} in ${page.path}`);
+      throw new Error(`Missing P5-06E2 marker ${JSON.stringify(marker)} in ${page.path}`);
     }
   }
   for (const forbidden of [
@@ -59,6 +60,8 @@ for (const page of requiredPages) {
     'encryptedEmail',
     'requestFingerprint',
     'duplicateSubmissionPublicId',
+    'storageKey',
+    'privateProof',
   ]) {
     if (html.includes(forbidden)) {
       throw new Error(`Protected operational marker leaked into ${page.path}: ${forbidden}`);
@@ -66,4 +69,4 @@ for (const page of requiredPages) {
   }
 }
 
-console.log('P5-06D2 reviewer terminal-resolution artifacts are present and bounded.');
+console.log('P5-06E2 reviewer aggregate-resolution artifacts are present and bounded.');

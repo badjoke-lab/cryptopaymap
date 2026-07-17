@@ -7,6 +7,11 @@ import {
   type PhotoParentResolutionAuthorizationEnvironment,
 } from '../../../../../src/admin/submissions/photo-parent-resolution-authorization';
 import {
+  PhotoParentResolutionPreviewError,
+  loadPhotoParentResolutionPreview,
+  type PhotoParentResolutionPreviewResponse,
+} from '../../../../../src/admin/submissions/photo-parent-resolution-preview';
+import {
   PhotoParentResolutionError,
   resolvePhotoParentSubmission,
   type PhotoParentResolutionReceipt,
@@ -36,8 +41,16 @@ type PhotoParentResolutionRunner = (
   changedAt: Date,
 ) => Promise<PhotoParentResolutionReceipt>;
 
+type PhotoParentResolutionPreviewLoader = (
+  context: ReturnType<typeof authorizePhotoParentResolution>,
+  submissionId: string,
+  environment: PhotoParentResolutionEnvironment,
+  generatedAt: Date,
+) => Promise<PhotoParentResolutionPreviewResponse>;
+
 export interface PhotoParentResolutionHandlerDependencies {
   runPhotoParentResolution?: PhotoParentResolutionRunner;
+  loadPhotoParentResolutionPreview?: PhotoParentResolutionPreviewLoader;
   now?: () => Date;
 }
 
@@ -50,6 +63,36 @@ function jsonResponse(status: number, body: Record<string, unknown>): Response {
   );
 }
 
+function authorize(pagesContext: PhotoParentResolutionPagesContext) {
+  const identity = readProtectedAdminIdentity(pagesContext.data.adminIdentity);
+  const policy = readPhotoParentResolutionAuthorizationPolicy(pagesContext.env);
+  return authorizePhotoParentResolution(identity, policy);
+}
+
+function authorizationFailure(error: unknown): Response {
+  if (
+    error instanceof PhotoParentResolutionAuthorizationError &&
+    error.code === 'configuration'
+  ) {
+    return jsonResponse(503, { error: 'photo_parent_resolution_unavailable' });
+  }
+  return jsonResponse(403, { error: 'photo_parent_resolution_denied' });
+}
+
+function databaseUrl(environment: PhotoParentResolutionEnvironment): string {
+  const result = requiredDatabaseEnvironmentSchema.safeParse({
+    DATABASE_URL:
+      typeof environment.DATABASE_URL === 'string' ? environment.DATABASE_URL : undefined,
+  });
+  if (!result.success) {
+    throw new PhotoParentResolutionError(
+      'backend_failure',
+      'The Photos parent-resolution database is unavailable.',
+    );
+  }
+  return result.data.DATABASE_URL;
+}
+
 async function runPhotoParentResolutionFromDatabase(
   context: ReturnType<typeof authorizePhotoParentResolution>,
   submissionId: string,
@@ -57,23 +100,38 @@ async function runPhotoParentResolutionFromDatabase(
   environment: PhotoParentResolutionEnvironment,
   changedAt: Date,
 ): Promise<PhotoParentResolutionReceipt> {
-  const databaseEnvironment = requiredDatabaseEnvironmentSchema.safeParse({
-    DATABASE_URL:
-      typeof environment.DATABASE_URL === 'string' ? environment.DATABASE_URL : undefined,
-  });
-  if (!databaseEnvironment.success) {
-    throw new PhotoParentResolutionError(
-      'backend_failure',
-      'The Photos parent-resolution database is unavailable.',
-    );
-  }
-  const database = createDatabase(databaseEnvironment.data.DATABASE_URL);
+  const database = createDatabase(databaseUrl(environment));
   return resolvePhotoParentSubmission(
     context,
     createDrizzlePhotoParentResolutionBackend(database),
     submissionId,
     rawRequest,
     changedAt,
+  );
+}
+
+async function loadPhotoParentResolutionPreviewFromDatabase(
+  context: ReturnType<typeof authorizePhotoParentResolution>,
+  submissionId: string,
+  environment: PhotoParentResolutionEnvironment,
+  generatedAt: Date,
+): Promise<PhotoParentResolutionPreviewResponse> {
+  let url: string;
+  try {
+    url = databaseUrl(environment);
+  } catch (error) {
+    throw new PhotoParentResolutionPreviewError(
+      'backend_failure',
+      'The Photos parent-resolution preview database is unavailable.',
+      { cause: error },
+    );
+  }
+  const database = createDatabase(url);
+  return loadPhotoParentResolutionPreview(
+    context,
+    createDrizzlePhotoParentResolutionBackend(database),
+    submissionId,
+    generatedAt,
   );
 }
 
@@ -87,17 +145,9 @@ export function createPhotoParentResolutionHandler(
   return async (pagesContext: PhotoParentResolutionPagesContext): Promise<Response> => {
     let context: ReturnType<typeof authorizePhotoParentResolution>;
     try {
-      const identity = readProtectedAdminIdentity(pagesContext.data.adminIdentity);
-      const policy = readPhotoParentResolutionAuthorizationPolicy(pagesContext.env);
-      context = authorizePhotoParentResolution(identity, policy);
+      context = authorize(pagesContext);
     } catch (error) {
-      if (
-        error instanceof PhotoParentResolutionAuthorizationError &&
-        error.code === 'configuration'
-      ) {
-        return jsonResponse(503, { error: 'photo_parent_resolution_unavailable' });
-      }
-      return jsonResponse(403, { error: 'photo_parent_resolution_denied' });
+      return authorizationFailure(error);
     }
 
     const submissionId = pagesContext.params.submissionId;
@@ -143,4 +193,50 @@ export function createPhotoParentResolutionHandler(
   };
 }
 
+export function createPhotoParentResolutionPreviewHandler(
+  dependencies: PhotoParentResolutionHandlerDependencies = {},
+) {
+  const loader =
+    dependencies.loadPhotoParentResolutionPreview ??
+    loadPhotoParentResolutionPreviewFromDatabase;
+  const now = dependencies.now ?? (() => new Date());
+
+  return async (pagesContext: PhotoParentResolutionPagesContext): Promise<Response> => {
+    let context: ReturnType<typeof authorizePhotoParentResolution>;
+    try {
+      context = authorize(pagesContext);
+    } catch (error) {
+      return authorizationFailure(error);
+    }
+
+    const submissionId = pagesContext.params.submissionId;
+    if (typeof submissionId !== 'string') {
+      return jsonResponse(400, { error: 'photo_parent_resolution_preview_invalid_request' });
+    }
+
+    try {
+      return jsonResponse(
+        200,
+        await loader(context, submissionId, pagesContext.env, now()),
+      );
+    } catch (error) {
+      if (error instanceof PhotoParentResolutionPreviewError) {
+        if (error.code === 'unauthorized') {
+          return jsonResponse(403, { error: 'photo_parent_resolution_denied' });
+        }
+        if (error.code === 'invalid_request') {
+          return jsonResponse(400, {
+            error: 'photo_parent_resolution_preview_invalid_request',
+          });
+        }
+        if (error.code === 'not_found') {
+          return jsonResponse(404, { error: 'photo_parent_resolution_not_found' });
+        }
+      }
+      return jsonResponse(503, { error: 'photo_parent_resolution_unavailable' });
+    }
+  };
+}
+
+export const onRequestGet = createPhotoParentResolutionPreviewHandler();
 export const onRequestPost = createPhotoParentResolutionHandler();
