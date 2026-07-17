@@ -34,7 +34,12 @@ export const submissionApplicationKindValues = [
 
 export const submissionApplicationStatusValues = ['pending', 'committed', 'failed'] as const;
 export const submissionPublicationStatusValues = ['blocked', 'pending', 'committed', 'failed'] as const;
-export const submissionApplicationReceiptKindValues = ['submission_event'] as const;
+export const submissionApplicationReceiptKindValues = [
+  'submission_event',
+  'candidate_promotion_decision',
+  'media_review_decision',
+  'export_release_decision',
+] as const;
 export const submissionApplicationEventActionValues = [
   'registered',
   'application_committed',
