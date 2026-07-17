@@ -1,7 +1,7 @@
 # P5-07A canonical application and retention inventory
 
 **Implementation item:** P5-07A  
-**Status:** Active — repository inventory  
+**Status:** Completed in PR #243  
 **Last updated:** 2026-07-17
 
 ## Purpose
