@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07 — Canonical application transactions and retention
+P5-07B — Common application lifecycle and receipt references
 
 ## Current repository state
 
@@ -18,28 +18,24 @@ P5-07 — Canonical application transactions and retention
 - P5-03 Payment and problem reports is complete through #194–#202.
 - P5-04 Business and service claims is complete through #203–#215.
 - P5-05 Photo and Media submission intake is complete through #216–#227.
-- P5-06A cross-submission review workflow inventory completed in #228.
-- P5-06B common review entry completed through #229–#232.
-- P5-06C information-request, Hold, resume services, and reviewer controls completed through #233–#234.
-- P5-06D common terminal-resolution service and reviewer controls completed through #236–#237.
-- P5-06E Photos parent resolution, partial outcomes, private-status projection, preview, and reviewer controls completed through #239–#240.
-- P5-06F cross-submission integration audit completed in #241.
-- P5-06 review workflow extensions are repository-complete.
+- P5-06 review workflow extensions are repository-complete through #228–#242.
+- P5-07A canonical application and retention inventory completed in #243.
+- P5-07 is active.
 
 ## Latest verified main
 
 ```text
-0581e679d7a5b56ba39b27b9d76687d6264a8e71
+549b2a4716bfb289421e32118e54c293558580c9
 ```
 
-The following pull-request workflows passed for the final P5-06F implementation head before #241 merged:
+The final P5-07A implementation head passed:
 
 - Foundation validation;
 - Migration drift;
 - Staging review validation;
 - representative review screenshots.
 
-Foundation validation included formatting, lint, Astro and TypeScript checks, all runtime-schema checks including the P5-06F cross-submission audit, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
+Foundation validation included formatting, lint, Astro and TypeScript checks, all runtime-schema checks including the P5-06F and P5-07A audits, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
 
 ## Active pull request
 
@@ -47,19 +43,29 @@ None.
 
 ## Next
 
-Begin P5-07 canonical application transactions and retention from an explicit inventory of the approved-decision sources delivered by P5-02 through P5-06.
+Implement P5-07B as the common application lifecycle and receipt-reference boundary.
 
-P5-07 must:
+P5-07B may add:
 
-- derive explicit application plans from approved decisions;
-- require exact canonical state or version expectations;
-- preserve field-level provenance and reviewer identity;
-- apply canonical create or update work atomically and replay safely;
-- keep Claim, Claim Asset, practical-profile, and Media boundaries distinct;
-- keep public export and release separate;
-- define contact, payload, evidence, proof, and upload retention or deletion behavior.
+- strict internal application state and receipt contracts;
+- exact references to existing type-specific decision and application receipts;
+- one durable common application record when justified by migration review;
+- one-application-per-Submission and changed-reference conflict guards;
+- replay-safe application-state transitions;
+- bounded protected read projection;
+- explicit separation of application completion from publication completion.
 
-No P5-07 slice may infer approval from intake alone or publish directly outside the normal export and release boundary.
+P5-07B must not:
+
+- promote or link a Candidate;
+- apply a Problem Report correction;
+- create Claim Assets or provenance;
+- update Entity, Location, Claim, Evidence, or Media;
+- delete private contact, payload, Evidence, proof, or object data;
+- activate export or release;
+- claim configured deployment.
+
+The later sequence defined by P5-07A remains P5-07C Suggest receipt binding, P5-07D report correction/recheck application, P5-07E Business Claim payment/provenance/order completion, P5-07F Photos/Media reconciliation, P5-07G retention execution, and P5-07H integration audit.
 
 ## Blocked
 
@@ -73,11 +79,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 - `docs/IMPLEMENTATION_PLAN.md`
 - `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`
-- `docs/P5_06A_REVIEW_WORKFLOW_INVENTORY.md`
-- `docs/P5_06D1_COMMON_TERMINAL_RESOLUTION.md`
-- `docs/P5_06D2_TERMINAL_RESOLUTION_UI.md`
-- `docs/P5_06E1_PHOTOS_PARENT_RESOLUTION.md`
-- `docs/P5_06E2_PHOTOS_PARENT_RESOLUTION_UI.md`
 - `docs/P5_06F_CROSS_SUBMISSION_INTEGRATION_AUDIT.md`
+- `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
