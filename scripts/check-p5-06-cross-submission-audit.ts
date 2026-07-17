@@ -59,7 +59,11 @@ function assertParses(label: string, parse: () => unknown): void {
   }
 }
 
-function assertExactValues(label: string, actual: readonly string[], expected: readonly string[]): void {
+function assertExactValues(
+  label: string,
+  actual: readonly string[],
+  expected: readonly string[],
+): void {
   assert(
     actual.length === expected.length && actual.every((value, index) => value === expected[index]),
     `${label} changed: expected ${expected.join(', ')}, received ${actual.join(', ')}.`,
@@ -530,7 +534,10 @@ const forbiddenCanonicalWrites = [
 for (const path of p506RuntimeFiles) {
   const source = readFileSync(path, 'utf8');
   for (const forbidden of forbiddenCanonicalWrites) {
-    assert(!source.includes(forbidden), `${path} contains forbidden P5-07/export effect ${forbidden}.`);
+    assert(
+      !source.includes(forbidden),
+      `${path} contains forbidden P5-07/export effect ${forbidden}.`,
+    );
   }
 }
 
