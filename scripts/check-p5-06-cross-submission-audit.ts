@@ -1,3 +1,4 @@
+// @ts-expect-error Node built-ins are available to the tsx schema-check runtime.
 import { readFileSync } from 'node:fs';
 import {
   businessClaimReviewTransitionActionValues,
@@ -487,7 +488,7 @@ const replayEvidence = [
   ['tests/submission-review-followup.test.ts', ['replayed', 'idempotency_conflict']],
   [
     'tests/business-claim-review-transitions.test.ts',
-    ['replays an identical transition', 'idempotency_conflict'],
+    ['replays an identical transition', 'changed replay content', "code: 'invalid_request'"],
   ],
   ['tests/submission-terminal-resolution.test.ts', ['replayed', 'idempotency_conflict']],
   ['tests/photo-parent-resolution.test.ts', ['replayed', 'idempotency_conflict']],
