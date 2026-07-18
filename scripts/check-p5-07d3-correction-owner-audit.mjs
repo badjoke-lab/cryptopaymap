@@ -15,9 +15,8 @@ function walk(directory) {
 
 const reportContract = read('src/submissions/report-contract.ts');
 for (const kind of ['asset', 'network', 'instructions', 'location_profile', 'other']) {
-  assert.match(
-    reportContract,
-    new RegExp(`kind: z\.literal\('${kind}'\)`),
+  assert.ok(
+    reportContract.includes(`kind: z.literal('${kind}')`),
     `Problem Report correction kind ${kind} must remain explicit.`,
   );
 }
