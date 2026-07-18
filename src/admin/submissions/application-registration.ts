@@ -36,6 +36,7 @@ export const submissionPublicationStatusSchema = z.enum([
 export const submissionApplicationReceiptKindSchema = z.enum([
   'submission_event',
   'candidate_promotion_decision',
+  'location_profile_correction_decision',
   'media_review_decision',
   'export_release_decision',
 ]);
@@ -288,77 +289,7 @@ async function deterministicUuid(label: string): Promise<string> {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-function deriveLifecycle(
-  state: SubmissionApplicationRegistrationState,
-  request: SubmissionApplicationRegistrationRequest,
-): {
-  applicationKind: SubmissionApplicationKind;
-  applicationStatus: SubmissionApplicationStatus;
-  publicationStatus: SubmissionPublicationStatus;
-  applicationReceipt: SubmissionApplicationReceiptReference | null;
-} {
-  const contract = sourceDecisionContracts[request.sourceDecisionKind];
-  const event = state.sourceDecisionEvent;
-  if (
-    state.workflowStatus !== 'resolved' ||
-    state.resolution === null ||
-    event === null ||
-    event.eventId !== request.sourceDecisionEventId ||
-    event.submissionId !== state.submissionId ||
-    event.toStatus !== 'resolved' ||
-    !contract.submissionTypes.includes(state.submissionType) ||
-    !contract.actions.includes(event.action) ||
-    !contract.resolutions.includes(state.resolution)
-  ) {
-    throw new SubmissionApplicationRegistrationError(
-      'ineligible',
-      'The referenced decision is not eligible for application registration.',
-    );
-  }
-
-  if (
-    request.sourceDecisionKind === 'suggest_candidate_acceptance' &&
-    state.candidatePromotionDecisionId !== null
-  ) {
-    return {
-      applicationKind: contract.applicationKind,
-      applicationStatus: 'committed',
-      publicationStatus: 'pending',
-      applicationReceipt: {
-        kind: 'candidate_promotion_decision',
-        ids: [state.candidatePromotionDecisionId],
-      },
-    };
-  }
-
-  if (
-    request.sourceDecisionKind === 'business_claim_relationship' &&
-    state.businessClaimFieldApplicationEventId !== null
-  ) {
-    return {
-      applicationKind: contract.applicationKind,
-      applicationStatus: 'committed',
-      publicationStatus: 'pending',
-      applicationReceipt: {
-        kind: 'submission_event',
-        ids: [state.businessClaimFieldApplicationEventId],
-      },
-    };
-  }
-
-  const applicationReceipt: SubmissionApplicationReceiptReference | null =
-    contract.defaultApplicationStatus === 'committed'
-      ? { kind: 'submission_event', ids: [event.eventId] }
-      : null;
-  return {
-    applicationKind: contract.applicationKind,
-    applicationStatus: contract.defaultApplicationStatus,
-    publicationStatus: contract.defaultPublicationStatus,
-    applicationReceipt,
-  };
-}
-
-function receiptFromRecord(
+function registrationReceipt(
   state: 'committed' | 'replayed',
   record: SubmissionApplicationRegistrationRecord,
 ): SubmissionApplicationRegistrationReceipt {
@@ -378,26 +309,116 @@ function receiptFromRecord(
   });
 }
 
-function verifyReplay(
-  record: SubmissionApplicationRegistrationRecord,
-  submissionId: string,
+function sameRegistration(
+  existing: SubmissionApplicationRegistrationRecord,
+  command: SubmissionApplicationRegistrationCommand,
+): boolean {
+  return (
+    existing.registrationRequestId === command.registrationRequestId &&
+    existing.applicationId === command.applicationId &&
+    existing.submissionId === command.submissionId &&
+    existing.submissionType === command.submissionType &&
+    existing.sourceDecisionKind === command.sourceDecisionKind &&
+    existing.sourceDecisionEventId === command.sourceDecisionEventId &&
+    existing.applicationKind === command.applicationKind &&
+    existing.applicationStatus === command.applicationStatus &&
+    existing.publicationStatus === command.publicationStatus &&
+    JSON.stringify(existing.applicationReceipt) === JSON.stringify(command.applicationReceipt) &&
+    JSON.stringify(existing.publicationReceipt) === JSON.stringify(command.publicationReceipt) &&
+    existing.actorId === command.actorId &&
+    existing.requestFingerprint === command.requestFingerprint &&
+    existing.registeredAt === command.registeredAt.toISOString()
+  );
+}
+
+function planRegistration(
+  context: SubmissionApplicationRegistrationContext,
+  state: SubmissionApplicationRegistrationState,
   request: SubmissionApplicationRegistrationRequest,
-  actorId: string,
-  requestFingerprint: string,
-): SubmissionApplicationRegistrationReceipt {
+  registeredAt: Date,
+): Promise<SubmissionApplicationRegistrationCommand> {
+  const contract = sourceDecisionContracts[request.sourceDecisionKind];
   if (
-    record.submissionId !== submissionId ||
-    record.sourceDecisionKind !== request.sourceDecisionKind ||
-    record.sourceDecisionEventId !== request.sourceDecisionEventId ||
-    record.actorId !== actorId ||
-    record.requestFingerprint !== requestFingerprint
+    !contract.submissionTypes.includes(state.submissionType) ||
+    state.workflowStatus !== 'resolved' ||
+    state.resolution === null ||
+    !contract.resolutions.includes(state.resolution) ||
+    state.sourceDecisionEvent === null ||
+    state.sourceDecisionEvent.eventId !== request.sourceDecisionEventId ||
+    state.sourceDecisionEvent.submissionId !== state.submissionId ||
+    state.sourceDecisionEvent.toStatus !== 'resolved' ||
+    !contract.actions.includes(state.sourceDecisionEvent.action) ||
+    state.updatedAt !== request.expectedSubmissionUpdatedAt
   ) {
     throw new SubmissionApplicationRegistrationError(
-      'idempotency_conflict',
-      'The application registration UUID was already used for different content.',
+      'ineligible',
+      'The Submission decision is not eligible for application registration.',
     );
   }
-  return receiptFromRecord('replayed', record);
+
+  let applicationReceipt: SubmissionApplicationReceiptReference | null = null;
+  if (
+    request.sourceDecisionKind === 'suggest_candidate_acceptance' &&
+    state.candidatePromotionDecisionId !== null
+  ) {
+    applicationReceipt = {
+      kind: 'candidate_promotion_decision',
+      ids: [state.candidatePromotionDecisionId],
+    };
+  }
+  if (
+    request.sourceDecisionKind === 'business_claim_relationship' &&
+    state.businessClaimFieldApplicationEventId !== null
+  ) {
+    applicationReceipt = {
+      kind: 'submission_event',
+      ids: [state.businessClaimFieldApplicationEventId],
+    };
+  }
+
+  const applicationStatus =
+    applicationReceipt === null ? contract.defaultApplicationStatus : 'committed';
+  const publicationStatus = applicationStatus === 'committed' ? 'pending' : 'blocked';
+  const applicationId = await deterministicUuid(
+    `submission-application:${state.submissionId}:${request.sourceDecisionEventId}`,
+  );
+  const requestFingerprint = await sha256({
+    schemaVersion: request.schemaVersion,
+    registrationRequestId: request.requestId,
+    applicationId,
+    submissionId: state.submissionId,
+    submissionType: state.submissionType,
+    sourceDecisionKind: request.sourceDecisionKind,
+    sourceDecisionEventId: request.sourceDecisionEventId,
+    expectedSubmissionUpdatedAt: request.expectedSubmissionUpdatedAt,
+    applicationKind: contract.applicationKind,
+    applicationStatus,
+    publicationStatus,
+    applicationReceipt,
+    publicationReceipt: null,
+    actorId: context.actorId,
+    actorType: context.actorType,
+    registeredAt: registeredAt.toISOString(),
+  });
+
+  return {
+    registrationRequestId: request.requestId,
+    applicationId,
+    submissionId: state.submissionId,
+    submissionType: state.submissionType,
+    sourceDecisionKind: request.sourceDecisionKind,
+    sourceDecisionEventId: request.sourceDecisionEventId,
+    expectedSubmissionUpdatedAt: new Date(request.expectedSubmissionUpdatedAt),
+    applicationKind: contract.applicationKind,
+    applicationStatus,
+    publicationStatus,
+    applicationReceipt,
+    publicationReceipt: null,
+    actorId: context.actorId,
+    actorType: context.actorType,
+    requestFingerprint,
+    registeredAt,
+  };
 }
 
 export async function registerSubmissionApplication(
@@ -410,7 +431,7 @@ export async function registerSubmissionApplication(
   if (!context.capabilities.includes('submission:application:register')) {
     throw new SubmissionApplicationRegistrationError(
       'unauthorized',
-      'The actor is not authorized to register Submission application state.',
+      'The actor is not authorized to register Submission applications.',
     );
   }
   const submissionIdResult = z.uuid().safeParse(submissionId);
@@ -422,11 +443,10 @@ export async function registerSubmissionApplication(
   ) {
     throw new SubmissionApplicationRegistrationError(
       'invalid_request',
-      'The application registration request is invalid.',
+      'The Submission application registration request is invalid.',
     );
   }
   const request = requestResult.data;
-  const requestFingerprint = await sha256(request);
 
   let existing: SubmissionApplicationRegistrationRecord | null;
   try {
@@ -439,117 +459,97 @@ export async function registerSubmissionApplication(
     );
   }
   if (existing !== null) {
-    return verifyReplay(
-      existing,
-      submissionIdResult.data,
-      request,
-      context.actorId,
-      requestFingerprint,
-    );
+    if (
+      existing.registrationRequestId !== request.requestId ||
+      existing.submissionId !== submissionIdResult.data ||
+      existing.sourceDecisionKind !== request.sourceDecisionKind ||
+      existing.sourceDecisionEventId !== request.sourceDecisionEventId ||
+      existing.actorId !== context.actorId
+    ) {
+      throw new SubmissionApplicationRegistrationError(
+        'idempotency_conflict',
+        'The application registration UUID was already used for different content.',
+      );
+    }
+    return registrationReceipt('replayed', existing);
   }
 
-  let existingForSubmission: SubmissionApplicationRegistrationRecord | null;
-  let currentState: SubmissionApplicationRegistrationState | null;
+  let alreadyRegistered: SubmissionApplicationRegistrationRecord | null;
   try {
-    [existingForSubmission, currentState] = await Promise.all([
-      backend.readApplicationBySubmission(submissionIdResult.data),
-      backend.readState(submissionIdResult.data, request.sourceDecisionEventId),
-    ]);
+    alreadyRegistered = await backend.readApplicationBySubmission(submissionIdResult.data);
   } catch (error) {
     throw new SubmissionApplicationRegistrationError(
       'backend_failure',
-      'The Submission application source could not be loaded.',
+      'The existing Submission application could not be loaded.',
       { cause: error },
     );
   }
-  if (existingForSubmission !== null) {
+  if (alreadyRegistered !== null) {
     throw new SubmissionApplicationRegistrationError(
       'conflict',
-      'The Submission already has a different application registration.',
+      'The Submission already has an application record.',
     );
   }
-  if (currentState === null) {
+
+  let state: SubmissionApplicationRegistrationState | null;
+  try {
+    state = await backend.readState(submissionIdResult.data, request.sourceDecisionEventId);
+  } catch (error) {
+    throw new SubmissionApplicationRegistrationError(
+      'backend_failure',
+      'The Submission decision state could not be loaded.',
+      { cause: error },
+    );
+  }
+  if (state === null) {
     throw new SubmissionApplicationRegistrationError(
       'not_found',
-      'The Submission or referenced decision was not found.',
-    );
-  }
-  if (currentState.updatedAt !== request.expectedSubmissionUpdatedAt) {
-    throw new SubmissionApplicationRegistrationError(
-      'conflict',
-      'The Submission changed before application registration.',
+      'The Submission decision was not found.',
     );
   }
 
-  const lifecycle = deriveLifecycle(currentState, request);
-  const applicationId = await deterministicUuid(`submission-application:${request.requestId}`);
-  const command: SubmissionApplicationRegistrationCommand = {
-    registrationRequestId: request.requestId,
-    applicationId,
-    submissionId: submissionIdResult.data,
-    submissionType: currentState.submissionType,
-    sourceDecisionKind: request.sourceDecisionKind,
-    sourceDecisionEventId: request.sourceDecisionEventId,
-    expectedSubmissionUpdatedAt: new Date(request.expectedSubmissionUpdatedAt),
-    applicationKind: lifecycle.applicationKind,
-    applicationStatus: lifecycle.applicationStatus,
-    publicationStatus: lifecycle.publicationStatus,
-    applicationReceipt: lifecycle.applicationReceipt,
-    publicationReceipt: null,
-    actorId: context.actorId,
-    actorType: context.actorType,
-    requestFingerprint,
-    registeredAt,
-  };
-
+  const command = await planRegistration(context, state, request, registeredAt);
   try {
     await backend.commitRegistration(command);
   } catch (error) {
+    if (error instanceof SubmissionApplicationRegistrationError) throw error;
     if (error instanceof SubmissionPersistenceError && error.code === 'conflict') {
-      let raced: SubmissionApplicationRegistrationRecord | null;
+      let concurrent: SubmissionApplicationRegistrationRecord | null = null;
       try {
-        raced = await backend.readRegistration(request.requestId);
-      } catch (readError) {
-        throw new SubmissionApplicationRegistrationError(
-          'backend_failure',
-          'Application registration replay recovery failed.',
-          { cause: readError },
-        );
+        concurrent = await backend.readRegistration(request.requestId);
+      } catch {
+        // Keep the original persistence conflict.
       }
-      if (raced !== null) {
-        return verifyReplay(
-          raced,
-          submissionIdResult.data,
-          request,
-          context.actorId,
-          requestFingerprint,
-        );
+      if (concurrent !== null && sameRegistration(concurrent, command)) {
+        return registrationReceipt('replayed', concurrent);
       }
       throw new SubmissionApplicationRegistrationError(
         'conflict',
-        'The Submission application state changed before registration committed.',
+        'The Submission application registration conflicted with current state.',
         { cause: error },
       );
     }
     throw new SubmissionApplicationRegistrationError(
       'backend_failure',
-      'The application registration could not be committed.',
+      'The Submission application registration could not be committed.',
       { cause: error },
     );
   }
 
-  return submissionApplicationRegistrationReceiptSchema.parse({
-    state: 'committed',
-    applicationId,
-    submissionId: submissionIdResult.data,
-    submissionType: currentState.submissionType,
-    sourceDecisionKind: request.sourceDecisionKind,
-    sourceDecisionEventId: request.sourceDecisionEventId,
-    applicationKind: lifecycle.applicationKind,
-    applicationStatus: lifecycle.applicationStatus,
-    publicationStatus: lifecycle.publicationStatus,
-    applicationReceipt: lifecycle.applicationReceipt,
-    publicationReceipt: null,
-    registeredAt: registeredAt.toISOString(),
+  return registrationReceipt('committed', {
+    registrationRequestId: command.registrationRequestId,
+    applicationId: command.applicationId,
+    submissionId: command.submissionId,
+    submissionType: command.submissionType,
+    sourceDecisionKind: command.sourceDecisionKind,
+    sourceDecisionEventId: command.sourceDecisionEventId,
+    applicationKind: command.applicationKind,
+    applicationStatus: command.applicationStatus,
+    publicationStatus: command.publicationStatus,
+    applicationReceipt: command.applicationReceipt,
+    publicationReceipt: command.publicationReceipt,
+    actorId: command.actorId,
+    requestFingerprint: command.requestFingerprint,
+    registeredAt: command.registeredAt.toISOString(),
   });
 }
