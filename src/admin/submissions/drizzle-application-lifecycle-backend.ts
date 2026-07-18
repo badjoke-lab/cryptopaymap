@@ -1,9 +1,6 @@
 import { and, asc, eq, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
-import {
-  submissionApplicationEvents,
-  submissionApplications,
-} from '../../db/schema';
+import { submissionApplicationEvents, submissionApplications } from '../../db/schema';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type { SubmissionApplicationReceiptReference } from './application-registration';
 import type {

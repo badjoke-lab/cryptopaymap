@@ -219,7 +219,11 @@ describe('P5-07B2 application lifecycle', () => {
       toPublicationStatus: 'committed',
     });
 
-    const projection = await readSubmissionApplicationLifecycle(readContext, backend, applicationId);
+    const projection = await readSubmissionApplicationLifecycle(
+      readContext,
+      backend,
+      applicationId,
+    );
     expect(projection.applicationReceipt).toEqual({
       kind: 'submission_event',
       ids: [applicationReceiptId],
@@ -345,12 +349,9 @@ describe('P5-07B2 application lifecycle', () => {
       ).success,
     ).toBe(false);
     await expect(
-      transitionSubmissionApplicationLifecycle(
-        transitionContext,
-        backend,
-        applicationId,
-        { operation: 'commit_application' },
-      ),
+      transitionSubmissionApplicationLifecycle(transitionContext, backend, applicationId, {
+        operation: 'commit_application',
+      }),
     ).rejects.toMatchObject({ code: 'invalid_request' });
     expect(backend.reads()).toBe(0);
   });
@@ -389,7 +390,10 @@ describe('P5-07B2 application lifecycle', () => {
         transitionContext,
         backend,
         applicationId,
-        { ...transitionRequest, receipt: { kind: 'submission_event', ids: [sourceDecisionEventId] } },
+        {
+          ...transitionRequest,
+          receipt: { kind: 'submission_event', ids: [sourceDecisionEventId] },
+        },
         changedAt,
       ),
     ).rejects.toMatchObject({ code: 'idempotency_conflict' });

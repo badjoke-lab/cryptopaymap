@@ -119,9 +119,7 @@ if (
 
 const policy = readSubmissionApplicationLifecycleAuthorizationPolicy({
   CPM_ADMIN_SUBMISSION_APPLICATION_READ_SUBJECTS: JSON.stringify(['lifecycle-reader']),
-  CPM_ADMIN_SUBMISSION_APPLICATION_TRANSITION_SUBJECTS: JSON.stringify([
-    'lifecycle-transitioner',
-  ]),
+  CPM_ADMIN_SUBMISSION_APPLICATION_TRANSITION_SUBJECTS: JSON.stringify(['lifecycle-transitioner']),
 });
 const reader = authorizeSubmissionApplicationLifecycleRead(
   {

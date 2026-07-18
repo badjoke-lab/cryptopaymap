@@ -363,11 +363,9 @@ function transitionReceipt(
     transitionEventId: request.requestId,
     applicationId,
     action: replay?.action ?? plan.action,
-    fromApplicationStatus:
-      replay?.fromApplicationStatus ?? request.expectedApplicationStatus,
+    fromApplicationStatus: replay?.fromApplicationStatus ?? request.expectedApplicationStatus,
     toApplicationStatus: replay?.toApplicationStatus ?? plan.toApplicationStatus,
-    fromPublicationStatus:
-      replay?.fromPublicationStatus ?? request.expectedPublicationStatus,
+    fromPublicationStatus: replay?.fromPublicationStatus ?? request.expectedPublicationStatus,
     toPublicationStatus: replay?.toPublicationStatus ?? plan.toPublicationStatus,
     receipt: request.receipt,
     changedAt: replay?.changedAt ?? changedAt.toISOString(),
@@ -403,7 +401,14 @@ async function verifyReplay(
       'The lifecycle transition UUID was already used for different content.',
     );
   }
-  return transitionReceipt('replayed', applicationId, request, replay, plan, new Date(replay.changedAt));
+  return transitionReceipt(
+    'replayed',
+    applicationId,
+    request,
+    replay,
+    plan,
+    new Date(replay.changedAt),
+  );
 }
 
 export async function readSubmissionApplicationLifecycle(
