@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type { SubmissionType } from '../../submissions/contract';
+import { SubmissionPersistenceError } from '../../submissions/persistence';
 
 const timestampSchema = z.iso.datetime({ offset: true });
 
@@ -36,6 +36,7 @@ export const submissionPublicationStatusSchema = z.enum([
 export const submissionApplicationReceiptKindSchema = z.enum([
   'submission_event',
   'candidate_promotion_decision',
+  'location_profile_correction_decision',
   'media_review_decision',
   'export_release_decision',
 ]);
