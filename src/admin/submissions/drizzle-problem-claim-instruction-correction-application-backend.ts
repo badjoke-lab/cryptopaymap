@@ -22,7 +22,7 @@ import {
   problemClaimInstructionCorrectionEventPayloadSchema,
 } from './problem-claim-instruction-correction-application';
 
- type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
+type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
 function postgresErrorCode(error: unknown): string | null {
   if (error === null || typeof error !== 'object' || !('code' in error)) return null;
