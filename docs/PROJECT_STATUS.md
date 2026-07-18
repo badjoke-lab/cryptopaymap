@@ -26,7 +26,7 @@ P5-07D4 — Problem Report Claim instruction correction application
 - P5-07D1 approved Problem Report practical Location correction application completed in #248.
 - P5-07D2 durable negative recheck application projection completed in #249.
 - P5-07D3 remaining correction owner audit completed in #250.
-- P5-07D4 is active on `p5-07d4-claim-instruction-correction`.
+- P5-07D4 is active in #251.
 
 ## Latest verified main
 
@@ -46,7 +46,7 @@ Foundation validation included formatting, lint, Astro and TypeScript checks, th
 ## Active pull request
 
 ```text
-p5-07d4-claim-instruction-correction — Claim instruction correction application
+#251 — P5-07D4: apply approved Claim instruction corrections
 ```
 
 ## Current boundary
