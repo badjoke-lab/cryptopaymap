@@ -1,3 +1,4 @@
+import { submissionApplicationReceiptKindSchema } from '../src/admin/submissions/application-registration';
 import {
   problemLocationCorrectionApplicationReceiptSchema,
   problemLocationCorrectionApplicationRequestSchema,
@@ -7,7 +8,6 @@ import {
   authorizeProblemLocationCorrectionApplication,
   readProblemLocationCorrectionApplicationAuthorizationPolicy,
 } from '../src/admin/submissions/problem-location-correction-application-authorization';
-import { submissionApplicationReceiptKindSchema } from '../src/admin/submissions/application-registration';
 
 const applicationId = '10000000-0000-4000-8000-000000000001';
 const submissionId = '20000000-0000-4000-8000-000000000001';
@@ -60,7 +60,9 @@ if (
     applicationStatus: 'committed',
   }).success
 ) {
-  throw new Error('Problem Location correction application accepted client-selected derived state.');
+  throw new Error(
+    'Problem Location correction application accepted client-selected derived state.',
+  );
 }
 
 if (
@@ -79,7 +81,9 @@ if (
   throw new Error('Problem Location correction source payload accepted private reviewer material.');
 }
 
-if (!submissionApplicationReceiptKindSchema.safeParse('location_profile_correction_decision').success) {
+if (
+  !submissionApplicationReceiptKindSchema.safeParse('location_profile_correction_decision').success
+) {
   throw new Error('Location profile correction receipt kind is unavailable.');
 }
 

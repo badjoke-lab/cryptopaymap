@@ -1,6 +1,6 @@
 import { z } from 'zod';
-import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type { SubmissionType } from '../../submissions/contract';
+import { SubmissionPersistenceError } from '../../submissions/persistence';
 
 const timestampSchema = z.iso.datetime({ offset: true });
 
@@ -331,7 +331,7 @@ function sameRegistration(
   );
 }
 
-function planRegistration(
+async function planRegistration(
   context: SubmissionApplicationRegistrationContext,
   state: SubmissionApplicationRegistrationState,
   request: SubmissionApplicationRegistrationRequest,

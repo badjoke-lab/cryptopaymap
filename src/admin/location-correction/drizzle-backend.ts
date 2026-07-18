@@ -2,9 +2,9 @@ import { and, eq, inArray, isNull, ne } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import { locationProfileCorrectionDecisions, locations, provenanceLinks } from '../../db/schema';
 import {
-  LocationCorrectionDecisionError,
   type LocationCorrectionDecisionBackend,
   type LocationCorrectionDecisionCommand,
+  LocationCorrectionDecisionError,
   type PracticalLocationCorrectionField,
 } from './decision';
 import { locationCorrectionSourceSetGuard, locationCorrectionTargetGuard } from './drizzle-guards';

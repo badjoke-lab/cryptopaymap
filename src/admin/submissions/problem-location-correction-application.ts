@@ -1,20 +1,20 @@
 import { z } from 'zod';
+import { parseProblemReportDecisionEvent } from '../../submissions/problem-report-decision-contract';
 import {
+  type LocationCorrectionChanges,
   LocationCorrectionDecisionError,
   type LocationCorrectionDecisionInput,
   type LocationCorrectionDecisionReceipt,
   type LocationCorrectionMutationContext,
-  type LocationCorrectionChanges,
   type PracticalLocationCorrectionField,
 } from '../location-correction/decision';
-import { parseProblemReportDecisionEvent } from '../../submissions/problem-report-decision-contract';
-import { problemReportReviewProjectionSchema } from './report-detail';
 import {
-  transitionSubmissionApplicationLifecycle,
   type SubmissionApplicationLifecycleBackend,
   type SubmissionApplicationLifecycleRecord,
   type SubmissionApplicationTransitionReplayRecord,
+  transitionSubmissionApplicationLifecycle,
 } from './application-lifecycle';
+import { problemReportReviewProjectionSchema } from './report-detail';
 
 const timestampSchema = z.iso.datetime({ offset: true });
 

@@ -1,19 +1,19 @@
 import { describe, expect, it } from 'vitest';
-import {
-  applyProblemLocationCorrectionApplication,
-  type ProblemLocationCorrectionApplicationBackend,
-  type ProblemLocationCorrectionApplicationState,
-} from '../src/admin/submissions/problem-location-correction-application';
-import type {
-  SubmissionApplicationLifecycleRecord,
-  SubmissionApplicationTransitionCommand,
-  SubmissionApplicationTransitionReplayRecord,
-} from '../src/admin/submissions/application-lifecycle';
 import type {
   LocationCorrectionDecisionInput,
   LocationCorrectionDecisionReceipt,
   LocationCorrectionMutationContext,
 } from '../src/admin/location-correction/decision';
+import type {
+  SubmissionApplicationLifecycleRecord,
+  SubmissionApplicationTransitionCommand,
+  SubmissionApplicationTransitionReplayRecord,
+} from '../src/admin/submissions/application-lifecycle';
+import {
+  applyProblemLocationCorrectionApplication,
+  type ProblemLocationCorrectionApplicationBackend,
+  type ProblemLocationCorrectionApplicationState,
+} from '../src/admin/submissions/problem-location-correction-application';
 import { serializeProblemReportDecisionEvent } from '../src/submissions/problem-report-decision-contract';
 
 const applicationId = '10000000-0000-4000-8000-000000000001';
@@ -145,12 +145,14 @@ function request(overrides: Record<string, unknown> = {}) {
 }
 
 function createBackend(initial = state()) {
-  let current = structuredClone(initial);
+  const current = structuredClone(initial);
   const transitions = new Map<string, SubmissionApplicationTransitionReplayRecord>();
   const applications: Array<{
     context: LocationCorrectionMutationContext;
     input: LocationCorrectionDecisionInput;
-    sourceRecord: Parameters<ProblemLocationCorrectionApplicationBackend['applyLocationCorrection']>[2];
+    sourceRecord: Parameters<
+      ProblemLocationCorrectionApplicationBackend['applyLocationCorrection']
+    >[2];
   }> = [];
   let reads = 0;
 

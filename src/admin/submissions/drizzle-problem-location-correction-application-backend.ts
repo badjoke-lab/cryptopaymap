@@ -9,8 +9,8 @@ import {
   submissionPayloads,
   submissions,
 } from '../../db/schema';
-import { createDrizzleLocationCorrectionBackend } from '../location-correction/drizzle-backend';
 import { createLocationCorrectionDecisionService } from '../location-correction/decision';
+import { createDrizzleLocationCorrectionBackend } from '../location-correction/drizzle-backend';
 import { createDrizzleSubmissionApplicationLifecycleBackend } from './drizzle-application-lifecycle-backend';
 import type {
   ProblemLocationCorrectionApplicationBackend,
@@ -77,8 +77,7 @@ export function createDrizzleProblemLocationCorrectionApplicationBackend(
         .select({
           requestId: locationProfileCorrectionDecisions.requestId,
           locationId: locationProfileCorrectionDecisions.locationId,
-          expectedLocationUpdatedAt:
-            locationProfileCorrectionDecisions.expectedLocationUpdatedAt,
+          expectedLocationUpdatedAt: locationProfileCorrectionDecisions.expectedLocationUpdatedAt,
           changedFieldPaths: locationProfileCorrectionDecisions.changedFieldPaths,
           decidedAt: locationProfileCorrectionDecisions.decidedAt,
         })
@@ -128,8 +127,7 @@ export function createDrizzleProblemLocationCorrectionApplicationBackend(
             : {
                 requestId: correction.requestId,
                 locationId: correction.locationId,
-                expectedLocationUpdatedAt:
-                  correction.expectedLocationUpdatedAt.toISOString(),
+                expectedLocationUpdatedAt: correction.expectedLocationUpdatedAt.toISOString(),
                 changedFieldPaths: correction.changedFieldPaths,
                 decidedAt: correction.decidedAt.toISOString(),
               },
@@ -138,7 +136,7 @@ export function createDrizzleProblemLocationCorrectionApplicationBackend(
 
     async applyLocationCorrection(context, input, sourceRecord) {
       const correctionBackend = createDrizzleLocationCorrectionBackend(database, {
-        prefixStatements: (command) => [
+        prefixStatements: () => [
           database.select({
             guard: sql<number>`1 / case when exists (
               select 1
