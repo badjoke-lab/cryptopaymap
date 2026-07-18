@@ -346,7 +346,7 @@ function deriveLifecycle(
     };
   }
 
-  const applicationReceipt =
+  const applicationReceipt: SubmissionApplicationReceiptReference | null =
     contract.defaultApplicationStatus === 'committed'
       ? { kind: 'submission_event', ids: [event.eventId] }
       : null;
