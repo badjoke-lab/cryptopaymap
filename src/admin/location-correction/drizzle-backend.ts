@@ -16,6 +16,12 @@ import {
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
+export interface DrizzleLocationCorrectionBackendOptions {
+  prefixStatements?: (
+    command: LocationCorrectionDecisionCommand,
+  ) => readonly unknown[] | Promise<readonly unknown[]>;
+}
+
 function postgresErrorCode(error: unknown): string | null {
   if (error === null || typeof error !== 'object' || !('code' in error)) return null;
   const code = (error as { code?: unknown }).code;
@@ -34,6 +40,7 @@ function hasCurrentValue(value: unknown): boolean {
 
 export function createDrizzleLocationCorrectionBackend(
   database: CryptoPayMapDatabase,
+  options: DrizzleLocationCorrectionBackendOptions = {},
 ): LocationCorrectionDecisionBackend {
   return {
     async commitCorrection(command: LocationCorrectionDecisionCommand) {
@@ -62,8 +69,12 @@ export function createDrizzleLocationCorrectionBackend(
           effectiveTo: null,
         }));
       });
+      const prefixStatements = options.prefixStatements
+        ? await options.prefixStatements(command)
+        : [];
 
       const statements: unknown[] = [
+        ...prefixStatements,
         locationCorrectionTargetGuard(database, command),
         locationCorrectionSourceSetGuard(database, command),
         database
