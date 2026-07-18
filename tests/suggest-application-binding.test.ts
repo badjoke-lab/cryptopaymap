@@ -251,7 +251,7 @@ describe('P5-07C Suggest application receipt binding', () => {
         }),
         boundAt,
       ),
-    ).rejects.toMatchObject({ code: 'not_found' });
+    ).rejects.toMatchObject({ code: 'ineligible' });
     expect(backend.commits).toHaveLength(1);
   });
 
