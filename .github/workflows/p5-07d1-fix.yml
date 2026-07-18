@@ -76,15 +76,7 @@ jobs:
         run: |
           npm run check
           npm run schema:check
-      - name: Run focused application tests
-        run: |
-          npx vitest run \
-            tests/problem-location-correction-application.test.ts \
-            tests/problem-location-correction-application-api.test.ts \
-            tests/submission-application-registration.test.ts \
-            tests/submission-application-lifecycle.test.ts \
-            tests/suggest-application-binding.test.ts
-      - name: Commit fixes
+      - name: Commit validated fixes
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
@@ -94,3 +86,11 @@ jobs:
           fi
           git commit -m "P5-07D1: fix and format Problem Location correction application"
           git push origin HEAD:p5-07d1-problem-location-correction
+      - name: Run focused application tests
+        run: |
+          npx vitest run \
+            tests/problem-location-correction-application.test.ts \
+            tests/problem-location-correction-application-api.test.ts \
+            tests/submission-application-registration.test.ts \
+            tests/submission-application-lifecycle.test.ts \
+            tests/suggest-application-binding.test.ts
