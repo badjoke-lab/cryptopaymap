@@ -26,7 +26,7 @@ function transitionBody() {
     expectedPublicationStatus: 'blocked',
     expectedUpdatedAt: '2026-07-18T05:00:00.000Z',
     receipt: {
-      kind: 'submission_event',
+      kind: 'submission_event' as const,
       ids: ['50000000-0000-4000-8000-000000000001'],
     },
   };
@@ -43,15 +43,19 @@ function context(
     body?: unknown;
   } = {},
 ) {
+  const requestInit: RequestInit =
+    method === 'POST'
+      ? {
+          method,
+          headers: { 'Content-Type': overrides.contentType ?? 'application/json' },
+          body: JSON.stringify(overrides.body ?? transitionBody()),
+        }
+      : { method };
   return {
-    request: new Request(`https://example.test/admin/api/application-lifecycle/${applicationId}`, {
-      method,
-      headers:
-        method === 'POST'
-          ? { 'Content-Type': overrides.contentType ?? 'application/json' }
-          : undefined,
-      body: method === 'POST' ? JSON.stringify(overrides.body ?? transitionBody()) : undefined,
-    }),
+    request: new Request(
+      `https://example.test/admin/api/application-lifecycle/${applicationId}`,
+      requestInit,
+    ),
     env: {
       CPM_ADMIN_SUBMISSION_APPLICATION_READ_SUBJECTS:
         overrides.readSubjects ?? JSON.stringify(['application-operator']),
