@@ -92,9 +92,7 @@ jobs:
             tests/problem-location-correction-application.test.ts \
             tests/problem-location-correction-application-api.test.ts \
             scripts/check-problem-location-correction-application.ts \
-            docs/P5_07D1_PROBLEM_LOCATION_CORRECTION_APPLICATION.md \
-            drizzle/meta/_journal.json \
-            drizzle/meta/*.json
+            docs/P5_07D1_PROBLEM_LOCATION_CORRECTION_APPLICATION.md
       - name: Commit integration
         run: |
           git config user.name github-actions[bot]
