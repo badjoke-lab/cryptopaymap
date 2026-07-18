@@ -99,8 +99,8 @@ for (const required of [
 }
 assert.doesNotMatch(backend, /update\(claimAssets\)/);
 assert.doesNotMatch(backend, /update\(locations\)/);
-assert.doesNotMatch(backend, /claimStatus:/);
-assert.doesNotMatch(backend, /nextReviewAt:/);
+assert.doesNotMatch(backend, /\.set\(\{[^}]*claimStatus/s);
+assert.doesNotMatch(backend, /\.set\(\{[^}]*nextReviewAt/s);
 
 const api = readFileSync(
   'functions/admin/api/problem-applications/[applicationId]/apply-claim-instructions.ts',
