@@ -341,8 +341,9 @@ describe('P5-07D4 Problem Report Claim instruction correction application', () =
         internalNote: 'Asset changes use a separate owner.',
       });
     }
-    (invalid.submission.normalizedPayload as { reportType: string; proposedCorrection: unknown }).reportType =
-      'wrong_asset';
+    (
+      invalid.submission.normalizedPayload as { reportType: string; proposedCorrection: unknown }
+    ).reportType = 'wrong_asset';
     (invalid.submission.normalizedPayload as { proposedCorrection: unknown }).proposedCorrection =
       assetCorrection;
     const backend = createBackend(invalid);
