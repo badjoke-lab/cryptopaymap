@@ -47,9 +47,7 @@ if (
 }
 
 const policy = readSuggestApplicationBindingAuthorizationPolicy({
-  CPM_ADMIN_SUGGEST_APPLICATION_BINDING_SUBJECTS: JSON.stringify([
-    'suggest-application-operator',
-  ]),
+  CPM_ADMIN_SUGGEST_APPLICATION_BINDING_SUBJECTS: JSON.stringify(['suggest-application-operator']),
 });
 const context = authorizeSuggestApplicationBinding(
   {

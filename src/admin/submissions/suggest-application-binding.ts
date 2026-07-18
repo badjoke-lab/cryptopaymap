@@ -107,7 +107,9 @@ function validateBinding(
   request: SuggestApplicationBindingRequest,
 ): string {
   const { application, submission, sourceDecisionEvent, promotionDecision, candidate } = state;
-  const payload = parseSuggestAcceptedCandidateEventPayload(sourceDecisionEvent?.internalNote ?? null);
+  const payload = parseSuggestAcceptedCandidateEventPayload(
+    sourceDecisionEvent?.internalNote ?? null,
+  );
   if (
     application.submissionType !== 'suggest' ||
     application.sourceDecisionKind !== 'suggest_candidate_acceptance' ||
@@ -216,22 +218,14 @@ export async function bindSuggestApplicationReceipt(
   }
   const applicationIdResult = z.uuid().safeParse(applicationId);
   const requestResult = suggestApplicationBindingRequestSchema.safeParse(rawRequest);
-  if (
-    !applicationIdResult.success ||
-    !requestResult.success ||
-    Number.isNaN(boundAt.getTime())
-  ) {
+  if (!applicationIdResult.success || !requestResult.success || Number.isNaN(boundAt.getTime())) {
     throw new SuggestApplicationBindingError(
       'invalid_request',
       'The Suggest application binding request is invalid.',
     );
   }
   const request = requestResult.data;
-  const { state, replay } = await readStateAndReplay(
-    backend,
-    applicationIdResult.data,
-    request,
-  );
+  const { state, replay } = await readStateAndReplay(backend, applicationIdResult.data, request);
   const candidateId = validateBinding(state, request);
 
   if (replay === null && state.application.applicationStatus === 'committed') {

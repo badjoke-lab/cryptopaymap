@@ -31,9 +31,7 @@ const boundAt = new Date('2026-07-18T06:10:00.000Z');
 const context = {
   actorId: 'reviewer:suggest-application',
   actorType: 'human' as const,
-  capabilities: ['submission:suggest-application:bind'] as [
-    'submission:suggest-application:bind',
-  ],
+  capabilities: ['submission:suggest-application:bind'] as ['submission:suggest-application:bind'],
 };
 
 function application(): SubmissionApplicationLifecycleRecord {
