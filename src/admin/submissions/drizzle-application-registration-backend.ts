@@ -24,11 +24,7 @@ function postgresErrorCode(error: unknown): string | null {
 }
 
 function receipt(
-  kind: SubmissionApplicationRegistrationRecord['applicationReceipt'] extends infer T
-    ? T extends SubmissionApplicationReceiptReference
-      ? T['kind']
-      : never
-    : never,
+  kind: SubmissionApplicationReceiptReference['kind'] | null,
   ids: string[],
 ): SubmissionApplicationReceiptReference | null {
   return kind === null || ids.length === 0 ? null : { kind, ids };
