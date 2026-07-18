@@ -78,21 +78,6 @@ jobs:
       - run: npm ci
       - name: Generate receipt enum migration
         run: npm run db:generate
-      - name: Format P5-07D1 files
-        run: |
-          npx biome format --write \
-            package.json \
-            src/db/schema/submission-applications.ts \
-            src/admin/location-correction/drizzle-backend.ts \
-            src/admin/submissions/application-registration.ts \
-            src/admin/submissions/problem-location-correction-application.ts \
-            src/admin/submissions/problem-location-correction-application-authorization.ts \
-            src/admin/submissions/drizzle-problem-location-correction-application-backend.ts \
-            'functions/admin/api/problem-applications/[applicationId]/apply-location-correction.ts' \
-            tests/problem-location-correction-application.test.ts \
-            tests/problem-location-correction-application-api.test.ts \
-            scripts/check-problem-location-correction-application.ts \
-            docs/P5_07D1_PROBLEM_LOCATION_CORRECTION_APPLICATION.md
       - name: Commit integration
         run: |
           git config user.name github-actions[bot]
