@@ -17,7 +17,7 @@ const reportContract = read('src/submissions/report-contract.ts');
 for (const kind of ['asset', 'network', 'instructions', 'location_profile', 'other']) {
   assert.match(
     reportContract,
-    new RegExp(`kind: z\\.literal\\('${kind}'\\)`),
+    new RegExp(`kind: z\.literal\('${kind}'\)`),
     `Problem Report correction kind ${kind} must remain explicit.`,
   );
 }
@@ -41,10 +41,7 @@ assert.doesNotMatch(locationApplication, /claimAssets/);
 
 const acceptanceClaims = read('src/db/schema/acceptance-claims.ts');
 assert.match(acceptanceClaims, /howToPay: text\('how_to_pay'\)/);
-assert.match(
-  acceptanceClaims,
-  /claimStatus} <> 'confirmed' or \(\$\{table\.howToPay}/,
-);
+assert.match(acceptanceClaims, /claimStatus} <> 'confirmed' or \(\$\{table\.howToPay}/);
 
 const claimAssets = read('src/db/schema/claim-assets.ts');
 for (const field of ['assetId', 'networkId', 'paymentMethodId', 'contractAddress', 'isPrimary']) {
