@@ -60,25 +60,53 @@ jobs:
             scripts/check-negative-recheck-application.ts \
             docs/P5_07D2_NEGATIVE_RECHECK_APPLICATION.md \
             docs/PROJECT_STATUS.md
-      - name: Validate TypeScript and runtime contracts
-        run: |
-          npm run check
-          npm run schema:check
-      - name: Run focused tests
-        run: |
-          npx vitest run \
-            tests/negative-recheck-application.test.ts \
-            tests/negative-recheck-application-api.test.ts \
-            tests/negative-report-evidence.test.ts \
-            tests/submission-application-registration.test.ts \
-            tests/submission-application-lifecycle.test.ts
       - name: Commit integration
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add package.json src functions tests scripts docs
-          if git diff --cached --quiet; then
-            exit 0
+          if ! git diff --cached --quiet; then
+            git commit -m "P5-07D2: integrate negative recheck application projection"
+            git push origin HEAD:p5-07d2-negative-recheck-application
           fi
-          git commit -m "P5-07D2: integrate negative recheck application projection"
-          git push origin HEAD:p5-07d2-negative-recheck-application
+      - name: Capture validation diagnostics
+        run: |
+          set +e
+          {
+            echo '=== npm run check ==='
+            npm run check
+            check_status=$?
+            echo "check_status=$check_status"
+            echo '=== npm run schema:check ==='
+            npm run schema:check
+            schema_status=$?
+            echo "schema_status=$schema_status"
+            echo '=== focused tests ==='
+            npx vitest run \
+              tests/negative-recheck-application.test.ts \
+              tests/negative-recheck-application-api.test.ts \
+              tests/negative-report-evidence.test.ts \
+              tests/submission-application-registration.test.ts \
+              tests/submission-application-lifecycle.test.ts
+            test_status=$?
+            echo "test_status=$test_status"
+            if [ "$check_status" -ne 0 ] || [ "$schema_status" -ne 0 ] || [ "$test_status" -ne 0 ]; then
+              echo 'validation_status=1'
+            else
+              echo 'validation_status=0'
+            fi
+          } > p5-07d2-validation.log 2>&1
+          status=$(tail -n 1 p5-07d2-validation.log | cut -d= -f2)
+          echo "validation_status=$status" >> "$GITHUB_ENV"
+          exit 0
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p5-07d2-validation-log
+          path: p5-07d2-validation.log
+          if-no-files-found: error
+      - name: Report validation result
+        run: |
+          if [ "$validation_status" -ne 0 ]; then
+            echo 'P5-07D2 validation failed; see artifact.'
+            exit 1
+          fi
