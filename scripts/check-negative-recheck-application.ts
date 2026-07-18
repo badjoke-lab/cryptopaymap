@@ -1,6 +1,4 @@
-import {
-  negativeRecheckApplicationProjectionSchema,
-} from '../src/admin/submissions/negative-recheck-application';
+import { negativeRecheckApplicationProjectionSchema } from '../src/admin/submissions/negative-recheck-application';
 import {
   authorizeNegativeRecheckApplicationRead,
   readNegativeRecheckApplicationAuthorizationPolicy,
@@ -81,9 +79,7 @@ if (
 }
 
 const policy = readNegativeRecheckApplicationAuthorizationPolicy({
-  CPM_ADMIN_NEGATIVE_RECHECK_APPLICATION_SUBJECTS: JSON.stringify([
-    'negative-recheck-operator',
-  ]),
+  CPM_ADMIN_NEGATIVE_RECHECK_APPLICATION_SUBJECTS: JSON.stringify(['negative-recheck-operator']),
 });
 const context = authorizeNegativeRecheckApplicationRead(
   {

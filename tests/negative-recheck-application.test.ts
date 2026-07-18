@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest';
+import type { SubmissionApplicationLifecycleRecord } from '../src/admin/submissions/application-lifecycle';
 import {
-  readNegativeRecheckApplication,
   type NegativeRecheckApplicationBackend,
   type NegativeRecheckDecisionState,
   type NegativeRecheckEvidenceClaimState,
   type NegativeRecheckResolutionEventState,
+  readNegativeRecheckApplication,
 } from '../src/admin/submissions/negative-recheck-application';
-import type { SubmissionApplicationLifecycleRecord } from '../src/admin/submissions/application-lifecycle';
 import { serializeNegativeReportEvidenceEvent } from '../src/submissions/negative-report-evidence-contract';
 
 const applicationId = '10000000-0000-4000-8000-000000000001';
@@ -110,17 +110,20 @@ function evidenceClaim(): NegativeRecheckEvidenceClaimState {
   };
 }
 
-function createBackend(overrides: {
-  application?: SubmissionApplicationLifecycleRecord | null;
-  decision?: NegativeRecheckDecisionState | null;
-  evidenceClaim?: NegativeRecheckEvidenceClaimState | null;
-  resolution?: NegativeRecheckResolutionEventState | null;
-} = {}) {
+function createBackend(
+  overrides: {
+    application?: SubmissionApplicationLifecycleRecord | null;
+    decision?: NegativeRecheckDecisionState | null;
+    evidenceClaim?: NegativeRecheckEvidenceClaimState | null;
+    resolution?: NegativeRecheckResolutionEventState | null;
+  } = {},
+) {
   let reads = 0;
   const applicationState =
     overrides.application === undefined ? application() : overrides.application;
   const decision = overrides.decision === undefined ? decisionState() : overrides.decision;
-  const evidence = overrides.evidenceClaim === undefined ? evidenceClaim() : overrides.evidenceClaim;
+  const evidence =
+    overrides.evidenceClaim === undefined ? evidenceClaim() : overrides.evidenceClaim;
   const resolution = overrides.resolution === undefined ? null : overrides.resolution;
 
   const backend: NegativeRecheckApplicationBackend & { reads(): number } = {
@@ -133,9 +136,7 @@ function createBackend(overrides: {
     },
     async readDecisionState(id, decisionEventId) {
       reads += 1;
-      return id === submissionId && decisionEventId === eventId
-        ? structuredClone(decision)
-        : null;
+      return id === submissionId && decisionEventId === eventId ? structuredClone(decision) : null;
     },
     async readEvidenceClaim(id) {
       reads += 1;

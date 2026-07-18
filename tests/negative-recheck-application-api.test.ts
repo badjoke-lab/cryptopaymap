@@ -15,11 +15,9 @@ const identity = {
   email: 'operator@example.com',
 };
 
-function context(overrides: {
-  identity?: unknown;
-  subjects?: string;
-  applicationId?: string | string[];
-} = {}) {
+function context(
+  overrides: { identity?: unknown; subjects?: string; applicationId?: string | string[] } = {},
+) {
   return {
     request: new Request(
       `https://example.test/admin/api/report-applications/${applicationId}/recheck-signal`,
