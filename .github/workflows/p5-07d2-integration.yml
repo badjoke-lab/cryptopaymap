@@ -22,91 +22,47 @@ jobs:
         with:
           ref: p5-07d2-negative-recheck-application
           fetch-depth: 0
-      - name: Register negative recheck application checker
+      - name: Fix non-null decision payload type
         run: |
           python - <<'PY'
-          import json
           from pathlib import Path
-          path = Path('package.json')
-          data = json.loads(path.read_text())
-          command = data['scripts']['schema:check']
-          marker = 'tsx scripts/check-problem-location-correction-application.ts'
-          checker = 'tsx scripts/check-negative-recheck-application.ts'
-          if checker not in command:
-              if marker not in command:
-                  raise SystemExit('P5-07D1 schema-check marker is missing')
-              data['scripts']['schema:check'] = command.replace(
-                  marker,
-                  marker + ' && ' + checker,
-                  1,
-              )
-          path.write_text(json.dumps(data, indent=2) + '\n')
+          path = Path('src/admin/submissions/negative-recheck-application.ts')
+          content = path.read_text()
+          content = content.replace(
+              "import { parseNegativeReportEvidenceEvent } from '../../submissions/negative-report-evidence-contract';",
+              "import {\n  parseNegativeReportEvidenceEvent,\n  type NegativeReportEvidenceEvent,\n} from '../../submissions/negative-report-evidence-contract';",
+              1,
+          )
+          content = content.replace(
+              "): ReturnType<typeof parseNegativeReportEvidenceEvent> {",
+              "): NegativeReportEvidenceEvent {",
+              1,
+          )
+          path.write_text(content)
           PY
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Format and lint P5-07D2 files
+      - name: Format and lint corrected service
+        run: npx biome check --write src/admin/submissions/negative-recheck-application.ts
+      - name: Validate TypeScript, runtime contracts, and focused tests
         run: |
-          npx biome check --write \
-            package.json \
-            src/admin/submissions/negative-recheck-application.ts \
-            src/admin/submissions/negative-recheck-application-authorization.ts \
-            src/admin/submissions/drizzle-negative-recheck-application-backend.ts \
-            'functions/admin/api/report-applications/[applicationId]/recheck-signal.ts' \
+          npm run check
+          npm run schema:check
+          npx vitest run \
             tests/negative-recheck-application.test.ts \
             tests/negative-recheck-application-api.test.ts \
-            scripts/check-negative-recheck-application.ts \
-            docs/P5_07D2_NEGATIVE_RECHECK_APPLICATION.md \
-            docs/PROJECT_STATUS.md
-      - name: Commit integration
+            tests/negative-report-evidence.test.ts \
+            tests/submission-application-registration.test.ts \
+            tests/submission-application-lifecycle.test.ts
+      - name: Commit correction
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add package.json src functions tests scripts docs
+          git add src/admin/submissions/negative-recheck-application.ts
           if ! git diff --cached --quiet; then
-            git commit -m "P5-07D2: integrate negative recheck application projection"
+            git commit -m "P5-07D2: narrow priority decision event type"
             git push origin HEAD:p5-07d2-negative-recheck-application
-          fi
-      - name: Capture validation diagnostics
-        run: |
-          set +e
-          {
-            echo '=== npm run check ==='
-            npm run check
-            check_status=$?
-            echo "check_status=$check_status"
-            echo '=== npm run schema:check ==='
-            npm run schema:check
-            schema_status=$?
-            echo "schema_status=$schema_status"
-            echo '=== focused tests ==='
-            npx vitest run \
-              tests/negative-recheck-application.test.ts \
-              tests/negative-recheck-application-api.test.ts \
-              tests/negative-report-evidence.test.ts \
-              tests/submission-application-registration.test.ts \
-              tests/submission-application-lifecycle.test.ts
-            test_status=$?
-            echo "test_status=$test_status"
-            if [ "$check_status" -ne 0 ] || [ "$schema_status" -ne 0 ] || [ "$test_status" -ne 0 ]; then
-              echo 'validation_status=1'
-            else
-              echo 'validation_status=0'
-            fi
-          } > p5-07d2-validation.log 2>&1
-          status=$(tail -n 1 p5-07d2-validation.log | cut -d= -f2)
-          echo "validation_status=$status" >> "$GITHUB_ENV"
-          exit 0
-      - uses: actions/upload-artifact@v4
-        with:
-          name: p5-07d2-validation-log
-          path: p5-07d2-validation.log
-          if-no-files-found: error
-      - name: Report validation result
-        run: |
-          if [ "$validation_status" -ne 0 ]; then
-            echo 'P5-07D2 validation failed; see artifact.'
-            exit 1
           fi
