@@ -176,6 +176,13 @@
       "when": 1784042220148,
       "tag": "0024_kind_rawhide_kid",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1784305064070,
+      "tag": "0025_numerous_riptide",
+      "breakpoints": true
     }
   ]
 }
