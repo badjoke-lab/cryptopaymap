@@ -11,7 +11,7 @@ on:
       - 'docs/**'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
@@ -19,38 +19,6 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: p5-07b1-application-registration
-          fetch-depth: 0
-
-      - name: Apply focused P5-07B1 type fixes
-        if: github.actor != 'github-actions[bot]' && github.head_ref == 'p5-07b1-application-registration'
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-
-          service = Path('src/admin/submissions/application-registration.ts')
-          source = service.read_text()
-          old = "? ({ kind: 'submission_event', ids: [event.eventId] } as const)"
-          new = "? { kind: 'submission_event', ids: [event.eventId] }"
-          if source.count(old) != 1:
-              raise SystemExit('Expected readonly application receipt marker was not found exactly once')
-          service.write_text(source.replace(old, new, 1))
-
-          backend = Path('src/admin/submissions/drizzle-application-registration-backend.ts')
-          source = backend.read_text()
-          old = """  kind: SubmissionApplicationRegistrationRecord['applicationReceipt'] extends infer T
-    ? T extends SubmissionApplicationReceiptReference
-      ? T['kind']
-      : never
-    : never,
-"""
-          new = """  kind: SubmissionApplicationReceiptReference['kind'] | null,
-"""
-          if source.count(old) != 1:
-              raise SystemExit('Expected receipt kind type marker was not found exactly once')
-          backend.write_text(source.replace(old, new, 1))
-          PY
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -60,22 +28,6 @@ jobs:
 
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
-
-      - name: Format focused P5-07B1 fixes
-        if: github.actor != 'github-actions[bot]' && github.head_ref == 'p5-07b1-application-registration'
-        run: |
-          npx biome format --write \
-            src/admin/submissions/application-registration.ts \
-            src/admin/submissions/drizzle-application-registration-backend.ts
-
-      - name: Commit focused P5-07B1 fixes
-        if: github.actor != 'github-actions[bot]' && github.head_ref == 'p5-07b1-application-registration'
-        run: |
-          git config user.name github-actions[bot]
-          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add src/admin/submissions/application-registration.ts src/admin/submissions/drizzle-application-registration-backend.ts
-          git commit -m "P5-07B1: fix application receipt types"
-          git push origin HEAD:p5-07b1-application-registration
 
       - name: Check formatting
         run: set -o pipefail && npm run format:check 2>&1 | tee validation-format.log
