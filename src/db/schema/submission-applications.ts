@@ -42,6 +42,7 @@ export const submissionPublicationStatusValues = [
 export const submissionApplicationReceiptKindValues = [
   'submission_event',
   'candidate_promotion_decision',
+  'location_profile_correction_decision',
   'media_review_decision',
   'export_release_decision',
 ] as const;
