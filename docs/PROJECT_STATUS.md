@@ -25,7 +25,7 @@ P5-07D3 — Remaining Problem Report correction owner audit
 - P5-07C Suggest Candidate promotion receipt binding completed in #247.
 - P5-07D1 approved Problem Report practical Location correction application completed in #248.
 - P5-07D2 durable negative recheck application projection completed in #249.
-- P5-07D3 is active on `p5-07d3-correction-owner-audit`.
+- P5-07D3 is active in #250.
 
 ## Latest verified main
 
@@ -45,7 +45,7 @@ Foundation validation included formatting, lint, Astro and TypeScript checks, ru
 ## Active pull request
 
 ```text
-p5-07d3-correction-owner-audit — remaining correction owner audit
+#250 — P5-07D3: audit remaining Problem Report correction owners
 ```
 
 ## Current boundary
