@@ -1,5 +1,8 @@
 import { z } from 'zod';
-import { parseNegativeReportEvidenceEvent } from '../../submissions/negative-report-evidence-contract';
+import {
+  type NegativeReportEvidenceEvent,
+  parseNegativeReportEvidenceEvent,
+} from '../../submissions/negative-report-evidence-contract';
 import {
   evaluateReconfirmationClaim,
   type ReconfirmationClaimSnapshot,
@@ -179,7 +182,7 @@ function assertApplication(application: SubmissionApplicationLifecycleRecord): v
 function assertDecision(
   application: SubmissionApplicationLifecycleRecord,
   state: NegativeRecheckDecisionState,
-): ReturnType<typeof parseNegativeReportEvidenceEvent> {
+): NegativeReportEvidenceEvent {
   const payload = parseNegativeReportEvidenceEvent(state.event?.internalNote ?? null);
   if (
     state.submission.submissionId !== application.submissionId ||
