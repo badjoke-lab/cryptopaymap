@@ -257,6 +257,7 @@ function validateAndPlan(
   const correctionReplay = parseProblemClaimInstructionCorrectionEvent(
     correctionEvent?.internalNote ?? null,
   );
+
   if (
     application.submissionType !== 'problem_report' ||
     application.sourceDecisionKind !== 'problem_correction_handoff' ||
@@ -423,6 +424,56 @@ function alreadyAppliedReceipt(
   });
 }
 
+function mapCanonicalCommitError(error: unknown): never {
+  if (error !== null && typeof error === 'object' && 'code' in error) {
+    const code = (error as { code?: unknown }).code;
+    if (code === 'idempotency_conflict') {
+      throw new ProblemClaimInstructionCorrectionApplicationError(
+        'idempotency_conflict',
+        'The instruction correction UUID was already used for different content.',
+        { cause: error },
+      );
+    }
+    if (code === 'conflict') {
+      throw new ProblemClaimInstructionCorrectionApplicationError(
+        'conflict',
+        'The canonical Claim changed before instruction correction application.',
+        { cause: error },
+      );
+    }
+  }
+  throw new ProblemClaimInstructionCorrectionApplicationError(
+    'backend_failure',
+    'The approved Claim instruction correction could not be applied.',
+    { cause: error },
+  );
+}
+
+function mapLifecycleError(error: unknown): never {
+  if (error !== null && typeof error === 'object' && 'code' in error) {
+    const code = (error as { code?: unknown }).code;
+    if (code === 'idempotency_conflict') {
+      throw new ProblemClaimInstructionCorrectionApplicationError(
+        'idempotency_conflict',
+        'The instruction correction application UUID was reused for different content.',
+        { cause: error },
+      );
+    }
+    if (code === 'conflict') {
+      throw new ProblemClaimInstructionCorrectionApplicationError(
+        'conflict',
+        'The application lifecycle changed after the canonical instruction correction committed.',
+        { cause: error },
+      );
+    }
+  }
+  throw new ProblemClaimInstructionCorrectionApplicationError(
+    'backend_failure',
+    'The canonical instruction correction committed but its application receipt was not recorded.',
+    { cause: error },
+  );
+}
+
 export async function applyProblemClaimInstructionCorrectionApplication(
   context: ProblemClaimInstructionCorrectionApplicationContext,
   backend: ProblemClaimInstructionCorrectionApplicationBackend,
@@ -437,9 +488,11 @@ export async function applyProblemClaimInstructionCorrectionApplication(
       'The actor is not authorized to apply approved Claim instruction corrections.',
     );
   }
+
   const applicationIdResult = z.uuid().safeParse(applicationId);
   const sourceIdResult = z.uuid().safeParse(sourceId);
-  const requestResult = problemClaimInstructionCorrectionApplicationRequestSchema.safeParse(rawRequest);
+  const requestResult =
+    problemClaimInstructionCorrectionApplicationRequestSchema.safeParse(rawRequest);
   if (
     !applicationIdResult.success ||
     !sourceIdResult.success ||
@@ -475,6 +528,7 @@ export async function applyProblemClaimInstructionCorrectionApplication(
     claimId: plan.claimId,
     beforeHowToPay: plan.beforeHowToPay,
     afterHowToPay: plan.afterHowToPay,
+    sourceId: sourceIdResult.data,
     sourceRecordId,
     verificationEventId,
   });
@@ -483,15 +537,16 @@ export async function applyProblemClaimInstructionCorrectionApplication(
   );
 
   if (state.application.applicationStatus === 'committed') {
-    if (state.application.updatedAt !== request.expectedApplicationUpdatedAt || existingPayload === null) {
+    if (existingPayload === null) {
       throw new ProblemClaimInstructionCorrectionApplicationError(
         'conflict',
-        'The instruction correction application changed before its receipt was confirmed.',
+        'The committed instruction correction application has no exact canonical receipt.',
       );
     }
     verifyCanonicalReplay(state, existingPayload, context, requestFingerprint);
     return alreadyAppliedReceipt(state, existingPayload);
   }
+
   if (
     transitionReplay === null &&
     (state.application.applicationStatus !== 'pending' ||
@@ -509,18 +564,6 @@ export async function applyProblemClaimInstructionCorrectionApplication(
     canonicalReceipt = verifyCanonicalReplay(state, existingPayload, context, requestFingerprint);
   } else {
     const sourcePayload = plan.sourcePayload;
-    const eventPayload = problemClaimInstructionCorrectionEventPayloadSchema.parse({
-      schemaVersion: 'problem-claim-instruction-correction-event-v1',
-      requestFingerprint,
-      applicationId: state.application.applicationId,
-      sourceDecisionEventId: state.application.sourceDecisionEventId,
-      claimId: plan.claimId,
-      sourceRecordId,
-      verificationEventId,
-      expectedClaimUpdatedAt: request.expectedClaimUpdatedAt,
-      beforeHowToPay: plan.beforeHowToPay,
-      afterHowToPay: plan.afterHowToPay,
-    });
     try {
       canonicalReceipt = await backend.commitClaimInstructionCorrection({
         requestId: request.requestId,
@@ -549,28 +592,7 @@ export async function applyProblemClaimInstructionCorrectionApplication(
         appliedAt,
       });
     } catch (error) {
-      if (error !== null && typeof error === 'object' && 'code' in error) {
-        const code = (error as { code?: unknown }).code;
-        if (code === 'idempotency_conflict') {
-          throw new ProblemClaimInstructionCorrectionApplicationError(
-            'idempotency_conflict',
-            'The instruction correction UUID was already used for different content.',
-            { cause: error },
-          );
-        }
-        if (code === 'conflict') {
-          throw new ProblemClaimInstructionCorrectionApplicationError(
-            'conflict',
-            'The canonical Claim changed before instruction correction application.',
-            { cause: error },
-          );
-        }
-      }
-      throw new ProblemClaimInstructionCorrectionApplicationError(
-        'backend_failure',
-        'The approved Claim instruction correction could not be applied.',
-        { cause: error },
-      );
+      mapCanonicalCommitError(error);
     }
   }
 
@@ -608,27 +630,6 @@ export async function applyProblemClaimInstructionCorrectionApplication(
       appliedAt: transition.changedAt,
     });
   } catch (error) {
-    if (error !== null && typeof error === 'object' && 'code' in error) {
-      const code = (error as { code?: unknown }).code;
-      if (code === 'idempotency_conflict') {
-        throw new ProblemClaimInstructionCorrectionApplicationError(
-          'idempotency_conflict',
-          'The instruction correction application UUID was reused for different content.',
-          { cause: error },
-        );
-      }
-      if (code === 'conflict') {
-        throw new ProblemClaimInstructionCorrectionApplicationError(
-          'conflict',
-          'The application lifecycle changed after the canonical instruction correction committed.',
-          { cause: error },
-        );
-      }
-    }
-    throw new ProblemClaimInstructionCorrectionApplicationError(
-      'backend_failure',
-      'The canonical instruction correction committed but its application receipt was not recorded.',
-      { cause: error },
-    );
+    mapLifecycleError(error);
   }
 }
