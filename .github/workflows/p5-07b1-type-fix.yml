@@ -1,19 +1,16 @@
 name: P5-07B1 type fix
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
-    types:
-      - synchronize
-      - reopened
+      - p5-07b1-application-registration
 
 permissions:
   contents: write
 
 jobs:
   fix:
-    if: github.head_ref == 'p5-07b1-application-registration' && github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
