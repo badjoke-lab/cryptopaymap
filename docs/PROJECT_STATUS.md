@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-17
+**Last verified:** 2026-07-18
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07B — Common application lifecycle and receipt references
+P5-07D2 — Durable negative recheck application projection
 
 ## Current repository state
 
@@ -20,52 +20,61 @@ P5-07B — Common application lifecycle and receipt references
 - P5-05 Photo and Media submission intake is complete through #216–#227.
 - P5-06 review workflow extensions are repository-complete through #228–#242.
 - P5-07A canonical application and retention inventory completed in #243.
-- P5-07 is active.
+- P5-07B1 common application registration completed in #245.
+- P5-07B2 protected application lifecycle read and transition completed in #246.
+- P5-07C Suggest Candidate promotion receipt binding completed in #247.
+- P5-07D1 approved Problem Report practical Location correction application completed in #248.
+- P5-07D2 is active in #249.
 
 ## Latest verified main
 
 ```text
-549b2a4716bfb289421e32118e54c293558580c9
+ab43802ad14eea140ca3b3acf3ba42cf945ffd2e
 ```
 
-The final P5-07A implementation head passed:
+The final P5-07D1 implementation head passed:
 
 - Foundation validation;
 - Migration drift;
 - Staging review validation;
 - representative review screenshots.
 
-Foundation validation included formatting, lint, Astro and TypeScript checks, all runtime-schema checks including the P5-06F and P5-07A audits, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
+Foundation validation included formatting, lint, Astro and TypeScript checks, runtime-schema checks, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
 
 ## Active pull request
 
-None.
+```text
+#249 — P5-07D2: project durable negative recheck application signals
+```
+
+## Current boundary
+
+P5-07D2 verifies the existing durable priority-recheck chain rather than creating a duplicate work-item table.
+
+It may add:
+
+- exact application, Submission event, Evidence, Claim, and resolving Verification Event validation;
+- active or resolved priority-signal projection;
+- reuse of protected reconfirmation queue priority semantics;
+- bounded protected read authorization and API;
+- focused tests, runtime checks, and documentation.
+
+It must not:
+
+- create a second recheck task or queue table;
+- update Claim status, visibility, or `nextReviewAt`;
+- mutate Evidence or Submission state;
+- transition common application state;
+- expose private Evidence, reviewer notes, contacts, or Submission payloads;
+- activate export or release;
+- execute retention deletion;
+- claim configured deployment.
 
 ## Next
 
-Implement P5-07B as the common application lifecycle and receipt-reference boundary.
+After P5-07D2, continue P5-07D with separately owned correction classes only where a safe canonical transaction exists. Asset, network, payment-instruction, country, coordinate, and generic-other corrections must not be forced through the practical Location correction owner.
 
-P5-07B may add:
-
-- strict internal application state and receipt contracts;
-- exact references to existing type-specific decision and application receipts;
-- one durable common application record when justified by migration review;
-- one-application-per-Submission and changed-reference conflict guards;
-- replay-safe application-state transitions;
-- bounded protected read projection;
-- explicit separation of application completion from publication completion.
-
-P5-07B must not:
-
-- promote or link a Candidate;
-- apply a Problem Report correction;
-- create Claim Assets or provenance;
-- update Entity, Location, Claim, Evidence, or Media;
-- delete private contact, payload, Evidence, proof, or object data;
-- activate export or release;
-- claim configured deployment.
-
-The later sequence defined by P5-07A remains P5-07C Suggest receipt binding, P5-07D report correction/recheck application, P5-07E Business Claim payment/provenance/order completion, P5-07F Photos/Media reconciliation, P5-07G retention execution, and P5-07H integration audit.
+The later sequence remains P5-07E Business Claim payment/provenance/order completion, P5-07F Photos/Media reconciliation, P5-07G retention execution, and P5-07H cross-submission integration audit.
 
 ## Blocked
 
@@ -79,7 +88,8 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 - `docs/IMPLEMENTATION_PLAN.md`
 - `docs/PHASE5_IMPLEMENTATION_SEQUENCE.md`
-- `docs/P5_06F_CROSS_SUBMISSION_INTEGRATION_AUDIT.md`
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
+- `docs/P5_07D1_PROBLEM_LOCATION_CORRECTION_APPLICATION.md`
+- `docs/P5_07D2_NEGATIVE_RECHECK_APPLICATION.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
