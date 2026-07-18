@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07D2 — Durable negative recheck application projection
+P5-07D3 — Remaining Problem Report correction owner audit
 
 ## Current repository state
 
@@ -24,15 +24,16 @@ P5-07D2 — Durable negative recheck application projection
 - P5-07B2 protected application lifecycle read and transition completed in #246.
 - P5-07C Suggest Candidate promotion receipt binding completed in #247.
 - P5-07D1 approved Problem Report practical Location correction application completed in #248.
-- P5-07D2 is active in #249.
+- P5-07D2 durable negative recheck application projection completed in #249.
+- P5-07D3 is active in #250.
 
 ## Latest verified main
 
 ```text
-ab43802ad14eea140ca3b3acf3ba42cf945ffd2e
+1fbda9429bea8c69000927b35491136fc60902e4
 ```
 
-The final P5-07D1 implementation head passed:
+The final P5-07D2 implementation head passed:
 
 - Foundation validation;
 - Migration drift;
@@ -44,35 +45,38 @@ Foundation validation included formatting, lint, Astro and TypeScript checks, ru
 ## Active pull request
 
 ```text
-#249 — P5-07D2: project durable negative recheck application signals
+#250 — P5-07D3: audit remaining Problem Report correction owners
 ```
 
 ## Current boundary
 
-P5-07D2 verifies the existing durable priority-recheck chain rather than creating a duplicate work-item table.
+P5-07D3 is an executable ownership audit. It fixes separate canonical boundaries for correction classes excluded from P5-07D1 without adding a mutation.
 
 It may add:
 
-- exact application, Submission event, Evidence, Claim, and resolving Verification Event validation;
-- active or resolved priority-signal projection;
-- reuse of protected reconfirmation queue priority semantics;
-- bounded protected read authorization and API;
-- focused tests, runtime checks, and documentation.
+- an explicit owner matrix for instructions, Claim Asset sets, Location identity, and generic-other handoffs;
+- executable checks that prevent unsupported Problem application writes;
+- a fixed P5-07D4 handoff for guarded Acceptance Claim `howToPay` correction;
+- project-status and boundary documentation.
 
 It must not:
 
-- create a second recheck task or queue table;
-- update Claim status, visibility, or `nextReviewAt`;
-- mutate Evidence or Submission state;
+- update Acceptance Claims, Claim Assets, Entities, Locations, Evidence, or Media;
+- create a generic canonical patch mechanism;
+- reuse the Business Claim field-application receipt for Problem Reports;
+- add a database migration;
 - transition common application state;
-- expose private Evidence, reviewer notes, contacts, or Submission payloads;
 - activate export or release;
 - execute retention deletion;
 - claim configured deployment.
 
 ## Next
 
-After P5-07D2, continue P5-07D with separately owned correction classes only where a safe canonical transaction exists. Asset, network, payment-instruction, country, coordinate, and generic-other corrections must not be forced through the practical Location correction owner.
+Implement P5-07D4 as a separately authorized, exact-state, replay-safe Acceptance Claim instruction correction transaction for approved `wrong_instructions` handoffs.
+
+P5-07D4 must derive `howToPay` only from the retained approved Submission decision chain, create private user-submission source provenance, update only the exact Claim instruction field, bind a durable receipt to the common application lifecycle, and leave publication pending.
+
+Asset/network set replacement, Location country/coordinate identity correction, and generic-other classification remain separate later owners.
 
 The later sequence remains P5-07E Business Claim payment/provenance/order completion, P5-07F Photos/Media reconciliation, P5-07G retention execution, and P5-07H cross-submission integration audit.
 
@@ -91,5 +95,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/P5_07D1_PROBLEM_LOCATION_CORRECTION_APPLICATION.md`
 - `docs/P5_07D2_NEGATIVE_RECHECK_APPLICATION.md`
+- `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
