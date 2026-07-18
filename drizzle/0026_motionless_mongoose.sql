@@ -1,0 +1,1 @@
+ALTER TYPE "public"."submission_application_receipt_kind" ADD VALUE 'location_profile_correction_decision' BEFORE 'media_review_decision';

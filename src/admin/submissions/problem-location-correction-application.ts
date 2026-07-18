@@ -109,6 +109,7 @@ export interface ProblemLocationCorrectionApplicationState {
   correctionDecision: {
     requestId: string;
     locationId: string;
+    expectedLocationUpdatedAt: string;
     changedFieldPaths: string[];
     decidedAt: string;
   } | null;
@@ -278,7 +279,12 @@ function validateAndPlan(
     location === null ||
     location.locationId !== submission.targetId ||
     location.deletedAt !== null ||
-    location.updatedAt !== request.expectedLocationUpdatedAt
+    (state.correctionDecision === null
+      ? location.updatedAt !== request.expectedLocationUpdatedAt
+      : state.correctionDecision.requestId !== request.requestId ||
+        state.correctionDecision.locationId !== location.locationId ||
+        state.correctionDecision.expectedLocationUpdatedAt !== request.expectedLocationUpdatedAt ||
+        location.updatedAt !== state.correctionDecision.decidedAt)
   ) {
     throw new ProblemLocationCorrectionApplicationError(
       'ineligible',

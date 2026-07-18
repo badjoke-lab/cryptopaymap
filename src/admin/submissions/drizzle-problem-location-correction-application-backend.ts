@@ -77,6 +77,8 @@ export function createDrizzleProblemLocationCorrectionApplicationBackend(
         .select({
           requestId: locationProfileCorrectionDecisions.requestId,
           locationId: locationProfileCorrectionDecisions.locationId,
+          expectedLocationUpdatedAt:
+            locationProfileCorrectionDecisions.expectedLocationUpdatedAt,
           changedFieldPaths: locationProfileCorrectionDecisions.changedFieldPaths,
           decidedAt: locationProfileCorrectionDecisions.decidedAt,
         })
@@ -126,6 +128,8 @@ export function createDrizzleProblemLocationCorrectionApplicationBackend(
             : {
                 requestId: correction.requestId,
                 locationId: correction.locationId,
+                expectedLocationUpdatedAt:
+                  correction.expectedLocationUpdatedAt.toISOString(),
                 changedFieldPaths: correction.changedFieldPaths,
                 decidedAt: correction.decidedAt.toISOString(),
               },
