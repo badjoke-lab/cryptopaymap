@@ -348,7 +348,7 @@ function deriveLifecycle(
 
   const applicationReceipt =
     contract.defaultApplicationStatus === 'committed'
-      ? ({ kind: 'submission_event', ids: [event.eventId] } as const)
+      ? { kind: 'submission_event', ids: [event.eventId] }
       : null;
   return {
     applicationKind: contract.applicationKind,
