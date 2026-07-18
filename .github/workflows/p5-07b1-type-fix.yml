@@ -1,0 +1,69 @@
+name: P5-07B1 type fix
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - synchronize
+      - reopened
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.head_ref == 'p5-07b1-application-registration' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-07b1-application-registration
+          fetch-depth: 0
+      - name: Apply focused type fixes
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          service = Path('src/admin/submissions/application-registration.ts')
+          source = service.read_text()
+          old = "? ({ kind: 'submission_event', ids: [event.eventId] } as const)"
+          new = "? { kind: 'submission_event', ids: [event.eventId] }"
+          if source.count(old) != 1:
+              raise SystemExit('Expected readonly application receipt marker was not found exactly once')
+          service.write_text(source.replace(old, new, 1))
+
+          backend = Path('src/admin/submissions/drizzle-application-registration-backend.ts')
+          source = backend.read_text()
+          old = """  kind: SubmissionApplicationRegistrationRecord['applicationReceipt'] extends infer T
+    ? T extends SubmissionApplicationReceiptReference
+      ? T['kind']
+      : never
+    : never,
+"""
+          new = """  kind: SubmissionApplicationReceiptReference['kind'] | null,
+"""
+          if source.count(old) != 1:
+              raise SystemExit('Expected receipt kind type marker was not found exactly once')
+          backend.write_text(source.replace(old, new, 1))
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Verify focused checks
+        run: |
+          npx biome format --write \
+            src/admin/submissions/application-registration.ts \
+            src/admin/submissions/drizzle-application-registration-backend.ts
+          npm run check
+          npm test -- --run tests/submission-application-registration.test.ts tests/submission-application-registration-api.test.ts
+      - name: Commit fixes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/admin/submissions/application-registration.ts src/admin/submissions/drizzle-application-registration-backend.ts
+          git commit -m "P5-07B1: fix application receipt types"
+          git push origin HEAD:p5-07b1-application-registration
