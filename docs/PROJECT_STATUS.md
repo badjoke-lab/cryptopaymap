@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-18
+**Last verified:** 2026-07-19
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07D5 — Claim Asset set replacement preview
+P5-07D6 — Durable Claim Asset row-selection and complete replacement plan
 
 ## Current repository state
 
@@ -27,49 +27,50 @@ P5-07D5 — Claim Asset set replacement preview
 - P5-07D2 durable negative recheck application projection completed in #249.
 - P5-07D3 remaining correction owner audit completed in #250.
 - P5-07D4 Claim instruction correction application completed in #251.
-- P5-07D5 is active on `p5-07d5-claim-asset-set-preview`.
+- P5-07D5 Claim Asset set replacement preview completed in #252.
+- P5-07D6 is active on `p5-07d6-claim-asset-replacement-plan`.
 
 ## Latest verified main
 
 ```text
-36238aaf18cc327b2f40cb426b08e7d321adc0f1
+4a109b9013eae05b3b26aba2df82b3f4176bc402
 ```
 
-The final P5-07D4 implementation head passed:
+The final P5-07D5 implementation head passed:
 
 - Foundation validation;
 - Migration drift;
 - Staging review validation;
 - representative review screenshots.
 
-Foundation validation included formatting, lint, Astro and TypeScript checks, the D4 runtime audit, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
+Foundation validation included formatting, lint, Astro and TypeScript checks, the D5 runtime audit, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
 
 ## Active pull request
 
 ```text
-p5-07d5-claim-asset-set-preview — Claim Asset set replacement preview
+p5-07d6-claim-asset-replacement-plan — Durable Claim Asset replacement plan
 ```
 
 ## Current boundary
 
-P5-07D5 is a protected read-only planning boundary for exact approved `wrong_asset` and `wrong_network` handoffs.
+P5-07D6 records one private, replayable complete-set replacement plan for an exact approved `wrong_asset` or `wrong_network` application.
 
 It may add:
 
-- strict application, Submission, decision-event, projection, Claim, and Claim Asset set validation;
-- exact active Asset, Network, and Payment Method registry projection;
-- reuse of existing Claim Asset publication prerequisites;
-- stable complete-set hashes;
-- deterministic single-row replacement proposal;
-- explicit `needs_selection` for multi-row Claims;
-- exact-subject read authorization and private/no-store GET API;
+- strict automatic-single-row and reviewed-multi-row selection requests;
+- exact application, Claim, decision-event, and current-set expectations;
+- server-derived deterministic replacement rows;
+- complete private current and proposed sets with stable hashes;
+- an application-scoped advisory transaction guard;
+- one durable private Submission plan event;
+- exact replay and changed-content conflict handling;
+- separately authorized private/no-store POST API;
 - focused tests, runtime audit, and boundary documentation.
 
 It must not:
 
 - mutate Claim Assets or any canonical row;
-- guess a target row in a multi-row Claim;
-- accept a client-selected replacement tuple;
+- accept a client-selected replacement tuple or deletion;
 - create Source Records, provenance, Verification Events, or application receipts;
 - transition common application state;
 - add a database migration;
@@ -79,11 +80,11 @@ It must not:
 
 ## Next
 
-Implement P5-07D6 as the durable row-selection and complete replacement-plan boundary.
+Implement P5-07D7 as the exact atomic complete Claim Asset set replacement owner for one durable D6 plan.
 
-D6 must preserve the exact current set hash, selected current row, deterministic replacement row, complete proposed set hash, registry identities, payment method, optional contract, primary flag, notes, Claim version, application version, and source decision event. It must support the automatic single-row plan and an explicitly reviewed multi-row selection without allowing arbitrary client-selected tuples.
+D7 must guard the application, plan event, Claim version, complete current set, registries, replacement row, and proposed hash; create private source and row-level provenance; replace the set atomically; add one corrected Verification Event and durable application receipt; and support exact replay plus post-canonical lifecycle recovery. Publication remains pending.
 
-Canonical Claim Asset set replacement remains deferred until the durable plan is fixed. Location country/coordinate identity correction and generic-other classification remain separate later boundaries.
+Location country/coordinate identity correction and generic-other classification remain separate later boundaries.
 
 The later sequence remains P5-07E Business Claim payment/provenance/order completion, P5-07F Photos/Media reconciliation, P5-07G retention execution, and P5-07H cross-submission integration audit.
 
@@ -105,5 +106,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
 - `docs/P5_07D5_CLAIM_ASSET_SET_PREVIEW.md`
+- `docs/P5_07D6_CLAIM_ASSET_REPLACEMENT_PLAN.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
