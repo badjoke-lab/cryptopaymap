@@ -88,7 +88,10 @@ export const problemClaimAssetSetPreviewSchema = z
     issues: z.array(issueSchema).max(100),
     selectedCurrentRowId: z.uuid().nullable(),
     currentSetHash: z.string().regex(/^[a-f0-9]{64}$/),
-    proposedSetHash: z.string().regex(/^[a-f0-9]{64}$/).nullable(),
+    proposedSetHash: z
+      .string()
+      .regex(/^[a-f0-9]{64}$/)
+      .nullable(),
     currentSet: z.array(projectedRowSchema).max(50),
     proposedSet: z.array(projectedRowSchema).max(50).nullable(),
   })
@@ -149,7 +152,12 @@ export interface ProblemClaimAssetSetPreviewBackend {
 
 export class ProblemClaimAssetSetPreviewError extends Error {
   constructor(
-    readonly code: 'unauthorized' | 'invalid_request' | 'not_found' | 'ineligible' | 'backend_failure',
+    readonly code:
+      | 'unauthorized'
+      | 'invalid_request'
+      | 'not_found'
+      | 'ineligible'
+      | 'backend_failure',
     message: string,
     options?: ErrorOptions,
   ) {
