@@ -127,9 +127,7 @@ function backend(initial = state()) {
       if (slug === 'usdc') {
         return { id: proposedAssetId, slug: 'usdc', symbol: 'USDC', status: 'active' };
       }
-      return slug === 'btc'
-        ? { id: assetId, slug: 'btc', symbol: 'BTC', status: 'active' }
-        : null;
+      return slug === 'btc' ? { id: assetId, slug: 'btc', symbol: 'BTC', status: 'active' } : null;
     },
     async readNetworkBySlug(slug) {
       return slug === 'bitcoin' ? { id: networkId, slug: 'bitcoin', status: 'active' } : null;
