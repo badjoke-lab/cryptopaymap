@@ -394,10 +394,7 @@ async function buildPayload(
     );
   }
 
-  if (
-    replacementAsset.id === selected.asset.id &&
-    replacementNetwork.id === selected.network.id
-  ) {
+  if (replacementAsset.id === selected.asset.id && replacementNetwork.id === selected.network.id) {
     throw new ProblemClaimAssetReplacementPlanError(
       'no_change',
       'The proposed registry value already matches the selected Claim Asset row.',
@@ -511,12 +508,10 @@ export async function prepareProblemClaimAssetReplacementPlan(
       expectedApplicationUpdatedAt: new Date(payload.expectedApplicationUpdatedAt),
       expectedClaimUpdatedAt: new Date(payload.expectedClaimUpdatedAt),
       expectedCurrentSet: payload.currentSet,
-      proposedAssetId: payload.proposedSet.find(
-        (row) => row.rowId === payload.replacementRowId,
-      )?.asset.id as string,
-      proposedNetworkId: payload.proposedSet.find(
-        (row) => row.rowId === payload.replacementRowId,
-      )?.network.id as string,
+      proposedAssetId: payload.proposedSet.find((row) => row.rowId === payload.replacementRowId)
+        ?.asset.id as string,
+      proposedNetworkId: payload.proposedSet.find((row) => row.rowId === payload.replacementRowId)
+        ?.network.id as string,
       correctionKind: payload.correction.kind,
       actorId: context.actorId,
       actorType: context.actorType,
