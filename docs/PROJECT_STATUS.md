@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07D6 — Durable Claim Asset row-selection and complete replacement plan
+P5-07D7 — Atomic complete Claim Asset set replacement application
 
 ## Current repository state
 
@@ -28,63 +28,65 @@ P5-07D6 — Durable Claim Asset row-selection and complete replacement plan
 - P5-07D3 remaining correction owner audit completed in #250.
 - P5-07D4 Claim instruction correction application completed in #251.
 - P5-07D5 Claim Asset set replacement preview completed in #252.
-- P5-07D6 is active on `p5-07d6-claim-asset-replacement-plan`.
+- P5-07D6 durable Claim Asset replacement plan completed in #253.
+- P5-07D7 is active on `p5-07d7-claim-asset-replacement-application`.
 
 ## Latest verified main
 
 ```text
-4a109b9013eae05b3b26aba2df82b3f4176bc402
+03551cd149e25eaab53faed3cc7f618e86bc83a2
 ```
 
-The final P5-07D5 implementation head passed:
+The final P5-07D6 implementation head passed:
 
 - Foundation validation;
 - Migration drift;
 - Staging review validation;
 - representative review screenshots.
 
-Foundation validation included formatting, lint, Astro and TypeScript checks, the D5 runtime audit, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
+Foundation validation included formatting, lint, Astro and TypeScript checks, the D6 runtime audit, migration-history checks, all unit and component tests, static build, accessibility checks, and generated staging-artifact checks.
 
 ## Active pull request
 
 ```text
-p5-07d6-claim-asset-replacement-plan — Durable Claim Asset replacement plan
+p5-07d7-claim-asset-replacement-application — Atomic complete Claim Asset set replacement
 ```
 
 ## Current boundary
 
-P5-07D6 records one private, replayable complete-set replacement plan for an exact approved `wrong_asset` or `wrong_network` application.
+P5-07D7 consumes one exact durable D6 plan and applies its complete Claim Asset replacement as a guarded canonical transaction.
 
 It may add:
 
-- strict automatic-single-row and reviewed-multi-row selection requests;
-- exact application, Claim, decision-event, and current-set expectations;
-- server-derived deterministic replacement rows;
-- complete private current and proposed sets with stable hashes;
-- an application-scoped advisory transaction guard;
-- one durable private Submission plan event;
-- exact replay and changed-content conflict handling;
+- strict application request and canonical receipt contracts;
+- exact D6 plan, source decision, Claim version, registry, and complete-set guards;
+- selected-row delete plus deterministic replacement-row insert;
+- final complete proposed-set verification inside the transaction;
+- private user-submission Source Record;
+- record-level Claim Asset correction provenance;
+- one corrected Verification Event;
+- one durable Submission application receipt event;
+- common application lifecycle transition to committed/pending;
+- exact replay and post-canonical lifecycle recovery;
 - separately authorized private/no-store POST API;
 - focused tests, runtime audit, and boundary documentation.
 
 It must not:
 
-- mutate Claim Assets or any canonical row;
-- accept a client-selected replacement tuple or deletion;
-- create Source Records, provenance, Verification Events, or application receipts;
-- transition common application state;
-- add a database migration;
+- accept a client-selected replacement tuple, arbitrary deletion, or generic patch;
+- perform independent in-place `asset_id` or `network_id` updates;
+- change Claim status, visibility, route, instructions, confirmation dates, restrictions, or scope;
+- mutate registries, Entity, Location, Evidence, or Media;
 - activate export or release;
 - execute retention deletion;
+- add a database migration;
 - claim configured deployment.
 
 ## Next
 
-Implement P5-07D7 as the exact atomic complete Claim Asset set replacement owner for one durable D6 plan.
+Continue with P5-07E Business Claim payment/provenance/order completion after D7 is merged.
 
-D7 must guard the application, plan event, Claim version, complete current set, registries, replacement row, and proposed hash; create private source and row-level provenance; replace the set atomically; add one corrected Verification Event and durable application receipt; and support exact replay plus post-canonical lifecycle recovery. Publication remains pending.
-
-Location country/coordinate identity correction and generic-other classification remain separate later boundaries.
+Location country/coordinate identity correction and generic-other classification remain separate later boundaries. Public export and release remain controlled by the existing publication lifecycle.
 
 The later sequence remains P5-07E Business Claim payment/provenance/order completion, P5-07F Photos/Media reconciliation, P5-07G retention execution, and P5-07H cross-submission integration audit.
 
@@ -107,5 +109,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
 - `docs/P5_07D5_CLAIM_ASSET_SET_PREVIEW.md`
 - `docs/P5_07D6_CLAIM_ASSET_REPLACEMENT_PLAN.md`
+- `docs/P5_07D7_CLAIM_ASSET_REPLACEMENT_APPLICATION.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
