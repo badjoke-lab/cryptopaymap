@@ -162,8 +162,12 @@ describe('P5-07D5 Claim Asset replacement preview', () => {
 
   it('stops a multiple-row Claim for separately reviewed row selection', async () => {
     const multiple = state();
+    const firstRow = multiple.rows[0];
+    if (firstRow === undefined) {
+      throw new Error('Expected one Claim Asset fixture row.');
+    }
     multiple.rows.push({
-      ...structuredClone(multiple.rows[0]),
+      ...structuredClone(firstRow),
       rowId: '80000000-0000-4000-8000-000000000002',
       isPrimary: false,
       asset: { id: proposedAssetId, slug: 'eth', symbol: 'ETH', status: 'active' },
