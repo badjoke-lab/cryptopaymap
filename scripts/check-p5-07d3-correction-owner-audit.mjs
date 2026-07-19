@@ -58,13 +58,17 @@ const problemApplicationFiles = [
   ...walk('src/admin/submissions'),
   ...walk('functions/admin/api'),
 ].filter((path) => /problem.*application|report-applications/.test(path));
+const claimAssetSetOwner =
+  'src/admin/submissions/drizzle-problem-claim-asset-replacement-application-backend.ts';
 for (const path of problemApplicationFiles) {
   const source = read(path);
-  assert.doesNotMatch(
-    source,
-    /update\(claimAssets\)|delete\(claimAssets\)|insert\(claimAssets\)/,
-    `${path} must not mutate Claim Assets before a dedicated set owner exists.`,
-  );
+  if (path !== claimAssetSetOwner) {
+    assert.doesNotMatch(
+      source,
+      /update\(claimAssets\)|delete\(claimAssets\)|insert\(claimAssets\)/,
+      `${path} must not mutate Claim Assets outside the dedicated set owner.`,
+    );
+  }
   if (!path.endsWith('problem-location-correction-application.ts')) {
     assert.doesNotMatch(
       source,
@@ -73,6 +77,13 @@ for (const path of problemApplicationFiles) {
     );
   }
 }
+
+const claimAssetOwnerSource = read(claimAssetSetOwner);
+assert.match(claimAssetOwnerSource, /pg_advisory_xact_lock/);
+assert.match(claimAssetOwnerSource, /delete\(claimAssets\)/);
+assert.match(claimAssetOwnerSource, /insert\(claimAssets\)/);
+assert.doesNotMatch(claimAssetOwnerSource, /update\(claimAssets\)/);
+assert.match(claimAssetOwnerSource, /problem_claim_assets_replaced/);
 
 const audit = read('docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md');
 assert.match(audit, /P5-07D4/);
