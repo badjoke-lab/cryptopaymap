@@ -164,7 +164,9 @@ class Store
     id: string,
     requestedPlanId?: string,
     correctionEventId?: string,
-  ): Promise<ProblemClaimAssetSetPreviewState | ProblemClaimAssetReplacementApplicationState | null> {
+  ): Promise<
+    ProblemClaimAssetSetPreviewState | ProblemClaimAssetReplacementApplicationState | null
+  > {
     if (id !== applicationId) return null;
     this.preview.application = structuredClone(this.applicationRecord);
     if (requestedPlanId === undefined || correctionEventId === undefined) {
@@ -300,7 +302,8 @@ class Store
 
   corruptPlan() {
     const event = this.planEvents.get(planId);
-    if (event === undefined || event.internalNote === null) throw new Error('Expected a plan event.');
+    if (event === undefined || event.internalNote === null)
+      throw new Error('Expected a plan event.');
     const payload = JSON.parse(event.internalNote) as {
       proposedSet: Array<{ notes: string | null }>;
     };

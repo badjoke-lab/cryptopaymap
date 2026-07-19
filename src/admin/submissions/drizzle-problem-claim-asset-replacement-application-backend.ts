@@ -285,9 +285,7 @@ export function createDrizzleProblemClaimAssetReplacementApplicationBackend(
       const selected = command.expectedCurrentSet.find(
         (row) => row.rowId === command.selectedCurrentRowId,
       );
-      const replacement = command.proposedSet.find(
-        (row) => row.rowId === command.replacementRowId,
-      );
+      const replacement = command.proposedSet.find((row) => row.rowId === command.replacementRowId);
       if (selected === undefined || replacement === undefined) {
         throw new ProblemClaimAssetReplacementApplicationError(
           'ineligible',

@@ -343,7 +343,9 @@ async function validateAndPlan(
   request: ProblemClaimAssetReplacementApplicationRequest,
 ): Promise<ApplicationPlan> {
   const { application, submission, sourceDecisionEvent, planEvent, correctionEvent, claim } = state;
-  const payload = parseProblemClaimAssetReplacementPlanEventPayload(planEvent?.internalNote ?? null);
+  const payload = parseProblemClaimAssetReplacementPlanEventPayload(
+    planEvent?.internalNote ?? null,
+  );
   const correctionReplay = parseProblemClaimAssetReplacementApplicationEventPayload(
     correctionEvent?.internalNote ?? null,
   );
