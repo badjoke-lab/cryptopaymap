@@ -14,7 +14,9 @@ const identity = {
   email: 'operator@example.com',
 };
 
-function context(overrides: { identity?: unknown; subjects?: string; applicationId?: string[] } = {}) {
+function context(
+  overrides: { identity?: unknown; subjects?: string; applicationId?: string[] } = {},
+) {
   return {
     request: new Request(
       `https://example.test/admin/api/problem-applications/${applicationId}/claim-asset-preview`,
@@ -41,7 +43,11 @@ function projection() {
       publicationStatus: 'blocked' as const,
       expectedApplicationUpdatedAt: '2026-07-18T13:00:00.000Z',
     },
-    correction: { reportType: 'wrong_asset' as const, kind: 'asset' as const, proposedSlug: 'usdc' },
+    correction: {
+      reportType: 'wrong_asset' as const,
+      kind: 'asset' as const,
+      proposedSlug: 'usdc',
+    },
     target: {
       claimId,
       claimStatus: 'confirmed' as const,
@@ -68,7 +74,10 @@ describe('P5-07D5 protected Claim Asset replacement preview API', () => {
 
     expect(response.status).toBe(200);
     expect(response.headers.get('cache-control')).toBe('private, no-store');
-    await expect(response.json()).resolves.toMatchObject({ readiness: 'ready', target: { claimId } });
+    await expect(response.json()).resolves.toMatchObject({
+      readiness: 'ready',
+      target: { claimId },
+    });
     expect(readPreview).toHaveBeenCalledWith(
       {
         actorId: identity.actorId,
@@ -108,7 +117,10 @@ describe('P5-07D5 protected Claim Asset replacement preview API', () => {
     ] as const) {
       const response = await createProblemClaimAssetSetPreviewHandler({
         readPreview: vi.fn(async () => {
-          throw new ProblemClaimAssetSetPreviewError(code, 'private registry and Submission detail');
+          throw new ProblemClaimAssetSetPreviewError(
+            code,
+            'private registry and Submission detail',
+          );
         }),
       })(context());
       expect(response.status).toBe(status);
