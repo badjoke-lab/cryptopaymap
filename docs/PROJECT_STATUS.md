@@ -29,7 +29,7 @@ P5-07D7 — Atomic complete Claim Asset set replacement application
 - P5-07D4 Claim instruction correction application completed in #251.
 - P5-07D5 Claim Asset set replacement preview completed in #252.
 - P5-07D6 durable Claim Asset replacement plan completed in #253.
-- P5-07D7 is active on `p5-07d7-claim-asset-replacement-application`.
+- P5-07D7 is active in #254.
 
 ## Latest verified main
 
@@ -49,7 +49,7 @@ Foundation validation included formatting, lint, Astro and TypeScript checks, th
 ## Active pull request
 
 ```text
-p5-07d7-claim-asset-replacement-application — Atomic complete Claim Asset set replacement
+#254 — P5-07D7 atomic complete Claim Asset set replacement
 ```
 
 ## Current boundary
