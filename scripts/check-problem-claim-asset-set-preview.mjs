@@ -21,9 +21,7 @@ for (const required of [
 assert.doesNotMatch(service, /commit|update\(|delete\(|insert\(/);
 assert.doesNotMatch(service, /reviewerNote|privateEvidenceUrl|contact/);
 
-const backend = read(
-  'src/admin/submissions/drizzle-problem-claim-asset-set-preview-backend.ts',
-);
+const backend = read('src/admin/submissions/drizzle-problem-claim-asset-set-preview-backend.ts');
 for (const table of ['claimAssets', 'assets', 'networks', 'paymentMethods']) {
   assert.ok(backend.includes(table), `Missing D5 read source: ${table}`);
 }
@@ -36,9 +34,7 @@ const authorization = read(
 assert.match(authorization, /CPM_ADMIN_PROBLEM_CLAIM_ASSET_PREVIEW_SUBJECTS/);
 assert.match(authorization, /submission:problem-claim-asset-preview:read/);
 
-const api = read(
-  'functions/admin/api/problem-applications/[applicationId]/claim-asset-preview.ts',
-);
+const api = read('functions/admin/api/problem-applications/[applicationId]/claim-asset-preview.ts');
 assert.match(api, /Cache-Control': 'private, no-store'/);
 assert.doesNotMatch(api, /onRequestPost|onRequestPut|onRequestDelete/);
 
