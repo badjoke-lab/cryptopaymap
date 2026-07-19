@@ -48,9 +48,7 @@ const authorization = read(
 assert.match(authorization, /CPM_ADMIN_PROBLEM_CLAIM_ASSET_PLAN_SUBJECTS/);
 assert.match(authorization, /submission:problem-claim-asset-plan:prepare/);
 
-const api = read(
-  'functions/admin/api/problem-applications/[applicationId]/plan-claim-assets.ts',
-);
+const api = read('functions/admin/api/problem-applications/[applicationId]/plan-claim-assets.ts');
 assert.match(api, /onRequestPost/);
 assert.match(api, /Cache-Control': 'private, no-store'/);
 assert.doesNotMatch(api, /onRequestGet|onRequestPut|onRequestDelete/);
