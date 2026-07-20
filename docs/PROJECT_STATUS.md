@@ -19,7 +19,7 @@ P5-07E1 — Business Claim application-order correction
 - P5-07C Suggest Candidate receipt binding completed in #247.
 - P5-07D report correction and Claim Asset work completed through #248–#254.
 - P5-07D7 atomic complete Claim Asset replacement completed in #254.
-- P5-07E1 is active on `p5-07e1-business-claim-application-order`.
+- P5-07E1 is active in PR #255 on `p5-07e1-business-claim-application-order`.
 
 ## Latest verified main
 
@@ -32,7 +32,7 @@ The final P5-07D7 head passed all four normal workflow groups.
 ## Active pull request
 
 ```text
-p5-07e1-business-claim-application-order — Business Claim application ordering
+#255 — P5-07E1 Business Claim application ordering
 ```
 
 ## Current boundary
