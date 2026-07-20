@@ -25,7 +25,7 @@ P5-07E2 — Protected Business Claim payment-draft preview
 - P5-07D6 durable Claim Asset replacement plan completed in #253.
 - P5-07D7 atomic complete Claim Asset replacement completed in #254.
 - P5-07E1 Business Claim application-order correction completed in #255.
-- P5-07E2 is active on `p5-07e2-business-claim-payment-preview`.
+- P5-07E2 is active in PR #256 on `p5-07e2-business-claim-payment-preview`.
 
 ## Latest verified main
 
@@ -33,12 +33,12 @@ P5-07E2 — Protected Business Claim payment-draft preview
 482a99252019be34e11f1fb2ef6a0499d481cb4e
 ```
 
-The final P5-07D7 head passed all four normal workflow groups.
+The final P5-07E1 head passed all four normal workflow groups.
 
 ## Active pull request
 
 ```text
-p5-07e2-business-claim-payment-preview — Business Claim payment preview
+#256 — P5-07E2 Business Claim payment preview
 ```
 
 ## Current boundary
