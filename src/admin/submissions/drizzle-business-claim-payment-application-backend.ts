@@ -159,6 +159,7 @@ function replayReceipt(
     JSON.stringify(payload.insertedClaimAssetRowIds) !== JSON.stringify(insertedClaimAssetRowIds) ||
     JSON.stringify(payload.alreadyPresentClaimAssetRowIds) !==
       JSON.stringify(alreadyPresentClaimAssetRowIds) ||
+    JSON.stringify(payload.finalClaimAssetSets) !== JSON.stringify(command.finalClaimAssetSets) ||
     JSON.stringify(payload.verificationEvents) !== JSON.stringify(verificationReferences)
   ) {
     throw new BusinessClaimPaymentApplicationError(
@@ -464,6 +465,7 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
         createdClaimIds,
         insertedClaimAssetRowIds,
         alreadyPresentClaimAssetRowIds,
+        finalClaimAssetSets: command.finalClaimAssetSets,
         verificationEvents: verificationReferences,
         expectedApplicationUpdatedAt: command.expectedApplicationUpdatedAt.toISOString(),
         expectedPlanCreatedAt: command.planCreatedAt.toISOString(),
@@ -803,6 +805,12 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
           item.operation === 'insert_claim_asset'
             ? (item.plannedClaimAssetRowId as string)
             : (item.existingClaimAssetRowId as string);
+        const insertedRowGuard =
+          item.operation === 'insert_claim_asset'
+            ? sql`and ${claimAssets.notes} is null
+                and ${claimAssets.createdAt} = ${command.appliedAt}
+                and ${claimAssets.updatedAt} = ${command.appliedAt}`
+            : sql``;
         statements.push(
           database.select({
             guard: sql<number>`1 / case when exists (
@@ -814,8 +822,23 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
                 and ${claimAssets.paymentMethodId} = ${item.paymentMethod.id}
                 and ${claimAssets.contractAddress} is not distinct from ${item.proposal.contractAddress}
                 and ${claimAssets.isPrimary} = ${item.isPrimary}
-                and ${claimAssets.notes} is null
+                ${insertedRowGuard}
             ) then 1 else 0 end`,
+          }),
+        );
+      }
+      for (const finalSet of command.finalClaimAssetSets) {
+        const expectedRowIds = JSON.stringify(finalSet.rowIds);
+        statements.push(
+          database.select({
+            guard: sql<number>`1 / case when (
+              select coalesce(
+                jsonb_agg(final_row.id::text order by final_row.id),
+                '[]'::jsonb
+              )
+              from ${claimAssets} final_row
+              where final_row.claim_id = ${finalSet.claimId}
+            ) = cast(${expectedRowIds} as jsonb) then 1 else 0 end`,
           }),
         );
       }

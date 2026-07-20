@@ -6,6 +6,7 @@ import {
   parseBusinessClaimPaymentApplicationEventPayload,
   type BusinessClaimPaymentApplicationEventPayload,
   type BusinessClaimPaymentApplicationReceipt,
+  type BusinessClaimPaymentFinalClaimAssetSet,
   type BusinessClaimPaymentApplicationRequest,
   type BusinessClaimPaymentSourcePayload,
   type BusinessClaimPaymentVerificationReference,
@@ -175,6 +176,7 @@ export interface BusinessClaimPaymentApplicationCommitCommand {
   plannedClaims: BusinessClaimPaymentPlannedClaim[];
   expectedExistingClaims: BusinessClaimPaymentExpectedClaim[];
   items: BusinessClaimPaymentPlanItem[];
+  finalClaimAssetSets: BusinessClaimPaymentFinalClaimAssetSet[];
   sourceRecord: BusinessClaimPaymentSourceRecordCommand;
   verificationEvents: BusinessClaimPaymentVerificationCommand[];
   actorId: string;
@@ -309,6 +311,63 @@ function itemRowId(item: BusinessClaimPaymentPlanItem): string {
     );
   }
   return id;
+}
+
+function deriveFinalClaimAssetSets(
+  payload: BusinessClaimPaymentPlanEventPayload,
+  expectedExistingClaims: BusinessClaimPaymentExpectedClaim[],
+): BusinessClaimPaymentFinalClaimAssetSet[] {
+  const rowIdsByClaim = new Map<string, Set<string>>();
+  for (const claim of payload.plannedClaims) {
+    rowIdsByClaim.set(claim.claimId, new Set());
+  }
+  for (const claim of expectedExistingClaims) {
+    rowIdsByClaim.set(claim.claimId, new Set(claim.expectedRows.map((row) => row.rowId)));
+  }
+  for (const item of payload.items) {
+    const rowIds = rowIdsByClaim.get(item.targetClaimId) ?? new Set<string>();
+    rowIds.add(itemRowId(item));
+    rowIdsByClaim.set(item.targetClaimId, rowIds);
+  }
+  return [...rowIdsByClaim.entries()]
+    .map(([claimId, rowIds]) => ({ claimId, rowIds: [...rowIds].sort() }))
+    .sort((left, right) => left.claimId.localeCompare(right.claimId));
+}
+
+function validateFinalClaimAssetSets(
+  payload: BusinessClaimPaymentPlanEventPayload,
+  finalSets: BusinessClaimPaymentFinalClaimAssetSet[],
+): void {
+  const affectedClaimIds = [...new Set(payload.items.map((item) => item.targetClaimId))].sort();
+  const finalClaimIds = finalSets.map((item) => item.claimId).sort();
+  if (JSON.stringify(affectedClaimIds) !== JSON.stringify(finalClaimIds)) {
+    throw new BusinessClaimPaymentApplicationError(
+      'conflict',
+      'The canonical receipt does not bind every affected Claim to one final payment set.',
+    );
+  }
+  const setByClaim = new Map(finalSets.map((item) => [item.claimId, new Set(item.rowIds)]));
+  for (const item of payload.items) {
+    if (!setByClaim.get(item.targetClaimId)?.has(itemRowId(item))) {
+      throw new BusinessClaimPaymentApplicationError(
+        'conflict',
+        'The canonical receipt omits a planned Claim Asset row.',
+      );
+    }
+  }
+  for (const planned of payload.plannedClaims) {
+    const plannedIds = payload.items
+      .filter((item) => item.targetClaimId === planned.claimId)
+      .map(itemRowId)
+      .sort();
+    const finalIds = [...(setByClaim.get(planned.claimId) ?? new Set<string>())].sort();
+    if (JSON.stringify(plannedIds) !== JSON.stringify(finalIds)) {
+      throw new BusinessClaimPaymentApplicationError(
+        'conflict',
+        'A new candidate Claim receipt contains an unexpected Claim Asset row.',
+      );
+    }
+  }
 }
 
 function exactClaim(
@@ -748,7 +807,23 @@ async function verifyCanonicalReplayState(
   }
   for (const guard of execution.payload.existingClaims) {
     const claim = exactClaim(state, guard.claimId);
-    if (claim === null || claim.deletedAt !== null || claim.updatedAt !== appliedAt) {
+    const claimItems = execution.payload.items.filter(
+      (item) => item.targetClaimId === guard.claimId,
+    );
+    if (
+      claim === null ||
+      claim.deletedAt !== null ||
+      !['candidate', 'confirmed', 'stale'].includes(claim.claimStatus) ||
+      claim.entityId !== execution.payload.target.entityId ||
+      claim.locationId !== execution.payload.target.locationId ||
+      claim.updatedAt !== appliedAt ||
+      claimItems.some(
+        (item) =>
+          item.targetKind !== 'existing_claim' ||
+          item.proposal.routeType !== claim.routeType ||
+          (item.processor?.id ?? null) !== claim.processorId,
+      )
+    ) {
       throw new BusinessClaimPaymentApplicationError(
         'conflict',
         'An affected existing Claim does not match the canonical payment receipt.',
@@ -765,13 +840,23 @@ async function verifyCanonicalReplayState(
       row.paymentMethodId !== item.paymentMethod.id ||
       row.contractAddress !== item.proposal.contractAddress ||
       row.isPrimary !== item.isPrimary ||
-      row.notes !== null ||
       (item.operation === 'insert_claim_asset' &&
-        (row.createdAt !== appliedAt || row.updatedAt !== appliedAt))
+        (row.notes !== null || row.createdAt !== appliedAt || row.updatedAt !== appliedAt))
     ) {
       throw new BusinessClaimPaymentApplicationError(
         'conflict',
         'A canonical Claim Asset row does not match the exact durable plan.',
+      );
+    }
+  }
+  for (const finalSet of eventPayload.finalClaimAssetSets) {
+    const actualRowIds = rowsForClaim(state, finalSet.claimId)
+      .map((row) => row.rowId)
+      .sort();
+    if (JSON.stringify(actualRowIds) !== JSON.stringify(finalSet.rowIds)) {
+      throw new BusinessClaimPaymentApplicationError(
+        'conflict',
+        'A canonical Claim contains an unexpected or missing Claim Asset row.',
       );
     }
   }
@@ -1011,6 +1096,13 @@ export async function applyBusinessClaimPaymentApplication(
     })),
   );
   const sourceContentHash = await sha256(execution.sourcePayload);
+  const eventPayload = parseBusinessClaimPaymentApplicationEventPayload(
+    state.applicationEvent?.internalNote ?? null,
+  );
+  const finalClaimAssetSets =
+    eventPayload?.finalClaimAssetSets ??
+    deriveFinalClaimAssetSets(execution.payload, execution.expectedExistingClaims);
+  validateFinalClaimAssetSets(execution.payload, finalClaimAssetSets);
   const requestFingerprint = await sha256({
     schemaVersion: 'business-claim-payment-application-command-v1',
     request,
@@ -1020,12 +1112,9 @@ export async function applyBusinessClaimPaymentApplication(
     sourceId: sourceIdResult.data,
     sourceRecordId,
     plan: execution.payload,
+    finalClaimAssetSets,
     verificationEvents,
   });
-
-  const eventPayload = parseBusinessClaimPaymentApplicationEventPayload(
-    state.applicationEvent?.internalNote ?? null,
-  );
   if (state.applicationEvent !== null) {
     if (
       eventPayload === null ||
@@ -1098,6 +1187,7 @@ export async function applyBusinessClaimPaymentApplication(
         plannedClaims: execution.payload.plannedClaims,
         expectedExistingClaims: execution.expectedExistingClaims,
         items: execution.payload.items,
+        finalClaimAssetSets,
         sourceRecord: {
           id: sourceRecordId,
           sourceId: sourceIdResult.data,

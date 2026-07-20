@@ -36,6 +36,7 @@ requireMarkers(
     'business-claim-payment-source-v1',
     'already_applied',
     'expectedDraftSetHash',
+    'finalClaimAssetSets',
   ],
   'E4 contract',
 );
@@ -49,6 +50,8 @@ requireMarkers(
     'exactly one primary row',
     'final existing Claim payment set would contain multiple primary rows',
     'verifyCanonicalReplayState',
+    'deriveFinalClaimAssetSets',
+    'unexpected or missing Claim Asset row',
     'transitionSubmissionApplicationLifecycle',
     'submission:business-claim-payments:apply',
     'business_claim_payments_applied',

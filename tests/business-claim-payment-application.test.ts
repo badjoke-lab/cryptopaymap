@@ -136,7 +136,7 @@ function row(
     paymentMethodId: methodId,
     contractAddress: null,
     isPrimary,
-    notes: null,
+    notes: 'Existing row note.',
     createdAt,
     updatedAt: createdAt,
   };
@@ -492,6 +492,7 @@ class Store implements BusinessClaimPaymentApplicationBackend {
         .filter((item) => item.operation === 'already_present')
         .map((item) => item.existingClaimAssetRowId as string)
         .sort(),
+      finalClaimAssetSets: command.finalClaimAssetSets,
       verificationEvents: command.verificationEvents
         .map((item) => ({ claimId: item.claimId, verificationEventId: item.eventId }))
         .sort((left, right) => left.claimId.localeCompare(right.claimId)),
@@ -608,6 +609,7 @@ describe('P5-07E4 Business Claim payment application', () => {
       alreadyPresentClaimAssetRowIds: [existingRowId],
     });
     expect(store.state.rows).toHaveLength(1);
+    expect(store.state.rows[0]?.notes).toBe('Existing row note.');
     expect(store.state.provenanceLinks).toContainEqual(
       expect.objectContaining({
         subjectType: 'claim_asset',
@@ -644,6 +646,43 @@ describe('P5-07E4 Business Claim payment application', () => {
     expect(recovered.state).toBe('committed');
     expect(store.canonicalCommits).toBe(1);
     expect(store.state.application.applicationStatus).toBe('committed');
+  });
+
+  it('rejects lifecycle recovery when an unexpected Claim Asset row appears', async () => {
+    const payload = await existingPlan('insert_claim_asset');
+    const store = new Store(baseState(payload, [existingClaim()], []));
+    store.failLifecycleOnce = true;
+    await expect(
+      applyBusinessClaimPaymentApplication(
+        context,
+        store,
+        applicationId,
+        sourceId,
+        request(),
+        appliedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'backend_failure' });
+    store.state.rows.push({
+      ...row(
+        'd0000000-0000-4000-8000-000000000001',
+        existingClaimId,
+        secondAssetId,
+        false,
+        appliedAt.toISOString(),
+      ),
+      notes: null,
+    });
+    await expect(
+      applyBusinessClaimPaymentApplication(
+        context,
+        store,
+        applicationId,
+        sourceId,
+        request(),
+        appliedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'conflict' });
+    expect(store.canonicalCommits).toBe(1);
   });
 
   it('fails closed when a planned candidate Claim has multiple primary rows', async () => {

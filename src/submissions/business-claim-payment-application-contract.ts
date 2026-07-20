@@ -57,6 +57,22 @@ export const businessClaimPaymentVerificationReferenceSchema = z
   .object({ claimId: z.uuid(), verificationEventId: z.uuid() })
   .strict();
 
+export const businessClaimPaymentFinalClaimAssetSetSchema = z
+  .object({
+    claimId: z.uuid(),
+    rowIds: z.array(z.uuid()).min(1).max(100),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (new Set(value.rowIds).size !== value.rowIds.length) {
+      context.addIssue({
+        code: 'custom',
+        path: ['rowIds'],
+        message: 'Final Claim Asset row IDs must be unique.',
+      });
+    }
+  });
+
 export const businessClaimPaymentApplicationEventPayloadSchema = z
   .object({
     schemaVersion: z.literal('business-claim-payment-application-event-v1'),
@@ -78,6 +94,7 @@ export const businessClaimPaymentApplicationEventPayloadSchema = z
     createdClaimIds: z.array(z.uuid()).max(20),
     insertedClaimAssetRowIds: z.array(z.uuid()).max(20),
     alreadyPresentClaimAssetRowIds: z.array(z.uuid()).max(20),
+    finalClaimAssetSets: z.array(businessClaimPaymentFinalClaimAssetSetSchema).min(1).max(20),
     verificationEvents: z.array(businessClaimPaymentVerificationReferenceSchema).min(1).max(20),
     expectedApplicationUpdatedAt: timestampSchema,
     expectedPlanCreatedAt: timestampSchema,
@@ -93,6 +110,18 @@ export const businessClaimPaymentApplicationEventPayloadSchema = z
       if (new Set(values).size !== values.length) {
         context.addIssue({ code: 'custom', path: [key], message: `${key} must be unique.` });
       }
+    }
+    const finalClaimIds = payload.finalClaimAssetSets.map((item) => item.claimId);
+    const finalRowIds = payload.finalClaimAssetSets.flatMap((item) => item.rowIds);
+    if (
+      new Set(finalClaimIds).size !== finalClaimIds.length ||
+      new Set(finalRowIds).size !== finalRowIds.length
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['finalClaimAssetSets'],
+        message: 'Final Claim and Claim Asset row IDs must be globally unique.',
+      });
     }
     const verificationIds = payload.verificationEvents.map((item) => item.verificationEventId);
     const verificationClaimIds = payload.verificationEvents.map((item) => item.claimId);
@@ -136,6 +165,9 @@ export type BusinessClaimPaymentSourcePayload = z.infer<
 >;
 export type BusinessClaimPaymentVerificationReference = z.infer<
   typeof businessClaimPaymentVerificationReferenceSchema
+>;
+export type BusinessClaimPaymentFinalClaimAssetSet = z.infer<
+  typeof businessClaimPaymentFinalClaimAssetSetSchema
 >;
 export type BusinessClaimPaymentApplicationEventPayload = z.infer<
   typeof businessClaimPaymentApplicationEventPayloadSchema
