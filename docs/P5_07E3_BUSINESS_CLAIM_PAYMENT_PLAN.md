@@ -1,7 +1,7 @@
 # P5-07E3 Business Claim payment plan
 
 **Implementation item:** P5-07E3  
-**Status:** Active  
+**Status:** Completed in #257  
 **Last updated:** 2026-07-20
 
 ## Purpose
