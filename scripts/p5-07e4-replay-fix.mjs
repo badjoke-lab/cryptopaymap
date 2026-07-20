@@ -8,7 +8,196 @@ function replaceOnce(path, oldText, newText, label) {
   writeFileSync(path, source);
 }
 
+const contractPath = 'src/submissions/business-claim-payment-application-contract.ts';
+replaceOnce(
+  contractPath,
+  `export const businessClaimPaymentVerificationReferenceSchema = z
+  .object({ claimId: z.uuid(), verificationEventId: z.uuid() })
+  .strict();
+
+export const businessClaimPaymentApplicationEventPayloadSchema = z`,
+  `export const businessClaimPaymentVerificationReferenceSchema = z
+  .object({ claimId: z.uuid(), verificationEventId: z.uuid() })
+  .strict();
+
+export const businessClaimPaymentFinalClaimAssetSetSchema = z
+  .object({
+    claimId: z.uuid(),
+    rowIds: z.array(z.uuid()).min(1).max(100),
+  })
+  .strict()
+  .superRefine((value, context) => {
+    if (new Set(value.rowIds).size !== value.rowIds.length) {
+      context.addIssue({
+        code: 'custom',
+        path: ['rowIds'],
+        message: 'Final Claim Asset row IDs must be unique.',
+      });
+    }
+  });
+
+export const businessClaimPaymentApplicationEventPayloadSchema = z`,
+  'final Claim Asset set schema',
+);
+replaceOnce(
+  contractPath,
+  `    alreadyPresentClaimAssetRowIds: z.array(z.uuid()).max(20),
+    verificationEvents: z.array(businessClaimPaymentVerificationReferenceSchema).min(1).max(20),`,
+  `    alreadyPresentClaimAssetRowIds: z.array(z.uuid()).max(20),
+    finalClaimAssetSets: z.array(businessClaimPaymentFinalClaimAssetSetSchema).min(1).max(20),
+    verificationEvents: z.array(businessClaimPaymentVerificationReferenceSchema).min(1).max(20),`,
+  'event final Claim Asset sets',
+);
+replaceOnce(
+  contractPath,
+  `    const verificationIds = payload.verificationEvents.map((item) => item.verificationEventId);`,
+  `    const finalClaimIds = payload.finalClaimAssetSets.map((item) => item.claimId);
+    const finalRowIds = payload.finalClaimAssetSets.flatMap((item) => item.rowIds);
+    if (
+      new Set(finalClaimIds).size !== finalClaimIds.length ||
+      new Set(finalRowIds).size !== finalRowIds.length
+    ) {
+      context.addIssue({
+        code: 'custom',
+        path: ['finalClaimAssetSets'],
+        message: 'Final Claim and Claim Asset row IDs must be globally unique.',
+      });
+    }
+    const verificationIds = payload.verificationEvents.map((item) => item.verificationEventId);`,
+  'event final set uniqueness',
+);
+replaceOnce(
+  contractPath,
+  `export type BusinessClaimPaymentVerificationReference = z.infer<
+  typeof businessClaimPaymentVerificationReferenceSchema
+>;
+export type BusinessClaimPaymentApplicationEventPayload = z.infer<`,
+  `export type BusinessClaimPaymentVerificationReference = z.infer<
+  typeof businessClaimPaymentVerificationReferenceSchema
+>;
+export type BusinessClaimPaymentFinalClaimAssetSet = z.infer<
+  typeof businessClaimPaymentFinalClaimAssetSetSchema
+>;
+export type BusinessClaimPaymentApplicationEventPayload = z.infer<`,
+  'final Claim Asset set type',
+);
+
 const servicePath = 'src/admin/submissions/business-claim-payment-application.ts';
+replaceOnce(
+  servicePath,
+  `  type BusinessClaimPaymentApplicationEventPayload,
+  type BusinessClaimPaymentApplicationReceipt,`,
+  `  type BusinessClaimPaymentApplicationEventPayload,
+  type BusinessClaimPaymentApplicationReceipt,
+  type BusinessClaimPaymentFinalClaimAssetSet,`,
+  'service final set import',
+);
+replaceOnce(
+  servicePath,
+  `  expectedExistingClaims: BusinessClaimPaymentExpectedClaim[];
+  items: BusinessClaimPaymentPlanItem[];
+  sourceRecord: BusinessClaimPaymentSourceRecordCommand;`,
+  `  expectedExistingClaims: BusinessClaimPaymentExpectedClaim[];
+  items: BusinessClaimPaymentPlanItem[];
+  finalClaimAssetSets: BusinessClaimPaymentFinalClaimAssetSet[];
+  sourceRecord: BusinessClaimPaymentSourceRecordCommand;`,
+  'commit command final sets',
+);
+replaceOnce(
+  servicePath,
+  `function exactClaim(
+  state: BusinessClaimPaymentApplicationState,`,
+  `function deriveFinalClaimAssetSets(
+  payload: BusinessClaimPaymentPlanEventPayload,
+  expectedExistingClaims: BusinessClaimPaymentExpectedClaim[],
+): BusinessClaimPaymentFinalClaimAssetSet[] {
+  const rowIdsByClaim = new Map<string, Set<string>>();
+  for (const claim of payload.plannedClaims) {
+    rowIdsByClaim.set(claim.claimId, new Set());
+  }
+  for (const claim of expectedExistingClaims) {
+    rowIdsByClaim.set(claim.claimId, new Set(claim.expectedRows.map((row) => row.rowId)));
+  }
+  for (const item of payload.items) {
+    const rowIds = rowIdsByClaim.get(item.targetClaimId) ?? new Set<string>();
+    rowIds.add(itemRowId(item));
+    rowIdsByClaim.set(item.targetClaimId, rowIds);
+  }
+  return [...rowIdsByClaim.entries()]
+    .map(([claimId, rowIds]) => ({ claimId, rowIds: [...rowIds].sort() }))
+    .sort((left, right) => left.claimId.localeCompare(right.claimId));
+}
+
+function validateFinalClaimAssetSets(
+  payload: BusinessClaimPaymentPlanEventPayload,
+  finalSets: BusinessClaimPaymentFinalClaimAssetSet[],
+): void {
+  const affectedClaimIds = [...new Set(payload.items.map((item) => item.targetClaimId))].sort();
+  const finalClaimIds = finalSets.map((item) => item.claimId).sort();
+  if (JSON.stringify(affectedClaimIds) !== JSON.stringify(finalClaimIds)) {
+    throw new BusinessClaimPaymentApplicationError(
+      'conflict',
+      'The canonical receipt does not bind every affected Claim to one final payment set.',
+    );
+  }
+  const setByClaim = new Map(finalSets.map((item) => [item.claimId, new Set(item.rowIds)]));
+  for (const item of payload.items) {
+    if (!setByClaim.get(item.targetClaimId)?.has(itemRowId(item))) {
+      throw new BusinessClaimPaymentApplicationError(
+        'conflict',
+        'The canonical receipt omits a planned Claim Asset row.',
+      );
+    }
+  }
+  for (const planned of payload.plannedClaims) {
+    const plannedIds = payload.items
+      .filter((item) => item.targetClaimId === planned.claimId)
+      .map(itemRowId)
+      .sort();
+    const finalIds = [...(setByClaim.get(planned.claimId) ?? new Set<string>())].sort();
+    if (JSON.stringify(plannedIds) !== JSON.stringify(finalIds)) {
+      throw new BusinessClaimPaymentApplicationError(
+        'conflict',
+        'A new candidate Claim receipt contains an unexpected Claim Asset row.',
+      );
+    }
+  }
+}
+
+function exactClaim(
+  state: BusinessClaimPaymentApplicationState,`,
+  'final Claim Asset set helpers',
+);
+replaceOnce(
+  servicePath,
+  `  const sourceContentHash = await sha256(execution.sourcePayload);
+  const requestFingerprint = await sha256({`,
+  `  const sourceContentHash = await sha256(execution.sourcePayload);
+  const eventPayload = parseBusinessClaimPaymentApplicationEventPayload(
+    state.applicationEvent?.internalNote ?? null,
+  );
+  const finalClaimAssetSets =
+    eventPayload?.finalClaimAssetSets ??
+    deriveFinalClaimAssetSets(execution.payload, execution.expectedExistingClaims);
+  validateFinalClaimAssetSets(execution.payload, finalClaimAssetSets);
+  const requestFingerprint = await sha256({`,
+  'event-first fingerprint preparation',
+);
+replaceOnce(
+  servicePath,
+  `    plan: execution.payload,
+    verificationEvents,
+  });
+
+  const eventPayload = parseBusinessClaimPaymentApplicationEventPayload(
+    state.applicationEvent?.internalNote ?? null,
+  );`,
+  `    plan: execution.payload,
+    finalClaimAssetSets,
+    verificationEvents,
+  });`,
+  'fingerprint final sets',
+);
 replaceOnce(
   servicePath,
   `  for (const guard of execution.payload.existingClaims) {
@@ -62,76 +251,57 @@ replaceOnce(
 );
 replaceOnce(
   servicePath,
-  `  for (const item of execution.payload.items) {
-    const row = exactRow(state, itemRowId(item));
-    if (
-      row === null ||
-      row.claimId !== item.targetClaimId ||
-      row.assetId !== item.asset.id ||
-      row.networkId !== item.network.id ||
-      row.paymentMethodId !== item.paymentMethod.id ||
-      row.contractAddress !== item.proposal.contractAddress ||
-      row.isPrimary !== item.isPrimary ||
-      (item.operation === 'insert_claim_asset' &&
-        (row.notes !== null || row.createdAt !== appliedAt || row.updatedAt !== appliedAt))
-    ) {
-      throw new BusinessClaimPaymentApplicationError(
-        'conflict',
-        'A canonical Claim Asset row does not match the exact durable plan.',
-      );
-    }
-  }
-  if (`,
-  `  for (const item of execution.payload.items) {
-    const row = exactRow(state, itemRowId(item));
-    if (
-      row === null ||
-      row.claimId !== item.targetClaimId ||
-      row.assetId !== item.asset.id ||
-      row.networkId !== item.network.id ||
-      row.paymentMethodId !== item.paymentMethod.id ||
-      row.contractAddress !== item.proposal.contractAddress ||
-      row.isPrimary !== item.isPrimary ||
-      (item.operation === 'insert_claim_asset' &&
-        (row.notes !== null || row.createdAt !== appliedAt || row.updatedAt !== appliedAt))
-    ) {
-      throw new BusinessClaimPaymentApplicationError(
-        'conflict',
-        'A canonical Claim Asset row does not match the exact durable plan.',
-      );
-    }
-  }
-  const expectedRowIdsByClaim = new Map<string, Set<string>>();
-  for (const planned of execution.payload.plannedClaims) {
-    expectedRowIdsByClaim.set(planned.claimId, new Set());
-  }
-  for (const guard of execution.payload.existingClaims) {
-    expectedRowIdsByClaim.set(
-      guard.claimId,
-      new Set(guard.expectedRows.map((row) => row.rowId)),
-    );
-  }
-  for (const item of execution.payload.items) {
-    const expected = expectedRowIdsByClaim.get(item.targetClaimId) ?? new Set<string>();
-    expected.add(itemRowId(item));
-    expectedRowIdsByClaim.set(item.targetClaimId, expected);
-  }
-  for (const [claimId, expectedIds] of expectedRowIdsByClaim) {
-    const actualIds = rowsForClaim(state, claimId)
+  `  if (
+    state.sourceRecord === null ||`,
+  `  for (const finalSet of eventPayload.finalClaimAssetSets) {
+    const actualRowIds = rowsForClaim(state, finalSet.claimId)
       .map((row) => row.rowId)
       .sort();
-    if (JSON.stringify(actualIds) !== JSON.stringify([...expectedIds].sort())) {
+    if (JSON.stringify(actualRowIds) !== JSON.stringify(finalSet.rowIds)) {
       throw new BusinessClaimPaymentApplicationError(
         'conflict',
         'A canonical Claim contains an unexpected or missing Claim Asset row.',
       );
     }
   }
-  if (`,
-  'complete Claim Asset replay set',
+  if (
+    state.sourceRecord === null ||`,
+  'exact final row set replay',
+);
+replaceOnce(
+  servicePath,
+  `        expectedExistingClaims: execution.expectedExistingClaims,
+        items: execution.payload.items,
+        sourceRecord: {`,
+  `        expectedExistingClaims: execution.expectedExistingClaims,
+        items: execution.payload.items,
+        finalClaimAssetSets,
+        sourceRecord: {`,
+  'commit final sets',
 );
 
 const backendPath = 'src/admin/submissions/drizzle-business-claim-payment-application-backend.ts';
+replaceOnce(
+  backendPath,
+  `    JSON.stringify(payload.alreadyPresentClaimAssetRowIds) !==
+      JSON.stringify(alreadyPresentClaimAssetRowIds) ||
+    JSON.stringify(payload.verificationEvents) !== JSON.stringify(verificationReferences)`,
+  `    JSON.stringify(payload.alreadyPresentClaimAssetRowIds) !==
+      JSON.stringify(alreadyPresentClaimAssetRowIds) ||
+    JSON.stringify(payload.finalClaimAssetSets) !==
+      JSON.stringify(command.finalClaimAssetSets) ||
+    JSON.stringify(payload.verificationEvents) !== JSON.stringify(verificationReferences)`,
+  'backend replay final sets',
+);
+replaceOnce(
+  backendPath,
+  `        alreadyPresentClaimAssetRowIds,
+        verificationEvents: verificationReferences,`,
+  `        alreadyPresentClaimAssetRowIds,
+        finalClaimAssetSets: command.finalClaimAssetSets,
+        verificationEvents: verificationReferences,`,
+  'backend event final sets',
+);
 replaceOnce(
   backendPath,
   `      for (const item of command.items) {
@@ -183,35 +353,23 @@ replaceOnce(
           }),
         );
       }
-      const expectedFinalRowIdsByClaim = new Map<string, Set<string>>();
-      for (const planned of command.plannedClaims) {
-        expectedFinalRowIdsByClaim.set(planned.claimId, new Set());
-      }
-      for (const existing of command.expectedExistingClaims) {
-        expectedFinalRowIdsByClaim.set(
-          existing.claimId,
-          new Set(existing.expectedRows.map((row) => row.rowId)),
-        );
-      }
-      for (let index = 0; index < command.items.length; index += 1) {
-        const item = command.items[index];
-        if (item === undefined) continue;
-        const expected = expectedFinalRowIdsByClaim.get(item.targetClaimId) ?? new Set<string>();
-        expected.add(itemRowId(command, index));
-        expectedFinalRowIdsByClaim.set(item.targetClaimId, expected);
-      }
-      for (const [claimId, expectedIds] of expectedFinalRowIdsByClaim) {
+      for (const finalSet of command.finalClaimAssetSets) {
+        const expectedRowIds = JSON.stringify(finalSet.rowIds);
         statements.push(
           database.select({
             guard: sql<number>\`1 / case when (
-              select count(*) from \${claimAssets}
-              where \${claimAssets.claimId} = \${claimId}
-            ) = \${expectedIds.size} then 1 else 0 end\`,
+              select coalesce(
+                jsonb_agg(final_row.id::text order by final_row.id),
+                '[]'::jsonb
+              )
+              from \${claimAssets} final_row
+              where final_row.claim_id = \${finalSet.claimId}
+            ) = cast(\${expectedRowIds} as jsonb) then 1 else 0 end\`,
           }),
         );
       }
       statements.push(`,
-  'backend exact row set guard',
+  'backend exact final row sets',
 );
 
 const testPath = 'tests/business-claim-payment-application.test.ts';
@@ -222,6 +380,21 @@ replaceOnce(
   `    notes: 'Existing row note.',
     createdAt,`,
   'existing row private note fixture',
+);
+replaceOnce(
+  testPath,
+  `      alreadyPresentClaimAssetRowIds: command.items
+        .filter((item) => item.operation === 'already_present')
+        .map((item) => item.existingClaimAssetRowId as string)
+        .sort(),
+      verificationEvents: command.verificationEvents`,
+  `      alreadyPresentClaimAssetRowIds: command.items
+        .filter((item) => item.operation === 'already_present')
+        .map((item) => item.existingClaimAssetRowId as string)
+        .sort(),
+      finalClaimAssetSets: command.finalClaimAssetSets,
+      verificationEvents: command.verificationEvents`,
+  'test Store final sets',
 );
 replaceOnce(
   testPath,
@@ -274,4 +447,25 @@ replaceOnce(
 
   it('fails closed when a planned candidate Claim has multiple primary rows', async () => {`,
   'unexpected row recovery test',
+);
+
+const auditPath = 'scripts/check-business-claim-payment-application.mjs';
+replaceOnce(
+  auditPath,
+  `    "expectedDraftSetHash",
+  ],`,
+  `    "expectedDraftSetHash",
+    "finalClaimAssetSets",
+  ],`,
+  'audit final sets contract',
+);
+replaceOnce(
+  auditPath,
+  `    "verifyCanonicalReplayState",
+    "transitionSubmissionApplicationLifecycle",`,
+  `    "verifyCanonicalReplayState",
+    "deriveFinalClaimAssetSets",
+    "unexpected or missing Claim Asset row",
+    "transitionSubmissionApplicationLifecycle",`,
+  'audit final sets service',
 );
