@@ -86,7 +86,10 @@ function fieldNote(proposals = [proposal()]) {
   });
 }
 
-function claim(claimId: string, rows: BusinessClaimPaymentPreviewState['claims'][number]['rows'] = []) {
+function claim(
+  claimId: string,
+  rows: BusinessClaimPaymentPreviewState['claims'][number]['rows'] = [],
+) {
   return {
     claimId,
     entityId,
@@ -269,9 +272,7 @@ describe('P5-07E3 Business Claim payment plan', () => {
       targetClaimId: firstClaimId,
       isPrimary: true,
     });
-    expect(payload?.items[0]?.plannedClaimAssetRowId).toMatch(
-      /^[a-f0-9-]{36}$/,
-    );
+    expect(payload?.items[0]?.plannedClaimAssetRowId).toMatch(/^[a-f0-9-]{36}$/);
     expect(payload?.existingClaims[0]).toMatchObject({ claimId: firstClaimId, rowCount: 0 });
 
     const replayed = await prepareBusinessClaimPaymentPlan(

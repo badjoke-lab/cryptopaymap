@@ -198,9 +198,7 @@ export const businessClaimPaymentPlanReceiptSchema = z
 export type BusinessClaimPaymentPlanSelection = z.infer<
   typeof businessClaimPaymentPlanSelectionSchema
 >;
-export type BusinessClaimPaymentPlanRequest = z.infer<
-  typeof businessClaimPaymentPlanRequestSchema
->;
+export type BusinessClaimPaymentPlanRequest = z.infer<typeof businessClaimPaymentPlanRequestSchema>;
 export type BusinessClaimPaymentPlannedClaim = z.infer<
   typeof businessClaimPaymentPlannedClaimSchema
 >;
@@ -211,9 +209,7 @@ export type BusinessClaimPaymentPlanItem = z.infer<typeof businessClaimPaymentPl
 export type BusinessClaimPaymentPlanEventPayload = z.infer<
   typeof businessClaimPaymentPlanEventPayloadSchema
 >;
-export type BusinessClaimPaymentPlanReceipt = z.infer<
-  typeof businessClaimPaymentPlanReceiptSchema
->;
+export type BusinessClaimPaymentPlanReceipt = z.infer<typeof businessClaimPaymentPlanReceiptSchema>;
 
 export function serializeBusinessClaimPaymentPlanEventPayload(
   payload: BusinessClaimPaymentPlanEventPayload,

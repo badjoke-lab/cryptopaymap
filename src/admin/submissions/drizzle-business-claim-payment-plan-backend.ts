@@ -128,7 +128,8 @@ export function createDrizzleBusinessClaimPaymentPlanBackend(
         .where(eq(submissionApplications.id, applicationId))
         .orderBy(asc(submissionEvents.createdAt), asc(submissionEvents.id))
         .limit(2);
-      if (rows.length > 1) throw new Error('Business Claim application contains multiple payment plans.');
+      if (rows.length > 1)
+        throw new Error('Business Claim application contains multiple payment plans.');
       return rows[0] === undefined ? null : eventRecord(rows[0]);
     },
 
@@ -172,11 +173,7 @@ export function createDrizzleBusinessClaimPaymentPlanBackend(
         .where(eq(locations.id, targetId))
         .limit(1);
       const row = rows[0];
-      if (
-        row === undefined ||
-        row.locationDeletedAt !== null ||
-        row.entityDeletedAt !== null
-      ) {
+      if (row === undefined || row.locationDeletedAt !== null || row.entityDeletedAt !== null) {
         return null;
       }
       return {
@@ -193,13 +190,16 @@ export function createDrizzleBusinessClaimPaymentPlanBackend(
     async commitPlan(command) {
       const existingClaimGuards = command.expectedExistingClaims.map(claimGuard);
       const assetGuards = command.assetIds.map(
-        (id) => sql`exists (select 1 from ${assets} where ${assets.id} = ${id} and ${assets.status} = 'active')`,
+        (id) =>
+          sql`exists (select 1 from ${assets} where ${assets.id} = ${id} and ${assets.status} = 'active')`,
       );
       const networkGuards = command.networkIds.map(
-        (id) => sql`exists (select 1 from ${networks} where ${networks.id} = ${id} and ${networks.status} = 'active')`,
+        (id) =>
+          sql`exists (select 1 from ${networks} where ${networks.id} = ${id} and ${networks.status} = 'active')`,
       );
       const methodGuards = command.paymentMethodIds.map(
-        (id) => sql`exists (select 1 from ${paymentMethods} where ${paymentMethods.id} = ${id} and ${paymentMethods.status} = 'active')`,
+        (id) =>
+          sql`exists (select 1 from ${paymentMethods} where ${paymentMethods.id} = ${id} and ${paymentMethods.status} = 'active')`,
       );
       const processorGuards = command.processorIds.map(
         (id) => sql`exists (

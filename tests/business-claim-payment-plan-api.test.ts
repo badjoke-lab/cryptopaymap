@@ -102,11 +102,8 @@ describe('P5-07E3 protected Business Claim payment plan API', () => {
       ).status,
     ).toBe(415);
     expect(
-      (
-        await createBusinessClaimPaymentPlanHandler({ runPlan })(
-          pagesContext({ rawBody: '{' }),
-        )
-      ).status,
+      (await createBusinessClaimPaymentPlanHandler({ runPlan })(pagesContext({ rawBody: '{' })))
+        .status,
     ).toBe(400);
     expect(
       (

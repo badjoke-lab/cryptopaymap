@@ -37,8 +37,8 @@ for (const marker of [
   'business_claim_fields_applied',
   'business_claim_relationship_approved',
   'business_claim_payment_plan_prepared',
-  'application.application_status = \'pending\'',
-  'application.publication_status = \'blocked\'',
+  "application.application_status = 'pending'",
+  "application.publication_status = 'blocked'",
 ]) {
   assert.ok(backend.includes(marker), `payment plan backend lost ${marker}`);
 }

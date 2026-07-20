@@ -141,7 +141,9 @@ async function deterministicUuid(label: string): Promise<string> {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-function expectedRows(claim: BusinessClaimPaymentPreviewClaimState): BusinessClaimPaymentPlanExpectedRow[] {
+function expectedRows(
+  claim: BusinessClaimPaymentPreviewClaimState,
+): BusinessClaimPaymentPlanExpectedRow[] {
   return claim.rows
     .map((row) => ({
       rowId: row.rowId,
@@ -162,6 +164,7 @@ function receiptFromEvent(
   state: 'committed' | 'replayed',
   applicationId: string,
   actorId: string,
+  actorType: 'human' | 'system',
   requestFingerprint: string,
   event: BusinessClaimPaymentPlanEventRecord,
 ): BusinessClaimPaymentPlanReceipt {
@@ -174,7 +177,7 @@ function receiptFromEvent(
     event.toStatus !== 'resolved' ||
     event.reasonCode !== 'payment_information' ||
     event.actorId !== actorId ||
-    event.actorType !== 'reviewer' ||
+    event.actorType !== (actorType === 'human' ? 'reviewer' : 'system') ||
     payload.applicationId !== applicationId ||
     payload.requestFingerprint !== requestFingerprint ||
     event.submissionId !== payload.submissionId
@@ -193,7 +196,8 @@ function receiptFromEvent(
     itemCount: payload.items.length,
     plannedClaimCount: payload.plannedClaims.length,
     insertCount: payload.items.filter((item) => item.operation === 'insert_claim_asset').length,
-    alreadyPresentCount: payload.items.filter((item) => item.operation === 'already_present').length,
+    alreadyPresentCount: payload.items.filter((item) => item.operation === 'already_present')
+      .length,
     plannedAt: payload.plannedAt,
   });
 }
@@ -344,11 +348,7 @@ async function buildPayload(
       'Every ambiguous payment draft requires one explicit compatible Claim selection.',
     );
   }
-  if (
-    request.selections.some(
-      (selection) => !neededIndexes.includes(selection.submittedIndex),
-    )
-  ) {
+  if (request.selections.some((selection) => !neededIndexes.includes(selection.submittedIndex))) {
     throw new BusinessClaimPaymentPlanError(
       'invalid_request',
       'Only ambiguous payment drafts accept reviewer Claim selections.',
@@ -358,7 +358,10 @@ async function buildPayload(
   const plannedClaims = new Map<string, BusinessClaimPaymentPlannedClaim>();
   const existingClaims = new Map<
     string,
-    { guard: BusinessClaimPaymentExistingClaimGuard; command: BusinessClaimPaymentPlanExpectedClaim }
+    {
+      guard: BusinessClaimPaymentExistingClaimGuard;
+      command: BusinessClaimPaymentPlanExpectedClaim;
+    }
   >();
   const items: BusinessClaimPaymentPlanItem[] = [];
 
@@ -444,7 +447,9 @@ async function buildPayload(
         );
       }
       const claim = exactClaim(state, targetClaimId);
-      const projected = item.compatibleClaims.find((candidate) => candidate.claimId === targetClaimId);
+      const projected = item.compatibleClaims.find(
+        (candidate) => candidate.claimId === targetClaimId,
+      );
       if (projected === undefined || projected.updatedAt !== claim.updatedAt) {
         throw new BusinessClaimPaymentPlanError(
           'conflict',
@@ -606,6 +611,7 @@ export async function prepareBusinessClaimPaymentPlan(
       'replayed',
       applicationIdResult.data,
       context.actorId,
+      context.actorType,
       requestFingerprint,
       existing,
     );
@@ -650,6 +656,7 @@ export async function prepareBusinessClaimPaymentPlan(
           'replayed',
           applicationIdResult.data,
           context.actorId,
+          context.actorType,
           requestFingerprint,
           raced,
         );
@@ -671,6 +678,7 @@ export async function prepareBusinessClaimPaymentPlan(
     'committed',
     applicationIdResult.data,
     context.actorId,
+    context.actorType,
     requestFingerprint,
     {
       eventId: payload.planId,
