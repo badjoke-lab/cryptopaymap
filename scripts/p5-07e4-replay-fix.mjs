@@ -452,20 +452,20 @@ replaceOnce(
 const auditPath = 'scripts/check-business-claim-payment-application.mjs';
 replaceOnce(
   auditPath,
-  `    "expectedDraftSetHash",
+  `    'expectedDraftSetHash',
   ],`,
-  `    "expectedDraftSetHash",
-    "finalClaimAssetSets",
+  `    'expectedDraftSetHash',
+    'finalClaimAssetSets',
   ],`,
   'audit final sets contract',
 );
 replaceOnce(
   auditPath,
-  `    "verifyCanonicalReplayState",
-    "transitionSubmissionApplicationLifecycle",`,
-  `    "verifyCanonicalReplayState",
-    "deriveFinalClaimAssetSets",
-    "unexpected or missing Claim Asset row",
-    "transitionSubmissionApplicationLifecycle",`,
+  `    'verifyCanonicalReplayState',
+    'transitionSubmissionApplicationLifecycle',`,
+  `    'verifyCanonicalReplayState',
+    'deriveFinalClaimAssetSets',
+    'unexpected or missing Claim Asset row',
+    'transitionSubmissionApplicationLifecycle',`,
   'audit final sets service',
 );
