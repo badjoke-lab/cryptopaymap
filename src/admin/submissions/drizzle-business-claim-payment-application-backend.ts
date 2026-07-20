@@ -821,10 +821,19 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
               and ${sourceRecords.sourceId} = ${command.sourceRecord.sourceId}
               and ${sourceRecords.externalId} = ${command.sourceRecord.externalId}
               and ${sourceRecords.contentHash} = ${command.sourceRecord.contentHash}
-          ) and (
-            select count(*) from ${verificationEvents}
-            where ${verificationEvents.id} in ${command.verificationEvents.map((item) => item.eventId)}
-          ) = ${command.verificationEvents.length}
+          ) and ${allGuards(
+            command.verificationEvents.map(
+              (item) => sql`exists (
+                select 1 from ${verificationEvents}
+                where ${verificationEvents.id} = ${item.eventId}
+                  and ${verificationEvents.claimId} = ${item.claimId}
+                  and ${verificationEvents.eventType} = 'corrected'
+                  and ${verificationEvents.reasonCode} = 'business_claim_payment_information_applied'
+                  and ${verificationEvents.effectiveAt} = ${command.appliedAt}
+                  and ${verificationEvents.internalNote} = ${item.internalNote}
+              )`,
+            ),
+          )}
           and (
             select count(*) from ${provenanceLinks}
             where ${provenanceLinks.sourceRecordId} = ${command.sourceRecord.id}
