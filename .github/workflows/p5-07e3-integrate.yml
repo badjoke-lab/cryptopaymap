@@ -1,0 +1,39 @@
+name: P5-07E3 integrate
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.head_ref == 'p5-07e3-business-claim-payment-plan' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-07e3-business-claim-payment-plan
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: python scripts/p5-07e3-integrate.py
+      - run: npm run format
+      - run: node scripts/check-business-claim-payment-plan.mjs
+      - run: npx vitest run tests/business-claim-payment-plan.test.ts tests/business-claim-payment-plan-api.test.ts tests/business-claim-payment-preview.test.ts
+      - run: npm run check
+      - name: Commit integrated slice
+        shell: bash
+        run: |
+          git rm .github/workflows/p5-07e3-integrate.yml scripts/p5-07e3-integrate.py
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "P5-07E3 integrate payment plan"
+          git push origin HEAD:p5-07e3-business-claim-payment-plan
