@@ -23,130 +23,77 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Apply bounded E3 integration edits
+      - name: Apply E3 source integration
         shell: bash
         run: |
           python - <<'PY'
           from pathlib import Path
 
-          def insert_after(path: str, anchor: str, addition: str) -> None:
-              file = Path(path)
-              text = file.read_text()
-              if addition.strip() in text:
-                  return
-              if anchor not in text:
-                  raise RuntimeError(f'{path}: missing anchor {anchor!r}')
-              file.write_text(text.replace(anchor, anchor + addition, 1))
+          p = Path('src/admin/submissions/business-claim-payment-preview.ts')
+          s = p.read_text()
+          if 'export interface BusinessClaimPaymentPreviewClaimAssetState' in s and '  contractAddress: string | null;\n  isPrimary: boolean;\n' not in s:
+              s = s.replace('  contractAddress: string | null;\n', '  contractAddress: string | null;\n  isPrimary: boolean;\n', 1)
+          p.write_text(s)
 
-          def replace_once(path: str, old: str, new: str) -> None:
-              file = Path(path)
-              text = file.read_text()
-              if new in text:
-                  return
-              if old not in text:
-                  raise RuntimeError(f'{path}: missing replacement source')
-              file.write_text(text.replace(old, new, 1))
+          p = Path('src/admin/submissions/drizzle-business-claim-payment-preview-backend.ts')
+          s = p.read_text()
+          if '                isPrimary: claimAssets.isPrimary,\n' not in s:
+              s = s.replace('                contractAddress: claimAssets.contractAddress,\n', '                contractAddress: claimAssets.contractAddress,\n                isPrimary: claimAssets.isPrimary,\n', 1)
+          p.write_text(s)
 
-          insert_after(
-              'src/admin/submissions/business-claim-payment-preview.ts',
-              '  contractAddress: string | null;\n',
-              '  isPrimary: boolean;\n',
-          )
-          insert_after(
-              'src/admin/submissions/drizzle-business-claim-payment-preview-backend.ts',
-              '                contractAddress: claimAssets.contractAddress,\n',
-              '                isPrimary: claimAssets.isPrimary,\n',
-          )
-          insert_after(
-              'package.json',
-              'node scripts/check-business-claim-payment-preview.mjs && ',
-              'node scripts/check-business-claim-payment-plan.mjs && ',
-          )
+          p = Path('package.json')
+          s = p.read_text()
+          marker = 'node scripts/check-business-claim-payment-preview.mjs && '
+          addition = 'node scripts/check-business-claim-payment-plan.mjs && '
+          if addition not in s:
+              s = s.replace(marker, marker + addition, 1)
+          p.write_text(s)
 
-          service = Path('src/admin/submissions/business-claim-payment-plan.ts')
-          text = service.read_text()
-          if "  actorType: 'human' | 'system',\n  requestFingerprint: string," not in text:
-              text = text.replace(
-                  '  actorId: string,\n  requestFingerprint: string,',
-                  "  actorId: string,\n  actorType: 'human' | 'system',\n  requestFingerprint: string,",
-                  1,
-              )
-          text = text.replace(
-              "    event.actorType !== 'reviewer' ||",
-              "    event.actorType !== (actorType === 'human' ? 'reviewer' : 'system') ||",
-              1,
-          )
-          for old, new in [
-              (
-                  '      context.actorId,\n      requestFingerprint,\n      existing,',
-                  '      context.actorId,\n      context.actorType,\n      requestFingerprint,\n      existing,',
-              ),
-              (
-                  '          context.actorId,\n          requestFingerprint,\n          raced,',
-                  '          context.actorId,\n          context.actorType,\n          requestFingerprint,\n          raced,',
-              ),
-              (
-                  '    context.actorId,\n    requestFingerprint,\n    {',
-                  '    context.actorId,\n    context.actorType,\n    requestFingerprint,\n    {',
-              ),
-          ]:
-              if new not in text:
-                  if old not in text:
-                      raise RuntimeError('payment plan service call marker is missing')
-                  text = text.replace(old, new, 1)
-          service.write_text(text)
+          p = Path('src/admin/submissions/business-claim-payment-plan.ts')
+          s = p.read_text()
+          s = s.replace('  actorId: string,\n  requestFingerprint: string,', "  actorId: string,\n  actorType: 'human' | 'system',\n  requestFingerprint: string,", 1)
+          s = s.replace("    event.actorType !== 'reviewer' ||", "    event.actorType !== (actorType === 'human' ? 'reviewer' : 'system') ||", 1)
+          s = s.replace('      context.actorId,\n      requestFingerprint,\n      existing,', '      context.actorId,\n      context.actorType,\n      requestFingerprint,\n      existing,', 1)
+          s = s.replace('          context.actorId,\n          requestFingerprint,\n          raced,', '          context.actorId,\n          context.actorType,\n          requestFingerprint,\n          raced,', 1)
+          s = s.replace('    context.actorId,\n    requestFingerprint,\n    {', '    context.actorId,\n    context.actorType,\n    requestFingerprint,\n    {', 1)
+          p.write_text(s)
 
-          status = Path('docs/PROJECT_STATUS.md')
-          text = status.read_text()
-          replacements = [
-              (
-                  'P5-07E2 — Protected Business Claim payment-draft preview',
-                  'P5-07E3 — Durable Business Claim payment application plan',
-              ),
-              (
-                  '- P5-07E2 is active in PR #256 on `p5-07e2-business-claim-payment-preview`.',
-                  '- P5-07E2 protected Business Claim payment-draft preview completed in #256.\n- P5-07E3 is active on `p5-07e3-business-claim-payment-plan`.',
-              ),
-              (
-                  '482a99252019be34e11f1fb2ef6a0499d481cb4e',
-                  '60d0881778aaf04e1cdd1d408d60be609cc7bd77',
-              ),
-              (
-                  'The final P5-07E1 head passed all four normal workflow groups.',
-                  'The final P5-07E2 head passed all four normal workflow groups.',
-              ),
-              (
-                  '#256 — P5-07E2 Business Claim payment preview',
-                  'p5-07e3-business-claim-payment-plan — Business Claim payment plan',
-              ),
-          ]
-          for old, new in replacements:
-              if new not in text:
-                  if old not in text:
-                      raise RuntimeError(f'PROJECT_STATUS missing {old!r}')
-                  text = text.replace(old, new, 1)
-          start = text.index('## Current boundary')
-          end = text.index('## Blocked')
-          text = text[:start] + '''## Current boundary
+          p = Path('docs/PROJECT_STATUS.md')
+          s = p.read_text()
+          s = s.replace('P5-07E2 — Protected Business Claim payment-draft preview', 'P5-07E3 — Durable Business Claim payment application plan', 1)
+          s = s.replace('- P5-07E2 is active in PR #256 on `p5-07e2-business-claim-payment-preview`.', '- P5-07E2 protected Business Claim payment-draft preview completed in #256.\n- P5-07E3 is active on `p5-07e3-business-claim-payment-plan`.', 1)
+          s = s.replace('482a99252019be34e11f1fb2ef6a0499d481cb4e', '60d0881778aaf04e1cdd1d408d60be609cc7bd77', 1)
+          s = s.replace('The final P5-07E1 head passed all four normal workflow groups.', 'The final P5-07E2 head passed all four normal workflow groups.', 1)
+          s = s.replace('#256 — P5-07E2 Business Claim payment preview', 'p5-07e3-business-claim-payment-plan — Business Claim payment plan', 1)
+          if 'P5-07E3 may persist one exact private payment plan' not in s:
+              start = s.find('## Current boundary')
+              end = s.find('## Blocked')
+              if start >= 0 and end > start:
+                  block = '''## Current boundary
 
-          P5-07E3 may persist one exact private payment plan bound to the E2 `draftSetHash`, current target versions, selected existing Claim versions, complete selected Claim Asset set hashes, and explicit reviewer selections for ambiguous drafts.
+P5-07E3 may persist one exact private payment plan bound to the E2 `draftSetHash`, current target versions, selected existing Claim versions, complete selected Claim Asset set hashes, and explicit reviewer selections for ambiguous drafts.
 
-          It derives candidate Claim IDs, Claim Asset row IDs, registries, processors, duplicate rows, and primary-row safety on the server. It must not mutate canonical Claims, Claim Assets, provenance, verification history, lifecycle, export, or release.
+It derives candidate Claim IDs, Claim Asset row IDs, registries, processors, duplicate rows, and primary-row safety on the server. It must not mutate canonical Claims, Claim Assets, provenance, verification history, lifecycle, export, or release.
 
-          ## Next
+## Next
 
-          Implement P5-07E4 as the atomic consumer of one exact E3 plan. It should create planned hidden candidate Claims, insert planned Claim Asset rows, preserve already-present rows, write payment provenance and verification history, and commit the common application with replay-safe recovery. Entity and Location field-level provenance remains a separate atomic owner.
+Implement P5-07E4 as the atomic consumer of one exact E3 plan. It should create planned hidden candidate Claims, insert planned Claim Asset rows, preserve already-present rows, write payment provenance and verification history, and commit the common application with replay-safe recovery. Entity and Location field-level provenance remains a separate atomic owner.
 
-          ''' + text[end:]
-          reference = '- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`'
-          if reference not in text:
-              text = text.replace(
-                  '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`',
-                  '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`\n' + reference,
-                  1,
-              )
-          status.write_text(text)
+'''
+                  s = s[:start] + block + s[end:]
+          ref = '- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`'
+          if ref not in s:
+              s = s.replace('- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`', '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`\n' + ref, 1)
+          p.write_text(s)
           PY
+      - name: Verify integration markers
+        shell: bash
+        run: |
+          grep -q 'isPrimary: boolean' src/admin/submissions/business-claim-payment-preview.ts
+          grep -q 'isPrimary: claimAssets.isPrimary' src/admin/submissions/drizzle-business-claim-payment-preview-backend.ts
+          grep -q 'check-business-claim-payment-plan.mjs' package.json
+          grep -q 'context.actorType' src/admin/submissions/business-claim-payment-plan.ts
+          grep -q 'P5-07E3' docs/PROJECT_STATUS.md
       - run: npm run format
       - run: node scripts/check-business-claim-payment-plan.mjs
       - run: npx vitest run tests/business-claim-payment-plan.test.ts tests/business-claim-payment-plan-api.test.ts tests/business-claim-payment-preview.test.ts
