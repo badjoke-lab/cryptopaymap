@@ -8,6 +8,7 @@ import {
   submissions,
 } from '../../db/schema';
 import { parseSuggestAcceptedCandidateEventPayload } from '../../submissions/accepted-candidate-contract';
+import { parseBusinessClaimFieldApplicationEventPayload } from '../../submissions/business-claim-field-application-persistence-contract';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type {
   SubmissionApplicationReceiptReference,
@@ -118,7 +119,10 @@ export function createDrizzleSubmissionApplicationRegistrationBackend(
       }
 
       const applicationEventRows = await database
-        .select({ id: submissionEvents.id })
+        .select({
+          id: submissionEvents.id,
+          internalNote: submissionEvents.internalNote,
+        })
         .from(submissionEvents)
         .where(
           and(
@@ -130,6 +134,18 @@ export function createDrizzleSubmissionApplicationRegistrationBackend(
         .limit(2);
       if (applicationEventRows.length > 1) {
         throw new Error('Business Claim Submission contains multiple field-application events.');
+      }
+      const businessClaimFieldApplicationEvent = applicationEventRows[0] ?? null;
+      let businessClaimPaymentApplicationPending = false;
+      if (businessClaimFieldApplicationEvent !== null) {
+        const payload = parseBusinessClaimFieldApplicationEventPayload(
+          businessClaimFieldApplicationEvent.internalNote,
+        );
+        if (payload === null || payload.projection.submissionId !== submissionId) {
+          throw new Error('Business Claim field-application event payload is invalid.');
+        }
+        businessClaimPaymentApplicationPending =
+          (payload.projection.paymentApplication?.acceptedProposals.length ?? 0) > 0;
       }
 
       return {
@@ -153,7 +169,8 @@ export function createDrizzleSubmissionApplicationRegistrationBackend(
                 createdAt: row.eventCreatedAt.toISOString(),
               },
         candidatePromotionDecisionId,
-        businessClaimFieldApplicationEventId: applicationEventRows[0]?.id ?? null,
+        businessClaimFieldApplicationEventId: businessClaimFieldApplicationEvent?.id ?? null,
+        businessClaimPaymentApplicationPending,
       };
     },
 
