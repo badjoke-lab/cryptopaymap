@@ -1,42 +1,51 @@
 from pathlib import Path
 
-# Register the executable runtime audit.
-package = Path('package.json')
-text = package.read_text()
-old = 'node scripts/check-business-claim-payment-preview.mjs && tsx scripts/check-positive-payment-evidence.ts'
-new = 'node scripts/check-business-claim-payment-preview.mjs && node scripts/check-business-claim-payment-plan.mjs && tsx scripts/check-positive-payment-evidence.ts'
-assert old in text
-package.write_text(text.replace(old, new, 1))
 
-# E3 needs the exact current primary-row state that E2 already loads privately.
-preview = Path('src/admin/submissions/business-claim-payment-preview.ts')
-text = preview.read_text()
-old = '''  paymentMethodId: string;
+def replace_once(path: str, old: str, new: str, label: str) -> None:
+    file = Path(path)
+    text = file.read_text()
+    if new in text:
+        print(f'{label}: already applied')
+        return
+    if old not in text:
+        raise RuntimeError(f'{label}: neither source nor target marker exists')
+    file.write_text(text.replace(old, new, 1))
+    print(f'{label}: applied')
+
+
+replace_once(
+    'package.json',
+    'node scripts/check-business-claim-payment-preview.mjs && tsx scripts/check-positive-payment-evidence.ts',
+    'node scripts/check-business-claim-payment-preview.mjs && node scripts/check-business-claim-payment-plan.mjs && tsx scripts/check-positive-payment-evidence.ts',
+    'schema audit registration',
+)
+
+replace_once(
+    'src/admin/submissions/business-claim-payment-preview.ts',
+    '''  paymentMethodId: string;
   contractAddress: string | null;
-}'''
-new = '''  paymentMethodId: string;
+}''',
+    '''  paymentMethodId: string;
   contractAddress: string | null;
   isPrimary: boolean;
-}'''
-assert old in text
-preview.write_text(text.replace(old, new, 1))
+}''',
+    'preview primary-row state',
+)
 
-preview_backend = Path('src/admin/submissions/drizzle-business-claim-payment-preview-backend.ts')
-text = preview_backend.read_text()
-old = '''                paymentMethodId: claimAssets.paymentMethodId,
+replace_once(
+    'src/admin/submissions/drizzle-business-claim-payment-preview-backend.ts',
+    '''                paymentMethodId: claimAssets.paymentMethodId,
                 contractAddress: claimAssets.contractAddress,
-              })'''
-new = '''                paymentMethodId: claimAssets.paymentMethodId,
+              })''',
+    '''                paymentMethodId: claimAssets.paymentMethodId,
                 contractAddress: claimAssets.contractAddress,
                 isPrimary: claimAssets.isPrimary,
-              })'''
-assert old in text
-preview_backend.write_text(text.replace(old, new, 1))
+              })''',
+    'preview backend primary-row read',
+)
 
-# Replay verification must support both human and explicitly authorized system actors.
-service = Path('src/admin/submissions/business-claim-payment-plan.ts')
-text = service.read_text()
-text = text.replace(
+replace_once(
+    'src/admin/submissions/business-claim-payment-plan.ts',
     '''  actorId: string,
   requestFingerprint: string,
   event: BusinessClaimPaymentPlanEventRecord,''',
@@ -44,14 +53,16 @@ text = text.replace(
   actorType: 'human' | 'system',
   requestFingerprint: string,
   event: BusinessClaimPaymentPlanEventRecord,''',
-    1,
+    'replay actor signature',
 )
-text = text.replace(
+replace_once(
+    'src/admin/submissions/business-claim-payment-plan.ts',
     "    event.actorType !== 'reviewer' ||",
     "    event.actorType !== (actorType === 'human' ? 'reviewer' : 'system') ||",
-    1,
+    'replay actor guard',
 )
-text = text.replace(
+replace_once(
+    'src/admin/submissions/business-claim-payment-plan.ts',
     '''      context.actorId,
       requestFingerprint,
       existing,''',
@@ -59,9 +70,10 @@ text = text.replace(
       context.actorType,
       requestFingerprint,
       existing,''',
-    1,
+    'initial replay actor argument',
 )
-text = text.replace(
+replace_once(
+    'src/admin/submissions/business-claim-payment-plan.ts',
     '''          context.actorId,
           requestFingerprint,
           raced,''',
@@ -69,9 +81,10 @@ text = text.replace(
           context.actorType,
           requestFingerprint,
           raced,''',
-    1,
+    'raced replay actor argument',
 )
-text = text.replace(
+replace_once(
+    'src/admin/submissions/business-claim-payment-plan.ts',
     '''    context.actorId,
     requestFingerprint,
     {''',
@@ -79,38 +92,46 @@ text = text.replace(
     context.actorType,
     requestFingerprint,
     {''',
-    1,
+    'committed receipt actor argument',
 )
-service.write_text(text)
 
-# Advance the bounded repository handoff while preserving older audit markers.
 status = Path('docs/PROJECT_STATUS.md')
 text = status.read_text()
-text = text.replace(
-    'P5-07E2 — Protected Business Claim payment-draft preview',
-    'P5-07E3 — Durable Business Claim payment application plan',
-    1,
-)
-text = text.replace(
-    '- P5-07E2 is active in PR #256 on `p5-07e2-business-claim-payment-preview`.',
-    '- P5-07E2 protected Business Claim payment-draft preview completed in #256.\n- P5-07E3 is active on `p5-07e3-business-claim-payment-plan`.',
-    1,
-)
-text = text.replace(
-    '482a99252019be34e11f1fb2ef6a0499d481cb4e',
-    '60d0881778aaf04e1cdd1d408d60be609cc7bd77',
-    1,
-)
-text = text.replace(
-    'The final P5-07E1 head passed all four normal workflow groups.',
-    'The final P5-07E2 head passed all four normal workflow groups.',
-    1,
-)
-text = text.replace(
-    '#256 — P5-07E2 Business Claim payment preview',
-    'p5-07e3-business-claim-payment-plan — Business Claim payment plan',
-    1,
-)
+for old, new, label in [
+    (
+        'P5-07E2 — Protected Business Claim payment-draft preview',
+        'P5-07E3 — Durable Business Claim payment application plan',
+        'status current item',
+    ),
+    (
+        '- P5-07E2 is active in PR #256 on `p5-07e2-business-claim-payment-preview`.',
+        '- P5-07E2 protected Business Claim payment-draft preview completed in #256.\n- P5-07E3 is active on `p5-07e3-business-claim-payment-plan`.',
+        'status repository state',
+    ),
+    (
+        '482a99252019be34e11f1fb2ef6a0499d481cb4e',
+        '60d0881778aaf04e1cdd1d408d60be609cc7bd77',
+        'status main sha',
+    ),
+    (
+        'The final P5-07E1 head passed all four normal workflow groups.',
+        'The final P5-07E2 head passed all four normal workflow groups.',
+        'status verified head',
+    ),
+    (
+        '#256 — P5-07E2 Business Claim payment preview',
+        'p5-07e3-business-claim-payment-plan — Business Claim payment plan',
+        'status active pr',
+    ),
+]:
+    if new in text:
+        print(f'{label}: already applied')
+    elif old in text:
+        text = text.replace(old, new, 1)
+        print(f'{label}: applied')
+    else:
+        raise RuntimeError(f'{label}: neither source nor target marker exists')
+
 start = text.index('## Current boundary')
 end = text.index('## Blocked')
 replacement = '''## Current boundary
@@ -126,9 +147,13 @@ Implement P5-07E4 as the atomic consumer of one exact E3 plan. It should create 
 '''
 text = text[:start] + replacement + text[end:]
 if '- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`' not in text:
+    marker = '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`'
+    if marker not in text:
+        raise RuntimeError('status reference marker is missing')
     text = text.replace(
-        '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`',
-        '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`\n- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`',
+        marker,
+        f'{marker}\n- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`',
         1,
     )
 status.write_text(text)
+print('project status: applied')
