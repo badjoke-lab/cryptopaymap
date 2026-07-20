@@ -17,7 +17,12 @@ P5-07E1 — Business Claim application-order correction
 - P5-07A canonical application and retention inventory completed in #243.
 - P5-07B common application registration and lifecycle completed in #245–#246.
 - P5-07C Suggest Candidate receipt binding completed in #247.
-- P5-07D report correction and Claim Asset work completed through #248–#254.
+- P5-07D1 practical Location correction application completed in #248.
+- P5-07D2 durable negative recheck application completed in #249.
+- P5-07D3 remaining correction owner audit completed in #250.
+- P5-07D4 Claim instruction correction application completed in #251.
+- P5-07D5 Claim Asset set replacement preview completed in #252.
+- P5-07D6 durable Claim Asset replacement plan completed in #253.
 - P5-07D7 atomic complete Claim Asset replacement completed in #254.
 - P5-07E1 is active in PR #255 on `p5-07e1-business-claim-application-order`.
 
@@ -58,6 +63,8 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
+- `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
+- `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
 - `docs/P5_07D7_CLAIM_ASSET_REPLACEMENT_APPLICATION.md`
 - `docs/P5_07E1_BUSINESS_CLAIM_APPLICATION_ORDER.md`
 - `docs/SUBMISSION_WORKFLOW.md`
