@@ -121,6 +121,7 @@ export interface SubmissionApplicationRegistrationState {
   } | null;
   candidatePromotionDecisionId: string | null;
   businessClaimFieldApplicationEventId: string | null;
+  businessClaimPaymentApplicationPending?: boolean;
 }
 
 export interface SubmissionApplicationRegistrationRecord {
@@ -336,6 +337,14 @@ function deriveLifecycle(
     request.sourceDecisionKind === 'business_claim_relationship' &&
     state.businessClaimFieldApplicationEventId !== null
   ) {
+    if (state.businessClaimPaymentApplicationPending === true) {
+      return {
+        applicationKind: contract.applicationKind,
+        applicationStatus: 'pending',
+        publicationStatus: 'blocked',
+        applicationReceipt: null,
+      };
+    }
     return {
       applicationKind: contract.applicationKind,
       applicationStatus: 'committed',
