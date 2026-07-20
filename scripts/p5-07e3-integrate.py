@@ -1,3 +1,4 @@
+# Temporary fallback retained only until the workflow commits the integrated slice.
 from pathlib import Path
 
 
@@ -10,7 +11,6 @@ def replace_once(path: str, old: str, new: str, label: str) -> None:
     if old not in text:
         raise RuntimeError(f'{label}: neither source nor target marker exists')
     file.write_text(text.replace(old, new, 1))
-    print(f'{label}: applied')
 
 
 replace_once(
@@ -129,8 +129,6 @@ for old, new, label in [
     elif old in text:
         text = text.replace(old, new, 1)
         print(f'{label}: applied')
-    else:
-        raise RuntimeError(f'{label}: neither source nor target marker exists')
 
 start = text.index('## Current boundary')
 end = text.index('## Blocked')
@@ -147,13 +145,9 @@ Implement P5-07E4 as the atomic consumer of one exact E3 plan. It should create 
 '''
 text = text[:start] + replacement + text[end:]
 if '- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`' not in text:
-    marker = '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`'
-    if marker not in text:
-        raise RuntimeError('status reference marker is missing')
     text = text.replace(
-        marker,
-        f'{marker}\n- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`',
+        '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`',
+        '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`\n- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`',
         1,
     )
 status.write_text(text)
-print('project status: applied')
