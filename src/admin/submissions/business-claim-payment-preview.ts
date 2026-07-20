@@ -13,7 +13,12 @@ import type { SubmissionApplicationLifecycleRecord } from './application-lifecyc
 
 const timestampSchema = z.iso.datetime({ offset: true });
 const issueSchema = z.string().trim().min(1).max(500);
-const slugSchema = z.string().trim().min(1).max(64).regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
+const slugSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(64)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/);
 
 const registryAssetSchema = z
   .object({
@@ -175,7 +180,12 @@ export interface BusinessClaimPaymentPreviewBackend {
 
 export class BusinessClaimPaymentPreviewError extends Error {
   constructor(
-    readonly code: 'unauthorized' | 'invalid_request' | 'not_found' | 'ineligible' | 'backend_failure',
+    readonly code:
+      | 'unauthorized'
+      | 'invalid_request'
+      | 'not_found'
+      | 'ineligible'
+      | 'backend_failure',
     message: string,
     options?: ErrorOptions,
   ) {
@@ -307,23 +317,33 @@ async function resolveItem(
     );
   }
 
-  if (proposal.assetSlug === null) issues.push('An Asset slug is required for canonical payment application.');
+  if (proposal.assetSlug === null)
+    issues.push('An Asset slug is required for canonical payment application.');
   else if (asset === null) issues.push(`Asset ${proposal.assetSlug} does not exist.`);
   else if (asset.status !== 'active') issues.push(`Asset ${proposal.assetSlug} is not active.`);
 
-  if (proposal.networkSlug === null) issues.push('A Network slug is required for canonical payment application.');
+  if (proposal.networkSlug === null)
+    issues.push('A Network slug is required for canonical payment application.');
   else if (network === null) issues.push(`Network ${proposal.networkSlug} does not exist.`);
-  else if (network.status !== 'active') issues.push(`Network ${proposal.networkSlug} is not active.`);
+  else if (network.status !== 'active')
+    issues.push(`Network ${proposal.networkSlug} is not active.`);
 
-  if (proposal.paymentMethod === null) issues.push('A Payment Method is required for canonical payment application.');
-  else if (paymentMethod === null) issues.push(`Payment Method ${proposal.paymentMethod} does not exist.`);
-  else if (paymentMethod.status !== 'active') issues.push(`Payment Method ${proposal.paymentMethod} is not active.`);
+  if (proposal.paymentMethod === null)
+    issues.push('A Payment Method is required for canonical payment application.');
+  else if (paymentMethod === null)
+    issues.push(`Payment Method ${proposal.paymentMethod} does not exist.`);
+  else if (paymentMethod.status !== 'active')
+    issues.push(`Payment Method ${proposal.paymentMethod} is not active.`);
 
-  if (proposal.routeType === null) issues.push('A route type is required for canonical payment application.');
+  if (proposal.routeType === null)
+    issues.push('A route type is required for canonical payment application.');
   if (proposal.routeType === 'direct_wallet' && proposal.paymentMethod === 'processor_checkout') {
     issues.push('Direct-wallet proposals cannot use the processor-checkout Payment Method.');
   }
-  if (proposal.routeType === 'processor_checkout' && proposal.paymentMethod !== 'processor_checkout') {
+  if (
+    proposal.routeType === 'processor_checkout' &&
+    proposal.paymentMethod !== 'processor_checkout'
+  ) {
     issues.push('Processor-checkout proposals must use the processor-checkout Payment Method.');
   }
 
@@ -349,7 +369,8 @@ async function resolveItem(
           (expectedWebsite === null || normalizedUrl(candidate.websiteUrl) === expectedWebsite),
       );
       if (matches.length === 1) processor = matches[0] ?? null;
-      else if (matches.length === 0) issues.push('No exact active payment processor matches the submitted identity.');
+      else if (matches.length === 0)
+        issues.push('No exact active payment processor matches the submitted identity.');
       else issues.push('Multiple active payment processors match the submitted identity.');
     }
   } else if (proposal.processor !== null) {
@@ -418,7 +439,10 @@ export async function readBusinessClaimPaymentPreview(
   }
   const applicationIdResult = z.uuid().safeParse(applicationId);
   if (!applicationIdResult.success || Number.isNaN(generatedAt.getTime())) {
-    throw new BusinessClaimPaymentPreviewError('invalid_request', 'The payment preview request is invalid.');
+    throw new BusinessClaimPaymentPreviewError(
+      'invalid_request',
+      'The payment preview request is invalid.',
+    );
   }
 
   let state: BusinessClaimPaymentPreviewState | null;
@@ -432,7 +456,10 @@ export async function readBusinessClaimPaymentPreview(
     );
   }
   if (state === null) {
-    throw new BusinessClaimPaymentPreviewError('not_found', 'The Business Claim application was not found.');
+    throw new BusinessClaimPaymentPreviewError(
+      'not_found',
+      'The Business Claim application was not found.',
+    );
   }
   const { payload, target } = assertEligible(state);
   const paymentApplication = payload.projection.paymentApplication;

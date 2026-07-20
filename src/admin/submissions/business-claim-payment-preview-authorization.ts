@@ -8,7 +8,10 @@ const subjectsSchema = z
   .max(50)
   .superRefine((subjects, context) => {
     if (new Set(subjects).size !== subjects.length) {
-      context.addIssue({ code: 'custom', message: 'Business Claim payment preview subjects must be unique.' });
+      context.addIssue({
+        code: 'custom',
+        message: 'Business Claim payment preview subjects must be unique.',
+      });
     }
   });
 

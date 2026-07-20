@@ -96,7 +96,11 @@ export function createDrizzleBusinessClaimPaymentPreviewBackend(
         }
       } else if (submission.targetType === 'location' && submission.targetId !== null) {
         const rows = await database
-          .select({ id: locations.id, entityId: locations.entityId, deletedAt: locations.deletedAt })
+          .select({
+            id: locations.id,
+            entityId: locations.entityId,
+            deletedAt: locations.deletedAt,
+          })
           .from(locations)
           .where(eq(locations.id, submission.targetId))
           .limit(1);

@@ -19,9 +19,9 @@ const generatedAt = new Date('2026-07-20T07:00:00.000Z');
 const context = {
   actorId: 'reviewer:payment-preview',
   actorType: 'human' as const,
-  capabilities: [
+  capabilities: ['submission:business-claim-payment-preview:read'] as [
     'submission:business-claim-payment-preview:read',
-  ] as ['submission:business-claim-payment-preview:read'],
+  ],
 };
 
 function internalNote(routeType: 'direct_wallet' | 'processor_checkout' = 'direct_wallet') {
@@ -29,7 +29,8 @@ function internalNote(routeType: 'direct_wallet' | 'processor_checkout' = 'direc
     assetSlug: 'bitcoin',
     networkSlug: 'bitcoin',
     routeType,
-    paymentMethod: routeType === 'direct_wallet' ? ('onchain' as const) : ('processor_checkout' as const),
+    paymentMethod:
+      routeType === 'direct_wallet' ? ('onchain' as const) : ('processor_checkout' as const),
     processor:
       routeType === 'direct_wallet'
         ? null
@@ -74,8 +75,9 @@ function internalNote(routeType: 'direct_wallet' | 'processor_checkout' = 'direc
   });
 }
 
-function state(routeType: 'direct_wallet' | 'processor_checkout' = 'direct_wallet'):
-  BusinessClaimPaymentPreviewState {
+function state(
+  routeType: 'direct_wallet' | 'processor_checkout' = 'direct_wallet',
+): BusinessClaimPaymentPreviewState {
   return {
     application: {
       applicationId,
@@ -148,9 +150,7 @@ function backend(initial: BusinessClaimPaymentPreviewState): BusinessClaimPaymen
       return id === applicationId ? structuredClone(initial) : null;
     },
     async readAssetBySlug(slug) {
-      return slug === 'bitcoin'
-        ? { id: assetId, slug, symbol: 'BTC', status: 'active' }
-        : null;
+      return slug === 'bitcoin' ? { id: assetId, slug, symbol: 'BTC', status: 'active' } : null;
     },
     async readNetworkBySlug(slug) {
       return slug === 'bitcoin' ? { id: networkId, slug, status: 'active' } : null;

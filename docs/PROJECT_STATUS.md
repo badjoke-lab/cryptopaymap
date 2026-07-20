@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07E1 — Business Claim application-order correction
+P5-07E2 — Protected Business Claim payment-draft preview
 
 ## Current repository state
 
@@ -24,12 +24,13 @@ P5-07E1 — Business Claim application-order correction
 - P5-07D5 Claim Asset set replacement preview completed in #252.
 - P5-07D6 durable Claim Asset replacement plan completed in #253.
 - P5-07D7 atomic complete Claim Asset replacement completed in #254.
-- P5-07E1 is active in PR #255 on `p5-07e1-business-claim-application-order`.
+- P5-07E1 Business Claim application-order correction completed in #255.
+- P5-07E2 is active on `p5-07e2-business-claim-payment-preview`.
 
 ## Latest verified main
 
 ```text
-3d4e68ae2280807b7c0c9083f041425ebc42c19e
+482a99252019be34e11f1fb2ef6a0499d481cb4e
 ```
 
 The final P5-07D7 head passed all four normal workflow groups.
@@ -37,20 +38,18 @@ The final P5-07D7 head passed all four normal workflow groups.
 ## Active pull request
 
 ```text
-#255 — P5-07E1 Business Claim application ordering
+p5-07e2-business-claim-payment-preview — Business Claim payment preview
 ```
 
 ## Current boundary
 
-P5-07E1 prevents a Business Claim field-application event from completing the common application while accepted private payment drafts remain unconsumed.
+P5-07E2 may read only the exact pending Business Claim application, durable accepted payment drafts, canonical target, active registries, processor candidates, and compatible Claim/Claim Asset state.
 
-It may parse the exact field event, derive pending payment work, preserve no-payment completion, and add focused tests and audit documentation.
-
-It must not create or mutate Claims, Claim Assets, registries, provenance, Entity, Location, export, release, retention, schema, or deployment state.
+It classifies each accepted draft without guessing and returns a deterministic `draftSetHash`. It must not mutate canonical or lifecycle state.
 
 ## Next
 
-Implement P5-07E2 as the protected exact payment-draft and canonical-target preview. Provenance completion and canonical payment application remain separate atomic owners after the preview.
+Implement P5-07E3 as a durable exact payment application plan bound to the E2 preview and explicit reviewer selection. Canonical payment application and Entity/Location provenance remain later separate atomic owners.
 
 ## Blocked
 
@@ -67,5 +66,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
 - `docs/P5_07D7_CLAIM_ASSET_REPLACEMENT_APPLICATION.md`
 - `docs/P5_07E1_BUSINESS_CLAIM_APPLICATION_ORDER.md`
+- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`
