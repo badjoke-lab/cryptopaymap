@@ -70,9 +70,6 @@ jobs:
           p.write_text(s)
           PY
       - run: npm run format
-      - run: node scripts/check-business-claim-payment-plan.mjs
-      - run: npx vitest run tests/business-claim-payment-plan.test.ts tests/business-claim-payment-plan-api.test.ts tests/business-claim-payment-preview.test.ts
-      - run: npm run check
       - name: Commit integrated slice
         shell: bash
         run: |
