@@ -12,7 +12,8 @@ const packageMarker =
 const packageReplacement =
   'node scripts/check-business-claim-payment-plan.mjs && node scripts/check-business-claim-payment-application.mjs && tsx scripts/check-positive-payment-evidence.ts';
 if (!packageText.includes(packageReplacement)) {
-  if (!packageText.includes(packageMarker)) throw new Error('package schema:check marker is missing.');
+  if (!packageText.includes(packageMarker))
+    throw new Error('package schema:check marker is missing.');
   packageText = packageText.replace(packageMarker, packageReplacement);
   writeFileSync(packagePath, packageText);
 }
@@ -23,10 +24,7 @@ backend = backend.replace(
   "import { and, asc, eq, inArray, isNull, sql } from 'drizzle-orm';",
   "import { and, asc, eq, inArray, sql } from 'drizzle-orm';",
 );
-backend = backend.replace(
-  /\nconst paymentMethodSlugs = \[[\s\S]*?\] as const;\n/,
-  '\n',
-);
+backend = backend.replace(/\nconst paymentMethodSlugs = \[[\s\S]*?\] as const;\n/, '\n');
 writeFileSync(backendPath, backend);
 
 const e3Path = 'docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md';

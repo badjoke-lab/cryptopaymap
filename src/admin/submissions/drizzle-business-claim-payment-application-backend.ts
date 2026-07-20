@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNull, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   acceptanceClaims,
@@ -32,17 +32,6 @@ import {
   type BusinessClaimPaymentApplicationState,
   type BusinessClaimPaymentExpectedClaim,
 } from './business-claim-payment-application';
-
-const paymentMethodSlugs = [
-  'onchain',
-  'lightning_invoice',
-  'lightning_nfc',
-  'wallet_qr',
-  'processor_checkout',
-  'pos_terminal',
-  'invoice',
-  'payment_link',
-] as const;
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
@@ -167,8 +156,7 @@ function replayReceipt(
     payload.expectedPlanCreatedAt !== command.planCreatedAt.toISOString() ||
     payload.appliedAt !== event.createdAt ||
     JSON.stringify(payload.createdClaimIds) !== JSON.stringify(createdClaimIds) ||
-    JSON.stringify(payload.insertedClaimAssetRowIds) !==
-      JSON.stringify(insertedClaimAssetRowIds) ||
+    JSON.stringify(payload.insertedClaimAssetRowIds) !== JSON.stringify(insertedClaimAssetRowIds) ||
     JSON.stringify(payload.alreadyPresentClaimAssetRowIds) !==
       JSON.stringify(alreadyPresentClaimAssetRowIds) ||
     JSON.stringify(payload.verificationEvents) !== JSON.stringify(verificationReferences)
@@ -240,7 +228,9 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
           readEvent(database, planId),
           readEvent(database, applicationEventId),
         ]);
-      const planPayload = parseBusinessClaimPaymentPlanEventPayload(planEvent?.internalNote ?? null);
+      const planPayload = parseBusinessClaimPaymentPlanEventPayload(
+        planEvent?.internalNote ?? null,
+      );
       const applicationPayload = parseBusinessClaimPaymentApplicationEventPayload(
         applicationEvent?.internalNote ?? null,
       );
@@ -343,11 +333,7 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
           .where(eq(locations.id, submission.targetId))
           .limit(1);
         const row = rows[0];
-        if (
-          row !== undefined &&
-          row.locationDeletedAt === null &&
-          row.entityDeletedAt === null
-        ) {
+        if (row !== undefined && row.locationDeletedAt === null && row.entityDeletedAt === null) {
           target = {
             targetType: 'location',
             targetId: row.locationId,
@@ -446,9 +432,7 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
       if (existing !== null) return replayReceipt(existing, command);
 
       const createdClaimIds = command.plannedClaims.map((claim) => claim.claimId).sort();
-      const insertedItems = command.items.filter(
-        (item) => item.operation === 'insert_claim_asset',
-      );
+      const insertedItems = command.items.filter((item) => item.operation === 'insert_claim_asset');
       const preservedItems = command.items.filter((item) => item.operation === 'already_present');
       const insertedClaimAssetRowIds = insertedItems
         .map((item) => item.plannedClaimAssetRowId as string)
@@ -486,9 +470,7 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
       const existingClaimGuards = command.expectedExistingClaims.map(claimGuard);
       const assetIds = [...new Set(command.items.map((item) => item.asset.id))];
       const networkIds = [...new Set(command.items.map((item) => item.network.id))];
-      const paymentMethodIds = [
-        ...new Set(command.items.map((item) => item.paymentMethod.id)),
-      ];
+      const paymentMethodIds = [...new Set(command.items.map((item) => item.paymentMethod.id))];
       const processorIds = [
         ...new Set(
           command.items.flatMap((item) => (item.processor === null ? [] : [item.processor.id])),
@@ -518,7 +500,8 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
         ),
       ];
       const plannedAbsentGuards = createdClaimIds.map(
-        (id) => sql`not exists (select 1 from ${acceptanceClaims} where ${acceptanceClaims.id} = ${id})`,
+        (id) =>
+          sql`not exists (select 1 from ${acceptanceClaims} where ${acceptanceClaims.id} = ${id})`,
       );
       const insertedAbsentGuards = insertedClaimAssetRowIds.map(
         (id) => sql`not exists (select 1 from ${claimAssets} where ${claimAssets.id} = ${id})`,

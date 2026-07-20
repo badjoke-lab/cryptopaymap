@@ -63,9 +63,7 @@ async function sha256(value: unknown): Promise<string> {
     'SHA-256',
     new TextEncoder().encode(JSON.stringify(canonicalize(value))),
   );
-  return [...new Uint8Array(digest)]
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
+  return [...new Uint8Array(digest)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
 }
 
 function application(): SubmissionApplicationLifecycleRecord {
@@ -280,7 +278,11 @@ function baseState(
   claims: BusinessClaimPaymentApplicationState['claims'],
   rows: BusinessClaimPaymentApplicationState['rows'],
 ): BusinessClaimPaymentApplicationState {
-  const event = (id: string, action: string, createdAt: string): BusinessClaimPaymentApplicationEventRecord => ({
+  const event = (
+    id: string,
+    action: string,
+    createdAt: string,
+  ): BusinessClaimPaymentApplicationEventRecord => ({
     eventId: id,
     submissionId,
     fromStatus: null,
@@ -306,7 +308,11 @@ function baseState(
       workflowStatus: 'resolved',
       resolution: 'approved',
     },
-    sourceDecisionEvent: event(sourceDecisionEventId, 'business_claim_relationship_approved', registeredAt),
+    sourceDecisionEvent: event(
+      sourceDecisionEventId,
+      'business_claim_relationship_approved',
+      registeredAt,
+    ),
     fieldApplicationEvent: event(fieldEventId, 'business_claim_fields_applied', registeredAt),
     planEvent: event(planId, 'business_claim_payment_plan_prepared', plannedAt),
     applicationEvent: null,
@@ -399,7 +405,9 @@ class Store implements BusinessClaimPaymentApplicationBackend {
       const claim = this.state.claims.find((item) => item.claimId === expected.claimId);
       if (claim !== undefined) claim.updatedAt = applied;
     }
-    for (const item of command.items.filter((candidate) => candidate.operation === 'insert_claim_asset')) {
+    for (const item of command.items.filter(
+      (candidate) => candidate.operation === 'insert_claim_asset',
+    )) {
       this.state.rows.push({
         rowId: item.plannedClaimAssetRowId as string,
         claimId: item.targetClaimId,

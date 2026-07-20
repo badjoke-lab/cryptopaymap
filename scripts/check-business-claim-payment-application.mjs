@@ -31,11 +31,11 @@ function requireMarkers(file, markers, label) {
 requireMarkers(
   files.contract,
   [
-    "business-claim-payment-application-v1",
-    "business-claim-payment-application-event-v1",
-    "business-claim-payment-source-v1",
-    "already_applied",
-    "expectedDraftSetHash",
+    'business-claim-payment-application-v1',
+    'business-claim-payment-application-event-v1',
+    'business-claim-payment-source-v1',
+    'already_applied',
+    'expectedDraftSetHash',
   ],
   'E4 contract',
 );
@@ -43,15 +43,15 @@ requireMarkers(
 requireMarkers(
   files.service,
   [
-    "parseBusinessClaimPaymentPlanEventPayload",
-    "assertPlanShape",
-    "exact durable Business Claim payment plan",
-    "exactly one primary row",
-    "final existing Claim payment set would contain multiple primary rows",
-    "verifyCanonicalReplayState",
-    "transitionSubmissionApplicationLifecycle",
-    "submission:business-claim-payments:apply",
-    "business_claim_payments_applied",
+    'parseBusinessClaimPaymentPlanEventPayload',
+    'assertPlanShape',
+    'exact durable Business Claim payment plan',
+    'exactly one primary row',
+    'final existing Claim payment set would contain multiple primary rows',
+    'verifyCanonicalReplayState',
+    'transitionSubmissionApplicationLifecycle',
+    'submission:business-claim-payments:apply',
+    'business_claim_payments_applied',
   ],
   'E4 service',
 );
@@ -59,15 +59,15 @@ requireMarkers(
 requireMarkers(
   files.backend,
   [
-    "pg_advisory_xact_lock",
-    "business_claim_payment_plan_prepared",
-    "business_claim_payments_applied",
-    "business_claim_payment_information_applied",
-    "database.insert(acceptanceClaims)",
-    "database.insert(claimAssets)",
-    "database.insert(sourceRecords)",
-    "database.insert(provenanceLinks)",
-    "database.insert(verificationEvents)",
+    'pg_advisory_xact_lock',
+    'business_claim_payment_plan_prepared',
+    'business_claim_payments_applied',
+    'business_claim_payment_information_applied',
+    'database.insert(acceptanceClaims)',
+    'database.insert(claimAssets)',
+    'database.insert(sourceRecords)',
+    'database.insert(provenanceLinks)',
+    'database.insert(verificationEvents)',
     "sourceType} = 'business_representative'",
     "application.application_status = 'pending'",
     "application.publication_status = 'blocked'",
@@ -87,9 +87,9 @@ if (
 requireMarkers(
   files.authorization,
   [
-    "CPM_ADMIN_BUSINESS_CLAIM_PAYMENT_APPLY_SUBJECTS",
-    "CPM_BUSINESS_CLAIM_SOURCE_ID",
-    "submission:business-claim-payments:apply",
+    'CPM_ADMIN_BUSINESS_CLAIM_PAYMENT_APPLY_SUBJECTS',
+    'CPM_BUSINESS_CLAIM_SOURCE_ID',
+    'submission:business-claim-payments:apply',
   ],
   'E4 authorization',
 );
@@ -97,8 +97,8 @@ requireMarkers(
   files.route,
   [
     "Cache-Control': 'private, no-store'",
-    "business_claim_payment_apply_conflict",
-    "business_claim_payment_apply_ineligible",
+    'business_claim_payment_apply_conflict',
+    'business_claim_payment_apply_ineligible',
   ],
   'E4 protected route',
 );

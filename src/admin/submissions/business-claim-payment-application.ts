@@ -605,7 +605,9 @@ async function buildExecution(
         'A planned Claim Asset row ID already exists.',
       );
     }
-    for (const item of payload.items.filter((candidate) => candidate.operation === 'already_present')) {
+    for (const item of payload.items.filter(
+      (candidate) => candidate.operation === 'already_present',
+    )) {
       const row = exactRow(state, itemRowId(item));
       if (
         row === null ||
@@ -781,7 +783,10 @@ async function verifyCanonicalReplayState(
     );
   }
   const actualVerification = state.verificationEvents
-    .map((item) => `${item.claimId}:${item.eventId}:${item.eventType}:${item.reasonCode}:${item.effectiveAt}`)
+    .map(
+      (item) =>
+        `${item.claimId}:${item.eventId}:${item.eventType}:${item.reasonCode}:${item.effectiveAt}`,
+    )
     .sort();
   const expectedVerification = verificationEvents
     .map(
@@ -1025,7 +1030,8 @@ export async function applyBusinessClaimPaymentApplication(
       state.applicationEvent.action !== 'business_claim_payments_applied' ||
       state.applicationEvent.reasonCode !== 'business_claim_payment_information_applied' ||
       state.applicationEvent.actorId !== context.actorId ||
-      state.applicationEvent.actorType !== (context.actorType === 'human' ? 'reviewer' : 'system') ||
+      state.applicationEvent.actorType !==
+        (context.actorType === 'human' ? 'reviewer' : 'system') ||
       eventPayload.requestFingerprint !== requestFingerprint ||
       eventPayload.applicationId !== state.application.applicationId ||
       eventPayload.planId !== execution.payload.planId ||
