@@ -17,6 +17,18 @@ if (!packageText.includes(packageReplacement)) {
   writeFileSync(packagePath, packageText);
 }
 
+const backendPath = 'src/admin/submissions/drizzle-business-claim-payment-application-backend.ts';
+let backend = readFileSync(backendPath, 'utf8');
+backend = backend.replace(
+  "import { and, asc, eq, inArray, isNull, sql } from 'drizzle-orm';",
+  "import { and, asc, eq, inArray, sql } from 'drizzle-orm';",
+);
+backend = backend.replace(
+  /\nconst paymentMethodSlugs = \[[\s\S]*?\] as const;\n/,
+  '\n',
+);
+writeFileSync(backendPath, backend);
+
 const e3Path = 'docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md';
 let e3 = readFileSync(e3Path, 'utf8');
 e3 = e3.replace('**Status:** Active', '**Status:** Completed in #257');
