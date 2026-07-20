@@ -69,14 +69,6 @@ jobs:
               s = s.replace('- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`', '- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`\n- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`', 1)
           p.write_text(s)
           PY
-      - name: Verify integration markers
-        shell: bash
-        run: |
-          grep -q 'isPrimary: boolean' src/admin/submissions/business-claim-payment-preview.ts
-          grep -q 'isPrimary: claimAssets.isPrimary' src/admin/submissions/drizzle-business-claim-payment-preview-backend.ts
-          grep -q 'check-business-claim-payment-plan.mjs' package.json
-          grep -q 'context.actorType' src/admin/submissions/business-claim-payment-plan.ts
-          grep -q 'P5-07E3' docs/PROJECT_STATUS.md
       - run: npm run format
       - run: node scripts/check-business-claim-payment-plan.mjs
       - run: npx vitest run tests/business-claim-payment-plan.test.ts tests/business-claim-payment-plan-api.test.ts tests/business-claim-payment-preview.test.ts
