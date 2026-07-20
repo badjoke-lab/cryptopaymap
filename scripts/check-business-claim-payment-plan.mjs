@@ -57,7 +57,8 @@ const route = read(
   'functions/admin/api/business-claim-applications/[applicationId]/plan-payments.ts',
 );
 assert.ok(route.includes("'Cache-Control': 'private, no-store'"));
-assert.ok(route.includes('CPM_ADMIN_BUSINESS_CLAIM_PAYMENT_PLAN_SUBJECTS'));
+const authorization = read('src/admin/submissions/business-claim-payment-plan-authorization.ts');
+assert.ok(authorization.includes('CPM_ADMIN_BUSINESS_CLAIM_PAYMENT_PLAN_SUBJECTS'));
 assert.ok(route.includes('readProtectedAdminIdentity'));
 assert.ok(route.includes('onRequestPost'));
 

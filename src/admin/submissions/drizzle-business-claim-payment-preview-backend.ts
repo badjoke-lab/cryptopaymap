@@ -154,6 +154,7 @@ export function createDrizzleBusinessClaimPaymentPreviewBackend(
             networkId: claimAssets.networkId,
             paymentMethodId: claimAssets.paymentMethodId,
             contractAddress: claimAssets.contractAddress,
+            isPrimary: claimAssets.isPrimary,
           })
           .from(claimAssets)
           .where(eq(claimAssets.claimId, claim.claimId))

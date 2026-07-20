@@ -33,14 +33,14 @@ const context = {
   ],
 };
 
-function proposal(isPrimary = true) {
+function proposal(isPrimary = true, contractAddress: string | null = null) {
   return {
     assetSlug: 'bitcoin',
     networkSlug: 'bitcoin',
     routeType: 'direct_wallet' as const,
     paymentMethod: 'onchain' as const,
     processor: null,
-    contractAddress: null,
+    contractAddress,
     howToPay: 'Pay at checkout.',
     restrictions: null,
     isPrimary,
@@ -327,7 +327,7 @@ describe('P5-07E3 Business Claim payment plan', () => {
   });
 
   it('groups compatible no-Claim drafts into one deterministic hidden candidate Claim', async () => {
-    const proposals = [proposal(true), { ...proposal(false), contractAddress: 'bc1-example' }];
+    const proposals = [proposal(true), proposal(false, 'bc1-example')];
     const testBackend = backend(state([], proposals));
     const request = await requestFor(testBackend);
     const receipt = await prepareBusinessClaimPaymentPlan(
