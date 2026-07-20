@@ -123,6 +123,7 @@ export interface BusinessClaimPaymentPreviewClaimAssetState {
   networkId: string;
   paymentMethodId: string;
   contractAddress: string | null;
+  isPrimary: boolean;
 }
 
 export interface BusinessClaimPaymentPreviewClaimState {
