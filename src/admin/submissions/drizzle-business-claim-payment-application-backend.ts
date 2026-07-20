@@ -254,12 +254,15 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
                 locationId: acceptanceClaims.locationId,
                 claimScope: acceptanceClaims.claimScope,
                 routeType: acceptanceClaims.routeType,
+                acceptanceScope: acceptanceClaims.acceptanceScope,
                 processorId: acceptanceClaims.processorId,
                 customerPaysCrypto: acceptanceClaims.customerPaysCrypto,
                 merchantExplicitlyAcceptsCrypto: acceptanceClaims.merchantExplicitlyAcceptsCrypto,
                 claimStatus: acceptanceClaims.claimStatus,
                 visibility: acceptanceClaims.visibility,
                 howToPay: acceptanceClaims.howToPay,
+                instructionsLanguage: acceptanceClaims.instructionsLanguage,
+                merchantReceives: acceptanceClaims.merchantReceives,
                 restrictions: acceptanceClaims.restrictions,
                 createdAt: acceptanceClaims.createdAt,
                 updatedAt: acceptanceClaims.updatedAt,
@@ -778,12 +781,15 @@ export function createDrizzleBusinessClaimPaymentApplicationBackend(
                 and ${acceptanceClaims.locationId} is not distinct from ${claim.locationId}
                 and ${acceptanceClaims.claimScope} = ${claim.claimScope}
                 and ${acceptanceClaims.routeType} = ${claim.routeType}
+                and ${acceptanceClaims.acceptanceScope} = 'all_checkout'
                 and ${acceptanceClaims.processorId} is not distinct from ${claim.processorId}
                 and ${acceptanceClaims.customerPaysCrypto} = true
                 and ${acceptanceClaims.merchantExplicitlyAcceptsCrypto} = true
                 and ${acceptanceClaims.claimStatus} = 'candidate'
                 and ${acceptanceClaims.visibility} = 'hidden'
                 and ${acceptanceClaims.howToPay} is not distinct from ${claim.howToPay}
+                and ${acceptanceClaims.instructionsLanguage} = 'en'
+                and ${acceptanceClaims.merchantReceives} = 'not_publicly_confirmed'
                 and ${acceptanceClaims.restrictions} is not distinct from ${claim.restrictions}
                 and ${acceptanceClaims.createdAt} = ${command.appliedAt}
                 and ${acceptanceClaims.updatedAt} = ${command.appliedAt}

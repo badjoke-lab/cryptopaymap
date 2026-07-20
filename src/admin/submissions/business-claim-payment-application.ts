@@ -49,12 +49,15 @@ export interface BusinessClaimPaymentApplicationClaimState {
   locationId: string | null;
   claimScope: string;
   routeType: string;
+  acceptanceScope: string;
   processorId: string | null;
   customerPaysCrypto: boolean;
   merchantExplicitlyAcceptsCrypto: boolean;
   claimStatus: string;
   visibility: string;
   howToPay: string | null;
+  instructionsLanguage: string;
+  merchantReceives: string;
   restrictions: string | null;
   createdAt: string;
   updatedAt: string;
@@ -723,12 +726,15 @@ async function verifyCanonicalReplayState(
       claim.locationId !== planned.locationId ||
       claim.claimScope !== planned.claimScope ||
       claim.routeType !== planned.routeType ||
+      claim.acceptanceScope !== 'all_checkout' ||
       claim.processorId !== planned.processorId ||
       claim.customerPaysCrypto !== true ||
       claim.merchantExplicitlyAcceptsCrypto !== true ||
       claim.claimStatus !== 'candidate' ||
       claim.visibility !== 'hidden' ||
       claim.howToPay !== planned.howToPay ||
+      claim.instructionsLanguage !== 'en' ||
+      claim.merchantReceives !== 'not_publicly_confirmed' ||
       claim.restrictions !== planned.restrictions ||
       claim.createdAt !== appliedAt ||
       claim.updatedAt !== appliedAt ||

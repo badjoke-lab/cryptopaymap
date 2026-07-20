@@ -31,7 +31,7 @@ const newVerificationBlock = `          ) and \${allGuards(
           and (`;
 if (backend.includes(oldVerificationBlock)) {
   backend = backend.replace(oldVerificationBlock, newVerificationBlock);
-} else if (!backend.includes("and ${allGuards(\n            command.verificationEvents.map(")) {
+} else if (!backend.includes('and ${allGuards(\n            command.verificationEvents.map(')) {
   throw new Error('Verification Event exists guards are missing.');
 }
 writeFileSync(backendPath, backend);
@@ -60,7 +60,7 @@ replaceOnce(
 replaceOnce(
   backendPath,
   `                and \${acceptanceClaims.routeType} = \${claim.routeType}
-                and \${acceptanceClaims.processorId} is not distinct from \${claim.processorId}`, 
+                and \${acceptanceClaims.processorId} is not distinct from \${claim.processorId}`,
   `                and \${acceptanceClaims.routeType} = \${claim.routeType}
                 and \${acceptanceClaims.acceptanceScope} = 'all_checkout'
                 and \${acceptanceClaims.processorId} is not distinct from \${claim.processorId}`,
