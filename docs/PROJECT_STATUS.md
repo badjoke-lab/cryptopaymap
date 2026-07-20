@@ -26,7 +26,7 @@ P5-07E3 — Durable Business Claim payment application plan
 - P5-07D7 atomic complete Claim Asset replacement completed in #254.
 - P5-07E1 Business Claim application-order correction completed in #255.
 - P5-07E2 protected Business Claim payment-draft preview completed in #256.
-- P5-07E3 is active on `p5-07e3-business-claim-payment-plan`.
+- P5-07E3 is active in PR #257 on `p5-07e3-business-claim-payment-plan`.
 
 ## Latest verified main
 
@@ -39,18 +39,18 @@ The final P5-07E2 head passed all four normal workflow groups.
 ## Active pull request
 
 ```text
-p5-07e3-business-claim-payment-plan — Business Claim payment plan
+#257 — P5-07E3 durable Business Claim payment plan
 ```
 
 ## Current boundary
 
-P5-07E2 may read only the exact pending Business Claim application, durable accepted payment drafts, canonical target, active registries, processor candidates, and compatible Claim/Claim Asset state.
+P5-07E3 may persist one exact private payment plan bound to the E2 `draftSetHash`, current target versions, selected existing Claim versions, complete selected Claim Asset set hashes, and explicit reviewer selections for ambiguous drafts.
 
-It classifies each accepted draft without guessing and returns a deterministic `draftSetHash`. It must not mutate canonical or lifecycle state.
+It derives candidate Claim IDs, Claim Asset row IDs, registries, processors, duplicate rows, and primary-row safety on the server. It must not mutate canonical Claims, Claim Assets, provenance, verification history, lifecycle, export, or release.
 
 ## Next
 
-Implement P5-07E3 as a durable exact payment application plan bound to the E2 preview and explicit reviewer selection. Canonical payment application and Entity/Location provenance remain later separate atomic owners.
+Implement P5-07E4 as the atomic consumer of one exact E3 plan. It should create planned hidden candidate Claims, insert planned Claim Asset rows, preserve already-present rows, write payment provenance and verification history, and commit the common application with replay-safe recovery. Entity and Location field-level provenance remains a separate atomic owner.
 
 ## Blocked
 
