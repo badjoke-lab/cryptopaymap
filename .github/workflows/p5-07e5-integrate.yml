@@ -27,6 +27,7 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: node scripts/p5-07e5-integrate.mjs
+      - run: node scripts/p5-07e5-type-fix.mjs
       - run: npm run format
       - run: npm run lint
       - run: node scripts/check-business-claim-field-provenance.mjs
