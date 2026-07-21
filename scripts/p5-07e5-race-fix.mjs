@@ -15,6 +15,15 @@ if (!service.includes(serviceReplacement)) {
 
 const testPath = 'tests/business-claim-field-provenance.test.ts';
 let test = readFileSync(testPath, 'utf8');
+const importMarker = `  completeBusinessClaimFieldProvenance,
+  type BusinessClaimFieldProvenanceBackend,`;
+const importReplacement = `  completeBusinessClaimFieldProvenance,
+  BusinessClaimFieldProvenanceError,
+  type BusinessClaimFieldProvenanceBackend,`;
+if (!test.includes(importReplacement)) {
+  if (!test.includes(importMarker)) throw new Error('race error import marker is missing.');
+  test = test.replace(importMarker, importReplacement);
+}
 const testMarker = `  it('fails closed when another active correction provenance owner exists', async () => {`;
 const testBlock = `  it('preserves a backend idempotency conflict raised during a commit race', async () => {
     const store = new Store(baseState());
@@ -40,8 +49,8 @@ const testBlock = `  it('preserves a backend idempotency conflict raised during 
 if (!test.includes(testBlock)) {
   if (!test.includes(testMarker)) throw new Error('race test marker is missing.');
   test = test.replace(testMarker, testBlock + testMarker);
-  writeFileSync(testPath, test);
 }
+writeFileSync(testPath, test);
 
 const auditPath = 'scripts/check-business-claim-field-provenance.mjs';
 let audit = readFileSync(auditPath, 'utf8');
