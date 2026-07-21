@@ -96,6 +96,7 @@ requireMarkers(
     'clear-to-null and clear-to-empty',
     'accepted canonical field changes',
     'replays the exact request',
+    'backend idempotency conflict raised during a commit race',
     'active correction provenance owner',
   ],
   'E5 service tests',

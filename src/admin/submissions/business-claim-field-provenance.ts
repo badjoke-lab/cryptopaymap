@@ -378,6 +378,7 @@ function verifyReplay(
 }
 
 function mapCommitError(error: unknown): never {
+  if (error instanceof BusinessClaimFieldProvenanceError) throw error;
   if (error instanceof SubmissionPersistenceError) {
     if (error.code === 'conflict') {
       throw new BusinessClaimFieldProvenanceError(

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   completeBusinessClaimFieldProvenance,
+  BusinessClaimFieldProvenanceError,
   type BusinessClaimFieldProvenanceBackend,
   type BusinessClaimFieldProvenanceContext,
   type BusinessClaimFieldProvenanceCommitCommand,
@@ -389,6 +390,26 @@ describe('P5-07E5 Business Claim field provenance completion', () => {
         completedAt,
       ),
     ).rejects.toMatchObject({ code: 'conflict' });
+  });
+
+  it('preserves a backend idempotency conflict raised during a commit race', async () => {
+    const store = new Store(baseState());
+    store.commitFieldProvenance = async () => {
+      throw new BusinessClaimFieldProvenanceError(
+        'idempotency_conflict',
+        'simulated changed-content race',
+      );
+    };
+    await expect(
+      completeBusinessClaimFieldProvenance(
+        context,
+        store,
+        submissionId,
+        sourceId,
+        request(),
+        completedAt,
+      ),
+    ).rejects.toMatchObject({ code: 'idempotency_conflict' });
   });
 
   it('fails closed when another active correction provenance owner exists', async () => {
