@@ -1,0 +1,35 @@
+name: P5-07E5 diagnose
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'p5-07e5-business-claim-field-provenance'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Integrate working tree
+        env:
+          PR_NUMBER: '259'
+        run: node scripts/p5-07e5-integrate.mjs
+      - run: npm run format
+      - name: Capture Astro and TypeScript diagnostics
+        shell: bash
+        run: npm run check > e5-check.log 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p5-07e5-type-diagnostics
+          path: e5-check.log
+          retention-days: 1
