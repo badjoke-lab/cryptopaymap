@@ -39,7 +39,11 @@ export const businessClaimFieldProvenanceSourcePayloadSchema = z
   .superRefine((payload, context) => {
     const paths = payload.fields.map((field) => field.fieldPath);
     if (new Set(paths).size !== paths.length) {
-      context.addIssue({ code: 'custom', path: ['fields'], message: 'Field paths must be unique.' });
+      context.addIssue({
+        code: 'custom',
+        path: ['fields'],
+        message: 'Field paths must be unique.',
+      });
     }
   });
 
@@ -65,7 +69,11 @@ export const businessClaimFieldProvenanceEventPayloadSchema = z
   .strict()
   .superRefine((payload, context) => {
     if (new Set(payload.fieldPaths).size !== payload.fieldPaths.length) {
-      context.addIssue({ code: 'custom', path: ['fieldPaths'], message: 'Field paths must be unique.' });
+      context.addIssue({
+        code: 'custom',
+        path: ['fieldPaths'],
+        message: 'Field paths must be unique.',
+      });
     }
   });
 

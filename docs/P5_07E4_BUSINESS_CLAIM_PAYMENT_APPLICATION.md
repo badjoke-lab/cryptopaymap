@@ -1,7 +1,7 @@
 # P5-07E4 Business Claim payment application
 
 **Implementation item:** P5-07E4  
-**Status:** Active  
+**Status:** Completed in #258  
 **Last updated:** 2026-07-20
 
 ## Purpose

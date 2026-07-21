@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-20
+**Last verified:** 2026-07-21
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07E4 — Atomic Business Claim payment application
+P5-07E5 — Business Claim field provenance completion
 
 ## Current repository state
 
@@ -27,31 +27,32 @@ P5-07E4 — Atomic Business Claim payment application
 - P5-07E1 Business Claim application-order correction completed in #255.
 - P5-07E2 protected Business Claim payment-draft preview completed in #256.
 - P5-07E3 durable Business Claim payment application plan completed in #257.
-- P5-07E4 is active in PR #258 on `p5-07e4-business-claim-payment-application`.
+- P5-07E4 atomic Business Claim payment application completed in #258.
+- P5-07E5 is active in PR #259 on `p5-07e5-business-claim-field-provenance`.
 
 ## Latest verified main
 
 ```text
-2cc89ee3db694c768d083ba67de12a056ec8926b
+6e02124d7501216b1338b03fdb8726dfac1eac04
 ```
 
-The final P5-07E3 head passed all four normal workflow groups.
+The final P5-07E4 head passed all four normal workflow groups.
 
 ## Active pull request
 
 ```text
-#258 — P5-07E4 atomic Business Claim payment application
+#259 — P5-07E5 Business Claim field provenance completion
 ```
 
 ## Current boundary
 
-P5-07E4 may consume only one exact private P5-07E3 plan. It atomically creates planned hidden candidate Claims, inserts planned Claim Asset rows, preserves already-present rows, writes one private Source Record, payment provenance, Verification Events, and one canonical Submission event.
+P5-07E5 consumes one exact private P5-04H2 `business_claim_fields_applied` event and completes the missing Entity or Location field-level provenance. It does not update the canonical target again.
 
-Entity and Location profile fields are not changed. Application lifecycle commit follows the canonical transaction and supports exact replay-safe recovery without a second canonical write.
+The operation verifies the current exact target version and every accepted H2 field value, writes one deterministic private Business Claim Source Record, closes the exact prior open non-correction field links at the H2 application time, inserts current `correction` links, and records one private completion event in the same transaction.
 
 ## Next
 
-Complete Entity and Location field-level provenance for H2-applied Business Claim field changes. Publication, export, and retention remain separate later owners.
+P5-07F reconciles Photos parent resolution, Media application receipts, and publication handoff. Export activation remains a separate later owner.
 
 ## Blocked
 
@@ -71,5 +72,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`
 - `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`
 - `docs/P5_07E4_BUSINESS_CLAIM_PAYMENT_APPLICATION.md`
+- `docs/P5_07E5_BUSINESS_CLAIM_FIELD_PROVENANCE.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`

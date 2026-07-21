@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   completeBusinessClaimFieldProvenance,
   type BusinessClaimFieldProvenanceBackend,
+  type BusinessClaimFieldProvenanceContext,
   type BusinessClaimFieldProvenanceCommitCommand,
   type BusinessClaimFieldProvenanceState,
 } from '../src/admin/submissions/business-claim-field-provenance';
@@ -24,22 +25,22 @@ const fieldAppliedAt = '2026-07-14T10:00:00.000Z';
 const targetUpdatedAt = '2026-07-20T08:00:00.000Z';
 const completedAt = new Date('2026-07-21T01:00:00.000Z');
 
-const context = {
+const context: BusinessClaimFieldProvenanceContext = {
   actorId: 'reviewer-e5',
-  actorType: 'human' as const,
-  capabilities: ['submission:business-claim-field-provenance:complete'] as const,
+  actorType: 'human',
+  capabilities: ['submission:business-claim-field-provenance:complete'],
 };
 
 function entityValue(websiteUrl: string | null = 'https://merchant.example/new') {
   return {
-    entityType: 'merchant',
+    entityType: 'merchant' as const,
     name: 'Merchant',
     slug: 'merchant',
     legalName: 'Merchant Ltd',
     websiteUrl,
     countryCode: 'JP',
-    entityStatus: 'active',
-    visibility: 'public',
+    entityStatus: 'active' as const,
+    visibility: 'public' as const,
   };
 }
 
@@ -54,8 +55,8 @@ function locationValue(description: string | null, amenities: string[]) {
     countryCode: 'JP',
     latitude: 35.68,
     longitude: 139.76,
-    locationStatus: 'active',
-    visibility: 'public',
+    locationStatus: 'active' as const,
+    visibility: 'public' as const,
     websiteUrl: 'https://merchant.example',
     phone: null,
     description,
@@ -172,7 +173,9 @@ function locationFieldEvent() {
   };
 }
 
-function baseState(targetType: 'entity' | 'location' = 'entity'): BusinessClaimFieldProvenanceState {
+function baseState(
+  targetType: 'entity' | 'location' = 'entity',
+): BusinessClaimFieldProvenanceState {
   const targetId = targetType === 'entity' ? entityId : locationId;
   return {
     submission: {
@@ -337,7 +340,10 @@ describe('P5-07E5 Business Claim field provenance completion', () => {
 
   it('rejects completion after an accepted canonical field changes', async () => {
     const state = baseState();
-    state.target = { ...(state.target as NonNullable<typeof state.target>), value: entityValue(null) };
+    state.target = {
+      ...(state.target as NonNullable<typeof state.target>),
+      value: entityValue(null),
+    };
     const store = new Store(state);
     await expect(
       completeBusinessClaimFieldProvenance(

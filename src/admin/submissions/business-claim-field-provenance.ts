@@ -1,7 +1,6 @@
 import { z } from 'zod';
 import { parseBusinessClaimFieldApplicationEventPayload } from '../../submissions/business-claim-field-application-persistence-contract';
 import {
-  businessClaimFieldProvenanceEventPayloadSchema,
   businessClaimFieldProvenanceReceiptSchema,
   businessClaimFieldProvenanceRequestSchema,
   businessClaimFieldProvenanceSourcePayloadSchema,
@@ -153,7 +152,6 @@ interface CompletionPlan {
   relationshipDecisionId: string;
   targetType: 'entity' | 'location';
   targetId: string;
-  targetUpdatedAt: string;
   fieldAppliedAt: string;
   fields: FieldPlan[];
   sourcePayload: BusinessClaimFieldProvenanceSourcePayload;
@@ -251,12 +249,14 @@ function buildPlan(
     );
   }
 
+  const beforeValues = application.before as unknown as Record<string, unknown>;
+  const afterValues = application.after as unknown as Record<string, unknown>;
   const fields = [...application.acceptedFields]
     .sort((left, right) => left.localeCompare(right))
     .map((fieldPath) => ({
       fieldPath,
-      beforeValue: application.before[fieldPath],
-      appliedValue: application.after[fieldPath],
+      beforeValue: beforeValues[fieldPath],
+      appliedValue: afterValues[fieldPath],
     }));
   for (const field of fields) {
     if (!sameValue(state.target.value[field.fieldPath], field.appliedValue)) {
@@ -286,7 +286,6 @@ function buildPlan(
     relationshipDecisionId: payload.projection.relationshipDecisionId,
     targetType,
     targetId: payload.projection.targetId,
-    targetUpdatedAt: state.target.updatedAt,
     fieldAppliedAt: payload.appliedAt,
     fields,
     sourcePayload,
@@ -380,13 +379,6 @@ function verifyReplay(
 
 function mapCommitError(error: unknown): never {
   if (error instanceof SubmissionPersistenceError) {
-    if (error.code === 'idempotency_conflict') {
-      throw new BusinessClaimFieldProvenanceError(
-        'idempotency_conflict',
-        'The field provenance request UUID was reused for different content.',
-        { cause: error },
-      );
-    }
     if (error.code === 'conflict') {
       throw new BusinessClaimFieldProvenanceError(
         'conflict',
@@ -496,7 +488,8 @@ export async function completeBusinessClaimFieldProvenance(
   const fieldPaths = plan.fields.map((field) => field.fieldPath);
   const openLinks = orderedLinks(
     state.provenanceLinks.filter(
-      (link) => link.fieldPath !== null && fieldPaths.includes(link.fieldPath) && link.effectiveTo === null,
+      (link) =>
+        link.fieldPath !== null && fieldPaths.includes(link.fieldPath) && link.effectiveTo === null,
     ),
   );
   if (openLinks.some((link) => link.provenanceRole === 'correction')) {
@@ -517,20 +510,6 @@ export async function completeBusinessClaimFieldProvenance(
       'A current provenance link starts after the H2 field application.',
     );
   }
-
-  const eventPayload = businessClaimFieldProvenanceEventPayloadSchema.parse({
-    schemaVersion: 'business-claim-field-provenance-event-v1',
-    requestFingerprint,
-    submissionId: plan.submissionId,
-    fieldApplicationEventId: plan.fieldApplicationEventId,
-    relationshipDecisionId: plan.relationshipDecisionId,
-    sourceRecordId,
-    target: { targetType: plan.targetType, targetId: plan.targetId },
-    fieldPaths,
-    expectedTargetUpdatedAt: request.expectedTargetUpdatedAt,
-    fieldAppliedAt: plan.fieldAppliedAt,
-    completedAt: completedAt.toISOString(),
-  });
 
   let commitReceipt: BusinessClaimFieldProvenanceCommitReceipt;
   try {

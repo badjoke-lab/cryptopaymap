@@ -334,6 +334,7 @@ export function createDrizzleBusinessClaimFieldProvenanceBackend(
             and ${provenanceLinks.effectiveTo} is null
         )`,
       );
+      const fieldPathGuard = inArray(provenanceLinks.fieldPath, command.fieldPaths);
       const targetGuard =
         command.targetType === 'entity'
           ? sql`exists (
@@ -395,14 +396,14 @@ export function createDrizzleBusinessClaimFieldProvenanceBackend(
             select 1 from ${submissionEvents} completion
             where completion.submission_id = ${command.submissionId}
               and completion.action = 'business_claim_field_provenance_completed'
-              and (completion.internal_note::jsonb ->> 'fieldApplicationEventId') = ${command.fieldApplicationEventId}
+              and (coalesce(completion.internal_note, '{}')::jsonb ->> 'fieldApplicationEventId') = ${command.fieldApplicationEventId}
           )
           and ${allGuards(expectedOpenGuards)}
           and (
             select count(*) from ${provenanceLinks}
             where ${provenanceLinks.subjectType} = ${command.targetType}
               and ${provenanceLinks.subjectId} = ${command.targetId}
-              and ${provenanceLinks.fieldPath} in ${command.fieldPaths}
+              and ${fieldPathGuard}
               and ${provenanceLinks.effectiveTo} is null
           ) = ${command.expectedOpenProvenance.length}
           then 1 else 0 end`,
@@ -488,7 +489,7 @@ export function createDrizzleBusinessClaimFieldProvenanceBackend(
             select count(*) from ${provenanceLinks}
             where ${provenanceLinks.subjectType} = ${command.targetType}
               and ${provenanceLinks.subjectId} = ${command.targetId}
-              and ${provenanceLinks.fieldPath} in ${command.fieldPaths}
+              and ${fieldPathGuard}
               and ${provenanceLinks.sourceRecordId} = ${command.sourceRecord.id}
               and ${provenanceLinks.provenanceRole} = 'correction'
               and ${provenanceLinks.effectiveFrom} = ${command.fieldAppliedAt}
@@ -498,7 +499,7 @@ export function createDrizzleBusinessClaimFieldProvenanceBackend(
             select count(*) from ${provenanceLinks}
             where ${provenanceLinks.subjectType} = ${command.targetType}
               and ${provenanceLinks.subjectId} = ${command.targetId}
-              and ${provenanceLinks.fieldPath} in ${command.fieldPaths}
+              and ${fieldPathGuard}
               and ${provenanceLinks.effectiveTo} is null
           ) = ${command.fieldPaths.length}
           then 1 else 0 end`,

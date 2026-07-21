@@ -39,7 +39,8 @@ replaceOnce(
   'service target version return',
 );
 const service = readFileSync(servicePath, 'utf8');
-const eventPayloadBlock = /\n  const eventPayload = businessClaimFieldProvenanceEventPayloadSchema\.parse\(\{[\s\S]*?\n  \}\);\n\n  let commitReceipt:/;
+const eventPayloadBlock =
+  /\n  const eventPayload = businessClaimFieldProvenanceEventPayloadSchema\.parse\(\{[\s\S]*?\n  \}\);\n\n  let commitReceipt:/;
 if (eventPayloadBlock.test(service)) {
   writeFileSync(servicePath, service.replace(eventPayloadBlock, '\n\n  let commitReceipt:'));
 }
