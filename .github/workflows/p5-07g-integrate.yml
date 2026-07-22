@@ -1,0 +1,46 @@
+name: P5-07G integrate
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.head_ref == 'p5-07g-private-retention-execution' && github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-07g-private-retention-execution
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Integrate P5-07G slice
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/p5-07g-integrate.mjs
+      - run: npm run format
+      - run: npm run db:generate
+      - run: npm run format
+      - run: npm run lint
+      - run: npx tsx scripts/check-private-retention.ts
+      - run: npx vitest run tests/private-retention.test.ts tests/private-media-retention.test.ts tests/private-retention-boundary.test.ts tests/photo-private-lifecycle.test.ts tests/drizzle-photo-private-lifecycle.test.ts
+      - run: npm run check
+      - run: npm run db:check
+      - name: Commit integrated slice
+        shell: bash
+        run: |
+          rm .github/workflows/p5-07g-integrate.yml scripts/p5-07g-integrate.mjs
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add -A
+          git commit -m "P5-07G execute private retention"
+          git push origin HEAD:p5-07g-private-retention-execution
