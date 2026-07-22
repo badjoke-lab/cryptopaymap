@@ -1,14 +1,4 @@
-import {
-  and,
-  asc,
-  eq,
-  inArray,
-  isNull,
-  lte,
-  notExists,
-  or,
-  sql,
-} from 'drizzle-orm';
+import { and, asc, eq, inArray, isNull, lte, notExists, or, sql } from 'drizzle-orm';
 import { z } from 'zod';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
@@ -27,7 +17,7 @@ import type {
 function reservationIdFromKey(storageKey: string): string | null {
   const match = /^quarantine\/photos\/v1\/([0-9a-f-]{36})$/.exec(storageKey);
   if (match?.[1] === undefined) return null;
-  const result = x.uuid().safeParse(match[1]);
+  const result = z.uuid().safeParse(match[1]);
   if (!result.success || photoQuarantineObjectKey(result.data) !== storageKey) return null;
   return result.data;
 }

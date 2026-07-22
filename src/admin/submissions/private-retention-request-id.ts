@@ -5,9 +5,11 @@ function uuidFromDigest(bytes: Uint8Array): string {
   value[6] = ((value[6] ?? 0) & 0x0f) | 0x80;
   value[8] = ((value[8] ?? 0) & 0x3f) | 0x80;
   const hex = Array.from(value, (byte) => byte.toString(16).padStart(2, '0')).join('');
-  return z.uuid().parse(
-    `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`,
-  );
+  return z
+    .uuid()
+    .parse(
+      `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`,
+    );
 }
 
 async function deterministicUuid(label: string): Promise<string> {
@@ -18,7 +20,9 @@ async function deterministicUuid(label: string): Promise<string> {
 }
 
 export function privateRetentionRunId(effectiveAt: string): Promise<string> {
-  return deterministicUuid(`private-retention-run-v1:${z.iso.datetime({ offset: true }).parse(effectiveAt)}`);
+  return deterministicUuid(
+    `private-retention-run-v1:${z.iso.datetime({ offset: true }).parse(effectiveAt)}`,
+  );
 }
 
 export function privateRetentionItemId(

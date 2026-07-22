@@ -1,0 +1,66 @@
+
+> cryptopaymap@0.0.0 format
+> biome format --write .
+
+scripts/p5-07g-integrate.mjs:20:61680 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × unterminated string literal
+  
+    18 │ }
+    19 │ 
+  > 20 │ ...ZGUgIT09IG51bGwgJiYgWyc...TRUNCATED_FOR_DISPLAY...
+       │                                                      
+  
+  i input ends here
+  
+    18 │ }
+    19 │ 
+  > 20 │ ...ZGUgIT09IG51bGwgJiYgWyc...TRUNCATED_FOR_DISPLAY...
+       │                                                      
+  
+  i string literal starts here
+  
+    18 │ }
+    19 │ 
+  > 20 │ ...ubmissions/drizzle-private-retention-backend.ts": "aW1wb3J0IHsKICBhbmQsCiAgYXNjLAogIGVxLAogIGluQXJyY...
+       │                                                      ^
+  
+
+scripts/p5-07g-integrate.mjs format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Code formatting aborted due to parsing errors. To format code with errors, enable the 'formatter.formatWithErrors' option.
+  
+
+src/db/schema/submission-retention.ts:20:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Expected an expression but instead found '}'.
+  
+    18 │   'submission_retention_run_state',
+    19 │   submissionRetentionRunStateValues,
+  > 20 │ };
+       │ ^
+    21 │ 
+    22 │ export const submissionRetentionMaterialValues = [
+  
+  i Expected an expression here.
+  
+    18 │   'submission_retention_run_state',
+    19 │   submissionRetentionRunStateValues,
+  > 20 │ };
+       │ ^
+    21 │ 
+    22 │ export const submissionRetentionMaterialValues = [
+  
+
+src/db/schema/submission-retention.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Code formatting aborted due to parsing errors. To format code with errors, enable the 'formatter.formatWithErrors' option.
+  
+
+Formatted 936 files in 443ms. Fixed 6 files.
+Found 2 errors.
+format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  × Some errors were emitted while running checks.
+  
+

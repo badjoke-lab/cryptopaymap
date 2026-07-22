@@ -77,8 +77,8 @@ export const privateMediaRetentionReceiptSchema = z
             submissionId: z.uuid().nullable(),
             reason: privateMediaRetentionReasonSchema,
             outcome: z.enum(['deleted', 'replayed', 'partial']),
-            deletedObjectCount: x.number().int().min(0),
-            missingObjectCount: x.number().int().min(0),
+            deletedObjectCount: z.number().int().min(0),
+            missingObjectCount: z.number().int().min(0),
             failedObjectCount: z.number().int().min(0),
           })
           .strict(),
@@ -87,9 +87,7 @@ export const privateMediaRetentionReceiptSchema = z
   })
   .strict();
 
-export type PrivateMediaRetentionCandidate = z.infer<
-  typeof privateMediaRetentionCandidateSchema
->;
+export type PrivateMediaRetentionCandidate = z.infer<typeof privateMediaRetentionCandidateSchema>;
 export type PrivateMediaRetentionReceipt = z.infer<typeof privateMediaRetentionReceiptSchema>;
 
 export interface PrivateMediaRetentionCandidateReader {
@@ -110,10 +108,7 @@ export class PrivateMediaRetentionError extends Error {
   }
 }
 
-function eligibleThreshold(
-  reason: PrivateMediaRetentionCandidate['reason'],
-  asOf: Date,
-): number {
+function eligibleThreshold(reason: PrivateMediaRetentionCandidate['reason'], asOf: Date): number {
   const days =
     reason === 'private_evidence_media_180d'
       ? PRIVATE_EVIDENCE_MEDIA_RETENTION_DAYS
@@ -178,7 +173,9 @@ export function createPrivateMediaRetentionService(dependencies: {
         }
         return parsed.data;
       });
-      if (new Set(candidates.map((candidate) => candidate.referenceId)).size !== candidates.length) {
+      if (
+        new Set(candidates.map((candidate) => candidate.referenceId)).size !== candidates.length
+      ) {
         throw new PrivateMediaRetentionError(
           'candidate_invalid',
           'Private Media retention candidates repeat a Media Asset.',

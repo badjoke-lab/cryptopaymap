@@ -14,7 +14,10 @@ function replaceAll(path, replacements) {
 replaceAll('src/admin/submissions/private-retention-contract.ts', [
   ['effectiveAt: x.iso.datetime', 'effectiveAt: z.iso.datetime'],
   ['deletedObjectCount: x.number()', 'deletedObjectCount: z.number()'],
-  ['export type PrivateRetentionRunReceipt = x.infer', 'export type PrivateRetentionRunReceipt = z.infer'],
+  [
+    'export type PrivateRetentionRunReceipt = x.infer',
+    'export type PrivateRetentionRunReceipt = z.infer',
+  ],
 ]);
 
 replaceAll('src/submissions/private-media-retention.ts', [
@@ -28,8 +31,14 @@ replaceAll('src/submissions/drizzle-private-media-retention.ts', [
 
 replaceAll('src/admin/submissions/private-retention.ts', [
   ["case 'closed_submission_without_handof':", "case 'closed_submission_without_handoff':"],
-  ['if (!inputResult.success || Number.isNaN(startedAt.getTime()) {', 'if (!inputResult.success || Number.isNaN(startedAt.getTime())) {'],
-  ['        runId: validContext.runId,\n      actorId: validContext.actorId,', '        runId: validContext.runId,\n        actorId: validContext.actorId,'],
+  [
+    'if (!inputResult.success || Number.isNaN(startedAt.getTime()) {',
+    'if (!inputResult.success || Number.isNaN(startedAt.getTime())) {',
+  ],
+  [
+    '        runId: validContext.runId,\n      actorId: validContext.actorId,',
+    '        runId: validContext.runId,\n        actorId: validContext.actorId,',
+  ],
 ]);
 
 const indexPath = 'src/db/schema/index.ts';

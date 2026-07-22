@@ -45,7 +45,7 @@ function photoPolicy(
   switch (reason) {
     case 'expired_authorization':
       return 'expired_authorization';
-    case 'closed_submission_without_handof':
+    case 'closed_submission_without_handoff':
       return 'closed_submission_without_handoff';
     case 'rejected_media':
       return 'rejected_media_30d';
@@ -90,7 +90,7 @@ export function createPrivateRetentionService(dependencies: {
         );
       }
       const inputResult = privateRetentionInputSchema.safeParse(input);
-      if (!inputResult.success || Number.isNaN(startedAt.getTime()) {
+      if (!inputResult.success || Number.isNaN(startedAt.getTime())) {
         throw new PrivateRetentionError('invalid_run', 'The private retention run is invalid.');
       }
       const validContext = contextResult.data;
@@ -98,7 +98,7 @@ export function createPrivateRetentionService(dependencies: {
       const effectiveAt = new Date(validInput.effectiveAt);
       const requestFingerprint = await sha256({
         runId: validContext.runId,
-      actorId: validContext.actorId,
+        actorId: validContext.actorId,
         ...validInput,
       });
 
@@ -135,10 +135,7 @@ export function createPrivateRetentionService(dependencies: {
       let databaseHasMore = false;
       try {
         const loaded = privateRetentionDatabaseBatchSchema.parse(
-          await dependencies.backend.loadDatabaseCandidates(
-            effectiveAt,
-            validInput.databaseLimit,
-          ),
+          await dependencies.backend.loadDatabaseCandidates(effectiveAt, validInput.databaseLimit),
         );
         if (loaded.candidates.length > validInput.databaseLimit) {
           throw new Error('The database retention batch exceeded its requested limit.');
@@ -233,8 +230,7 @@ export function createPrivateRetentionService(dependencies: {
               policy,
               referenceType: candidate.referenceType,
               referenceId: candidate.referenceId,
-              submissionId:
-                candidate.referenceType === 'submission' ? candidate.referenceId : null,
+              submissionId: candidate.referenceType === 'submission' ? candidate.referenceId : null,
               deletedObjectCount: candidate.deletedObjectCount,
               missingObjectCount: candidate.missingObjectCount,
             });

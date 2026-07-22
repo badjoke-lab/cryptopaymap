@@ -33,11 +33,7 @@ export const privateRetentionInputSchema = z
 export const privateRetentionDatabaseCandidateSchema = z
   .object({
     material: z.enum(['contact', 'payload', 'evidence']),
-    policy: z.enum([
-      'contact_retention_expired',
-      'terminal_payload_180d',
-      'private_evidence_180d',
-    ]),
+    policy: z.enum(['contact_retention_expired', 'terminal_payload_180d', 'private_evidence_180d']),
     referenceType: z.enum(['submission', 'evidence']),
     referenceId: z.uuid(),
     submissionId: z.uuid(),
@@ -88,14 +84,14 @@ export const privateRetentionRunReceiptSchema = z
   .object({
     schemaVersion: z.literal('private-retention-run-receipt-v1'),
     runId: z.uuid(),
-    effectiveAt: x.iso.datetime({ offset: true }),
+    effectiveAt: z.iso.datetime({ offset: true }),
     state: z.enum(['completed', 'partial', 'replayed']),
     scannedCount: z.number().int().min(0).max(150),
     committedCount: z.number().int().min(0).max(150),
     replayedCount: z.number().int().min(0).max(150),
     conflictCount: z.number().int().min(0).max(150),
     failedCount: z.number().int().min(0).max(150),
-    deletedObjectCount: x.number().int().min(0),
+    deletedObjectCount: z.number().int().min(0),
     missingObjectCount: z.number().int().min(0),
     failedObjectCount: z.number().int().min(0),
     hasMore: z.boolean(),
@@ -113,7 +109,7 @@ export type PrivateRetentionDatabaseCandidate = z.infer<
 >;
 export type PrivateRetentionDatabaseBatch = z.infer<typeof privateRetentionDatabaseBatchSchema>;
 export type PrivateRetentionOutcome = z.infer<typeof privateRetentionOutcomeSchema>;
-export type PrivateRetentionRunReceipt = x.infer<typeof privateRetentionRunReceiptSchema>;
+export type PrivateRetentionRunReceipt = z.infer<typeof privateRetentionRunReceiptSchema>;
 
 export interface PrivateRetentionRunRecord {
   runId: string;
@@ -166,11 +162,11 @@ export interface FinalizePrivateRetentionRunCommand {
 export interface PrivateRetentionBackend {
   beginRun(
     command: BeginPrivateRetentionRunCommand,
-  ): Promise<{ state: 'started' | 'resumed' | 'replayed'; receipt: PrivateRetentionRunReceipt | null }>;
-  loadDatabaseCandidates(
-    effectiveAt: Date,
-    limit: number,
-  ): Promise<PrivateRetentionDatabaseBatch>;
+  ): Promise<{
+    state: 'started' | 'resumed' | 'replayed';
+    receipt: PrivateRetentionRunReceipt | null;
+  }>;
+  loadDatabaseCandidates(effectiveAt: Date, limit: number): Promise<PrivateRetentionDatabaseBatch>;
   applyDatabaseCandidate(
     command: ApplyPrivateRetentionCandidateCommand,
   ): Promise<'committed' | 'replayed'>;
@@ -182,11 +178,7 @@ export interface PrivateRetentionBackend {
 
 export class PrivateRetentionError extends Error {
   constructor(
-    readonly code:
-      | 'unauthorized'
-      | 'invalid_run'
-      | 'idempotency_conflict'
-      | 'backend_failure',
+    readonly code: 'unauthorized' | 'invalid_run' | 'idempotency_conflict' | 'backend_failure',
     message: string,
     options?: ErrorOptions,
   ) {
