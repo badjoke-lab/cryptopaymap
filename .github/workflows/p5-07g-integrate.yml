@@ -28,8 +28,18 @@ jobs:
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          set -o pipefail
-          node scripts/p5-07g-integrate.mjs 2>&1 | tail -80
+          set +e
+          node scripts/p5-07g-integrate.mjs > /tmp/p5-07g-integrate.log 2>&1
+          status=$?
+          if [ "$status" -ne 0 ]; then
+            tail -120 /tmp/p5-07g-integrate.log > p5-07g-integration-error.txt
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git add p5-07g-integration-error.txt
+            git commit -m "P5-07G capture integration error"
+            git push origin HEAD:p5-07g-private-retention-execution
+            exit "$status"
+          fi
       - run: npm run format
       - run: npm run db:generate
       - run: npm run format
@@ -41,7 +51,7 @@ jobs:
       - name: Commit integrated slice
         shell: bash
         run: |
-          rm .github/workflows/p5-07g-integrate.yml scripts/p5-07g-integrate.mjs
+          rm .github/workflows/p5-07g-integrate.yml scripts/p5-07g-integrate.mjs p5-07g-integration-error.txt 2>/dev/null || true
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -A
