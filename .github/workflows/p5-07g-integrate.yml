@@ -18,42 +18,33 @@ jobs:
         with:
           ref: p5-07g-private-retention-execution
           fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: npm
-      - run: npm ci
-      - name: Integrate P5-07G slice
-        shell: bash
-        env:
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          set +e
-          node scripts/p5-07g-integrate.mjs > /tmp/p5-07g-integrate.log 2>&1
-          status=$?
-          if [ "$status" -ne 0 ]; then
-            tail -120 /tmp/p5-07g-integrate.log > p5-07g-integration-error.txt
-            git config user.name github-actions[bot]
-            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-            git add p5-07g-integration-error.txt
-            git commit -m "P5-07G capture integration error"
-            git push origin HEAD:p5-07g-private-retention-execution
-            exit "$status"
-          fi
-      - run: npm run format
-      - run: npm run db:generate
-      - run: npm run format
-      - run: npm run lint
-      - run: npx tsx scripts/check-private-retention.ts
-      - run: npx vitest run tests/private-retention.test.ts tests/private-media-retention.test.ts tests/private-retention-boundary.test.ts tests/photo-private-lifecycle.test.ts tests/drizzle-photo-private-lifecycle.test.ts
-      - run: npm run check
-      - run: npm run db:check
-      - name: Commit integrated slice
+      - name: Locate generated file-map syntax error
         shell: bash
         run: |
-          rm .github/workflows/p5-07g-integrate.yml scripts/p5-07g-integrate.mjs p5-07g-integration-error.txt 2>/dev/null || true
+          python - <<'PY' > p5-07g-integration-error.txt
+          import json
+          from pathlib import Path
+
+          text = Path('scripts/p5-07g-integrate.mjs').read_text()
+          prefix = 'const files = '
+          suffix = ';\nfor (const [path, content] of Object.entries(files))'
+          start = text.index(prefix) + len(prefix)
+          end = text.index(suffix, start)
+          value = text[start:end]
+          print('file_map_length', len(value))
+          print('truncated_marker_count', value.count('TRUNCATED_FOR_DISPLAY'))
+          try:
+              parsed = json.loads(value)
+              print('json_ok', len(parsed))
+          except json.JSONDecodeError as error:
+              print('json_error', error)
+              print('position', error.pos)
+              print('before', repr(value[max(0, error.pos - 300):error.pos]))
+              print('after', repr(value[error.pos:error.pos + 300]))
+          PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -A
-          git commit -m "P5-07G execute private retention"
+          git add p5-07g-integration-error.txt
+          git commit -m "P5-07G locate integration syntax error"
           git push origin HEAD:p5-07g-private-retention-execution
+          exit 1
