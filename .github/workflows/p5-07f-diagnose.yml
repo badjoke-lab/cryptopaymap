@@ -1,0 +1,38 @@
+name: P5-07F diagnose
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'p5-07f-photo-media-receipt-binding'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: p5-07f-photo-media-receipt-binding
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: node scripts/p5-07f-audit-fix.mjs
+      - name: Integrate working tree
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: node scripts/p5-07f-integrate.mjs
+      - run: npm run format
+      - name: Capture Astro and TypeScript diagnostics
+        shell: bash
+        run: npm run check > p5-07f-check.log 2>&1 || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: p5-07f-type-diagnostics
+          path: p5-07f-check.log
+          retention-days: 1
