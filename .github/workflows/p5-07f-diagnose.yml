@@ -31,6 +31,10 @@ jobs:
       - name: Capture Astro and TypeScript diagnostics
         shell: bash
         run: npm run check > p5-07f-check.log 2>&1 || true
+      - name: Print focused diagnostics
+        shell: bash
+        run: |
+          grep -E "(^|[[:space:]])(error|Error|TS[0-9]{4}|src/|tests/)" p5-07f-check.log | tail -120 || true
       - uses: actions/upload-artifact@v4
         with:
           name: p5-07f-type-diagnostics
