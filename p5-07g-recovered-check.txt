@@ -1,5 +1,414 @@
 
-> cryptopaymap@0.0.0 format
-> biome format --write .
+> cryptopaymap@0.0.0 check
+> astro check
 
-Formatted 935 files in 581ms. Fixed 2 files.
+[2m14:26:38[22m [34m[content][39m Syncing content
+[33m[1m14:26:38[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
+[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/updates.json
+[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/places.json
+[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
+[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
+[2m14:26:38[22m [34m[content][39m Synced content
+[2m14:26:38[22m [34m[types][39m Generated [2m1.05s[22m
+[2m14:26:38[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
+[96msrc/admin/access/config.ts[0m:[93m42[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CF_ACCESS_TEAM_DOMAIN: ZodPipe<ZodString, ZodTransform<string, string>>; CF_ACCESS_AUD: ZodPipe<ZodString, ZodTransform<string, string>>; }, $loose>' is deprecated.
+
+[7m42[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+[96msrc/admin/access/config.ts[0m:[93m12[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: string | { abort?: boolean | undefined; pattern?: RegExp | undefined; normalize?: boolean | undefined; hostname?: RegExp | undefined; protocol?: RegExp | undefined; error?: string | ... 1 more ... | undefined; message?: string | undefined; } | undefined): ZodString' is deprecated.
+
+[7m12[0m   .url()
+[7m  [0m [93m   ~~~[0m
+
+[96msrc/admin/access/identity.ts[0m:[93m10[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ sub: ZodString; email: ZodOptional<ZodNullable<ZodEmail>>; iss: ZodOptional<ZodURL>; aud: ZodOptional<ZodUnion<readonly [ZodString, ZodArray<...>]>>; }, $loose>' is deprecated.
+
+[7m10[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/access/verification.ts[0m:[93m34[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ kid: ZodString; kty: ZodLiteral<"RSA">; alg: ZodLiteral<"RS256">; n: ZodString; e: ZodString; }, $loose>' is deprecated.
+
+[7m34[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+[96msrc/admin/access/verification.ts[0m:[93m24[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ sub: ZodString; email: ZodOptional<ZodNullable<ZodEmail>>; iss: ZodURL; aud: ZodUnion<readonly [ZodString, ZodArray<ZodString>]>; exp: ZodNumber; nbf: ZodOptional<...>; }, $loose>' is deprecated.
+
+[7m24[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+[96msrc/admin/access/verification.ts[0m:[93m12[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ alg: ZodLiteral<"RS256">; kid: ZodString; }, $loose>' is deprecated.
+
+[7m12[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/audit-history/authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_AUDIT_READ_ACTOR_IDS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/candidates/detail.ts[0m:[93m78[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m78[0m     longitude: z.number().finite().min(-180).max(180),
+[7m  [0m [93m                          ~~~~~~[0m
+[96msrc/admin/candidates/detail.ts[0m:[93m77[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m77[0m     latitude: z.number().finite().min(-90).max(90),
+[7m  [0m [93m                         ~~~~~~[0m
+
+[96msrc/admin/candidates/duplicate-authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_CANDIDATE_RESOLVE_SUBJECTS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/candidates/source-snapshot.ts[0m:[93m13[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ normalizedRecord: ZodUnknown; }, $loose>' is deprecated.
+
+[7m13[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/evidence-review/authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/export-release/authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/export-release/publication-authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/location-correction/authorization.ts[0m:[93m10[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_LOCATION_CORRECT_SUBJECTS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m10[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/media-review/authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/promotion/authorization.ts[0m:[93m9[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m9[0m   .passthrough();
+[7m [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/promotion/target-selection.ts[0m:[93m67[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m67[0m     longitude: z.number().finite().min(-180).max(180),
+[7m  [0m [93m                          ~~~~~~[0m
+[96msrc/admin/promotion/target-selection.ts[0m:[93m66[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m66[0m     latitude: z.number().finite().min(-90).max(90),
+[7m  [0m [93m                         ~~~~~~[0m
+
+[96msrc/admin/reconfirmation/authorization.ts[0m:[93m10[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CPM_ADMIN_RECONFIRMATION_SUBJECTS: ZodOptional<ZodString>; }, $loose>' is deprecated.
+
+[7m10[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+
+[96msrc/admin/reconfirmation/scheduled-boundary.ts[0m:[93m15[0m:[93m31[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m15[0m     scheduledTime: z.number().finite().nonnegative(),
+[7m  [0m [93m                              ~~~~~~[0m
+
+[96msrc/admin/submissions/business-claim-field-application-workspace.ts[0m:[93m25[0m:[93m14[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m25[0m   z.number().finite(),
+[7m  [0m [93m             ~~~~~~[0m
+
+[96msrc/components/admin/AuditHistoryView.tsx[0m:[93m224[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m224[0m   function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/AuditHistoryView.tsx[0m:[93m2[0m:[93m44[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                           ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/CandidateExistingTargetEditor.tsx[0m:[93m187[0m:[93m39[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m187[0m   async function searchTargets(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/CandidateExistingTargetEditor.tsx[0m:[93m2[0m:[93m44[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                           ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/CandidateExistingTargetForm.tsx[0m:[93m67[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m67[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m  [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/CandidateExistingTargetForm.tsx[0m:[93m2[0m:[93m29[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useMemo, useState, type FormEvent } from 'react';
+[7m [0m [93m                            ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/CandidatePromotionForm.tsx[0m:[93m108[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m108[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/CandidatePromotionForm.tsx[0m:[93m2[0m:[93m29[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useMemo, useState, type FormEvent } from 'react';
+[7m [0m [93m                            ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/EvidenceReviewDetail.tsx[0m:[93m231[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m231[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/EvidenceReviewDetail.tsx[0m:[93m2[0m:[93m53[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/EvidenceReviewQueue.tsx[0m:[93m148[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m148[0m   function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/EvidenceReviewQueue.tsx[0m:[93m2[0m:[93m44[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                           ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/ExportReleaseDetail.tsx[0m:[93m191[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m191[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/ExportReleaseDetail.tsx[0m:[93m2[0m:[93m53[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/ExportReleaseQueue.tsx[0m:[93m147[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m147[0m   function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/ExportReleaseQueue.tsx[0m:[93m2[0m:[93m44[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                           ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/LocationCorrectionEditor.tsx[0m:[93m291[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m291[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/LocationCorrectionEditor.tsx[0m:[93m2[0m:[93m53[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/MediaReviewDetail.tsx[0m:[93m244[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m244[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/MediaReviewDetail.tsx[0m:[93m2[0m:[93m53[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useMemo, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                                    ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/MediaReviewQueue.tsx[0m:[93m152[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m152[0m   function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                         ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/MediaReviewQueue.tsx[0m:[93m2[0m:[93m44[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m2[0m import { useCallback, useEffect, useState, type FormEvent, type ReactNode } from 'react';
+[7m [0m [93m                                           ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/admin/ReconfirmationDetail.tsx[0m:[93m38[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m38[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m  [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/admin/ReconfirmationDetail.tsx[0m:[93m1[0m:[93m31[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m1[0m import { useEffect, useState, type FormEvent } from 'react';
+[7m [0m [93m                              ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/submissions/PhotoForm.tsx[0m:[93m387[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m387[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/submissions/PhotoForm.tsx[0m:[93m1[0m:[93m39[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m1[0m import { useEffect, useRef, useState, type FormEvent } from 'react';
+[7m [0m [93m                                      ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/submissions/ReportForm.tsx[0m:[93m214[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m214[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/submissions/ReportForm.tsx[0m:[93m1[0m:[93m39[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m1[0m import { useEffect, useRef, useState, type FormEvent } from 'react';
+[7m [0m [93m                                      ~~~~~~~~~~~~~~[0m
+
+[96msrc/components/submissions/SuggestForm.tsx[0m:[93m262[0m:[93m32[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m262[0m   async function submit(event: FormEvent<HTMLFormElement>) {
+[7m   [0m [93m                               ~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+[96msrc/components/submissions/SuggestForm.tsx[0m:[93m1[0m:[93m39[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
+
+[7m1[0m import { useEffect, useRef, useState, type FormEvent } from 'react';
+[7m [0m [93m                                      ~~~~~~~~~~~~~~[0m
+
+[96msrc/schemas/physical-place-import.ts[0m:[93m200[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m200[0m     longitude: z.number().finite().min(-180).max(180),
+[7m   [0m [93m                          ~~~~~~[0m
+[96msrc/schemas/physical-place-import.ts[0m:[93m199[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m199[0m     latitude: z.number().finite().min(-90).max(90),
+[7m   [0m [93m                         ~~~~~~[0m
+
+[96msrc/submissions/business-claim-contract.ts[0m:[93m192[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m192[0m     longitude: z.number().finite().min(-180).max(180).nullable(),
+[7m   [0m [93m                          ~~~~~~[0m
+[96msrc/submissions/business-claim-contract.ts[0m:[93m191[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m191[0m     latitude: z.number().finite().min(-90).max(90).nullable(),
+[7m   [0m [93m                         ~~~~~~[0m
+
+[96msrc/submissions/business-claim-target-context.ts[0m:[93m72[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m72[0m     longitude: z.number().finite().min(-180).max(180),
+[7m  [0m [93m                          ~~~~~~[0m
+[96msrc/submissions/business-claim-target-context.ts[0m:[93m71[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m71[0m     latitude: z.number().finite().min(-90).max(90),
+[7m  [0m [93m                         ~~~~~~[0m
+
+[96msrc/submissions/contract.ts[0m:[93m149[0m:[93m16[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m149[0m     z.number().finite(),
+[7m   [0m [93m               ~~~~~~[0m
+
+[96msrc/submissions/report-contract.ts[0m:[93m142[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m142[0m     longitude: z.number().finite().min(-180).max(180).nullable(),
+[7m   [0m [93m                          ~~~~~~[0m
+[96msrc/submissions/report-contract.ts[0m:[93m141[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m141[0m     latitude: z.number().finite().min(-90).max(90).nullable(),
+[7m   [0m [93m                         ~~~~~~[0m
+
+[96msrc/submissions/report-target-context.ts[0m:[93m50[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m50[0m     longitude: z.number().finite().min(-180).max(180),
+[7m  [0m [93m                          ~~~~~~[0m
+[96msrc/submissions/report-target-context.ts[0m:[93m49[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m49[0m     latitude: z.number().finite().min(-90).max(90),
+[7m  [0m [93m                         ~~~~~~[0m
+
+[96msrc/submissions/suggest-contract.ts[0m:[93m40[0m:[93m27[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m40[0m     longitude: z.number().finite().min(-180).max(180).nullable(),
+[7m  [0m [93m                          ~~~~~~[0m
+[96msrc/submissions/suggest-contract.ts[0m:[93m39[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'(params?: unknown): ZodNumber' is deprecated.
+
+[7m39[0m     latitude: z.number().finite().min(-90).max(90).nullable(),
+[7m  [0m [93m                         ~~~~~~[0m
+
+[96msrc/submissions/turnstile-siteverify.ts[0m:[93m20[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ success: ZodBoolean; challenge_ts: ZodOptional<ZodString>; hostname: ZodOptional<ZodString>; 'error-codes': ZodOptional<...>; action: ZodOptional<...>; cdata: ZodOptional<...>; }, $loose>' is deprecated.
+
+[7m20[0m   .passthrough();
+[7m  [0m [93m   ~~~~~~~~~~~[0m
+
+[96mtests/business-claim-field-application.test.ts[0m:[93m547[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m547[0m     ).toThrowError(/not authorized/);
+[7m   [0m [93m      ~~~~~~~~~~~~[0m
+
+[96mtests/business-claim-relationship-decision.test.ts[0m:[93m428[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m428[0m     ).toThrowError(/not authorized/);
+[7m   [0m [93m      ~~~~~~~~~~~~[0m
+
+[96mtests/business-claim-submission-review-contract.test.ts[0m:[93m314[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m314[0m     ).toThrowError(/does not match/);
+[7m   [0m [93m      ~~~~~~~~~~~~[0m
+
+[96mtests/business-claim-verification-execution.test.ts[0m:[93m375[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m375[0m     ).toThrowError(/not authorized/);
+[7m   [0m [93m      ~~~~~~~~~~~~[0m
+
+[96mtests/business-claim-verification-preparation.test.ts[0m:[93m312[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m312[0m     ).toThrowError(/not authorized/);
+[7m   [0m [93m      ~~~~~~~~~~~~[0m
+
+[96mtests/candidate-promotion-authorization.test.ts[0m:[93m44[0m:[93m76[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m44[0m     expect(() => authorizeCandidatePromotion(identity, policy, 'invalid')).toThrowError(
+[7m  [0m [93m                                                                           ~~~~~~~~~~~~[0m
+[96mtests/candidate-promotion-authorization.test.ts[0m:[93m37[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m37[0m     ).toThrowError(CandidatePromotionAuthorizationError);
+[7m  [0m [93m      ~~~~~~~~~~~~[0m
+
+[96mtests/cloudflare-images-photo-processor.test.ts[0m:[93m122[0m:[93m78[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m122[0m     expect(() => createCloudflareImagesPhotoPrivateProcessor(null as never)).toThrowError(
+[7m   [0m [93m                                                                             ~~~~~~~~~~~~[0m
+
+[96mtests/export-activation-authorization.test.ts[0m:[93m42[0m:[93m71[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m42[0m     expect(() => authorizeExportPublication(identity, allowed, null)).toThrowError(
+[7m  [0m [93m                                                                      ~~~~~~~~~~~~[0m
+[96mtests/export-activation-authorization.test.ts[0m:[93m35[0m:[93m75[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m35[0m     expect(() => authorizeExportPublication(identity, denied, requestId)).toThrowError(
+[7m  [0m [93m                                                                          ~~~~~~~~~~~~[0m
+
+[96mtests/export-release-authorization.test.ts[0m:[93m50[0m:[93m66[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m50[0m     expect(() => authorizeExportRelease(identity, policy, null)).toThrowError(
+[7m  [0m [93m                                                                 ~~~~~~~~~~~~[0m
+[96mtests/export-release-authorization.test.ts[0m:[93m41[0m:[93m71[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m41[0m     expect(() => authorizeExportRelease(identity, policy, requestId)).toThrowError(
+[7m  [0m [93m                                                                      ~~~~~~~~~~~~[0m
+
+[96mtests/location-correction-authorization.test.ts[0m:[93m52[0m:[93m80[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m52[0m     expect(() => authorizeLocationCorrection(identity, allowed, 'not-a-uuid')).toThrowError(
+[7m  [0m [93m                                                                               ~~~~~~~~~~~~[0m
+
+[96mtests/photo-image-inspection.test.ts[0m:[93m191[0m:[93m68[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m191[0m     expect(() => inspectPhotoImage(Uint8Array.from([1, 2, 3, 4]))).toThrowError(
+[7m   [0m [93m                                                                   ~~~~~~~~~~~~[0m
+[96mtests/photo-image-inspection.test.ts[0m:[93m185[0m:[93m46[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m185[0m       expect(() => inspectPhotoImage(bytes)).toThrowError(
+[7m   [0m [93m                                             ~~~~~~~~~~~~[0m
+[96mtests/photo-image-inspection.test.ts[0m:[93m174[0m:[93m54[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m174[0m     expect(() => inspectPhotoImage(png(20_001, 10))).toThrowError(
+[7m   [0m [93m                                                     ~~~~~~~~~~~~[0m
+[96mtests/photo-image-inspection.test.ts[0m:[93m171[0m:[93m59[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m171[0m     expect(() => inspectPhotoImage(webp(100, 100, true))).toThrowError(
+[7m   [0m [93m                                                          ~~~~~~~~~~~~[0m
+[96mtests/photo-image-inspection.test.ts[0m:[93m165[0m:[93m64[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m165[0m     expect(() => inspectPhotoImage(jpeg(20, 10).slice(0, -2))).toThrowError(
+[7m   [0m [93m                                                               ~~~~~~~~~~~~[0m
+[96mtests/photo-image-inspection.test.ts[0m:[93m161[0m:[93m48[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m161[0m     expect(() => inspectPhotoImage(corrupted)).toThrowError(
+[7m   [0m [93m                                               ~~~~~~~~~~~~[0m
+
+[96mtests/report-submission-queue-identity.test.ts[0m:[93m27[0m:[93m7[0m - [93mwarning[0m[90m ts(6385): [0m'toThrowError' is deprecated.
+
+[7m27[0m     ).toThrowError(
+[7m  [0m [93m      ~~~~~~~~~~~~[0m
+
+Result (1064 files): 
+- 0 errors
+- 0 warnings
+- 86 hints
+
