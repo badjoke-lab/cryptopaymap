@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07E5 — Business Claim field provenance completion
+P5-07F — Photos Media receipt binding
 
 ## Current repository state
 
@@ -28,31 +28,32 @@ P5-07E5 — Business Claim field provenance completion
 - P5-07E2 protected Business Claim payment-draft preview completed in #256.
 - P5-07E3 durable Business Claim payment application plan completed in #257.
 - P5-07E4 atomic Business Claim payment application completed in #258.
-- P5-07E5 is active in PR #259 on `p5-07e5-business-claim-field-provenance`.
+- P5-07E5 Business Claim field provenance completion completed in #259.
+- P5-07F is active in PR #260 on `p5-07f-photo-media-receipt-binding`.
 
 ## Latest verified main
 
 ```text
-6e02124d7501216b1338b03fdb8726dfac1eac04
+10364840a1a8db472255dbf8e117c8e2c26185ca
 ```
 
-The final P5-07E4 head passed all four normal workflow groups.
+The final P5-07E5 head passed all four normal workflow groups.
 
 ## Active pull request
 
 ```text
-#259 — P5-07E5 Business Claim field provenance completion
+#260 — P5-07F Photos Media receipt binding
 ```
 
 ## Current boundary
 
-P5-07E5 consumes one exact private P5-04H2 `business_claim_fields_applied` event and completes the missing Entity or Location field-level provenance. It does not update the canonical target again.
+P5-07F keeps the private Photos parent resolution event as the source decision and binds the common application receipt to the complete exact child `media_review_decision` ID set.
 
-The operation verifies the current exact target version and every accepted H2 field value, writes one deterministic private Business Claim Source Record, closes the exact prior open non-correction field links at the H2 application time, inserts current `correction` links, and records one private completion event in the same transaction.
+Registration revalidates every referenced durable Media decision against the parent event. The application is `committed`, publication remains `pending`, and no export or release activation occurs.
 
 ## Next
 
-P5-07F reconciles Photos parent resolution, Media application receipts, and publication handoff. Export activation remains a separate later owner.
+P5-07G executes bounded retention for contact, payload, Evidence, proof, and Media private material. Publication and export activation remain separate later owners.
 
 ## Blocked
 
@@ -73,5 +74,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`
 - `docs/P5_07E4_BUSINESS_CLAIM_PAYMENT_APPLICATION.md`
 - `docs/P5_07E5_BUSINESS_CLAIM_FIELD_PROVENANCE.md`
+- `docs/P5_07F_PHOTO_MEDIA_RECEIPT_BINDING.md`
 - `docs/SUBMISSION_WORKFLOW.md`
 - `docs/SECURITY_AND_PRIVACY.md`

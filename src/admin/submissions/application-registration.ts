@@ -122,6 +122,7 @@ export interface SubmissionApplicationRegistrationState {
   candidatePromotionDecisionId: string | null;
   businessClaimFieldApplicationEventId: string | null;
   businessClaimPaymentApplicationPending?: boolean;
+  photoParentMediaDecisionIds?: string[];
 }
 
 export interface SubmissionApplicationRegistrationRecord {
@@ -353,6 +354,24 @@ function deriveLifecycle(
         kind: 'submission_event',
         ids: [state.businessClaimFieldApplicationEventId],
       },
+    };
+  }
+
+  if (request.sourceDecisionKind === 'photos_parent_resolution') {
+    const decisionIds = [...(state.photoParentMediaDecisionIds ?? [])].sort((left, right) =>
+      left.localeCompare(right),
+    );
+    if (decisionIds.length === 0 || new Set(decisionIds).size !== decisionIds.length) {
+      throw new SubmissionApplicationRegistrationError(
+        'ineligible',
+        'The Photos parent decision does not bind one exact complete Media review receipt set.',
+      );
+    }
+    return {
+      applicationKind: contract.applicationKind,
+      applicationStatus: 'committed',
+      publicationStatus: 'pending',
+      applicationReceipt: { kind: 'media_review_decision', ids: decisionIds },
     };
   }
 
