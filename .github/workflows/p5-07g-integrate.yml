@@ -17,30 +17,46 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: p5-07g-private-retention-execution
-          fetch-depth: 0
+          fetch-depth: 1
       - name: Locate generated file-map syntax error
         shell: bash
         run: |
-          python - <<'PY' > p5-07g-integration-error.txt
+          rm -f p5-07g-integration-error.txt
+          python - <<'PY' > p5-07g-integration-error.txt 2>&1
           import json
+          import traceback
           from pathlib import Path
 
-          text = Path('scripts/p5-07g-integrate.mjs').read_text()
-          prefix = 'const files = '
-          suffix = ';\nfor (const [path, content] of Object.entries(files))'
-          start = text.index(prefix) + len(prefix)
-          end = text.index(suffix, start)
-          value = text[start:end]
-          print('file_map_length', len(value))
-          print('truncated_marker_count', value.count('TRUNCATED_FOR_DISPLAY'))
           try:
-              parsed = json.loads(value)
-              print('json_ok', len(parsed))
-          except json.JSONDecodeError as error:
-              print('json_error', error)
-              print('position', error.pos)
-              print('before', repr(value[max(0, error.pos - 300):error.pos]))
-              print('after', repr(value[error.pos:error.pos + 300]))
+              text = Path('scripts/p5-07g-integrate.mjs').read_text()
+              prefix = 'const files = '
+              start = text.index(prefix) + len(prefix)
+              markers = [
+                  ';\nfor (const [path, content] of Object.entries(files))',
+                  ';\r\nfor (const [path, content] of Object.entries(files))',
+              ]
+              positions = [text.find(marker, start) for marker in markers]
+              positions = [position for position in positions if position >= 0]
+              print('script_length', len(text))
+              print('start', start)
+              print('suffix_positions', positions)
+              print('truncated_marker_count', text.count('TRUNCATED_FOR_DISPLAY'))
+              if not positions:
+                  print('tail', repr(text[-1000:]))
+              else:
+                  end = min(positions)
+                  value = text[start:end]
+                  print('file_map_length', len(value))
+                  try:
+                      parsed = json.loads(value)
+                      print('json_ok', len(parsed))
+                  except json.JSONDecodeError as error:
+                      print('json_error', error)
+                      print('position', error.pos)
+                      print('before', repr(value[max(0, error.pos - 300):error.pos]))
+                      print('after', repr(value[error.pos:error.pos + 300]))
+          except Exception:
+              traceback.print_exc()
           PY
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
