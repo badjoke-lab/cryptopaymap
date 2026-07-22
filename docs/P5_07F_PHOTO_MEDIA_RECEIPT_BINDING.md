@@ -2,7 +2,7 @@
 
 **Implementation item:** P5-07F  
 **Status:** Active  
-**Last updated:** 2026-07-21
+**Last updated:** 2026-07-22
 
 ## Purpose
 
@@ -25,7 +25,7 @@ Registration parses the exact private `photo_parent_resolution_decided` payload 
 - every referenced `media_review_decisions` row to exist;
 - exact Media Asset ID, action, initial pending status, resulting accepted/rejected status, and decision timestamp agreement.
 
-Missing, duplicated, or mismatched child receipts make the registration ineligible or unavailable. The client cannot supply or reorder receipt IDs.
+Missing, duplicated, or mismatched child receipts make the registration ineligible or unavailable. The client cannot supply or reorder receipt IDs. The final receipt IDs are sorted by decision UUID before persistence so identical canonical state always produces the same receipt ordering.
 
 ## Lifecycle result
 
