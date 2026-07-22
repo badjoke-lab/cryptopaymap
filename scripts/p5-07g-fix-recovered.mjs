@@ -11,6 +11,13 @@ function replaceAll(path, replacements) {
   writeFileSync(path, source);
 }
 
+replaceAll('src/db/schema/submission-retention.ts', [
+  [
+    "  submissionRetentionRunStateValues,\n};",
+    "  submissionRetentionRunStateValues,\n);",
+  ],
+]);
+
 replaceAll('src/admin/submissions/private-retention-contract.ts', [
   ['effectiveAt: x.iso.datetime', 'effectiveAt: z.iso.datetime'],
   ['deletedObjectCount: x.number()', 'deletedObjectCount: z.number()'],
