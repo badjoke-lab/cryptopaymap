@@ -2,36 +2,4 @@
 > cryptopaymap@0.0.0 format
 > biome format --write .
 
-src/db/schema/submission-retention.ts:20:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  × Expected an expression but instead found '}'.
-  
-    18 │   'submission_retention_run_state',
-    19 │   submissionRetentionRunStateValues,
-  > 20 │ };
-       │ ^
-    21 │ 
-    22 │ export const submissionRetentionMaterialValues = [
-  
-  i Expected an expression here.
-  
-    18 │   'submission_retention_run_state',
-    19 │   submissionRetentionRunStateValues,
-  > 20 │ };
-       │ ^
-    21 │ 
-    22 │ export const submissionRetentionMaterialValues = [
-  
-
-src/db/schema/submission-retention.ts format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  × Code formatting aborted due to parsing errors. To format code with errors, enable the 'formatter.formatWithErrors' option.
-  
-
-Formatted 935 files in 427ms. Fixed 1 file.
-Found 1 error.
-format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  × Some errors were emitted while running checks.
-  
-
+Formatted 935 files in 581ms. Fixed 2 files.

@@ -12,10 +12,7 @@ function replaceAll(path, replacements) {
 }
 
 replaceAll('src/db/schema/submission-retention.ts', [
-  [
-    "  submissionRetentionRunStateValues,\n};",
-    "  submissionRetentionRunStateValues,\n);",
-  ],
+  ['  submissionRetentionRunStateValues,\n};', '  submissionRetentionRunStateValues,\n);'],
 ]);
 
 replaceAll('src/admin/submissions/private-retention-contract.ts', [

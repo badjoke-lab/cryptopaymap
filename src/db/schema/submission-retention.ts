@@ -17,7 +17,7 @@ export const submissionRetentionRunStateValues = ['running', 'completed', 'parti
 export const submissionRetentionRunStateEnum = pgEnum(
   'submission_retention_run_state',
   submissionRetentionRunStateValues,
-};
+);
 
 export const submissionRetentionMaterialValues = [
   'contact',
@@ -86,10 +86,7 @@ export const submissionRetentionRuns = pgTable(
       'submission_retention_runs_receipt_state',
       sql`(${table.state} = 'running' and ${table.receipt} is null) or (${table.state} in ('completed', 'partial') and ${table.receipt} is not null and jsonb_typeof(${table.receipt}) = 'object')`,
     ),
-    check(
-      'submission_retention_runs_time_order',
-      sql`${table.createdAt} <= ${table.updatedAt}`,
-    ),
+    check('submission_retention_runs_time_order', sql`${table.createdAt} <= ${table.updatedAt}`),
   ],
 );
 
