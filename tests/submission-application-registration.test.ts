@@ -14,6 +14,8 @@ const sourceEventId = '20000000-0000-4000-8000-000000000001';
 const requestId = '30000000-0000-4000-8000-000000000001';
 const candidatePromotionDecisionId = '40000000-0000-4000-8000-000000000001';
 const fieldApplicationEventId = '50000000-0000-4000-8000-000000000001';
+const mediaDecisionIdA = '60000000-0000-4000-8000-000000000001';
+const mediaDecisionIdB = '60000000-0000-4000-8000-000000000002';
 const updatedAt = '2026-07-17T06:00:00.000Z';
 const registeredAt = new Date('2026-07-17T06:05:00.000Z');
 const context = {
@@ -29,6 +31,8 @@ interface Scenario {
   action: string;
   candidatePromotionDecisionId?: string | null;
   businessClaimFieldApplicationEventId?: string | null;
+  photoParentMediaDecisionIds?: string[];
+  receiptIds?: string[];
   applicationKind:
     | 'candidate_resolution'
     | 'report_evidence'
@@ -38,7 +42,7 @@ interface Scenario {
     | 'photo_media_set';
   applicationStatus: 'pending' | 'committed';
   publicationStatus: 'blocked' | 'pending';
-  receiptKind: 'submission_event' | 'candidate_promotion_decision' | null;
+  receiptKind: 'submission_event' | 'candidate_promotion_decision' | 'media_review_decision' | null;
   receiptId: string | null;
 }
 
@@ -141,8 +145,10 @@ const scenarios: Scenario[] = [
     applicationKind: 'photo_media_set',
     applicationStatus: 'committed',
     publicationStatus: 'pending',
-    receiptKind: 'submission_event',
-    receiptId: sourceEventId,
+    receiptKind: 'media_review_decision',
+    receiptId: null,
+    receiptIds: [mediaDecisionIdA, mediaDecisionIdB],
+    photoParentMediaDecisionIds: [mediaDecisionIdB, mediaDecisionIdA],
   },
 ];
 
@@ -162,6 +168,7 @@ function stateFor(scenario: Scenario): SubmissionApplicationRegistrationState {
     },
     candidatePromotionDecisionId: scenario.candidatePromotionDecisionId ?? null,
     businessClaimFieldApplicationEventId: scenario.businessClaimFieldApplicationEventId ?? null,
+    photoParentMediaDecisionIds: scenario.photoParentMediaDecisionIds ?? [],
   };
 }
 
@@ -269,7 +276,10 @@ describe('P5-07B1 Submission application registration', () => {
     expect(receipt.applicationReceipt).toEqual(
       scenario.receiptKind === null
         ? null
-        : { kind: scenario.receiptKind, ids: [scenario.receiptId] },
+        : {
+            kind: scenario.receiptKind,
+            ids: scenario.receiptIds ?? [scenario.receiptId as string],
+          },
     );
     expect(receipt.publicationReceipt).toBeNull();
     expect(backend.commits).toHaveLength(1);
@@ -279,6 +289,22 @@ describe('P5-07B1 Submission application registration', () => {
       applicationStatus: scenario.applicationStatus,
       publicationStatus: scenario.publicationStatus,
     });
+  });
+
+  it('rejects a Photos parent registration without one exact complete Media receipt set', async () => {
+    const scenario = scenarios[8];
+    if (scenario === undefined) throw new Error('Scenario is missing.');
+    for (const photoParentMediaDecisionIds of [[], [mediaDecisionIdA, mediaDecisionIdA]]) {
+      await expect(
+        registerSubmissionApplication(
+          context,
+          createBackend({ ...stateFor(scenario), photoParentMediaDecisionIds }),
+          submissionId,
+          requestFor(scenario.sourceDecisionKind),
+          registeredAt,
+        ),
+      ).rejects.toMatchObject({ code: 'ineligible' });
+    }
   });
 
   it('rejects a mismatched type, action, resolution, or stale Submission version', async () => {

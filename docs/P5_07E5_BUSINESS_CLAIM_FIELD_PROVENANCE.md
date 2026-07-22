@@ -1,7 +1,7 @@
 # P5-07E5 Business Claim field provenance completion
 
 **Implementation item:** P5-07E5  
-**Status:** Active  
+**Status:** Completed in #259  
 **Last updated:** 2026-07-21
 
 ## Purpose

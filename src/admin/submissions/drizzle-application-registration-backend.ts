@@ -1,7 +1,8 @@
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, inArray, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   candidatePromotionDecisions,
+  mediaReviewDecisions,
   submissionApplicationEvents,
   submissionApplications,
   submissionEvents,
@@ -9,6 +10,7 @@ import {
 } from '../../db/schema';
 import { parseSuggestAcceptedCandidateEventPayload } from '../../submissions/accepted-candidate-contract';
 import { parseBusinessClaimFieldApplicationEventPayload } from '../../submissions/business-claim-field-application-persistence-contract';
+import { parsePhotoParentResolutionEventPayload } from '../../submissions/photo-parent-resolution-contract';
 import { SubmissionPersistenceError } from '../../submissions/persistence';
 import type {
   SubmissionApplicationReceiptReference,
@@ -148,6 +150,56 @@ export function createDrizzleSubmissionApplicationRegistrationBackend(
           (payload.projection.paymentApplication?.acceptedProposals.length ?? 0) > 0;
       }
 
+      let photoParentMediaDecisionIds: string[] = [];
+      if (row.eventAction === 'photo_parent_resolution_decided') {
+        const payload = parsePhotoParentResolutionEventPayload(row.eventInternalNote);
+        if (
+          payload === null ||
+          payload.requestId !== row.eventId ||
+          payload.submissionId !== submissionId ||
+          payload.resolution !== row.resolution
+        ) {
+          throw new Error('Photos parent-resolution event payload is invalid.');
+        }
+        photoParentMediaDecisionIds = payload.media
+          .map((item) => item.decisionId)
+          .sort((left, right) => left.localeCompare(right));
+        if (new Set(photoParentMediaDecisionIds).size !== photoParentMediaDecisionIds.length) {
+          throw new Error('Photos parent-resolution event repeats a Media review decision.');
+        }
+        const decisionRows = await database
+          .select({
+            decisionId: mediaReviewDecisions.id,
+            mediaAssetId: mediaReviewDecisions.mediaAssetId,
+            action: mediaReviewDecisions.action,
+            expectedReviewStatus: mediaReviewDecisions.expectedReviewStatus,
+            toReviewStatus: mediaReviewDecisions.toReviewStatus,
+            decidedAt: mediaReviewDecisions.decidedAt,
+          })
+          .from(mediaReviewDecisions)
+          .where(inArray(mediaReviewDecisions.id, photoParentMediaDecisionIds));
+        const decisionById = new Map(
+          decisionRows.map((decision) => [decision.decisionId, decision]),
+        );
+        if (decisionById.size !== photoParentMediaDecisionIds.length) {
+          throw new Error('Photos parent resolution is missing a durable Media review decision.');
+        }
+        for (const snapshot of payload.media) {
+          const decision = decisionById.get(snapshot.decisionId);
+          const expectedStatus = snapshot.decision === 'approved' ? 'accepted' : 'rejected';
+          if (
+            decision === undefined ||
+            decision.mediaAssetId !== snapshot.mediaAssetId ||
+            decision.action !== snapshot.decisionAction ||
+            decision.expectedReviewStatus !== 'pending' ||
+            decision.toReviewStatus !== expectedStatus ||
+            decision.decidedAt.toISOString() !== snapshot.decisionDecidedAt
+          ) {
+            throw new Error('Photos parent resolution does not match its durable Media receipt.');
+          }
+        }
+      }
+
       return {
         submissionId: row.submissionId,
         submissionType: row.submissionType,
@@ -171,6 +223,7 @@ export function createDrizzleSubmissionApplicationRegistrationBackend(
         candidatePromotionDecisionId,
         businessClaimFieldApplicationEventId: businessClaimFieldApplicationEvent?.id ?? null,
         businessClaimPaymentApplicationPending,
+        photoParentMediaDecisionIds,
       };
     },
 
