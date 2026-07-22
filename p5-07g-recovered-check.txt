@@ -2,35 +2,6 @@
 > cryptopaymap@0.0.0 format
 > biome format --write .
 
-scripts/p5-07g-integrate.mjs:20:61680 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  × unterminated string literal
-  
-    18 │ }
-    19 │ 
-  > 20 │ ...ZGUgIT09IG51bGwgJiYgWyc...TRUNCATED_FOR_DISPLAY...
-       │                                                      
-  
-  i input ends here
-  
-    18 │ }
-    19 │ 
-  > 20 │ ...ZGUgIT09IG51bGwgJiYgWyc...TRUNCATED_FOR_DISPLAY...
-       │                                                      
-  
-  i string literal starts here
-  
-    18 │ }
-    19 │ 
-  > 20 │ ...ubmissions/drizzle-private-retention-backend.ts": "aW1wb3J0IHsKICBhbmQsCiAgYXNjLAogIGVxLAogIGluQXJyY...
-       │                                                      ^
-  
-
-scripts/p5-07g-integrate.mjs format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-  × Code formatting aborted due to parsing errors. To format code with errors, enable the 'formatter.formatWithErrors' option.
-  
-
 src/db/schema/submission-retention.ts:20:1 parse ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   × Expected an expression but instead found '}'.
@@ -57,8 +28,8 @@ src/db/schema/submission-retention.ts format ━━━━━━━━━━━�
   × Code formatting aborted due to parsing errors. To format code with errors, enable the 'formatter.formatWithErrors' option.
   
 
-Formatted 936 files in 443ms. Fixed 6 files.
-Found 2 errors.
+Formatted 935 files in 427ms. Fixed 1 file.
+Found 1 error.
 format ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   × Some errors were emitted while running checks.

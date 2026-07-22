@@ -160,9 +160,7 @@ export interface FinalizePrivateRetentionRunCommand {
 }
 
 export interface PrivateRetentionBackend {
-  beginRun(
-    command: BeginPrivateRetentionRunCommand,
-  ): Promise<{
+  beginRun(command: BeginPrivateRetentionRunCommand): Promise<{
     state: 'started' | 'resumed' | 'replayed';
     receipt: PrivateRetentionRunReceipt | null;
   }>;
