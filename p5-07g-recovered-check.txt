@@ -2,15 +2,15 @@
 > cryptopaymap@0.0.0 check
 > astro check
 
-[2m14:26:38[22m [34m[content][39m Syncing content
-[33m[1m14:26:38[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
-[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/updates.json
-[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/places.json
-[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
-[33m[1m14:26:38[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
-[2m14:26:38[22m [34m[content][39m Synced content
-[2m14:26:38[22m [34m[types][39m Generated [2m1.05s[22m
-[2m14:26:38[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
+[2m14:30:45[22m [34m[content][39m Syncing content
+[33m[1m14:30:45[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
+[33m[1m14:30:45[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
+[33m[1m14:30:45[22m [WARN] [file-loader][39m No items found in public/data/updates.json
+[33m[1m14:30:45[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
+[33m[1m14:30:45[22m [WARN] [file-loader][39m No items found in public/data/places.json
+[2m14:30:45[22m [34m[content][39m Synced content
+[2m14:30:45[22m [34m[types][39m Generated [2m1.19s[22m
+[2m14:30:45[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
 [96msrc/admin/access/config.ts[0m:[93m42[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CF_ACCESS_TEAM_DOMAIN: ZodPipe<ZodString, ZodTransform<string, string>>; CF_ACCESS_AUD: ZodPipe<ZodString, ZodTransform<string, string>>; }, $loose>' is deprecated.
 
 [7m42[0m   .passthrough();
@@ -115,6 +115,18 @@
 
 [7m25[0m   z.number().finite(),
 [7m  [0m [93m             ~~~~~~[0m
+
+[96msrc/admin/submissions/drizzle-private-retention-backend.ts[0m:[93m108[0m:[93m11[0m - [91merror[0m[90m ts(2769): [0mNo overload matches this call.
+  Overload 1 of 3, '(left: PgColumn<{ name: "reference_id"; tableName: "submission_retention_items"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; ... 5 more ...; generated: undefined; }, {}, {}>, right: string | SQLWrapper): SQL<...>', gave the following error.
+    Argument of type 'unknown' is not assignable to parameter of type 'string | SQLWrapper'.
+  Overload 2 of 3, '(left: Aliased<unknown>, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "reference_id"; tableName: "submission_retention_items"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; ... 5 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<unknown>'.
+      Type 'PgColumn<{ name: "reference_id"; tableName: "submission_retention_items"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; ... 5 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<unknown>': sql, fieldAlias
+  Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+    Argument of type 'PgColumn<{ name: "reference_id"; tableName: "submission_retention_items"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; ... 5 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+
+[7m108[0m           eq(submissionRetentionItems.referenceId, referenceId),
+[7m   [0m [91m          ~~[0m
 
 [96msrc/components/admin/AuditHistoryView.tsx[0m:[93m224[0m:[93m26[0m - [93mwarning[0m[90m ts(6385): [0m'FormEvent' is deprecated.
 
@@ -407,8 +419,8 @@
 [7m27[0m     ).toThrowError(
 [7m  [0m [93m      ~~~~~~~~~~~~[0m
 
-Result (1064 files): 
-- 0 errors
+Result (1065 files): 
+- 1 error
 - 0 warnings
 - 86 hints
 

@@ -1,16 +1,4 @@
-import {
-  and,
-  asc,
-  eq,
-  inArray,
-  isNotNull,
-  isNull,
-  lte,
-  ne,
-  notExists,
-  or,
-  sql,
-} from 'drizzle-orm';
+import { and, asc, eq, inArray, isNotNull, isNull, lte, ne, notExists, or, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../../db/client';
 import {
   evidence,
@@ -576,11 +564,16 @@ export function createDrizzlePrivateRetentionBackend(
         return 'committed';
       } catch (error) {
         if (postgresErrorCode(error) === '23505') {
-          if (await itemExists(database, command.policy, command.referenceType, command.referenceId)) {
+          if (
+            await itemExists(database, command.policy, command.referenceType, command.referenceId)
+          ) {
             return 'replayed';
           }
         }
-        persistenceConflict(error, 'Private Media retention receipt conflicted with current state.');
+        persistenceConflict(
+          error,
+          'Private Media retention receipt conflicted with current state.',
+        );
       }
     },
 
@@ -591,7 +584,8 @@ export function createDrizzlePrivateRetentionBackend(
       }
       if (current.state !== 'running') {
         const stored = privateRetentionRunReceiptSchema.safeParse(current.receipt);
-        if (stored.success && JSON.stringify(stored.data) === JSON.stringify(command.receipt)) return;
+        if (stored.success && JSON.stringify(stored.data) === JSON.stringify(command.receipt))
+          return;
         throw new SubmissionPersistenceError(
           'conflict',
           'The private retention run was finalized with different content.',
