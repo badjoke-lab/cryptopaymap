@@ -23,6 +23,7 @@ jobs:
           cache: npm
       - run: npm ci
       - run: node scripts/p5-07f-audit-fix.mjs
+      - run: node scripts/p5-07f-type-fix.mjs
       - name: Integrate working tree
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
