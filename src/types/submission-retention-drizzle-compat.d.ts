@@ -7,8 +7,5 @@ declare module 'drizzle-orm' {
    * column expression. Keep this overload scoped to the retention reference
    * column so the rest of Drizzle's equality checks remain strict.
    */
-  export function eq(
-    left: typeof submissionRetentionItems.referenceId,
-    right: unknown,
-  ): SQL;
+  export function eq(left: typeof submissionRetentionItems.referenceId, right: unknown): SQL;
 }
