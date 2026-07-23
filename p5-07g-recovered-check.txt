@@ -2,15 +2,15 @@
 > cryptopaymap@0.0.0 check
 > astro check
 
-[2m10:11:13[22m [34m[content][39m Syncing content
-[33m[1m10:11:13[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
-[33m[1m10:11:13[22m [WARN] [file-loader][39m No items found in public/data/places.json
-[33m[1m10:11:13[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
-[33m[1m10:11:13[22m [WARN] [file-loader][39m No items found in public/data/updates.json
-[33m[1m10:11:13[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
-[2m10:11:13[22m [34m[content][39m Synced content
-[2m10:11:13[22m [34m[types][39m Generated [2m1.20s[22m
-[2m10:11:13[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
+[2m10:12:54[22m [34m[content][39m Syncing content
+[33m[1m10:12:54[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
+[33m[1m10:12:54[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
+[33m[1m10:12:54[22m [WARN] [file-loader][39m No items found in public/data/places.json
+[33m[1m10:12:54[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
+[33m[1m10:12:54[22m [WARN] [file-loader][39m No items found in public/data/updates.json
+[2m10:12:54[22m [34m[content][39m Synced content
+[2m10:12:54[22m [34m[types][39m Generated [2m1.22s[22m
+[2m10:12:54[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
 [96mfunctions/admin/api/media-file.ts[0m:[93m81[0m:[93m21[0m - [91merror[0m[90m ts(2379): [0mArgument of type 'PgColumn<{ name: "id"; tableName: "media_files"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'PgColumn<{ name: "reference_id"; tableName: "submission_retention_items"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; ... 5 more ...; generated: undefined; }, {}, {}>' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
   Type '{ name: "id"; tableName: "media_files"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: true; isPrimaryKey: true; isAutoincrement: false; ... 4 more ...; generated: undefined; }' is not assignable to type '{ name: "reference_id"; tableName: "submission_retention_items"; dataType: "string"; columnType: "PgUUID"; data: string; driverParam: string; notNull: true; hasDefault: false; isPrimaryKey: false; ... 5 more ...; generated: undefined; }'.
     Types of property 'name' are incompatible.
