@@ -2,15 +2,15 @@
 > cryptopaymap@0.0.0 check
 > astro check
 
-[2m10:54:38[22m [34m[content][39m Syncing content
-[33m[1m10:54:38[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
-[33m[1m10:54:38[22m [WARN] [file-loader][39m No items found in public/data/places.json
-[33m[1m10:54:38[22m [WARN] [file-loader][39m No items found in public/data/updates.json
-[33m[1m10:54:38[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
-[33m[1m10:54:38[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
-[2m10:54:38[22m [34m[content][39m Synced content
-[2m10:54:38[22m [34m[types][39m Generated [2m1.19s[22m
-[2m10:54:38[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
+[2m11:38:50[22m [34m[content][39m Syncing content
+[33m[1m11:38:50[22m [WARN] [glob-loader][39m No files found matching "**/*.md" in directory "content/changelog"
+[33m[1m11:38:50[22m [WARN] [file-loader][39m No items found in public/data/places.json
+[33m[1m11:38:50[22m [WARN] [file-loader][39m No items found in public/data/online-services.json
+[33m[1m11:38:50[22m [WARN] [file-loader][39m No items found in public/data/place-pins.json
+[33m[1m11:38:50[22m [WARN] [file-loader][39m No items found in public/data/updates.json
+[2m11:38:50[22m [34m[content][39m Synced content
+[2m11:38:50[22m [34m[types][39m Generated [2m1.25s[22m
+[2m11:38:50[22m [34m[check][39m Getting diagnostics for Astro files in /home/runner/work/cryptopaymap/cryptopaymap...
 [96msrc/admin/access/config.ts[0m:[93m42[0m:[93m4[0m - [93mwarning[0m[90m ts(6385): [0m'(): ZodObject<{ CF_ACCESS_TEAM_DOMAIN: ZodPipe<ZodString, ZodTransform<string, string>>; CF_ACCESS_AUD: ZodPipe<ZodString, ZodTransform<string, string>>; }, $loose>' is deprecated.
 
 [7m42[0m   .passthrough();
