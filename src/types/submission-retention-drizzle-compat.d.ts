@@ -1,11 +1,10 @@
-import type { SQL } from 'drizzle-orm';
-import { submissionRetentionItems } from '../db/schema';
+import type { SQL, SQLWrapper } from 'drizzle-orm';
 
 declare module 'drizzle-orm' {
   /**
-   * The retention exclusion helper accepts either a concrete UUID or a UUID
-   * column expression. Keep this overload scoped to the retention reference
-   * column so the rest of Drizzle's equality checks remain strict.
+   * Retention exclusion queries compare a UUID column with another UUID column
+   * expression. Keep the overload expression-based so regular value checks
+   * continue to use Drizzle's existing strict overloads.
    */
-  export function eq(left: typeof submissionRetentionItems.referenceId, right: unknown): SQL;
+  export function eq(left: SQLWrapper, right: unknown): SQL;
 }
