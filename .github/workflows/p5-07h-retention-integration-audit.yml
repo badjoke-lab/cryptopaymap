@@ -1,0 +1,26 @@
+name: P5-07H retention integration audit
+
+on:
+  pull_request:
+    paths:
+      - 'src/admin/submissions/private-retention.ts'
+      - 'src/admin/submissions/drizzle-private-retention-backend.ts'
+      - 'src/admin/submissions/private-retention-contract.ts'
+      - 'src/submissions/private-media-retention.ts'
+      - 'scripts/check-p5-07h-retention-integration-audit.js'
+      - '.github/workflows/p5-07h-retention-integration-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P5-07H retention integration audit
+        run: node scripts/check-p5-07h-retention-integration-audit.js
