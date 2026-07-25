@@ -17,13 +17,23 @@ P5-08A — MVP-B integration audit matrix and repository handoff
 - P5-07A canonical application and retention inventory completed in #243.
 - P5-07B common application registration and lifecycle completed in #245–#246.
 - P5-07C Suggest Candidate receipt binding completed in #247.
-- P5-07D Problem Report correction and application ownership completed in #248–#254.
-- P5-07E Business Claim ordering, payment application, and field provenance completed in #255–#259.
+- P5-07D1 practical Location correction application completed in #248.
+- P5-07D2 durable negative recheck application completed in #249.
+- P5-07D3 remaining correction owner audit completed in #250.
+- P5-07D4 Claim instruction correction application completed in #251.
+- P5-07D5 Claim Asset set replacement preview completed in #252.
+- P5-07D6 durable Claim Asset replacement plan completed in #253.
+- P5-07D7 atomic complete Claim Asset replacement completed in #254.
+- P5-07E1 Business Claim application-order correction completed in #255.
+- P5-07E2 protected Business Claim payment-draft preview completed in #256.
+- P5-07E3 durable Business Claim payment application plan completed in #257.
+- P5-07E4 atomic Business Claim payment application completed in #258.
+- P5-07E5 Business Claim field provenance completion completed in #259.
 - P5-07F Photos Media receipt binding completed in #260.
 - P5-07G private retention execution completed in #261.
 - P5-07H canonical application and retention integration audit completed in #263.
 - P5-07 is repository-complete.
-- P5-08A is active in Issue #264 on `p5-08a-mvp-b-integration-audit-matrix`.
+- P5-08A is active in PR #265 for Issue #264 on `p5-08a-mvp-b-integration-audit-matrix`.
 
 ## Latest verified main
 
@@ -36,7 +46,7 @@ The final P5-07H head passed Foundation validation, Migration drift, and the ded
 ## Active pull request
 
 ```text
-None yet — P5-08A branch is active for Issue #264.
+#265 — P5-08A MVP-B integration audit matrix
 ```
 
 ## Current boundary
@@ -47,7 +57,7 @@ It separates repository-executable evidence from configured and live-environment
 
 ## Next
 
-Open the P5-08A pull request, pass normal repository workflows, merge the audit matrix and status reconciliation, then begin P5-08B public-intake and private-status integration audit.
+Pass normal repository workflows and merge #265, then begin P5-08B public-intake and private-status integration audit.
 
 ## Blocked
 
