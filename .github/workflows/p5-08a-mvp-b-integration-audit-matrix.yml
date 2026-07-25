@@ -1,0 +1,24 @@
+name: P5-08A MVP-B integration audit matrix
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p5-08a-mvp-b-integration-audit-matrix.js'
+      - '.github/workflows/p5-08a-mvp-b-integration-audit-matrix.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P5-08A MVP-B integration audit matrix check
+        run: node scripts/check-p5-08a-mvp-b-integration-audit-matrix.js
