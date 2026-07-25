@@ -18,7 +18,7 @@ This audit verifies the boundary between canonical application and the P5-07G pr
 Run:
 
 ```sh
-node scripts/check-p5-07h-retention-integration-audit.mjs
+node scripts/check-p5-07h-retention-integration-audit.js
 ```
 
 The command exits non-zero if a required guard or receipt invariant disappears, or if a forbidden canonical mutation signature enters the retention execution surface. On success it emits a machine-readable JSON audit receipt.
