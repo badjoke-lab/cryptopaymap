@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-21
+**Last verified:** 2026-07-25
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-07F — Photos Media receipt binding
+P5-08A — MVP-B integration audit matrix and repository handoff
 
 ## Current repository state
 
@@ -29,35 +29,41 @@ P5-07F — Photos Media receipt binding
 - P5-07E3 durable Business Claim payment application plan completed in #257.
 - P5-07E4 atomic Business Claim payment application completed in #258.
 - P5-07E5 Business Claim field provenance completion completed in #259.
-- P5-07F is active in PR #260 on `p5-07f-photo-media-receipt-binding`.
+- P5-07F — Photos Media receipt binding completed in #260.
+- P5-07G private retention execution completed in #261.
+- P5-07H canonical application and retention integration audit completed in #263.
+- P5-07 is repository-complete.
+- P5-08A is active in PR #265 for Issue #264 on `p5-08a-mvp-b-integration-audit-matrix`.
 
 ## Latest verified main
 
 ```text
-10364840a1a8db472255dbf8e117c8e2c26185ca
+c3f6049e96df5c29201bec61fc3c7374ae322846
 ```
 
-The final P5-07E5 head passed all four normal workflow groups.
+The final P5-07H head passed Foundation validation, Migration drift, and the dedicated P5-07H retention integration audit before merge.
 
 ## Active pull request
 
 ```text
-#260 — P5-07F Photos Media receipt binding
+#265 — P5-08A MVP-B integration audit matrix
 ```
 
 ## Current boundary
 
-P5-07F keeps the private Photos parent resolution event as the source decision and binds the common application receipt to the complete exact child `media_review_decision` ID set.
+P5-08A defines the MVP-B integration audit matrix across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
 
-Registration revalidates every referenced durable Media decision against the parent event. The application is `committed`, publication remains `pending`, and no export or release activation occurs.
+It separates repository-executable evidence from configured and live-environment launch evidence, preserves the application/publication ownership boundary, and divides P5-08B through P5-08F into bounded audit slices.
 
 ## Next
 
-P5-07G executes bounded retention for contact, payload, Evidence, proof, and Media private material. Publication and export activation remain separate later owners.
+Pass normal repository workflows and merge #265, then begin P5-08B public-intake and private-status integration audit.
 
 ## Blocked
 
 No repository blocker is known.
+
+Configured production evidence remains deliberately deferred to Phase 6, including live Cloudflare Access, deployed Functions bindings, live Neon execution, R2 publication behavior, retention scheduler binding, and production restore drills.
 
 ## Verification rule
 
@@ -65,6 +71,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
+- `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
