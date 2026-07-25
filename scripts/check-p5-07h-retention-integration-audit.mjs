@@ -10,7 +10,10 @@ const files = {
 
 const source = Object.fromEntries(
   await Promise.all(
-    Object.entries(files).map(async ([key, path]) => [key, await readFile(path, 'utf8')]),
+    Object.entries(files).map(async ([key, path]) => [
+      key,
+      await readFile(path, 'utf8'),
+    ]),
   ),
 );
 
@@ -49,7 +52,9 @@ const forbiddenCanonicalMutationFragments = [
   'delete(claimAsset',
 ];
 
-const combinedExecutionSource = `${source.retention}\n${source.backend}\n${source.media}`.toLowerCase();
+const combinedExecutionSource = [source.retention, source.backend, source.media]
+  .join('\n')
+  .toLowerCase();
 for (const fragment of forbiddenCanonicalMutationFragments) {
   assert.ok(
     !combinedExecutionSource.includes(fragment.toLowerCase()),
