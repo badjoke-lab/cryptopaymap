@@ -1,0 +1,11 @@
+name: P5-07G integrate
+
+on:
+  workflow_dispatch:
+
+jobs:
+  integrate:
+    if: false
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo "P5-07G integration helper retired after generated migration files were committed."
