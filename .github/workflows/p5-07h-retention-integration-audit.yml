@@ -7,7 +7,7 @@ on:
       - 'src/admin/submissions/drizzle-private-retention-backend.ts'
       - 'src/admin/submissions/private-retention-contract.ts'
       - 'src/submissions/private-media-retention.ts'
-      - 'scripts/check-p5-07h-retention-integration-audit.mjs'
+      - 'scripts/check-p5-07h-retention-integration-audit.js'
       - '.github/workflows/p5-07h-retention-integration-audit.yml'
   workflow_dispatch:
 
@@ -23,4 +23,4 @@ jobs:
         with:
           node-version: 24
       - name: Run P5-07H retention integration audit
-        run: node scripts/check-p5-07h-retention-integration-audit.mjs
+        run: node scripts/check-p5-07h-retention-integration-audit.js
