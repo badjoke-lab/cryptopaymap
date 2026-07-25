@@ -23,18 +23,16 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: node scripts/p5-07g-fix-recovered.mjs
-      - run: npm run format
-      - run: npm run lint
-      - name: Capture TypeScript diagnostics
+      - run: npm run db:generate
+      - name: Commit generated database files once
         shell: bash
         run: |
-          set +e
-          npm run check > p5-07g-recovered-check.txt 2>&1
-          status=$?
+          if git diff --quiet -- drizzle; then
+            echo "Database files are already current."
+            exit 0
+          fi
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -A
-          git commit -m "P5-07G validate recovered types"
+          git add drizzle
+          git commit -m "P5-07G add generated database migration"
           git push origin HEAD:p5-07g-private-retention-execution
-          exit "$status"
