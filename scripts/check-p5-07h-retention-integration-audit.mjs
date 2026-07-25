@@ -10,10 +10,7 @@ const files = {
 
 const source = Object.fromEntries(
   await Promise.all(
-    Object.entries(files).map(async ([key, path]) => [
-      key,
-      await readFile(path, 'utf8'),
-    ]),
+    Object.entries(files).map(async ([key, path]) => [key, await readFile(path, 'utf8')]),
   ),
 );
 
