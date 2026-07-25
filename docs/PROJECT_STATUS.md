@@ -29,7 +29,7 @@ P5-08A — MVP-B integration audit matrix and repository handoff
 - P5-07E3 durable Business Claim payment application plan completed in #257.
 - P5-07E4 atomic Business Claim payment application completed in #258.
 - P5-07E5 Business Claim field provenance completion completed in #259.
-- P5-07F Photos Media receipt binding completed in #260.
+- P5-07F — Photos Media receipt binding completed in #260.
 - P5-07G private retention execution completed in #261.
 - P5-07H canonical application and retention integration audit completed in #263.
 - P5-07 is repository-complete.
