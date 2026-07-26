@@ -79,7 +79,7 @@ for (const marker of [
   'P5-08A',
   'P5-08B',
   'P5-08C',
-  'repository-executable evidence',
+  'Repository-executable evidence',
   'Configured-environment evidence',
 ]) {
   assert.ok(matrix.includes(marker), `P5-08B audit failed: P5-08A handoff missing: ${marker}`);
@@ -87,7 +87,7 @@ for (const marker of [
 
 for (const marker of [
   'P5-08B — Public intake and private-status integration audit',
-  'P5-08A completed in #265',
+  'P5-08A — MVP-B integration audit matrix and repository handoff completed in #265',
   'P5-08C',
 ]) {
   assert.ok(status.includes(marker), `P5-08B audit failed: project status marker missing: ${marker}`);
