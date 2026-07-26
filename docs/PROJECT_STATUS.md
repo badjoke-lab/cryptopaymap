@@ -35,7 +35,7 @@ P5-08C — Protected review and final-decision integration audit
 - P5-07 is repository-complete.
 - P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
 - The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
-- P5-08B completed in #267 for Issue #266.
+- P5-08B — Public intake and private-status integration audit completed in #267 for Issue #266.
 - P5-08C is active in Issue #268 on `p5-08c-protected-review-final-decision-audit`.
 
 ## Latest verified main
@@ -49,7 +49,7 @@ The final P5-08B head passed Foundation validation, Migration drift, the retaine
 ## Active pull request
 
 ```text
-None yet — P5-08C branch is active for Issue #268.
+#269 — P5-08C protected review and final-decision integration audit
 ```
 
 ## Current boundary
@@ -60,7 +60,7 @@ It verifies exact-state transitions, stale-state and changed-content conflict cl
 
 ## Next
 
-Open the P5-08C pull request, pass normal repository workflows and the dedicated P5-08C audit, merge it, then begin P5-08D canonical application and publication-handoff integration audit.
+Pass normal repository workflows and the dedicated P5-08C audit, merge #269, then begin P5-08D canonical application and publication-handoff integration audit.
 
 ## Blocked
 
