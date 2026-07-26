@@ -15,6 +15,7 @@ P5-08B — Public intake and private-status integration audit
 - Phase 0 through Phase 4 are complete for the Phase 5 handoff.
 - P5-01 through P5-06 are repository-complete.
 - P5-07A through P5-07H are complete through #243–#263.
+- P5-07F — Photos Media receipt binding completed in #260; P5-07G private retention execution completed in #261.
 - P5-07 is repository-complete.
 - P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
 - The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
