@@ -1,0 +1,26 @@
+name: P5-08C protected review and final decision audit
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P5_08C_PROTECTED_REVIEW_FINAL_DECISION_AUDIT.md'
+      - 'docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p5-08c-protected-review-final-decision.js'
+      - 'package.json'
+      - '.github/workflows/p5-08c-protected-review-final-decision-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P5-08C protected review and final decision audit
+        run: node scripts/check-p5-08c-protected-review-final-decision.js
