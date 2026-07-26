@@ -36,6 +36,7 @@ P5-08C — Protected review and final-decision integration audit
 - P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
 - The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
 - P5-08B — Public intake and private-status integration audit completed in #267 for Issue #266.
+- P5-08B completed in #267; its fixed audit receipt remains required by later P5-08 slices.
 - P5-08C is active in Issue #268 on `p5-08c-protected-review-final-decision-audit`.
 
 ## Latest verified main
