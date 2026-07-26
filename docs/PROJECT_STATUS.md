@@ -14,8 +14,24 @@ P5-08B — Public intake and private-status integration audit
 
 - Phase 0 through Phase 4 are complete for the Phase 5 handoff.
 - P5-01 through P5-06 are repository-complete.
-- P5-07A through P5-07H are complete through #243–#263.
-- P5-07F — Photos Media receipt binding completed in #260; P5-07G private retention execution completed in #261.
+- P5-07A canonical application and retention inventory completed in #243.
+- P5-07B common application registration and lifecycle completed in #245–#246.
+- P5-07C Suggest Candidate receipt binding completed in #247.
+- P5-07D1 practical Location correction application completed in #248.
+- P5-07D2 durable negative recheck application completed in #249.
+- P5-07D3 remaining correction owner audit completed in #250.
+- P5-07D4 Claim instruction correction application completed in #251.
+- P5-07D5 Claim Asset set replacement preview completed in #252.
+- P5-07D6 durable Claim Asset replacement plan completed in #253.
+- P5-07D7 atomic complete Claim Asset replacement completed in #254.
+- P5-07E1 Business Claim application-order correction completed in #255.
+- P5-07E2 protected Business Claim payment-draft preview completed in #256.
+- P5-07E3 durable Business Claim payment application plan completed in #257.
+- P5-07E4 atomic Business Claim payment application completed in #258.
+- P5-07E5 Business Claim field provenance completion completed in #259.
+- P5-07F — Photos Media receipt binding completed in #260.
+- P5-07G private retention execution completed in #261.
+- P5-07H canonical application and retention integration audit completed in #263.
 - P5-07 is repository-complete.
 - P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
 - The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
