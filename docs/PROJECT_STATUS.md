@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-25
+**Last verified:** 2026-07-26
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-08A — MVP-B integration audit matrix and repository handoff
+P5-08B — Public intake and private-status integration audit
 
 ## Current repository state
 
@@ -33,37 +33,39 @@ P5-08A — MVP-B integration audit matrix and repository handoff
 - P5-07G private retention execution completed in #261.
 - P5-07H canonical application and retention integration audit completed in #263.
 - P5-07 is repository-complete.
-- P5-08A is active in PR #265 for Issue #264 on `p5-08a-mvp-b-integration-audit-matrix`.
+- P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
+- The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
+- P5-08B is active in Issue #266 on `p5-08b-public-intake-private-status-audit`.
 
 ## Latest verified main
 
 ```text
-c3f6049e96df5c29201bec61fc3c7374ae322846
+f235ebd868ac71dfef849865d03a59f704960f3e
 ```
 
-The final P5-07H head passed Foundation validation, Migration drift, and the dedicated P5-07H retention integration audit before merge.
+The final P5-08A head passed Foundation validation, Migration drift, and the dedicated P5-08A MVP-B integration audit matrix workflow before merge.
 
 ## Active pull request
 
 ```text
-#265 — P5-08A MVP-B integration audit matrix
+#267 — P5-08B public intake and private-status integration audit
 ```
 
 ## Current boundary
 
-P5-08A defines the MVP-B integration audit matrix across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
+P5-08B audits Suggest, Payment Report, Problem Report, Business Claim, and Photos from public intake through common private persistence and bounded private-status reads.
 
-It separates repository-executable evidence from configured and live-environment launch evidence, preserves the application/publication ownership boundary, and divides P5-08B through P5-08F into bounded audit slices.
+It verifies abuse-control ownership, deterministic replay and changed-content conflict, opaque-reference plus follow-up-secret status access, leakage suppression, and the separation between repository evidence and configured Phase 6 evidence.
 
 ## Next
 
-Pass normal repository workflows and merge #265, then begin P5-08B public-intake and private-status integration audit.
+Pass normal repository workflows and the dedicated P5-08B audit, merge #267, then begin P5-08C protected review and decision integration audit.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured production evidence remains deliberately deferred to Phase 6, including live Cloudflare Access, deployed Functions bindings, live Neon execution, R2 publication behavior, retention scheduler binding, and production restore drills.
+Configured production evidence remains deliberately deferred to Phase 6, including live Cloudflare Access, deployed Functions and secret bindings, live Turnstile and Durable Object behavior, live Neon execution, R2 publication behavior, retention scheduler binding, and production restore drills.
 
 ## Verification rule
 
@@ -72,6 +74,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
+- `docs/P5_08B_PUBLIC_INTAKE_PRIVATE_STATUS_AUDIT.md`
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
