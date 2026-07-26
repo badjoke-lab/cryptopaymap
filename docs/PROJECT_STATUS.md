@@ -16,7 +16,8 @@ P5-08B — Public intake and private-status integration audit
 - P5-01 through P5-06 are repository-complete.
 - P5-07A through P5-07H are complete through #243–#263.
 - P5-07 is repository-complete.
-- P5-08A completed in #265 and established the five-family MVP-B audit matrix plus the P5-08B through P5-08F sequence.
+- P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
+- The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
 - P5-08B is active in Issue #266 on `p5-08b-public-intake-private-status-audit`.
 
 ## Latest verified main
@@ -30,7 +31,7 @@ The final P5-08A head passed Foundation validation, Migration drift, and the ded
 ## Active pull request
 
 ```text
-None yet — P5-08B branch is active for Issue #266.
+#267 — P5-08B public intake and private-status integration audit
 ```
 
 ## Current boundary
@@ -41,7 +42,7 @@ It verifies abuse-control ownership, deterministic replay and changed-content co
 
 ## Next
 
-Open the P5-08B pull request, pass normal repository workflows and the dedicated audit, merge it, then begin P5-08C protected review and decision integration audit.
+Pass normal repository workflows and the dedicated P5-08B audit, merge #267, then begin P5-08C protected review and decision integration audit.
 
 ## Blocked
 
