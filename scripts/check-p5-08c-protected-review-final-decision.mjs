@@ -9,7 +9,11 @@ const [packageJson, matrix, auditDoc, status] = await Promise.all([
 ]);
 
 const schemaCheck = JSON.parse(packageJson).scripts?.['schema:check'];
-assert.equal(typeof schemaCheck, 'string', 'P5-08C audit failed: schema:check is missing.');
+assert.equal(
+  typeof schemaCheck,
+  'string',
+  'P5-08C audit failed: schema:check is missing.',
+);
 
 const commonChecks = [
   'check-submission-review-entry.ts',
@@ -55,12 +59,21 @@ const familyChecks = {
 };
 
 for (const check of commonChecks) {
-  assert.ok(schemaCheck.includes(check), `P5-08C audit failed: common check missing: ${check}`);
+  assert.ok(
+    schemaCheck.includes(check),
+    `P5-08C audit failed: common check missing: ${check}`,
+  );
 }
 for (const [family, checks] of Object.entries(familyChecks)) {
-  assert.ok(matrix.includes(`| ${family} |`), `P5-08C audit failed: matrix family missing: ${family}`);
+  assert.ok(
+    matrix.includes(`| ${family} |`),
+    `P5-08C audit failed: matrix family missing: ${family}`,
+  );
   for (const check of checks) {
-    assert.ok(schemaCheck.includes(check), `P5-08C audit failed: ${family} check missing: ${check}`);
+    assert.ok(
+      schemaCheck.includes(check),
+      `P5-08C audit failed: ${family} check missing: ${check}`,
+    );
   }
 }
 
@@ -72,7 +85,10 @@ for (const marker of [
   'Parent resolution requires the exact complete eligible child decision set.',
   'P5-08D remains the next owner',
 ]) {
-  assert.ok(auditDoc.includes(marker), `P5-08C audit failed: audit invariant missing: ${marker}`);
+  assert.ok(
+    auditDoc.includes(marker),
+    `P5-08C audit failed: audit invariant missing: ${marker}`,
+  );
 }
 
 for (const marker of [
@@ -80,19 +96,28 @@ for (const marker of [
   'P5-08B completed in #267',
   'P5-08D',
 ]) {
-  assert.ok(status.includes(marker), `P5-08C audit failed: project status marker missing: ${marker}`);
+  assert.ok(
+    status.includes(marker),
+    `P5-08C audit failed: project status marker missing: ${marker}`,
+  );
 }
 
-console.log(JSON.stringify({
-  audit: 'P5-08C',
-  result: 'pass',
-  families: Object.keys(familyChecks),
-  guarantees: [
-    'protected capability and subject boundary',
-    'cross-family review owner coverage',
-    'exact-state final decisions',
-    'replay and conflict failure closure',
-    'durable decision before application',
-    'application and publication separation',
-  ],
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      audit: 'P5-08C',
+      result: 'pass',
+      families: Object.keys(familyChecks),
+      guarantees: [
+        'protected capability and subject boundary',
+        'cross-family review owner coverage',
+        'exact-state final decisions',
+        'replay and conflict failure closure',
+        'durable decision before application',
+        'application and publication separation',
+      ],
+    },
+    null,
+    2,
+  ),
+);
