@@ -46,6 +46,7 @@ P6-04 — Configured R2 media lifecycle evidence
 - Phase 5 is repository-complete.
 - P6-01 — Launch evidence register and data QA baseline completed in #277 for Issue #276.
 - P6-02 — Configured identity access and protected Admin evidence completed in #279 for Issue #278.
+- The P6-02 fixed merge evidence was `b2c076aeb66c79a61732e18f10a50485332e058a`.
 - P6-03 — Live Neon canonical transaction and application receipt evidence completed in #281 for Issue #280.
 - P6-04 is active in Issue #282 on `p6-04-configured-r2-media-lifecycle-evidence`.
 
