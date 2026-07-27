@@ -1,0 +1,26 @@
+name: P5-08D canonical application and publication handoff audit
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md'
+      - 'docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p5-08d-canonical-application-publication-handoff-audit.js'
+      - '.github/workflows/p5-08d-canonical-application-publication-handoff-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P5-08D canonical application and publication handoff audit
+        run: node scripts/check-p5-08d-canonical-application-publication-handoff-audit.js

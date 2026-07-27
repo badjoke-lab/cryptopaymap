@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-26
+**Last verified:** 2026-07-27
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-08C — Protected review and final-decision integration audit
+P5-08D — Canonical application and publication-handoff integration audit
 
 ## Current repository state
 
@@ -37,37 +37,39 @@ P5-08C — Protected review and final-decision integration audit
 - The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
 - P5-08B — Public intake and private-status integration audit completed in #267 for Issue #266.
 - P5-08B completed in #267; its fixed audit receipt remains required by later P5-08 slices.
-- P5-08C is active in Issue #268 on `p5-08c-protected-review-final-decision-audit`.
+- P5-08C — Protected review and final-decision integration audit completed in #269 for Issue #268.
+- P5-08C completed in #269; its fixed audit receipt remains required by later P5-08 slices.
+- P5-08D is active in Issue #270 on `p5-08d-canonical-application-publication-handoff-audit`.
 
 ## Latest verified main
 
 ```text
-c838f919167f058998fe4ff6f29e5e6a1f7043a6
+2bf4751778877bfe8129eabf969a11ffece62106
 ```
 
-The final P5-08B head passed Foundation validation, Migration drift, the retained P5-08A audit, and the dedicated P5-08B public-intake/private-status audit before merge.
+The final P5-08C head passed Foundation validation, Migration drift, and the retained P5-08A/P5-08B/P5-08C audits before merge.
 
 ## Active pull request
 
 ```text
-#269 — P5-08C protected review and final-decision integration audit
+Pending — P5-08D canonical application and publication-handoff integration audit
 ```
 
 ## Current boundary
 
-P5-08C audits protected queue, detail, workspace, capability, subject, follow-up, and final-decision ownership across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
+P5-08D audits exact canonical application owners and durable receipts across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
 
-It verifies exact-state transitions, stale-state and changed-content conflict closure, durable decision receipts, Photos child/parent separation, and the boundary between review completion, canonical application, and publication.
+It verifies replay/conflict/prerequisite closure, mutation-and-receipt integrity, and the hard separation between application completion and export, release, activation, publication, or public-state mutation.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P5-08C audit, merge #269, then begin P5-08D canonical application and publication-handoff integration audit.
+Pass normal repository workflows and the dedicated P5-08D audit, merge the P5-08D pull request, then begin P5-08E privacy, retention, replay, conflict, and partial-failure integration audit.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured production evidence remains deliberately deferred to Phase 6, including live Cloudflare Access, deployed capability allowlists, configured protected Admin journeys, live Neon execution, R2 publication behavior, retention scheduler binding, and production restore drills.
+Configured production evidence remains deliberately deferred to Phase 6, including live Neon transactions and receipt persistence, configured reviewer-to-application journeys, R2 export/release behavior, publication reconciliation, rollback, and production public-state verification.
 
 ## Verification rule
 
@@ -78,6 +80,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
 - `docs/P5_08B_PUBLIC_INTAKE_PRIVATE_STATUS_AUDIT.md`
 - `docs/P5_08C_PROTECTED_REVIEW_FINAL_DECISION_AUDIT.md`
+- `docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md`
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
