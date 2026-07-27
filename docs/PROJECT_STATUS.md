@@ -4,11 +4,11 @@
 
 ## Current phase
 
-Phase 5 — Public submissions / MVP-B
+Phase 5 — Public submissions / MVP-B final close
 
 ## Current implementation item
 
-P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit
+P5-08F — MVP-B final integration close and Phase 6 evidence handoff
 
 ## Current repository state
 
@@ -34,44 +34,45 @@ P5-08E — Privacy, retention, replay, conflict, and partial-failure integration
 - P5-07H canonical application and retention integration audit completed in #263.
 - P5-07 is repository-complete.
 - P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
-- The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`; its merged main is `f235ebd868ac71dfef849865d03a59f704960f3e`.
+- The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`.
 - P5-08B — Public intake and private-status integration audit completed in #267 for Issue #266.
 - P5-08B completed in #267; its fixed audit receipt remains required by later P5-08 slices.
 - P5-08C — Protected review and final-decision integration audit completed in #269 for Issue #268.
 - P5-08C completed in #269; its fixed audit receipt remains required by later P5-08 slices.
 - P5-08D — Canonical application and publication-handoff integration audit completed in #271 for Issue #270.
 - P5-08D completed in #271; its fixed audit receipt remains required by later P5-08 slices.
-- P5-08E is active in Issue #272 on `p5-08e-privacy-retention-replay-conflict-partial-failure-audit`.
+- P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit completed in #273 for Issue #272.
+- P5-08F is active in Issue #274 on `p5-08f-mvp-b-final-close-phase6-handoff`.
 
 ## Latest verified main
 
 ```text
-2cae36ab0b8573eaa557f6513db562be3be30d0c
+b99ba72a889b181ab3c61dd98b4fad7d2ab0e8fe
 ```
 
-The final P5-08D head passed Foundation validation, Migration drift, and the retained P5-08A/P5-08B/P5-08C/P5-08D audits before merge.
+The final P5-08E head passed Foundation validation, Migration drift, and the retained P5-08A through P5-08E audits before merge.
 
 ## Active pull request
 
 ```text
-Pending — P5-08E privacy, retention, replay, conflict, and partial-failure integration audit
+#275 — P5-08F MVP-B final close and Phase 6 evidence handoff
 ```
 
 ## Current boundary
 
-P5-08E audits private/public field separation, retention ownership, deterministic replay, changed-content and stale-state conflict, duplicate execution, and partial-failure closure across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
+P5-08F closes Phase 5 repository work by retaining all P5-08A through P5-08E audits on one final head and by documenting configured-production evidence that remains unproven.
 
-It verifies that private deletion preserves required canonical/public provenance, public release excludes unnecessary private payloads, and Photos parent, child Media, and source-object lifecycles remain separately bounded.
+It does not activate production export, release, publication, deletion, deployment, DNS, or live data mutation.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P5-08E audit, merge the P5-08E pull request, then begin P5-08F final MVP-B integration closure and Phase 6 evidence handoff.
+Pass normal repository workflows and the dedicated P5-08F audit, merge #275, then begin Phase 6 configured-production evidence collection.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured production evidence remains deliberately deferred to Phase 6, including live retention scheduling and deletion receipts, live Neon/R2 partial-failure behavior, configured secret and capability bindings, restore drills, export/release execution, and production privacy verification.
+Phase 6 remains blocked on configured environments and evidence collection for Cloudflare Access, deployed capability allowlists, protected Admin journeys, live Neon transaction and receipt persistence, R2/Media lifecycle, export/release/restore, publication reconciliation, retention scheduling and deletion receipts, rollback, privacy verification, and restore drills.
 
 ## Verification rule
 
@@ -84,6 +85,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_08C_PROTECTED_REVIEW_FINAL_DECISION_AUDIT.md`
 - `docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md`
 - `docs/P5_08E_PRIVACY_RETENTION_REPLAY_CONFLICT_PARTIAL_FAILURE_AUDIT.md`
+- `docs/P5_08F_MVP_B_FINAL_CLOSE_PHASE6_HANDOFF.md`
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`

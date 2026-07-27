@@ -1,0 +1,21 @@
+name: P5-08F MVP-B final close and Phase 6 handoff audit
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P5-08F audit
+        run: node scripts/check-p5-08f-mvp-b-final-close-phase6-handoff.js
