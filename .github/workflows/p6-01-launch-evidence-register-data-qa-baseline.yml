@@ -1,0 +1,19 @@
+name: P6-01 launch evidence register and data QA baseline
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P6-01 launch evidence register audit
+        run: node scripts/check-p6-01-launch-evidence-register-data-qa-baseline.js
