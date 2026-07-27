@@ -33,11 +33,15 @@ P5-08F — MVP-B final integration close and Phase 6 evidence handoff
 - P5-07G private retention execution completed in #261.
 - P5-07H canonical application and retention integration audit completed in #263.
 - P5-07 is repository-complete.
-- P5-08A MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
-- P5-08B public intake and private-status integration audit completed in #267 for Issue #266.
-- P5-08C protected review and final-decision integration audit completed in #269 for Issue #268.
-- P5-08D canonical application and publication-handoff integration audit completed in #271 for Issue #270.
-- P5-08E privacy, retention, replay, conflict, and partial-failure integration audit completed in #273 for Issue #272.
+- P5-08A — MVP-B integration audit matrix and repository handoff completed in #265 for Issue #264.
+- The P5-08A fixed base evidence was `c3f6049e96df5c29201bec61fc3c7374ae322846`.
+- P5-08B — Public intake and private-status integration audit completed in #267 for Issue #266.
+- P5-08B completed in #267; its fixed audit receipt remains required by later P5-08 slices.
+- P5-08C — Protected review and final-decision integration audit completed in #269 for Issue #268.
+- P5-08C completed in #269; its fixed audit receipt remains required by later P5-08 slices.
+- P5-08D — Canonical application and publication-handoff integration audit completed in #271 for Issue #270.
+- P5-08D completed in #271; its fixed audit receipt remains required by later P5-08 slices.
+- P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit completed in #273 for Issue #272.
 - P5-08F is active in Issue #274 on `p5-08f-mvp-b-final-close-phase6-handoff`.
 
 ## Latest verified main
@@ -51,7 +55,7 @@ The final P5-08E head passed Foundation validation, Migration drift, and the ret
 ## Active pull request
 
 ```text
-Pending — P5-08F MVP-B final close and Phase 6 evidence handoff
+#275 — P5-08F MVP-B final close and Phase 6 evidence handoff
 ```
 
 ## Current boundary
@@ -62,7 +66,7 @@ It does not activate production export, release, publication, deletion, deployme
 
 ## Next
 
-Pass normal repository workflows and the dedicated P5-08F audit, merge the P5-08F pull request, then begin Phase 6 configured-production evidence collection.
+Pass normal repository workflows and the dedicated P5-08F audit, merge #275, then begin Phase 6 configured-production evidence collection.
 
 ## Blocked
 
