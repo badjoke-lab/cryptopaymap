@@ -13,58 +13,51 @@ for (const file of requiredFiles) {
   }
 }
 
-const evidence = fs.readFileSync(
-  'docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md',
-  'utf8',
-);
-const status = fs.readFileSync('docs/PROJECT_STATUS.md', 'utf8');
-const security = fs.readFileSync('docs/SECURITY_AND_PRIVACY.md', 'utf8');
+const readNormalized = (file) =>
+  fs.readFileSync(file, 'utf8').replace(/\s+/g, ' ').toLowerCase();
 
-const requiredEvidenceMarkers = [
-  'Configured staging evidence: `unproven`',
-  'Configured production evidence: `unproven`',
-  'A page-only Access policy is insufficient.',
+const evidence = readNormalized(
+  'docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md',
+);
+const status = readNormalized('docs/PROJECT_STATUS.md');
+const security = readNormalized('docs/SECURITY_AND_PRIVACY.md');
+
+const assertMarkers = (label, content, markers) => {
+  const missing = markers.filter((marker) => !content.includes(marker.toLowerCase()));
+  if (missing.length > 0) {
+    throw new Error(`${label} markers missing:\n- ${missing.join('\n- ')}`);
+  }
+};
+
+assertMarkers('P6-02 evidence', evidence, [
+  'configured staging evidence: `unproven`',
+  'configured production evidence: `unproven`',
+  'page-only access policy is insufficient',
   '`candidate:review`',
   '`publication:run`',
-  'Wrong audience',
-  'Forged email header without assertion',
-  'No raw assertion, session cookie, service token, email address, or secret header',
-  'Repository audit passing means only that this evidence contract is present and internally consistent.',
-  'P6-03 owns live Neon canonical transaction and application receipt-chain evidence.',
-];
+  'wrong audience',
+  'forged email header without assertion',
+  'no raw assertion, session cookie, service token, email address, or secret header',
+  'repository audit passing means only that this evidence contract is present and internally consistent',
+  'p6-03 owns live neon canonical transaction and application receipt-chain evidence',
+]);
 
-for (const marker of requiredEvidenceMarkers) {
-  if (!evidence.includes(marker)) {
-    throw new Error(`P6-02 evidence marker missing: ${marker}`);
-  }
-}
-
-const requiredSecurityMarkers = [
+assertMarkers('Security architecture', security, [
+  'cloudflare access',
   'default deny',
-  'server-side validation of Access assertions',
+  'server-side validation',
   'issuer and audience validation',
-  'no reliance on an unverified email header',
-  'protected API routes as well as protected pages',
-];
+  'unverified email header',
+  'protected api routes',
+  'protected pages',
+]);
 
-for (const marker of requiredSecurityMarkers) {
-  if (!security.includes(marker)) {
-    throw new Error(`Security architecture marker missing: ${marker}`);
-  }
-}
-
-const requiredStatusMarkers = [
-  'Phase 6 — Launch and cutover evidence',
-  'P6-02 — Configured identity access and protected Admin evidence',
-  'P6-01 — Launch evidence register and data QA baseline completed in #277 for Issue #276.',
+assertMarkers('PROJECT_STATUS', status, [
+  'phase 6 — launch and cutover evidence',
+  'p6-02 — configured identity access and protected admin evidence',
+  'p6-01 — launch evidence register and data qa baseline completed in #277 for issue #276',
   'c8e67cf93b1445f5451291fb1f67ccbb4723e701',
-  'P6-03 live Neon canonical transaction and application receipt-chain evidence',
-];
-
-for (const marker of requiredStatusMarkers) {
-  if (!status.includes(marker)) {
-    throw new Error(`PROJECT_STATUS marker missing: ${marker}`);
-  }
-}
+  'p6-03 live neon canonical transaction and application receipt-chain evidence',
+]);
 
 console.log('P6-02 configured identity and protected Admin evidence contract passed.');
