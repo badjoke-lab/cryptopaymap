@@ -8,7 +8,7 @@ Phase 5 — Public submissions / MVP-B
 
 ## Current implementation item
 
-P5-08D — Canonical application and publication-handoff integration audit
+P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit
 
 ## Current repository state
 
@@ -39,37 +39,39 @@ P5-08D — Canonical application and publication-handoff integration audit
 - P5-08B completed in #267; its fixed audit receipt remains required by later P5-08 slices.
 - P5-08C — Protected review and final-decision integration audit completed in #269 for Issue #268.
 - P5-08C completed in #269; its fixed audit receipt remains required by later P5-08 slices.
-- P5-08D is active in Issue #270 on `p5-08d-canonical-application-publication-handoff-audit`.
+- P5-08D — Canonical application and publication-handoff integration audit completed in #271 for Issue #270.
+- P5-08D completed in #271; its fixed audit receipt remains required by later P5-08 slices.
+- P5-08E is active in Issue #272 on `p5-08e-privacy-retention-replay-conflict-partial-failure-audit`.
 
 ## Latest verified main
 
 ```text
-2bf4751778877bfe8129eabf969a11ffece62106
+2cae36ab0b8573eaa557f6513db562be3be30d0c
 ```
 
-The final P5-08C head passed Foundation validation, Migration drift, and the retained P5-08A/P5-08B/P5-08C audits before merge.
+The final P5-08D head passed Foundation validation, Migration drift, and the retained P5-08A/P5-08B/P5-08C/P5-08D audits before merge.
 
 ## Active pull request
 
 ```text
-Pending — P5-08D canonical application and publication-handoff integration audit
+Pending — P5-08E privacy, retention, replay, conflict, and partial-failure integration audit
 ```
 
 ## Current boundary
 
-P5-08D audits exact canonical application owners and durable receipts across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
+P5-08E audits private/public field separation, retention ownership, deterministic replay, changed-content and stale-state conflict, duplicate execution, and partial-failure closure across Suggest, Payment Report, Problem Report, Business Claim, and Photos.
 
-It verifies replay/conflict/prerequisite closure, mutation-and-receipt integrity, and the hard separation between application completion and export, release, activation, publication, or public-state mutation.
+It verifies that private deletion preserves required canonical/public provenance, public release excludes unnecessary private payloads, and Photos parent, child Media, and source-object lifecycles remain separately bounded.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P5-08D audit, merge the P5-08D pull request, then begin P5-08E privacy, retention, replay, conflict, and partial-failure integration audit.
+Pass normal repository workflows and the dedicated P5-08E audit, merge the P5-08E pull request, then begin P5-08F final MVP-B integration closure and Phase 6 evidence handoff.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured production evidence remains deliberately deferred to Phase 6, including live Neon transactions and receipt persistence, configured reviewer-to-application journeys, R2 export/release behavior, publication reconciliation, rollback, and production public-state verification.
+Configured production evidence remains deliberately deferred to Phase 6, including live retention scheduling and deletion receipts, live Neon/R2 partial-failure behavior, configured secret and capability bindings, restore drills, export/release execution, and production privacy verification.
 
 ## Verification rule
 
@@ -81,6 +83,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_08B_PUBLIC_INTAKE_PRIVATE_STATUS_AUDIT.md`
 - `docs/P5_08C_PROTECTED_REVIEW_FINAL_DECISION_AUDIT.md`
 - `docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md`
+- `docs/P5_08E_PRIVACY_RETENTION_REPLAY_CONFLICT_PARTIAL_FAILURE_AUDIT.md`
 - `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
 - `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
 - `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`

@@ -1,0 +1,26 @@
+name: P5-08E privacy retention replay conflict and partial failure audit
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md'
+      - 'docs/P5_08E_PRIVACY_RETENTION_REPLAY_CONFLICT_PARTIAL_FAILURE_AUDIT.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p5-08e-privacy-retention-replay-conflict-partial-failure.js'
+      - '.github/workflows/p5-08e-privacy-retention-replay-conflict-partial-failure-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Run P5-08E privacy retention replay conflict and partial failure audit
+        run: node scripts/check-p5-08e-privacy-retention-replay-conflict-partial-failure.js
