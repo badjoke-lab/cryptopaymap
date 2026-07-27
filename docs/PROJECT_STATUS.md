@@ -8,7 +8,7 @@ Phase 6 — Launch and cutover evidence
 
 ## Current implementation item
 
-P6-01 — Launch evidence register and data QA baseline
+P6-02 — Configured identity access and protected Admin evidence
 
 ## Current repository state
 
@@ -44,37 +44,38 @@ P6-01 — Launch evidence register and data QA baseline
 - P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit completed in #273 for Issue #272.
 - P5-08F — MVP-B final integration close and Phase 6 evidence handoff completed in #275 for Issue #274.
 - Phase 5 is repository-complete.
-- P6-01 is active in Issue #276 on `p6-01-launch-evidence-register-data-qa-baseline`.
+- P6-01 — Launch evidence register and data QA baseline completed in #277 for Issue #276.
+- P6-02 is active in Issue #278 on `p6-02-configured-identity-admin-evidence`.
 
 ## Latest verified main
 
 ```text
-75ade3eb6acc4b633be26f5943789503d3b1866e
+c8e67cf93b1445f5451291fb1f67ccbb4723e701
 ```
 
-The final P5-08F head passed Foundation validation, Migration drift, and the retained P5-08A through P5-08F audits before merge.
+The P6-01 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, and the dedicated P6-01 audit before merge.
 
 ## Active pull request
 
 ```text
-Pending — P6-01 launch evidence register and data QA baseline
+Pending — P6-02 configured identity access and protected Admin evidence
 ```
 
 ## Current boundary
 
-P6-01 defines one fail-closed evidence register across data QA, migration, licensing, privacy, mobile, accessibility, performance, security, redirects, indexing, domain cutover, backup, rollback, and monitoring.
+P6-02 defines the configured evidence contract for identity assertion validation, default-deny route protection, explicit server-side capability allowlists, and positive and negative protected Admin journeys.
 
-It establishes the repository-executable data QA baseline but does not mark configured-staging, configured-production, manual-device, or operational-drill evidence as passed.
+Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production evidence as passed without deployed executions and retained redacted artifacts.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P6-01 audit, merge P6-01, then begin P6-02 configured identity-aware access, capability allowlist, and protected Admin journey evidence.
+Pass normal repository workflows and the dedicated P6-02 audit, merge P6-02, then begin P6-03 live Neon canonical transaction and application receipt-chain evidence.
 
 ## Blocked
 
 No repository blocker is known.
 
-Launch remains blocked until required configured-production, manual-device, and operational-drill evidence is executed and retained. Documentation or repository implementation alone cannot satisfy those gates.
+Configured staging and production identity evidence remain unproven. Launch remains blocked until the deployed Admin page and API inventory, Access assertions, capability decisions, session boundaries, negative journeys, and safe audit receipts are executed in the required environments.
 
 ## Verification rule
 
@@ -82,6 +83,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
+- `docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md`
 - `docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md`
 - `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
 - `docs/P5_08B_PUBLIC_INTAKE_PRIVATE_STATUS_AUDIT.md`
