@@ -54,10 +54,11 @@ assertMarkers('Security architecture', security, [
 
 assertMarkers('PROJECT_STATUS', status, [
   'phase 6 — launch and cutover evidence',
-  'p6-02 — configured identity access and protected admin evidence',
+  'p6-02 — configured identity access and protected admin evidence completed in #279 for issue #278',
   'p6-01 — launch evidence register and data qa baseline completed in #277 for issue #276',
-  'c8e67cf93b1445f5451291fb1f67ccbb4723e701',
-  'p6-03 live neon canonical transaction and application receipt-chain evidence',
+  'b2c076aeb66c79a61732e18f10a50485332e058a',
+  'p6-03',
+  'live neon canonical transaction',
 ]);
 
 console.log('P6-02 configured identity and protected Admin evidence contract passed.');

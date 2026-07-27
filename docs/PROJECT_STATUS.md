@@ -8,7 +8,7 @@ Phase 6 — Launch and cutover evidence
 
 ## Current implementation item
 
-P6-02 — Configured identity access and protected Admin evidence
+P6-03 — Live Neon canonical transaction and application receipt evidence
 
 ## Current repository state
 
@@ -45,37 +45,38 @@ P6-02 — Configured identity access and protected Admin evidence
 - P5-08F — MVP-B final integration close and Phase 6 evidence handoff completed in #275 for Issue #274.
 - Phase 5 is repository-complete.
 - P6-01 — Launch evidence register and data QA baseline completed in #277 for Issue #276.
-- P6-02 is active in Issue #278 on `p6-02-configured-identity-admin-evidence`.
+- P6-02 — Configured identity access and protected Admin evidence completed in #279 for Issue #278.
+- P6-03 is active in Issue #280 on `p6-03-live-neon-transaction-receipt-evidence`.
 
 ## Latest verified main
 
 ```text
-c8e67cf93b1445f5451291fb1f67ccbb4723e701
+b2c076aeb66c79a61732e18f10a50485332e058a
 ```
 
-The P6-01 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, and the dedicated P6-01 audit before merge.
+The P6-02 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, P6-01, and the dedicated P6-02 audit before merge.
 
 ## Active pull request
 
 ```text
-Pending — P6-02 configured identity access and protected Admin evidence
+Pending — P6-03 live Neon canonical transaction and application receipt evidence
 ```
 
 ## Current boundary
 
-P6-02 defines the configured evidence contract for identity assertion validation, default-deny route protection, explicit server-side capability allowlists, and positive and negative protected Admin journeys.
+P6-03 defines the configured evidence contract for live Neon canonical mutation, atomic application receipt and audit-event persistence, injected-failure rollback, deterministic replay, duplicate prevention, stale-state and changed-content conflict handling, and publication-state separation.
 
-Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production evidence as passed without deployed executions and retained redacted artifacts.
+Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production Neon evidence as passed without real executions and retained redacted artifacts.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P6-02 audit, merge P6-02, then begin P6-03 live Neon canonical transaction and application receipt-chain evidence.
+Pass normal repository workflows and the dedicated P6-03 audit, merge P6-03, then begin P6-04 configured R2 media lifecycle evidence.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured staging and production identity evidence remain unproven. Launch remains blocked until the deployed Admin page and API inventory, Access assertions, capability decisions, session boundaries, negative journeys, and safe audit receipts are executed in the required environments.
+Configured staging and production Neon transaction evidence remain unproven. Launch remains blocked until positive, rollback, replay, duplicate, stale-state, changed-content, and publication-separation procedures execute in the required environments.
 
 ## Verification rule
 
@@ -83,6 +84,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
+- `docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md`
 - `docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md`
 - `docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md`
 - `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
