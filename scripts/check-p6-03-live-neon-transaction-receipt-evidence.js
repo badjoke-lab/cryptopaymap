@@ -51,7 +51,7 @@ assertMarkers('P5-08D preservation', p508d, [
   'canonical application',
   'publication',
   'application receipt',
-  'partial failure',
+  'partial-failure',
 ]);
 
 assertMarkers('PROJECT_STATUS', status, [
