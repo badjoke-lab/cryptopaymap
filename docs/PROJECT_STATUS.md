@@ -4,11 +4,11 @@
 
 ## Current phase
 
-Phase 5 — Public submissions / MVP-B final close
+Phase 6 — Launch and cutover evidence
 
 ## Current implementation item
 
-P5-08F — MVP-B final integration close and Phase 6 evidence handoff
+P6-01 — Launch evidence register and data QA baseline
 
 ## Current repository state
 
@@ -42,37 +42,39 @@ P5-08F — MVP-B final integration close and Phase 6 evidence handoff
 - P5-08D — Canonical application and publication-handoff integration audit completed in #271 for Issue #270.
 - P5-08D completed in #271; its fixed audit receipt remains required by later P5-08 slices.
 - P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit completed in #273 for Issue #272.
-- P5-08F is active in Issue #274 on `p5-08f-mvp-b-final-close-phase6-handoff`.
+- P5-08F — MVP-B final integration close and Phase 6 evidence handoff completed in #275 for Issue #274.
+- Phase 5 is repository-complete.
+- P6-01 is active in Issue #276 on `p6-01-launch-evidence-register-data-qa-baseline`.
 
 ## Latest verified main
 
 ```text
-b99ba72a889b181ab3c61dd98b4fad7d2ab0e8fe
+75ade3eb6acc4b633be26f5943789503d3b1866e
 ```
 
-The final P5-08E head passed Foundation validation, Migration drift, and the retained P5-08A through P5-08E audits before merge.
+The final P5-08F head passed Foundation validation, Migration drift, and the retained P5-08A through P5-08F audits before merge.
 
 ## Active pull request
 
 ```text
-#275 — P5-08F MVP-B final close and Phase 6 evidence handoff
+Pending — P6-01 launch evidence register and data QA baseline
 ```
 
 ## Current boundary
 
-P5-08F closes Phase 5 repository work by retaining all P5-08A through P5-08E audits on one final head and by documenting configured-production evidence that remains unproven.
+P6-01 defines one fail-closed evidence register across data QA, migration, licensing, privacy, mobile, accessibility, performance, security, redirects, indexing, domain cutover, backup, rollback, and monitoring.
 
-It does not activate production export, release, publication, deletion, deployment, DNS, or live data mutation.
+It establishes the repository-executable data QA baseline but does not mark configured-staging, configured-production, manual-device, or operational-drill evidence as passed.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P5-08F audit, merge #275, then begin Phase 6 configured-production evidence collection.
+Pass normal repository workflows and the dedicated P6-01 audit, merge P6-01, then begin P6-02 configured identity-aware access, capability allowlist, and protected Admin journey evidence.
 
 ## Blocked
 
 No repository blocker is known.
 
-Phase 6 remains blocked on configured environments and evidence collection for Cloudflare Access, deployed capability allowlists, protected Admin journeys, live Neon transaction and receipt persistence, R2/Media lifecycle, export/release/restore, publication reconciliation, retention scheduling and deletion receipts, rollback, privacy verification, and restore drills.
+Launch remains blocked until required configured-production, manual-device, and operational-drill evidence is executed and retained. Documentation or repository implementation alone cannot satisfy those gates.
 
 ## Verification rule
 
@@ -80,6 +82,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
+- `docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md`
 - `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
 - `docs/P5_08B_PUBLIC_INTAKE_PRIVATE_STATUS_AUDIT.md`
 - `docs/P5_08C_PROTECTED_REVIEW_FINAL_DECISION_AUDIT.md`
@@ -96,5 +99,6 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P5_07E4_BUSINESS_CLAIM_PAYMENT_APPLICATION.md`
 - `docs/P5_07E5_BUSINESS_CLAIM_FIELD_PROVENANCE.md`
 - `docs/P5_07F_PHOTO_MEDIA_RECEIPT_BINDING.md`
-- `docs/SUBMISSION_WORKFLOW.md`
+- `docs/LAUNCH_CRITERIA.md`
+- `docs/MIGRATION_AND_CUTOVER.md`
 - `docs/SECURITY_AND_PRIVACY.md`
