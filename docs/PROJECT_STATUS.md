@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-27
+**Last verified:** 2026-07-28
 
 ## Current phase
 
@@ -8,7 +8,7 @@ Phase 6 — Launch and cutover evidence
 
 ## Current implementation item
 
-P6-03 — Live Neon canonical transaction and application receipt evidence
+P6-04 — Configured R2 media lifecycle evidence
 
 ## Current repository state
 
@@ -46,37 +46,39 @@ P6-03 — Live Neon canonical transaction and application receipt evidence
 - Phase 5 is repository-complete.
 - P6-01 — Launch evidence register and data QA baseline completed in #277 for Issue #276.
 - P6-02 — Configured identity access and protected Admin evidence completed in #279 for Issue #278.
-- P6-03 is active in Issue #280 on `p6-03-live-neon-transaction-receipt-evidence`.
+- The P6-02 fixed merge evidence was `b2c076aeb66c79a61732e18f10a50485332e058a`.
+- P6-03 — Live Neon canonical transaction and application receipt evidence completed in #281 for Issue #280.
+- P6-04 is active in Issue #282 on `p6-04-configured-r2-media-lifecycle-evidence`.
 
 ## Latest verified main
 
 ```text
-b2c076aeb66c79a61732e18f10a50485332e058a
+9d7ffcd7acd891c91b474e4a3af503c0c64d8cb5
 ```
 
-The P6-02 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, P6-01, and the dedicated P6-02 audit before merge.
+The P6-03 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, P6-01, P6-02, and the dedicated P6-03 audit before merge.
 
 ## Active pull request
 
 ```text
-Pending — P6-03 live Neon canonical transaction and application receipt evidence
+Pending — P6-04 configured R2 media lifecycle evidence
 ```
 
 ## Current boundary
 
-P6-03 defines the configured evidence contract for live Neon canonical mutation, atomic application receipt and audit-event persistence, injected-failure rollback, deterministic replay, duplicate prevention, stale-state and changed-content conflict handling, and publication-state separation.
+P6-04 defines the configured evidence contract for bounded upload authorization, private quarantine, server-side inspection, deterministic derivative generation, approved public delivery, partial-failure cleanup, takedown, deletion, and CDN or cache invalidation.
 
-Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production Neon evidence as passed without real executions and retained redacted artifacts.
+Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production R2 evidence as passed without real lifecycle executions and retained redacted artifacts.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P6-03 audit, merge P6-03, then begin P6-04 configured R2 media lifecycle evidence.
+Pass normal repository workflows and the dedicated P6-04 audit, merge P6-04, then begin P6-05 configured public export and release evidence.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured staging and production Neon transaction evidence remain unproven. Launch remains blocked until positive, rollback, replay, duplicate, stale-state, changed-content, and publication-separation procedures execute in the required environments.
+Configured staging and production R2 lifecycle evidence remain unproven. Launch remains blocked until upload authorization, quarantine, inspection, rejection, derivative, publication, partial-failure, takedown, deletion, and cache-unavailability procedures execute in the required environments.
 
 ## Verification rule
 
@@ -84,6 +86,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
+- `docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md`
 - `docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md`
 - `docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md`
 - `docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md`

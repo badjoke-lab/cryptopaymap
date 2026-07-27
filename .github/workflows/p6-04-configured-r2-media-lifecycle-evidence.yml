@@ -1,0 +1,39 @@
+name: P6-04 configured R2 media lifecycle evidence
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md'
+      - 'docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md'
+      - 'docs/P5_07F_PHOTO_MEDIA_RECEIPT_BINDING.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'docs/SECURITY_AND_PRIVACY.md'
+      - 'scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js'
+      - '.github/workflows/p6-04-configured-r2-media-lifecycle-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md'
+      - 'docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md'
+      - 'docs/P5_07F_PHOTO_MEDIA_RECEIPT_BINDING.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'docs/SECURITY_AND_PRIVACY.md'
+      - 'scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js'
+      - '.github/workflows/p6-04-configured-r2-media-lifecycle-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run P6-04 evidence contract audit
+        run: node scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js
