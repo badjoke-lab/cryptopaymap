@@ -1,0 +1,37 @@
+name: P6-02 configured identity and protected Admin evidence
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md'
+      - 'docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'docs/SECURITY_AND_PRIVACY.md'
+      - 'scripts/check-p6-02-configured-identity-admin-evidence.js'
+      - '.github/workflows/p6-02-configured-identity-admin-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md'
+      - 'docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'docs/SECURITY_AND_PRIVACY.md'
+      - 'scripts/check-p6-02-configured-identity-admin-evidence.js'
+      - '.github/workflows/p6-02-configured-identity-admin-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run P6-02 evidence contract audit
+        run: node scripts/check-p6-02-configured-identity-admin-evidence.js
