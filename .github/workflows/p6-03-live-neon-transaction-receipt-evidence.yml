@@ -1,0 +1,37 @@
+name: P6-03 live Neon transaction and receipt evidence
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md'
+      - 'docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md'
+      - 'docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p6-03-live-neon-transaction-receipt-evidence.js'
+      - '.github/workflows/p6-03-live-neon-transaction-receipt-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md'
+      - 'docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md'
+      - 'docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p6-03-live-neon-transaction-receipt-evidence.js'
+      - '.github/workflows/p6-03-live-neon-transaction-receipt-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run P6-03 evidence contract audit
+        run: node scripts/check-p6-03-live-neon-transaction-receipt-evidence.js
