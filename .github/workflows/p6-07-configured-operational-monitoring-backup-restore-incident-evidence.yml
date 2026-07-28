@@ -1,0 +1,35 @@
+name: P6-07 configured operational monitoring backup restore and incident evidence
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
+      - 'docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+      - '.github/workflows/p6-07-configured-operational-monitoring-backup-restore-incident-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
+      - 'docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+      - '.github/workflows/p6-07-configured-operational-monitoring-backup-restore-incident-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run P6-07 evidence contract audit
+        run: node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
