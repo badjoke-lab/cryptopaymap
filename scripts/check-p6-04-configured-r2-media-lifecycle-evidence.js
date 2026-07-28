@@ -9,26 +9,17 @@ const requiredFiles = [
 ];
 
 for (const file of requiredFiles) {
-  if (!fs.existsSync(file)) {
-    throw new Error(`Missing required file: ${file}`);
-  }
+  if (!fs.existsSync(file)) throw new Error(`Missing required file: ${file}`);
 }
 
-const normalize = (file) =>
-  fs.readFileSync(file, 'utf8').replace(/\s+/g, ' ').toLowerCase();
-
-const evidence = normalize(
-  'docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md',
-);
+const normalize = (file) => fs.readFileSync(file, 'utf8').replace(/\s+/g, ' ').toLowerCase();
+const evidence = normalize('docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md');
 const p507f = normalize('docs/P5_07F_PHOTO_MEDIA_RECEIPT_BINDING.md');
 const security = normalize('docs/SECURITY_AND_PRIVACY.md');
 const status = normalize('docs/PROJECT_STATUS.md');
-
 const assertMarkers = (label, content, markers) => {
   const missing = markers.filter((marker) => !content.includes(marker.toLowerCase()));
-  if (missing.length > 0) {
-    throw new Error(`${label} markers missing:\n- ${missing.join('\n- ')}`);
-  }
+  if (missing.length) throw new Error(`${label} markers missing:\n- ${missing.join('\n- ')}`);
 };
 
 assertMarkers('P6-04 evidence', evidence, [
@@ -48,13 +39,7 @@ assertMarkers('P6-04 evidence', evidence, [
   'p6-05 owns configured public export generation',
 ]);
 
-assertMarkers('P5-07F preservation', p507f, [
-  'photos',
-  'media',
-  'receipt',
-  'private',
-]);
-
+assertMarkers('P5-07F preservation', p507f, ['photos', 'media', 'receipt', 'private']);
 assertMarkers('Security architecture', security, [
   'object storage',
   'private originals',
@@ -62,13 +47,11 @@ assertMarkers('Security architecture', security, [
   'signed url',
   'media',
 ]);
-
 assertMarkers('PROJECT_STATUS', status, [
   'phase 6 — launch and cutover evidence',
-  'p6-04 — configured r2 media lifecycle evidence',
+  'p6-04 — configured r2 media lifecycle evidence completed in #283 for issue #282',
   'p6-03 — live neon canonical transaction and application receipt evidence completed in #281 for issue #280',
-  '9d7ffcd7acd891c91b474e4a3af503c0c64d8cb5',
-  'p6-05 configured public export and release evidence',
+  'p6-05 — configured public export and release evidence',
 ]);
 
 console.log('P6-04 configured R2 media lifecycle evidence contract passed.');

@@ -1,0 +1,37 @@
+name: P6-05 configured public export and release evidence
+
+on:
+  pull_request:
+    paths:
+      - 'docs/P6_05_CONFIGURED_PUBLIC_EXPORT_RELEASE_EVIDENCE.md'
+      - 'docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md'
+      - 'docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p6-05-configured-public-export-release-evidence.js'
+      - '.github/workflows/p6-05-configured-public-export-release-evidence.yml'
+  push:
+    branches:
+      - main
+    paths:
+      - 'docs/P6_05_CONFIGURED_PUBLIC_EXPORT_RELEASE_EVIDENCE.md'
+      - 'docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md'
+      - 'docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-p6-05-configured-public-export-release-evidence.js'
+      - '.github/workflows/p6-05-configured-public-export-release-evidence.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run P6-05 evidence contract audit
+        run: node scripts/check-p6-05-configured-public-export-release-evidence.js
