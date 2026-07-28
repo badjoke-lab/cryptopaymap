@@ -47,10 +47,11 @@ assertMarkers('P5-08D preservation', p508d, [
 
 assertMarkers('PROJECT_STATUS', status, [
   'phase 6 — launch and cutover evidence',
-  'p6-05 — configured public export and release evidence',
+  'p6-05 — configured public export and release evidence completed in #285 for issue #284',
   'p6-04 — configured r2 media lifecycle evidence completed in #283 for issue #282',
-  '749d034a7b16cde7390c4e810799b946fdedf64a',
-  'p6-06 configured domain cutover and rollback evidence',
+  '3087fe60d5b3d42061931f7e2f50e997aeda0c49',
+  'p6-06',
+  'domain cutover and rollback evidence',
 ]);
 
 console.log('P6-05 configured public export and release evidence contract passed.');
