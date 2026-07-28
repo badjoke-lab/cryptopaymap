@@ -62,10 +62,10 @@ assertMarkers('Security preservation', security, [
 assertMarkers('PROJECT_STATUS', status, [
   'phase 6 — launch and cutover evidence',
   'p6-05 — configured public export and release evidence completed in #285 for issue #284',
-  '3087fe60d5b3d42061931f7e2f50e997aeda0c49',
-  'p6-06',
-  'domain cutover and rollback evidence',
+  'p6-06 — configured domain cutover and rollback evidence completed in #287 for issue #286',
+  'f9bf5256879c8cf2d59e5c32210b7b03d34672c2',
   'p6-07',
+  'operational monitoring, alerting, backup, restore, and incident-response evidence',
 ]);
 
 console.log('P6-06 configured domain cutover and rollback evidence contract passed.');
