@@ -8,27 +8,16 @@ const requiredFiles = [
 ];
 
 for (const file of requiredFiles) {
-  if (!fs.existsSync(file)) {
-    throw new Error(`Missing required file: ${file}`);
-  }
+  if (!fs.existsSync(file)) throw new Error(`Missing required file: ${file}`);
 }
 
-const normalize = (file) =>
-  fs.readFileSync(file, 'utf8').replace(/\s+/g, ' ').toLowerCase();
-
-const evidence = normalize(
-  'docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md',
-);
-const p508d = normalize(
-  'docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md',
-);
+const normalize = (file) => fs.readFileSync(file, 'utf8').replace(/\s+/g, ' ').toLowerCase();
+const evidence = normalize('docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md');
+const p508d = normalize('docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md');
 const status = normalize('docs/PROJECT_STATUS.md');
-
 const assertMarkers = (label, content, markers) => {
   const missing = markers.filter((marker) => !content.includes(marker.toLowerCase()));
-  if (missing.length > 0) {
-    throw new Error(`${label} markers missing:\n- ${missing.join('\n- ')}`);
-  }
+  if (missing.length) throw new Error(`${label} markers missing:\n- ${missing.join('\n- ')}`);
 };
 
 assertMarkers('P6-03 evidence', evidence, [
@@ -56,10 +45,9 @@ assertMarkers('P5-08D preservation', p508d, [
 
 assertMarkers('PROJECT_STATUS', status, [
   'phase 6 — launch and cutover evidence',
-  'p6-03 — live neon canonical transaction and application receipt evidence',
+  'p6-03 — live neon canonical transaction and application receipt evidence completed in #281 for issue #280',
   'p6-02 — configured identity access and protected admin evidence completed in #279 for issue #278',
-  'b2c076aeb66c79a61732e18f10a50485332e058a',
-  'p6-04 configured r2 media lifecycle evidence',
+  'p6-04 — configured r2 media lifecycle evidence completed in #283 for issue #282',
 ]);
 
 console.log('P6-03 live Neon transaction and receipt evidence contract passed.');
