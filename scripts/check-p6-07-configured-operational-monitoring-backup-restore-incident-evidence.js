@@ -52,10 +52,10 @@ assertMarkers('P6-06 preservation', p606, [
 assertMarkers('PROJECT_STATUS', status, [
   'phase 6 — launch and cutover evidence',
   'p6-06 — configured domain cutover and rollback evidence completed in #287 for issue #286',
-  'f9bf5256879c8cf2d59e5c32210b7b03d34672c2',
-  'p6-07',
-  'operational monitoring, alerting, backup, restore, and incident-response evidence',
+  'p6-07 — configured operational monitoring, alerting, backup, restore, and incident-response evidence completed in #289 for issue #288',
+  '0b0b328b8cb002977f1aa34e7385fc8eef56d324',
   'p6-08',
+  'final launch authorization',
 ]);
 
 console.log('P6-07 configured operational evidence contract passed.');
