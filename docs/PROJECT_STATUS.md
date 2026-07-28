@@ -8,7 +8,7 @@ Phase 6 — Launch and cutover evidence
 
 ## Current implementation item
 
-P6-06 — Configured domain cutover and rollback evidence
+P6-07 — Configured operational monitoring, alerting, backup, restore, and incident-response evidence
 
 ## Current repository state
 
@@ -50,37 +50,38 @@ P6-06 — Configured domain cutover and rollback evidence
 - P6-03 — Live Neon canonical transaction and application receipt evidence completed in #281 for Issue #280.
 - P6-04 — Configured R2 media lifecycle evidence completed in #283 for Issue #282.
 - P6-05 — Configured public export and release evidence completed in #285 for Issue #284.
-- P6-06 is active in Issue #286 on `p6-06-configured-domain-cutover-rollback-evidence`.
+- P6-06 — Configured domain cutover and rollback evidence completed in #287 for Issue #286.
+- P6-07 is active in Issue #288 on `p6-07-configured-ops-backup-restore-incident-evidence`.
 
 ## Latest verified main
 
 ```text
-3087fe60d5b3d42061931f7e2f50e997aeda0c49
+f9bf5256879c8cf2d59e5c32210b7b03d34672c2
 ```
 
-The P6-05 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, P6-01 through P6-04, and the dedicated P6-05 audit before merge.
+The P6-06 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, P6-01 through P6-05, and the dedicated P6-06 audit before merge.
 
 ## Active pull request
 
 ```text
-Pending — P6-06 configured domain cutover and rollback evidence
+Pending — P6-07 configured operational monitoring, alerting, backup, restore, and incident-response evidence
 ```
 
 ## Current boundary
 
-P6-06 defines configured evidence for custom-domain ownership, DNS change, TLS issuance, canonical-host and redirect behavior, external reachability, cache propagation, failure handling, and bounded rollback to the prior serving path.
+P6-07 defines configured evidence for monitoring coverage, heartbeat and monitoring-pipeline health, alert delivery and escalation, backup integrity and retention, isolated restore drills, measured recovery objectives, and incident-response exercises.
 
-Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production domain-cutover evidence as passed without real executions and retained redacted artifacts.
+Repository validation can prove that this contract is complete and internally consistent. It cannot mark configured staging or production operational evidence as passed without real executions and retained redacted artifacts.
 
 ## Next
 
-Pass normal repository workflows and the dedicated P6-06 audit, merge P6-06, then begin P6-07 configured operational monitoring, alerting, backup, restore, and incident-response evidence.
+Pass normal repository workflows and the dedicated P6-07 audit, merge P6-07, then begin P6-08 final launch authorization, go-live execution, post-cutover verification, and launch-close evidence.
 
 ## Blocked
 
 No repository blocker is known.
 
-Configured staging and production domain cutover evidence remain unproven. Launch remains blocked until ownership, DNS, TLS, redirect, external reachability, failure, cache, and rollback procedures execute in the required environments.
+Configured staging and production operational evidence remain unproven. Launch remains blocked until monitoring, heartbeat, alert delivery, escalation, backup, restore, RPO/RTO, failure, and incident-response procedures execute in the required environments.
 
 ## Verification rule
 
@@ -88,6 +89,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
+- `docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md`
 - `docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md`
 - `docs/P6_05_CONFIGURED_PUBLIC_EXPORT_RELEASE_EVIDENCE.md`
 - `docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md`
