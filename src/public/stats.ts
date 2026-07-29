@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { publicStatsSchema } from '../schemas/public-exports';
+import { publicStatsFileSchema, publicStatsSchema } from '../schemas/public-exports';
 
 export type PublicStats = z.infer<typeof publicStatsSchema>;
 export type PublicStatRankingEntry = PublicStats['topAssets'][number];
@@ -33,5 +33,5 @@ export function buildPublicStatsViewModel(stats: PublicStats): PublicStatsViewMo
 }
 
 export function parsePublicStatsDocument(value: unknown): PublicStats {
-  return publicStatsSchema.parse(value);
+  return publicStatsFileSchema.parse(value).stats;
 }
