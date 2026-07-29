@@ -186,7 +186,11 @@ const version = {
 parsePublicExport('/data/manifest.json', manifest);
 parsePublicExport('/version.json', version);
 await Promise.all([
-  writeFile(new URL('manifest.json', outputDirectory), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8'),
+  writeFile(
+    new URL('manifest.json', outputDirectory),
+    `${JSON.stringify(manifest, null, 2)}\n`,
+    'utf8',
+  ),
   writeFile(versionPath, `${JSON.stringify(version, null, 2)}\n`, 'utf8'),
 ]);
 
