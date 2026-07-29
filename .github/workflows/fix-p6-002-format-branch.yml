@@ -1,0 +1,45 @@
+name: FIX-P6-002 format branch
+
+on:
+  push:
+    branches:
+      - agent/fix-p6-002-staging-public-metadata
+    paths:
+      - '.github/workflows/fix-p6-002-format-branch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/fix-p6-002-staging-public-metadata
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format bounded fix files
+        run: |
+          npx biome format --write \
+            scripts/materialize-staging-review-data.mjs \
+            scripts/check-staging-review-artifact.mjs \
+            src/public/stats.ts
+      - name: Commit formatting
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            scripts/materialize-staging-review-data.mjs \
+            scripts/check-staging-review-artifact.mjs \
+            src/public/stats.ts
+          if git diff --cached --quiet; then
+            echo 'No formatting changes required.'
+            exit 0
+          fi
+          git commit -m 'FIX-P6-002 apply Biome formatting'
+          git push origin HEAD:agent/fix-p6-002-staging-public-metadata
