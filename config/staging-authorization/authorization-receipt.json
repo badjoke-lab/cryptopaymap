@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:985b1f478905a3e64204989ba9e4d0d0d39b10d84b89dcb5db077116f03888f2",
+  "authorizationId": "sha256:64374cf70fb2fb41c817cc2e44fca542bd3210ac79e69f3211945827c31db40a",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "ba2ac6b4fb3a83596ed296cbc79a994281447026",
-  "generatedAt": "2026-07-29T17:10:03.013Z",
-  "workflowRunId": "30474059819",
+  "generatedAt": "2026-07-29T17:11:46.869Z",
+  "workflowRunId": "30474193385",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -15,13 +15,13 @@
   "checks": {
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
-      "state": "failed",
-      "generatedAt": "2026-07-29T16:38:51.834Z"
+      "state": "current",
+      "generatedAt": "2026-07-29T17:10:26.169Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
-      "state": "failed",
-      "generatedAt": "2026-07-29T16:39:31.971Z"
+      "state": "current",
+      "generatedAt": "2026-07-29T17:11:16.817Z"
     },
     "predecessors": [
       {
@@ -84,8 +84,6 @@
     "P6-05:missing",
     "P6-06:missing",
     "P6-07:missing",
-    "deployment_receipt:failed",
-    "explicit_dispatch:required",
-    "live_audit_receipt:failed"
+    "explicit_dispatch:required"
   ]
 }
