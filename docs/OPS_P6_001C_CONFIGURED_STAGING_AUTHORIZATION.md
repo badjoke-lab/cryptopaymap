@@ -50,7 +50,9 @@ Missing, malformed, failed, expired, commit-mismatched, or binding-mismatched re
 
 ### Inventory mode
 
-A main push automatically records the current evidence inventory. Inventory mode always retains `not_authorized` and includes `explicit_dispatch:required`, even when every predecessor is present.
+A main push records an immediate evidence inventory. Because deployment and live-audit receipts for that commit may still be updating, completion of the successful `P5-02R fixed review live audit` workflow triggers a second inventory bound to the audited main commit. The later receipt replaces the initial inventory and prevents a pre-deployment snapshot from remaining authoritative.
+
+Inventory mode always retains `not_authorized` and includes `explicit_dispatch:required`, even when every predecessor is present.
 
 ### Authorization mode
 
@@ -87,4 +89,4 @@ The receipt includes:
 
 ## Next boundary
 
-The first automatic inventory is expected to remain `not_authorized` until real P6-01 through P6-07 configured receipts are executed and retained. Those operational receipts must be produced separately; they must not be fabricated from repository documentation or CI success.
+The first complete post-audit inventory is expected to remain `not_authorized` until real P6-01 through P6-07 configured receipts are executed and retained. Those operational receipts must be produced separately; they must not be fabricated from repository documentation or CI success.
