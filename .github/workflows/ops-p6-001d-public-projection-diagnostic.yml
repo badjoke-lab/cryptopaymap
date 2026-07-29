@@ -1,0 +1,104 @@
+name: OPS-P6-001D public projection diagnostic
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001d-configured-staging-p6-01-data-qa
+    paths:
+      - '.github/workflows/ops-p6-001d-public-projection-diagnostic.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    env:
+      DIAGNOSTIC_REVISION: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001d-configured-staging-p6-01-data-qa
+      - name: Inspect bounded public projection responses
+        run: |
+          python - <<'PY'
+          import datetime
+          import hashlib
+          import json
+          import urllib.error
+          import urllib.parse
+          import urllib.request
+          from pathlib import Path
+
+          base = 'https://review.cryptopaymap-staging.pages.dev'
+
+          def inspect(path):
+              request = urllib.request.Request(
+                  base + path,
+                  headers={'Cache-Control': 'no-cache', 'User-Agent': 'CryptoPayMap-P6-01-Diagnostic/1'},
+              )
+              try:
+                  with urllib.request.urlopen(request, timeout=20) as response:
+                      body = response.read()
+                      content_type = response.headers.get('content-type')
+                      status = response.status
+                      final_url = response.geturl()
+              except urllib.error.HTTPError as error:
+                  body = error.read()
+                  content_type = error.headers.get('content-type')
+                  status = error.code
+                  final_url = error.geturl()
+              stripped = body.lstrip()
+              body_class = (
+                  'json'
+                  if stripped.startswith((b'{', b'['))
+                  else 'html'
+                  if stripped.startswith(b'<')
+                  else 'other'
+              )
+              return {
+                  'path': path,
+                  'status': status,
+                  'contentType': content_type,
+                  'bodyClass': body_class,
+                  'sha256': hashlib.sha256(body).hexdigest(),
+                  'byteLength': len(body),
+                  'finalPath': urllib.parse.urlsplit(final_url).path,
+                  '_body': body,
+              }
+
+          inspected = [inspect('/version.json'), inspect('/data/manifest.json')]
+          manifest_result = inspected[1]
+          if manifest_result['bodyClass'] == 'json':
+              try:
+                  manifest = json.loads(manifest_result['_body'])
+                  for entry in manifest.get('files', []):
+                      path = entry.get('path')
+                      if isinstance(path, str):
+                          inspected.append(inspect(path))
+              except Exception:
+                  pass
+
+          for item in inspected:
+              item.pop('_body', None)
+          output = {
+              'baseHost': 'review.cryptopaymap-staging.pages.dev',
+              'generatedAt': datetime.datetime.now(datetime.timezone.utc).isoformat(),
+              'responses': inspected,
+          }
+          path = Path('config/diagnostics/p6-01-public-projection.json')
+          path.parent.mkdir(parents=True, exist_ok=True)
+          path.write_text(json.dumps(output, indent=2) + '\n')
+          PY
+      - name: Remove one-shot diagnostic workflow
+        run: rm -f .github/workflows/ops-p6-001d-public-projection-diagnostic.yml
+      - name: Commit bounded diagnostic
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A \
+            config/diagnostics/p6-01-public-projection.json \
+            .github/workflows/ops-p6-001d-public-projection-diagnostic.yml
+          git commit -m 'OPS-P6-001D record bounded public projection diagnostic'
+          git push origin HEAD:agent/ops-p6-001d-configured-staging-p6-01-data-qa
