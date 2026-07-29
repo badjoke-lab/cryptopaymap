@@ -13,6 +13,8 @@ permissions:
 jobs:
   format:
     runs-on: ubuntu-24.04
+    env:
+      FORMAT_REVISION: '1'
     steps:
       - uses: actions/checkout@v4
         with:
