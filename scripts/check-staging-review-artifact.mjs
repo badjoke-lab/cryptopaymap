@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 
 async function readText(path) {
@@ -6,6 +7,27 @@ async function readText(path) {
 
 async function readBinary(path) {
   return readFile(new URL(`../dist/${path}`, import.meta.url));
+}
+
+function sha256(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+function parseJsonArtifact(path, text) {
+  if (text.trimStart().startsWith('<')) {
+    throw new Error(`Staging public JSON path resolved to HTML: ${path}`);
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error(`Staging public JSON path is not valid JSON: ${path}`);
+  }
+}
+
+function countRecords(path, value) {
+  if (path === '/data/stats.json') return value.stats ? 1 : 0;
+  if (Array.isArray(value.records)) return value.records.length;
+  throw new Error(`Unsupported staging public export record shape: ${path}`);
 }
 
 const marker = JSON.parse(await readText('staging-review.json'));
@@ -26,10 +48,83 @@ if (!robots.includes('Disallow: /')) {
   throw new Error('Staging review robots policy must exclude crawling.');
 }
 
-const places = JSON.parse(await readText('data/places.json'));
-const pins = JSON.parse(await readText('data/place-pins.json'));
-const services = JSON.parse(await readText('data/online-services.json'));
-const stats = JSON.parse(await readText('data/stats.json'));
+const versionText = await readText('version.json');
+const manifestText = await readText('data/manifest.json');
+const version = parseJsonArtifact('/version.json', versionText);
+const manifest = parseJsonArtifact('/data/manifest.json', manifestText);
+const expectedPublicPaths = new Set([
+  '/data/places.json',
+  '/data/place-pins.json',
+  '/data/online-services.json',
+  '/data/stats.json',
+  '/data/updates.json',
+]);
+
+if (
+  version.projectId !== 'cryptopaymap' ||
+  version.siteName !== 'CryptoPayMap' ||
+  version.registryType !== 'crypto_payment_acceptance' ||
+  version.canonicalOnly !== true ||
+  version.verificationMarker !== 'reviewed_public_records_only'
+) {
+  throw new Error('Staging public version metadata is invalid.');
+}
+if (
+  manifest.canonicalOnly !== true ||
+  manifest.datasetVersion !== version.datasetVersion ||
+  manifest.schemaVersion !== version.schemaVersion ||
+  manifest.generatedAt !== version.generatedAt ||
+  !Array.isArray(manifest.files)
+) {
+  throw new Error('Staging public manifest identity does not match version metadata.');
+}
+
+const manifestPaths = new Set();
+for (const entry of manifest.files) {
+  if (!expectedPublicPaths.has(entry.path)) {
+    throw new Error(`Unexpected staging public manifest path: ${entry.path}`);
+  }
+  if (manifestPaths.has(entry.path)) {
+    throw new Error(`Duplicate staging public manifest path: ${entry.path}`);
+  }
+  manifestPaths.add(entry.path);
+  if (
+    entry.mediaType !== 'application/json' ||
+    entry.schemaVersion !== version.schemaVersion ||
+    !Array.isArray(entry.licenses) ||
+    entry.licenses.length === 0
+  ) {
+    throw new Error(`Invalid staging public manifest entry: ${entry.path}`);
+  }
+  const artifactPath = entry.path.replace(/^\//, '');
+  const bytes = await readBinary(artifactPath);
+  const text = bytes.toString('utf8');
+  const value = parseJsonArtifact(entry.path, text);
+  if (sha256(bytes) !== entry.sha256) {
+    throw new Error(`Staging public manifest digest mismatch: ${entry.path}`);
+  }
+  if (countRecords(entry.path, value) !== entry.recordCount) {
+    throw new Error(`Staging public manifest record-count mismatch: ${entry.path}`);
+  }
+  if (value.schemaVersion !== version.schemaVersion || value.generatedAt !== version.generatedAt) {
+    throw new Error(`Staging public file identity mismatch: ${entry.path}`);
+  }
+}
+if (
+  manifestPaths.size !== expectedPublicPaths.size ||
+  [...expectedPublicPaths].some((path) => !manifestPaths.has(path))
+) {
+  throw new Error('Staging public manifest does not enumerate the complete generated file set.');
+}
+
+const places = parseJsonArtifact('/data/places.json', await readText('data/places.json'));
+const pins = parseJsonArtifact('/data/place-pins.json', await readText('data/place-pins.json'));
+const services = parseJsonArtifact(
+  '/data/online-services.json',
+  await readText('data/online-services.json'),
+);
+const statsFile = parseJsonArtifact('/data/stats.json', await readText('data/stats.json'));
+const stats = statsFile.stats;
 
 if (places.records.length < 15) throw new Error('Staging review needs at least 15 Place records.');
 if (pins.records.length < 12) throw new Error('Staging review needs at least 12 visible map pins.');
@@ -133,5 +228,5 @@ if (
 }
 
 console.log(
-  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${representativeRoutes.length} representative routes, with public Media and practical Place profile coverage.`,
+  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${manifest.files.length} machine-readable files, ${representativeRoutes.length} representative routes, with public Media and practical Place profile coverage.`,
 );
