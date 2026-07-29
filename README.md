@@ -98,4 +98,4 @@ Repository-wide working rules are defined in [AGENTS.md](AGENTS.md). Pull reques
 
 ## Current phase
 
-Phase 1 integration auditing is active. The repository foundation is assembled, and live Cloudflare staging verification remains the external completion gate before Phase 2.
+Repository definition work is complete through P6-08. Configured staging and production launch authorization remain `not authorized`, and go-live remains `not executed`. The active operational handoff is OPS-P6-001 in Issue #293; repository CI alone cannot complete it.

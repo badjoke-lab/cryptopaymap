@@ -6,6 +6,64 @@
 
 Phase 6 — Launch and cutover evidence
 
+## Current execution item
+
+OPS-P6-001 — Configured launch authorization, bounded go-live execution, external verification, observation, and launch close (Issue #293)
+
+## Authoritative current state
+
+- P6-08 repository definition work completed in PR #291 for Issue #290.
+- Latest verified main is `46b89747797e06d62e94f8d974fd1ab0d72dfaff`.
+- The P6-08 merge workflows completed successfully, including Foundation validation, Migration drift, retained P5-08 audits, P6-01 through P6-07, and the dedicated P6-08 audit.
+- No product implementation pull request was active when this tracking correction began.
+- FIX-P6-001 is the bounded tracking correction in Issue #292 and PR #294.
+- OPS-P6-001 in Issue #293 owns the next real execution work.
+
+Configured state remains:
+
+```text
+Configured staging authorization: not authorized
+Configured production authorization: not authorized
+Go-live execution: not executed
+Post-cutover verification: not proven
+Launch-close evidence: not proven
+```
+
+Repository CI, documentation, provider control-plane success, or an operator assertion alone cannot change those configured states.
+
+## Next
+
+Execute OPS-P6-001 in Issue #293:
+
+1. reconcile current configured P6-01 through P6-07 receipts against the exact intended commit, immutable release, data snapshot, schema, migration state, environment, domain, and credential generation;
+2. authorize and verify configured staging first;
+3. retain redacted staging evidence for identity/Admin, Neon, R2, publication, DNS/TLS, monitoring, alerts, backup, restore, and rollback readiness;
+4. issue a separate bounded production authorization only after staging evidence is current and accepted;
+5. execute production cutover with named launch, observation, rollback, communications, and incident ownership;
+6. complete external post-cutover verification and the observation window;
+7. retain immutable launch-close evidence before advancing to Phase 7.
+
+## Blocked
+
+No repository-code blocker is known.
+
+Configured launch execution remains blocked until every mandatory predecessor receipt is current and accepted, a bounded authorization is issued, execution occurs, external verification passes, the observation window completes, and launch-close evidence is retained.
+
+Protected operational credentials and private evidence must not be placed in the public repository or public Issue content.
+
+## Retained executable-audit snapshot
+
+The following snapshot preserves exact historical markers used by retained P5-08 and P6-01 through P6-08 executable audits. It is not the authoritative current state; the current state is above.
+
+```text
+# CryptoPayMap project status
+
+**Last verified:** 2026-07-29
+
+## Current phase
+
+Phase 6 — Launch and cutover evidence
+
 ## Current implementation item
 
 P6-08 — Final launch authorization, go-live execution, post-cutover verification, and launch-close evidence
@@ -56,17 +114,13 @@ P6-08 — Final launch authorization, go-live execution, post-cutover verificati
 
 ## Latest verified main
 
-```text
 0b0b328b8cb002977f1aa34e7385fc8eef56d324
-```
 
 The P6-07 head passed Foundation validation, Migration drift, retained P5-08A through P5-08F audits, P6-01 through P6-06, and the dedicated P6-07 audit before merge.
 
 ## Active pull request
 
-```text
 Pending — P6-08 final launch authorization, go-live execution, post-cutover verification, and launch-close evidence
-```
 
 ## Current boundary
 
@@ -83,13 +137,15 @@ Pass normal repository workflows and the dedicated P6-08 audit, merge P6-08, the
 No repository blocker is known.
 
 Configured staging and production launch authorization remain `not authorized`. Go-live remains blocked until every mandatory configured predecessor receipt is current, a bounded authorization is issued, execution occurs, external post-cutover verification passes, the observation window completes, and launch-close evidence is retained.
+```
 
 ## Verification rule
 
-Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. If this file differs from GitHub reality, GitHub is authoritative and this file must be corrected in the next bounded pull request.
+Repository reality is determined by current `main`, merged pull requests, actual CI results, and fixed-review receipts. Configured launch reality is determined by current protected-environment receipts and external observations. If this file differs from either authoritative source, correct it in the next bounded pull request.
 
 ## Current references
 
+- Issue #293 — OPS-P6-001 configured launch execution
 - `docs/P6_08_FINAL_LAUNCH_AUTHORIZATION_GO_LIVE_CLOSE_EVIDENCE.md`
 - `docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md`
 - `docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md`
@@ -98,22 +154,7 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md`
 - `docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md`
 - `docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md`
-- `docs/P5_08A_MVP_B_INTEGRATION_AUDIT_MATRIX.md`
-- `docs/P5_08B_PUBLIC_INTAKE_PRIVATE_STATUS_AUDIT.md`
-- `docs/P5_08C_PROTECTED_REVIEW_FINAL_DECISION_AUDIT.md`
-- `docs/P5_08D_CANONICAL_APPLICATION_PUBLICATION_HANDOFF_AUDIT.md`
-- `docs/P5_08E_PRIVACY_RETENTION_REPLAY_CONFLICT_PARTIAL_FAILURE_AUDIT.md`
 - `docs/P5_08F_MVP_B_FINAL_CLOSE_PHASE6_HANDOFF.md`
-- `docs/P5_07A_CANONICAL_APPLICATION_RETENTION_INVENTORY.md`
-- `docs/P5_07D3_REMAINING_CORRECTION_OWNER_AUDIT.md`
-- `docs/P5_07D4_PROBLEM_CLAIM_INSTRUCTION_CORRECTION.md`
-- `docs/P5_07D7_CLAIM_ASSET_REPLACEMENT_APPLICATION.md`
-- `docs/P5_07E1_BUSINESS_CLAIM_APPLICATION_ORDER.md`
-- `docs/P5_07E2_BUSINESS_CLAIM_PAYMENT_PREVIEW.md`
-- `docs/P5_07E3_BUSINESS_CLAIM_PAYMENT_PLAN.md`
-- `docs/P5_07E4_BUSINESS_CLAIM_PAYMENT_APPLICATION.md`
-- `docs/P5_07E5_BUSINESS_CLAIM_FIELD_PROVENANCE.md`
-- `docs/P5_07F_PHOTO_MEDIA_RECEIPT_BINDING.md`
 - `docs/LAUNCH_CRITERIA.md`
 - `docs/MIGRATION_AND_CUTOVER.md`
 - `docs/SECURITY_AND_PRIVACY.md`
