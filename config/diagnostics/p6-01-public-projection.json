@@ -1,0 +1,24 @@
+{
+  "baseHost": "review.cryptopaymap-staging.pages.dev",
+  "generatedAt": "2026-07-29T17:17:27.992827+00:00",
+  "responses": [
+    {
+      "path": "/version.json",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bodyClass": "html",
+      "sha256": "38909c2fce553a3d4948352d7f4a97b03be4c4953e34f652f3a1bec5c17b4010",
+      "byteLength": 32388,
+      "finalPath": "/version.json"
+    },
+    {
+      "path": "/data/manifest.json",
+      "status": 200,
+      "contentType": "text/html; charset=utf-8",
+      "bodyClass": "html",
+      "sha256": "38909c2fce553a3d4948352d7f4a97b03be4c4953e34f652f3a1bec5c17b4010",
+      "byteLength": 32388,
+      "finalPath": "/data/manifest.json"
+    }
+  ]
+}
