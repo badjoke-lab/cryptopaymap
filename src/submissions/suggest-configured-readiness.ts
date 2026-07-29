@@ -12,6 +12,16 @@ const durableObjectReadinessResponseSchema = z.object({ status: z.literal('ready
 
 export const suggestReadinessTokenSchema = z.string().min(32).max(512).regex(/^\S+$/);
 
+export const suggestConfiguredReadinessFailureStageSchema = z.enum([
+  'runtime_configuration',
+  'database',
+  'durable_object',
+]);
+
+export type SuggestConfiguredReadinessFailureStage = z.infer<
+  typeof suggestConfiguredReadinessFailureStageSchema
+>;
+
 export type SuggestConfiguredReadinessEnvironment = SuggestHttpEnvironment &
   Readonly<{
     CPM_SUGGEST_READINESS_TOKEN?: unknown;
@@ -23,7 +33,7 @@ export interface SuggestConfiguredReadinessProbes {
 }
 
 export class SuggestConfiguredReadinessError extends Error {
-  constructor() {
+  constructor(readonly stage: SuggestConfiguredReadinessFailureStage) {
     super('Suggest configured environment is unavailable.');
     this.name = 'SuggestConfiguredReadinessError';
   }
@@ -59,6 +69,9 @@ export async function verifySuggestConfiguredReadiness(
   environment: SuggestConfiguredReadinessEnvironment,
   probes: SuggestConfiguredReadinessProbes = {},
 ): Promise<void> {
+  let databaseUrl: string;
+  let rateLimitNamespace: SubmissionRateLimitDurableObjectNamespace;
+
   try {
     createSuggestHttpRuntimeFromEnvironment(environment);
     const databaseEnvironment = requiredDatabaseEnvironmentSchema.parse({
@@ -67,12 +80,21 @@ export async function verifySuggestConfiguredReadiness(
     if (!isDurableObjectNamespace(environment.SUBMISSION_RATE_LIMIT_BUCKETS)) {
       throw new Error('Durable Object namespace binding is unavailable.');
     }
-
-    await (probes.probeDatabase ?? probeDatabase)(databaseEnvironment.DATABASE_URL);
-    await (probes.probeRateLimitProvider ?? probeRateLimitProvider)(
-      environment.SUBMISSION_RATE_LIMIT_BUCKETS,
-    );
+    databaseUrl = databaseEnvironment.DATABASE_URL;
+    rateLimitNamespace = environment.SUBMISSION_RATE_LIMIT_BUCKETS;
   } catch {
-    throw new SuggestConfiguredReadinessError();
+    throw new SuggestConfiguredReadinessError('runtime_configuration');
+  }
+
+  try {
+    await (probes.probeDatabase ?? probeDatabase)(databaseUrl);
+  } catch {
+    throw new SuggestConfiguredReadinessError('database');
+  }
+
+  try {
+    await (probes.probeRateLimitProvider ?? probeRateLimitProvider)(rateLimitNamespace);
+  } catch {
+    throw new SuggestConfiguredReadinessError('durable_object');
   }
 }

@@ -1,4 +1,5 @@
 import {
+  SuggestConfiguredReadinessError,
   suggestReadinessTokenSchema,
   type SuggestConfiguredReadinessEnvironment,
   verifySuggestConfiguredReadiness,
@@ -51,7 +52,11 @@ export async function onRequestGet(context: SuggestReadinessPagesContext): Promi
   try {
     await verifySuggestConfiguredReadiness(context.env);
     return jsonResponse(200, { ready: true });
-  } catch {
-    return jsonResponse(503, { ready: false });
+  } catch (error) {
+    const failureStage =
+      error instanceof SuggestConfiguredReadinessError
+        ? error.stage
+        : 'runtime_configuration';
+    return jsonResponse(503, { ready: false, failureStage });
   }
 }

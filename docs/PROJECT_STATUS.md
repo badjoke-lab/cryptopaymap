@@ -10,14 +10,19 @@ Phase 6 — Launch and cutover evidence
 
 OPS-P6-001 — Configured launch authorization, bounded go-live execution, external verification, observation, and launch close (Issue #293)
 
+## Current operational slice
+
+OPS-P6-001A — Diagnose configured staging readiness failure (Issue #295)
+
 ## Authoritative current state
 
 - P6-08 repository definition work completed in PR #291 for Issue #290.
-- Latest verified main is `46b89747797e06d62e94f8d974fd1ab0d72dfaff`.
-- The P6-08 merge workflows completed successfully, including Foundation validation, Migration drift, retained P5-08 audits, P6-01 through P6-07, and the dedicated P6-08 audit.
-- No product implementation pull request was active when this tracking correction began.
-- FIX-P6-001 is the bounded tracking correction in Issue #292 and PR #294.
-- OPS-P6-001 in Issue #293 owns the next real execution work.
+- FIX-P6-001 tracking reconciliation completed in PR #294 for Issue #292.
+- Latest verified main is `dbc1620be37244657d7882ca163d25855eb338f9`.
+- The fixed-review deployment receipt is bound to that exact main commit.
+- Cloudflare credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, and Pages deployment succeeded.
+- Configured verification failed because the bearer-protected readiness endpoint returned HTTP 503 after 18 attempts.
+- OPS-P6-001A in Issue #295 owns bounded failure-stage diagnosis before any staging authorization claim.
 
 Configured state remains:
 
@@ -33,21 +38,23 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Execute OPS-P6-001 in Issue #293:
+Execute OPS-P6-001A in Issue #295:
 
-1. reconcile current configured P6-01 through P6-07 receipts against the exact intended commit, immutable release, data snapshot, schema, migration state, environment, domain, and credential generation;
-2. authorize and verify configured staging first;
-3. retain redacted staging evidence for identity/Admin, Neon, R2, publication, DNS/TLS, monitoring, alerts, backup, restore, and rollback readiness;
-4. issue a separate bounded production authorization only after staging evidence is current and accepted;
-5. execute production cutover with named launch, observation, rollback, communications, and incident ownership;
-6. complete external post-cutover verification and the observation window;
-7. retain immutable launch-close evidence before advancing to Phase 7.
+1. preserve 404 behavior for unauthorized readiness requests;
+2. classify only the bearer-authorized readiness failure as `runtime_configuration`, `database`, or `durable_object`;
+3. retain the bounded stage in the configured-verification diagnostic and deployment receipt;
+4. merge after normal repository validation;
+5. inspect the automatically generated fixed-review receipt for the merged main commit;
+6. repair the exact configured dependency and obtain a successful staging receipt;
+7. continue the remaining OPS-P6-001 staging evidence only after readiness succeeds.
+
+Production authorization, DNS cutover, and Phase 7 remain out of scope for this slice.
 
 ## Blocked
 
-No repository-code blocker is known.
+Configured staging authorization is blocked by the current readiness HTTP 503.
 
-Configured launch execution remains blocked until every mandatory predecessor receipt is current and accepted, a bounded authorization is issued, execution occurs, external verification passes, the observation window completes, and launch-close evidence is retained.
+The existing receipt does not distinguish runtime configuration, Neon connectivity, and Durable Object health. OPS-P6-001A adds only a fixed non-secret failure-stage enum after valid bearer authorization so the dependency can be repaired without exposing operational details.
 
 Protected operational credentials and private evidence must not be placed in the public repository or public Issue content.
 
@@ -146,6 +153,8 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - Issue #293 — OPS-P6-001 configured launch execution
+- Issue #295 — OPS-P6-001A configured staging readiness diagnosis
+- `config/staging-review/deployment-receipt.json` on the `staging-review` branch
 - `docs/P6_08_FINAL_LAUNCH_AUTHORIZATION_GO_LIVE_CLOSE_EVIDENCE.md`
 - `docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md`
 - `docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md`
