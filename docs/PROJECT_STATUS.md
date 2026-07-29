@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-29
+**Last verified:** 2026-07-30
 
 ## Current phase
 
@@ -12,17 +12,19 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-OPS-P6-001A — Diagnose configured staging readiness failure (Issue #295)
+OPS-P6-001C — Implement configured staging authorization gate (Issue #298, PR #299)
 
 ## Authoritative current state
 
 - P6-08 repository definition work completed in PR #291 for Issue #290.
 - FIX-P6-001 tracking reconciliation completed in PR #294 for Issue #292.
-- Latest verified main is `dbc1620be37244657d7882ca163d25855eb338f9`.
-- The fixed-review deployment receipt is bound to that exact main commit.
-- Cloudflare credentials, configured inputs, Durable Object Worker deployment, Pages secret synchronization, and Pages deployment succeeded.
-- Configured verification failed because the bearer-protected readiness endpoint returned HTTP 503 after 18 attempts.
-- OPS-P6-001A in Issue #295 owns bounded failure-stage diagnosis before any staging authorization claim.
+- OPS-P6-001A readiness diagnostics completed in PR #296.
+- Latest verified main is `71962246127a06b9de708595518666b4b93c4e4a`.
+- A fresh fixed-review Neon database was initialized through guarded workflow run `30465445438`; schema and migration-ledger verification passed.
+- The configured staging deployment receipt records `status: deployed`, configured readiness success, and successful Cloudflare credential, input, Durable Object, Pages secret, deployment, and verification checks.
+- The fixed-review live-audit receipt records `status: complete`, first POST HTTP 202, exact replay HTTP 202 with matching public reference and status secret, changed-content HTTP 409, and unchanged public artifacts.
+- OPS-P6-001B in Issue #297 is completed.
+- OPS-P6-001C in Issue #298 and PR #299 adds the fail-closed configured staging authorization inventory and dispatch gate.
 
 Configured state remains:
 
@@ -38,23 +40,21 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Execute OPS-P6-001A in Issue #295:
+Execute OPS-P6-001C in Issue #298 and PR #299:
 
-1. preserve 404 behavior for unauthorized readiness requests;
-2. classify only the bearer-authorized readiness failure as `runtime_configuration`, `database`, or `durable_object`;
-3. retain the bounded stage in the configured-verification diagnostic and deployment receipt;
-4. merge after normal repository validation;
-5. inspect the automatically generated fixed-review receipt for the merged main commit;
-6. repair the exact configured dependency and obtain a successful staging receipt;
-7. continue the remaining OPS-P6-001 staging evidence only after readiness succeeds.
-
-Production authorization, DNS cutover, and Phase 7 remain out of scope for this slice.
+1. pass normal repository validation and the dedicated authorization self-test;
+2. merge the gate to `main`;
+3. retain the automatic `inventory` receipt on the `staging-review` branch;
+4. confirm the exact missing or stale P6-01 through P6-07 configured predecessor list;
+5. execute each missing configured predecessor separately without fabricating evidence from repository CI;
+6. run the explicit authorization dispatch only after every predecessor is current and bound to the same commit, release, data snapshot, configuration, and environment;
+7. keep production authorization, DNS cutover, go-live, and Phase 7 blocked until staging authorization is real and current.
 
 ## Blocked
 
-Configured staging authorization is blocked by the current readiness HTTP 503.
+No Neon, migration, configured staging deployment, readiness, or fixed-review live-journey blocker remains.
 
-The existing receipt does not distinguish runtime configuration, Neon connectivity, and Durable Object health. OPS-P6-001A adds only a fixed non-secret failure-stage enum after valid bearer authorization so the dependency can be repaired without exposing operational details.
+Configured staging authorization is blocked until real configured P6-01 through P6-07 predecessor receipts are current, non-expired, exact-commit bound, and mutually identity-consistent. PR #299 is the gate that names those blockers and prevents inventory or repository CI from being treated as authorization.
 
 Protected operational credentials and private evidence must not be placed in the public repository or public Issue content.
 
@@ -153,8 +153,13 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - Issue #293 — OPS-P6-001 configured launch execution
-- Issue #295 — OPS-P6-001A configured staging readiness diagnosis
+- Issue #297 — completed fixed-review Neon recovery
+- Issue #298 — OPS-P6-001C configured staging authorization gate
+- PR #299 — OPS-P6-001C implementation
 - `config/staging-review/deployment-receipt.json` on the `staging-review` branch
+- `config/staging-review/p5-02r-live-audit-receipt.json` on the `staging-review` branch
+- `config/staging-authorization/authorization-receipt.json` on the `staging-review` branch after gate execution
+- `docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md`
 - `docs/P6_08_FINAL_LAUNCH_AUTHORIZATION_GO_LIVE_CLOSE_EVIDENCE.md`
 - `docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md`
 - `docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md`
