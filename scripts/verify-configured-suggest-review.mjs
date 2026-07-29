@@ -3,6 +3,11 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const challengeOrigin = 'https://challenges.cloudflare.com';
+const readinessFailureStages = new Set([
+  'runtime_configuration',
+  'database',
+  'durable_object',
+]);
 
 function sleep(milliseconds) {
   return new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds));
@@ -30,11 +35,13 @@ function summarizeConfigResponse(status, parsedBody, expectedSiteKey, expectedAc
 function summarizeReadinessResponse(status, parsedBody) {
   const value = parsedBody.value;
   const objectValue = value !== null && typeof value === 'object' ? value : null;
+  const failureStage = objectValue?.failureStage;
   return {
     httpStatus: status,
     jsonParsed: parsedBody.parsed,
     ready: objectValue?.ready === true,
     errorCode: typeof objectValue?.error === 'string' ? objectValue.error.slice(0, 64) : null,
+    failureStage: readinessFailureStages.has(failureStage) ? failureStage : null,
   };
 }
 
