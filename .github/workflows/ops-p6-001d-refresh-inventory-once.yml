@@ -1,0 +1,72 @@
+name: OPS-P6-001D refresh inventory once
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001d-rerun-p6-01-92779f
+    paths:
+      - '.github/workflows/ops-p6-001d-refresh-inventory-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: 92779fbafe7ad736b87186301eba87ebb8c98fd5
+      CONFIRMATION: AUTHORIZE_CONFIGURED_STAGING
+      LAUNCH_OWNER: inventory:badjoke-lab
+      OBSERVER: inventory:unassigned-observer
+      ROLLBACK_OWNER: inventory:unassigned-rollback-owner
+      EVALUATION_MODE: inventory
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Check out exact main source
+        uses: actions/checkout@v4
+        with:
+          ref: 92779fbafe7ad736b87186301eba87ebb8c98fd5
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Evaluate current configured staging inventory
+        run: |
+          node source/scripts/evaluate-ops-p6-001c-staging-authorization.mjs \
+            status \
+            configured-staging-authorization-receipt.json
+
+      - name: Publish refreshed inventory receipt
+        run: |
+          set -euo pipefail
+          mkdir -p status/config/staging-authorization
+          cp configured-staging-authorization-receipt.json \
+            status/config/staging-authorization/authorization-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/authorization-receipt.json
+          git -C status commit -m 'Refresh configured staging authorization inventory after P6-01'
+          git -C status push origin HEAD:staging-review
+
+      - name: Enforce expected P6-01 progression
+        run: |
+          node <<'NODE'
+          const receipt = require('./configured-staging-authorization-receipt.json');
+          const p601 = receipt.checks.predecessors.find((item) => item.evidenceId === 'P6-01');
+          if (receipt.state !== 'not_authorized') process.exit(1);
+          if (p601?.state !== 'current') process.exit(1);
+          if (receipt.blockers.some((item) => item.startsWith('P6-01:'))) process.exit(1);
+          for (const id of ['P6-02', 'P6-03', 'P6-04', 'P6-05', 'P6-06', 'P6-07']) {
+            if (!receipt.blockers.includes(`${id}:missing`)) process.exit(1);
+          }
+          if (!receipt.blockers.includes('explicit_dispatch:required')) process.exit(1);
+          NODE
