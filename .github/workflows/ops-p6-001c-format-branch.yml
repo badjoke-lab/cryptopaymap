@@ -1,0 +1,47 @@
+name: OPS-P6-001C format branch
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001c-staging-authorization-gate
+    paths:
+      - '.github/workflows/ops-p6-001c-format-branch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  format:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001c-staging-authorization-gate
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format bounded OPS-P6-001C files
+        run: |
+          npx biome format --write \
+            .github/workflows/ops-p6-001c-configured-staging-authorization.yml \
+            docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md \
+            docs/PROJECT_STATUS.md \
+            scripts/evaluate-ops-p6-001c-staging-authorization.mjs
+      - name: Commit formatting
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            .github/workflows/ops-p6-001c-configured-staging-authorization.yml \
+            docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md \
+            docs/PROJECT_STATUS.md \
+            scripts/evaluate-ops-p6-001c-staging-authorization.mjs
+          if git diff --cached --quiet; then
+            echo 'No formatting changes required.'
+            exit 0
+          fi
+          git commit -m 'OPS-P6-001C apply final Biome formatting'
+          git push origin HEAD:agent/ops-p6-001c-staging-authorization-gate
