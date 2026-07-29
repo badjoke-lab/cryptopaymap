@@ -33,5 +33,7 @@ export function buildPublicStatsViewModel(stats: PublicStats): PublicStatsViewMo
 }
 
 export function parsePublicStatsDocument(value: unknown): PublicStats {
-  return publicStatsFileSchema.parse(value).stats;
+  const wrapped = publicStatsFileSchema.safeParse(value);
+  if (wrapped.success) return wrapped.data.stats;
+  return publicStatsSchema.parse(value);
 }
