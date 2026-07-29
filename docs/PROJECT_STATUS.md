@@ -12,19 +12,21 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-OPS-P6-001C — Implement configured staging authorization gate (Issue #298, PR #299)
+OPS-P6-001D — Execute configured staging P6-01 data QA evidence (Issue #300)
 
 ## Authoritative current state
 
 - P6-08 repository definition work completed in PR #291 for Issue #290.
 - FIX-P6-001 tracking reconciliation completed in PR #294 for Issue #292.
 - OPS-P6-001A readiness diagnostics completed in PR #296.
-- Latest verified main is `71962246127a06b9de708595518666b4b93c4e4a`.
-- A fresh fixed-review Neon database was initialized through guarded workflow run `30465445438`; schema and migration-ledger verification passed.
-- The configured staging deployment receipt records `status: deployed`, configured readiness success, and successful Cloudflare credential, input, Durable Object, Pages secret, deployment, and verification checks.
-- The fixed-review live-audit receipt records `status: complete`, first POST HTTP 202, exact replay HTTP 202 with matching public reference and status secret, changed-content HTTP 409, and unchanged public artifacts.
-- OPS-P6-001B in Issue #297 is completed.
-- OPS-P6-001C in Issue #298 and PR #299 adds the fail-closed configured staging authorization inventory and dispatch gate.
+- OPS-P6-001B Neon recovery completed in Issue #297.
+- OPS-P6-001C configured staging authorization gate completed in PR #299 for Issue #298.
+- Latest verified main is `8e48975d5f16907d6fa0163da4ba6f670727d1b5`.
+- The exact-main configured staging deployment receipt is `deployed`; Cloudflare credentials, configured inputs, Durable Object Worker, Pages secret synchronization, Pages deployment, and configured verification all succeeded.
+- The exact-main fixed-review live-audit receipt is `complete`; first POST returned HTTP 202, exact replay returned HTTP 202 with matching public reference and status secret, changed-content reuse returned HTTP 409, and public artifacts remained unchanged.
+- The post-audit configured staging inventory is retained as `not_authorized` and bound to the exact current main.
+- Its explicit missing predecessors are P6-01 through P6-07; deployment and live-audit checks are current.
+- OPS-P6-001D in Issue #300 owns the first configured predecessor: P6-01 data QA and shared launch binding.
 
 Configured state remains:
 
@@ -40,21 +42,22 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Execute OPS-P6-001C in Issue #298 and PR #299:
+Execute OPS-P6-001D in Issue #300:
 
-1. pass normal repository validation and the dedicated authorization self-test;
-2. merge the gate to `main`;
-3. retain the automatic `inventory` receipt on the `staging-review` branch;
-4. confirm the exact missing or stale P6-01 through P6-07 configured predecessor list;
-5. execute each missing configured predecessor separately without fabricating evidence from repository CI;
-6. run the explicit authorization dispatch only after every predecessor is current and bound to the same commit, release, data snapshot, configuration, and environment;
-7. keep production authorization, DNS cutover, go-live, and Phase 7 blocked until staging authorization is real and current.
+1. pass repository validation and the dedicated configured data-QA self-test;
+2. merge the bounded P6-01 executor to `main`;
+3. redeploy and retain exact-main staging deployment and live-audit receipts;
+4. dispatch the P6-01 workflow with exact confirmation, exact main commit, and bounded data owner;
+5. run staging-review build, public export schema/digest/count checks, candidate/private-field exclusion checks, migration history, and live schema/migration-ledger checks;
+6. retain `config/staging-authorization/p6-01-data-qa-receipt.json` with one shared release/data/configuration/environment binding;
+7. refresh the authorization inventory and confirm `P6-01:missing` is removed while P6-02 through P6-07 remain explicit;
+8. continue with configured P6-02 only after the P6-01 receipt is accepted and current.
 
 ## Blocked
 
 No Neon, migration, configured staging deployment, readiness, or fixed-review live-journey blocker remains.
 
-Configured staging authorization is blocked until real configured P6-01 through P6-07 predecessor receipts are current, non-expired, exact-commit bound, and mutually identity-consistent. PR #299 is the gate that names those blockers and prevents inventory or repository CI from being treated as authorization.
+Configured staging authorization is blocked by missing configured P6-01 through P6-07 receipts and the required explicit authorization dispatch. OPS-P6-001D addresses only P6-01. Production remains untouched.
 
 Protected operational credentials and private evidence must not be placed in the public repository or public Issue content.
 
@@ -153,12 +156,13 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - Issue #293 — OPS-P6-001 configured launch execution
-- Issue #297 — completed fixed-review Neon recovery
-- Issue #298 — OPS-P6-001C configured staging authorization gate
-- PR #299 — OPS-P6-001C implementation
+- Issue #300 — OPS-P6-001D configured staging P6-01 data QA
+- PR #299 — completed configured staging authorization gate
 - `config/staging-review/deployment-receipt.json` on the `staging-review` branch
 - `config/staging-review/p5-02r-live-audit-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/authorization-receipt.json` on the `staging-review` branch after gate execution
+- `config/staging-authorization/authorization-receipt.json` on the `staging-review` branch
+- `config/staging-authorization/p6-01-data-qa-receipt.json` on the `staging-review` branch after execution
+- `docs/OPS_P6_001D_CONFIGURED_STAGING_P6_01_DATA_QA.md`
 - `docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md`
 - `docs/P6_08_FINAL_LAUNCH_AUTHORIZATION_GO_LIVE_CLOSE_EVIDENCE.md`
 - `docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md`
