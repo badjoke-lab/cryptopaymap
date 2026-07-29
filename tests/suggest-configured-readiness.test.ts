@@ -55,17 +55,21 @@ describe('P5-02Q configured Suggest readiness', () => {
     expect(probeDatabase).toHaveBeenCalledWith(validEnvironment.DATABASE_URL);
   });
 
-  it('fails closed when the database probe fails', async () => {
+  it('classifies a database probe failure without exposing its detail', async () => {
     await expect(
       verifySuggestConfiguredReadiness(validEnvironment, {
         probeDatabase: async () => {
           throw new Error('database detail');
         },
       }),
-    ).rejects.toThrow(SuggestConfiguredReadinessError);
+    ).rejects.toMatchObject({
+      name: 'SuggestConfiguredReadinessError',
+      message: 'Suggest configured environment is unavailable.',
+      stage: 'database',
+    });
   });
 
-  it('fails closed when the DO worker health response is malformed', async () => {
+  it('classifies a malformed DO worker health response', async () => {
     await expect(
       verifySuggestConfiguredReadiness(
         {
@@ -76,10 +80,14 @@ describe('P5-02Q configured Suggest readiness', () => {
         },
         { probeDatabase: async () => {} },
       ),
-    ).rejects.toThrow('Suggest configured environment is unavailable.');
+    ).rejects.toMatchObject({
+      name: 'SuggestConfiguredReadinessError',
+      message: 'Suggest configured environment is unavailable.',
+      stage: 'durable_object',
+    });
   });
 
-  it('fails closed when any required route configuration is missing', async () => {
+  it('classifies missing required route configuration', async () => {
     await expect(
       verifySuggestConfiguredReadiness(
         {
@@ -88,6 +96,14 @@ describe('P5-02Q configured Suggest readiness', () => {
         },
         { probeDatabase: async () => {} },
       ),
-    ).rejects.toThrow(SuggestConfiguredReadinessError);
+    ).rejects.toMatchObject({
+      name: 'SuggestConfiguredReadinessError',
+      message: 'Suggest configured environment is unavailable.',
+      stage: 'runtime_configuration',
+    });
+  });
+
+  it('keeps the exported error type available to callers', () => {
+    expect(new SuggestConfiguredReadinessError('database')).toBeInstanceOf(Error);
   });
 });
