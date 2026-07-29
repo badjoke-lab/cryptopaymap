@@ -106,7 +106,8 @@ function safeTimestamp(value: unknown): string | null {
 function countRecords(path: PublicExportPath, value: unknown): number {
   if (!isObject(value)) return -1;
   if (Array.isArray(value.records)) return value.records.length;
-  if (path === '/data/places.geojson' && Array.isArray(value.features)) return value.features.length;
+  if (path === '/data/places.geojson' && Array.isArray(value.features))
+    return value.features.length;
   if (path === '/data/stats.json' && isObject(value.stats)) return 1;
   return -1;
 }
@@ -181,7 +182,10 @@ async function inspectPublicProjection(baseUrl: URL) {
   const versionResponse = await fetchJson(new URL('/version.json', baseUrl));
   const manifestResponse = await fetchJson(new URL('/data/manifest.json', baseUrl));
   const version = parsePublicExport('/version.json', versionResponse.value) as PublicVersion;
-  const manifest = parsePublicExport('/data/manifest.json', manifestResponse.value) as PublicManifest;
+  const manifest = parsePublicExport(
+    '/data/manifest.json',
+    manifestResponse.value,
+  ) as PublicManifest;
   const allowedPaths = new Set<PublicExportPath>(publicExportPaths);
   const uniquePaths = new Set<string>();
   const fileChecks: Array<{
@@ -208,7 +212,8 @@ async function inspectPublicProjection(baseUrl: URL) {
       schema = 'failure';
     }
     const digest = sha256Bytes(response.bytes) === entry.sha256 ? 'match' : 'mismatch';
-    const recordCount = countRecords(entry.path, response.value) === entry.recordCount ? 'match' : 'mismatch';
+    const recordCount =
+      countRecords(entry.path, response.value) === entry.recordCount ? 'match' : 'mismatch';
     fileChecks.push({ path: entry.path, schema, digest, recordCount });
     publicValues.set(entry.path, response.value);
   }
@@ -264,9 +269,8 @@ async function inspectPublicProjection(baseUrl: URL) {
 }
 
 function safeDeploymentConfiguration(receipt: JsonObject | null, baseUrl: URL): JsonObject {
-  const reviewConfiguration = receipt && isObject(receipt.reviewConfiguration)
-    ? receipt.reviewConfiguration
-    : {};
+  const reviewConfiguration =
+    receipt && isObject(receipt.reviewConfiguration) ? receipt.reviewConfiguration : {};
   return {
     host: baseUrl.hostname,
     derivedSecretsVersion: reviewConfiguration.derivedSecretsVersion ?? null,
@@ -323,7 +327,8 @@ export async function evaluateConfiguredStagingDataQa(input: {
   if (input.approvedCommit !== input.currentMainCommit) blockers.push('exact_main:mismatch');
   if (input.repositoryDataQaOutcome !== 'success') blockers.push('repository_data_qa:failed');
   if (input.migrationCheckOutcome !== 'success') blockers.push('migration_history:failed');
-  if (input.liveSchemaOutcome !== 'success' || !liveSchemaReady) blockers.push('live_schema:failed');
+  if (input.liveSchemaOutcome !== 'success' || !liveSchemaReady)
+    blockers.push('live_schema:failed');
   if (deployment.state !== 'current') blockers.push('deployment_receipt:failed');
   if (liveAudit.state !== 'current') blockers.push('live_audit_receipt:failed');
   if (publicProjection?.status !== 'passed') blockers.push('public_projection:failed');
@@ -444,10 +449,7 @@ async function runSelfTest() {
     const projection = await inspectPublicProjection(new URL(defaultReviewBaseUrl));
     if (projection.status !== 'passed') throw new Error('valid projection did not pass');
     manifest.files[0]!.sha256 = '0'.repeat(64);
-    responses.set(
-      '/data/manifest.json',
-      new TextEncoder().encode(`${JSON.stringify(manifest)}\n`),
-    );
+    responses.set('/data/manifest.json', new TextEncoder().encode(`${JSON.stringify(manifest)}\n`));
     const failed = await inspectPublicProjection(new URL(defaultReviewBaseUrl));
     if (failed.status !== 'failed') throw new Error('digest mismatch did not fail');
     console.log('OPS-P6-001D configured staging data QA self-test passed.');
