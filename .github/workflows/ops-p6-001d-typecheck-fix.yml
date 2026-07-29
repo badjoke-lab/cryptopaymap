@@ -13,6 +13,8 @@ permissions:
 jobs:
   fix:
     runs-on: ubuntu-24.04
+    env:
+      FIX_REVISION: '1'
     steps:
       - uses: actions/checkout@v4
         with:
