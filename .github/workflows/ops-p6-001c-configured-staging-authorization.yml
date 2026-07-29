@@ -1,0 +1,145 @@
+name: OPS-P6-001C configured staging authorization
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
+      - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
+      - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter AUTHORIZE_CONFIGURED_STAGING exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character main commit SHA to authorize.
+        required: true
+        type: string
+      launch_owner:
+        description: Bounded launch-owner identity.
+        required: true
+        type: string
+      observer:
+        description: Bounded independent-observer identity.
+        required: true
+        type: string
+      rollback_owner:
+        description: Bounded rollback-owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001c-configured-staging-authorization
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Run fail-closed authorization self-test
+        run: node scripts/evaluate-ops-p6-001c-staging-authorization.mjs --self-test
+
+  evaluate:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.approved_commit || github.sha }}
+      CONFIRMATION: ${{ github.event_name == 'workflow_dispatch' && inputs.confirmation || 'AUTHORIZE_CONFIGURED_STAGING' }}
+      LAUNCH_OWNER: ${{ github.event_name == 'workflow_dispatch' && inputs.launch_owner || format('inventory:{0}', github.actor) }}
+      OBSERVER: ${{ github.event_name == 'workflow_dispatch' && inputs.observer || 'inventory:unassigned-observer' }}
+      ROLLBACK_OWNER: ${{ github.event_name == 'workflow_dispatch' && inputs.rollback_owner || 'inventory:unassigned-rollback-owner' }}
+      EVALUATION_MODE: ${{ github.event_name == 'workflow_dispatch' && 'authorization' || 'inventory' }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.approved_commit || github.sha }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Evaluate configured staging authorization
+        run: |
+          node source/scripts/evaluate-ops-p6-001c-staging-authorization.mjs \
+            status \
+            configured-staging-authorization-receipt.json
+
+      - name: Upload bounded authorization receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001c-configured-staging-authorization
+          path: configured-staging-authorization-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish authorization receipt to status branch
+        run: |
+          set -euo pipefail
+          mkdir -p status/config/staging-authorization
+          cp configured-staging-authorization-receipt.json \
+            status/config/staging-authorization/authorization-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/authorization-receipt.json
+          if git -C status diff --cached --quiet; then
+            echo 'Configured staging authorization receipt is unchanged.'
+            exit 0
+          fi
+          git -C status commit -m 'Record configured staging authorization receipt'
+          git -C status push origin HEAD:staging-review
+
+      - name: Write authorization summary
+        run: |
+          node <<'NODE'
+          const { appendFileSync, readFileSync } = require('node:fs');
+          const receipt = JSON.parse(
+            readFileSync('configured-staging-authorization-receipt.json', 'utf8'),
+          );
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging authorization',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Mode: \`${receipt.mode}\``,
+              `- Approved commit: \`${receipt.approvedCommit}\``,
+              `- Blockers: ${receipt.blockers.length === 0 ? 'none' : receipt.blockers.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce explicit authorization result
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          node -e "const r=require('./configured-staging-authorization-receipt.json'); if(r.state!=='authorized') process.exit(1)"
