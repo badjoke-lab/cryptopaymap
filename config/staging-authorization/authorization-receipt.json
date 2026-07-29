@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "authorizationId": "sha256:18741425d10a7390ad4a3d6b3d438ec12f8bcd7bbda641022e0fe2b7fbaaea68",
+  "state": "not_authorized",
+  "environment": "configured_staging",
+  "mode": "inventory",
+  "approvedCommit": "8e48975d5f16907d6fa0163da4ba6f670727d1b5",
+  "generatedAt": "2026-07-29T16:38:21.981Z",
+  "workflowRunId": "30471631417",
+  "operators": {
+    "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
+    "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
+    "rollbackOwner": "sha256:d0cd171be8090d5e3b850f17a2cf6be2d8f587c99e9e4621cd350e1e6ba51506"
+  },
+  "checks": {
+    "deployment": {
+      "path": "config/staging-review/deployment-receipt.json",
+      "state": "failed",
+      "generatedAt": "2026-07-29T15:24:11.465Z"
+    },
+    "liveAudit": {
+      "path": "config/staging-review/p5-02r-live-audit-receipt.json",
+      "state": "failed",
+      "generatedAt": "2026-07-29T16:02:44.229Z"
+    },
+    "predecessors": [
+      {
+        "evidenceId": "P6-01",
+        "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      },
+      {
+        "evidenceId": "P6-02",
+        "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      },
+      {
+        "evidenceId": "P6-03",
+        "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      },
+      {
+        "evidenceId": "P6-04",
+        "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      },
+      {
+        "evidenceId": "P6-05",
+        "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      },
+      {
+        "evidenceId": "P6-06",
+        "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      },
+      {
+        "evidenceId": "P6-07",
+        "path": "config/staging-authorization/p6-07-operations-recovery-receipt.json",
+        "state": "missing",
+        "generatedAt": null,
+        "expiresAt": null
+      }
+    ],
+    "predecessorBinding": "unproven"
+  },
+  "blockers": [
+    "P6-01:missing",
+    "P6-02:missing",
+    "P6-03:missing",
+    "P6-04:missing",
+    "P6-05:missing",
+    "P6-06:missing",
+    "P6-07:missing",
+    "deployment_receipt:failed",
+    "explicit_dispatch:required",
+    "live_audit_receipt:failed"
+  ]
+}
