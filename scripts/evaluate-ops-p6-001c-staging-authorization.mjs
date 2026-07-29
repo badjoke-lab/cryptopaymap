@@ -4,15 +4,17 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const predecessorSpecs = Object.freeze([
-  ['P6-01', 'config/staging-authorization/p6-01-data-qa-receipt.json'],
-  ['P6-02', 'config/staging-authorization/p6-02-identity-admin-receipt.json'],
-  ['P6-03', 'config/staging-authorization/p6-03-neon-transaction-receipt.json'],
-  ['P6-04', 'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json'],
-  ['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json'],
-  ['P6-06', 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'],
-  ['P6-07', 'config/staging-authorization/p6-07-operations-recovery-receipt.json'],
-].map(([evidenceId, path]) => Object.freeze({ evidenceId, path })));
+export const predecessorSpecs = Object.freeze(
+  [
+    ['P6-01', 'config/staging-authorization/p6-01-data-qa-receipt.json'],
+    ['P6-02', 'config/staging-authorization/p6-02-identity-admin-receipt.json'],
+    ['P6-03', 'config/staging-authorization/p6-03-neon-transaction-receipt.json'],
+    ['P6-04', 'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json'],
+    ['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json'],
+    ['P6-06', 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'],
+    ['P6-07', 'config/staging-authorization/p6-07-operations-recovery-receipt.json'],
+  ].map(([evidenceId, path]) => Object.freeze({ evidenceId, path })),
+);
 
 const deploymentPath = 'config/staging-review/deployment-receipt.json';
 const liveAuditPath = 'config/staging-review/p5-02r-live-audit-receipt.json';
@@ -292,12 +294,9 @@ function runSelfTest() {
     });
     const binding = {
       releaseId: 'sha256:release000000000000000000000000000000000000000000000000000000000000',
-      dataSnapshotId:
-        'sha256:data000000000000000000000000000000000000000000000000000000000000000',
-      configurationId:
-        'sha256:config0000000000000000000000000000000000000000000000000000000000000',
-      environmentId:
-        'sha256:environment0000000000000000000000000000000000000000000000000000000000',
+      dataSnapshotId: 'sha256:data000000000000000000000000000000000000000000000000000000000000000',
+      configurationId: 'sha256:config0000000000000000000000000000000000000000000000000000000000000',
+      environmentId: 'sha256:environment0000000000000000000000000000000000000000000000000000000000',
     };
     for (const spec of predecessorSpecs) {
       writeFixture(root, spec.path, {
