@@ -1,12 +1,12 @@
 {
-  "status": "failed",
+  "status": "complete",
   "commit": "71962246127a06b9de708595518666b4b93c4e4a",
-  "generatedAt": "2026-07-29T15:24:54.522Z",
+  "generatedAt": "2026-07-29T16:02:44.229Z",
   "workflowRunId": "30465685167",
   "checks": {
     "databaseSchema": "success",
     "schemaResultParsed": true,
-    "liveJourney": "failure",
+    "liveJourney": "success",
     "auditResultParsed": true
   },
   "result": {
@@ -20,16 +20,16 @@
       "hostnameMatches": false,
       "actionMatches": false
     },
-    "status": "failed",
+    "status": "complete",
     "firstPost": {
       "httpStatus": 202,
       "receiptShapeMatches": true
     },
     "exactReplay": {
-      "httpStatus": 503,
-      "receiptShapeMatches": false,
-      "publicReferenceMatches": false,
-      "statusSecretMatches": false
+      "httpStatus": 202,
+      "receiptShapeMatches": true,
+      "publicReferenceMatches": true,
+      "statusSecretMatches": true
     },
     "changedContent": {
       "httpStatus": 409,
