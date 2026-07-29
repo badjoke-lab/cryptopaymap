@@ -36,6 +36,8 @@ The configured procedure performs:
 14. bounded forbidden private-key scanning across public exports;
 15. shared launch binding derivation.
 
+The evaluator is a Node-only operational entry point executed through `tsx`. Its behavior is enforced by the dedicated valid-projection and digest-mismatch self-test, while the normal repository lint and formatting checks still inspect the source. Browser/Astro diagnostics are not used as a substitute for that operational runtime test.
+
 ## Shared binding
 
 An accepted receipt establishes four deterministic SHA-256 identities:
