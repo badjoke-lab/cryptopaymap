@@ -1,0 +1,192 @@
+name: OPS-P6-001D configured staging P6-01 data QA
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001d-configured-staging-p6-01-data-qa.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001D_CONFIGURED_STAGING_P6_01_DATA_QA.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/run-ops-p6-001d-configured-staging-data-qa.ts'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001d-configured-staging-p6-01-data-qa.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001D_CONFIGURED_STAGING_P6_01_DATA_QA.md'
+      - 'scripts/run-ops-p6-001d-configured-staging-data-qa.ts'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_01 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      data_owner:
+        description: Bounded data-operations owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001d-configured-staging-p6-01-data-qa
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run configured data QA self-test
+        run: npx tsx scripts/run-ops-p6-001d-configured-staging-data-qa.ts --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      DATA_OWNER: ${{ inputs.data_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      CPM_REVIEW_BASE_URL: https://review.cryptopaymap-staging.pages.dev
+      LIVE_SCHEMA_PATH: p6-01-live-schema.json
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        id: exact_main
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          echo "CURRENT_MAIN_COMMIT=$current_main_commit" >> "$GITHUB_ENV"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Build and validate staging review public projection
+        id: repository_data_qa
+        continue-on-error: true
+        working-directory: source
+        run: npm run staging:review:build
+
+      - name: Check repository migration history
+        id: migration_check
+        continue-on-error: true
+        working-directory: source
+        run: npm run db:check
+
+      - name: Check fixed-review live schema and migration ledger
+        id: live_schema
+        continue-on-error: true
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node source/scripts/check-p5-02r-review-schema.mjs \
+            > p6-01-live-schema.json \
+            2> p6-01-live-schema-error.log
+
+      - name: Write bounded configured P6-01 receipt
+        env:
+          REPOSITORY_DATA_QA_OUTCOME: ${{ steps.repository_data_qa.outcome }}
+          MIGRATION_CHECK_OUTCOME: ${{ steps.migration_check.outcome }}
+          LIVE_SCHEMA_OUTCOME: ${{ steps.live_schema.outcome }}
+        run: |
+          npx --prefix source tsx \
+            source/scripts/run-ops-p6-001d-configured-staging-data-qa.ts \
+            status \
+            p6-01-data-qa-receipt.json
+
+      - name: Upload bounded P6-01 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001d-configured-staging-p6-01-data-qa
+          path: |
+            p6-01-data-qa-receipt.json
+            p6-01-live-schema.json
+            p6-01-live-schema-error.log
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish configured P6-01 receipt to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-01-data-qa-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-01-data-qa-receipt.json \
+            status/config/staging-authorization/p6-01-data-qa-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-01-data-qa-receipt.json
+          if git -C status diff --cached --quiet; then
+            echo 'Configured P6-01 receipt is unchanged.'
+            exit 0
+          fi
+          git -C status commit -m 'Record configured staging P6-01 data QA receipt'
+          git -C status push origin HEAD:staging-review
+
+      - name: Write configured P6-01 summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-01-data-qa-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('p6-01-data-qa-receipt.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-01 data QA',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Dataset: \`${receipt.checks.publicProjection.version?.datasetVersion ?? 'unavailable'}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce configured P6-01 acceptance
+        if: always()
+        run: |
+          node -e "const r=require('./p6-01-data-qa-receipt.json'); if(r.state!=='accepted') process.exit(1)"

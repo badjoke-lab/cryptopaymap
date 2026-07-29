@@ -16,6 +16,7 @@ on:
   workflow_run:
     workflows:
       - P5-02R fixed review live audit
+      - OPS-P6-001D configured staging P6-01 data QA
     types:
       - completed
   workflow_dispatch:
