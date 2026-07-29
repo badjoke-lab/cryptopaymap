@@ -13,6 +13,11 @@ on:
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
       - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
       - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  workflow_run:
+    workflows:
+      - P5-02R fixed review live audit
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       confirmation:
@@ -59,11 +64,16 @@ jobs:
         run: node scripts/evaluate-ops-p6-001c-staging-authorization.mjs --self-test
 
   evaluate:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: >-
+      github.event_name == 'push' ||
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main')
     needs: contract
     runs-on: ubuntu-24.04
     env:
-      APPROVED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.approved_commit || github.sha }}
+      APPROVED_COMMIT: ${{ github.event_name == 'workflow_dispatch' && inputs.approved_commit || github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
       CONFIRMATION: ${{ github.event_name == 'workflow_dispatch' && inputs.confirmation || 'AUTHORIZE_CONFIGURED_STAGING' }}
       LAUNCH_OWNER: ${{ github.event_name == 'workflow_dispatch' && inputs.launch_owner || format('inventory:{0}', github.actor) }}
       OBSERVER: ${{ github.event_name == 'workflow_dispatch' && inputs.observer || 'inventory:unassigned-observer' }}
@@ -74,7 +84,7 @@ jobs:
       - name: Check out evaluated source
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.approved_commit || github.sha }}
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.approved_commit || github.event_name == 'workflow_run' && github.event.workflow_run.head_sha || github.sha }}
           path: source
 
       - name: Check out retained status branch
