@@ -1,0 +1,35 @@
+name: OPS-P6-001D typecheck diagnostic
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001d-configured-staging-p6-01-data-qa
+    paths:
+      - '.github/workflows/ops-p6-001d-typecheck-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Capture Astro and TypeScript diagnostics
+        id: check
+        continue-on-error: true
+        run: npm run check > typecheck-diagnostic.log 2>&1
+      - name: Upload diagnostic
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001d-typecheck-diagnostic
+          path: typecheck-diagnostic.log
+          if-no-files-found: error
+          retention-days: 1
+      - name: Enforce diagnostic outcome
+        run: test '${{ steps.check.outcome }}' = success
