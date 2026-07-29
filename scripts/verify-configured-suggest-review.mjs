@@ -3,11 +3,7 @@ import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const challengeOrigin = 'https://challenges.cloudflare.com';
-const readinessFailureStages = new Set([
-  'runtime_configuration',
-  'database',
-  'durable_object',
-]);
+const readinessFailureStages = new Set(['runtime_configuration', 'database', 'durable_object']);
 
 function sleep(milliseconds) {
   return new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds));
