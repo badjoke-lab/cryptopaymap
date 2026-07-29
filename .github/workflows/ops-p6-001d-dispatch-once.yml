@@ -1,0 +1,29 @@
+name: OPS-P6-001D dispatch once
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001d-configured-staging-p6-01-data-qa
+    paths:
+      - '.github/workflows/ops-p6-001d-dispatch-once.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Dispatch exact-main configured P6-01 execution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh workflow run ops-p6-001d-configured-staging-p6-01-data-qa.yml \
+            --repo badjoke-lab/cryptopaymap \
+            --ref main \
+            --field confirmation=EXECUTE_CONFIGURED_STAGING_P6_01 \
+            --field approved_commit=ba2ac6b4fb3a83596ed296cbc79a994281447026 \
+            --field data_owner=badjoke-lab
+          echo 'Configured staging P6-01 workflow_dispatch submitted.'
