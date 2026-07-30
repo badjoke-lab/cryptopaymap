@@ -13,6 +13,7 @@ on:
       - 'scripts/run-ops-p6-001e-configured-staging-identity-admin.ts'
       - 'tests/admin-access-identity.test.ts'
       - 'tests/admin-access-verification.test.ts'
+      - 'tests/admin-derived-service-auth.test.ts'
   push:
     branches:
       - main
@@ -25,6 +26,7 @@ on:
       - 'scripts/run-ops-p6-001e-configured-staging-identity-admin.ts'
       - 'tests/admin-access-identity.test.ts'
       - 'tests/admin-access-verification.test.ts'
+      - 'tests/admin-derived-service-auth.test.ts'
   workflow_dispatch:
     inputs:
       confirmation:
@@ -73,7 +75,7 @@ jobs:
         run: npx tsx scripts/run-ops-p6-001e-configured-staging-identity-admin.ts --self-test
 
       - name: Run focused Access identity tests
-        run: npx vitest run tests/admin-access-identity.test.ts tests/admin-access-verification.test.ts
+        run: npx vitest run tests/admin-access-identity.test.ts tests/admin-access-verification.test.ts tests/admin-derived-service-auth.test.ts
 
   execute:
     if: github.event_name == 'workflow_dispatch'
@@ -86,12 +88,7 @@ jobs:
       WORKFLOW_RUN_ID: ${{ github.run_id }}
       CPM_REVIEW_BASE_URL: https://review.cryptopaymap-staging.pages.dev
       SOURCE_ROOT: source
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CPM_STAGING_ACCESS_REVIEWER_CLIENT_ID: ${{ secrets.CPM_STAGING_ACCESS_REVIEWER_CLIENT_ID }}
-      CPM_STAGING_ACCESS_REVIEWER_CLIENT_SECRET: ${{ secrets.CPM_STAGING_ACCESS_REVIEWER_CLIENT_SECRET }}
-      CPM_STAGING_ACCESS_PUBLISHER_CLIENT_ID: ${{ secrets.CPM_STAGING_ACCESS_PUBLISHER_CLIENT_ID }}
-      CPM_STAGING_ACCESS_PUBLISHER_CLIENT_SECRET: ${{ secrets.CPM_STAGING_ACCESS_PUBLISHER_CLIENT_SECRET }}
+      CPM_REVIEW_SECRET_SEED_BASE64URL: ${{ secrets.CPM_REVIEW_SECRET_SEED_BASE64URL }}
     steps:
       - name: Check out evaluated source
         uses: actions/checkout@v4
@@ -132,7 +129,28 @@ jobs:
           npx tsx scripts/check-admin-access.ts
           node scripts/check-p6-02-configured-identity-admin-evidence.js
           npx tsx scripts/run-ops-p6-001e-configured-staging-identity-admin.ts --self-test
-          npx vitest run tests/admin-access-identity.test.ts tests/admin-access-verification.test.ts
+          npx vitest run tests/admin-access-identity.test.ts tests/admin-access-verification.test.ts tests/admin-derived-service-auth.test.ts
+
+      - name: Derive bounded staging Admin service credentials
+        working-directory: source
+        run: |
+          set -euo pipefail
+          trap 'rm -f ../p6-02-derived-secrets.json' EXIT
+          node scripts/derive-suggest-review-secrets.mjs ../p6-02-derived-secrets.json
+          node <<'NODE'
+          const { appendFileSync, readFileSync } = require('node:fs');
+          const values = JSON.parse(readFileSync('../p6-02-derived-secrets.json', 'utf8'));
+          const keys = [
+            'CPM_STAGING_ADMIN_REVIEWER_HMAC_KEY_BASE64URL',
+            'CPM_STAGING_ADMIN_PUBLISHER_HMAC_KEY_BASE64URL',
+          ];
+          for (const key of keys) {
+            const value = values[key];
+            if (typeof value !== 'string' || value.length === 0) throw new Error(`${key} missing`);
+            console.log(`::add-mask::${value}`);
+            appendFileSync(process.env.GITHUB_ENV, `${key}=${value}\n`);
+          }
+          NODE
 
       - name: Write bounded configured P6-02 receipt
         env:
