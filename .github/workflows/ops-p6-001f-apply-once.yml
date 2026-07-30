@@ -1,0 +1,67 @@
+name: OPS-P6-001F apply derived staging auth once
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001f-derived-staging-service-auth
+    paths:
+      - '.github/workflows/ops-p6-001f-apply-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001f-derived-staging-service-auth
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Apply bounded migration
+        run: python3 scripts/apply_ops_p6_001f.py
+
+      - name: Format changed source
+        run: |
+          npx biome check --write \
+            src/admin/access/config.ts \
+            src/admin/access/identity.ts \
+            src/admin/access/verification.ts \
+            src/admin/dashboard/identity-context.ts \
+            scripts/check-admin-access.ts \
+            scripts/derive-suggest-review-secrets.mjs \
+            scripts/run-ops-p6-001e-configured-staging-identity-admin.ts \
+            tests/admin-access-verification.test.ts \
+            tests/admin-derived-service-auth.test.ts
+
+      - name: Run bounded contract checks
+        run: |
+          npx tsx scripts/check-admin-access.ts
+          node scripts/check-p6-02-configured-identity-admin-evidence.js
+          npx tsx scripts/run-ops-p6-001e-configured-staging-identity-admin.ts --self-test
+          npx vitest run \
+            tests/admin-access-identity.test.ts \
+            tests/admin-access-verification.test.ts \
+            tests/admin-derived-service-auth.test.ts
+
+      - name: Remove one-time migration files
+        run: |
+          rm scripts/apply_ops_p6_001f.py
+          rm .github/workflows/ops-p6-001f-apply-once.yml
+
+      - name: Commit functional changes
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'OPS-P6-001F add derived staging service authentication'
+          git push origin HEAD:agent/ops-p6-001f-derived-staging-service-auth
