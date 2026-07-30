@@ -1,8 +1,8 @@
 {
   "status": "deployed",
-  "commit": "70dd77f4556a96a4b3a9b84b45a88b3796ba6be8",
+  "commit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-30T13:47:29.848Z",
+  "generatedAt": "2026-07-30T15:23:50.340Z",
   "checks": {
     "credentials": "success",
     "configuredInputs": "success",
@@ -25,7 +25,12 @@
     "rateLimit": {
       "maximumRequests": 5,
       "windowSeconds": 600
-    }
+    },
+    "adminAuthMode": "derived_staging_service",
+    "adminServiceRoles": [
+      "reviewer",
+      "publisher"
+    ]
   },
   "configuredVerificationDiagnostic": {
     "status": "success",
