@@ -1,0 +1,199 @@
+name: OPS-P6-001E configured staging P6-02 identity and Admin
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001e-configured-staging-p6-02-identity-admin.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md'
+      - 'docs/ADMIN_ACCESS_CONFIGURATION.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'functions/admin/**'
+      - 'src/admin/access/**'
+      - 'scripts/run-ops-p6-001e-configured-staging-identity-admin.ts'
+      - 'tests/admin-access-identity.test.ts'
+      - 'tests/admin-access-verification.test.ts'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001e-configured-staging-p6-02-identity-admin.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md'
+      - 'docs/ADMIN_ACCESS_CONFIGURATION.md'
+      - 'src/admin/access/**'
+      - 'scripts/run-ops-p6-001e-configured-staging-identity-admin.ts'
+      - 'tests/admin-access-identity.test.ts'
+      - 'tests/admin-access-verification.test.ts'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_02 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      identity_owner:
+        description: Bounded identity-operations owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001e-configured-staging-p6-02-identity-admin
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check repository Admin Access runtime
+        run: npx tsx scripts/check-admin-access.ts
+
+      - name: Check retained P6-02 evidence contract
+        run: node scripts/check-p6-02-configured-identity-admin-evidence.js
+
+      - name: Run configured P6-02 self-test
+        run: npx tsx scripts/run-ops-p6-001e-configured-staging-identity-admin.ts --self-test
+
+      - name: Run focused Access identity tests
+        run: npx vitest run tests/admin-access-identity.test.ts tests/admin-access-verification.test.ts
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      IDENTITY_OWNER: ${{ inputs.identity_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      CPM_REVIEW_BASE_URL: https://review.cryptopaymap-staging.pages.dev
+      SOURCE_ROOT: source
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      CPM_STAGING_ACCESS_REVIEWER_CLIENT_ID: ${{ secrets.CPM_STAGING_ACCESS_REVIEWER_CLIENT_ID }}
+      CPM_STAGING_ACCESS_REVIEWER_CLIENT_SECRET: ${{ secrets.CPM_STAGING_ACCESS_REVIEWER_CLIENT_SECRET }}
+      CPM_STAGING_ACCESS_PUBLISHER_CLIENT_ID: ${{ secrets.CPM_STAGING_ACCESS_PUBLISHER_CLIENT_ID }}
+      CPM_STAGING_ACCESS_PUBLISHER_CLIENT_SECRET: ${{ secrets.CPM_STAGING_ACCESS_PUBLISHER_CLIENT_SECRET }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          echo "CURRENT_MAIN_COMMIT=$current_main_commit" >> "$GITHUB_ENV"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npx tsx scripts/check-admin-access.ts
+          node scripts/check-p6-02-configured-identity-admin-evidence.js
+          npx tsx scripts/run-ops-p6-001e-configured-staging-identity-admin.ts --self-test
+          npx vitest run tests/admin-access-identity.test.ts tests/admin-access-verification.test.ts
+
+      - name: Write bounded configured P6-02 receipt
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        run: |
+          npx --prefix source tsx \
+            source/scripts/run-ops-p6-001e-configured-staging-identity-admin.ts \
+            status \
+            p6-02-identity-admin-receipt.json
+
+      - name: Upload bounded P6-02 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001e-configured-staging-p6-02-identity-admin
+          path: p6-02-identity-admin-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish configured P6-02 receipt to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-02-identity-admin-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-02-identity-admin-receipt.json \
+            status/config/staging-authorization/p6-02-identity-admin-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-02-identity-admin-receipt.json
+          if git -C status diff --cached --quiet; then
+            echo 'Configured P6-02 receipt is unchanged.'
+            exit 0
+          fi
+          git -C status commit -m 'Record configured staging P6-02 identity receipt'
+          git -C status push origin HEAD:staging-review
+
+      - name: Write configured P6-02 summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-02-identity-admin-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('p6-02-identity-admin-receipt.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-02 identity and Admin evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Protected routes: ${receipt.checks.routeInventory.routeCount}`,
+              `- Negative journeys: \`${receipt.checks.negativeJourneys.status}\``,
+              `- Positive journeys: \`${receipt.checks.positiveJourneys.status}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce configured P6-02 acceptance
+        if: always()
+        run: |
+          node -e "const r=require('./p6-02-identity-admin-receipt.json'); if(r.state!=='accepted') process.exit(1)"
