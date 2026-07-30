@@ -40,6 +40,14 @@ export function deriveSuggestReviewSecrets(seedBase64Url) {
       'submission-rate-limit-bucket-hmac-key',
     ).toString('base64url'),
     CPM_SUGGEST_READINESS_TOKEN: `cpmrv_${derive(seed, 'suggest-readiness-token').toString('base64url')}`,
+    CPM_STAGING_ADMIN_REVIEWER_HMAC_KEY_BASE64URL: derive(
+      seed,
+      'staging-admin-reviewer-hmac-key',
+    ).toString('base64url'),
+    CPM_STAGING_ADMIN_PUBLISHER_HMAC_KEY_BASE64URL: derive(
+      seed,
+      'staging-admin-publisher-hmac-key',
+    ).toString('base64url'),
   });
 }
 
