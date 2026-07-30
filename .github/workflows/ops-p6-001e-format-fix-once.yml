@@ -14,7 +14,7 @@ jobs:
   fix:
     runs-on: ubuntu-24.04
     env:
-      FORMAT_REVISION: '2'
+      FORMAT_REVISION: '3'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,6 +24,18 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Fix bounded implicit journey state
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/run-ops-p6-001e-configured-staging-identity-admin.ts')
+          text = path.read_text()
+          old = '  let positiveJourneys;\n'
+          new = "  let positiveJourneys = { status: 'failed', error: 'positive_journey_unavailable' };\n"
+          if old not in text:
+              raise SystemExit('Expected positiveJourneys declaration was not found.')
+          path.write_text(text.replace(old, new, 1))
+          PY
       - name: Format bounded files
         run: |
           npx biome format --write \
@@ -32,7 +44,7 @@ jobs:
             src/admin/access/verification.ts \
             tests/admin-access-identity.test.ts \
             tests/admin-access-verification.test.ts
-      - name: Commit bounded formatting
+      - name: Commit bounded corrections
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -43,9 +55,5 @@ jobs:
             src/admin/access/verification.ts \
             tests/admin-access-identity.test.ts \
             tests/admin-access-verification.test.ts
-          if git diff --cached --quiet; then
-            echo 'No bounded formatting required.'
-            exit 0
-          fi
-          git commit -m 'OPS-P6-001E apply Biome formatting'
+          git commit -m 'OPS-P6-001E fix bounded Biome findings'
           git push origin HEAD:agent/ops-p6-001e-configured-staging-p6-02
