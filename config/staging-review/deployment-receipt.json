@@ -1,15 +1,15 @@
 {
-  "status": "deployed",
-  "commit": "aae8d8cb4d5797e35e5895b1e7fb774e07b6efca",
+  "status": "missing_credentials",
+  "commit": "7bec40ebeb9e1282f71d094e2d5290574dc07ec0",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-07-30T02:46:46.807Z",
+  "generatedAt": "2026-07-30T13:46:38.390Z",
   "checks": {
-    "credentials": "success",
-    "configuredInputs": "success",
-    "durableObjectWorker": "success",
-    "pagesSecrets": "success",
-    "pagesDeployment": "success",
-    "configuredVerification": "success"
+    "credentials": "skipped",
+    "configuredInputs": "skipped",
+    "durableObjectWorker": "skipped",
+    "pagesSecrets": "skipped",
+    "pagesDeployment": "skipped",
+    "configuredVerification": "skipped"
   },
   "reviewConfiguration": {
     "manualSecrets": [
@@ -26,31 +26,5 @@
       "maximumRequests": 5,
       "windowSeconds": 600
     }
-  },
-  "configuredVerificationDiagnostic": {
-    "status": "success",
-    "stage": "complete",
-    "baseUrl": "https://review.cryptopaymap-staging.pages.dev",
-    "attemptsCompleted": 1,
-    "config": {
-      "httpStatus": 200,
-      "jsonParsed": true,
-      "siteKeyMatches": true,
-      "actionMatches": true
-    },
-    "readiness": {
-      "httpStatus": 200,
-      "jsonParsed": true,
-      "ready": true,
-      "errorCode": null,
-      "failureStage": null
-    },
-    "csp": {
-      "httpStatus": 200,
-      "headerPresent": true,
-      "scriptSrcAllowsChallenge": true,
-      "frameSrcAllowsChallenge": true
-    },
-    "networkError": null
   }
 }
