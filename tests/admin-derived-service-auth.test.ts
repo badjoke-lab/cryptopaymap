@@ -54,9 +54,13 @@ async function signedRequest(
 describe('derived staging service authentication', () => {
   it('returns distinct bounded reviewer and publisher identities', async () => {
     await expect(
-      verifyAdminAccessRequest(await signedRequest('reviewer', '/admin/api/dashboard'), configuration, {
-        now: () => now,
-      }),
+      verifyAdminAccessRequest(
+        await signedRequest('reviewer', '/admin/api/dashboard'),
+        configuration,
+        {
+          now: () => now,
+        },
+      ),
     ).resolves.toEqual({
       actorId: 'cryptopaymap-service:staging-service:reviewer',
       actorType: 'system',
