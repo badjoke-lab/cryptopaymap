@@ -3,6 +3,7 @@ import type { AdminAccessConfiguration } from '../src/admin/access/config';
 import { verifyAdminAccessRequest } from '../src/admin/access/verification';
 
 const configuration: AdminAccessConfiguration = {
+  mode: 'cloudflare_access',
   domain: 'https://test-team.cloudflareaccess.com',
   aud: 'a'.repeat(64),
 };
