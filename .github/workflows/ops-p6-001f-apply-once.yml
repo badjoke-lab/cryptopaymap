@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   apply:
@@ -64,11 +64,12 @@ jobs:
             tests/admin-access-verification.test.ts \
             tests/admin-derived-service-auth.test.ts
 
-      - name: Package validated functional files
+      - name: Commit validated non-workflow changes
         run: |
-          tar -czf ops-p6-001f-functional-files.tgz \
-            .github/workflows/staging-review-deploy.yml \
-            .github/workflows/ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
             docs/ADMIN_ACCESS_CONFIGURATION.md \
             docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md \
             docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md \
@@ -82,11 +83,6 @@ jobs:
             src/admin/dashboard/identity-context.ts \
             tests/admin-access-verification.test.ts \
             tests/admin-derived-service-auth.test.ts
-
-      - name: Upload validated functional patch
-        uses: actions/upload-artifact@v4
-        with:
-          name: ops-p6-001f-functional-files
-          path: ops-p6-001f-functional-files.tgz
-          if-no-files-found: error
-          retention-days: 7
+          git rm scripts/apply_ops_p6_001f.py
+          git commit -m 'OPS-P6-001F add validated staging service authentication'
+          git push origin HEAD:agent/ops-p6-001f-derived-staging-service-auth
