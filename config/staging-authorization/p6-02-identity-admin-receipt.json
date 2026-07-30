@@ -3,12 +3,12 @@
   "evidenceId": "P6-02",
   "launchDomain": "identity_admin",
   "environment": "configured_staging",
-  "state": "failed",
-  "commit": "aae8d8cb4d5797e35e5895b1e7fb774e07b6efca",
-  "generatedAt": "2026-07-30T02:52:35.016Z",
-  "expiresAt": "2026-08-02T02:52:35.016Z",
-  "workflowRunId": "30509597025",
-  "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
+  "state": "accepted",
+  "commit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
+  "generatedAt": "2026-07-30T15:30:15.417Z",
+  "expiresAt": "2026-08-02T15:30:15.417Z",
+  "workflowRunId": "30556901650",
+  "owner": "sha256:b06340ce5a1321dc2a36cebd2e859c45a66beb344b6c1bf5f095c4ce92db86df",
   "procedure": "OPS-P6-001E configured staging identity and protected Admin evidence",
   "checks": {
     "exactMain": "success",
@@ -16,8 +16,8 @@
     "predecessor": {
       "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-30T02:51:30.870Z",
-      "expiresAt": "2026-08-02T02:51:30.870Z"
+      "generatedAt": "2026-07-30T15:28:57.702Z",
+      "expiresAt": "2026-08-02T15:28:57.702Z"
     },
     "routeInventory": {
       "status": "passed",
@@ -26,11 +26,15 @@
       "error": null
     },
     "controlPlane": {
-      "status": "failed",
-      "error": "cloudflare_api_403"
+      "status": "passed",
+      "mode": "derived_staging_service",
+      "externalControlPlaneRequired": false,
+      "credentialSource": "existing_review_seed_hkdf",
+      "roleCount": 2,
+      "roleDigest": "sha256:f13178f60482d9dfb57dcdea29eb5406d8e0252036cdb6019fc7e57b6c9a02e5"
     },
     "negativeJourneys": {
-      "status": "failed",
+      "status": "passed",
       "routeCount": 53,
       "journeyCount": 122,
       "routeInventoryDigest": "sha256:a5d2f520d647c0fd1c477b8e82f288ba7685bb92285479adda6c1d63aca5f589",
@@ -39,1305 +43,1330 @@
           "path": "/admin/api/application-lifecycle/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/application-lifecycle/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/application-registration/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/audit-history",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/business-claim-applications/00000000-0000-4000-8000-000000000000/apply-payments",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/business-claim-applications/00000000-0000-4000-8000-000000000000/payment-preview",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/business-claim-applications/00000000-0000-4000-8000-000000000000/plan-payments",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/business-claim-field-applications/00000000-0000-4000-8000-000000000000/complete-provenance",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/business-claims/00000000-0000-4000-8000-000000000000/field-application",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/business-claims/00000000-0000-4000-8000-000000000000/field-application",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/candidates",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/candidates/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/dashboard",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/duplicates/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/duplicates/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/evidence",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/evidence/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/evidence/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/export-activate",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/export-decision",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/export-detail",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/export-history",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/exports",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/location-corrections/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/location-corrections/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/media",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/media-decision",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/media-detail",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/media-file",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/photo-submissions",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/photo-submissions/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/photo-submissions/00000000-0000-4000-8000-000000000000/parent-resolution",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/photo-submissions/00000000-0000-4000-8000-000000000000/parent-resolution",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/problem-applications/00000000-0000-4000-8000-000000000000/apply-claim-assets",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/problem-applications/00000000-0000-4000-8000-000000000000/apply-claim-instructions",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/problem-applications/00000000-0000-4000-8000-000000000000/apply-location-correction",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/problem-applications/00000000-0000-4000-8000-000000000000/claim-asset-preview",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/problem-applications/00000000-0000-4000-8000-000000000000/plan-claim-assets",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/promotions/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/promotions/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/promotions/00000000-0000-4000-8000-000000000000/existing-target",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/promotions/00000000-0000-4000-8000-000000000000/targets",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/rechecks",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/rechecks/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/rechecks/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/report-applications/00000000-0000-4000-8000-000000000000/recheck-signal",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/reports",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/reports/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/reports/00000000-0000-4000-8000-000000000000/negative-evidence",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/reports/00000000-0000-4000-8000-000000000000/positive-evidence",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/reports/00000000-0000-4000-8000-000000000000/problem-decision",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/review-entry/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/review-followup/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/submissions",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/submissions/00000000-0000-4000-8000-000000000000",
           "method": "GET",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/submissions/00000000-0000-4000-8000-000000000000/accept-candidate",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/submissions/00000000-0000-4000-8000-000000000000/hold",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/submissions/00000000-0000-4000-8000-000000000000/request-information",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/submissions/00000000-0000-4000-8000-000000000000/transition",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/suggest-applications/00000000-0000-4000-8000-000000000000/bind-promotion",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         },
         {
           "path": "/admin/api/terminal-resolution/00000000-0000-4000-8000-000000000000",
           "method": "POST",
           "unauthenticated": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
           "forgedEmail": {
-            "status": 503,
+            "status": 403,
             "redirectClass": null,
             "contentType": "text/plain",
             "cacheControlSafe": true,
             "noPrivateLeakage": true,
-            "responseDigest": "c78e9495357210c60a4895998ad68da904f72fea2669a6ca4819adfd44144378"
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
           },
-          "passed": false
+          "passed": true
         }
       ]
     },
     "positiveJourneys": {
-      "status": "failed",
-      "error": "missing_service_identity_credentials",
-      "missing": [
-        "reviewerClientId",
-        "reviewerClientSecret",
-        "publisherClientId",
-        "publisherClientSecret"
-      ]
+      "status": "passed",
+      "reviewerDashboard": {
+        "status": 200,
+        "redirectClass": null,
+        "contentType": "application/json",
+        "cacheControlSafe": true,
+        "noPrivateLeakage": true,
+        "responseDigest": "28db864a765751c087b1129a82cd9bd599f80d11aa9db3e1d79eb84b6177ec73"
+      },
+      "reviewerPublication": {
+        "status": 403,
+        "redirectClass": null,
+        "contentType": "application/json",
+        "cacheControlSafe": true,
+        "noPrivateLeakage": true,
+        "responseDigest": "bdf23cae200ddcfed52d4638a40b8a5bb90a97522cf1946bf44e99e8a1532f93"
+      },
+      "publisherDashboard": {
+        "status": 403,
+        "redirectClass": null,
+        "contentType": "application/json",
+        "cacheControlSafe": true,
+        "noPrivateLeakage": true,
+        "responseDigest": "16817117b483eff87937f9d9125061d744c6c66606d7b3352d25ed53fd7a748d"
+      },
+      "publisherPublication": {
+        "status": 400,
+        "redirectClass": null,
+        "contentType": "application/json",
+        "cacheControlSafe": true,
+        "noPrivateLeakage": true,
+        "responseDigest": "2c3e3c12408ec7dc04309713fee491f2aeafa464477b0f991280315ebeda961b"
+      },
+      "identityDigests": {
+        "reviewer": "sha256:b138bafae2bb32669c5d81ff9be69ce6f53264e79f79a614db1caae90a973419",
+        "publisher": "sha256:8759553d94e0e3e1f0e5b4de4717ea1b5203d96a68ce6576b2aa49edf85a0d78"
+      }
     }
   },
   "binding": {
-    "releaseId": "sha256:f3a90abe3b88e711f807df2a0c23646f9c19768909601487b85d3ae0b389951d",
+    "releaseId": "sha256:2b08e396dcce3f6b890641e6071313fff906ce4ccad24cb2314cd1ecc8f57681",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "access_control_plane:cloudflare_api_403",
-    "negative_journeys:failed",
-    "positive_journeys:missing_service_identity_credentials"
-  ]
+  "exceptions": []
 }
