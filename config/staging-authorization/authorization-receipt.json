@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "authorizationId": "sha256:7ff8834482c223f5dba87f12e627d4bd08e870d55890b88903ca6d768c38da30",
+  "authorizationId": "sha256:fbb7f49f5c5c826cf600daadbd245f96cb03e68a1b8f0ebf21265c155f2a15d7",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
-  "generatedAt": "2026-07-30T15:25:12.987Z",
-  "workflowRunId": "30556548414",
+  "generatedAt": "2026-07-30T15:36:21.400Z",
+  "workflowRunId": "30557494502",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
-    "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
-    "rollbackOwner": "sha256:d0cd171be8090d5e3b850f17a2cf6be2d8f587c99e9e4621cd350e1e6ba51506"
+    "observer": "sha256:e8b33f36bb91db6f5a8371cd93cb4cd306c44ffcfe7817fa1376c4e51553dde3",
+    "rollbackOwner": "sha256:e62da0e5c16ce4c90e2542b6b81252fa41760d54f0ce9e19a28b66960b8b782d"
   },
   "checks": {
     "deployment": {
@@ -27,16 +27,16 @@
       {
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-07-30T02:51:30.870Z",
-        "expiresAt": "2026-08-02T02:51:30.870Z"
+        "state": "current",
+        "generatedAt": "2026-07-30T15:28:57.702Z",
+        "expiresAt": "2026-08-02T15:28:57.702Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-07-30T02:52:35.016Z",
-        "expiresAt": "2026-08-02T02:52:35.016Z"
+        "state": "current",
+        "generatedAt": "2026-07-30T15:30:15.417Z",
+        "expiresAt": "2026-08-02T15:30:15.417Z"
       },
       {
         "evidenceId": "P6-03",
@@ -77,8 +77,6 @@
     "predecessorBinding": "unproven"
   },
   "blockers": [
-    "P6-01:failed",
-    "P6-02:failed",
     "P6-03:missing",
     "P6-04:missing",
     "P6-05:missing",
