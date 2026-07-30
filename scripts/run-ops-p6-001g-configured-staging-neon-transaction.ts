@@ -117,9 +117,7 @@ function readPredecessor(
           : 'failed',
     generatedAt,
     expiresAt,
-    binding: current
-      ? Object.fromEntries(bindingKeys.map((key) => [key, binding?.[key]]))
-      : null,
+    binding: current ? Object.fromEntries(bindingKeys.map((key) => [key, binding?.[key]])) : null,
   };
 }
 
@@ -135,8 +133,12 @@ async function cleanupFixture(database: ReturnType<typeof createDatabase>) {
     database
       .delete(locationProfileCorrectionDecisions)
       .where(eq(locationProfileCorrectionDecisions.locationId, fixture.locationId)),
-    database.delete(submissionApplications).where(eq(submissionApplications.id, fixture.applicationId)),
-    database.delete(submissionEvents).where(eq(submissionEvents.submissionId, fixture.submissionId)),
+    database
+      .delete(submissionApplications)
+      .where(eq(submissionApplications.id, fixture.applicationId)),
+    database
+      .delete(submissionEvents)
+      .where(eq(submissionEvents.submissionId, fixture.submissionId)),
     database.delete(submissions).where(eq(submissions.id, fixture.submissionId)),
     database.delete(locations).where(eq(locations.id, fixture.locationId)),
     database.delete(entities).where(eq(entities.id, fixture.entityId)),
@@ -144,28 +146,35 @@ async function cleanupFixture(database: ReturnType<typeof createDatabase>) {
 }
 
 async function fixtureSnapshot(database: ReturnType<typeof createDatabase>) {
-  const [entityRows, locationRows, submissionRows, sourceEventRows, applicationRows, appEventRows, decisionRows] =
-    await Promise.all([
-      database.select().from(entities).where(eq(entities.id, fixture.entityId)),
-      database.select().from(locations).where(eq(locations.id, fixture.locationId)),
-      database.select().from(submissions).where(eq(submissions.id, fixture.submissionId)),
-      database
-        .select()
-        .from(submissionEvents)
-        .where(eq(submissionEvents.submissionId, fixture.submissionId)),
-      database
-        .select()
-        .from(submissionApplications)
-        .where(eq(submissionApplications.id, fixture.applicationId)),
-      database
-        .select()
-        .from(submissionApplicationEvents)
-        .where(eq(submissionApplicationEvents.applicationId, fixture.applicationId)),
-      database
-        .select()
-        .from(locationProfileCorrectionDecisions)
-        .where(eq(locationProfileCorrectionDecisions.locationId, fixture.locationId)),
-    ]);
+  const [
+    entityRows,
+    locationRows,
+    submissionRows,
+    sourceEventRows,
+    applicationRows,
+    appEventRows,
+    decisionRows,
+  ] = await Promise.all([
+    database.select().from(entities).where(eq(entities.id, fixture.entityId)),
+    database.select().from(locations).where(eq(locations.id, fixture.locationId)),
+    database.select().from(submissions).where(eq(submissions.id, fixture.submissionId)),
+    database
+      .select()
+      .from(submissionEvents)
+      .where(eq(submissionEvents.submissionId, fixture.submissionId)),
+    database
+      .select()
+      .from(submissionApplications)
+      .where(eq(submissionApplications.id, fixture.applicationId)),
+    database
+      .select()
+      .from(submissionApplicationEvents)
+      .where(eq(submissionApplicationEvents.applicationId, fixture.applicationId)),
+    database
+      .select()
+      .from(locationProfileCorrectionDecisions)
+      .where(eq(locationProfileCorrectionDecisions.locationId, fixture.locationId)),
+  ]);
   return {
     entityRows,
     locationRows,
@@ -237,7 +246,11 @@ async function databaseMetadata(database: ReturnType<typeof createDatabase>) {
   };
 }
 
-async function seedFixture(database: ReturnType<typeof createDatabase>, commit: string, seededAt: Date) {
+async function seedFixture(
+  database: ReturnType<typeof createDatabase>,
+  commit: string,
+  seededAt: Date,
+) {
   const fingerprint = sha256(['seed', commit, fixture.applicationId].join(':'));
   await database.batch([
     database.insert(entities).values({
@@ -539,7 +552,9 @@ async function executeConfiguredTransaction(input: {
         }) as never,
       ),
     ]);
-    const fulfilledCount = concurrentResults.filter((result) => result.status === 'fulfilled').length;
+    const fulfilledCount = concurrentResults.filter(
+      (result) => result.status === 'fulfilled',
+    ).length;
     const rejectedCount = concurrentResults.filter((result) => result.status === 'rejected').length;
 
     const committed = await fixtureSnapshot(database);
@@ -563,7 +578,8 @@ async function executeConfiguredTransaction(input: {
       decision?.requestFingerprint === positiveFingerprint &&
       application?.applicationReceiptIds?.[0] === fixture.receiptId &&
       committed.decisionRows.length === 1 &&
-      committed.appEventRows.filter((event) => event.action === 'application_committed').length === 1;
+      committed.appEventRows.filter((event) => event.action === 'application_committed').length ===
+        1;
     const changedContentPassed =
       decision?.requestFingerprint === positiveFingerprint &&
       decision?.requestFingerprint !== changedFingerprint;
@@ -821,7 +837,11 @@ async function runSelfTest() {
     }
     const p601 = readPredecessor(root, p601ReceiptPath, 'P6-01', approvedCommit, now);
     const p602 = readPredecessor(root, p602ReceiptPath, 'P6-02', approvedCommit, now);
-    if (p601.state !== 'current' || p602.state !== 'current' || !sameBinding(p601.binding, p602.binding)) {
+    if (
+      p601.state !== 'current' ||
+      p602.state !== 'current' ||
+      !sameBinding(p601.binding, p602.binding)
+    ) {
       throw new Error('valid predecessor fixtures were not accepted');
     }
     const stale = readPredecessor(
