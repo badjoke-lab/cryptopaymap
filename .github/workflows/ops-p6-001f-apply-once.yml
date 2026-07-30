@@ -83,6 +83,6 @@ jobs:
             src/admin/dashboard/identity-context.ts \
             tests/admin-access-verification.test.ts \
             tests/admin-derived-service-auth.test.ts
-          git rm scripts/apply_ops_p6_001f.py
+          git rm -f scripts/apply_ops_p6_001f.py
           git commit -m 'OPS-P6-001F add validated staging service authentication'
           git push origin HEAD:agent/ops-p6-001f-derived-staging-service-auth
