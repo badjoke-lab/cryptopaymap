@@ -1,8 +1,21 @@
 import { z } from 'zod';
-import type { AdminAccessConfiguration } from './config';
-import { parseVerifiedAdminAccessIdentity, type AdminAccessIdentity } from './identity';
+import type {
+  AdminAccessConfiguration,
+  CloudflareAdminAccessConfiguration,
+  DerivedStagingServiceConfiguration,
+} from './config';
+import {
+  createDerivedStagingServiceIdentity,
+  parseVerifiedAdminAccessIdentity,
+  type AdminAccessIdentity,
+  type DerivedStagingServiceRole,
+} from './identity';
 
 const maximumAssertionLength = 16_384;
+const derivedRoleHeader = 'X-CPM-Admin-Role';
+const derivedTimestampHeader = 'X-CPM-Admin-Timestamp';
+const derivedSignatureHeader = 'X-CPM-Admin-Signature';
+const derivedSignatureVersion = 'cryptopaymap-staging-admin-v1';
 
 const jwtHeaderSchema = z
   .object({
@@ -38,6 +51,10 @@ const certificatesSchema = z.object({
   keys: z.array(signingKeySchema).max(128),
 });
 
+const derivedRoleSchema = z.enum(['reviewer', 'publisher']);
+const derivedTimestampSchema = z.string().regex(/^\d{10}$/);
+const derivedSignatureSchema = z.string().regex(/^[A-Za-z0-9_-]{43}$/);
+
 export interface AdminAccessVerificationDependencies {
   fetch?: typeof globalThis.fetch;
   crypto?: Pick<Crypto, 'subtle'>;
@@ -45,7 +62,7 @@ export interface AdminAccessVerificationDependencies {
 }
 
 export class AdminAccessVerificationError extends Error {
-  constructor(message = 'Cloudflare Access verification failed.') {
+  constructor(message = 'Administration access verification failed.') {
     super(message);
     this.name = 'AdminAccessVerificationError';
   }
@@ -66,7 +83,7 @@ function decodeBase64Url(value: string): Uint8Array<ArrayBuffer> {
     }
     return bytes;
   } catch {
-    throw verificationError('The Access assertion is not valid base64url data.');
+    throw verificationError('The authentication value is not valid base64url data.');
   }
 }
 
@@ -95,10 +112,84 @@ function normalizeIssuer(value: string): string {
   return issuer.origin;
 }
 
-export async function verifyAdminAccessRequest(
+function derivedMessage(
+  role: DerivedStagingServiceRole,
+  timestamp: string,
   request: Request,
-  configuration: AdminAccessConfiguration,
-  dependencies: AdminAccessVerificationDependencies = {},
+): Uint8Array<ArrayBuffer> {
+  const url = new URL(request.url);
+  return new TextEncoder().encode(
+    [
+      derivedSignatureVersion,
+      role,
+      timestamp,
+      request.method.toUpperCase(),
+      `${url.pathname}${url.search}`,
+    ].join('\n'),
+  );
+}
+
+async function verifyDerivedStagingServiceRequest(
+  request: Request,
+  configuration: DerivedStagingServiceConfiguration,
+  dependencies: AdminAccessVerificationDependencies,
+): Promise<AdminAccessIdentity> {
+  if (request.headers.has('Cf-Access-Authenticated-User-Email')) {
+    throw verificationError('Unverified email headers are not accepted.');
+  }
+  const roleResult = derivedRoleSchema.safeParse(request.headers.get(derivedRoleHeader));
+  const timestampResult = derivedTimestampSchema.safeParse(
+    request.headers.get(derivedTimestampHeader),
+  );
+  const signatureResult = derivedSignatureSchema.safeParse(
+    request.headers.get(derivedSignatureHeader),
+  );
+  if (!roleResult.success || !timestampResult.success || !signatureResult.success) {
+    throw verificationError('The staging service authentication headers are invalid.');
+  }
+
+  const nowSeconds = Math.floor((dependencies.now?.() ?? Date.now()) / 1000);
+  const timestampSeconds = Number(timestampResult.data);
+  if (Math.abs(nowSeconds - timestampSeconds) > configuration.maximumClockSkewSeconds) {
+    throw verificationError('The staging service authentication timestamp is outside the window.');
+  }
+
+  const cryptoImplementation = dependencies.crypto ?? globalThis.crypto;
+  if (!cryptoImplementation?.subtle) {
+    throw verificationError('The staging service verification runtime is unavailable.');
+  }
+  const keyValue =
+    roleResult.data === 'reviewer'
+      ? configuration.reviewerKeyBase64Url
+      : configuration.publisherKeyBase64Url;
+  let key: CryptoKey;
+  try {
+    key = await cryptoImplementation.subtle.importKey(
+      'raw',
+      decodeBase64Url(keyValue),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify'],
+    );
+  } catch {
+    throw verificationError('The staging service verification key could not be imported.');
+  }
+  const verified = await cryptoImplementation.subtle.verify(
+    'HMAC',
+    key,
+    decodeBase64Url(signatureResult.data),
+    derivedMessage(roleResult.data, timestampResult.data, request),
+  );
+  if (!verified) {
+    throw verificationError('The staging service authentication signature is invalid.');
+  }
+  return createDerivedStagingServiceIdentity(roleResult.data);
+}
+
+async function verifyCloudflareAccessRequest(
+  request: Request,
+  configuration: CloudflareAdminAccessConfiguration,
+  dependencies: AdminAccessVerificationDependencies,
 ): Promise<AdminAccessIdentity> {
   const assertion = request.headers.get('Cf-Access-Jwt-Assertion');
   if (!assertion) {
@@ -193,4 +284,14 @@ export async function verifyAdminAccessRequest(
   }
 
   return parseVerifiedAdminAccessIdentity(claims);
+}
+
+export async function verifyAdminAccessRequest(
+  request: Request,
+  configuration: AdminAccessConfiguration,
+  dependencies: AdminAccessVerificationDependencies = {},
+): Promise<AdminAccessIdentity> {
+  return configuration.mode === 'derived_staging_service'
+    ? verifyDerivedStagingServiceRequest(request, configuration, dependencies)
+    : verifyCloudflareAccessRequest(request, configuration, dependencies);
 }
