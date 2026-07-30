@@ -27,6 +27,11 @@ jobs:
       EVALUATION_MODE: inventory
       WORKFLOW_RUN_ID: ${{ github.run_id }}
     steps:
+      - name: Check out dispatcher branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001g-inventory-refresh
+
       - name: Check out exact main source
         uses: actions/checkout@v4
         with:
