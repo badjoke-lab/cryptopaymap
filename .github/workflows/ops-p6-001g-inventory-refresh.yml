@@ -1,0 +1,79 @@
+name: OPS-P6-001G refresh configured authorization inventory
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001g-inventory-refresh
+    paths:
+      - '.github/workflows/ops-p6-001g-inventory-refresh.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: 79293b74a4c3bed49efe63aecc7c9fbf56a006c9
+      CONFIRMATION: AUTHORIZE_CONFIGURED_STAGING
+      LAUNCH_OWNER: inventory:automation
+      OBSERVER: inventory:unassigned-observer
+      ROLLBACK_OWNER: inventory:unassigned-rollback-owner
+      EVALUATION_MODE: inventory
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Check out exact main source
+        uses: actions/checkout@v4
+        with:
+          ref: 79293b74a4c3bed49efe63aecc7c9fbf56a006c9
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Verify unchanged exact main
+        run: |
+          set -euo pipefail
+          current_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$current_main" = "$APPROVED_COMMIT"
+
+      - name: Evaluate configured staging inventory
+        run: |
+          node source/scripts/evaluate-ops-p6-001c-staging-authorization.mjs \
+            status \
+            configured-staging-authorization-receipt.json
+
+      - name: Publish refreshed inventory receipt
+        run: |
+          set -euo pipefail
+          mkdir -p status/config/staging-authorization
+          cp configured-staging-authorization-receipt.json \
+            status/config/staging-authorization/authorization-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/authorization-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Refresh configured staging authorization inventory after P6-03'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Remove one-time inventory workflow
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/ops-p6-001g-inventory-refresh.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/ops-p6-001g-inventory-refresh.yml
+          if ! git diff --cached --quiet; then
+            git commit -m 'OPS-P6-001G remove one-time inventory refresh'
+            git push origin HEAD:agent/ops-p6-001g-inventory-refresh
+          fi
