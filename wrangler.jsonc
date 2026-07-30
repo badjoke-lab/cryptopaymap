@@ -3,6 +3,9 @@
   "name": "cryptopaymap-staging",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-06-26",
+  "vars": {
+    "CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS": "[\"cryptopaymap-service:staging-service:reviewer\"]"
+  },
   "durable_objects": {
     "bindings": [
       {
@@ -19,6 +22,9 @@
   },
   "env": {
     "preview": {
+      "vars": {
+        "CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS": "[\"cryptopaymap-service:staging-service:reviewer\"]"
+      },
       "durable_objects": {
         "bindings": [
           {
