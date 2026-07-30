@@ -1,0 +1,102 @@
+name: OPS-P6-001G exact-main evidence chain
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001g-evidence-chain
+    paths:
+      - '.github/workflows/ops-p6-001g-evidence-chain.yml'
+
+permissions:
+  actions: write
+  contents: write
+
+jobs:
+  chain:
+    runs-on: ubuntu-24.04
+    env:
+      EXPECTED_MAIN: 79293b74a4c3bed49efe63aecc7c9fbf56a006c9
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out dispatcher branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001g-evidence-chain
+
+      - name: Verify unchanged exact main
+        run: |
+          set -euo pipefail
+          actual_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$actual_main" = "$EXPECTED_MAIN"
+
+      - name: Run live audit and configured P6-01 through P6-03
+        run: |
+          set -euo pipefail
+
+          dispatch_and_watch() {
+            local workflow="$1"
+            shift
+            local before
+            before="$(gh run list \
+              --workflow "$workflow" \
+              --branch main \
+              --event workflow_dispatch \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId // 0')"
+
+            gh workflow run "$workflow" --ref main "$@"
+
+            local run_id=''
+            for _ in $(seq 1 30); do
+              sleep 4
+              run_id="$(gh run list \
+                --workflow "$workflow" \
+                --branch main \
+                --event workflow_dispatch \
+                --limit 5 \
+                --json databaseId,headSha \
+                --jq --arg sha "$EXPECTED_MAIN" --argjson before "$before" \
+                  '[.[] | select(.headSha == $sha and .databaseId != $before)][0].databaseId // empty')"
+              if [ -n "$run_id" ]; then
+                break
+              fi
+            done
+            test -n "$run_id"
+            echo "Watching $workflow run $run_id"
+            gh run watch "$run_id" --exit-status
+          }
+
+          dispatch_and_watch p5-02r-fixed-review-live-audit.yml
+
+          dispatch_and_watch \
+            ops-p6-001d-configured-staging-p6-01-data-qa.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_01 \
+            -f approved_commit="$EXPECTED_MAIN" \
+            -f data_owner=automation:ops-p6-001g
+
+          dispatch_and_watch \
+            ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_02 \
+            -f approved_commit="$EXPECTED_MAIN" \
+            -f identity_owner=automation:ops-p6-001g
+
+          dispatch_and_watch \
+            ops-p6-001g-configured-staging-p6-03-neon-transaction.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_03 \
+            -f approved_commit="$EXPECTED_MAIN" \
+            -f transaction_owner=automation:ops-p6-001g
+
+      - name: Remove one-time dispatcher
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/ops-p6-001g-evidence-chain.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/ops-p6-001g-evidence-chain.yml
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'OPS-P6-001G remove one-time evidence dispatcher'
+          git push origin HEAD:agent/ops-p6-001g-evidence-chain
