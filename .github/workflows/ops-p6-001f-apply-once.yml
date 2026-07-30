@@ -6,7 +6,7 @@ on:
       - main
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   apply:
@@ -64,16 +64,29 @@ jobs:
             tests/admin-access-verification.test.ts \
             tests/admin-derived-service-auth.test.ts
 
-      - name: Remove one-time migration files
+      - name: Package validated functional files
         run: |
-          rm scripts/apply_ops_p6_001f.py
-          rm .github/workflows/ops-p6-001f-apply-once.yml
+          tar -czf ops-p6-001f-functional-files.tgz \
+            .github/workflows/staging-review-deploy.yml \
+            .github/workflows/ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+            docs/ADMIN_ACCESS_CONFIGURATION.md \
+            docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md \
+            docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md \
+            docs/PROJECT_STATUS.md \
+            scripts/check-admin-access.ts \
+            scripts/derive-suggest-review-secrets.mjs \
+            scripts/run-ops-p6-001e-configured-staging-identity-admin.ts \
+            src/admin/access/config.ts \
+            src/admin/access/identity.ts \
+            src/admin/access/verification.ts \
+            src/admin/dashboard/identity-context.ts \
+            tests/admin-access-verification.test.ts \
+            tests/admin-derived-service-auth.test.ts
 
-      - name: Commit functional changes
-        run: |
-          set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
-          git commit -m 'OPS-P6-001F add derived staging service authentication'
-          git push origin HEAD:agent/ops-p6-001f-derived-staging-service-auth
+      - name: Upload validated functional patch
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001f-functional-files
+          path: ops-p6-001f-functional-files.tgz
+          if-no-files-found: error
+          retention-days: 7
