@@ -101,4 +101,6 @@ It does not include a connection string, password, token, database name, private
 
 P6-03 becomes `accepted` only when every configured check passes, cleanup succeeds, the receipt is current, and it preserves the exact P6-01/P6-02 binding.
 
+The workflow remains manual and exact-commit bound; a repository push or successful contract check cannot execute the configured database fixture by itself.
+
 An accepted P6-03 receipt does not authorize staging, production, release activation, DNS cutover, or launch. P6-04 remains the next configured predecessor.
