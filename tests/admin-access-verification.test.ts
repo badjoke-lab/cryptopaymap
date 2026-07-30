@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { AdminAccessConfiguration } from '../src/admin/access/config';
+import type { CloudflareAdminAccessConfiguration } from '../src/admin/access/config';
 import { verifyAdminAccessRequest } from '../src/admin/access/verification';
 
-const configuration: AdminAccessConfiguration = {
+const configuration: CloudflareAdminAccessConfiguration = {
   mode: 'cloudflare_access',
   domain: 'https://test-team.cloudflareaccess.com',
   aud: 'a'.repeat(64),
