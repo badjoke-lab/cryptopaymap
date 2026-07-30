@@ -11,7 +11,11 @@ const protectedAdminIdentitySchema = z
   })
   .strict()
   .superRefine((identity, context) => {
-    if (identity.actorId !== `cloudflare-access:${identity.subject}`) {
+    const expectedActorIds = new Set([
+      `cloudflare-access:${identity.subject}`,
+      `cryptopaymap-service:${identity.subject}`,
+    ]);
+    if (!expectedActorIds.has(identity.actorId)) {
       context.addIssue({
         code: 'custom',
         path: ['actorId'],
