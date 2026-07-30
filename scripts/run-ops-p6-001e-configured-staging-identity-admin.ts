@@ -1,11 +1,11 @@
 // @ts-nocheck
-import { createHash } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import {
   existsSync,
   mkdirSync,
   mkdtempSync,
-  readFileSync,
   readdirSync,
+  readFileSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -26,6 +26,7 @@ const sensitiveResponseMarkers = [
   'cf-access-client-secret',
   'cf-access-jwt-assertion',
   'cf_authorization',
+  'x-cpm-admin-signature',
   'database_url',
   'encryptedemail',
   'statussecret',
@@ -157,90 +158,27 @@ function buildRouteInventory(sourceRoot) {
   return routes;
 }
 
-async function cloudflareApi(token, accountId, path) {
-  const response = await fetch(
-    `https://api.cloudflare.com/client/v4/accounts/${accountId}${path}`,
-    {
-      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
-    },
-  );
-  let body = null;
-  try {
-    body = await response.json();
-  } catch {
-    body = null;
-  }
-  if (!response.ok || body?.success !== true) {
-    throw new Error(`cloudflare_api_${response.status}`);
-  }
-  return body.result;
-}
-
-async function inspectControlPlane(token, accountId) {
-  if (!token || !accountId) {
-    return { status: 'failed', error: 'missing_cloudflare_credentials' };
-  }
-  try {
-    const organization = await cloudflareApi(token, accountId, '/access/organizations');
-    const appsResult = await cloudflareApi(token, accountId, '/access/apps?per_page=100');
-    const apps = Array.isArray(appsResult) ? appsResult : [];
-    const app = apps.find(
-      (candidate) =>
-        candidate?.type === 'self_hosted' &&
-        typeof candidate.domain === 'string' &&
-        candidate.domain.replace(/^https?:\/\//, '').replace(/\/$/, '') === configuredAdminDomain,
-    );
-    if (!app) {
-      return {
-        status: 'failed',
-        appMatched: false,
-        appCount: apps.length,
-        error: 'configured_admin_application_missing',
-      };
-    }
-    const policiesResult = await cloudflareApi(
-      token,
-      accountId,
-      `/access/apps/${encodeURIComponent(app.id)}/policies?per_page=100`,
-    );
-    const policies = Array.isArray(policiesResult) ? policiesResult : [];
-    const serviceAuthPolicies = policies.filter((policy) =>
-      ['non_identity', 'service_auth'].includes(policy?.decision),
-    );
-    const authDomain =
-      typeof organization?.auth_domain === 'string' ? organization.auth_domain : null;
-    const ready =
-      typeof app.id === 'string' &&
-      typeof app.aud === 'string' &&
-      /^[a-f0-9]{64}$/i.test(app.aud) &&
-      authDomain !== null &&
-      serviceAuthPolicies.length > 0;
-    return {
-      status: ready ? 'passed' : 'failed',
-      appMatched: true,
-      applicationId: boundedHash(app.id ?? 'missing'),
-      audience: boundedHash(app.aud ?? 'missing'),
-      issuer: boundedHash(authDomain ?? 'missing'),
-      serviceAuth401: app.service_auth_401_redirect === true,
-      policyCount: policies.length,
-      serviceAuthPolicyCount: serviceAuthPolicies.length,
-      policyDigest: boundedHash(
-        policies
-          .map((policy) => ({
-            id: policy.id,
-            decision: policy.decision,
-            precedence: policy.precedence,
-          }))
-          .sort((left, right) => String(left.id).localeCompare(String(right.id))),
-      ),
-      ...(ready ? {} : { error: 'configured_access_contract_incomplete' }),
-    };
-  } catch (error) {
+function inspectControlPlane(credentials) {
+  const missing = Object.entries(credentials)
+    .filter(([, value]) => !value)
+    .map(([key]) => key);
+  if (missing.length > 0) {
     return {
       status: 'failed',
-      error: error instanceof Error ? error.message.slice(0, 120) : 'cloudflare_api_failed',
+      mode: 'derived_staging_service',
+      externalControlPlaneRequired: false,
+      error: 'missing_derived_service_credentials',
+      missing,
     };
   }
+  return {
+    status: 'passed',
+    mode: 'derived_staging_service',
+    externalControlPlaneRequired: false,
+    credentialSource: 'existing_review_seed_hkdf',
+    roleCount: 2,
+    roleDigest: boundedHash(['reviewer', 'publisher']),
+  };
 }
 
 function safeLocationClass(location, baseUrl) {
@@ -318,10 +256,16 @@ async function inspectNegativeJourneys(baseUrl, routes) {
   };
 }
 
-function serviceHeaders(clientId, clientSecret, extra = {}) {
+function serviceHeaders(role, keyBase64Url, path, method, extra = {}) {
+  const timestamp = String(Math.floor(Date.now() / 1000));
+  const message = ['cryptopaymap-staging-admin-v1', role, timestamp, method, path].join('\n');
+  const signature = createHmac('sha256', Buffer.from(keyBase64Url, 'base64url'))
+    .update(message)
+    .digest('base64url');
   return {
-    'CF-Access-Client-Id': clientId,
-    'CF-Access-Client-Secret': clientSecret,
+    'X-CPM-Admin-Role': role,
+    'X-CPM-Admin-Timestamp': timestamp,
+    'X-CPM-Admin-Signature': signature,
     ...extra,
   };
 }
@@ -333,32 +277,34 @@ async function inspectPositiveJourneys(baseUrl, credentials) {
   if (missing.length > 0) {
     return { status: 'failed', error: 'missing_service_identity_credentials', missing };
   }
+  const dashboardPath = '/admin/api/dashboard';
+  const publicationPath = '/admin/api/export-activate';
   const reviewerDashboard = await requestSummary(
     baseUrl,
-    '/admin/api/dashboard',
+    dashboardPath,
     'GET',
-    serviceHeaders(credentials.reviewerClientId, credentials.reviewerClientSecret),
+    serviceHeaders('reviewer', credentials.reviewerKeyBase64Url, dashboardPath, 'GET'),
   );
   const reviewerPublication = await requestSummary(
     baseUrl,
-    '/admin/api/export-activate',
+    publicationPath,
     'POST',
-    serviceHeaders(credentials.reviewerClientId, credentials.reviewerClientSecret, {
+    serviceHeaders('reviewer', credentials.reviewerKeyBase64Url, publicationPath, 'POST', {
       'Content-Type': 'application/json',
       'Idempotency-Key': '11111111-1111-4111-8111-111111111111',
     }),
   );
   const publisherDashboard = await requestSummary(
     baseUrl,
-    '/admin/api/dashboard',
+    dashboardPath,
     'GET',
-    serviceHeaders(credentials.publisherClientId, credentials.publisherClientSecret),
+    serviceHeaders('publisher', credentials.publisherKeyBase64Url, dashboardPath, 'GET'),
   );
   const publisherPublication = await requestSummary(
     baseUrl,
-    '/admin/api/export-activate',
+    publicationPath,
     'POST',
-    serviceHeaders(credentials.publisherClientId, credentials.publisherClientSecret, {
+    serviceHeaders('publisher', credentials.publisherKeyBase64Url, publicationPath, 'POST', {
       'Content-Type': 'application/json',
       'Idempotency-Key': '22222222-2222-4222-8222-222222222222',
     }),
@@ -381,8 +327,8 @@ async function inspectPositiveJourneys(baseUrl, credentials) {
     publisherDashboard,
     publisherPublication,
     identityDigests: {
-      reviewerClient: boundedHash(credentials.reviewerClientId),
-      publisherClient: boundedHash(credentials.publisherClientId),
+      reviewer: boundedHash('staging-service:reviewer'),
+      publisher: boundedHash('staging-service:publisher'),
     },
   };
 }
@@ -412,10 +358,7 @@ export async function evaluateConfiguredStagingIdentityAdmin(input) {
     routeInventoryError =
       error instanceof Error ? error.message.slice(0, 120) : 'route_inventory_failed';
   }
-  const controlPlane = await inspectControlPlane(
-    input.cloudflareApiToken,
-    input.cloudflareAccountId,
-  );
+  const controlPlane = inspectControlPlane(input.credentials);
   let negativeJourneys = { status: 'failed', error: 'route_inventory_unavailable' };
   if (routeInventory.length > 0) {
     try {
@@ -557,21 +500,21 @@ async function runSelfTest() {
       }
     }
     const headers = new Headers(init.headers);
-    const clientId = headers.get('CF-Access-Client-Id');
+    const role = headers.get('X-CPM-Admin-Role');
     const commonHeaders = {
       'Cache-Control': 'private, no-store',
       'Content-Type': 'application/json',
     };
-    if (!clientId || headers.has('Cf-Access-Authenticated-User-Email')) {
+    if (!role || headers.has('Cf-Access-Authenticated-User-Email')) {
       return new Response('{}', { status: 401, headers: commonHeaders });
     }
-    if (clientId === 'reviewer-client') {
+    if (role === 'reviewer') {
       if (url.pathname === '/admin/api/dashboard') {
         return new Response('{}', { status: 200, headers: commonHeaders });
       }
       return new Response('{}', { status: 403, headers: commonHeaders });
     }
-    if (clientId === 'publisher-client') {
+    if (role === 'publisher') {
       if (url.pathname === '/admin/api/export-activate') {
         return new Response('{}', { status: 400, headers: commonHeaders });
       }
@@ -589,13 +532,9 @@ async function runSelfTest() {
       identityOwner: 'identity-owner',
       workflowRunId: 'self-test',
       repositoryContractOutcome: 'success',
-      cloudflareApiToken: 'token',
-      cloudflareAccountId: 'account',
       credentials: {
-        reviewerClientId: 'reviewer-client',
-        reviewerClientSecret: 'reviewer-secret',
-        publisherClientId: 'publisher-client',
-        publisherClientSecret: 'publisher-secret',
+        reviewerKeyBase64Url: Buffer.alloc(32, 17).toString('base64url'),
+        publisherKeyBase64Url: Buffer.alloc(32, 23).toString('base64url'),
       },
       now,
     });
@@ -611,13 +550,9 @@ async function runSelfTest() {
       identityOwner: 'identity-owner',
       workflowRunId: 'self-test',
       repositoryContractOutcome: 'success',
-      cloudflareApiToken: '',
-      cloudflareAccountId: '',
       credentials: {
-        reviewerClientId: '',
-        reviewerClientSecret: '',
-        publisherClientId: '',
-        publisherClientSecret: '',
+        reviewerKeyBase64Url: '',
+        publisherKeyBase64Url: '',
       },
       now,
     });
@@ -649,14 +584,10 @@ async function main() {
     identityOwner: process.env.IDENTITY_OWNER ?? '',
     workflowRunId: process.env.WORKFLOW_RUN_ID ?? null,
     repositoryContractOutcome: process.env.REPOSITORY_CONTRACT_OUTCOME ?? 'failure',
-    cloudflareApiToken: process.env.CLOUDFLARE_API_TOKEN ?? '',
-    cloudflareAccountId: process.env.CLOUDFLARE_ACCOUNT_ID ?? '',
     reviewBaseUrl: process.env.CPM_REVIEW_BASE_URL,
     credentials: {
-      reviewerClientId: process.env.CPM_STAGING_ACCESS_REVIEWER_CLIENT_ID ?? '',
-      reviewerClientSecret: process.env.CPM_STAGING_ACCESS_REVIEWER_CLIENT_SECRET ?? '',
-      publisherClientId: process.env.CPM_STAGING_ACCESS_PUBLISHER_CLIENT_ID ?? '',
-      publisherClientSecret: process.env.CPM_STAGING_ACCESS_PUBLISHER_CLIENT_SECRET ?? '',
+      reviewerKeyBase64Url: process.env.CPM_STAGING_ADMIN_REVIEWER_HMAC_KEY_BASE64URL ?? '',
+      publisherKeyBase64Url: process.env.CPM_STAGING_ADMIN_PUBLISHER_HMAC_KEY_BASE64URL ?? '',
     },
   });
   mkdirSync(dirname(resolve(outputPath)), { recursive: true });

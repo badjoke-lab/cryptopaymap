@@ -133,6 +133,11 @@ jobs:
             CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
             CPM_TURNSTILE_EXPECTED_ACTION: 'test',
             PUBLIC_TURNSTILE_ACTION: 'submission_intake',
+            CPM_ADMIN_AUTH_MODE: 'derived_staging_service',
+            CPM_ADMIN_SERVICE_MAX_CLOCK_SKEW_SECONDS: '90',
+            CPM_ADMIN_DASHBOARD_SUBJECTS: '["staging-service:reviewer"]',
+            CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS:
+              '["cryptopaymap-service:staging-service:publisher"]',
           };
           writeFileSync('pages-secrets.json', `${JSON.stringify(values)}\n`, { mode: 0o600 });
           appendFileSync(
@@ -255,6 +260,8 @@ jobs:
               siteverifyExpectedAction: 'test',
               contactRetentionDays: 180,
               rateLimit: { maximumRequests: 5, windowSeconds: 600 },
+              adminAuthMode: 'derived_staging_service',
+              adminServiceRoles: ['reviewer', 'publisher'],
             },
             ...(checks.durableObjectWorker === 'failure'
               ? { diagnosticsArtifact: 'staging-review-worker-deployment-log' }

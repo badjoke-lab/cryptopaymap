@@ -45,6 +45,7 @@ describe('administration Pages middleware', () => {
     const response = await middleware(requestContext);
 
     expect(verifier).toHaveBeenCalledWith(requestContext.request, {
+      mode: 'cloudflare_access',
       domain: validEnvironment.CF_ACCESS_TEAM_DOMAIN,
       aud: validEnvironment.CF_ACCESS_AUD,
     });

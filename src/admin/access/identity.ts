@@ -21,6 +21,8 @@ const verifiedAccessPayloadSchema = z
   })
   .passthrough();
 
+export type DerivedStagingServiceRole = 'reviewer' | 'publisher';
+
 export interface AdminAccessIdentity {
   actorId: string;
   actorType: 'human' | 'system';
@@ -40,6 +42,18 @@ export class AdminAccessIdentityError extends Error {
 
 function identityError(issue: string): AdminAccessIdentityError {
   return new AdminAccessIdentityError([issue]);
+}
+
+export function createDerivedStagingServiceIdentity(
+  role: DerivedStagingServiceRole,
+): AdminAccessIdentity {
+  const subject = `staging-service:${role}`;
+  return Object.freeze({
+    actorId: `cryptopaymap-service:${subject}`,
+    actorType: 'system',
+    subject,
+    email: null,
+  });
 }
 
 export function parseVerifiedAdminAccessIdentity(payload: unknown): AdminAccessIdentity {

@@ -206,3 +206,14 @@ Repository tests do not prove:
 - capability separation for configured live identities.
 
 Those checks require configured-environment execution. Live values and credentials must not be committed to the repository.
+
+
+## Configured staging derived service authentication
+
+Configured staging uses `CPM_ADMIN_AUTH_MODE=derived_staging_service`. Reviewer and publisher
+HMAC keys are derived from the existing review seed with separate HKDF labels and synchronized
+only to the Pages preview environment. Each request carries a role, timestamp, and HMAC signature;
+the signature is verified with WebCrypto inside a bounded clock window. Unverified email headers,
+missing signatures, stale signatures, and cross-role signatures fail closed. Production and the
+default mode remain Cloudflare Access with issuer, audience, and signature validation. No raw key
+or request signature may be retained in logs, receipts, artifacts, or repository files.

@@ -13,6 +13,7 @@ const validEnvironment = {
 describe('administration Access configuration', () => {
   it('normalizes a valid team origin and audience tag', () => {
     expect(readAdminAccessConfiguration(validEnvironment)).toEqual({
+      mode: 'cloudflare_access',
       domain: 'https://test-team.cloudflareaccess.com',
       aud: 'a'.repeat(64),
     });
