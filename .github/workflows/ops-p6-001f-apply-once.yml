@@ -7,6 +7,9 @@ on:
     paths:
       - '.github/workflows/ops-p6-001f-apply-once.yml'
 
+env:
+  APPLY_REVISION: '2'
+
 permissions:
   contents: write
 
