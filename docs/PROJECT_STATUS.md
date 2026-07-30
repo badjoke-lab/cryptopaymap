@@ -1,8 +1,6 @@
-OPS-P6-001F is implementing a staging-only derived service authentication boundary while retaining Cloudflare Access as the production/default mode. No production, DNS, canonical data, or public release activation is changed.
-
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-30
+**Last verified:** 2026-07-31
 
 ## Current phase
 
@@ -14,7 +12,7 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-OPS-P6-001E — Execute configured staging P6-02 identity and protected Admin evidence (Issue #304)
+OPS-P6-001G — Execute configured staging P6-03 Neon transaction evidence (Issue #309, PR #310)
 
 ## Authoritative current state
 
@@ -24,13 +22,14 @@ OPS-P6-001E — Execute configured staging P6-02 identity and protected Admin ev
 - OPS-P6-001B Neon recovery completed in Issue #297.
 - OPS-P6-001C configured staging authorization gate completed in PR #299 for Issue #298.
 - OPS-P6-001D configured staging P6-01 data QA completed in Issue #300 after PR #301 and FIX-P6-002 PR #303.
-- Latest verified main is `92779fbafe7ad736b87186301eba87ebb8c98fd5`.
-- The exact-main configured staging deployment receipt is `deployed`; Cloudflare credentials, configured inputs, Durable Object Worker, Pages secret synchronization, Pages deployment, and configured verification all succeeded.
+- OPS-P6-001E configured staging P6-02 identity and protected Admin evidence completed in Issue #304 after PR #305 and OPS-P6-001F PR #307.
+- Latest verified main is `09c2e377fcfbd65273497bfb2297a7543361fd15`.
+- The exact-main configured staging deployment receipt is `deployed`; Cloudflare credentials, configured inputs, Durable Object Worker, Pages secret synchronization, Pages deployment, and configured verification succeeded.
 - The exact-main fixed-review live-audit receipt is `complete`; first POST returned HTTP 202, exact replay returned HTTP 202 with matching public reference and status secret, changed-content reuse returned HTTP 409, and public artifacts remained unchanged.
-- The configured P6-01 receipt is `accepted` and the authorization inventory classifies it as `current`.
-- P6-01 proved exact-main public version/manifest identity, five-file schema/digest/count integrity, Candidate/private-field exclusion, live schema readiness with 28 migrations, and one shared release/data/configuration/environment binding.
-- The authorization inventory remains `not_authorized`; its remaining configured predecessors are P6-02 through P6-07.
-- OPS-P6-001E in Issue #304 owns P6-02 configured identity-aware access and protected Admin evidence.
+- Configured P6-01 and P6-02 receipts are `accepted`; the authorization inventory classifies both as `current` with one shared release/data/configuration/environment binding.
+- P6-02 covers 53 protected Admin routes, 122 unauthenticated or forged-header journeys, and separate reviewer and publisher capability journeys.
+- The authorization inventory remains `not_authorized`; its remaining configured predecessors are P6-03 through P6-07 plus explicit authorization dispatch.
+- OPS-P6-001G in Issue #309 and PR #310 owns configured P6-03 Neon atomic transaction, rollback, replay, conflict, publication-separation, cleanup, and retained receipt evidence.
 
 Configured state remains:
 
@@ -46,24 +45,24 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Execute OPS-P6-001E in Issue #304:
+Execute OPS-P6-001G in Issue #309 and PR #310:
 
-1. add exact-main configured P6-02 execution and fail-closed self-tests;
-2. support Cloudflare Access service identities only after signature, issuer, audience, and time-bound verification;
-3. derive the complete protected Admin Function route inventory;
-4. verify the configured Access application and service-auth policies without retaining live identifiers;
-5. execute unauthenticated and forged-email negative journeys across every protected route;
-6. execute separate review and publication service-identity journeys and prove capability separation without activating a release;
-7. retain `config/staging-authorization/p6-02-identity-admin-receipt.json` with the unchanged P6-01 binding;
-8. refresh authorization inventory and confirm P6-02 becomes current before starting P6-03.
+1. pass the repository P6-03 contract and configured executor self-test;
+2. merge the guarded exact-main workflow after all normal repository checks pass;
+3. refresh exact-main deployment, fixed-review live audit, P6-01, and P6-02 evidence;
+4. execute the hidden reversible Neon fixture against the fixed-review database;
+5. prove atomic canonical mutation, application receipt, audit event, injected rollback, concurrency, replay, stale-state and changed-content rejection, and publication separation;
+6. remove the fixture and retain only bounded redacted evidence;
+7. publish `config/staging-authorization/p6-03-neon-transaction-receipt.json` with the unchanged predecessor binding;
+8. refresh authorization inventory and confirm P6-03 becomes current before starting P6-04.
 
 ## Blocked
 
-No Neon, migration, configured staging deployment, readiness, fixed-review live-journey, or P6-01 data-QA blocker remains.
+No Neon connectivity, migration, configured staging deployment, readiness, fixed-review live-journey, P6-01 data-QA, or P6-02 identity/Admin blocker remains.
 
-Configured staging authorization is blocked by missing configured P6-02 through P6-07 receipts and the required explicit authorization dispatch. Production remains untouched.
+Configured staging authorization is blocked by missing configured P6-03 through P6-07 receipts and the required explicit authorization dispatch. Production remains untouched.
 
-Protected operational credentials, Access assertions, service-token values, private Admin evidence, and private canonical material must not be placed in the public repository or public Issue content.
+Protected operational credentials, private database material, private Submission data, unrestricted database rows, and raw transaction fixture evidence must not be placed in the public repository or public Issue content.
 
 ## Retained executable-audit snapshot
 
@@ -114,7 +113,7 @@ P6-08 — Final launch authorization, go-live execution, post-cutover verificati
 - P5-08D — Canonical application and publication-handoff integration audit completed in #271 for Issue #270.
 - P5-08D completed in #271; its fixed audit receipt remains required by later P5-08 slices.
 - P5-08E — Privacy, retention, replay, conflict, and partial-failure integration audit completed in #273 for Issue #272.
-- P5-08F — MVP-B final integration close and Phase 6 evidence handoff completed in #275 for Issue #274.
+- P5-08F — MVP-B final integration close and Phase 6 handoff completed in #275 for Issue #274.
 - Phase 5 is repository-complete.
 - P6-01 — Launch evidence register and data QA baseline completed in #277 for Issue #276.
 - P6-02 — Configured identity access and protected Admin evidence completed in #279 for Issue #278.
@@ -160,7 +159,10 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - Issue #293 — OPS-P6-001 configured launch execution
-- Issue #304 — OPS-P6-001E configured staging P6-02 identity and protected Admin evidence
+- Issue #309 — OPS-P6-001G configured staging P6-03 Neon transaction evidence
+- PR #310 — configured staging P6-03 executor
+- Issue #304 — completed configured staging P6-02 identity and protected Admin evidence
+- PR #307 — completed derived staging service authentication
 - Issue #300 — completed configured staging P6-01 data QA
 - PR #303 — completed staging public metadata fix
 - PR #301 — configured staging P6-01 executor
@@ -169,7 +171,9 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `config/staging-review/p5-02r-live-audit-receipt.json` on the `staging-review` branch
 - `config/staging-authorization/authorization-receipt.json` on the `staging-review` branch
 - `config/staging-authorization/p6-01-data-qa-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/p6-02-identity-admin-receipt.json` on the `staging-review` branch after execution
+- `config/staging-authorization/p6-02-identity-admin-receipt.json` on the `staging-review` branch
+- `config/staging-authorization/p6-03-neon-transaction-receipt.json` on the `staging-review` branch after execution
+- `docs/OPS_P6_001G_CONFIGURED_STAGING_P6_03_NEON_TRANSACTION.md`
 - `docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md`
 - `docs/OPS_P6_001D_CONFIGURED_STAGING_P6_01_DATA_QA.md`
 - `docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md`
