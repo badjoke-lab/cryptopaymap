@@ -28,11 +28,16 @@ interface StoredStagingMediaObject {
   contentType: string;
   contentHash: string;
   byteSize: number;
+  width: number;
+  height: number;
   body: ArrayBuffer;
   createdAtMs: number;
 }
 
-const stagingMediaKeyPattern = /^media\/(private|public)\/ops-p6-001h\/[A-Za-z0-9._/-]{1,300}$/;
+const stagingMediaAssetId = '94000000-0000-4000-8000-000000000001';
+const stagingMediaKeyPattern = new RegExp(
+  `^media/(private|public)/${stagingMediaAssetId}/(?:original-[a-f0-9]{64}\\.png|[a-f0-9-]{36}-[a-f0-9]{64}\\.(?:jpg|webp))$`,
+);
 const stagingMediaHashPattern = /^[a-f0-9]{64}$/;
 const maximumStagingMediaBytes = 1_000_000;
 
@@ -52,6 +57,64 @@ function hex(bytes: ArrayBuffer): string {
 
 async function sha256(value: ArrayBuffer): Promise<string> {
   return hex(await crypto.subtle.digest('SHA-256', value));
+}
+
+function inspectPng(bytes: Uint8Array): { width: number; height: number } | null {
+  const signature = [137, 80, 78, 71, 13, 10, 26, 10];
+  if (bytes.length < 24 || !signature.every((value, index) => bytes[index] === value)) return null;
+  if (new TextDecoder().decode(bytes.slice(12, 16)) !== 'IHDR') return null;
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const width = view.getUint32(16, false);
+  const height = view.getUint32(20, false);
+  return width > 0 && height > 0 ? { width, height } : null;
+}
+
+function inspectWebp(bytes: Uint8Array): { width: number; height: number } | null {
+  if (
+    bytes.length < 30 ||
+    new TextDecoder().decode(bytes.slice(0, 4)) !== 'RIFF' ||
+    new TextDecoder().decode(bytes.slice(8, 12)) !== 'WEBP' ||
+    new TextDecoder().decode(bytes.slice(12, 16)) !== 'VP8 ' ||
+    bytes[23] !== 0x9d ||
+    bytes[24] !== 0x01 ||
+    bytes[25] !== 0x2a
+  ) {
+    return null;
+  }
+  const width = ((bytes[27] ?? 0) << 8 | (bytes[26] ?? 0)) & 0x3fff;
+  const height = ((bytes[29] ?? 0) << 8 | (bytes[28] ?? 0)) & 0x3fff;
+  return width > 0 && height > 0 ? { width, height } : null;
+}
+
+function inspectJpeg(bytes: Uint8Array): { width: number; height: number } | null {
+  if (bytes.length < 4 || bytes[0] !== 0xff || bytes[1] !== 0xd8) return null;
+  let offset = 2;
+  while (offset + 9 < bytes.length) {
+    if (bytes[offset] !== 0xff) return null;
+    const marker = bytes[offset + 1] ?? 0;
+    offset += 2;
+    if (marker === 0xd9 || marker === 0xda) break;
+    const length = ((bytes[offset] ?? 0) << 8) | (bytes[offset + 1] ?? 0);
+    if (length < 2 || offset + length > bytes.length) return null;
+    if ([0xc0, 0xc1, 0xc2, 0xc3, 0xc5, 0xc6, 0xc7, 0xc9, 0xca, 0xcb, 0xcd, 0xce, 0xcf].includes(marker)) {
+      const height = ((bytes[offset + 3] ?? 0) << 8) | (bytes[offset + 4] ?? 0);
+      const width = ((bytes[offset + 5] ?? 0) << 8) | (bytes[offset + 6] ?? 0);
+      return width > 0 && height > 0 ? { width, height } : null;
+    }
+    offset += length;
+  }
+  return null;
+}
+
+function inspectImage(
+  body: ArrayBuffer,
+  contentType: string,
+): { width: number; height: number } | null {
+  const bytes = new Uint8Array(body);
+  if (contentType === 'image/png') return inspectPng(bytes);
+  if (contentType === 'image/webp') return inspectWebp(bytes);
+  if (contentType === 'image/jpeg') return inspectJpeg(bytes);
+  return null;
 }
 
 function mediaLocation(request: Request): {
@@ -74,15 +137,16 @@ function mediaLocation(request: Request): {
 }
 
 function objectHeaders(object: StoredStagingMediaObject): Headers {
-  const headers = new Headers({
+  return new Headers({
     'Cache-Control': object.storageScope === 'public' ? 'public, max-age=60' : 'private, no-store',
     'Content-Length': String(object.byteSize),
     'Content-Type': object.contentType,
     ETag: `"${object.contentHash}"`,
     'X-CPM-Content-Hash': object.contentHash,
+    'X-CPM-Image-Height': String(object.height),
+    'X-CPM-Image-Width': String(object.width),
     'X-Content-Type-Options': 'nosniff',
   });
-  return headers;
 }
 
 export class SubmissionRateLimitBucket {
@@ -104,6 +168,8 @@ export class SubmissionRateLimitBucket {
         content_type TEXT NOT NULL,
         content_hash TEXT NOT NULL,
         byte_size INTEGER NOT NULL CHECK (byte_size > 0 AND byte_size <= 1000000),
+        width INTEGER NOT NULL CHECK (width > 0),
+        height INTEGER NOT NULL CHECK (height > 0),
         body BLOB NOT NULL,
         created_at_ms INTEGER NOT NULL
       )
@@ -121,6 +187,8 @@ export class SubmissionRateLimitBucket {
               content_type AS contentType,
               content_hash AS contentHash,
               byte_size AS byteSize,
+              width,
+              height,
               body,
               created_at_ms AS createdAtMs
             FROM staging_media_objects
@@ -154,6 +222,8 @@ export class SubmissionRateLimitBucket {
       if ((await sha256(body)) !== contentHash) {
         return jsonResponse(409, { error: 'media_hash_mismatch' });
       }
+      const dimensions = inspectImage(body, contentType);
+      if (dimensions === null) return jsonResponse(415, { error: 'invalid_media_bytes' });
       this.sql.exec(
         `
           INSERT INTO staging_media_objects (
@@ -162,14 +232,18 @@ export class SubmissionRateLimitBucket {
             content_type,
             content_hash,
             byte_size,
+            width,
+            height,
             body,
             created_at_ms
-          ) VALUES (?, ?, ?, ?, ?, ?, ?)
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
           ON CONFLICT(object_key) DO UPDATE SET
             storage_scope = excluded.storage_scope,
             content_type = excluded.content_type,
             content_hash = excluded.content_hash,
             byte_size = excluded.byte_size,
+            width = excluded.width,
+            height = excluded.height,
             body = excluded.body,
             created_at_ms = excluded.created_at_ms
         `,
@@ -178,6 +252,8 @@ export class SubmissionRateLimitBucket {
         contentType,
         contentHash,
         body.byteLength,
+        dimensions.width,
+        dimensions.height,
         body,
         Date.now(),
       );
@@ -186,6 +262,8 @@ export class SubmissionRateLimitBucket {
         scope: location.scope,
         byteSize: body.byteLength,
         contentHash,
+        width: dimensions.width,
+        height: dimensions.height,
       });
     }
 
