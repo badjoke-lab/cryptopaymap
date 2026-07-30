@@ -26,7 +26,9 @@ async function signedRequest(
 ): Promise<Request> {
   const method = options.method ?? 'GET';
   const timestamp = String(options.timestamp ?? Math.floor(now / 1000));
-  const keyBytes = options.key ?? (role === 'reviewer' ? reviewerKey : publisherKey);
+  const sourceKey = options.key ?? (role === 'reviewer' ? reviewerKey : publisherKey);
+  const keyBytes = new Uint8Array(sourceKey.byteLength);
+  keyBytes.set(sourceKey);
   const cryptoKey = await globalThis.crypto.subtle.importKey(
     'raw',
     keyBytes,
@@ -52,13 +54,9 @@ async function signedRequest(
 describe('derived staging service authentication', () => {
   it('returns distinct bounded reviewer and publisher identities', async () => {
     await expect(
-      verifyAdminAccessRequest(
-        await signedRequest('reviewer', '/admin/api/dashboard'),
-        configuration,
-        {
-          now: () => now,
-        },
-      ),
+      verifyAdminAccessRequest(await signedRequest('reviewer', '/admin/api/dashboard'), configuration, {
+        now: () => now,
+      }),
     ).resolves.toEqual({
       actorId: 'cryptopaymap-service:staging-service:reviewer',
       actorType: 'system',
