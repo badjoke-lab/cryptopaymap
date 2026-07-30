@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "authorizationId": "sha256:acf07767483f9fcee87ae0a51535d6e7669151e1b90dd917440fc69fc2535ca0",
+  "authorizationId": "sha256:048f310993e9b8da3137e2e3647db2f4c75ce524d7cadb8555e05a1668c6846b",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "79293b74a4c3bed49efe63aecc7c9fbf56a006c9",
-  "generatedAt": "2026-07-30T17:25:56.637Z",
-  "workflowRunId": "30565885417",
+  "generatedAt": "2026-07-30T17:50:38.489Z",
+  "workflowRunId": "30567760083",
   "operators": {
-    "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
+    "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
     "rollbackOwner": "sha256:d0cd171be8090d5e3b850f17a2cf6be2d8f587c99e9e4621cd350e1e6ba51506"
   },
@@ -20,30 +20,30 @@
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
-      "state": "failed",
-      "generatedAt": "2026-07-30T16:32:13.933Z"
+      "state": "current",
+      "generatedAt": "2026-07-30T17:31:58.221Z"
     },
     "predecessors": [
       {
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-07-30T15:28:57.702Z",
-        "expiresAt": "2026-08-02T15:28:57.702Z"
+        "state": "current",
+        "generatedAt": "2026-07-30T17:37:41.834Z",
+        "expiresAt": "2026-08-02T17:37:41.834Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-07-30T15:30:15.417Z",
-        "expiresAt": "2026-08-02T15:30:15.417Z"
+        "state": "current",
+        "generatedAt": "2026-07-30T17:39:02.134Z",
+        "expiresAt": "2026-08-02T17:39:02.134Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
-        "state": "missing",
-        "generatedAt": null,
-        "expiresAt": null
+        "state": "current",
+        "generatedAt": "2026-07-30T17:41:11.311Z",
+        "expiresAt": "2026-08-02T17:41:11.311Z"
       },
       {
         "evidenceId": "P6-04",
@@ -77,14 +77,10 @@
     "predecessorBinding": "unproven"
   },
   "blockers": [
-    "P6-01:failed",
-    "P6-02:failed",
-    "P6-03:missing",
     "P6-04:missing",
     "P6-05:missing",
     "P6-06:missing",
     "P6-07:missing",
-    "explicit_dispatch:required",
-    "live_audit_receipt:failed"
+    "explicit_dispatch:required"
   ]
 }
