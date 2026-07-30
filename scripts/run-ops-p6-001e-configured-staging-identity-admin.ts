@@ -427,7 +427,7 @@ export async function evaluateConfiguredStagingIdentityAdmin(input) {
       };
     }
   }
-  let positiveJourneys;
+  let positiveJourneys = { status: 'failed', error: 'positive_journey_unavailable' };
   try {
     positiveJourneys = await inspectPositiveJourneys(baseUrl, input.credentials);
   } catch (error) {
