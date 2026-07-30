@@ -95,7 +95,11 @@ function p601Check(receipt, approvedCommit, evaluatedAt) {
     bindingValid;
   return {
     path: p601ReceiptPath,
-    state: current ? 'current' : expiresAt && Date.parse(expiresAt) <= evaluatedAt.getTime() ? 'stale' : 'failed',
+    state: current
+      ? 'current'
+      : expiresAt && Date.parse(expiresAt) <= evaluatedAt.getTime()
+        ? 'stale'
+        : 'failed',
     generatedAt,
     expiresAt,
     binding: current ? Object.fromEntries(bindingKeys.map((key) => [key, binding[key]])) : null,
@@ -154,9 +158,12 @@ function buildRouteInventory(sourceRoot) {
 }
 
 async function cloudflareApi(token, accountId, path) {
-  const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}${path}`, {
-    headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
-  });
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${accountId}${path}`,
+    {
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
+    },
+  );
   let body = null;
   try {
     body = await response.json();
@@ -200,7 +207,8 @@ async function inspectControlPlane(token, accountId) {
     const serviceAuthPolicies = policies.filter((policy) =>
       ['non_identity', 'service_auth'].includes(policy?.decision),
     );
-    const authDomain = typeof organization?.auth_domain === 'string' ? organization.auth_domain : null;
+    const authDomain =
+      typeof organization?.auth_domain === 'string' ? organization.auth_domain : null;
     const ready =
       typeof app.id === 'string' &&
       typeof app.aud === 'string' &&
@@ -218,7 +226,11 @@ async function inspectControlPlane(token, accountId) {
       serviceAuthPolicyCount: serviceAuthPolicies.length,
       policyDigest: boundedHash(
         policies
-          .map((policy) => ({ id: policy.id, decision: policy.decision, precedence: policy.precedence }))
+          .map((policy) => ({
+            id: policy.id,
+            decision: policy.decision,
+            precedence: policy.precedence,
+          }))
           .sort((left, right) => String(left.id).localeCompare(String(right.id))),
       ),
       ...(ready ? {} : { error: 'configured_access_contract_incomplete' }),
@@ -266,7 +278,11 @@ async function requestSummary(baseUrl, path, method, headers = {}) {
 }
 
 function expectedUnauthenticated(method, summary) {
-  if (method === 'GET' && summary.redirectClass === 'cloudflare_access' && [301, 302, 303, 307, 308].includes(summary.status)) {
+  if (
+    method === 'GET' &&
+    summary.redirectClass === 'cloudflare_access' &&
+    [301, 302, 303, 307, 308].includes(summary.status)
+  ) {
     return true;
   }
   return [401, 403].includes(summary.status);
@@ -393,9 +409,13 @@ export async function evaluateConfiguredStagingIdentityAdmin(input) {
   try {
     routeInventory = buildRouteInventory(input.sourceRoot);
   } catch (error) {
-    routeInventoryError = error instanceof Error ? error.message.slice(0, 120) : 'route_inventory_failed';
+    routeInventoryError =
+      error instanceof Error ? error.message.slice(0, 120) : 'route_inventory_failed';
   }
-  const controlPlane = await inspectControlPlane(input.cloudflareApiToken, input.cloudflareAccountId);
+  const controlPlane = await inspectControlPlane(
+    input.cloudflareApiToken,
+    input.cloudflareAccountId,
+  );
   let negativeJourneys = { status: 'failed', error: 'route_inventory_unavailable' };
   if (routeInventory.length > 0) {
     try {
@@ -421,9 +441,11 @@ export async function evaluateConfiguredStagingIdentityAdmin(input) {
   if (input.repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
   if (p601.state !== 'current') blockers.push(`P6-01:${p601.state}`);
   if (routeInventory.length === 0) blockers.push('protected_route_inventory:failed');
-  if (controlPlane.status !== 'passed') blockers.push(`access_control_plane:${controlPlane.error ?? 'failed'}`);
+  if (controlPlane.status !== 'passed')
+    blockers.push(`access_control_plane:${controlPlane.error ?? 'failed'}`);
   if (negativeJourneys.status !== 'passed') blockers.push('negative_journeys:failed');
-  if (positiveJourneys.status !== 'passed') blockers.push(`positive_journeys:${positiveJourneys.error ?? 'failed'}`);
+  if (positiveJourneys.status !== 'passed')
+    blockers.push(`positive_journeys:${positiveJourneys.error ?? 'failed'}`);
   blockers.sort();
   const generatedAt = now.toISOString();
   const expiresAt = new Date(now.getTime() + expiryHours * 60 * 60 * 1_000).toISOString();
@@ -508,7 +530,10 @@ async function runSelfTest() {
     const url = new URL(String(input));
     if (url.hostname === 'api.cloudflare.com') {
       if (url.pathname.endsWith('/access/organizations')) {
-        return Response.json({ success: true, result: { auth_domain: 'test.cloudflareaccess.com' } });
+        return Response.json({
+          success: true,
+          result: { auth_domain: 'test.cloudflareaccess.com' },
+        });
       }
       if (url.pathname.endsWith('/access/apps')) {
         return Response.json({
@@ -533,7 +558,10 @@ async function runSelfTest() {
     }
     const headers = new Headers(init.headers);
     const clientId = headers.get('CF-Access-Client-Id');
-    const commonHeaders = { 'Cache-Control': 'private, no-store', 'Content-Type': 'application/json' };
+    const commonHeaders = {
+      'Cache-Control': 'private, no-store',
+      'Content-Type': 'application/json',
+    };
     if (!clientId || headers.has('Cf-Access-Authenticated-User-Email')) {
       return new Response('{}', { status: 401, headers: commonHeaders });
     }

@@ -6,7 +6,10 @@ const serviceTokenCommonNameSchema = z
   .trim()
   .min(8)
   .max(256)
-  .regex(/^[A-Za-z0-9._:-]+\.access$/, 'Use the verified Cloudflare Access service-token common name.');
+  .regex(
+    /^[A-Za-z0-9._:-]+\.access$/,
+    'Use the verified Cloudflare Access service-token common name.',
+  );
 
 const verifiedAccessPayloadSchema = z
   .object({

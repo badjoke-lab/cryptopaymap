@@ -35,8 +35,7 @@ describe('verified Cloudflare Access identity', () => {
         common_name: '8f64ab31d9e844d491e42d31b3c1a201.access',
       }),
     ).toEqual({
-      actorId:
-        'cloudflare-access:service-token:8f64ab31d9e844d491e42d31b3c1a201.access',
+      actorId: 'cloudflare-access:service-token:8f64ab31d9e844d491e42d31b3c1a201.access',
       actorType: 'system',
       subject: 'service-token:8f64ab31d9e844d491e42d31b3c1a201.access',
       email: null,
