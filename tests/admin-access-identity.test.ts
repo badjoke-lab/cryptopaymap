@@ -19,13 +19,47 @@ describe('verified Cloudflare Access identity', () => {
     });
   });
 
-  it('supports a verified service identity without assuming an email address', () => {
+  it('supports a verified identity subject without assuming an email address', () => {
     expect(parseVerifiedAdminAccessIdentity({ sub: 'service-token-subject' })).toEqual({
       actorId: 'cloudflare-access:service-token-subject',
       actorType: 'system',
       subject: 'service-token-subject',
       email: null,
     });
+  });
+
+  it('maps a verified Cloudflare service-token common name to a bounded system identity', () => {
+    expect(
+      parseVerifiedAdminAccessIdentity({
+        sub: '',
+        common_name: '8f64ab31d9e844d491e42d31b3c1a201.access',
+      }),
+    ).toEqual({
+      actorId: 'cloudflare-access:service-token:8f64ab31d9e844d491e42d31b3c1a201.access',
+      actorType: 'system',
+      subject: 'service-token:8f64ab31d9e844d491e42d31b3c1a201.access',
+      email: null,
+    });
+  });
+
+  it('rejects an empty subject without a valid verified service-token common name', () => {
+    expect(() => parseVerifiedAdminAccessIdentity({ sub: '' })).toThrow(AdminAccessIdentityError);
+    expect(() =>
+      parseVerifiedAdminAccessIdentity({
+        sub: '',
+        common_name: 'not-a-service-token',
+      }),
+    ).toThrow(AdminAccessIdentityError);
+  });
+
+  it('rejects a service-token identity that contains a user email', () => {
+    expect(() =>
+      parseVerifiedAdminAccessIdentity({
+        sub: '',
+        common_name: '8f64ab31d9e844d491e42d31b3c1a201.access',
+        email: 'reviewer@example.com',
+      }),
+    ).toThrow(AdminAccessIdentityError);
   });
 
   it('rejects an unverified or incomplete payload', () => {

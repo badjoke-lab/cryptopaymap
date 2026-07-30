@@ -1,9 +1,21 @@
 import { z } from 'zod';
 
+const accessSubjectSchema = z.string().trim().min(1).max(200);
+const serviceTokenCommonNameSchema = z
+  .string()
+  .trim()
+  .min(8)
+  .max(256)
+  .regex(
+    /^[A-Za-z0-9._:-]+\.access$/,
+    'Use the verified Cloudflare Access service-token common name.',
+  );
+
 const verifiedAccessPayloadSchema = z
   .object({
-    sub: z.string().trim().min(1).max(200),
+    sub: z.string().max(200),
     email: z.email().nullable().optional(),
+    common_name: z.string().nullable().optional(),
     iss: z.url().optional(),
     aud: z.union([z.string(), z.array(z.string())]).optional(),
   })
@@ -26,6 +38,10 @@ export class AdminAccessIdentityError extends Error {
   }
 }
 
+function identityError(issue: string): AdminAccessIdentityError {
+  return new AdminAccessIdentityError([issue]);
+}
+
 export function parseVerifiedAdminAccessIdentity(payload: unknown): AdminAccessIdentity {
   const result = verifiedAccessPayloadSchema.safeParse(payload);
   if (!result.success) {
@@ -37,11 +53,36 @@ export function parseVerifiedAdminAccessIdentity(payload: unknown): AdminAccessI
     );
   }
 
-  const email = result.data.email ?? null;
+  const subjectResult = accessSubjectSchema.safeParse(result.data.sub);
+  if (subjectResult.success) {
+    const email = result.data.email ?? null;
+    return Object.freeze({
+      actorId: `cloudflare-access:${subjectResult.data}`,
+      actorType: email === null ? 'system' : 'human',
+      subject: subjectResult.data,
+      email,
+    });
+  }
+
+  if (result.data.sub !== '') {
+    throw identityError('sub: The verified Access subject is invalid.');
+  }
+  if (result.data.email !== undefined && result.data.email !== null) {
+    throw identityError('email: A service-token identity must not contain a user email address.');
+  }
+
+  const commonNameResult = serviceTokenCommonNameSchema.safeParse(result.data.common_name);
+  if (!commonNameResult.success) {
+    throw identityError(
+      'common_name: An empty Access subject requires a verified service-token common name.',
+    );
+  }
+
+  const serviceSubject = `service-token:${commonNameResult.data}`;
   return Object.freeze({
-    actorId: `cloudflare-access:${result.data.sub}`,
-    actorType: email === null ? 'system' : 'human',
-    subject: result.data.sub,
-    email,
+    actorId: `cloudflare-access:${serviceSubject}`,
+    actorType: 'system',
+    subject: serviceSubject,
+    email: null,
   });
 }
