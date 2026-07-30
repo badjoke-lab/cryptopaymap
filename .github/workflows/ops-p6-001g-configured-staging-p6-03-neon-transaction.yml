@@ -1,0 +1,184 @@
+name: OPS-P6-001G configured staging P6-03 Neon transaction
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001g-configured-staging-p6-03-neon-transaction.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001G_CONFIGURED_STAGING_P6_03_NEON_TRANSACTION.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'scripts/check-ops-p6-001g-configured-staging-neon-transaction.mjs'
+      - 'scripts/run-ops-p6-001g-configured-staging-neon-transaction.ts'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001g-configured-staging-p6-03-neon-transaction.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001G_CONFIGURED_STAGING_P6_03_NEON_TRANSACTION.md'
+      - 'scripts/check-ops-p6-001g-configured-staging-neon-transaction.mjs'
+      - 'scripts/run-ops-p6-001g-configured-staging-neon-transaction.ts'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_03 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      transaction_owner:
+        description: Bounded transaction-operations owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001g-configured-staging-p6-03-neon-transaction
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check repository P6-03 evidence contract
+        run: node scripts/check-p6-03-live-neon-transaction-receipt-evidence.js
+
+      - name: Check configured P6-03 execution contract
+        run: node scripts/check-ops-p6-001g-configured-staging-neon-transaction.mjs
+
+      - name: Run configured P6-03 self-test
+        run: npx tsx scripts/run-ops-p6-001g-configured-staging-neon-transaction.ts --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      TRANSACTION_OWNER: ${{ inputs.transaction_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          echo "CURRENT_MAIN_COMMIT=$current_main_commit" >> "$GITHUB_ENV"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          node scripts/check-p6-03-live-neon-transaction-receipt-evidence.js
+          node scripts/check-ops-p6-001g-configured-staging-neon-transaction.mjs
+          npx tsx scripts/run-ops-p6-001g-configured-staging-neon-transaction.ts --self-test
+
+      - name: Execute configured P6-03 transaction and write receipt
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        run: |
+          npx --prefix source tsx \
+            source/scripts/run-ops-p6-001g-configured-staging-neon-transaction.ts \
+            status \
+            p6-03-neon-transaction-receipt.json
+
+      - name: Upload bounded P6-03 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001g-configured-staging-p6-03-neon-transaction
+          path: p6-03-neon-transaction-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish configured P6-03 receipt to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-03-neon-transaction-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-03-neon-transaction-receipt.json \
+            status/config/staging-authorization/p6-03-neon-transaction-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-03-neon-transaction-receipt.json
+          if git -C status diff --cached --quiet; then
+            echo 'Configured P6-03 receipt is unchanged.'
+            exit 0
+          fi
+          git -C status commit -m 'Record configured staging P6-03 Neon transaction receipt'
+          git -C status push origin HEAD:staging-review
+
+      - name: Write configured P6-03 summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-03-neon-transaction-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(
+            readFileSync('p6-03-neon-transaction-receipt.json', 'utf8'),
+          );
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-03 Neon transaction evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Positive transaction: \`${receipt.checks.positive.status}\``,
+              `- Injected rollback: \`${receipt.checks.rollback.status}\``,
+              `- Concurrent duplicate: \`${receipt.checks.concurrentDuplicate.status}\``,
+              `- Fixture cleanup: \`${receipt.checks.fixture.cleanup}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce configured P6-03 acceptance
+        if: always()
+        run: |
+          node -e "const r=require('./p6-03-neon-transaction-receipt.json'); if(r.state!=='accepted') process.exit(1)"
