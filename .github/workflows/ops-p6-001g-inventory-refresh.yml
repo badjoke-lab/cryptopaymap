@@ -6,6 +6,11 @@ on:
       - agent/ops-p6-001g-inventory-refresh
     paths:
       - '.github/workflows/ops-p6-001g-inventory-refresh.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001g-inventory-refresh.yml'
 
 permissions:
   contents: write
