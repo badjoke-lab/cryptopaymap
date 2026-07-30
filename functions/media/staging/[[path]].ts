@@ -12,7 +12,8 @@ interface StagingPublicMediaPagesContext {
 }
 
 const durableObjectName = 'ops-p6-001h-configured-media';
-const pathPattern = /^[A-Za-z0-9._/-]{1,300}$/;
+const stagingMediaAssetId = '94000000-0000-4000-8000-000000000001';
+const pathPattern = /^[a-f0-9-]{36}-[a-f0-9]{64}\.(?:jpg|webp)$/;
 
 function notFound(): Response {
   return new Response('Not found.', {
@@ -43,7 +44,7 @@ async function handlePublicStagingMedia(
   const path = parameterPath(context.params.path);
   if (path === null) return notFound();
 
-  const key = `media/public/ops-p6-001h/${path}`;
+  const key = `media/public/${stagingMediaAssetId}/${path}`;
   const url = new URL('https://staging-media.internal/staging-media/object');
   url.searchParams.set('scope', 'public');
   url.searchParams.set('key', key);
