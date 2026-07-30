@@ -1,20 +1,16 @@
 name: OPS-P6-001F apply derived staging auth once
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/ops-p6-001f-derived-staging-service-auth
-    paths:
-      - '.github/workflows/ops-p6-001f-apply-once.yml'
-
-env:
-  APPLY_REVISION: '2'
+      - main
 
 permissions:
   contents: write
 
 jobs:
   apply:
+    if: github.head_ref == 'agent/ops-p6-001f-derived-staging-service-auth'
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
