@@ -17,7 +17,10 @@ interface StagingMediaObjectPagesContext {
 
 const durableObjectName = 'ops-p6-001h-configured-media';
 const expectedActorId = 'cryptopaymap-service:staging-service:reviewer';
-const allowedKey = /^media\/(private|public)\/ops-p6-001h\/[A-Za-z0-9._/-]{1,300}$/;
+const stagingMediaAssetId = '94000000-0000-4000-8000-000000000001';
+const allowedKey = new RegExp(
+  `^media/(private|public)/${stagingMediaAssetId}/(?:original-[a-f0-9]{64}\\.png|[a-f0-9-]{36}-[a-f0-9]{64}\\.(?:jpg|webp))$`,
+);
 
 function textResponse(status: number, message: string): Response {
   return withAdminSecurityHeaders(
