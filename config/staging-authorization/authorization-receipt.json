@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:87d98402e8c5e276167cf70f61872baecdddb32ddaa933ade2b5e32a7d081871",
+  "authorizationId": "sha256:7ff8834482c223f5dba87f12e627d4bd08e870d55890b88903ca6d768c38da30",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
-  "generatedAt": "2026-07-30T15:24:02.327Z",
-  "workflowRunId": "30556453793",
+  "generatedAt": "2026-07-30T15:25:12.987Z",
+  "workflowRunId": "30556548414",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -20,8 +20,8 @@
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
-      "state": "failed",
-      "generatedAt": "2026-07-30T02:50:51.485Z"
+      "state": "current",
+      "generatedAt": "2026-07-30T15:24:35.788Z"
     },
     "predecessors": [
       {
@@ -84,7 +84,6 @@
     "P6-05:missing",
     "P6-06:missing",
     "P6-07:missing",
-    "explicit_dispatch:required",
-    "live_audit_receipt:failed"
+    "explicit_dispatch:required"
   ]
 }
