@@ -14,8 +14,9 @@ const jwtHeaderSchema = z
 const audienceValueSchema = z.string().min(1).max(512);
 const jwtClaimsSchema = z
   .object({
-    sub: z.string().trim().min(1).max(200),
+    sub: z.string().max(200),
     email: z.email().max(320).nullable().optional(),
+    common_name: z.string().max(256).nullable().optional(),
     iss: z.url().max(2_048),
     aud: z.union([audienceValueSchema, z.array(audienceValueSchema).min(1).max(16)]),
     exp: z.number().int().positive(),
