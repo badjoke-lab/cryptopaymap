@@ -1,0 +1,41 @@
+name: OPS-P6-001E bounded Biome diagnostic
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001e-biome-diagnostic.yml'
+      - 'scripts/run-ops-p6-001e-configured-staging-identity-admin.ts'
+      - 'src/admin/access/identity.ts'
+      - 'src/admin/access/verification.ts'
+      - 'tests/admin-access-identity.test.ts'
+      - 'tests/admin-access-verification.test.ts'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Show bounded formatting differences
+        run: |
+          npx biome format \
+            scripts/run-ops-p6-001e-configured-staging-identity-admin.ts \
+            src/admin/access/identity.ts \
+            src/admin/access/verification.ts \
+            tests/admin-access-identity.test.ts \
+            tests/admin-access-verification.test.ts
+      - name: Show bounded lint findings
+        run: |
+          npx biome lint \
+            scripts/run-ops-p6-001e-configured-staging-identity-admin.ts \
+            src/admin/access/identity.ts \
+            src/admin/access/verification.ts \
+            tests/admin-access-identity.test.ts \
+            tests/admin-access-verification.test.ts
