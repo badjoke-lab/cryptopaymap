@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:4066c79af41d11017ae8ba3158363a0cf59db1569448a874227bb9d460dc62ee",
+  "authorizationId": "sha256:96e847d766c01dec3089c7d377536d8a0e2d614a6d85b5374b5cde598d86b7e9",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
-  "approvedCommit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
-  "generatedAt": "2026-07-30T16:32:40.622Z",
-  "workflowRunId": "30561885222",
+  "approvedCommit": "79293b74a4c3bed49efe63aecc7c9fbf56a006c9",
+  "generatedAt": "2026-07-30T17:25:20.338Z",
+  "workflowRunId": "30565852238",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -15,26 +15,26 @@
   "checks": {
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
-      "state": "current",
+      "state": "failed",
       "generatedAt": "2026-07-30T16:31:23.011Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
-      "state": "current",
+      "state": "failed",
       "generatedAt": "2026-07-30T16:32:13.933Z"
     },
     "predecessors": [
       {
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
-        "state": "current",
+        "state": "failed",
         "generatedAt": "2026-07-30T15:28:57.702Z",
         "expiresAt": "2026-08-02T15:28:57.702Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
-        "state": "current",
+        "state": "failed",
         "generatedAt": "2026-07-30T15:30:15.417Z",
         "expiresAt": "2026-08-02T15:30:15.417Z"
       },
@@ -77,11 +77,15 @@
     "predecessorBinding": "unproven"
   },
   "blockers": [
+    "P6-01:failed",
+    "P6-02:failed",
     "P6-03:missing",
     "P6-04:missing",
     "P6-05:missing",
     "P6-06:missing",
     "P6-07:missing",
-    "explicit_dispatch:required"
+    "deployment_receipt:failed",
+    "explicit_dispatch:required",
+    "live_audit_receipt:failed"
   ]
 }
