@@ -1,27 +1,27 @@
 {
   "version": 1,
-  "authorizationId": "sha256:fbb7f49f5c5c826cf600daadbd245f96cb03e68a1b8f0ebf21265c155f2a15d7",
+  "authorizationId": "sha256:4066c79af41d11017ae8ba3158363a0cf59db1569448a874227bb9d460dc62ee",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
-  "generatedAt": "2026-07-30T15:36:21.400Z",
-  "workflowRunId": "30557494502",
+  "generatedAt": "2026-07-30T16:32:40.622Z",
+  "workflowRunId": "30561885222",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
-    "observer": "sha256:e8b33f36bb91db6f5a8371cd93cb4cd306c44ffcfe7817fa1376c4e51553dde3",
-    "rollbackOwner": "sha256:e62da0e5c16ce4c90e2542b6b81252fa41760d54f0ce9e19a28b66960b8b782d"
+    "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
+    "rollbackOwner": "sha256:d0cd171be8090d5e3b850f17a2cf6be2d8f587c99e9e4621cd350e1e6ba51506"
   },
   "checks": {
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-30T15:23:50.340Z"
+      "generatedAt": "2026-07-30T16:31:23.011Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-30T15:24:35.788Z"
+      "generatedAt": "2026-07-30T16:32:13.933Z"
     },
     "predecessors": [
       {
