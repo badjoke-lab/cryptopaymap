@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:274b5a6052f6ceb031ef2864b02db6d33338e394af28ecbe879d784b13ae65fe",
+  "authorizationId": "sha256:87d98402e8c5e276167cf70f61872baecdddb32ddaa933ade2b5e32a7d081871",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
-  "approvedCommit": "aae8d8cb4d5797e35e5895b1e7fb774e07b6efca",
-  "generatedAt": "2026-07-30T02:47:06.851Z",
-  "workflowRunId": "30509374969",
+  "approvedCommit": "09c2e377fcfbd65273497bfb2297a7543361fd15",
+  "generatedAt": "2026-07-30T15:24:02.327Z",
+  "workflowRunId": "30556453793",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -16,27 +16,27 @@
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-30T02:46:46.807Z"
+      "generatedAt": "2026-07-30T15:23:50.340Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
       "state": "failed",
-      "generatedAt": "2026-07-29T17:44:10.922Z"
+      "generatedAt": "2026-07-30T02:50:51.485Z"
     },
     "predecessors": [
       {
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "failed",
-        "generatedAt": "2026-07-29T17:47:54.080Z",
-        "expiresAt": "2026-08-01T17:47:54.080Z"
+        "generatedAt": "2026-07-30T02:51:30.870Z",
+        "expiresAt": "2026-08-02T02:51:30.870Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
-        "state": "missing",
-        "generatedAt": null,
-        "expiresAt": null
+        "state": "failed",
+        "generatedAt": "2026-07-30T02:52:35.016Z",
+        "expiresAt": "2026-08-02T02:52:35.016Z"
       },
       {
         "evidenceId": "P6-03",
@@ -78,7 +78,7 @@
   },
   "blockers": [
     "P6-01:failed",
-    "P6-02:missing",
+    "P6-02:failed",
     "P6-03:missing",
     "P6-04:missing",
     "P6-05:missing",
