@@ -1,4 +1,4 @@
-name: OPS-P6-001E format and lint fix once
+name: OPS-P6-001E format fix once
 
 on:
   push:
@@ -13,6 +13,8 @@ permissions:
 jobs:
   fix:
     runs-on: ubuntu-24.04
+    env:
+      FORMAT_REVISION: '2'
     steps:
       - uses: actions/checkout@v4
         with:
@@ -22,15 +24,15 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Apply bounded safe Biome fixes
+      - name: Format bounded files
         run: |
-          npx biome check --write \
+          npx biome format --write \
             scripts/run-ops-p6-001e-configured-staging-identity-admin.ts \
             src/admin/access/identity.ts \
             src/admin/access/verification.ts \
             tests/admin-access-identity.test.ts \
             tests/admin-access-verification.test.ts
-      - name: Commit bounded fixes
+      - name: Commit bounded formatting
         run: |
           set -euo pipefail
           git config user.name 'github-actions[bot]'
@@ -42,8 +44,8 @@ jobs:
             tests/admin-access-identity.test.ts \
             tests/admin-access-verification.test.ts
           if git diff --cached --quiet; then
-            echo 'No bounded fixes required.'
+            echo 'No bounded formatting required.'
             exit 0
           fi
-          git commit -m 'OPS-P6-001E apply bounded Biome fixes'
+          git commit -m 'OPS-P6-001E apply Biome formatting'
           git push origin HEAD:agent/ops-p6-001e-configured-staging-p6-02
