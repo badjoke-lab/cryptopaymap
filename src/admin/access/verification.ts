@@ -5,10 +5,10 @@ import type {
   DerivedStagingServiceConfiguration,
 } from './config';
 import {
-  createDerivedStagingServiceIdentity,
-  parseVerifiedAdminAccessIdentity,
   type AdminAccessIdentity,
+  createDerivedStagingServiceIdentity,
   type DerivedStagingServiceRole,
+  parseVerifiedAdminAccessIdentity,
 } from './identity';
 
 const maximumAssertionLength = 16_384;

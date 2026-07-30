@@ -1,3 +1,5 @@
+OPS-P6-001F is implementing a staging-only derived service authentication boundary while retaining Cloudflare Access as the production/default mode. No production, DNS, canonical data, or public release activation is changed.
+
 # CryptoPayMap project status
 
 **Last verified:** 2026-07-30

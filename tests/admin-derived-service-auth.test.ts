@@ -9,11 +9,7 @@ const publisherKey = new Uint8Array(32).fill(23);
 function base64Url(value: Uint8Array): string {
   let binary = '';
   for (const byte of value) binary += String.fromCharCode(byte);
-  return globalThis
-    .btoa(binary)
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_');
+  return globalThis.btoa(binary).replace(/=/g, '').replace(/\+/g, '-').replace(/\//g, '_');
 }
 
 const configuration: DerivedStagingServiceConfiguration = {
@@ -38,13 +34,7 @@ async function signedRequest(
     false,
     ['sign'],
   );
-  const message = [
-    'cryptopaymap-staging-admin-v1',
-    role,
-    timestamp,
-    method,
-    path,
-  ].join('\n');
+  const message = ['cryptopaymap-staging-admin-v1', role, timestamp, method, path].join('\n');
   const signature = new Uint8Array(
     await globalThis.crypto.subtle.sign('HMAC', cryptoKey, new TextEncoder().encode(message)),
   );
@@ -62,9 +52,13 @@ async function signedRequest(
 describe('derived staging service authentication', () => {
   it('returns distinct bounded reviewer and publisher identities', async () => {
     await expect(
-      verifyAdminAccessRequest(await signedRequest('reviewer', '/admin/api/dashboard'), configuration, {
-        now: () => now,
-      }),
+      verifyAdminAccessRequest(
+        await signedRequest('reviewer', '/admin/api/dashboard'),
+        configuration,
+        {
+          now: () => now,
+        },
+      ),
     ).resolves.toEqual({
       actorId: 'cryptopaymap-service:staging-service:reviewer',
       actorType: 'system',
