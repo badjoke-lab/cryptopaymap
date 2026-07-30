@@ -87,6 +87,36 @@ describe('Cloudflare Access assertion verification', () => {
     expect(runtime.verify).toHaveBeenCalledOnce();
   });
 
+  it('returns a bounded system identity for a cryptographically verified service token', async () => {
+    const runtime = dependencies();
+    const commonName = '8f64ab31d9e844d491e42d31b3c1a201.access';
+    const request = new Request('https://cryptopaymap.example/admin', {
+      headers: {
+        'Cf-Access-Jwt-Assertion': assertion({ sub: '', email: null, common_name: commonName }),
+      },
+    });
+
+    await expect(
+      verifyAdminAccessRequest(request, configuration, runtime.dependencies),
+    ).resolves.toEqual({
+      actorId: `cloudflare-access:service-token:${commonName}`,
+      actorType: 'system',
+      subject: `service-token:${commonName}`,
+      email: null,
+    });
+  });
+
+  it('rejects an empty verified subject without a valid service-token common name', async () => {
+    const runtime = dependencies();
+    const request = new Request('https://cryptopaymap.example/admin', {
+      headers: { 'Cf-Access-Jwt-Assertion': assertion({ sub: '', email: null }) },
+    });
+
+    await expect(
+      verifyAdminAccessRequest(request, configuration, runtime.dependencies),
+    ).rejects.toThrow('verified Cloudflare Access identity payload is invalid');
+  });
+
   it('rejects a request without an Access assertion before fetching signing keys', async () => {
     const runtime = dependencies();
 
