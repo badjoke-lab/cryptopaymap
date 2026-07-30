@@ -1,7 +1,7 @@
 # Admin Access configuration contract
 
 **Status:** Active repository contract  
-**Last updated:** 2026-07-08
+**Last updated:** 2026-07-30
 
 ## Purpose
 
@@ -9,7 +9,7 @@ CryptoPayMap administration uses a verified Cloudflare Access identity and separ
 
 This document explains the identifier format expected by repository configuration keys. It does not contain live allowlist values, Access policy details, secrets, or production configuration.
 
-## Verified identity forms
+## Verified human identity forms
 
 The verified Access payload supplies a stable subject identifier in `sub`.
 
@@ -37,13 +37,34 @@ The example above is illustrative only and is not a live configuration value.
 
 Email addresses are metadata only. Email is not used as an authorization identifier.
 
+## Verified service-token identity forms
+
+A Cloudflare Access service-token JWT is accepted only after cryptographic signature, issuer, audience, expiration, and not-before validation. Its verified payload uses an empty `sub` and a bounded `common_name` ending in `.access`.
+
+CryptoPayMap normalizes that verified service identity as:
+
+```text
+Access service-token common name
+<common_name>.access
+
+Subject-based allowlist value
+service-token:<common_name>.access
+
+Normalized actor ID
+cloudflare-access:service-token:<common_name>.access
+```
+
+Service-token client IDs and client secrets are never authorization identifiers by themselves and are never committed. The `common_name` is used only after it is received inside a fully verified Access JWT.
+
+An empty `sub` without a valid verified service-token `common_name` fails closed. A service-token identity containing a user email also fails closed.
+
 ## Configuration families
 
 All allowlists are serialized JSON arrays of strings.
 
 ### Subject-based allowlists
 
-These keys require the raw verified Access `sub` value:
+These keys require the normalized verified subject value:
 
 - `CPM_ADMIN_DASHBOARD_SUBJECTS`;
 - `CPM_ADMIN_CANDIDATE_SUBJECTS`;
@@ -53,32 +74,44 @@ These keys require the raw verified Access `sub` value:
 - `CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS`;
 - `CPM_ADMIN_RECONFIRMATION_SUBJECTS`.
 
-Illustrative shape:
+Human illustrative shape:
 
 ```json
 ["reviewer-subject"]
 ```
 
+Service identity illustrative shape:
+
+```json
+["service-token:example-service-identity.access"]
+```
+
 ### Actor-ID-based allowlists
 
-These keys require the normalized actor ID derived from the verified subject:
+These keys require the normalized actor ID derived from the verified identity:
 
 - `CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS`;
 - `CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS`;
 - `CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS`;
 - `CPM_ADMIN_AUDIT_READ_ACTOR_IDS`.
 
-Illustrative shape:
+Human illustrative shape:
 
 ```json
 ["cloudflare-access:reviewer-subject"]
+```
+
+Service identity illustrative shape:
+
+```json
+["cloudflare-access:service-token:example-service-identity.access"]
 ```
 
 ## One operator across multiple boundaries
 
 An operator who needs capabilities from both configuration families must be represented in both formats in the relevant allowlists.
 
-For the same verified Access identity:
+For the same verified human Access identity:
 
 ```text
 subject-based key
@@ -88,7 +121,17 @@ actor-ID-based key
 cloudflare-access:reviewer-subject
 ```
 
-Do not copy the normalized actor ID into a subject-based key. Do not copy the raw subject into an actor-ID-based key. Both mistakes fail authorization closed.
+For the same verified service identity:
+
+```text
+subject-based key
+service-token:example-service-identity.access
+
+actor-ID-based key
+cloudflare-access:service-token:example-service-identity.access
+```
+
+Do not copy an actor ID into a subject-based key. Do not remove the `service-token:` namespace from a verified service identity. Both mistakes fail authorization closed.
 
 ## Capability boundaries
 
@@ -96,14 +139,14 @@ The repository currently separates these capabilities:
 
 | Operation | Capability | Identifier family |
 |---|---|---|
-| Dashboard read | `dashboard:read` | Access subject |
-| Candidate queue/detail read | `candidate:read` | Access subject |
-| Duplicate resolution | `candidate:resolve` | Access subject |
-| Promotion and existing-target linking | `candidate:promote` | Access subject |
-| Existing-Location correction | `location:correct` | Access subject |
-| Evidence review | `evidence:review` | Access subject |
-| Reconfirmation read | `claim:recheck` | Access subject |
-| Reconfirmation expiration | `claim:expire` | Access subject authorization |
+| Dashboard read | `dashboard:read` | verified subject |
+| Candidate queue/detail read | `candidate:read` | verified subject |
+| Duplicate resolution | `candidate:resolve` | verified subject |
+| Promotion and existing-target linking | `candidate:promote` | verified subject |
+| Existing-Location correction | `location:correct` | verified subject |
+| Evidence review | `evidence:review` | verified subject |
+| Reconfirmation read | `claim:recheck` | verified subject |
+| Reconfirmation expiration | `claim:expire` | verified subject authorization |
 | Media review | `media:review` | normalized actor ID |
 | Export release decision | `export:release` | normalized actor ID |
 | Publication and restore mutation | `export:publish` | normalized actor ID |
@@ -117,8 +160,8 @@ The repository intentionally distinguishes authorization identity from expiratio
 
 A manual protected reconfirmation expiration request:
 
-1. verifies a human Access identity;
-2. authorizes the raw Access subject against `CPM_ADMIN_RECONFIRMATION_SUBJECTS`;
+1. verifies an Access identity;
+2. authorizes the verified subject against `CPM_ADMIN_RECONFIRMATION_SUBJECTS`;
 3. preserves the normalized operator `actorId` in the mutation context;
 4. records `actorType: system` for the expiration transition contract;
 5. requires a UUID `Idempotency-Key`.
@@ -146,6 +189,7 @@ Administration authorization must fail closed when:
 - the verified identity is missing;
 - the identifier is present in the wrong representation;
 - the verified identifier is not allowlisted;
+- a service-token assertion lacks a valid verified `common_name`;
 - a mutation requires an idempotency key and the key is missing or invalid.
 
 ## Environment verification boundary
@@ -155,9 +199,10 @@ Repository tests can verify parsing, deterministic identity normalization, polic
 Repository tests do not prove:
 
 - the live Cloudflare Access application policy;
-- the actual production Access subject values;
-- the actual production actor-ID allowlist values;
+- the actual staging or production Access identity values;
+- the actual subject-based or actor-ID-based allowlist values;
 - environment-variable propagation to deployed Functions;
-- live identity claims received from Cloudflare Access.
+- live identity claims received from Cloudflare Access;
+- capability separation for configured live identities.
 
-Those checks must be classified explicitly during P4-18D/P4-18E environment verification. Live values must not be committed to the repository.
+Those checks require configured-environment execution. Live values and credentials must not be committed to the repository.
