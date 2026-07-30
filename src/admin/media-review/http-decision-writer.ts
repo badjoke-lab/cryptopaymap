@@ -8,14 +8,20 @@ import {
   type MediaReviewMutationContext,
 } from './decision';
 import { createDrizzleMediaReviewBackend } from './drizzle-backend';
+import {
+  createStagingDurableObjectMediaBuckets,
+  type StagingMediaDurableObjectNamespace,
+} from './durable-object-storage';
 import { createR2MediaStorageAdapter, type R2BucketLike } from './r2-storage';
 import { createStorageAwareMediaReviewBackend } from './storage-backend';
 import { MediaStorageError } from './storage-contract';
 
 export interface MediaDecisionEnvironment extends MediaReviewAuthorizationEnvironment {
   DATABASE_URL?: string;
+  CPM_ADMIN_AUTH_MODE?: string;
   CPM_MEDIA_PRIVATE_BUCKET?: R2BucketLike;
   CPM_MEDIA_PUBLIC_BUCKET?: R2BucketLike;
+  CPM_STAGING_MEDIA_OBJECTS?: StagingMediaDurableObjectNamespace;
 }
 
 function databaseUrl(environment: MediaDecisionEnvironment): string {
@@ -28,6 +34,15 @@ function databaseUrl(environment: MediaDecisionEnvironment): string {
 }
 
 function storageAdapter(environment: MediaDecisionEnvironment) {
+  if (
+    environment.CPM_ADMIN_AUTH_MODE === 'derived_staging_service' &&
+    environment.CPM_STAGING_MEDIA_OBJECTS !== undefined
+  ) {
+    const { privateBucket, publicBucket } = createStagingDurableObjectMediaBuckets(
+      environment.CPM_STAGING_MEDIA_OBJECTS,
+    );
+    return createR2MediaStorageAdapter(privateBucket, publicBucket);
+  }
   if (
     environment.CPM_MEDIA_PRIVATE_BUCKET === undefined ||
     environment.CPM_MEDIA_PUBLIC_BUCKET === undefined
