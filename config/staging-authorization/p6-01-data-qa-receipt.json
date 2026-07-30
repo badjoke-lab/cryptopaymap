@@ -4,10 +4,10 @@
   "launchDomain": "data_qa",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "92779fbafe7ad736b87186301eba87ebb8c98fd5",
-  "generatedAt": "2026-07-29T17:47:54.080Z",
-  "expiresAt": "2026-08-01T17:47:54.080Z",
-  "workflowRunId": "30476805732",
+  "commit": "aae8d8cb4d5797e35e5895b1e7fb774e07b6efca",
+  "generatedAt": "2026-07-30T02:51:30.870Z",
+  "expiresAt": "2026-08-02T02:51:30.870Z",
+  "workflowRunId": "30509541221",
   "owner": "sha256:4a5701af8e3ea2fb4bca65bd906ff5ca207275391449d555160c85744a3dd3b5",
   "procedure": "OPS-P6-001D configured staging data QA",
   "checks": {
@@ -22,12 +22,12 @@
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-29T17:43:31.130Z"
+      "generatedAt": "2026-07-30T02:46:46.807Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-29T17:44:10.922Z"
+      "generatedAt": "2026-07-30T02:50:51.485Z"
     },
     "publicProjection": {
       "status": "passed",
@@ -86,7 +86,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:996d667e8a14b8be781788d8e73e3b7b8c7d3230b4499bdfe9b29d357838f7cd",
+    "releaseId": "sha256:f3a90abe3b88e711f807df2a0c23646f9c19768909601487b85d3ae0b389951d",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
