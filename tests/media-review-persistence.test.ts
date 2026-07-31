@@ -16,10 +16,7 @@ const durableDecision = {
   rightsStatus: 'licensed' as const,
   visibility: 'public' as const,
   decidedAt: new Date('2026-07-03T00:00:00.000Z'),
-  publicFileIds: [
-    '40000000-0000-4000-8000-000000000002',
-    '40000000-0000-4000-8000-000000000001',
-  ],
+  publicFileIds: ['40000000-0000-4000-8000-000000000002', '40000000-0000-4000-8000-000000000001'],
   requestFingerprint: 'fingerprint',
 };
 

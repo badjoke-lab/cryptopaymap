@@ -13,9 +13,7 @@ import {
 } from './drizzle-state';
 import { runMediaReviewBatch } from './run-batch';
 
-type DurableMediaReviewDecision = NonNullable<
-  Awaited<ReturnType<typeof readMediaReviewDecision>>
->;
+type DurableMediaReviewDecision = NonNullable<Awaited<ReturnType<typeof readMediaReviewDecision>>>;
 
 export function replayMatchingMediaReviewDecision(
   existing: DurableMediaReviewDecision | null,
