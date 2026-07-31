@@ -68,6 +68,9 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Check Astro and TypeScript
+        run: npm run check
+
       - name: Check repository P6-04 evidence contract
         run: node scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js
 
@@ -129,6 +132,7 @@ jobs:
         continue-on-error: true
         working-directory: source
         run: |
+          npm run check
           node scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js
           node scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs
           npx tsx scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts --self-test
