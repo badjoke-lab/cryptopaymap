@@ -1,11 +1,6 @@
 name: OPS-P6-001H exact-main configured evidence refresh
 
 on:
-  push:
-    branches:
-      - agent/ops-p6-001h-exact-main-refresh
-    paths:
-      - '.github/workflows/ops-p6-001h-exact-main-refresh.yml'
   pull_request:
     branches:
       - main
@@ -18,7 +13,7 @@ permissions:
 
 concurrency:
   group: ops-p6-001h-exact-main-refresh
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   refresh:
