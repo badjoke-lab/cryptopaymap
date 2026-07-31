@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+      - agent/ops-p6-001h-exact-main-dispatch
     paths:
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
       - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
@@ -46,6 +47,7 @@ on:
         type: string
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -65,11 +67,13 @@ jobs:
           node-version: 24
 
       - name: Run fail-closed authorization self-test
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: node scripts/evaluate-ops-p6-001c-staging-authorization.mjs --self-test
 
   evaluate:
     if: >-
-      github.event_name == 'push' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' &&
       github.event.workflow_run.conclusion == 'success' &&
