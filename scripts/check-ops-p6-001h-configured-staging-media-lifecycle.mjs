@@ -5,14 +5,8 @@ const files = {
     '.github/workflows/ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml',
     'utf8',
   ),
-  procedure: readFileSync(
-    'docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md',
-    'utf8',
-  ),
-  executor: readFileSync(
-    'scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts',
-    'utf8',
-  ),
+  procedure: readFileSync('docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md', 'utf8'),
+  executor: readFileSync('scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts', 'utf8'),
   worker: readFileSync('workers/submission-rate-limit/index.ts', 'utf8'),
   adminRoute: readFileSync('functions/admin/api/staging-media-object.ts', 'utf8'),
   publicRoute: readFileSync('functions/media/staging/[[path]].ts', 'utf8'),

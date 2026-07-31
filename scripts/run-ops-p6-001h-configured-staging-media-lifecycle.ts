@@ -110,9 +110,7 @@ function readPredecessor(
           : 'failed',
     generatedAt,
     expiresAt,
-    binding: current
-      ? Object.fromEntries(bindingKeys.map((key) => [key, binding?.[key]]))
-      : null,
+    binding: current ? Object.fromEntries(bindingKeys.map((key) => [key, binding?.[key]])) : null,
   };
 }
 
@@ -120,7 +118,7 @@ function sharedBinding(predecessors: ReturnType<typeof readPredecessor>[]) {
   if (predecessors.some((item) => item.state !== 'current' || item.binding === null)) return null;
   const first = JSON.stringify(predecessors[0]?.binding);
   return predecessors.every((item) => JSON.stringify(item.binding) === first)
-    ? predecessors[0]?.binding ?? null
+    ? (predecessors[0]?.binding ?? null)
     : null;
 }
 
@@ -158,20 +156,13 @@ function signedHeaders(
   return {
     'X-CPM-Admin-Role': role,
     'X-CPM-Admin-Timestamp': timestamp,
-    'X-CPM-Admin-Signature': createHmac(
-      'sha256',
-      Buffer.from(keyBase64Url, 'base64url'),
-    )
+    'X-CPM-Admin-Signature': createHmac('sha256', Buffer.from(keyBase64Url, 'base64url'))
       .update(message)
       .digest('base64url'),
   };
 }
 
-async function requestSummary(
-  url: URL,
-  init: RequestInit,
-  expectedBytes?: Uint8Array,
-) {
+async function requestSummary(url: URL, init: RequestInit, expectedBytes?: Uint8Array) {
   const response = await fetch(url, { ...init, redirect: 'manual', cache: 'no-store' });
   const bytes = new Uint8Array(await response.arrayBuffer());
   const text = new TextDecoder().decode(bytes).slice(0, 8_192);
@@ -191,7 +182,8 @@ async function requestSummary(
     width: response.headers.get('x-cpm-image-width'),
     height: response.headers.get('x-cpm-image-height'),
     bodyDigest: sha256(bytes),
-    expectedBodyMatches: expectedBytes === undefined ? null : sha256(bytes) === sha256(expectedBytes),
+    expectedBodyMatches:
+      expectedBytes === undefined ? null : sha256(bytes) === sha256(expectedBytes),
     json,
     noPrivateLeakage: !/(database_url|secret|token|storagekey|signedurl|contact)/i.test(text),
   };
@@ -205,16 +197,22 @@ function objectUrl(baseUrl: URL, scope: 'private' | 'public', key: string) {
 }
 
 async function cleanupDatabase(database: ReturnType<typeof createDatabase>) {
-  await database.delete(mediaReviewDecisions).where(eq(mediaReviewDecisions.mediaAssetId, fixture.mediaAssetId));
+  await database
+    .delete(mediaReviewDecisions)
+    .where(eq(mediaReviewDecisions.mediaAssetId, fixture.mediaAssetId));
   await database.delete(mediaFiles).where(eq(mediaFiles.mediaAssetId, fixture.mediaAssetId));
   await database.delete(mediaAssets).where(eq(mediaAssets.id, fixture.mediaAssetId));
 }
 
-async function seedDatabase(database: ReturnType<typeof createDatabase>, seededAt: Date, hashes: {
-  original: string;
-  display: string;
-  thumbnail: string;
-}) {
+async function seedDatabase(
+  database: ReturnType<typeof createDatabase>,
+  seededAt: Date,
+  hashes: {
+    original: string;
+    display: string;
+    thumbnail: string;
+  },
+) {
   await database.insert(mediaAssets).values({
     id: fixture.mediaAssetId,
     purpose: 'public_gallery_candidate',
@@ -513,12 +511,7 @@ async function executeLifecycle(input: {
         'X-CPM-Content-Hash': hashes.thumbnail,
       },
     );
-    const privateOriginal = await adminRequest(
-      'GET',
-      originalUrl,
-      'reviewer',
-      input.reviewerKey,
-    );
+    const privateOriginal = await adminRequest('GET', originalUrl, 'reviewer', input.reviewerKey);
     const publicBeforeApproval = await requestSummary(
       new URL(publicPath(fixture.displayFileId, hashes.display), input.baseUrl),
       { method: 'GET' },
@@ -620,7 +613,12 @@ async function executeLifecycle(input: {
     const deletedHeads = [];
     for (const [scope, key] of allObjectLocations) {
       deletedHeads.push(
-        await adminRequest('HEAD', objectUrl(input.baseUrl, scope, key), 'reviewer', input.reviewerKey),
+        await adminRequest(
+          'HEAD',
+          objectUrl(input.baseUrl, scope, key),
+          'reviewer',
+          input.reviewerKey,
+        ),
       );
     }
     objectCleanup = deletedHeads.every((result) => result.status === 404) ? 'passed' : 'failed';
@@ -786,7 +784,8 @@ export async function evaluateConfiguredStagingMediaLifecycle(input: {
   if (input.approvedCommit !== input.currentMainCommit) blockers.push('exact_main:mismatch');
   if (input.repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
   for (const predecessor of predecessors) {
-    if (predecessor.state !== 'current') blockers.push(`${predecessor.evidenceId}:${predecessor.state}`);
+    if (predecessor.state !== 'current')
+      blockers.push(`${predecessor.evidenceId}:${predecessor.state}`);
   }
   if (binding === null) blockers.push('predecessor_binding:mismatch');
   if (!input.databaseUrl) blockers.push('database:missing');
@@ -889,7 +888,10 @@ async function runSelfTest() {
     const predecessors = predecessorPaths.map(([evidence, path]) =>
       readPredecessor(root, evidence, path, commit, now),
     );
-    if (predecessors.some((item) => item.state !== 'current') || sharedBinding(predecessors) === null) {
+    if (
+      predecessors.some((item) => item.state !== 'current') ||
+      sharedBinding(predecessors) === null
+    ) {
       throw new Error('valid predecessor fixtures were not accepted');
     }
     if (sha256(webpBytes).length !== 64 || sha256(pngBytes).length !== 64) {
