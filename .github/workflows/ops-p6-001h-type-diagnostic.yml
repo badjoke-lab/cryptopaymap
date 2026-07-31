@@ -1,30 +1,57 @@
-name: OPS-P6-001H type diagnostic
+name: OPS-P6-001H formatter
 
 on:
-  pull_request:
+  push:
     branches:
-      - main
+      - agent/ops-p6-001h-configured-r2-media-lifecycle
     paths:
       - '.github/workflows/ops-p6-001h-type-diagnostic.yml'
-      - 'functions/admin/api/staging-media-object.ts'
-      - 'functions/media/staging/[[path]].ts'
-      - 'src/admin/media-review/durable-object-storage.ts'
-      - 'src/admin/media-review/http-decision-writer.ts'
-      - 'workers/submission-rate-limit/index.ts'
-      - 'wrangler.jsonc'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
+  format:
     runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Check out P6-04 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001h-configured-r2-media-lifecycle
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
-      - run: npm ci
-      - name: Run Astro and TypeScript check
-        run: npm run check
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format bounded P6-04 files
+        run: |
+          npx biome format --write \
+            .github/workflows/ops-p6-001c-configured-staging-authorization.yml \
+            .github/workflows/ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml \
+            docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md \
+            functions/admin/api/staging-media-object.ts \
+            'functions/media/staging/[[path]].ts' \
+            scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs \
+            scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts \
+            src/admin/media-review/durable-object-storage.ts \
+            src/admin/media-review/http-decision-writer.ts \
+            workers/submission-rate-limit/index.ts \
+            wrangler.jsonc
+
+      - name: Remove temporary formatter workflow
+        run: rm .github/workflows/ops-p6-001h-type-diagnostic.yml
+
+      - name: Commit formatted P6-04 branch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          git diff --cached --quiet && exit 0
+          git commit -m 'Format P6-04 configured media lifecycle'
+          git push origin HEAD:agent/ops-p6-001h-configured-r2-media-lifecycle
