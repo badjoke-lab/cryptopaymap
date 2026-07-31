@@ -1,0 +1,223 @@
+name: OPS-P6-001I configured staging P6-05 public export release
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001i-configured-staging-p6-05-public-export-release.yml'
+      - 'docs/OPS_P6_001I_CONFIGURED_STAGING_P6_05_PUBLIC_EXPORT_RELEASE.md'
+      - 'scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs'
+      - 'scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs'
+      - 'scripts/check-p6-05-configured-public-export-release-evidence.js'
+      - 'scripts/check-staging-review-artifact.mjs'
+      - 'scripts/materialize-staging-review-data.mjs'
+      - 'scripts/prepare-staging-review-artifact.mjs'
+      - 'src/admin/export-release/**'
+      - 'src/publication/**'
+      - 'src/schemas/public-exports.ts'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001i-configured-staging-p6-05-public-export-release.yml'
+      - 'docs/OPS_P6_001I_CONFIGURED_STAGING_P6_05_PUBLIC_EXPORT_RELEASE.md'
+      - 'scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs'
+      - 'scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs'
+      - 'scripts/check-p6-05-configured-public-export-release-evidence.js'
+      - 'scripts/check-staging-review-artifact.mjs'
+      - 'scripts/materialize-staging-review-data.mjs'
+      - 'scripts/prepare-staging-review-artifact.mjs'
+      - 'src/admin/export-release/**'
+      - 'src/publication/**'
+      - 'src/schemas/public-exports.ts'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_05 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      release_owner:
+        description: Bounded configured staging release owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001i-configured-staging-p6-05-public-export-release
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-05 evidence contract
+        run: node scripts/check-p6-05-configured-public-export-release-evidence.js
+
+      - name: Check configured P6-05 execution contract
+        run: node scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs
+
+      - name: Run configured P6-05 self-test
+        run: node scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      RELEASE_OWNER: ${{ inputs.release_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          echo "CURRENT_MAIN_COMMIT=$current_main_commit" >> "$GITHUB_ENV"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-05-configured-public-export-release-evidence.js
+          node scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs
+          node scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs --self-test
+
+      - name: Execute configured P6-05 release and write receipt
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs \
+            ../status \
+            ../p6-05-public-export-release-receipt.json
+
+      - name: Upload bounded P6-05 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001i-configured-staging-p6-05-public-export-release
+          path: p6-05-public-export-release-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish configured P6-05 receipt to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-05-public-export-release-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-05-public-export-release-receipt.json \
+            status/config/staging-authorization/p6-05-public-export-release-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-05-public-export-release-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-05 public export release receipt'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Refresh configured authorization inventory
+        if: always()
+        env:
+          EVALUATION_MODE: inventory
+          LAUNCH_OWNER: inventory:automation
+          OBSERVER: inventory:unassigned-observer
+          ROLLBACK_OWNER: inventory:unassigned-rollback-owner
+        run: |
+          set -euo pipefail
+          export CONFIRMATION=AUTHORIZE_CONFIGURED_STAGING
+          node source/scripts/evaluate-ops-p6-001c-staging-authorization.mjs \
+            status \
+            configured-staging-authorization-receipt.json
+          cp configured-staging-authorization-receipt.json \
+            status/config/staging-authorization/authorization-receipt.json
+          git -C status add config/staging-authorization/authorization-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Refresh configured staging authorization inventory after P6-05'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Write configured P6-05 summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-05-public-export-release-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(
+            readFileSync('p6-05-public-export-release-receipt.json', 'utf8'),
+          );
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-05 public export and release evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Deterministic generation: \`${receipt.checks.deterministicGeneration.status}\``,
+              `- Artifact validation: \`${receipt.checks.artifactValidation.status}\``,
+              `- Candidate activation: \`${receipt.checks.activation.status}\``,
+              `- Baseline rollback and candidate restore: \`${receipt.checks.rollback.status}\``,
+              `- External verification: \`${receipt.checks.external.status}\``,
+              `- Final active release: \`${receipt.checks.finalState.activeKind}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce configured P6-05 acceptance
+        if: always()
+        run: |
+          node -e "const r=require('./p6-05-public-export-release-receipt.json'); if(r.state!=='accepted') process.exit(1)"
+          node -e "const r=require('./configured-staging-authorization-receipt.json'); const s=new Map(r.checks.predecessors.map(x=>[x.evidenceId,x.state])); for(const id of ['P6-01','P6-02','P6-03','P6-04','P6-05']) if(s.get(id)!=='current') process.exit(1)"
