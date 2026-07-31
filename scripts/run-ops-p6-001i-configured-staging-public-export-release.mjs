@@ -388,7 +388,13 @@ async function execute(statusRoot, outputPath) {
     predecessorBinding: binding === null ? 'failed' : 'matched',
     deterministicGeneration: { status: 'not_run', firstDigest: null, secondDigest: null },
     artifactValidation: { status: 'not_run', datasetVersion: null, schemaVersion: null },
-    topology: { status: 'not_run', productionBranch: null, customDomainCount: null },
+    topology: {
+      status: 'not_run',
+      productionBranch: null,
+      platformDomainPresent: false,
+      platformDomainMatches: false,
+      customDomainCount: null,
+    },
     releases: { status: 'not_run', baseline: null, candidate: null },
     activation: { status: 'not_run', candidateVisible: false },
     rollback: { status: 'not_run', baselineVisible: false, candidateRestored: false },
@@ -455,15 +461,25 @@ async function execute(statusRoot, outputPath) {
         throw new Error('artifact_identity_failed');
 
       const project = await cloudflareRequest('');
-      const customDomains = Array.isArray(project?.domains) ? project.domains : [];
+      const platformDomain = `${projectName}.pages.dev`;
+      const projectDomains = Array.isArray(project?.domains)
+        ? project.domains.filter((domain) => typeof domain === 'string')
+        : [];
+      const platformDomainPresent = projectDomains.includes(platformDomain);
+      const platformDomainMatches = project?.subdomain === platformDomain;
+      const customDomains = projectDomains.filter((domain) => domain !== platformDomain);
       checks.topology = {
         status:
           project?.name === projectName &&
           project?.production_branch === productionBranch &&
+          platformDomainPresent &&
+          platformDomainMatches &&
           customDomains.length === 0
             ? 'passed'
             : 'failed',
         productionBranch: project?.production_branch ?? null,
+        platformDomainPresent,
+        platformDomainMatches,
         customDomainCount: customDomains.length,
       };
       if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');

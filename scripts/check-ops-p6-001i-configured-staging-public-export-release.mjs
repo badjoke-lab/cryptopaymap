@@ -29,6 +29,8 @@ const expectations = [
   [files.workflow, 'CLOUDFLARE_API_TOKEN'],
   [files.workflow, 'CLOUDFLARE_ACCOUNT_ID'],
   [files.procedure, 'production branch: `staging-review`'],
+  [files.procedure, 'exact project platform hostname: `cryptopaymap-staging.pages.dev`'],
+  [files.procedure, 'Every other hostname remains disallowed and fails closed.'],
   [files.procedure, 'Preview deployments are never rollback targets.'],
   [files.procedure, 'Leave the exact candidate active'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_05'"],
@@ -38,6 +40,12 @@ const expectations = [
   [files.executor, 'cloudflareRequest(`/deployments/${deploymentId}/rollback`'],
   [files.executor, 'unrecognized_production_deployment'],
   [files.executor, "execFileSync('npm', ['run', 'staging:review:build']"],
+  [files.executor, 'const platformDomain = `${projectName}.pages.dev`'],
+  [files.executor, 'const platformDomainPresent = projectDomains.includes(platformDomain)'],
+  [files.executor, 'const platformDomainMatches = project?.subdomain === platformDomain'],
+  [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],
+  [files.executor, 'platformDomainPresent: false'],
+  [files.executor, 'platformDomainMatches: false'],
   [files.executor, 'candidateRestored: true'],
   [files.executor, "activeKind: 'candidate'"],
   [
@@ -77,8 +85,14 @@ if (/--branch\s+review\b/.test(files.executor)) {
 if (!files.executor.includes('project?.production_branch === productionBranch')) {
   throw new Error('OPS-P6-001I executor must fail closed on the Pages production branch.');
 }
+if (!files.executor.includes('platformDomainPresent &&')) {
+  throw new Error('OPS-P6-001I executor must require the exact Pages platform domain.');
+}
+if (!files.executor.includes('platformDomainMatches &&')) {
+  throw new Error('OPS-P6-001I executor must require the project subdomain to match.');
+}
 if (!files.executor.includes('customDomains.length === 0')) {
-  throw new Error('OPS-P6-001I executor must refuse custom-domain staging topology.');
+  throw new Error('OPS-P6-001I executor must refuse non-platform custom domains.');
 }
 
 console.log('OPS-P6-001I configured staging public export/release contract check passed.');
