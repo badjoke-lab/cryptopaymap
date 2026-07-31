@@ -452,18 +452,15 @@ async function executeLifecycle(input: {
       },
       Math.floor(input.now.getTime() / 1000) - 300,
     );
-    const forgedEmail = await adminRequest(
-      'PUT',
-      originalUrl,
-      'reviewer',
-      input.reviewerKey,
-      pngBytes,
-      {
+    const forgedEmail = await requestSummary(originalUrl, {
+      method: 'PUT',
+      headers: {
         'Content-Type': 'image/png',
         'X-CPM-Content-Hash': hashes.original,
         'Cf-Access-Authenticated-User-Email': 'forged@example.invalid',
       },
-    );
+      body: pngBytes,
+    });
     const invalidBytesResult = await adminRequest(
       'PUT',
       originalUrl,
