@@ -412,6 +412,25 @@ function stable(value: unknown): unknown {
   return value;
 }
 
+export function mediaReviewRequestFingerprint(
+  context: Pick<MediaReviewMutationContext, 'requestId' | 'actorId' | 'actorType'>,
+  input: MediaReviewDecisionInput,
+): string {
+  const expectedFiles = [...input.expectedFiles].sort((left, right) =>
+    left.id.localeCompare(right.id),
+  );
+  return JSON.stringify(
+    stable({
+      requestId: context.requestId,
+      actorId: context.actorId,
+      actorType: context.actorType,
+      ...input,
+      decidedAt: undefined,
+      expectedFiles,
+    }),
+  );
+}
+
 function buildCommand(
   context: MediaReviewMutationContext,
   input: MediaReviewDecisionInput,
@@ -419,15 +438,7 @@ function buildCommand(
   const expectedFiles = [...input.expectedFiles].sort((left, right) =>
     left.id.localeCompare(right.id),
   );
-  const requestFingerprint = JSON.stringify(
-    stable({
-      requestId: context.requestId,
-      actorId: context.actorId,
-      actorType: context.actorType,
-      ...input,
-      expectedFiles,
-    }),
-  );
+  const requestFingerprint = mediaReviewRequestFingerprint(context, input);
   return {
     requestId: context.requestId,
     actorId: context.actorId,
