@@ -1,0 +1,32 @@
+name: OPS-P6-001H type diagnostic
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001h-configured-r2-media-lifecycle
+    paths:
+      - '.github/workflows/ops-p6-001h-type-diagnostic.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out P6-04 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001h-configured-r2-media-lifecycle
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run Astro and TypeScript check
+        run: npm run check
