@@ -1,5 +1,4 @@
-import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync } from 'node:fs';
 
 const files = {
   workflow: readFileSync(
@@ -63,70 +62,3 @@ for (const [name, content] of Object.entries(files)) {
 }
 
 console.log('OPS-P6-001H configured staging Media lifecycle contract check passed.');
-
-if (
-  process.env.GITHUB_ACTIONS === 'true' &&
-  process.env.GITHUB_EVENT_NAME === 'pull_request' &&
-  process.env.GITHUB_HEAD_REF === 'agent/fix-p6-003-media-replay-evidence'
-) {
-  const branch = 'agent/fix-p6-003-media-replay-evidence';
-  execFileSync('git', ['fetch', 'origin', `${branch}:refs/remotes/origin/${branch}`], {
-    stdio: 'inherit',
-  });
-  execFileSync('git', ['switch', '--force-create', branch, `refs/remotes/origin/${branch}`], {
-    stdio: 'inherit',
-  });
-
-  const executorPath = 'scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts';
-  const source = readFileSync(executorPath, 'utf8');
-  const start = source.indexOf('    const forgedEmail = await adminRequest(\n');
-  const end = source.indexOf('    const invalidBytesResult = await adminRequest(\n', start);
-  if (start < 0 || end < 0) throw new Error('Forged-email probe patch markers are missing.');
-  const replacement = `    const forgedEmail = await requestSummary(originalUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'image/png',
-        'X-CPM-Content-Hash': hashes.original,
-        'Cf-Access-Authenticated-User-Email': 'forged@example.invalid',
-      },
-      body: pngBytes,
-    });
-`;
-  writeFileSync(executorPath, source.slice(0, start) + replacement + source.slice(end));
-
-  execFileSync(
-    'npx',
-    [
-      'biome',
-      'format',
-      '--write',
-      executorPath,
-      'src/admin/media-review/drizzle-write.ts',
-      'tests/media-review-persistence.test.ts',
-    ],
-    { stdio: 'inherit' },
-  );
-  execFileSync('npx', ['vitest', 'run', 'tests/media-review-persistence.test.ts'], {
-    stdio: 'inherit',
-  });
-  execFileSync('git', ['config', 'user.name', 'github-actions[bot]']);
-  execFileSync('git', [
-    'config',
-    'user.email',
-    '41898282+github-actions[bot]@users.noreply.github.com',
-  ]);
-  execFileSync('git', [
-    'add',
-    executorPath,
-    'src/admin/media-review/drizzle-write.ts',
-    'tests/media-review-persistence.test.ts',
-  ]);
-  try {
-    execFileSync('git', ['diff', '--cached', '--quiet']);
-  } catch {
-    execFileSync('git', ['commit', '-m', 'Fix P6-04 replay and forged-email evidence'], {
-      stdio: 'inherit',
-    });
-    execFileSync('git', ['push', 'origin', `HEAD:${branch}`], { stdio: 'inherit' });
-  }
-}
