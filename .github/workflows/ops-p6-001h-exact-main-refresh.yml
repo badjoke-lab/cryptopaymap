@@ -1,0 +1,117 @@
+name: OPS-P6-001H exact-main configured evidence refresh
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-001h-exact-main-refresh
+    paths:
+      - '.github/workflows/ops-p6-001h-exact-main-refresh.yml'
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: ops-p6-001h-exact-main-refresh
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    env:
+      APPROVED_COMMIT: 91c61ee4198079b9f97e1e022a97c6d7342134f2
+      DISPATCHER_BRANCH: agent/ops-p6-001h-exact-main-refresh
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out dispatcher branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001h-exact-main-refresh
+
+      - name: Verify unchanged exact main
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$current_main" = "$APPROVED_COMMIT"
+
+      - name: Refresh exact-main configured evidence in order
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dispatch_and_wait() {
+            workflow="$1"
+            shift
+
+            previous_run_id="$(gh run list \
+              --workflow "$workflow" \
+              --branch main \
+              --event workflow_dispatch \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId // empty')"
+
+            gh workflow run "$workflow" --ref main "$@"
+
+            run_id=''
+            for attempt in $(seq 1 60); do
+              candidate="$(gh run list \
+                --workflow "$workflow" \
+                --branch main \
+                --event workflow_dispatch \
+                --limit 1 \
+                --json databaseId \
+                --jq '.[0].databaseId // empty')"
+              if [ -n "$candidate" ] && [ "$candidate" != "$previous_run_id" ]; then
+                run_id="$candidate"
+                break
+              fi
+              sleep 5
+            done
+
+            test -n "$run_id"
+            echo "Watching $workflow run $run_id"
+            gh run watch "$run_id" --exit-status
+          }
+
+          dispatch_and_wait p5-02r-fixed-review-live-audit.yml
+
+          dispatch_and_wait \
+            ops-p6-001d-configured-staging-p6-01-data-qa.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_01 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f data_owner=ops-p6-001h:automation
+
+          dispatch_and_wait \
+            ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_02 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f identity_owner=ops-p6-001h:automation
+
+          dispatch_and_wait \
+            ops-p6-001g-configured-staging-p6-03-neon-transaction.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_03 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f transaction_owner=ops-p6-001h:automation
+
+          dispatch_and_wait \
+            ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_04 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f media_owner=ops-p6-001h:automation
+
+      - name: Remove one-time dispatcher workflow
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/ops-p6-001h-exact-main-refresh.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/ops-p6-001h-exact-main-refresh.yml
+          if ! git diff --cached --quiet; then
+            git commit -m 'OPS-P6-001H remove one-time exact-main refresh'
+            git push origin HEAD:"$DISPATCHER_BRANCH"
+          fi
