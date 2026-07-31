@@ -53,7 +53,9 @@ function validatedKey(value: unknown, scope: 'private' | 'public'): string | nul
   return match?.[1] === scope ? value : null;
 }
 
-function requestLocation(request: Request) {
+function requestLocation(
+  request: Request,
+): { scope: 'private' | 'public'; key: string } | null {
   const url = new URL(request.url);
   const scope = url.searchParams.get('scope');
   const key = url.searchParams.get('key');
@@ -163,15 +165,15 @@ async function handleStagingMediaObject(
     headers.set('X-CPM-Content-Hash', contentHash);
   }
 
+  const requestInit: RequestInit = {
+    method: context.request.method,
+    headers,
+  };
+  if (context.request.method === 'PUT') {
+    requestInit.body = await context.request.arrayBuffer();
+  }
   const response = await stub.fetch(
-    new Request(internalUrl(location.scope, location.key), {
-      method: context.request.method,
-      headers,
-      body:
-        context.request.method === 'PUT'
-          ? await context.request.arrayBuffer()
-          : undefined,
-    }),
+    new Request(internalUrl(location.scope, location.key), requestInit),
   );
   return withAdminSecurityHeaders(response);
 }
