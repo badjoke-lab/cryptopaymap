@@ -44,6 +44,8 @@ const expectations = [
   [files.executor, 'const platformDomainPresent = projectDomains.includes(platformDomain)'],
   [files.executor, 'const platformDomainMatches = project?.subdomain === platformDomain'],
   [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],
+  [files.executor, 'platformDomainPresent: false'],
+  [files.executor, 'platformDomainMatches: false'],
   [files.executor, 'candidateRestored: true'],
   [files.executor, "activeKind: 'candidate'"],
   [
