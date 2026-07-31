@@ -24,10 +24,13 @@ The configured target is the existing `cryptopaymap-staging` Pages project.
 Required topology:
 
 - production branch: `staging-review`;
-- no custom domain;
+- exact project platform hostname: `cryptopaymap-staging.pages.dev`;
+- no non-platform custom domain;
 - no CryptoPayMap production hostname;
 - no DNS mutation;
 - no production project mutation.
+
+The exact project-owned `.pages.dev` hostname is a Cloudflare platform domain, not a custom domain. It must be present in the project domain inventory and must match the project subdomain. Every other hostname remains disallowed and fails closed.
 
 The existing `review` deployment remains a preview deployment. It is not treated as a rollback target. P6-05 creates and verifies production-style deployments only inside the isolated staging project.
 
@@ -77,6 +80,8 @@ The retained receipt may include only:
 - predecessor states and shared binding;
 - public tree digest hashes;
 - dataset and schema versions;
+- platform-domain presence and exact subdomain-match booleans;
+- non-platform custom-domain count;
 - hashed Pages deployment identifiers and URLs;
 - representative route status/content-type/body digests;
 - activation, rollback, restore, and final-state summaries;
@@ -99,4 +104,4 @@ P6-05 is complete only when:
 - the retained receipt is `accepted` on exact current main;
 - P6-01 through P6-05 are current in the configured authorization inventory;
 - P6-06 and P6-07 remain the only missing configured predecessors;
-- production CryptoPayMap, custom domains, DNS, canonical data, and private material remain unchanged.
+- production CryptoPayMap, non-platform custom domains, DNS, canonical data, and private material remain unchanged.
