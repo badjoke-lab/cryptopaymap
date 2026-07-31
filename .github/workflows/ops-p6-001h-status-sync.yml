@@ -1,9 +1,9 @@
 name: OPS-P6-001H status sync
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/ops-p6-001h-configured-r2-media-lifecycle
+      - main
     paths:
       - '.github/workflows/ops-p6-001h-status-sync.yml'
 
