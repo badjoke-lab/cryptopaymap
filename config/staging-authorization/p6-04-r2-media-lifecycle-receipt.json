@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "evidenceId": "P6-04",
+  "launchDomain": "media_lifecycle",
+  "environment": "configured_staging",
+  "state": "failed",
+  "commit": "781f69a3d5cb4910da222e5764b22f55b903d576",
+  "generatedAt": "2026-07-31T02:44:25.941Z",
+  "expiresAt": "2026-08-03T02:44:25.941Z",
+  "workflowRunId": "30599662049",
+  "owner": "sha256:19d13fd2009e80aec677a2332ae0402dca526f29b7d154e55eac67835db82e74",
+  "procedure": "OPS-P6-001H configured staging Media lifecycle evidence",
+  "checks": {
+    "exactMain": "success",
+    "repositoryContract": "success",
+    "predecessors": [
+      {
+        "evidenceId": "P6-01",
+        "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-07-31T02:39:32.703Z",
+        "expiresAt": "2026-08-03T02:39:32.703Z"
+      },
+      {
+        "evidenceId": "P6-02",
+        "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-07-31T02:40:48.597Z",
+        "expiresAt": "2026-08-03T02:40:48.597Z"
+      },
+      {
+        "evidenceId": "P6-03",
+        "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-07-31T02:41:56.687Z",
+        "expiresAt": "2026-08-03T02:41:56.687Z"
+      }
+    ],
+    "mode": "durable_object_staging_media",
+    "uploadAuthorization": {
+      "status": "failed",
+      "methodAndPathBound": true,
+      "maximumClockSkewSeconds": 90,
+      "unauthenticatedStatus": 403,
+      "expiredStatus": 403,
+      "forgedEmailStatus": 201
+    },
+    "byteInspection": {
+      "status": "passed",
+      "disguisedBytesStatus": 415,
+      "original": {
+        "mimeType": "image/png",
+        "byteSize": 68,
+        "width": 1,
+        "height": 1
+      },
+      "display": {
+        "mimeType": "image/webp",
+        "byteSize": 46,
+        "width": 1,
+        "height": 1
+      },
+      "thumbnail": {
+        "mimeType": "image/webp",
+        "byteSize": 46,
+        "width": 1,
+        "height": 1
+      },
+      "deterministicDerivativeDigest": "sha256:d89d90b150aa22601a0c1864a7a336703722af9dfd8b7ea171fffb3c3953ea0b"
+    },
+    "privateOriginal": {
+      "status": "passed",
+      "privateReadStatus": 200,
+      "publicOriginalStatus": 404,
+      "publicDerivativeBeforeApprovalStatus": 404
+    },
+    "partialFailure": {
+      "status": "passed",
+      "probeStatus": 200,
+      "externalStatusAfterCleanup": 404
+    },
+    "approval": {
+      "status": "failed",
+      "responseStates": [
+        "committed",
+        null
+      ],
+      "decisionCount": 1,
+      "publicVisibility": "public"
+    },
+    "replayAndCapability": {
+      "status": "failed",
+      "exactReplayStates": [
+        "committed",
+        null
+      ],
+      "changedContentStatus": 409,
+      "publisherStatus": 403
+    },
+    "publicDelivery": {
+      "status": "passed",
+      "displayStatus": 200,
+      "thumbnailStatus": 200,
+      "displayDigest": "5aea0a2807d6a125fbf9977f12915bb41da8aa65feb7b12e3baa863b5fe2cf3c",
+      "thumbnailDigest": "5aea0a2807d6a125fbf9977f12915bb41da8aa65feb7b12e3baa863b5fe2cf3c"
+    },
+    "takedown": {
+      "status": "passed",
+      "restrictionStatus": 200,
+      "visibility": "restricted",
+      "displayStatusAfterTakedown": 404,
+      "thumbnailStatusAfterTakedown": 404
+    },
+    "cleanup": {
+      "status": "passed",
+      "objects": "passed",
+      "database": "passed"
+    },
+    "retainedDigests": {
+      "fixtureIdentity": "sha256:80e6a42333a04026ea204ccf5aef5e5989f745de8572b67dac834bd03e3e5287",
+      "objectKeys": "sha256:1c57a0c0494d8bd0c19312cfa66d63bb2a0384650d2914fd0919984d32cd5590",
+      "approvalReceipt": "sha256:2e0754c4358aae0fde813e679a385068f226ccaf177143f139b923da8e70bcba",
+      "restrictionReceipt": "sha256:87bf535909b177115feca04ee7a88b4128fb95da623b03909d343c1384abbba2"
+    }
+  },
+  "binding": {
+    "releaseId": "sha256:c0385e1c6d5c090f2943b98ff756a2044f1d61799f4949ddb14599b17fb92f1b",
+    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+    "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+    "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+  },
+  "exceptions": [
+    "approval:failed",
+    "replayAndCapability:failed",
+    "uploadAuthorization:failed"
+  ]
+}
