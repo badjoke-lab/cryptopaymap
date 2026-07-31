@@ -78,6 +78,12 @@ Retained evidence includes only:
 
 It excludes raw bytes, object keys, signed requests, HMAC keys, database values, account identifiers, bucket identifiers, private payloads, and unrestricted logs.
 
+## Validation sequence
+
+Before merge, the pull-request head must pass formatting, lint, Astro and TypeScript checks, runtime schemas, migration history, all unit and component tests, static build, accessibility checks, staging artifact checks, the repository P6-04 evidence contract, the configured execution self-test, and the Durable Object Worker dry-run.
+
+After merge, the exact resulting `main` commit must pass configured staging deployment and the guarded P6-04 workflow before the retained receipt can become current.
+
 ## Acceptance
 
 P6-04 becomes `accepted` only when every configured journey and both object and database cleanup pass on exact current `main` with the unchanged P6-01 through P6-03 binding.
