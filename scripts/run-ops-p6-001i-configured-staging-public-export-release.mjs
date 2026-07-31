@@ -188,7 +188,10 @@ async function cloudflareRequest(path, init = {}) {
   }
   if (!response.ok || body?.success !== true) {
     const codes = Array.isArray(body?.errors)
-      ? body.errors.map((error) => error?.code).filter(Boolean).join(',')
+      ? body.errors
+          .map((error) => error?.code)
+          .filter(Boolean)
+          .join(',')
       : 'unknown';
     throw new Error(`cloudflare_api_${response.status}_${codes}`);
   }
@@ -306,7 +309,8 @@ async function verifyExternal(baseUrl, expectedMarker, localDist) {
     const bytes = new Uint8Array(await response.arrayBuffer());
     const text = new TextDecoder().decode(bytes).slice(0, 16_384);
     const contentType = response.headers.get('content-type')?.split(';')[0] ?? null;
-    if (response.status !== expectedStatus) throw new Error(`external_status_${path}_${response.status}`);
+    if (response.status !== expectedStatus)
+      throw new Error(`external_status_${path}_${response.status}`);
     if (expectedStatus === 200 && contentType !== expectedType) {
       throw new Error(`external_type_${path}_${contentType}`);
     }
@@ -347,7 +351,8 @@ async function selfTest() {
     writeMarker(root, baseline);
     if (publicTreeDigest(root) !== first) throw new Error('marker_changed_public_tree_digest');
     const candidate = releaseMarker('candidate', 'a'.repeat(40), first);
-    if (baseline.releaseId === candidate.releaseId) throw new Error('release_kind_not_fingerprinted');
+    if (baseline.releaseId === candidate.releaseId)
+      throw new Error('release_kind_not_fingerprinted');
     writeFileSync(join(root, 'data', 'manifest.json'), '{"version":2}\n');
     if (publicTreeDigest(root) === first) throw new Error('content_change_not_fingerprinted');
     console.log('OPS-P6-001I configured staging public export/release self-test passed.');
@@ -432,7 +437,9 @@ async function execute(statusRoot, outputPath) {
       writeMarker(candidateDist, candidateMarker);
 
       const version = JSON.parse(readFileSync(join(candidateDist, 'version.json'), 'utf8'));
-      const manifest = JSON.parse(readFileSync(join(candidateDist, 'data', 'manifest.json'), 'utf8'));
+      const manifest = JSON.parse(
+        readFileSync(join(candidateDist, 'data', 'manifest.json'), 'utf8'),
+      );
       checks.artifactValidation = {
         status:
           version.canonicalOnly === true &&
@@ -444,7 +451,8 @@ async function execute(statusRoot, outputPath) {
         datasetVersion: version.datasetVersion ?? null,
         schemaVersion: version.schemaVersion ?? null,
       };
-      if (checks.artifactValidation.status !== 'passed') throw new Error('artifact_identity_failed');
+      if (checks.artifactValidation.status !== 'passed')
+        throw new Error('artifact_identity_failed');
 
       const project = await cloudflareRequest('');
       const customDomains = Array.isArray(project?.domains) ? project.domains : [];

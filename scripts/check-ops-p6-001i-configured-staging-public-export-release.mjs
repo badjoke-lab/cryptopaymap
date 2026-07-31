@@ -35,11 +35,14 @@ const expectations = [
   [files.executor, "const productionBranch = 'staging-review'"],
   [files.executor, "const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev'"],
   [files.executor, "const markerPath = '/p6-05-release.json'"],
-  [files.executor, "cloudflareRequest(`/deployments/${deploymentId}/rollback`"],
+  [files.executor, 'cloudflareRequest(`/deployments/${deploymentId}/rollback`'],
   [files.executor, 'unrecognized_production_deployment'],
   [files.executor, "execFileSync('npm', ['run', 'staging:review:build']"],
   [files.executor, 'candidateRestored: true'],
-  [files.repositoryContract, 'P6-05 configured public export and release evidence contract passed.'],
+  [
+    files.repositoryContract,
+    'P6-05 configured public export and release evidence contract passed.',
+  ],
   [files.deployment, '--branch review'],
   [files.publication, "state: 'published' | 'replayed'"],
   [files.activation, 'pointer_conflict'],
@@ -70,7 +73,7 @@ for (const [name, content] of Object.entries(files)) {
 if (/--branch\s+review\b/.test(files.executor)) {
   throw new Error('OPS-P6-001I executor must not treat the review preview branch as production.');
 }
-if (!files.executor.includes("project?.production_branch === productionBranch")) {
+if (!files.executor.includes('project?.production_branch === productionBranch')) {
   throw new Error('OPS-P6-001I executor must fail closed on the Pages production branch.');
 }
 if (!files.executor.includes('customDomains.length === 0')) {
