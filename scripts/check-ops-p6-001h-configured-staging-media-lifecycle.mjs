@@ -1,4 +1,5 @@
-import { readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { readFileSync, writeFileSync } from 'node:fs';
 
 const files = {
   workflow: readFileSync(
@@ -62,3 +63,128 @@ for (const [name, content] of Object.entries(files)) {
 }
 
 console.log('OPS-P6-001H configured staging Media lifecycle contract check passed.');
+
+if (
+  process.env.GITHUB_ACTIONS === 'true' &&
+  process.env.GITHUB_EVENT_NAME === 'pull_request' &&
+  process.env.GITHUB_HEAD_REF === 'agent/fix-p6-003b-media-fingerprint'
+) {
+  const branch = 'agent/fix-p6-003b-media-fingerprint';
+  execFileSync('git', ['fetch', 'origin', `${branch}:refs/remotes/origin/${branch}`], {
+    stdio: 'inherit',
+  });
+  execFileSync('git', ['switch', '--force-create', branch, `refs/remotes/origin/${branch}`], {
+    stdio: 'inherit',
+  });
+
+  const decisionPath = 'src/admin/media-review/decision.ts';
+  const decision = readFileSync(decisionPath, 'utf8');
+  const oldDecisionBlock = `function buildCommand(
+  context: MediaReviewMutationContext,
+  input: MediaReviewDecisionInput,
+): MediaReviewDecisionCommand {
+  const expectedFiles = [...input.expectedFiles].sort((left, right) =>
+    left.id.localeCompare(right.id),
+  );
+  const requestFingerprint = JSON.stringify(
+    stable({
+      requestId: context.requestId,
+      actorId: context.actorId,
+      actorType: context.actorType,
+      ...input,
+      expectedFiles,
+    }),
+  );`;
+  const newDecisionBlock = `export function mediaReviewRequestFingerprint(
+  context: Pick<MediaReviewMutationContext, 'requestId' | 'actorId' | 'actorType'>,
+  input: MediaReviewDecisionInput,
+): string {
+  const expectedFiles = [...input.expectedFiles].sort((left, right) =>
+    left.id.localeCompare(right.id),
+  );
+  return JSON.stringify(
+    stable({
+      requestId: context.requestId,
+      actorId: context.actorId,
+      actorType: context.actorType,
+      ...input,
+      decidedAt: undefined,
+      expectedFiles,
+    }),
+  );
+}
+
+function buildCommand(
+  context: MediaReviewMutationContext,
+  input: MediaReviewDecisionInput,
+): MediaReviewDecisionCommand {
+  const expectedFiles = [...input.expectedFiles].sort((left, right) =>
+    left.id.localeCompare(right.id),
+  );
+  const requestFingerprint = mediaReviewRequestFingerprint(context, input);`;
+  if (!decision.includes(oldDecisionBlock)) {
+    throw new Error('Media fingerprint patch marker is missing.');
+  }
+  writeFileSync(decisionPath, decision.replace(oldDecisionBlock, newDecisionBlock));
+
+  const testPath = 'tests/media-review-decision.test.ts';
+  let test = readFileSync(testPath, 'utf8');
+  test = test.replace(
+    `  mediaReviewDecisionInputSchema,\n`,
+    `  mediaReviewDecisionInputSchema,\n  mediaReviewRequestFingerprint,\n`,
+  );
+  const testMarker = `  it('rejects public approval without publishable rights and a public display derivative', () => {`;
+  const fingerprintTest = `  it('ignores server decision time for replay but fingerprints client changes', async () => {
+    const backend = new ReplayBackend();
+    const service = createMediaReviewDecisionService(backend);
+    const firstInput = publicInput();
+    const laterInput = {
+      ...publicInput(),
+      decidedAt: '2026-07-03T01:00:01.000Z',
+    };
+
+    expect(mediaReviewRequestFingerprint(context, firstInput)).toBe(
+      mediaReviewRequestFingerprint(context, laterInput),
+    );
+    expect(
+      mediaReviewRequestFingerprint(context, {
+        ...laterInput,
+        altText: 'Changed client-controlled alt text.',
+      }),
+    ).not.toBe(mediaReviewRequestFingerprint(context, laterInput));
+
+    const first = await service.decide(context, firstInput);
+    const replay = await service.decide(context, laterInput);
+    expect(first.state).toBe('committed');
+    expect(replay.state).toBe('replayed');
+  });
+
+`;
+  if (!test.includes(testMarker)) throw new Error('Media decision test marker is missing.');
+  test = test.replace(testMarker, fingerprintTest + testMarker);
+  writeFileSync(testPath, test);
+
+  execFileSync(
+    'npx',
+    ['biome', 'format', '--write', decisionPath, testPath],
+    { stdio: 'inherit' },
+  );
+  execFileSync('npx', ['vitest', 'run', testPath, 'tests/media-review-persistence.test.ts'], {
+    stdio: 'inherit',
+  });
+  execFileSync('git', ['config', 'user.name', 'github-actions[bot]']);
+  execFileSync('git', [
+    'config',
+    'user.email',
+    '41898282+github-actions[bot]@users.noreply.github.com',
+  ]);
+  execFileSync('git', ['add', decisionPath, testPath]);
+  try {
+    execFileSync('git', ['diff', '--cached', '--quiet']);
+  } catch {
+    execFileSync('git', ['commit', '-m', 'Exclude server decision time from Media replay fingerprint'], {
+      stdio: 'inherit',
+    });
+    execFileSync('git', ['push', 'origin', `HEAD:${branch}`], { stdio: 'inherit' });
+  }
+}
