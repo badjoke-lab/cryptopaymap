@@ -40,7 +40,7 @@ const expectations = [
   [files.executor, 'cloudflareRequest(`/deployments/${deploymentId}/rollback`'],
   [files.executor, 'unrecognized_production_deployment'],
   [files.executor, "execFileSync('npm', ['run', 'staging:review:build']"],
-  [files.executor, "const platformDomain = `${projectName}.pages.dev`"],
+  [files.executor, 'const platformDomain = `${projectName}.pages.dev`'],
   [files.executor, 'const platformDomainPresent = projectDomains.includes(platformDomain)'],
   [files.executor, 'const platformDomainMatches = project?.subdomain === platformDomain'],
   [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],
