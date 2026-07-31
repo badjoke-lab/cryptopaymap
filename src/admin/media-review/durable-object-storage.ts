@@ -57,12 +57,16 @@ function createBucket(
       } satisfies R2ObjectBodyLike;
     },
     async put(key, value, options) {
+      const contentHash = options.customMetadata.contentHash;
+      if (contentHash === undefined) {
+        throw new Error('The staging Media object content hash is required.');
+      }
       const response = await stub.fetch(
         new Request(internalUrl(scope, key), {
           method: 'PUT',
           headers: {
             'Content-Type': options.httpMetadata.contentType,
-            'X-CPM-Content-Hash': options.customMetadata.contentHash,
+            'X-CPM-Content-Hash': contentHash,
           },
           body: value as BodyInit,
         }),
