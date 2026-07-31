@@ -1,11 +1,17 @@
 name: OPS-P6-001H type diagnostic
 
 on:
-  push:
+  pull_request:
     branches:
-      - agent/ops-p6-001h-configured-r2-media-lifecycle
+      - main
     paths:
       - '.github/workflows/ops-p6-001h-type-diagnostic.yml'
+      - 'functions/admin/api/staging-media-object.ts'
+      - 'functions/media/staging/[[path]].ts'
+      - 'src/admin/media-review/durable-object-storage.ts'
+      - 'src/admin/media-review/http-decision-writer.ts'
+      - 'workers/submission-rate-limit/index.ts'
+      - 'wrangler.jsonc'
 
 permissions:
   contents: read
@@ -14,10 +20,8 @@ jobs:
   diagnose:
     runs-on: ubuntu-24.04
     steps:
-      - name: Check out P6-04 branch
+      - name: Check out repository
         uses: actions/checkout@v4
-        with:
-          ref: agent/ops-p6-001h-configured-r2-media-lifecycle
 
       - name: Set up Node
         uses: actions/setup-node@v4
