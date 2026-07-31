@@ -18,6 +18,7 @@ on:
   push:
     branches:
       - main
+      - agent/ops-p6-001h-exact-main-dispatch
     paths:
       - '.github/workflows/ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml'
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
@@ -46,6 +47,7 @@ on:
         type: string
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -75,6 +77,8 @@ jobs:
         run: node scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js
 
       - name: Check configured P6-04 execution contract
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: node scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs
 
       - name: Run configured P6-04 self-test
