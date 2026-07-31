@@ -39,7 +39,7 @@ const expectations = [
   [files.executor, 'unrecognized_production_deployment'],
   [files.executor, "execFileSync('npm', ['run', 'staging:review:build']"],
   [files.executor, 'candidateRestored: true'],
-  [files.repositoryContract, 'P6-05 configured public export and release evidence checks passed.'],
+  [files.repositoryContract, 'P6-05 configured public export and release evidence contract passed.'],
   [files.deployment, '--branch review'],
   [files.publication, "state: 'published' | 'replayed'"],
   [files.activation, 'pointer_conflict'],
