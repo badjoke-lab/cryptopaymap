@@ -12,7 +12,7 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-OPS-P6-001G — Execute configured staging P6-03 Neon transaction evidence (Issue #309, PR #310)
+OPS-P6-001H — Execute configured staging P6-04 Media lifecycle evidence (Issue #312, PR #313)
 
 ## Authoritative current state
 
@@ -23,13 +23,14 @@ OPS-P6-001G — Execute configured staging P6-03 Neon transaction evidence (Issu
 - OPS-P6-001C configured staging authorization gate completed in PR #299 for Issue #298.
 - OPS-P6-001D configured staging P6-01 data QA completed in Issue #300 after PR #301 and FIX-P6-002 PR #303.
 - OPS-P6-001E configured staging P6-02 identity and protected Admin evidence completed in Issue #304 after PR #305 and OPS-P6-001F PR #307.
-- Latest verified main is `09c2e377fcfbd65273497bfb2297a7543361fd15`.
+- OPS-P6-001G configured staging P6-03 Neon transaction evidence completed in Issue #309 and PR #310.
+- Latest verified main is `79293b74a4c3bed49efe63aecc7c9fbf56a006c9`.
 - The exact-main configured staging deployment receipt is `deployed`; Cloudflare credentials, configured inputs, Durable Object Worker, Pages secret synchronization, Pages deployment, and configured verification succeeded.
-- The exact-main fixed-review live-audit receipt is `complete`; first POST returned HTTP 202, exact replay returned HTTP 202 with matching public reference and status secret, changed-content reuse returned HTTP 409, and public artifacts remained unchanged.
-- Configured P6-01 and P6-02 receipts are `accepted`; the authorization inventory classifies both as `current` with one shared release/data/configuration/environment binding.
-- P6-02 covers 53 protected Admin routes, 122 unauthenticated or forged-header journeys, and separate reviewer and publisher capability journeys.
-- The authorization inventory remains `not_authorized`; its remaining configured predecessors are P6-03 through P6-07 plus explicit authorization dispatch.
-- OPS-P6-001G in Issue #309 and PR #310 owns configured P6-03 Neon atomic transaction, rollback, replay, conflict, publication-separation, cleanup, and retained receipt evidence.
+- The exact-main fixed-review live-audit receipt is `complete`.
+- Configured P6-01, P6-02, and P6-03 receipts are `accepted`; the authorization inventory classifies all three as `current` with one shared release/data/configuration/environment binding.
+- P6-03 proved atomic canonical mutation, application receipt and audit creation, injected rollback, concurrency, deterministic replay, stale-state and changed-content rejection, public-export separation, and complete fixture cleanup.
+- The authorization inventory remains `not_authorized`; its remaining configured predecessors are P6-04 through P6-07 plus explicit authorization dispatch.
+- OPS-P6-001H in Issue #312 and PR #313 owns configured P6-04 private storage, byte inspection, publication cleanup, Media approval and replay, capability separation, public delivery, restriction, takedown, cleanup, and retained receipt evidence.
 
 Configured state remains:
 
@@ -45,24 +46,24 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Execute OPS-P6-001G in Issue #309 and PR #310:
+Complete OPS-P6-001H in Issue #312 and PR #313:
 
-1. pass the repository P6-03 contract and configured executor self-test;
-2. merge the guarded exact-main workflow after all normal repository checks pass;
-3. refresh exact-main deployment, fixed-review live audit, P6-01, and P6-02 evidence;
-4. execute the hidden reversible Neon fixture against the fixed-review database;
-5. prove atomic canonical mutation, application receipt, audit event, injected rollback, concurrency, replay, stale-state and changed-content rejection, and publication separation;
-6. remove the fixture and retain only bounded redacted evidence;
-7. publish `config/staging-authorization/p6-03-neon-transaction-receipt.json` with the unchanged predecessor binding;
-8. refresh authorization inventory and confirm P6-03 becomes current before starting P6-04.
+1. pass formatting, lint, Astro and TypeScript, runtime schemas, migration history, all unit and component tests, build, accessibility, staging artifact, P6-04 contracts, self-test, and Durable Object Worker dry-run;
+2. merge the guarded configured-staging Media lifecycle implementation;
+3. verify exact-main configured staging deployment and fixed-review live audit;
+4. refresh P6-01 through P6-03 receipts on the same exact-main binding;
+5. execute upload rejection, real-byte inspection, private object storage, partial-publication cleanup, Media approval, concurrent replay, changed-content conflict, reviewer/publisher separation, public delivery, restriction, and takedown;
+6. remove every object and database fixture;
+7. publish `config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json` with the unchanged predecessor binding;
+8. refresh authorization inventory and confirm P6-04 becomes current before starting P6-05.
 
 ## Blocked
 
-No Neon connectivity, migration, configured staging deployment, readiness, fixed-review live-journey, P6-01 data-QA, or P6-02 identity/Admin blocker remains.
+No configured staging deployment, readiness, fixed-review live-journey, P6-01 data-QA, P6-02 identity/Admin, or P6-03 Neon transaction blocker remains.
 
-Configured staging authorization is blocked by missing configured P6-03 through P6-07 receipts and the required explicit authorization dispatch. Production remains untouched.
+Configured staging authorization is blocked by missing configured P6-04 through P6-07 receipts and the required explicit authorization dispatch. Production remains untouched.
 
-Protected operational credentials, private database material, private Submission data, unrestricted database rows, and raw transaction fixture evidence must not be placed in the public repository or public Issue content.
+Protected operational credentials, private database material, private Submission data, unrestricted database rows, raw Media fixture bytes, and raw object keys must not be placed in the public repository or public Issue content.
 
 ## Retained executable-audit snapshot
 
@@ -159,8 +160,10 @@ Repository reality is determined by current `main`, merged pull requests, actual
 ## Current references
 
 - Issue #293 — OPS-P6-001 configured launch execution
-- Issue #309 — OPS-P6-001G configured staging P6-03 Neon transaction evidence
-- PR #310 — configured staging P6-03 executor
+- Issue #312 — OPS-P6-001H configured staging P6-04 Media lifecycle evidence
+- PR #313 — configured staging P6-04 executor
+- Issue #309 — completed configured staging P6-03 Neon transaction evidence
+- PR #310 — completed configured staging P6-03 executor
 - Issue #304 — completed configured staging P6-02 identity and protected Admin evidence
 - PR #307 — completed derived staging service authentication
 - Issue #300 — completed configured staging P6-01 data QA
@@ -172,7 +175,9 @@ Repository reality is determined by current `main`, merged pull requests, actual
 - `config/staging-authorization/authorization-receipt.json` on the `staging-review` branch
 - `config/staging-authorization/p6-01-data-qa-receipt.json` on the `staging-review` branch
 - `config/staging-authorization/p6-02-identity-admin-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/p6-03-neon-transaction-receipt.json` on the `staging-review` branch after execution
+- `config/staging-authorization/p6-03-neon-transaction-receipt.json` on the `staging-review` branch
+- `config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json` on the `staging-review` branch after execution
+- `docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md`
 - `docs/OPS_P6_001G_CONFIGURED_STAGING_P6_03_NEON_TRANSACTION.md`
 - `docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md`
 - `docs/OPS_P6_001D_CONFIGURED_STAGING_P6_01_DATA_QA.md`

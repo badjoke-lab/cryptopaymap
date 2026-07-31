@@ -1,0 +1,207 @@
+name: OPS-P6-001H configured staging P6-04 Media lifecycle
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md'
+      - 'docs/PROJECT_STATUS.md'
+      - 'functions/admin/api/staging-media-object.ts'
+      - 'functions/media/staging/**'
+      - 'scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs'
+      - 'scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts'
+      - 'src/admin/media-review/durable-object-storage.ts'
+      - 'src/admin/media-review/http-decision-writer.ts'
+      - 'workers/submission-rate-limit/**'
+      - 'wrangler.jsonc'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml'
+      - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
+      - 'docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md'
+      - 'functions/admin/api/staging-media-object.ts'
+      - 'functions/media/staging/**'
+      - 'scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs'
+      - 'scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts'
+      - 'src/admin/media-review/durable-object-storage.ts'
+      - 'src/admin/media-review/http-decision-writer.ts'
+      - 'workers/submission-rate-limit/**'
+      - 'wrangler.jsonc'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_04 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      media_owner:
+        description: Bounded Media operations owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001h-configured-staging-p6-04-media-lifecycle
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-04 evidence contract
+        run: node scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js
+
+      - name: Check configured P6-04 execution contract
+        run: node scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs
+
+      - name: Run configured P6-04 self-test
+        run: npx tsx scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts --self-test
+
+      - name: Dry-run configured Durable Object Worker
+        run: npx wrangler deploy --dry-run --config workers/submission-rate-limit/wrangler.jsonc
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      MEDIA_OWNER: ${{ inputs.media_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CPM_REVIEW_SECRET_SEED_BASE64URL: ${{ secrets.CPM_REVIEW_SECRET_SEED_BASE64URL }}
+      CPM_REVIEW_BASE_URL: https://review.cryptopaymap-staging.pages.dev
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          echo "CURRENT_MAIN_COMMIT=$current_main_commit" >> "$GITHUB_ENV"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-04-configured-r2-media-lifecycle-evidence.js
+          node scripts/check-ops-p6-001h-configured-staging-media-lifecycle.mjs
+          npx tsx scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts --self-test
+          npx wrangler deploy --dry-run --config workers/submission-rate-limit/wrangler.jsonc
+
+      - name: Execute configured P6-04 lifecycle and write receipt
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        run: |
+          npx --prefix source tsx \
+            source/scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts \
+            status \
+            p6-04-r2-media-lifecycle-receipt.json
+
+      - name: Upload bounded P6-04 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001h-configured-staging-p6-04-media-lifecycle
+          path: p6-04-r2-media-lifecycle-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish configured P6-04 receipt to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-04-r2-media-lifecycle-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-04-r2-media-lifecycle-receipt.json \
+            status/config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json
+          if git -C status diff --cached --quiet; then
+            echo 'Configured P6-04 receipt is unchanged.'
+            exit 0
+          fi
+          git -C status commit -m 'Record configured staging P6-04 Media lifecycle receipt'
+          git -C status push origin HEAD:staging-review
+
+      - name: Write configured P6-04 summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-04-r2-media-lifecycle-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(
+            readFileSync('p6-04-r2-media-lifecycle-receipt.json', 'utf8'),
+          );
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-04 Media lifecycle evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Storage mode: \`${receipt.checks.mode}\``,
+              `- Byte inspection: \`${receipt.checks.byteInspection.status}\``,
+              `- Public approval: \`${receipt.checks.approval.status}\``,
+              `- Takedown: \`${receipt.checks.takedown.status}\``,
+              `- Cleanup: \`${receipt.checks.cleanup.status}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce configured P6-04 acceptance
+        if: always()
+        run: |
+          node -e "const r=require('./p6-04-r2-media-lifecycle-receipt.json'); if(r.state!=='accepted') process.exit(1)"

@@ -19,6 +19,7 @@ on:
       - OPS-P6-001D configured staging P6-01 data QA
       - OPS-P6-001E configured staging P6-02 identity and Admin
       - OPS-P6-001G configured staging P6-03 Neon transaction
+      - OPS-P6-001H configured staging P6-04 Media lifecycle
     types:
       - completed
   workflow_dispatch:

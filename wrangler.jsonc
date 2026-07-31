@@ -3,10 +3,18 @@
   "name": "cryptopaymap-staging",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-06-26",
+  "vars": {
+    "CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS": "[\"cryptopaymap-service:staging-service:reviewer\"]"
+  },
   "durable_objects": {
     "bindings": [
       {
         "name": "SUBMISSION_RATE_LIMIT_BUCKETS",
+        "class_name": "SubmissionRateLimitBucket",
+        "script_name": "cryptopaymap-submission-rate-limit"
+      },
+      {
+        "name": "CPM_STAGING_MEDIA_OBJECTS",
         "class_name": "SubmissionRateLimitBucket",
         "script_name": "cryptopaymap-submission-rate-limit"
       }
@@ -14,10 +22,18 @@
   },
   "env": {
     "preview": {
+      "vars": {
+        "CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS": "[\"cryptopaymap-service:staging-service:reviewer\"]"
+      },
       "durable_objects": {
         "bindings": [
           {
             "name": "SUBMISSION_RATE_LIMIT_BUCKETS",
+            "class_name": "SubmissionRateLimitBucket",
+            "script_name": "cryptopaymap-submission-rate-limit"
+          },
+          {
+            "name": "CPM_STAGING_MEDIA_OBJECTS",
             "class_name": "SubmissionRateLimitBucket",
             "script_name": "cryptopaymap-submission-rate-limit"
           }
