@@ -49,18 +49,11 @@ jobs:
           if (!source.includes(oldShape)) throw new Error('Topology receipt shape marker is missing.');
           source = source.replace(oldShape, newShape);
 
-          const oldBlock = `      const project = await cloudflareRequest('');
-              const customDomains = Array.isArray(project?.domains) ? project.domains : [];
-              checks.topology = {
-                status:
-                  project?.name === projectName &&
-                  project?.production_branch === productionBranch &&
-                  customDomains.length === 0
-                    ? 'passed'
-                    : 'failed',
-                productionBranch: project?.production_branch ?? null,
-                customDomainCount: customDomains.length,
-              };`;
+          const startMarker = `      const project = await cloudflareRequest('');`;
+          const endMarker = `      if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');`;
+          const start = source.indexOf(startMarker);
+          const end = source.indexOf(endMarker, start);
+          if (start < 0 || end < 0) throw new Error('Topology classification boundaries are missing.');
           const newBlock = `      const project = await cloudflareRequest('');
               const platformDomain = \`${'${projectName}'}.pages.dev\`;
               const projectDomains = Array.isArray(project?.domains)
@@ -82,9 +75,9 @@ jobs:
                 platformDomainPresent,
                 platformDomainMatches,
                 customDomainCount: customDomains.length,
-              };`;
-          if (!source.includes(oldBlock)) throw new Error('Topology classification marker is missing.');
-          source = source.replace(oldBlock, newBlock);
+              };
+              `;
+          source = source.slice(0, start) + newBlock + source.slice(end);
           writeFileSync(path, source);
           NODE
           npx biome format --write scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs
