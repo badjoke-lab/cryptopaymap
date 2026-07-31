@@ -1,0 +1,74 @@
+name: FIX-P6-003 patch
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/fix-p6-003-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out fix branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/fix-p6-003-media-replay-evidence
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Correct forged-email evidence probe
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts')
+          text = path.read_text()
+          start = text.index('    const forgedEmail = await adminRequest(\n')
+          end = text.index('    const invalidBytesResult = await adminRequest(\n', start)
+          replacement = '''    const forgedEmail = await requestSummary(originalUrl, {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'image/png',
+                'X-CPM-Content-Hash': hashes.original,
+                'Cf-Access-Authenticated-User-Email': 'forged@example.invalid',
+              },
+              body: pngBytes,
+            });
+'''
+          path.write_text(text[:start] + replacement + text[end:])
+          PY
+
+      - name: Format bounded fix files
+        run: |
+          npx biome format --write \
+            scripts/run-ops-p6-001h-configured-staging-media-lifecycle.ts \
+            src/admin/media-review/drizzle-write.ts \
+            tests/media-review-persistence.test.ts
+
+      - name: Run focused persistence test
+        run: npx vitest run tests/media-review-persistence.test.ts
+
+      - name: Remove temporary patch workflow
+        run: rm .github/workflows/fix-p6-003-patch.yml
+
+      - name: Commit bounded fix
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          git diff --cached --quiet && exit 0
+          git commit -m 'Fix P6-04 replay and forged-email evidence'
+          git push origin HEAD:agent/fix-p6-003-media-replay-evidence
