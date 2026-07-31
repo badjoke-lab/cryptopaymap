@@ -4,11 +4,11 @@
   "launchDomain": "identity_admin",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "79293b74a4c3bed49efe63aecc7c9fbf56a006c9",
-  "generatedAt": "2026-07-30T17:39:02.134Z",
-  "expiresAt": "2026-08-02T17:39:02.134Z",
-  "workflowRunId": "30566821156",
-  "owner": "sha256:a5b3bef4e37f04b4f3833073f7e35840df802570ab4ee0f3d595c035a5a8c075",
+  "commit": "781f69a3d5cb4910da222e5764b22f55b903d576",
+  "generatedAt": "2026-07-31T02:40:48.597Z",
+  "expiresAt": "2026-08-03T02:40:48.597Z",
+  "workflowRunId": "30599557239",
+  "owner": "sha256:8e434cebcedf67e5dc0e6a8ae227d90606376aa9656a9e0d8d6c903eb7792d7c",
   "procedure": "OPS-P6-001E configured staging identity and protected Admin evidence",
   "checks": {
     "exactMain": "success",
@@ -16,13 +16,13 @@
     "predecessor": {
       "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
       "state": "current",
-      "generatedAt": "2026-07-30T17:37:41.834Z",
-      "expiresAt": "2026-08-02T17:37:41.834Z"
+      "generatedAt": "2026-07-31T02:39:32.703Z",
+      "expiresAt": "2026-08-03T02:39:32.703Z"
     },
     "routeInventory": {
       "status": "passed",
-      "routeCount": 53,
-      "digest": "sha256:a5d2f520d647c0fd1c477b8e82f288ba7685bb92285479adda6c1d63aca5f589",
+      "routeCount": 54,
+      "digest": "sha256:159b81569fc9403d6c9acb9b8dcc482edc40e9fbe39b05a65a6a9d630b7400aa",
       "error": null
     },
     "controlPlane": {
@@ -35,9 +35,9 @@
     },
     "negativeJourneys": {
       "status": "passed",
-      "routeCount": 53,
-      "journeyCount": 122,
-      "routeInventoryDigest": "sha256:a5d2f520d647c0fd1c477b8e82f288ba7685bb92285479adda6c1d63aca5f589",
+      "routeCount": 54,
+      "journeyCount": 130,
+      "routeInventoryDigest": "sha256:159b81569fc9403d6c9acb9b8dcc482edc40e9fbe39b05a65a6a9d630b7400aa",
       "results": [
         {
           "path": "/admin/api/application-lifecycle/00000000-0000-4000-8000-000000000000",
@@ -1153,6 +1153,90 @@
           "passed": true
         },
         {
+          "path": "/admin/api/staging-media-object",
+          "method": "DELETE",
+          "unauthenticated": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "forgedEmail": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "passed": true
+        },
+        {
+          "path": "/admin/api/staging-media-object",
+          "method": "GET",
+          "unauthenticated": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "forgedEmail": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "passed": true
+        },
+        {
+          "path": "/admin/api/staging-media-object",
+          "method": "POST",
+          "unauthenticated": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "forgedEmail": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "passed": true
+        },
+        {
+          "path": "/admin/api/staging-media-object",
+          "method": "PUT",
+          "unauthenticated": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "forgedEmail": {
+            "status": 403,
+            "redirectClass": null,
+            "contentType": "text/plain",
+            "cacheControlSafe": true,
+            "noPrivateLeakage": true,
+            "responseDigest": "6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314"
+          },
+          "passed": true
+        },
+        {
           "path": "/admin/api/submissions",
           "method": "GET",
           "unauthenticated": {
@@ -1330,7 +1414,7 @@
         "contentType": "application/json",
         "cacheControlSafe": true,
         "noPrivateLeakage": true,
-        "responseDigest": "40cf2414d33004fe81b5afdda5422e52cc714edca2001b101f1d802fa4ce4289"
+        "responseDigest": "26261d48d4d11744b08e9d3f40c1ceb390561546f78ead3ca85bec4826c40a5c"
       },
       "reviewerPublication": {
         "status": 403,
@@ -1363,7 +1447,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:bb672bd732c52740fa5883ac8638acc88b7df22ecdfd9c9a991adfa40cce5b20",
+    "releaseId": "sha256:c0385e1c6d5c090f2943b98ff756a2044f1d61799f4949ddb14599b17fb92f1b",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
