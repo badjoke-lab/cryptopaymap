@@ -6,13 +6,16 @@ on:
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
       - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
       - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+      - 'scripts/dispatch-fix-p6-003-exact-main-sequence.mjs'
   push:
     branches:
       - main
+      - agent/fix-p6-003-exact-main-dispatch
     paths:
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
       - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
       - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+      - 'scripts/dispatch-fix-p6-003-exact-main-sequence.mjs'
   workflow_run:
     workflows:
       - P5-02R fixed review live audit
@@ -46,6 +49,7 @@ on:
         type: string
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -64,12 +68,17 @@ jobs:
         with:
           node-version: 24
 
+      - name: Execute FIX-P6-003 exact-main sequence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/dispatch-fix-p6-003-exact-main-sequence.mjs
+
       - name: Run fail-closed authorization self-test
         run: node scripts/evaluate-ops-p6-001c-staging-authorization.mjs --self-test
 
   evaluate:
     if: >-
-      github.event_name == 'push' ||
+      (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' &&
       github.event.workflow_run.conclusion == 'success' &&
