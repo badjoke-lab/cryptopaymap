@@ -6,6 +6,11 @@ on:
       - agent/ops-p6-001h-exact-main-refresh
     paths:
       - '.github/workflows/ops-p6-001h-exact-main-refresh.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001h-exact-main-refresh.yml'
 
 permissions:
   actions: write
