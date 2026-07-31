@@ -10,6 +10,7 @@ const files = {
   worker: readFileSync('workers/submission-rate-limit/index.ts', 'utf8'),
   adminRoute: readFileSync('functions/admin/api/staging-media-object.ts', 'utf8'),
   publicRoute: readFileSync('functions/media/staging/[[path]].ts', 'utf8'),
+  decision: readFileSync('src/admin/media-review/decision.ts', 'utf8'),
   writer: readFileSync('src/admin/media-review/http-decision-writer.ts', 'utf8'),
   wrangler: readFileSync('wrangler.jsonc', 'utf8'),
   authorization: readFileSync(
@@ -33,6 +34,8 @@ const expectations = [
   [files.worker, 'X-CPM-Image-Width'],
   [files.adminRoute, 'Public Media writes require a durable Media decision.'],
   [files.publicRoute, 'media/public/${stagingMediaAssetId}'],
+  [files.decision, 'export function mediaReviewRequestFingerprint'],
+  [files.decision, 'decidedAt: undefined'],
   [files.writer, 'createStagingDurableObjectMediaBuckets'],
   [files.writer, "environment.CPM_ADMIN_AUTH_MODE === 'derived_staging_service'"],
   [files.wrangler, 'CPM_STAGING_MEDIA_OBJECTS'],

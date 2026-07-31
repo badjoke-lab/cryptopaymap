@@ -7,6 +7,7 @@ import {
   createMediaReviewDecisionService,
   MediaReviewDecisionError,
   mediaReviewDecisionInputSchema,
+  mediaReviewRequestFingerprint,
   type MediaReviewDecisionBackend,
   type MediaReviewDecisionCommand,
   type MediaReviewDecisionInput,
@@ -152,6 +153,31 @@ describe('media review decision contract', () => {
     });
     expect(replay.state).toBe('replayed');
     expect(replay.publicFileIds).toEqual([displayFileId, thumbnailFileId]);
+  });
+
+  it('ignores server decision time for replay but fingerprints client changes', async () => {
+    const backend = new ReplayBackend();
+    const service = createMediaReviewDecisionService(backend);
+    const firstInput = publicInput();
+    const laterInput = {
+      ...publicInput(),
+      decidedAt: '2026-07-03T01:00:01.000Z',
+    };
+
+    expect(mediaReviewRequestFingerprint(context, firstInput)).toBe(
+      mediaReviewRequestFingerprint(context, laterInput),
+    );
+    expect(
+      mediaReviewRequestFingerprint(context, {
+        ...laterInput,
+        altText: 'Changed client-controlled alt text.',
+      }),
+    ).not.toBe(mediaReviewRequestFingerprint(context, laterInput));
+
+    const first = await service.decide(context, firstInput);
+    const replay = await service.decide(context, laterInput);
+    expect(first.state).toBe('committed');
+    expect(replay.state).toBe('replayed');
   });
 
   it('rejects public approval without publishable rights and a public display derivative', () => {
