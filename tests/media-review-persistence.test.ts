@@ -3,7 +3,25 @@ import { createDrizzleMediaReviewBackend } from '../src/admin/media-review/drizz
 import { mediaAssetUpdateValues } from '../src/admin/media-review/drizzle-asset-values';
 import { isMediaReviewConflictCode } from '../src/admin/media-review/drizzle-errors';
 import { replayMediaReviewDecision } from '../src/admin/media-review/drizzle-state';
+import { replayMatchingMediaReviewDecision } from '../src/admin/media-review/drizzle-write';
+import { MediaReviewDecisionError } from '../src/admin/media-review/decision';
 import { mediaReviewDecisions } from '../src/db/schema';
+
+const durableDecision = {
+  requestId: '10000000-0000-4000-8000-000000000001',
+  mediaAssetId: '20000000-0000-4000-8000-000000000001',
+  action: 'approve_public' as const,
+  reviewStatus: 'accepted' as const,
+  purpose: 'public_gallery' as const,
+  rightsStatus: 'licensed' as const,
+  visibility: 'public' as const,
+  decidedAt: new Date('2026-07-03T00:00:00.000Z'),
+  publicFileIds: [
+    '40000000-0000-4000-8000-000000000002',
+    '40000000-0000-4000-8000-000000000001',
+  ],
+  requestFingerprint: 'fingerprint',
+};
 
 describe('Media review persistence foundation', () => {
   it('exposes durable request, subject, file-set, and outcome columns', () => {
@@ -24,27 +42,31 @@ describe('Media review persistence foundation', () => {
   });
 
   it('replays a durable receipt without changing its result', () => {
-    const replay = replayMediaReviewDecision({
-      requestId: '10000000-0000-4000-8000-000000000001',
-      mediaAssetId: '20000000-0000-4000-8000-000000000001',
-      action: 'approve_public',
-      reviewStatus: 'accepted',
-      purpose: 'public_gallery',
-      rightsStatus: 'licensed',
-      visibility: 'public',
-      decidedAt: new Date('2026-07-03T00:00:00.000Z'),
-      publicFileIds: [
-        '40000000-0000-4000-8000-000000000002',
-        '40000000-0000-4000-8000-000000000001',
-      ],
-      requestFingerprint: 'fingerprint',
-    });
+    const replay = replayMediaReviewDecision(durableDecision);
 
     expect(replay.state).toBe('replayed');
     expect(replay.publicFileIds).toEqual([
       '40000000-0000-4000-8000-000000000001',
       '40000000-0000-4000-8000-000000000002',
     ]);
+  });
+
+  it('recovers a matching concurrent decision and preserves changed-content conflict', () => {
+    expect(
+      replayMatchingMediaReviewDecision(durableDecision, {
+        requestFingerprint: 'fingerprint',
+      }),
+    ).toMatchObject({ state: 'replayed', requestId: durableDecision.requestId });
+    expect(
+      replayMatchingMediaReviewDecision(null, {
+        requestFingerprint: 'fingerprint',
+      }),
+    ).toBeNull();
+    expect(() =>
+      replayMatchingMediaReviewDecision(durableDecision, {
+        requestFingerprint: 'changed-fingerprint',
+      }),
+    ).toThrow(MediaReviewDecisionError);
   });
 
   it('projects the complete Media asset update payload', () => {
