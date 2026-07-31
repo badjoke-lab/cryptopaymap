@@ -1,0 +1,98 @@
+name: OPS-P6-001H exact-main P6-04-only execution
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001h-p6-04-only.yml'
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: ops-p6-001h-p6-04-only
+  cancel-in-progress: true
+
+jobs:
+  execute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      APPROVED_COMMIT: 91c61ee4198079b9f97e1e022a97c6d7342134f2
+      DISPATCHER_BRANCH: agent/ops-p6-001h-p6-04-only
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out dispatcher branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001h-p6-04-only
+
+      - name: Verify unchanged exact main and current predecessors
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$current_main" = "$APPROVED_COMMIT"
+
+          git fetch origin staging-review --depth=1
+          for receipt in \
+            p6-01-data-qa-receipt.json \
+            p6-02-identity-admin-receipt.json \
+            p6-03-neon-transaction-receipt.json; do
+            git show "origin/staging-review:config/staging-authorization/$receipt" > "$receipt"
+            node -e "const r=require('./$receipt'); if(r.state!=='accepted'||r.commit!==process.env.APPROVED_COMMIT) process.exit(1)"
+          done
+
+      - name: Dispatch and wait for configured P6-04
+        shell: bash
+        run: |
+          set -euo pipefail
+          workflow=ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml
+          previous_run_id="$(gh run list \
+            --workflow "$workflow" \
+            --branch main \
+            --event workflow_dispatch \
+            --limit 1 \
+            --json databaseId \
+            --jq '.[0].databaseId // empty')"
+
+          gh workflow run "$workflow" --ref main \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_04 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f media_owner=ops-p6-001h:automation
+
+          run_id=''
+          for attempt in $(seq 1 60); do
+            candidate="$(gh run list \
+              --workflow "$workflow" \
+              --branch main \
+              --event workflow_dispatch \
+              --limit 1 \
+              --json databaseId \
+              --jq '.[0].databaseId // empty')"
+            if [ -n "$candidate" ] && [ "$candidate" != "$previous_run_id" ]; then
+              run_id="$candidate"
+              break
+            fi
+            sleep 5
+          done
+
+          test -n "$run_id"
+          echo "Watching P6-04 run $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Remove one-time dispatcher workflow
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/ops-p6-001h-p6-04-only.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/ops-p6-001h-p6-04-only.yml
+          if ! git diff --cached --quiet; then
+            git commit -m 'OPS-P6-001H remove one-time P6-04 dispatcher'
+            git push origin HEAD:"$DISPATCHER_BRANCH"
+          fi
