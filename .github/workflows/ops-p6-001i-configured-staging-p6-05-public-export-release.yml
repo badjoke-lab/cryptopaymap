@@ -14,6 +14,7 @@ on:
       - 'src/admin/export-release/**'
       - 'src/publication/**'
       - 'src/schemas/public-exports.ts'
+      - 'src/pages/404.astro'
   push:
     branches:
       - main
@@ -29,6 +30,7 @@ on:
       - 'src/admin/export-release/**'
       - 'src/publication/**'
       - 'src/schemas/public-exports.ts'
+      - 'src/pages/404.astro'
   workflow_dispatch:
     inputs:
       confirmation:
