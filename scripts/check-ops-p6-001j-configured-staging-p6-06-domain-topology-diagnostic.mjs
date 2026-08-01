@@ -44,6 +44,8 @@ const expectations = [
   [files.executor, '/pages/projects/${projectName}'],
   [files.executor, 'listZones(accountId)'],
   [files.executor, 'listDnsRecords(zone.id)'],
+  [files.executor, 'dnsReadable = false'],
+  [files.executor, "permissions.dnsList = dnsReadable ? 'success' : 'failed'"],
   [files.executor, "decision = 'existing_candidate_requires_approval'"],
   [files.executor, "decision = 'no_candidate'"],
   [files.executor, "decision = 'permission_blocked'"],
