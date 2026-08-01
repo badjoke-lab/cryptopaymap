@@ -121,11 +121,7 @@ if (
 ) {
   throw new Error('OPS-P6-001I executor must separate exact-current and historical releases.');
 }
-if (
-  !files.executor.includes(
-    'recognized.push(item);\n      } else {\n        historical.push({',
-  )
-) {
+if (!files.executor.includes('recognized.push(item);\n      } else {\n        historical.push({')) {
   throw new Error('OPS-P6-001I executor must not reuse historical releases as exact-current.');
 }
 
