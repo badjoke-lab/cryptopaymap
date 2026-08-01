@@ -22,10 +22,10 @@ OPS-P6-001K — Repair minimum Cloudflare DNS read permission and rerun the conf
 - The accepted P6-05 receipt proved deterministic public generation, safe Pages topology, authenticated historical releases, candidate activation, representative external checks, baseline rollback, and candidate restoration.
 - The read-only P6-06 topology diagnostic completed on `46da212281bfbf80d0318747129217026a788328` with state `diagnosed` and decision `permission_blocked`.
 - The diagnostic verified the Cloudflare token, Pages project, production branch, expected Pages platform hostname, active-zone listing, exact-main predecessors, and shared binding. DNS record listing failed with HTTP 403 because the token lacked the required DNS read permission.
-- PR #336 merged the scoped-zone remediation. Current main is `9e83dade38ec01ec451ad8591daac3d519d024df`.
+- PR #336 merged the scoped-zone remediation at `9e83dade38ec01ec451ad8591daac3d519d024df`.
 - The P6-06 diagnostic now requires protected `P6_06_STAGING_ZONE_ID`, selects exactly one matching active zone, reads DNS records only for that selected zone, and fails closed on a missing or ambiguous zone match.
 - No DNS record, custom-domain binding, production hostname, certificate, redirect, cache, canonical data, or production deployment was changed.
-- Because main changed after the last configured evidence refresh, deployment, live audit, and P6-01 through P6-05 must be refreshed on `9e83dade38ec01ec451ad8591daac3d519d024df` after the protected configuration is repaired.
+- Because repository work changed main after the last configured evidence refresh, deployment, live audit, and P6-01 through P6-05 must be refreshed on the exact post-merge main after the protected configuration is repaired.
 
 Configured state remains:
 
@@ -45,7 +45,7 @@ Complete OPS-P6-001K in Issue #335:
 
 1. update the protected Cloudflare API token used by configured staging workflows so it preserves required Pages access and has only `Zone / DNS / Read` for the intended isolated staging zone;
 2. set the GitHub Actions secret `P6_06_STAGING_ZONE_ID` to the intended zone's Cloudflare zone identifier without placing the value in the repository, an Issue, a PR, or logs;
-3. refresh the exact-main configured staging deployment and fixed-review live audit on `9e83dade38ec01ec451ad8591daac3d519d024df`;
+3. refresh the configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
 4. refresh P6-01 through P6-05 on the same exact-main binding;
 5. rerun the read-only P6-06 topology diagnostic and require `dnsList: success` plus exactly one safe zone match;
 6. use the resulting `existing_candidate_requires_approval`, `no_candidate`, `ambiguous`, or `unsafe_topology` decision to define the next bounded P6-06 plan;
