@@ -58,6 +58,7 @@ const expectations = [
     'releaseMarker(marker.kind, marker.sourceCommit, marker.publicTreeDigest).releaseId',
   ],
   [files.executor, 'const historical = []'],
+  [files.executor, 'historical.push({'],
   [files.executor, 'return { recognized, historical, unrecognized }'],
   [files.executor, 'historicalCount: 0'],
   [files.executor, 'historicalCount: classified.historical.length'],
