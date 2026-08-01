@@ -1,0 +1,189 @@
+name: OPS-P6-001J configured staging P6-06 domain topology diagnostic
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml'
+      - 'docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md'
+      - 'docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md'
+      - 'scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs'
+      - 'scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs'
+      - 'scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js'
+      - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml'
+      - 'docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md'
+      - 'docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md'
+      - 'scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs'
+      - 'scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs'
+      - 'scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js'
+      - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter DIAGNOSE_CONFIGURED_STAGING_P6_06 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      domain_owner:
+        description: Bounded configured staging domain owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-06 evidence contract
+        run: node scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js
+
+      - name: Check configured P6-06 diagnostic contract
+        run: node scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs
+
+      - name: Run configured P6-06 diagnostic self-test
+        run: node scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs --self-test
+
+  diagnose:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      DOMAIN_OWNER: ${{ inputs.domain_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js
+          node scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs
+          node scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs --self-test
+
+      - name: Execute read-only configured P6-06 diagnostic
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            ../status \
+            ../p6-06-domain-topology-diagnostic.json
+
+      - name: Upload bounded P6-06 diagnostic
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic
+          path: p6-06-domain-topology-diagnostic.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish bounded diagnostic to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-06-domain-topology-diagnostic.json
+          mkdir -p status/config/staging-authorization
+          cp p6-06-domain-topology-diagnostic.json \
+            status/config/staging-authorization/p6-06-domain-topology-diagnostic.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-06-domain-topology-diagnostic.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-06 topology diagnostic'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Write diagnostic summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-06-domain-topology-diagnostic.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('p6-06-domain-topology-diagnostic.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-06 domain topology diagnostic',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Decision: \`${receipt.decision}\``,
+              `- Pages project safe: \`${receipt.checks.topology.projectSafe}\``,
+              `- Active zones: \`${receipt.checks.inventory.activeZoneCount}\``,
+              `- DNS records read: \`${receipt.checks.inventory.dnsRecordCount}\``,
+              `- Project custom domains: \`${receipt.checks.inventory.projectCustomDomainCount}\``,
+              `- Candidate records: \`${receipt.checks.inventory.candidateCount}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce completed read-only diagnostic
+        if: always()
+        run: |
+          node -e "const r=require('./p6-06-domain-topology-diagnostic.json'); if(r.state!=='diagnosed') process.exit(1); if(!['existing_candidate_requires_approval','no_candidate','ambiguous','permission_blocked','unsafe_topology'].includes(r.decision)) process.exit(1)"
