@@ -38,6 +38,8 @@ The existing `review` deployment remains a preview deployment. It is not treated
 
 The executor runs the complete staging-review build twice from one exact commit. Both builds must pass the existing schema, provenance, license, privacy, accessibility, route, Media, and staging-artifact validators and must produce the same public tree digest.
 
+The static artifact must contain a top-level `404.html` generated from `src/pages/404.astro`. Without that file, Cloudflare Pages applies single-page-application fallback behavior and returns the home document with HTTP 200 for unknown navigation routes. P6-05 requires an unknown route to return HTTP 404 with an HTML error page.
+
 The baseline and candidate deployment trees contain the same validated public projection. They differ only by `/p6-05-release.json`, a bounded configured-staging release marker used to distinguish active deployment identity externally. The marker contains no credential, private payload, canonical record, contact, object key, or unrestricted provider identifier.
 
 ## Release sequence
