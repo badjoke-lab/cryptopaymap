@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-07-31
+**Last verified:** 2026-08-01
 
 ## Current phase
 
@@ -12,25 +12,20 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-OPS-P6-001H — Execute configured staging P6-04 Media lifecycle evidence (Issue #312, PR #313)
+OPS-P6-001K — Repair minimum Cloudflare DNS read permission and rerun the configured staging P6-06 topology diagnostic (Issue #335)
 
 ## Authoritative current state
 
-- P6-08 repository definition work completed in PR #291 for Issue #290.
-- FIX-P6-001 tracking reconciliation completed in PR #294 for Issue #292.
-- OPS-P6-001A readiness diagnostics completed in PR #296.
-- OPS-P6-001B Neon recovery completed in Issue #297.
-- OPS-P6-001C configured staging authorization gate completed in PR #299 for Issue #298.
-- OPS-P6-001D configured staging P6-01 data QA completed in Issue #300 after PR #301 and FIX-P6-002 PR #303.
-- OPS-P6-001E configured staging P6-02 identity and protected Admin evidence completed in Issue #304 after PR #305 and OPS-P6-001F PR #307.
-- OPS-P6-001G configured staging P6-03 Neon transaction evidence completed in Issue #309 and PR #310.
-- Latest verified main is `79293b74a4c3bed49efe63aecc7c9fbf56a006c9`.
-- The exact-main configured staging deployment receipt is `deployed`; Cloudflare credentials, configured inputs, Durable Object Worker, Pages secret synchronization, Pages deployment, and configured verification succeeded.
-- The exact-main fixed-review live-audit receipt is `complete`.
-- Configured P6-01, P6-02, and P6-03 receipts are `accepted`; the authorization inventory classifies all three as `current` with one shared release/data/configuration/environment binding.
-- P6-03 proved atomic canonical mutation, application receipt and audit creation, injected rollback, concurrency, deterministic replay, stale-state and changed-content rejection, public-export separation, and complete fixture cleanup.
-- The authorization inventory remains `not_authorized`; its remaining configured predecessors are P6-04 through P6-07 plus explicit authorization dispatch.
-- OPS-P6-001H in Issue #312 and PR #313 owns configured P6-04 private storage, byte inspection, publication cleanup, Media approval and replay, capability separation, public delivery, restriction, takedown, cleanup, and retained receipt evidence.
+- P6-08 repository definition work is complete. Repository contracts alone do not authorize configured staging or production launch.
+- Configured staging P6-01 through P6-05 were last refreshed and accepted together on exact main `46da212281bfbf80d0318747129217026a788328` with one shared release/data/configuration/environment binding.
+- The accepted P6-04 receipt proved the configured R2 Media lifecycle, replay behavior, public delivery, takedown, and complete fixture cleanup.
+- The accepted P6-05 receipt proved deterministic public generation, safe Pages topology, authenticated historical releases, candidate activation, representative external checks, baseline rollback, and candidate restoration.
+- The read-only P6-06 topology diagnostic completed on `46da212281bfbf80d0318747129217026a788328` with state `diagnosed` and decision `permission_blocked`.
+- The diagnostic verified the Cloudflare token, Pages project, production branch, expected Pages platform hostname, active-zone listing, exact-main predecessors, and shared binding. DNS record listing failed with HTTP 403 because the token lacked the required DNS read permission.
+- PR #336 merged the scoped-zone remediation at `9e83dade38ec01ec451ad8591daac3d519d024df`.
+- The P6-06 diagnostic now requires protected `P6_06_STAGING_ZONE_ID`, selects exactly one matching active zone, reads DNS records only for that selected zone, and fails closed on a missing or ambiguous zone match.
+- No DNS record, custom-domain binding, production hostname, certificate, redirect, cache, canonical data, or production deployment was changed.
+- Because repository work changed main after the last configured evidence refresh, deployment, live audit, and P6-01 through P6-05 must be refreshed on the exact post-merge main after the protected configuration is repaired.
 
 Configured state remains:
 
@@ -46,24 +41,28 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Complete OPS-P6-001H in Issue #312 and PR #313:
+Complete OPS-P6-001K in Issue #335:
 
-1. pass formatting, lint, Astro and TypeScript, runtime schemas, migration history, all unit and component tests, build, accessibility, staging artifact, P6-04 contracts, self-test, and Durable Object Worker dry-run;
-2. merge the guarded configured-staging Media lifecycle implementation;
-3. verify exact-main configured staging deployment and fixed-review live audit;
-4. refresh P6-01 through P6-03 receipts on the same exact-main binding;
-5. execute upload rejection, real-byte inspection, private object storage, partial-publication cleanup, Media approval, concurrent replay, changed-content conflict, reviewer/publisher separation, public delivery, restriction, and takedown;
-6. remove every object and database fixture;
-7. publish `config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json` with the unchanged predecessor binding;
-8. refresh authorization inventory and confirm P6-04 becomes current before starting P6-05.
+1. update the protected Cloudflare API token used by configured staging workflows so it preserves required Pages access and has only `Zone / DNS / Read` for the intended isolated staging zone;
+2. set the GitHub Actions secret `P6_06_STAGING_ZONE_ID` to the intended zone's Cloudflare zone identifier without placing the value in the repository, an Issue, a PR, or logs;
+3. refresh the configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
+4. refresh P6-01 through P6-05 on the same exact-main binding;
+5. rerun the read-only P6-06 topology diagnostic and require `dnsList: success` plus exactly one safe zone match;
+6. use the resulting `existing_candidate_requires_approval`, `no_candidate`, `ambiguous`, or `unsafe_topology` decision to define the next bounded P6-06 plan;
+7. do not perform a DNS or custom-domain mutation until that separate plan is reviewed and explicitly authorized.
 
 ## Blocked
 
-No configured staging deployment, readiness, fixed-review live-journey, P6-01 data-QA, P6-02 identity/Admin, or P6-03 Neon transaction blocker remains.
+No repository implementation or CI blocker remains for the read-only P6-06 topology diagnostic.
 
-Configured staging authorization is blocked by missing configured P6-04 through P6-07 receipts and the required explicit authorization dispatch. Production remains untouched.
+Configured P6-06 execution is blocked by two protected settings outside the public repository:
 
-Protected operational credentials, private database material, private Submission data, unrestricted database rows, raw Media fixture bytes, and raw object keys must not be placed in the public repository or public Issue content.
+- minimum zone-scoped Cloudflare `DNS Read` permission on the configured token;
+- GitHub Actions secret `P6_06_STAGING_ZONE_ID` for the intended isolated staging zone.
+
+P6-06 acceptance, P6-07, configured staging authorization, and all production work remain blocked until the read-only diagnostic succeeds and the later evidence procedures are executed. Production remains untouched.
+
+Protected operational credentials, raw account or zone identifiers, private database material, private Submission data, unrestricted database rows, raw Media fixture bytes, and raw object keys must not be placed in the public repository or public Issue content.
 
 ## Retained executable-audit snapshot
 
