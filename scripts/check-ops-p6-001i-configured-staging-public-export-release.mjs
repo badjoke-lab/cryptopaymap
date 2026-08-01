@@ -20,6 +20,7 @@ const files = {
   deployment: readFileSync('.github/workflows/staging-review-deploy.yml', 'utf8'),
   publication: readFileSync('src/admin/export-release/publication-contract.ts', 'utf8'),
   activation: readFileSync('src/admin/export-release/activation-r2.ts', 'utf8'),
+  notFoundPage: readFileSync('src/pages/404.astro', 'utf8'),
 };
 
 const expectations = [
@@ -28,10 +29,12 @@ const expectations = [
   [files.workflow, 'Enforce configured P6-05 acceptance'],
   [files.workflow, 'CLOUDFLARE_API_TOKEN'],
   [files.workflow, 'CLOUDFLARE_ACCOUNT_ID'],
+  [files.workflow, "'src/pages/404.astro'"],
   [files.procedure, 'production branch: `staging-review`'],
   [files.procedure, 'exact project platform hostname: `cryptopaymap-staging.pages.dev`'],
   [files.procedure, 'Every other hostname remains disallowed and fails closed.'],
   [files.procedure, 'Preview deployments are never rollback targets.'],
+  [files.procedure, 'top-level `404.html`'],
   [files.procedure, 'Leave the exact candidate active'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_05'"],
   [files.executor, "const productionBranch = 'staging-review'"],
@@ -46,8 +49,11 @@ const expectations = [
   [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],
   [files.executor, 'platformDomainPresent: false'],
   [files.executor, 'platformDomainMatches: false'],
+  [files.executor, "['/__p6_05_missing__', 404, 'text/html']"],
   [files.executor, 'candidateRestored: true'],
   [files.executor, "activeKind: 'candidate'"],
+  [files.notFoundPage, "import BaseLayout from '../layouts/BaseLayout.astro'"],
+  [files.notFoundPage, 'Page not found'],
   [
     files.repositoryContract,
     'P6-05 configured public export and release evidence contract passed.',
