@@ -367,9 +367,7 @@ async function runDiagnostic(statusRoot, outputPath) {
         candidateCount: classification.candidateCount,
         candidateDigest: boundedHash(JSON.stringify(classification.candidates)),
         deploymentDigest: boundedHash(
-          JSON.stringify(
-            deployments.map((item) => boundedHash(item?.id ?? 'missing')).sort(),
-          ),
+          JSON.stringify(deployments.map((item) => boundedHash(item?.id ?? 'missing')).sort()),
         ),
       };
       state = 'diagnosed';

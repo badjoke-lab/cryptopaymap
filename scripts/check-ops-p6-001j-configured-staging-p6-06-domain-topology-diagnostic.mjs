@@ -17,10 +17,7 @@ const files = {
     'scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js',
     'utf8',
   ),
-  authorization: readFileSync(
-    'scripts/evaluate-ops-p6-001c-staging-authorization.mjs',
-    'utf8',
-  ),
+  authorization: readFileSync('scripts/evaluate-ops-p6-001c-staging-authorization.mjs', 'utf8'),
 };
 
 const expectations = [
@@ -39,7 +36,10 @@ const expectations = [
   [files.executor, "const evidenceId = 'P6-06-DIAGNOSTIC'"],
   [files.executor, "const projectName = 'cryptopaymap-staging'"],
   [files.executor, "const productionBranch = 'staging-review'"],
-  [files.executor, "['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json']"],
+  [
+    files.executor,
+    "['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json']",
+  ],
   [files.executor, "cloudflareRequest('/user/tokens/verify', 'token_verify')"],
   [files.executor, '/pages/projects/${projectName}'],
   [files.executor, 'listZones(accountId)'],
@@ -53,7 +53,10 @@ const expectations = [
   [files.executor, 'deploymentDigest: boundedHash'],
   [files.executor, 'raw hostname must not be retained'],
   [files.p606Contract, 'P6-06 configured domain cutover and rollback evidence contract passed.'],
-  [files.authorization, "['P6-06', 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json']"],
+  [
+    files.authorization,
+    "['P6-06', 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json']",
+  ],
 ];
 
 for (const [content, marker] of expectations) {
@@ -103,7 +106,7 @@ if (files.workflow.includes('p6-06-domain-cutover-rollback-receipt.json')) {
 if (!files.executor.includes("cache: 'no-store'")) {
   throw new Error('OPS-P6-001J provider reads must bypass response caches.');
 }
-if (!files.executor.includes('predecessors.every((item) => item.state === \'current\')')) {
+if (!files.executor.includes("predecessors.every((item) => item.state === 'current')")) {
   throw new Error('OPS-P6-001J must require current P6-01 through P6-05 receipts.');
 }
 
