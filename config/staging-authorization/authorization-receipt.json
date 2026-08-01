@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:0daf488a1d1e8494f9f3c473f30a5d63935875e0b7314ab55671f2c0a4dc0326",
+  "authorizationId": "sha256:c7db78f86efa95c58ab1dfa70b8e0f65ca21f59b2b6ee62d40a58c727c211cce",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
-  "approvedCommit": "1da0f02898c31f2bb000a7ba81eb3321f0e6399b",
-  "generatedAt": "2026-08-01T02:56:44.940Z",
-  "workflowRunId": "30680905431",
+  "approvedCommit": "46da212281bfbf80d0318747129217026a788328",
+  "generatedAt": "2026-08-01T03:34:16.919Z",
+  "workflowRunId": "30682137568",
   "operators": {
     "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -16,48 +16,48 @@
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-01T02:46:30.532Z"
+      "generatedAt": "2026-08-01T03:23:08.922Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-01T02:47:17.320Z"
+      "generatedAt": "2026-08-01T03:23:59.394Z"
     },
     "predecessors": [
       {
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T02:48:34.154Z",
-        "expiresAt": "2026-08-04T02:48:34.154Z"
+        "generatedAt": "2026-08-01T03:25:23.257Z",
+        "expiresAt": "2026-08-04T03:25:23.257Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T02:49:42.243Z",
-        "expiresAt": "2026-08-04T02:49:42.243Z"
+        "generatedAt": "2026-08-01T03:26:33.053Z",
+        "expiresAt": "2026-08-04T03:26:33.053Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T02:51:05.068Z",
-        "expiresAt": "2026-08-04T02:51:05.068Z"
+        "generatedAt": "2026-08-01T03:28:05.212Z",
+        "expiresAt": "2026-08-04T03:28:05.212Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T02:53:23.534Z",
-        "expiresAt": "2026-08-04T02:53:23.534Z"
+        "generatedAt": "2026-08-01T03:30:29.950Z",
+        "expiresAt": "2026-08-04T03:30:29.950Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T02:56:43.419Z",
-        "expiresAt": "2026-08-04T02:56:43.419Z"
+        "generatedAt": "2026-08-01T03:34:15.420Z",
+        "expiresAt": "2026-08-04T03:34:15.420Z"
       },
       {
         "evidenceId": "P6-06",
