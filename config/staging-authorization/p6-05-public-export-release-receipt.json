@@ -4,11 +4,11 @@
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "46da212281bfbf80d0318747129217026a788328",
-  "generatedAt": "2026-08-01T03:34:15.420Z",
-  "expiresAt": "2026-08-04T03:34:15.420Z",
-  "workflowRunId": "30682137568",
-  "owner": "sha256:15a4d96e70d8a15f9ed17810fc556db49f4bbb9b5efc94ca648e83dbf8bc6cda",
+  "commit": "80a898af2af6b0e508b67406b9f28322b4a5ca19",
+  "generatedAt": "2026-08-01T17:06:14.475Z",
+  "expiresAt": "2026-08-04T17:06:14.475Z",
+  "workflowRunId": "30709469856",
+  "owner": "sha256:887657d72564a860a5dc037d437d95451b77aaa6813933b390a5765c3f5cdb96",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
     "exactMain": "success",
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:25:23.257Z",
-        "expiresAt": "2026-08-04T03:25:23.257Z"
+        "generatedAt": "2026-08-01T16:57:18.360Z",
+        "expiresAt": "2026-08-04T16:57:18.360Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:26:33.053Z",
-        "expiresAt": "2026-08-04T03:26:33.053Z"
+        "generatedAt": "2026-08-01T16:58:49.883Z",
+        "expiresAt": "2026-08-04T16:58:49.883Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:28:05.212Z",
-        "expiresAt": "2026-08-04T03:28:05.212Z"
+        "generatedAt": "2026-08-01T17:00:09.990Z",
+        "expiresAt": "2026-08-04T17:00:09.990Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:30:29.950Z",
-        "expiresAt": "2026-08-04T03:30:29.950Z"
+        "generatedAt": "2026-08-01T17:02:26.004Z",
+        "expiresAt": "2026-08-04T17:02:26.004Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -65,16 +65,16 @@
     },
     "releases": {
       "status": "passed",
-      "historicalCount": 4,
+      "historicalCount": 6,
       "baseline": {
-        "id": "sha256:061511b14f4ab1aadda8acafbe9d91e12be1fd48ec286dbd8eefbd3392d28a6c",
-        "releaseId": "sha256:e71fdf07c1d45907397b2d6d3fd2769249caedd92f6233fa80630e38f1cc2fda",
-        "url": "sha256:61a09affe1656874f33120c933e57ae7b09dd8219ef67002a29c55f99d7807bc"
+        "id": "sha256:0ea82567cd7b96c0ef365ebd39c853c0e0d6608446199f535b509a674a4ba741",
+        "releaseId": "sha256:d4ab9d2789c40ee89b8c767fb01bc28362df337ef6a7e2c2c6d4a0adacf93c71",
+        "url": "sha256:48e34e19a2f8c3805f2b6aab59a9dda69fd3c450e91dd3aabb01b1c528d564e7"
       },
       "candidate": {
-        "id": "sha256:735ebb40ad681cb3fa7e5d4942f25abf97a43b2aa3d9b0f78d5a9f6286cd0c05",
-        "releaseId": "sha256:eecdc4794c503bb743a84b231ef1ae58e1dbefcbd1cbf812df0039cc5361af19",
-        "url": "sha256:15cfc3cd38905436d3f222c9ec1dc4fc067c53403ca0c9923b3975548514a14b"
+        "id": "sha256:bf19801c95e3cc9c0f237dc85f3fcf6244ba4233e8c70c683849979b7806b637",
+        "releaseId": "sha256:172f09d02cb2ec168551270694d1e188a2e849dff245417e15c424496e9d070f",
+        "url": "sha256:92b8a2ce26a675a3109c67adecbda5bbde090ef8a25e9e377245aca0fe120a25"
       }
     },
     "activation": {
@@ -97,7 +97,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:84c39a3e680f7f032ad624bbc662d1956029425fa9c64942d1ab935539fdc876",
+    "releaseId": "sha256:a4ccca4ed948bee14e1c3d5998d62253d6b6ea1bb1c4fc9938e99dfa88c0b146",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
