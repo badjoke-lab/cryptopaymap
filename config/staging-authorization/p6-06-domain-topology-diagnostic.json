@@ -3,12 +3,12 @@
   "evidenceId": "P6-06-DIAGNOSTIC",
   "environment": "configured_staging",
   "state": "diagnosed",
-  "decision": "permission_blocked",
-  "commit": "46da212281bfbf80d0318747129217026a788328",
-  "generatedAt": "2026-08-01T03:36:27.996Z",
-  "expiresAt": "2026-08-04T03:36:27.996Z",
-  "workflowRunId": "30682254077",
-  "owner": "sha256:15a4d96e70d8a15f9ed17810fc556db49f4bbb9b5efc94ca648e83dbf8bc6cda",
+  "decision": "no_candidate",
+  "commit": "80a898af2af6b0e508b67406b9f28322b4a5ca19",
+  "generatedAt": "2026-08-01T17:08:29.863Z",
+  "expiresAt": "2026-08-04T17:08:29.863Z",
+  "workflowRunId": "30709602675",
+  "owner": "sha256:887657d72564a860a5dc037d437d95451b77aaa6813933b390a5765c3f5cdb96",
   "checks": {
     "exactMain": "success",
     "confirmation": "success",
@@ -19,36 +19,36 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:25:23.257Z",
-        "expiresAt": "2026-08-04T03:25:23.257Z"
+        "generatedAt": "2026-08-01T16:57:18.360Z",
+        "expiresAt": "2026-08-04T16:57:18.360Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:26:33.053Z",
-        "expiresAt": "2026-08-04T03:26:33.053Z"
+        "generatedAt": "2026-08-01T16:58:49.883Z",
+        "expiresAt": "2026-08-04T16:58:49.883Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:28:05.212Z",
-        "expiresAt": "2026-08-04T03:28:05.212Z"
+        "generatedAt": "2026-08-01T17:00:09.990Z",
+        "expiresAt": "2026-08-04T17:00:09.990Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:30:29.950Z",
-        "expiresAt": "2026-08-04T03:30:29.950Z"
+        "generatedAt": "2026-08-01T17:02:26.004Z",
+        "expiresAt": "2026-08-04T17:02:26.004Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-01T03:34:15.420Z",
-        "expiresAt": "2026-08-04T03:34:15.420Z"
+        "generatedAt": "2026-08-01T17:06:14.475Z",
+        "expiresAt": "2026-08-04T17:06:14.475Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -56,31 +56,31 @@
       "tokenVerify": "success",
       "pagesProject": "success",
       "zoneList": "success",
-      "dnsList": "failed"
+      "dnsList": "success"
     },
     "topology": {
       "productionBranch": "staging-review",
       "platformDomainPresent": true,
       "platformDomainMatches": true,
-      "projectSafe": true
+      "projectSafe": true,
+      "zoneMatchesExpected": true
     },
     "inventory": {
       "activeZoneCount": 2,
-      "dnsRecordCount": 0,
+      "selectedZoneCount": 1,
+      "dnsRecordCount": 3,
       "projectCustomDomainCount": 0,
-      "successfulProductionDeploymentCount": 6,
+      "successfulProductionDeploymentCount": 8,
       "candidateCount": 0,
       "candidateDigest": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
-      "deploymentDigest": "sha256:1ea829b3c25392bb5df9563b56fee5417ecf0a7f28ba350e0425c07014017111"
+      "deploymentDigest": "sha256:0d8cf50a36fd1f857529fe463e63583fc3075ba2dfd0470a83a0a5b8c52dd0b1"
     }
   },
   "binding": {
-    "releaseId": "sha256:84c39a3e680f7f032ad624bbc662d1956029425fa9c64942d1ab935539fdc876",
+    "releaseId": "sha256:a4ccca4ed948bee14e1c3d5998d62253d6b6ea1bb1c4fc9938e99dfa88c0b146",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "dns:dns_records_list:403:10000"
-  ]
+  "exceptions": []
 }
