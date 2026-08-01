@@ -127,15 +127,15 @@ jobs:
           if (!source.includes(oldShape)) throw new Error('Release receipt shape marker is missing.');
           source = source.replace(oldShape, newShape);
 
-          const oldAssignment = `      checks.releases = {
-                status: 'passed',
-                baseline: {`;
-          const newAssignment = `      checks.releases = {
-                status: 'passed',
-                historicalCount: classified.historical.length,
-                baseline: {`;
-          if (!source.includes(oldAssignment)) throw new Error('Release assignment marker is missing.');
-          source = source.replace(oldAssignment, newAssignment);
+          const assignmentPattern = /checks\.releases = \{\n(\s+)status: 'passed',\n\1baseline: \{/;
+          if (!assignmentPattern.test(source)) {
+            throw new Error('Release assignment marker is missing.');
+          }
+          source = source.replace(
+            assignmentPattern,
+            (_match, indent) =>
+              `checks.releases = {\n${indent}status: 'passed',\n${indent}historicalCount: classified.historical.length,\n${indent}baseline: {`,
+          );
 
           writeFileSync(path, source);
           NODE
