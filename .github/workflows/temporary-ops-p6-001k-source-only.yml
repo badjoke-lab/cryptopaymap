@@ -1,0 +1,94 @@
+name: Temporary OPS-P6-001K source-only patch
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-ops-p6-001k-source-only.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.head_ref == 'agent/ops-p6-001k-scoped-dns-read'
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repair branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001k-scoped-dns-read
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Apply scoped-zone source patch
+        run: |
+          python <<'PY'
+          from pathlib import Path
+
+          def replace(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'missing patch marker in {path}: {old[:100]!r}')
+              p.write_text(text.replace(old, new, 1))
+
+          executor = 'scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs'
+          procedure = 'docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md'
+          checker = 'scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs'
+
+          replace(executor, "function validOperator(value) {\n  return typeof value === 'string' && value.trim().length >= 2 && value.trim().length <= 100;\n}\n\nfunction safeTimestamp(value) {", "function validOperator(value) {\n  return typeof value === 'string' && value.trim().length >= 2 && value.trim().length <= 100;\n}\n\nfunction validZoneId(value) {\n  return typeof value === 'string' && /^[a-f0-9]{32}$/.test(value);\n}\n\nfunction safeTimestamp(value) {")
+          replace(executor, 'function classifyTopology({ project, zones, records, dnsReadable }) {', 'function classifyTopology({ project, zones, records, dnsReadable, zoneSafe = true }) {')
+          replace(executor, "  if (!projectSafe) decision = 'unsafe_topology';\n  else if (!dnsReadable) decision = 'permission_blocked';", "  if (!projectSafe || !zoneSafe) decision = 'unsafe_topology';\n  else if (!dnsReadable) decision = 'permission_blocked';")
+          replace(executor, '    projectSafe,\n    platformDomainPresent,', '    projectSafe,\n    zoneSafe,\n    platformDomainPresent,')
+          replace(executor, '  const token = process.env.CLOUDFLARE_API_TOKEN;\n  const predecessors = validCommit(commit)', '  const token = process.env.CLOUDFLARE_API_TOKEN;\n  const expectedZoneId = process.env.P6_06_STAGING_ZONE_ID;\n  const predecessors = validCommit(commit)')
+          replace(executor, "      projectSafe: false,\n    },\n    inventory: {\n      activeZoneCount: 0,", "      projectSafe: false,\n      zoneMatchesExpected: false,\n    },\n    inventory: {\n      activeZoneCount: 0,\n      selectedZoneCount: 0,")
+          replace(executor, "    typeof token === 'string' &&\n    token.length > 0;", "    typeof token === 'string' &&\n    token.length > 0 &&\n    validZoneId(expectedZoneId);")
+          replace(executor, "      let zones = [];\n      let records = [];\n      let dnsReadable = true;", "      let zones = [];\n      let selectedZones = [];\n      let records = [];\n      let dnsReadable = true;\n      let zoneSafe = false;")
+          replace(executor, "        zones = await listZones(accountId);\n        permissions.zoneList = 'success';", "        zones = await listZones(accountId);\n        selectedZones = zones.filter((zone) => zone?.id === expectedZoneId);\n        zoneSafe = selectedZones.length === 1;\n        permissions.zoneList = 'success';")
+          replace(executor, "      if (dnsReadable) {\n        for (const zone of zones) {", "      if (dnsReadable && zoneSafe) {\n        for (const zone of selectedZones) {")
+          replace(executor, "        permissions.dnsList = dnsReadable ? 'success' : 'failed';\n      }\n\n      const classification = classifyTopology({ project, zones, records, dnsReadable });", "        permissions.dnsList = dnsReadable ? 'success' : 'failed';\n      }\n\n      const classification = classifyTopology({\n        project,\n        zones: selectedZones,\n        records,\n        dnsReadable,\n        zoneSafe,\n      });")
+          replace(executor, "        projectSafe: classification.projectSafe,\n      };", "        projectSafe: classification.projectSafe,\n        zoneMatchesExpected: classification.zoneSafe,\n      };")
+          replace(executor, "        activeZoneCount: zones.length,\n        dnsRecordCount: records.length,", "        activeZoneCount: zones.length,\n        selectedZoneCount: selectedZones.length,\n        dnsRecordCount: records.length,")
+          replace(executor, "  result = classifyTopology({ project, zones: [], records: [], dnsReadable: false });\n  assert(result.decision === 'permission_blocked', 'unreadable DNS must block');", "  result = classifyTopology({ project, zones: [], records: [], dnsReadable: false });\n  assert(result.decision === 'permission_blocked', 'unreadable DNS must block');\n\n  result = classifyTopology({\n    project,\n    zones: [],\n    records: [],\n    dnsReadable: true,\n    zoneSafe: false,\n  });\n  assert(result.decision === 'unsafe_topology', 'missing expected zone must be unsafe');")
+
+          replace(procedure, '- successful repository and execution-contract checks.\n', '- successful repository and execution-contract checks;\n- one protected `P6_06_STAGING_ZONE_ID` secret identifying the isolated staging zone.\n')
+          replace(procedure, '- list active zones visible to the token;\n- list DNS records visible to the token;\n', '- list active zones visible to the token;\n- select exactly one zone matching the protected `P6_06_STAGING_ZONE_ID`;\n- list DNS records only for that selected zone;\n')
+          replace(procedure, '- `unsafe_topology`: the Pages project, production branch, platform domain, or account boundary does not match the configured staging contract.\n', '- `unsafe_topology`: the Pages project, production branch, platform domain, account boundary, or protected expected-zone identity does not match the configured staging contract.\n')
+          replace(procedure, '- counts of custom domains, active zones, DNS records, successful production deployments, and matching candidates;\n', '- counts of custom domains, visible active zones, selected zones, DNS records, successful production deployments, and matching candidates;\n')
+          replace(procedure, '- permission failure requires the minimum read and mutation permissions needed by the later guarded executor.\n', '- permission failure requires minimum `Zone / DNS / Read` access only for the protected expected zone before the diagnostic is retried; later mutation permissions remain a separate approval.\n')
+
+          replace(checker, "  [files.workflow, 'CLOUDFLARE_ACCOUNT_ID'],\n", "  [files.workflow, 'CLOUDFLARE_ACCOUNT_ID'],\n  [files.workflow, 'P6_06_STAGING_ZONE_ID'],\n")
+          replace(checker, "  [files.executor, \"const projectName = 'cryptopaymap-staging'\"],\n", "  [files.executor, \"const projectName = 'cryptopaymap-staging'\"],\n  [files.executor, 'function validZoneId(value)'],\n  [files.executor, 'const expectedZoneId = process.env.P6_06_STAGING_ZONE_ID'],\n  [files.executor, 'zones.filter((zone) => zone?.id === expectedZoneId)'],\n  [files.executor, 'for (const zone of selectedZones)'],\n  [files.executor, 'zoneMatchesExpected: classification.zoneSafe'],\n  [files.executor, 'selectedZoneCount: selectedZones.length'],\n")
+          replace(checker, "  [files.procedure, 'p6-06-domain-topology-diagnostic.json'],\n", "  [files.procedure, 'p6-06-domain-topology-diagnostic.json'],\n  [files.procedure, 'list DNS records only for that selected zone'],\n  [files.procedure, 'Zone / DNS / Read'],\n")
+          PY
+
+          npx biome check --write \
+            scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md
+          npm run check
+          node scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js
+          node scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs
+          node scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs --self-test
+
+      - name: Commit source patch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md \
+            scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs
+          git commit -m 'Scope P6-06 DNS reads to the expected staging zone'
+          git push origin HEAD:agent/ops-p6-001k-scoped-dns-read
