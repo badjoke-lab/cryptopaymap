@@ -118,10 +118,13 @@ jobs:
               "  result = classifyTopology({ project, zones: [], records: [], dnsReadable: false });\n  assert(result.decision === 'permission_blocked', 'unreadable DNS must block');\n\n  result = classifyTopology({\n    project,\n    zones: [],\n    records: [],\n    dnsReadable: true,\n    zoneSafe: false,\n  });\n  assert(result.decision === 'unsafe_topology', 'missing expected zone must be unsafe');",
           )
 
+          account_expression = '$' + '{{ secrets.CLOUDFLARE_ACCOUNT_ID }}'
+          zone_expression = '$' + '{{ secrets.P6_06_STAGING_ZONE_ID }}'
           replace(
               workflow,
-              '      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}\n',
-              '      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}\n      P6_06_STAGING_ZONE_ID: ${{ secrets.P6_06_STAGING_ZONE_ID }}\n',
+              f'      CLOUDFLARE_ACCOUNT_ID: {account_expression}\n',
+              f'      CLOUDFLARE_ACCOUNT_ID: {account_expression}\n'
+              f'      P6_06_STAGING_ZONE_ID: {zone_expression}\n',
           )
           replace(
               workflow,
