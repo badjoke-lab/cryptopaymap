@@ -83,6 +83,7 @@ jobs:
       WORKFLOW_RUN_ID: ${{ github.run_id }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      P6_06_STAGING_ZONE_ID: ${{ secrets.P6_06_STAGING_ZONE_ID }}
     steps:
       - name: Check out evaluated source
         uses: actions/checkout@v4
@@ -173,7 +174,9 @@ jobs:
               `- State: \`${receipt.state}\``,
               `- Decision: \`${receipt.decision}\``,
               `- Pages project safe: \`${receipt.checks.topology.projectSafe}\``,
-              `- Active zones: \`${receipt.checks.inventory.activeZoneCount}\``,
+              `- Expected zone matched: \`${receipt.checks.topology.zoneMatchesExpected}\``,
+              `- Active zones visible: \`${receipt.checks.inventory.activeZoneCount}\``,
+              `- Selected zones: \`${receipt.checks.inventory.selectedZoneCount}\``,
               `- DNS records read: \`${receipt.checks.inventory.dnsRecordCount}\``,
               `- Project custom domains: \`${receipt.checks.inventory.projectCustomDomainCount}\``,
               `- Candidate records: \`${receipt.checks.inventory.candidateCount}\``,
