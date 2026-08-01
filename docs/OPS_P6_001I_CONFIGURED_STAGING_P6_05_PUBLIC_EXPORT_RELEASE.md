@@ -42,17 +42,26 @@ The static artifact must contain a top-level `404.html` generated from `src/page
 
 The baseline and candidate deployment trees contain the same validated public projection. They differ only by `/p6-05-release.json`, a bounded configured-staging release marker used to distinguish active deployment identity externally. The marker contains no credential, private payload, canonical record, contact, object key, or unrestricted provider identifier.
 
+## Release inventory and authentication
+
+Every successful production-style deployment in the isolated staging project must expose a P6-05 release marker. The executor authenticates that marker by requiring the configured-staging environment, P6-05 evidence identity, a valid source commit and public tree digest, a baseline or candidate kind, and a release ID that exactly matches the value recomputed from those fields.
+
+An authenticated marker matching the current exact commit and public tree digest is an exact-current release. An authenticated marker for an earlier commit or tree is an authenticated historical release. Historical releases are never reused as the current baseline or candidate; they are retained only as prior immutable release history and summarized by a bounded count in the receipt.
+
+A missing, malformed, forged, wrong-environment, wrong-evidence, or incorrectly fingerprinted marker remains unrecognized and fails closed.
+
 ## Release sequence
 
 1. Detect existing successful production deployments in the staging project.
-2. Reject any production deployment that is not a recognized exact-commit P6-05 baseline or candidate.
-3. Reuse a matching immutable baseline or candidate deployment when present.
-4. Create only a missing baseline or candidate deployment.
-5. Activate the exact candidate and verify its release marker at the Pages production hostname.
-6. Verify representative pages, detail routes, public JSON, manifest, robots policy, public Media, and 404 behavior.
-7. Roll back to the exact baseline deployment and verify the baseline marker externally.
-8. Restore the exact candidate deployment and verify the candidate marker externally.
-9. Leave the exact candidate active for the P6-06 handoff.
+2. Authenticate their P6-05 release markers and separate exact-current, historical, and unrecognized deployments.
+3. Reject any unrecognized production deployment.
+4. Reuse only a matching exact-current immutable baseline or candidate deployment when present.
+5. Create only a missing exact-current baseline or candidate deployment.
+6. Activate the exact candidate and verify its release marker at the Pages production hostname.
+7. Verify representative pages, detail routes, public JSON, manifest, robots policy, public Media, and 404 behavior.
+8. Roll back to the exact baseline deployment and verify the baseline marker externally.
+9. Restore the exact candidate deployment and verify the candidate marker externally.
+10. Leave the exact candidate active for the P6-06 handoff.
 
 Cloudflare Pages rollback is used only with successful production deployments. Preview deployments are never rollback targets.
 
@@ -84,7 +93,8 @@ The retained receipt may include only:
 - dataset and schema versions;
 - platform-domain presence and exact subdomain-match booleans;
 - non-platform custom-domain count;
-- hashed Pages deployment identifiers and URLs;
+- authenticated historical release count;
+- hashed exact-current Pages deployment identifiers and URLs;
 - representative route status/content-type/body digests;
 - activation, rollback, restore, and final-state summaries;
 - bounded exception classes.
@@ -97,7 +107,7 @@ Successful execution publishes:
 
 `config/staging-authorization/p6-05-public-export-release-receipt.json`
 
-The receipt is `accepted` only when deterministic generation, artifact validation, safe topology, candidate activation, external checks, baseline rollback, candidate restoration, and final exact-candidate state all pass.
+The receipt is `accepted` only when deterministic generation, artifact validation, safe topology, release inventory authentication, candidate activation, external checks, baseline rollback, candidate restoration, and final exact-candidate state all pass.
 
 ## Completion
 
