@@ -15,7 +15,8 @@ Execution requires:
 - one matching release/data/configuration/environment binding;
 - the exact confirmation `DIAGNOSE_CONFIGURED_STAGING_P6_06`;
 - a bounded domain owner identity;
-- successful repository and execution-contract checks.
+- successful repository and execution-contract checks;
+- one protected `P6_06_STAGING_ZONE_ID` secret identifying the isolated staging zone.
 
 A changed main commit, stale predecessor, mismatched binding, missing credential, or unexpected Pages project stops the diagnostic.
 
@@ -27,7 +28,8 @@ The diagnostic may only:
 - read the configured account's Pages project;
 - read project domain and successful deployment inventory;
 - list active zones visible to the token;
-- list DNS records visible to the token;
+- select exactly one zone matching the protected `P6_06_STAGING_ZONE_ID`;
+- list DNS records only for that selected zone;
 - compare project domains with DNS record names and targets;
 - produce bounded redacted evidence.
 
@@ -41,7 +43,7 @@ The diagnostic returns one decision:
 - `no_candidate`: no project custom domain or DNS record targets the isolated staging project;
 - `ambiguous`: multiple custom domains, multiple matching records, or inconsistent project and DNS inventories exist;
 - `permission_blocked`: the token cannot read the required zone or DNS inventory;
-- `unsafe_topology`: the Pages project, production branch, platform domain, or account boundary does not match the configured staging contract.
+- `unsafe_topology`: the Pages project, production branch, platform domain, account boundary, or protected expected-zone identity does not match the configured staging contract.
 
 No decision authorizes a cutover. Even an existing candidate requires a separately bounded mutation plan and explicit approval.
 
@@ -54,7 +56,7 @@ The retained diagnostic may include only:
 - predecessor states and shared binding;
 - token, Pages, zone-list, and DNS-list permission outcomes;
 - Pages production branch and platform-domain presence booleans;
-- counts of custom domains, active zones, DNS records, successful production deployments, and matching candidates;
+- counts of custom domains, visible active zones, selected zones, DNS records, successful production deployments, and matching candidates;
 - hashes of candidate hostnames, zone names, record targets, and deployment identifiers;
 - DNS record type, proxy-state class, and TTL class;
 - one bounded decision and bounded exception classes.
@@ -78,7 +80,7 @@ After the diagnostic:
 - an existing single candidate may be used only after its raw hostname, zone, prior state, target, and rollback target are approved in a protected execution input;
 - no candidate requires a new explicitly approved isolated staging hostname and DNS plan;
 - ambiguous topology must be reconciled without mutation before retry;
-- permission failure requires the minimum read and mutation permissions needed by the later guarded executor.
+- permission failure requires minimum `Zone / DNS / Read` access only for the protected expected zone before the diagnostic is retried; later mutation permissions remain a separate approval.
 
 ## Boundary
 
