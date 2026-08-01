@@ -228,23 +228,44 @@ async function productionDeployments() {
   return Array.isArray(result) ? result : [];
 }
 
+function validP6ReleaseMarker(marker) {
+  if (
+    marker?.version !== 1 ||
+    marker?.environment !== 'configured_staging' ||
+    marker?.evidenceId !== evidenceId ||
+    !validCommit(marker?.sourceCommit) ||
+    typeof marker?.publicTreeDigest !== 'string' ||
+    !/^[a-f0-9]{64}$/.test(marker.publicTreeDigest) ||
+    (marker?.kind !== 'baseline' && marker?.kind !== 'candidate') ||
+    typeof marker?.releaseId !== 'string'
+  ) {
+    return false;
+  }
+  return (
+    marker.releaseId ===
+    releaseMarker(marker.kind, marker.sourceCommit, marker.publicTreeDigest).releaseId
+  );
+}
+
 async function classifiedDeployments(commit, treeDigest) {
   const deployments = await productionDeployments();
   const recognized = [];
+  const historical = [];
   const unrecognized = [];
   for (const deployment of deployments) {
     if (deployment?.latest_stage?.status !== 'success') continue;
     const url = safeUrl(deployment.url);
     const marker = url === null ? null : await fetchMarker(url);
-    if (
-      marker?.version === 1 &&
-      marker?.environment === 'configured_staging' &&
-      marker?.evidenceId === evidenceId &&
-      marker?.sourceCommit === commit &&
-      marker?.publicTreeDigest === treeDigest &&
-      (marker?.kind === 'baseline' || marker?.kind === 'candidate')
-    ) {
-      recognized.push({ deployment, marker, url });
+    if (validP6ReleaseMarker(marker)) {
+      const item = { deployment, marker, url };
+      if (marker.sourceCommit === commit && marker.publicTreeDigest === treeDigest) {
+        recognized.push(item);
+      } else {
+        historical.push({
+          id: boundedHash(deployment?.id ?? 'missing'),
+          kind: marker.kind,
+        });
+      }
     } else {
       unrecognized.push({
         id: boundedHash(deployment?.id ?? 'missing'),
@@ -252,7 +273,7 @@ async function classifiedDeployments(commit, treeDigest) {
       });
     }
   }
-  return { recognized, unrecognized };
+  return { recognized, historical, unrecognized };
 }
 
 function deployArtifact(root) {
@@ -395,7 +416,12 @@ async function execute(statusRoot, outputPath) {
       platformDomainMatches: false,
       customDomainCount: null,
     },
-    releases: { status: 'not_run', baseline: null, candidate: null },
+    releases: {
+      status: 'not_run',
+      historicalCount: 0,
+      baseline: null,
+      candidate: null,
+    },
     activation: { status: 'not_run', candidateVisible: false },
     rollback: { status: 'not_run', baselineVisible: false, candidateRestored: false },
     external: { status: 'not_run', routeCount: 0, routeDigest: null },
@@ -506,6 +532,7 @@ async function execute(statusRoot, outputPath) {
       }
       checks.releases = {
         status: 'passed',
+        historicalCount: classified.historical.length,
         baseline: {
           id: boundedHash(baseline.deployment.id),
           releaseId: baselineMarker.releaseId,
