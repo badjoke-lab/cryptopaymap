@@ -114,7 +114,11 @@ if (!files.executor.includes('customDomains.length === 0')) {
 if (!files.executor.includes('if (validP6ReleaseMarker(marker))')) {
   throw new Error('OPS-P6-001I executor must authenticate retained release markers.');
 }
-if (!files.executor.includes('marker.sourceCommit === commit && marker.publicTreeDigest === treeDigest')) {
+if (
+  !files.executor.includes(
+    'marker.sourceCommit === commit && marker.publicTreeDigest === treeDigest',
+  )
+) {
   throw new Error('OPS-P6-001I executor must separate exact-current and historical releases.');
 }
 
