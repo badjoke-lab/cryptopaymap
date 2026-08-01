@@ -35,6 +35,8 @@ const expectations = [
   [files.procedure, 'Every other hostname remains disallowed and fails closed.'],
   [files.procedure, 'Preview deployments are never rollback targets.'],
   [files.procedure, 'top-level `404.html`'],
+  [files.procedure, 'authenticated historical release'],
+  [files.procedure, 'Historical releases are never reused'],
   [files.procedure, 'Leave the exact candidate active'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_05'"],
   [files.executor, "const productionBranch = 'staging-review'"],
@@ -50,6 +52,15 @@ const expectations = [
   [files.executor, 'platformDomainPresent: false'],
   [files.executor, 'platformDomainMatches: false'],
   [files.executor, "['/__p6_05_missing__', 404, 'text/html']"],
+  [files.executor, 'function validP6ReleaseMarker(marker)'],
+  [
+    files.executor,
+    'releaseMarker(marker.kind, marker.sourceCommit, marker.publicTreeDigest).releaseId',
+  ],
+  [files.executor, 'const historical = []'],
+  [files.executor, 'return { recognized, historical, unrecognized }'],
+  [files.executor, 'historicalCount: 0'],
+  [files.executor, 'historicalCount: classified.historical.length'],
   [files.executor, 'candidateRestored: true'],
   [files.executor, "activeKind: 'candidate'"],
   [files.notFoundPage, "import BaseLayout from '../layouts/BaseLayout.astro'"],
@@ -99,6 +110,12 @@ if (!files.executor.includes('platformDomainMatches &&')) {
 }
 if (!files.executor.includes('customDomains.length === 0')) {
   throw new Error('OPS-P6-001I executor must refuse non-platform custom domains.');
+}
+if (!files.executor.includes('if (validP6ReleaseMarker(marker))')) {
+  throw new Error('OPS-P6-001I executor must authenticate retained release markers.');
+}
+if (!files.executor.includes('marker.sourceCommit === commit && marker.publicTreeDigest === treeDigest')) {
+  throw new Error('OPS-P6-001I executor must separate exact-current and historical releases.');
 }
 
 console.log('OPS-P6-001I configured staging public export/release contract check passed.');
