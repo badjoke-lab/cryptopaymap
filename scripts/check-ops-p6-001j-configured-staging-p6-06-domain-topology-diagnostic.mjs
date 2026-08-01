@@ -25,6 +25,7 @@ const expectations = [
   [files.workflow, 'p6-06-domain-topology-diagnostic.json'],
   [files.workflow, 'CLOUDFLARE_API_TOKEN'],
   [files.workflow, 'CLOUDFLARE_ACCOUNT_ID'],
+  [files.workflow, 'P6_06_STAGING_ZONE_ID'],
   [files.workflow, 'Enforce completed read-only diagnostic'],
   [files.procedure, 'This diagnostic is not P6-06 acceptance evidence.'],
   [files.procedure, 'It must not create, update, delete, bind, activate, purge, roll back'],
@@ -103,6 +104,7 @@ const forbiddenRetainedMarkers = [
   'rawZoneName:',
   'CLOUDFLARE_API_TOKEN=',
   'CLOUDFLARE_ACCOUNT_ID=',
+  'P6_06_STAGING_ZONE_ID=',
 ];
 for (const marker of forbiddenRetainedMarkers) {
   if (files.executor.includes(marker)) {
