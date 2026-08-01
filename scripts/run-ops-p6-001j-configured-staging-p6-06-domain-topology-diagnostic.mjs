@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -36,6 +36,10 @@ function validCommit(value) {
 
 function validOperator(value) {
   return typeof value === 'string' && value.trim().length >= 2 && value.trim().length <= 100;
+}
+
+function validZoneId(value) {
+  return typeof value === 'string' && /^[a-f0-9]{32}$/.test(value);
 }
 
 function safeTimestamp(value) {
@@ -168,7 +172,7 @@ async function listDnsRecords(zoneId) {
   return records;
 }
 
-function classifyTopology({ project, zones, records, dnsReadable }) {
+function classifyTopology({ project, zones, records, dnsReadable, zoneSafe = true }) {
   const platformDomain = `${projectName}.pages.dev`;
   const projectDomains = Array.isArray(project?.domains)
     ? project.domains.map(normalizeHostname).filter(Boolean)
@@ -190,7 +194,7 @@ function classifyTopology({ project, zones, records, dnsReadable }) {
   });
 
   let decision = 'ambiguous';
-  if (!projectSafe) decision = 'unsafe_topology';
+  if (!projectSafe || !zoneSafe) decision = 'unsafe_topology';
   else if (!dnsReadable) decision = 'permission_blocked';
   else if (customDomains.length === 0 && candidateRecords.length === 0) decision = 'no_candidate';
   else if (
@@ -219,6 +223,7 @@ function classifyTopology({ project, zones, records, dnsReadable }) {
   return {
     decision,
     projectSafe,
+    zoneSafe,
     platformDomainPresent,
     platformDomainMatches,
     customDomainCount: customDomains.length,
@@ -235,6 +240,7 @@ async function runDiagnostic(statusRoot, outputPath) {
   const repositoryContract = process.env.REPOSITORY_CONTRACT_OUTCOME === 'success';
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const token = process.env.CLOUDFLARE_API_TOKEN;
+  const expectedZoneId = process.env.P6_06_STAGING_ZONE_ID;
   const predecessors = validCommit(commit)
     ? predecessorPaths.map(([id, path]) => readPredecessor(statusRoot, id, path, commit, now))
     : predecessorPaths.map(([id, path]) => ({
@@ -266,9 +272,11 @@ async function runDiagnostic(statusRoot, outputPath) {
       platformDomainPresent: false,
       platformDomainMatches: false,
       projectSafe: false,
+      zoneMatchesExpected: false,
     },
     inventory: {
       activeZoneCount: 0,
+      selectedZoneCount: 0,
       dnsRecordCount: 0,
       projectCustomDomainCount: 0,
       successfulProductionDeploymentCount: 0,
@@ -288,7 +296,8 @@ async function runDiagnostic(statusRoot, outputPath) {
     typeof accountId === 'string' &&
     accountId.length > 0 &&
     typeof token === 'string' &&
-    token.length > 0;
+    token.length > 0 &&
+    validZoneId(expectedZoneId);
 
   let state = 'failed';
   let decision = 'permission_blocked';
@@ -319,10 +328,14 @@ async function runDiagnostic(statusRoot, outputPath) {
       }
 
       let zones = [];
-      let records = [];
+      let selectedZones = [];
+      const records = [];
       let dnsReadable = true;
+      let zoneSafe = false;
       try {
         zones = await listZones(accountId);
+        selectedZones = zones.filter((zone) => zone?.id === expectedZoneId);
+        zoneSafe = selectedZones.length === 1;
         permissions.zoneList = 'success';
       } catch (error) {
         permissions.zoneList = 'failed';
@@ -331,8 +344,8 @@ async function runDiagnostic(statusRoot, outputPath) {
         exceptions.push(`zones:${safeError(error)}`);
       }
 
-      if (dnsReadable) {
-        for (const zone of zones) {
+      if (dnsReadable && zoneSafe) {
+        for (const zone of selectedZones) {
           if (typeof zone?.id !== 'string') continue;
           try {
             const zoneRecords = await listDnsRecords(zone.id);
@@ -346,13 +359,20 @@ async function runDiagnostic(statusRoot, outputPath) {
         permissions.dnsList = dnsReadable ? 'success' : 'failed';
       }
 
-      const classification = classifyTopology({ project, zones, records, dnsReadable });
+      const classification = classifyTopology({
+        project,
+        zones: selectedZones,
+        records,
+        dnsReadable,
+        zoneSafe,
+      });
       decision = classification.decision;
       checks.topology = {
         productionBranch: project?.production_branch ?? null,
         platformDomainPresent: classification.platformDomainPresent,
         platformDomainMatches: classification.platformDomainMatches,
         projectSafe: classification.projectSafe,
+        zoneMatchesExpected: classification.zoneSafe,
       };
       const projectDomains = Array.isArray(project?.domains)
         ? project.domains.map(normalizeHostname).filter(Boolean)
@@ -361,6 +381,7 @@ async function runDiagnostic(statusRoot, outputPath) {
       const customDomainCount = projectDomains.filter((domain) => domain !== platformDomain).length;
       checks.inventory = {
         activeZoneCount: zones.length,
+        selectedZoneCount: selectedZones.length,
         dnsRecordCount: records.length,
         projectCustomDomainCount: customDomainCount,
         successfulProductionDeploymentCount: deployments.length,
@@ -445,6 +466,15 @@ function runSelfTest() {
 
   result = classifyTopology({ project, zones: [], records: [], dnsReadable: false });
   assert(result.decision === 'permission_blocked', 'unreadable DNS must block');
+
+  result = classifyTopology({
+    project,
+    zones: [],
+    records: [],
+    dnsReadable: true,
+    zoneSafe: false,
+  });
+  assert(result.decision === 'unsafe_topology', 'missing expected zone must be unsafe');
 
   const root = mkdtempSync(join(tmpdir(), 'cpm-p6-06-diagnostic-self-test-'));
   try {

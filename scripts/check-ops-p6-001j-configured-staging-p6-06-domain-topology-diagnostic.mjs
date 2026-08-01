@@ -25,6 +25,7 @@ const expectations = [
   [files.workflow, 'p6-06-domain-topology-diagnostic.json'],
   [files.workflow, 'CLOUDFLARE_API_TOKEN'],
   [files.workflow, 'CLOUDFLARE_ACCOUNT_ID'],
+  [files.workflow, 'P6_06_STAGING_ZONE_ID'],
   [files.workflow, 'Enforce completed read-only diagnostic'],
   [files.procedure, 'This diagnostic is not P6-06 acceptance evidence.'],
   [files.procedure, 'It must not create, update, delete, bind, activate, purge, roll back'],
@@ -32,9 +33,17 @@ const expectations = [
   [files.procedure, '`permission_blocked`'],
   [files.procedure, '`unsafe_topology`'],
   [files.procedure, 'p6-06-domain-topology-diagnostic.json'],
+  [files.procedure, 'list DNS records only for that selected zone'],
+  [files.procedure, 'Zone / DNS / Read'],
   [files.executor, "const exactConfirmation = 'DIAGNOSE_CONFIGURED_STAGING_P6_06'"],
   [files.executor, "const evidenceId = 'P6-06-DIAGNOSTIC'"],
   [files.executor, "const projectName = 'cryptopaymap-staging'"],
+  [files.executor, 'function validZoneId(value)'],
+  [files.executor, 'const expectedZoneId = process.env.P6_06_STAGING_ZONE_ID'],
+  [files.executor, 'zones.filter((zone) => zone?.id === expectedZoneId)'],
+  [files.executor, 'for (const zone of selectedZones)'],
+  [files.executor, 'zoneMatchesExpected: classification.zoneSafe'],
+  [files.executor, 'selectedZoneCount: selectedZones.length'],
   [files.executor, "const productionBranch = 'staging-review'"],
   [
     files.executor,
@@ -95,6 +104,7 @@ const forbiddenRetainedMarkers = [
   'rawZoneName:',
   'CLOUDFLARE_API_TOKEN=',
   'CLOUDFLARE_ACCOUNT_ID=',
+  'P6_06_STAGING_ZONE_ID=',
 ];
 for (const marker of forbiddenRetainedMarkers) {
   if (files.executor.includes(marker)) {
