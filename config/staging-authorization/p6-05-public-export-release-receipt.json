@@ -4,10 +4,10 @@
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
   "state": "failed",
-  "commit": "8cedee91ea0bad335c82aaac665d9efcef6ef829",
-  "generatedAt": "2026-07-31T15:48:21.196Z",
-  "expiresAt": "2026-08-03T15:48:21.196Z",
-  "workflowRunId": "30644276688",
+  "commit": "27570959bf5f72c9f1b86c4eef028d82dc1bd755",
+  "generatedAt": "2026-08-01T01:58:22.545Z",
+  "expiresAt": "2026-08-04T01:58:22.545Z",
+  "workflowRunId": "30678955150",
   "owner": "sha256:5b18080146b0dce0ac0d5eae4390f68fef290fb09de738aacf8654ab4e4b1006",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-07-31T15:40:29.516Z",
-        "expiresAt": "2026-08-03T15:40:29.516Z"
+        "generatedAt": "2026-08-01T01:50:04.992Z",
+        "expiresAt": "2026-08-04T01:50:04.992Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-07-31T15:41:45.368Z",
-        "expiresAt": "2026-08-03T15:41:45.368Z"
+        "generatedAt": "2026-08-01T01:51:25.241Z",
+        "expiresAt": "2026-08-04T01:51:25.241Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-07-31T15:43:01.927Z",
-        "expiresAt": "2026-08-03T15:43:01.927Z"
+        "generatedAt": "2026-08-01T01:52:46.357Z",
+        "expiresAt": "2026-08-04T01:52:46.357Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-07-31T15:45:36.284Z",
-        "expiresAt": "2026-08-03T15:45:36.284Z"
+        "generatedAt": "2026-08-01T01:55:11.833Z",
+        "expiresAt": "2026-08-04T01:55:11.833Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -57,18 +57,28 @@
       "schemaVersion": "1.0.0"
     },
     "topology": {
-      "status": "failed",
+      "status": "passed",
       "productionBranch": "staging-review",
-      "customDomainCount": 1
+      "platformDomainPresent": true,
+      "platformDomainMatches": true,
+      "customDomainCount": 0
     },
     "releases": {
-      "status": "not_run",
-      "baseline": null,
-      "candidate": null
+      "status": "passed",
+      "baseline": {
+        "id": "sha256:221be002376551d9f75e8a03b09ad4fd28d341a3aacd949f324cb864e75cd56c",
+        "releaseId": "sha256:9aa0416b2040ce2300891d0ef15eb35ae3926be70d84d651e276ec486e4cfc5b",
+        "url": "sha256:37190111c55cde20e7ee71ebfa5c6c12abd0363a365ef707f952a14d4f65a616"
+      },
+      "candidate": {
+        "id": "sha256:c2f1c0c3a98ba982fda7cf383ad1ba43913bbea5dc6d1dd43cc2a316cfe59362",
+        "releaseId": "sha256:5de0781d85fc7e8b1e5adfae02d1feff07ab7e5a4474e81619514c710e823fe0",
+        "url": "sha256:beb7de1ade7f16055a1f41a844ec7a2e004c89ea54c46d6a8063a603f75f71f8"
+      }
     },
     "activation": {
-      "status": "not_run",
-      "candidateVisible": false
+      "status": "passed",
+      "candidateVisible": true
     },
     "rollback": {
       "status": "not_run",
@@ -86,13 +96,12 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:d8dc92c2c0b09c65d814d6246f257adc85e866695fbeddacc7b3f4bb9ff8bcec",
+    "releaseId": "sha256:28453ee85afc7387747ca6f234b8df87db2c2e52432d377060c1016229934ec3",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
   "exceptions": [
-    "execution:unsafe_pages_topology",
-    "topology:failed"
+    "execution:external_status_/__p6_05_missing___200"
   ]
 }
