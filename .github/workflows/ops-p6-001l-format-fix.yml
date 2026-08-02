@@ -36,20 +36,21 @@ jobs:
         run: |
           python3 <<'PY'
           from pathlib import Path
+          import re
           path = Path('scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs')
           text = path.read_text()
-          old = """  assert(
-            boundedHash(approvedHostname) === boundedHash(approvedHostname),
-            'hostname digest must be deterministic',
-          );"""
-          new = """  const hostnameDigest = boundedHash(approvedHostname);
+          pattern = re.compile(
+              r"  assert\(\n\s+boundedHash\(approvedHostname\) === boundedHash\(approvedHostname\),\n\s+'hostname digest must be deterministic',\n\s+\);"
+          )
+          replacement = """  const hostnameDigest = boundedHash(approvedHostname);
           assert(
             hostnameDigest === `sha256:${sha256(approvedHostname)}`,
             'hostname digest must use the bounded SHA-256 form',
           );"""
-          if old not in text:
-              raise SystemExit('self-test marker not found')
-          path.write_text(text.replace(old, new, 1))
+          text, count = pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'self-test replacement count was {count}')
+          path.write_text(text)
           PY
           npx biome format --write \
             scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs \
