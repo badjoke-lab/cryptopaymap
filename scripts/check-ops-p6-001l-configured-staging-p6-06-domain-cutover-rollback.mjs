@@ -42,10 +42,7 @@ const expectations = [
     files.executor,
     "const diagnosticPath = 'config/staging-authorization/p6-06-domain-topology-diagnostic.json'",
   ],
-  [
-    files.executor,
-    "const acceptedReceiptPath = 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'",
-  ],
+  [files.executor, 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'],
   [files.executor, "receipt?.decision === 'no_candidate'"],
   [files.executor, "receipt?.checks?.permissions?.dnsList === 'success'"],
   [files.executor, 'prestate_changed_before_mutation'],
