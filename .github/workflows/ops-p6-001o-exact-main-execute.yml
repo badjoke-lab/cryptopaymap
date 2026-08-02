@@ -1,0 +1,105 @@
+name: OPS-P6-001O exact-main configured staging execution
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001o-exact-main-execute.yml'
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: ops-p6-001o-exact-main-execute
+  cancel-in-progress: true
+
+jobs:
+  execute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      APPROVED_COMMIT: e78905e405b1463af1ad7fad60d3525013c3992f
+      DISPATCHER_BRANCH: agent/ops-p6-001o-exact-main-execute
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out dispatcher branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001o-exact-main-execute
+
+      - name: Verify unchanged exact main
+        run: |
+          set -euo pipefail
+          current_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$current_main" = "$APPROVED_COMMIT"
+
+      - name: Deploy refresh evidence diagnose and execute P6-06
+        run: |
+          set -euo pipefail
+
+          dispatch_and_wait() {
+            workflow="$1"
+            shift
+            previous="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+            gh workflow run "$workflow" --ref main "$@"
+            run_id=''
+            for attempt in $(seq 1 60); do
+              candidate="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+              if [ -n "$candidate" ] && [ "$candidate" != "$previous" ]; then
+                run_id="$candidate"
+                break
+              fi
+              sleep 5
+            done
+            test -n "$run_id"
+            echo "Watching $workflow run $run_id"
+            gh run watch "$run_id" --exit-status
+          }
+
+          dispatch_and_wait staging-review-deploy.yml
+          dispatch_and_wait p5-02r-fixed-review-live-audit.yml
+          dispatch_and_wait ops-p6-001d-configured-staging-p6-01-data-qa.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_01 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f data_owner=ops-p6-001o:automation
+          dispatch_and_wait ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_02 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f identity_owner=ops-p6-001o:automation
+          dispatch_and_wait ops-p6-001g-configured-staging-p6-03-neon-transaction.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_03 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f transaction_owner=ops-p6-001o:automation
+          dispatch_and_wait ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_04 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f media_owner=ops-p6-001o:automation
+          dispatch_and_wait ops-p6-001i-configured-staging-p6-05-public-export-release.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_05 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f release_owner=ops-p6-001o:automation
+          dispatch_and_wait ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml \
+            -f confirmation=DIAGNOSE_CONFIGURED_STAGING_P6_06 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f domain_owner=ops-p6-001o:automation
+          dispatch_and_wait ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_06 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f approved_hostname=staging.cryptopaymap.com \
+            -f domain_owner=ops-p6-001o:automation \
+            -f change_window=bounded-production-secrets-fix-2026-08-03-jst
+
+      - name: Remove one-time dispatcher workflow
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/ops-p6-001o-exact-main-execute.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/ops-p6-001o-exact-main-execute.yml
+          if ! git diff --cached --quiet; then
+            git commit -m 'OPS-P6-001O remove exact-main execution dispatcher'
+            git push origin HEAD:"$DISPATCHER_BRANCH"
+          fi
