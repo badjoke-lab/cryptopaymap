@@ -3,12 +3,12 @@
   "evidenceId": "P6-05",
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
-  "state": "failed",
+  "state": "accepted",
   "commit": "e78905e405b1463af1ad7fad60d3525013c3992f",
-  "generatedAt": "2026-08-02T17:00:56.376Z",
-  "expiresAt": "2026-08-05T17:00:56.376Z",
-  "workflowRunId": "30757814102",
-  "owner": "sha256:0455c9985dfdfad681a02f73ac0af1a984226ebe1926e1d3f381722bb34bf22f",
+  "generatedAt": "2026-08-02T17:08:14.658Z",
+  "expiresAt": "2026-08-05T17:08:14.658Z",
+  "workflowRunId": "30758041283",
+  "owner": "sha256:6f37bdff029681544c038b9df2e325e9b04e0925fa5cc757f899602203b2c52d",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
     "exactMain": "success",
@@ -78,22 +78,22 @@
       }
     },
     "activation": {
-      "status": "not_run",
-      "candidateVisible": false
+      "status": "passed",
+      "candidateVisible": true
     },
     "rollback": {
-      "status": "not_run",
-      "baselineVisible": false,
-      "candidateRestored": false
+      "status": "passed",
+      "baselineVisible": true,
+      "candidateRestored": true
     },
     "external": {
-      "status": "not_run",
-      "routeCount": 0,
-      "routeDigest": null
+      "status": "passed",
+      "routeCount": 10,
+      "routeDigest": "sha256:d0eba8f8e94640eb41d440d0355a7f01c3d038fc7c1bf482014c16c64bed7e70"
     },
     "finalState": {
-      "status": "not_run",
-      "activeKind": null
+      "status": "passed",
+      "activeKind": "candidate"
     }
   },
   "binding": {
@@ -102,7 +102,5 @@
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "execution:cloudflare_api_400_8000039"
-  ]
+  "exceptions": []
 }
