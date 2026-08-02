@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:214060d47eab6176cce51f3f3c9d9801c29254b80dc59c40b02cf6649ba349c1",
+  "authorizationId": "sha256:ce77a3eaffd393e21c9ca81890a331b297705b02b95015cbc133c221ca4eecb7",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "e78905e405b1463af1ad7fad60d3525013c3992f",
-  "generatedAt": "2026-08-02T17:08:16.844Z",
-  "workflowRunId": "30758041283",
+  "generatedAt": "2026-08-02T17:15:08.479Z",
+  "workflowRunId": "30758288920",
   "operators": {
     "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -62,9 +62,9 @@
       {
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-02T16:24:40.972Z",
-        "expiresAt": "2026-08-05T16:24:40.972Z"
+        "state": "current",
+        "generatedAt": "2026-08-02T17:15:06.110Z",
+        "expiresAt": "2026-08-05T17:15:06.110Z"
       },
       {
         "evidenceId": "P6-07",
@@ -77,7 +77,6 @@
     "predecessorBinding": "unproven"
   },
   "blockers": [
-    "P6-06:failed",
     "P6-07:missing",
     "explicit_dispatch:required"
   ]
