@@ -3,12 +3,12 @@
   "evidenceId": "P6-06",
   "launchDomain": "domain_cutover_rollback",
   "environment": "configured_staging",
-  "state": "failed",
-  "commit": "6420b69b103f587c9f11dbbd77c89a316dfdfce7",
-  "generatedAt": "2026-08-02T16:24:40.972Z",
-  "expiresAt": "2026-08-05T16:24:40.972Z",
-  "workflowRunId": "30756414295",
-  "owner": "sha256:07075068c0738773244409da3986e231b18bf884b8675331ef6c9524012eba70",
+  "state": "accepted",
+  "commit": "e78905e405b1463af1ad7fad60d3525013c3992f",
+  "generatedAt": "2026-08-02T17:15:06.110Z",
+  "expiresAt": "2026-08-05T17:15:06.110Z",
+  "workflowRunId": "30758288920",
+  "owner": "sha256:6f37bdff029681544c038b9df2e325e9b04e0925fa5cc757f899602203b2c52d",
   "procedure": "OPS-P6-001L configured staging P6-06 guarded domain cutover and rollback evidence",
   "checks": {
     "exactMain": "success",
@@ -20,7 +20,7 @@
     "owner": "success",
     "changeWindow": {
       "status": "success",
-      "digest": "sha256:f3c89b1d453b04f6ee9cb14f4ce9df35ce63ce5b13e1d3dba9ac010078cf1e72"
+      "digest": "sha256:c7dd12a97b8d494a044a75803b748ecb9ab2ecd923cd6cacb769dcb6f39d32fe"
     },
     "repositoryContract": "success",
     "predecessors": [
@@ -28,36 +28,36 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T01:06:04.596Z",
-        "expiresAt": "2026-08-05T01:06:04.596Z"
+        "generatedAt": "2026-08-02T16:52:28.377Z",
+        "expiresAt": "2026-08-05T16:52:28.377Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T01:07:27.497Z",
-        "expiresAt": "2026-08-05T01:07:27.497Z"
+        "generatedAt": "2026-08-02T16:53:42.451Z",
+        "expiresAt": "2026-08-05T16:53:42.451Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T01:08:51.687Z",
-        "expiresAt": "2026-08-05T01:08:51.687Z"
+        "generatedAt": "2026-08-02T16:55:09.081Z",
+        "expiresAt": "2026-08-05T16:55:09.081Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T01:11:15.549Z",
-        "expiresAt": "2026-08-05T01:11:15.549Z"
+        "generatedAt": "2026-08-02T16:57:34.170Z",
+        "expiresAt": "2026-08-05T16:57:34.170Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T01:20:53.183Z",
-        "expiresAt": "2026-08-05T01:20:53.183Z"
+        "generatedAt": "2026-08-02T17:08:14.658Z",
+        "expiresAt": "2026-08-05T17:08:14.658Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -65,9 +65,9 @@
       "path": "config/staging-authorization/p6-06-domain-topology-diagnostic.json",
       "state": "current_no_candidate",
       "decision": "no_candidate",
-      "generatedAt": "2026-08-02T01:22:51.431Z",
-      "expiresAt": "2026-08-05T01:22:51.431Z",
-      "digest": "sha256:43e024c46145f3f928348f59901f5b31942a43f2c00d8a2e93aeda5efb44467b"
+      "generatedAt": "2026-08-02T17:10:25.880Z",
+      "expiresAt": "2026-08-05T17:10:25.880Z",
+      "digest": "sha256:ed7efd64bbba5f667edef58eb3ebef6001c37664b3171690172e154df72db317"
     },
     "duplicate": {
       "status": "not_run",
@@ -81,37 +81,80 @@
     "cutover": {
       "status": "passed",
       "providerDigest": "sha256:8a5822da32dfa1e312cb8584a3aadc573aa258dc01a5328775d18607262d6439",
-      "pagesReceiptDigest": "sha256:538e10986fc58b86c1de825982033a0da3241221a261551689082275f4525f67",
-      "dnsReceiptDigest": "sha256:e9f58f91f2c28880276419688c778eca06c309839ceb661fc2238bb162680084"
+      "pagesReceiptDigest": "sha256:3aa793d568adaeed969e3dfa7047a60b63aaf85a86d9161319e539fac45598a5",
+      "dnsReceiptDigest": "sha256:b19699e47ef9562ab85a3dd8a090763a27b3c7fc7c985095af054dd1afb8ebe2"
     },
     "externalCutover": {
-      "status": "not_run"
+      "status": "passed",
+      "dns": {
+        "passed": true,
+        "digest": "sha256:43df18153b978a5ab2bb47437ef28814fccfeed22f893f9e71d3527b9d800e64",
+        "resolverCount": 3
+      },
+      "tls": {
+        "passed": true,
+        "protocol": "TLSv1.3",
+        "validTo": "Oct 31 17:12:55 2026 GMT",
+        "certificateDigest": "sha256:a2b5c6bc3312956b656288e6a7b27ec704738a1ec6e0cc09fbaab6c913fb985c",
+        "issuerDigest": "sha256:982e2c852bb0537003663b2d7b3ec0c641661f1b5cecde7fdbf83a1f2f598e2d",
+        "hostnameCovered": true
+      },
+      "redirect": {
+        "status": 301,
+        "locationDigest": "sha256:7576dbc7aafd75e80907fafc5270ba8bf27f458669e5c1a5f3bd66a71ff15d2d"
+      },
+      "routeCount": 11,
+      "routeDigest": "sha256:8293fa2980b54b94ed57455deec2be163b0b7c46e815345eee5bde02bfbcebb8",
+      "releaseId": "sha256:8694946b4d12cff620c2c9d8a37d33004aab0d57e416c89b055e82d6136597c1"
     },
     "rollback": {
-      "status": "not_run",
-      "providerDigest": null,
-      "deletedRecordCount": null
+      "status": "passed",
+      "providerDigest": "sha256:5fc7cb6da64c2bf5b48e3a3c9d4134227c1e9d33f690a85be50bc3ddb235782a",
+      "deletedRecordCount": 1
     },
     "externalRollback": {
-      "status": "not_run"
+      "status": "passed",
+      "dns": {
+        "passed": true,
+        "digest": "sha256:bfcf37f38247d0d3abbad5b4b1489e0ef78e12f7f9ac8908ed4a309662fd7984",
+        "resolverCount": 3
+      }
     },
     "finalRestore": {
-      "status": "not_run",
-      "providerDigest": null,
-      "pagesReceiptDigest": null,
-      "dnsReceiptDigest": null
+      "status": "passed",
+      "providerDigest": "sha256:8a5822da32dfa1e312cb8584a3aadc573aa258dc01a5328775d18607262d6439",
+      "pagesReceiptDigest": "sha256:6f48a893801c5ebb2a48ded261d56fa372003636f92087da5340852f8103585f",
+      "dnsReceiptDigest": "sha256:caff8d4b0feb5545794350b7f95776ccc546e64729a0b42cd0d94c73dd2c43aa"
     },
     "externalFinal": {
-      "status": "not_run"
+      "status": "passed",
+      "dns": {
+        "passed": true,
+        "digest": "sha256:43df18153b978a5ab2bb47437ef28814fccfeed22f893f9e71d3527b9d800e64",
+        "resolverCount": 3
+      },
+      "tls": {
+        "passed": true,
+        "protocol": "TLSv1.3",
+        "validTo": "Oct 31 17:13:49 2026 GMT",
+        "certificateDigest": "sha256:c8382b909062bb783100dbe0fcb8aeec68244568ac6c0bfc57cef7e4ba88f97b",
+        "issuerDigest": "sha256:982e2c852bb0537003663b2d7b3ec0c641661f1b5cecde7fdbf83a1f2f598e2d",
+        "hostnameCovered": true
+      },
+      "redirect": {
+        "status": 301,
+        "locationDigest": "sha256:e7403216130dc79bb935e36ee33533ba8064627620ce6553a3d03a097c9e5959"
+      },
+      "routeCount": 11,
+      "routeDigest": "sha256:8293fa2980b54b94ed57455deec2be163b0b7c46e815345eee5bde02bfbcebb8",
+      "releaseId": "sha256:8694946b4d12cff620c2c9d8a37d33004aab0d57e416c89b055e82d6136597c1"
     }
   },
   "binding": {
-    "releaseId": "sha256:9f01285c0daa1cc0cc5fa2dbe68c1f6f3206ec89d0ff5361fd0612c28c1e097d",
+    "releaseId": "sha256:0c42e1f4caa9826a4ed159d34b33b038d59000175919b51b13b6b98a9f4849f6",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "execution:route_status_/admin/api/dashboard_503"
-  ]
+  "exceptions": []
 }
