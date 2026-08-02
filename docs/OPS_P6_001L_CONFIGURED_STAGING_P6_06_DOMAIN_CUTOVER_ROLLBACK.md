@@ -16,6 +16,8 @@ The bounded provider scope is:
 
 This procedure does not authorize the apex, `www`, any production hostname, any unrelated DNS record, any registrar setting, canonical data mutation, or final launch authorization.
 
+Pull-request and push validation run only the repository contract and self-test; provider mutation is reachable only through the exact-confirmation `workflow_dispatch` execution job.
+
 ## Preconditions
 
 Execution stops before mutation unless all of the following are true:
