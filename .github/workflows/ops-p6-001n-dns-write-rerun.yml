@@ -1,0 +1,73 @@
+name: OPS-P6-001N DNS write rerun for P6-06
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001n-dns-write-rerun.yml'
+
+permissions:
+  actions: write
+  contents: write
+
+concurrency:
+  group: ops-p6-001n-dns-write-rerun
+  cancel-in-progress: true
+
+jobs:
+  execute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      APPROVED_COMMIT: 6420b69b103f587c9f11dbbd77c89a316dfdfce7
+      DISPATCHER_BRANCH: agent/ops-p6-001n-dns-write-rerun
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out dispatcher branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001n-dns-write-rerun
+
+      - name: Verify unchanged exact main
+        run: |
+          set -euo pipefail
+          current_main="$(git ls-remote origin refs/heads/main | awk '{print $1}')"
+          test "$current_main" = "$APPROVED_COMMIT"
+
+      - name: Execute guarded P6-06 with edited existing token
+        run: |
+          set -euo pipefail
+          workflow=ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml
+          previous="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+          gh workflow run "$workflow" --ref main \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_06 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f approved_hostname=staging.cryptopaymap.com \
+            -f domain_owner=ops-p6-001n:automation \
+            -f change_window=bounded-dns-write-rerun-2026-08-03-jst
+          run_id=''
+          for attempt in $(seq 1 60); do
+            candidate="$(gh run list --workflow "$workflow" --branch main --event workflow_dispatch --limit 1 --json databaseId --jq '.[0].databaseId // empty')"
+            if [ -n "$candidate" ] && [ "$candidate" != "$previous" ]; then
+              run_id="$candidate"
+              break
+            fi
+            sleep 5
+          done
+          test -n "$run_id"
+          echo "Watching $workflow run $run_id"
+          gh run watch "$run_id" --exit-status
+
+      - name: Remove one-time dispatcher workflow
+        if: always()
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/ops-p6-001n-dns-write-rerun.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add .github/workflows/ops-p6-001n-dns-write-rerun.yml
+          if ! git diff --cached --quiet; then
+            git commit -m 'OPS-P6-001N remove DNS write rerun dispatcher'
+            git push origin HEAD:"$DISPATCHER_BRANCH"
+          fi
