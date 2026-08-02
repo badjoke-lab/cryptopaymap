@@ -1,0 +1,224 @@
+name: OPS-P6-001L configured staging P6-06 domain cutover rollback
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml'
+      - 'docs/OPS_P6_001L_CONFIGURED_STAGING_P6_06_DOMAIN_CUTOVER_ROLLBACK.md'
+      - 'docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md'
+      - 'scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs'
+      - 'scripts/check-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs'
+      - 'scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js'
+      - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml'
+      - 'docs/OPS_P6_001L_CONFIGURED_STAGING_P6_06_DOMAIN_CUTOVER_ROLLBACK.md'
+      - 'docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md'
+      - 'scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs'
+      - 'scripts/check-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs'
+      - 'scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js'
+      - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_06 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      approved_hostname:
+        description: Enter staging.cryptopaymap.com exactly.
+        required: true
+        type: string
+      domain_owner:
+        description: Bounded configured staging domain owner identity.
+        required: true
+        type: string
+      change_window:
+        description: Bounded change-window label.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-06 evidence contract
+        run: node scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js
+
+      - name: Check guarded P6-06 execution contract
+        run: node scripts/check-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs
+
+      - name: Run guarded P6-06 self-test
+        run: node scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 150
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      APPROVED_HOSTNAME: ${{ inputs.approved_hostname }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      DOMAIN_OWNER: ${{ inputs.domain_owner }}
+      CHANGE_WINDOW: ${{ inputs.change_window }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      P6_06_STAGING_ZONE_ID: ${{ secrets.P6_06_STAGING_ZONE_ID }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js
+          node scripts/check-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs
+          node scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs --self-test
+
+      - name: Execute guarded P6-06 cutover rollback and final restore
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs \
+            ../status \
+            ../p6-06-domain-cutover-rollback-receipt.json
+
+      - name: Upload bounded P6-06 evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback
+          path: p6-06-domain-cutover-rollback-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish configured P6-06 receipt to status branch
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-06-domain-cutover-rollback-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-06-domain-cutover-rollback-receipt.json \
+            status/config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-06 domain cutover rollback receipt'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Refresh configured authorization inventory
+        if: always()
+        env:
+          EVALUATION_MODE: inventory
+          LAUNCH_OWNER: inventory:automation
+          OBSERVER: inventory:unassigned-observer
+          ROLLBACK_OWNER: inventory:unassigned-rollback-owner
+        run: |
+          set -euo pipefail
+          export CONFIRMATION=AUTHORIZE_CONFIGURED_STAGING
+          node source/scripts/evaluate-ops-p6-001c-staging-authorization.mjs \
+            status \
+            configured-staging-authorization-receipt.json
+          cp configured-staging-authorization-receipt.json \
+            status/config/staging-authorization/authorization-receipt.json
+          git -C status add config/staging-authorization/authorization-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Refresh configured staging authorization inventory after P6-06'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Write configured P6-06 summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-06-domain-cutover-rollback-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('p6-06-domain-cutover-rollback-receipt.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-06 domain cutover and rollback evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Pre-state: \`${receipt.checks.preState.status}\``,
+              `- Initial cutover: \`${receipt.checks.cutover.status}\``,
+              `- External cutover: \`${receipt.checks.externalCutover.status}\``,
+              `- Rollback drill: \`${receipt.checks.rollback.status}\``,
+              `- External rollback: \`${receipt.checks.externalRollback.status}\``,
+              `- Final restore: \`${receipt.checks.finalRestore.status}\``,
+              `- External final: \`${receipt.checks.externalFinal.status}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce configured P6-06 acceptance
+        if: always()
+        run: |
+          node -e "const r=require('./p6-06-domain-cutover-rollback-receipt.json'); if(r.state!=='accepted') process.exit(1)"
+          node -e "const r=require('./configured-staging-authorization-receipt.json'); const s=new Map(r.checks.predecessors.map(x=>[x.evidenceId,x.state])); for(const id of ['P6-01','P6-02','P6-03','P6-04','P6-05','P6-06']) if(s.get(id)!=='current') process.exit(1)"
