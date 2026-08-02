@@ -22,7 +22,8 @@ const predecessorPaths = [
   ['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json'],
 ];
 const diagnosticPath = 'config/staging-authorization/p6-06-domain-topology-diagnostic.json';
-const acceptedReceiptPath = 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
+const acceptedReceiptPath =
+  'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
 const publicRoutes = [
   ['/', 200, 'text/html'],
   ['/places/', 200, 'text/html'],
@@ -219,9 +220,7 @@ async function cloudflareRequest(
   if (allowNotFound && response.status === 404) return { found: false, result: null };
   if (!response.ok || payload?.success !== true) {
     const codes = Array.isArray(payload?.errors)
-      ? payload.errors
-          .map((item) => item?.code)
-          .filter((value) => Number.isInteger(value))
+      ? payload.errors.map((item) => item?.code).filter((value) => Number.isInteger(value))
       : [];
     throw new CloudflareApiError(label, response.status, codes);
   }
@@ -300,9 +299,7 @@ async function providerSnapshot() {
       'zones_list',
     ),
   ]);
-  const selectedZones = Array.isArray(zones)
-    ? zones.filter((zone) => zone?.id === zoneId)
-    : [];
+  const selectedZones = Array.isArray(zones) ? zones.filter((zone) => zone?.id === zoneId) : [];
   const selectedZone = selectedZones.length === 1 ? selectedZones[0] : null;
   const records = selectedZone === null ? [] : await listDnsRecords(zoneId);
   const hostnameRecords = records.filter(
@@ -503,9 +500,7 @@ async function dnsObservation(expectPresent) {
     google.answerCount > 0 &&
     authoritative.answerCount > 0;
   const observedAbsent =
-    cloudflare.answerCount === 0 &&
-    google.answerCount === 0 &&
-    authoritative.answerCount === 0;
+    cloudflare.answerCount === 0 && google.answerCount === 0 && authoritative.answerCount === 0;
   return {
     passed: expectPresent ? observedPresent : observedAbsent,
     digest: boundedHash({ cloudflare, google, authoritative }),
@@ -841,13 +836,10 @@ async function execute(statusRoot, outputPath) {
     state: state === 'accepted' && exceptions.length === 0 ? 'accepted' : 'failed',
     commit: validCommit(commit) ? commit : null,
     generatedAt,
-    expiresAt: new Date(
-      Date.parse(generatedAt) + expiryHours * 60 * 60 * 1_000,
-    ).toISOString(),
+    expiresAt: new Date(Date.parse(generatedAt) + expiryHours * 60 * 60 * 1_000).toISOString(),
     workflowRunId: process.env.WORKFLOW_RUN_ID ?? null,
     owner: validOperator(owner) ? boundedHash(owner.trim()) : null,
-    procedure:
-      'OPS-P6-001L configured staging P6-06 guarded domain cutover and rollback evidence',
+    procedure: 'OPS-P6-001L configured staging P6-06 guarded domain cutover and rollback evidence',
     checks,
     ...(binding === null ? {} : { binding }),
     exceptions: [...new Set(exceptions)].sort(),
@@ -886,10 +878,7 @@ function runSelfTest() {
       },
     ],
   };
-  assert(
-    classifySnapshot(pending) === 'final_pending',
-    'pending exact topology must be pending',
-  );
+  assert(classifySnapshot(pending) === 'final_pending', 'pending exact topology must be pending');
   const active = {
     ...pending,
     customDomains: [{ name: approvedHostname, status: 'active' }],
@@ -912,9 +901,10 @@ function runSelfTest() {
     !safe.includes(approvedHostname),
     'raw hostname must not be retained in provider snapshot',
   );
+  const hostnameDigest = boundedHash(approvedHostname);
   assert(
-    boundedHash(approvedHostname) === boundedHash(approvedHostname),
-    'hostname digest must be deterministic',
+    hostnameDigest === `sha256:${sha256(approvedHostname)}`,
+    'hostname digest must use the bounded SHA-256 form',
   );
   console.log('OPS-P6-001L configured staging P6-06 guarded cutover self-test passed.');
 }
