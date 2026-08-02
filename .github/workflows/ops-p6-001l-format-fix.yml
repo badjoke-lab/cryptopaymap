@@ -32,12 +32,29 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Apply bounded Biome fixes
+      - name: Repair self-test and apply bounded Biome fixes
         run: |
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs')
+          text = path.read_text()
+          old = """  assert(
+            boundedHash(approvedHostname) === boundedHash(approvedHostname),
+            'hostname digest must be deterministic',
+          );"""
+          new = """  const hostnameDigest = boundedHash(approvedHostname);
+          assert(
+            hostnameDigest === `sha256:${sha256(approvedHostname)}`,
+            'hostname digest must use the bounded SHA-256 form',
+          );"""
+          if old not in text:
+              raise SystemExit('self-test marker not found')
+          path.write_text(text.replace(old, new, 1))
+          PY
           npx biome format --write \
             scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs \
             scripts/check-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs
-          npx biome lint --write \
+          npx biome lint \
             scripts/run-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs \
             scripts/check-ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.mjs
 
