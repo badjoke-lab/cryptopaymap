@@ -5,10 +5,10 @@
   "environment": "configured_staging",
   "state": "failed",
   "commit": "6420b69b103f587c9f11dbbd77c89a316dfdfce7",
-  "generatedAt": "2026-08-02T01:25:08.003Z",
-  "expiresAt": "2026-08-05T01:25:08.003Z",
-  "workflowRunId": "30726954010",
-  "owner": "sha256:30b81dc089f1562945efa58b987ab6e06ab528738ca65fd9e4f61cc318ead650",
+  "generatedAt": "2026-08-02T16:24:40.972Z",
+  "expiresAt": "2026-08-05T16:24:40.972Z",
+  "workflowRunId": "30756414295",
+  "owner": "sha256:07075068c0738773244409da3986e231b18bf884b8675331ef6c9524012eba70",
   "procedure": "OPS-P6-001L configured staging P6-06 guarded domain cutover and rollback evidence",
   "checks": {
     "exactMain": "success",
@@ -20,7 +20,7 @@
     "owner": "success",
     "changeWindow": {
       "status": "success",
-      "digest": "sha256:08f2f86598698de46bb18d58c8abb91bce7d4987dbac475ac6b93f6cee21a5c0"
+      "digest": "sha256:f3c89b1d453b04f6ee9cb14f4ce9df35ce63ce5b13e1d3dba9ac010078cf1e72"
     },
     "repositoryContract": "success",
     "predecessors": [
@@ -79,10 +79,10 @@
       "recheckMatched": true
     },
     "cutover": {
-      "status": "not_run",
-      "providerDigest": null,
-      "pagesReceiptDigest": null,
-      "dnsReceiptDigest": null
+      "status": "passed",
+      "providerDigest": "sha256:8a5822da32dfa1e312cb8584a3aadc573aa258dc01a5328775d18607262d6439",
+      "pagesReceiptDigest": "sha256:538e10986fc58b86c1de825982033a0da3241221a261551689082275f4525f67",
+      "dnsReceiptDigest": "sha256:e9f58f91f2c28880276419688c778eca06c309839ceb661fc2238bb162680084"
     },
     "externalCutover": {
       "status": "not_run"
@@ -112,6 +112,6 @@
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
   "exceptions": [
-    "execution:dns_record_create:403:10000"
+    "execution:route_status_/admin/api/dashboard_503"
   ]
 }
