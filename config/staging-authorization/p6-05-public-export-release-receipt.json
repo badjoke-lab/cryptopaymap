@@ -3,12 +3,12 @@
   "evidenceId": "P6-05",
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
-  "state": "failed",
+  "state": "accepted",
   "commit": "6420b69b103f587c9f11dbbd77c89a316dfdfce7",
-  "generatedAt": "2026-08-02T01:14:20.667Z",
-  "expiresAt": "2026-08-05T01:14:20.667Z",
-  "workflowRunId": "30726614109",
-  "owner": "sha256:3c1d9a9336e2564d20b7ad10ccb6a60c4f11a7ea4bd6795b4cce4d109e2b8751",
+  "generatedAt": "2026-08-02T01:20:53.183Z",
+  "expiresAt": "2026-08-05T01:20:53.183Z",
+  "workflowRunId": "30726814775",
+  "owner": "sha256:30b81dc089f1562945efa58b987ab6e06ab528738ca65fd9e4f61cc318ead650",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
     "exactMain": "success",
@@ -64,28 +64,36 @@
       "customDomainCount": 0
     },
     "releases": {
-      "status": "not_run",
-      "historicalCount": 0,
-      "baseline": null,
-      "candidate": null
+      "status": "passed",
+      "historicalCount": 8,
+      "baseline": {
+        "id": "sha256:001b4d3e58b8c48d771b3d8aac18b3fc5d5a8cc9f330d2d0c48e8aecdc85622e",
+        "releaseId": "sha256:ddfdced112d8e5fd852c58d1d7cccd09823d3e9b4f81c08ef9a5915c9c8eaf56",
+        "url": "sha256:3d1c3b40fc5eedccdf1d5f91600d408e85c4861377d18aa884cd7232cdc78eeb"
+      },
+      "candidate": {
+        "id": "sha256:1ce31f50981333b2d781ea3d568ebcfb634b59e9acca5a468c5f04ec464cca9f",
+        "releaseId": "sha256:d738063774e9caee35090360765d6cbad402b507fab5f42b3ef36ce49c645ff8",
+        "url": "sha256:2884b36c7db11f02190f8c56c552cc474e3be1959e110d26125fa74ef0e32971"
+      }
     },
     "activation": {
-      "status": "not_run",
-      "candidateVisible": false
+      "status": "passed",
+      "candidateVisible": true
     },
     "rollback": {
-      "status": "not_run",
-      "baselineVisible": false,
-      "candidateRestored": false
+      "status": "passed",
+      "baselineVisible": true,
+      "candidateRestored": true
     },
     "external": {
-      "status": "not_run",
-      "routeCount": 0,
-      "routeDigest": null
+      "status": "passed",
+      "routeCount": 10,
+      "routeDigest": "sha256:d0eba8f8e94640eb41d440d0355a7f01c3d038fc7c1bf482014c16c64bed7e70"
     },
     "finalState": {
-      "status": "not_run",
-      "activeKind": null
+      "status": "passed",
+      "activeKind": "candidate"
     }
   },
   "binding": {
@@ -94,7 +102,5 @@
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "execution:unexpected_production_deployment_after_stage"
-  ]
+  "exceptions": []
 }
