@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:2b7838bcb1aa17df612db748821222870d5a6108996bf78c9ec67e531fc5fa15",
+  "authorizationId": "sha256:214060d47eab6176cce51f3f3c9d9801c29254b80dc59c40b02cf6649ba349c1",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "e78905e405b1463af1ad7fad60d3525013c3992f",
-  "generatedAt": "2026-08-02T17:00:58.671Z",
-  "workflowRunId": "30757814102",
+  "generatedAt": "2026-08-02T17:08:16.844Z",
+  "workflowRunId": "30758041283",
   "operators": {
     "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -55,9 +55,9 @@
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-02T17:00:56.376Z",
-        "expiresAt": "2026-08-05T17:00:56.376Z"
+        "state": "current",
+        "generatedAt": "2026-08-02T17:08:14.658Z",
+        "expiresAt": "2026-08-05T17:08:14.658Z"
       },
       {
         "evidenceId": "P6-06",
@@ -77,7 +77,6 @@
     "predecessorBinding": "unproven"
   },
   "blockers": [
-    "P6-05:failed",
     "P6-06:failed",
     "P6-07:missing",
     "explicit_dispatch:required"
