@@ -100,7 +100,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-      - name: Synchronize configured Suggest Pages secrets
+      - name: Synchronize configured staging Pages secrets
         id: pages_secrets
         if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success' && steps.worker_deploy.outcome == 'success'
         continue-on-error: true
@@ -149,6 +149,10 @@ jobs:
           npx wrangler pages secret bulk pages-secrets.json \
             --project-name cryptopaymap-staging \
             --env preview
+
+          npx wrangler pages secret bulk pages-secrets.json \
+            --project-name cryptopaymap-staging \
+            --env production
 
       - name: Deploy staging review to Cloudflare Pages
         id: deploy
