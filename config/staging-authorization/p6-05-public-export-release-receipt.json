@@ -3,12 +3,12 @@
   "evidenceId": "P6-05",
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
-  "state": "failed",
-  "commit": "7e7cccf35326d55f69085691bbce988cc5eae339",
-  "generatedAt": "2026-08-03T05:52:08.382Z",
-  "expiresAt": "2026-08-06T05:52:08.382Z",
-  "workflowRunId": "30788231880",
-  "owner": "sha256:b416c6ba6d36c9efe8a1c1c3b86e8f77642465fc5c71da8ec977af0883881671",
+  "state": "accepted",
+  "commit": "a975fa58825d20e054e65f24bdbbf4240328df00",
+  "generatedAt": "2026-08-03T06:21:39.773Z",
+  "expiresAt": "2026-08-06T06:21:39.773Z",
+  "workflowRunId": "30789740777",
+  "owner": "sha256:e6af3d7920827215569208b1cf480d8858b1b73d7cb2baa623feb44bddc583cb",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
     "exactMain": "success",
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T05:43:56.641Z",
-        "expiresAt": "2026-08-06T05:43:56.641Z"
+        "generatedAt": "2026-08-03T06:12:05.022Z",
+        "expiresAt": "2026-08-06T06:12:05.022Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T05:45:09.428Z",
-        "expiresAt": "2026-08-06T05:45:09.428Z"
+        "generatedAt": "2026-08-03T06:13:30.702Z",
+        "expiresAt": "2026-08-06T06:13:30.702Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T05:46:28.212Z",
-        "expiresAt": "2026-08-06T05:46:28.212Z"
+        "generatedAt": "2026-08-03T06:15:05.051Z",
+        "expiresAt": "2026-08-06T06:15:05.051Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T05:48:50.434Z",
-        "expiresAt": "2026-08-06T05:48:50.434Z"
+        "generatedAt": "2026-08-03T06:17:39.384Z",
+        "expiresAt": "2026-08-06T06:17:39.384Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -69,44 +69,45 @@
     },
     "releases": {
       "status": "passed",
-      "historicalCount": 14,
+      "historicalCount": 16,
       "baseline": {
-        "id": "sha256:3090fd825957c33a1c60caa90804f352660b0433f0167203bdc817fb8f44cf9f",
-        "releaseId": "sha256:5493f0c1dfe3c586933c00a4b406645d425fad7ac67c8bfb22bb7c0383cc1804",
-        "url": "sha256:887713ca213b9597a2032e9b9b9fd5266a4c2fdc42aee1da19ec7b8b5c0f3795"
+        "id": "sha256:596a88a3125278fefe54d2ff3074293d34a17fd40490d4df8ed9b07f784dd3f3",
+        "releaseId": "sha256:4755b34e387e3607aeb7f4701c49283fbba1469059a2437e728a28ca9016f24f",
+        "url": "sha256:f4bb82b3cd75e7cae3794823e2c08f473ab395e813b0781ec50dce3b80e12b39"
       },
       "candidate": {
-        "id": "sha256:d20b6ba67707a7def32384252e79139301582f74f30090b93b870f9edc319d2b",
-        "releaseId": "sha256:e51635799990e85dea63c8227e86ad9aef3bbe7ac03c7d3dd6d53164c2b1d646",
-        "url": "sha256:9e11eebf2d140a1332f75b36c4da8ea3d36eff3ce574726006a52207a05d9da5"
+        "id": "sha256:2da44b6155acbc76c48741912fc07ca612d484f3e9e42abb079797c935d35775",
+        "releaseId": "sha256:fc4b6ae8397af64666a33bd441eee50707b08b144f10671929d55fad3260984d",
+        "url": "sha256:fe2301772eef909c5591033acecbf819d83b9d9ed60cba701f8e599f17e953e6"
       }
     },
     "activation": {
-      "status": "not_run",
-      "candidateVisible": false
+      "status": "passed",
+      "candidateVisible": true,
+      "mode": "already_visible"
     },
     "rollback": {
-      "status": "not_run",
-      "baselineVisible": false,
-      "candidateRestored": false
+      "status": "passed",
+      "baselineVisible": true,
+      "candidateRestored": true,
+      "baselineMode": "rollback",
+      "candidateRestoreMode": "rollback"
     },
     "external": {
-      "status": "not_run",
-      "routeCount": 0,
-      "routeDigest": null
+      "status": "passed",
+      "routeCount": 10,
+      "routeDigest": "sha256:d0eba8f8e94640eb41d440d0355a7f01c3d038fc7c1bf482014c16c64bed7e70"
     },
     "finalState": {
-      "status": "not_run",
-      "activeKind": null
+      "status": "passed",
+      "activeKind": "candidate"
     }
   },
   "binding": {
-    "releaseId": "sha256:9a0b579a0145b71d629826249ac666bdf2573910349c4e5a063a295ef401ab15",
+    "releaseId": "sha256:dc38d69fd44f258a1a13af78cb071d76603a425c949c2d59c9d17b67e845c759",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "execution:cloudflare_api_400_8000039"
-  ]
+  "exceptions": []
 }
