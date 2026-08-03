@@ -3,12 +3,12 @@
   "evidenceId": "P6-05",
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
-  "state": "accepted",
-  "commit": "e78905e405b1463af1ad7fad60d3525013c3992f",
-  "generatedAt": "2026-08-02T17:08:14.658Z",
-  "expiresAt": "2026-08-05T17:08:14.658Z",
-  "workflowRunId": "30758041283",
-  "owner": "sha256:6f37bdff029681544c038b9df2e325e9b04e0925fa5cc757f899602203b2c52d",
+  "state": "failed",
+  "commit": "bb75eb94d19542abf3c40c828c1e0800a44a5d41",
+  "generatedAt": "2026-08-03T03:20:28.175Z",
+  "expiresAt": "2026-08-06T03:20:28.175Z",
+  "workflowRunId": "30781462745",
+  "owner": "sha256:be2e4f6583910da8d1e078f432ec86a1dce8b0bec2a6bcd0c638964540f75e12",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
     "exactMain": "success",
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T16:52:28.377Z",
-        "expiresAt": "2026-08-05T16:52:28.377Z"
+        "generatedAt": "2026-08-03T03:11:06.139Z",
+        "expiresAt": "2026-08-06T03:11:06.139Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T16:53:42.451Z",
-        "expiresAt": "2026-08-05T16:53:42.451Z"
+        "generatedAt": "2026-08-03T03:12:19.091Z",
+        "expiresAt": "2026-08-06T03:12:19.091Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T16:55:09.081Z",
-        "expiresAt": "2026-08-05T16:55:09.081Z"
+        "generatedAt": "2026-08-03T03:14:49.539Z",
+        "expiresAt": "2026-08-06T03:14:49.539Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-02T16:57:34.170Z",
-        "expiresAt": "2026-08-05T16:57:34.170Z"
+        "generatedAt": "2026-08-03T03:17:29.337Z",
+        "expiresAt": "2026-08-06T03:17:29.337Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -57,50 +57,45 @@
       "schemaVersion": "1.0.0"
     },
     "topology": {
-      "status": "passed",
+      "status": "failed",
       "productionBranch": "staging-review",
       "platformDomainPresent": true,
       "platformDomainMatches": true,
-      "customDomainCount": 0
+      "customDomainCount": 1
     },
     "releases": {
-      "status": "passed",
-      "historicalCount": 10,
-      "baseline": {
-        "id": "sha256:fc2e36a477a24a9e08b3a4af2d1a68d9f3e8f075db6a96fd7fcbfbe529e30d69",
-        "releaseId": "sha256:65ad07e5c8f496c126a182ba0d6a552eed3c96dcf8dd19944f6ba43bdf1ac4c5",
-        "url": "sha256:bf25ea09f14b2e2c21ec8e77f8e6708ed8caa1189f7f281c7932c62e2227499e"
-      },
-      "candidate": {
-        "id": "sha256:adcca46ffa7861e52f7d3b1abb0c7c43966a5938802fa6ac837e4eb5b850088a",
-        "releaseId": "sha256:8694946b4d12cff620c2c9d8a37d33004aab0d57e416c89b055e82d6136597c1",
-        "url": "sha256:d6ec5a7396ce84bee1bb529db60cb266bc950fe2f10c48d47e1b390ad65410b6"
-      }
+      "status": "not_run",
+      "historicalCount": 0,
+      "baseline": null,
+      "candidate": null
     },
     "activation": {
-      "status": "passed",
-      "candidateVisible": true
+      "status": "not_run",
+      "candidateVisible": false
     },
     "rollback": {
-      "status": "passed",
-      "baselineVisible": true,
-      "candidateRestored": true
+      "status": "not_run",
+      "baselineVisible": false,
+      "candidateRestored": false
     },
     "external": {
-      "status": "passed",
-      "routeCount": 10,
-      "routeDigest": "sha256:d0eba8f8e94640eb41d440d0355a7f01c3d038fc7c1bf482014c16c64bed7e70"
+      "status": "not_run",
+      "routeCount": 0,
+      "routeDigest": null
     },
     "finalState": {
-      "status": "passed",
-      "activeKind": "candidate"
+      "status": "not_run",
+      "activeKind": null
     }
   },
   "binding": {
-    "releaseId": "sha256:0c42e1f4caa9826a4ed159d34b33b038d59000175919b51b13b6b98a9f4849f6",
+    "releaseId": "sha256:6d859c4acd8e49a3f83de4483f8879e1ead2d1103eda7bea39241806d76f41d0",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": []
+  "exceptions": [
+    "execution:unsafe_pages_topology",
+    "topology:failed"
+  ]
 }
