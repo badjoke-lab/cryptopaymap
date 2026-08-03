@@ -34,8 +34,8 @@ const expectations = [
   [files.executor, "evidenceSource: 'prior_accepted_receipt'"],
   [files.executor, "status: 'existing_final'"],
   [files.executor, "procedure: 'OPS-P6-001R configured staging P6-06 continuity revalidation'"],
-  [files.executor, "!serialized.includes(priorCommit)"],
-  [files.executor, "!serialized.includes(approvedHostname)"],
+  [files.executor, '!serialized.includes(priorCommit)'],
+  [files.executor, '!serialized.includes(approvedHostname)'],
   [files.p606Contract, 'P6-06 configured domain cutover and rollback evidence contract passed.'],
 ];
 
@@ -68,7 +68,9 @@ const forbidden = [
 ];
 for (const marker of forbidden) {
   if (files.executor.includes(marker)) {
-    throw new Error(`OPS-P6-001R continuity executor contains forbidden mutation marker: ${marker}`);
+    throw new Error(
+      `OPS-P6-001R continuity executor contains forbidden mutation marker: ${marker}`,
+    );
   }
 }
 
@@ -84,7 +86,7 @@ if (!files.executor.includes("receipt?.checks?.externalRollback?.status === 'pas
 if (!files.executor.includes("receipt?.checks?.finalRestore?.status === 'passed'")) {
   throw new Error('OPS-P6-001R must require prior final restore evidence.');
 }
-if (!files.executor.includes("marker?.releaseId !== expectedReleaseId")) {
+if (!files.executor.includes('marker?.releaseId !== expectedReleaseId')) {
   throw new Error('OPS-P6-001R must bind the public domain to the current P6-05 release.');
 }
 
