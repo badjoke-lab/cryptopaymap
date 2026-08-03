@@ -19,7 +19,7 @@ on:
       - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
       - 'scripts/run-ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.mjs'
       - 'scripts/check-ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.mjs'
-      - 'scripts/check-p6-07-configured-operational-monitoring-backUP-restore-incident-evidence.js'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
       - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
   workflow_dispatch:
     inputs:
