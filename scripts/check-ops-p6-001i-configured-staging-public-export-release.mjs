@@ -47,6 +47,15 @@ const expectations = [
   [files.executor, "'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'"],
   [files.executor, "const markerPath = '/p6-05-release.json'"],
   [files.executor, 'cloudflareRequest(`/deployments/${deploymentId}/rollback`'],
+  [files.executor, 'async function markerVisible(baseUrl, expectedReleaseId, attempts = 5)'],
+  [files.executor, 'async function activateRelease('],
+  [files.executor, "mode: 'already_visible'"],
+  [files.executor, "mode: 'race_converged'"],
+  [files.executor, "mode: 'rollback'"],
+  [files.executor, "errorClass === 'cloudflare_api_400_8000039'"],
+  [files.executor, 'const candidateActivation = await activateRelease('],
+  [files.executor, 'const baselineActivation = await activateRelease('],
+  [files.executor, 'const candidateRestoration = await activateRelease('],
   [files.executor, 'unrecognized_production_deployment'],
   [files.executor, "execFileSync('npm', ['run', 'staging:review:build']"],
   [files.executor, 'const platformDomain = `${projectName}.pages.dev`'],
@@ -166,6 +175,19 @@ if (!files.executor.includes("unauthenticatedTopology.status !== 'failed'")) {
 if (!files.executor.includes("extraDomainTopology.status !== 'failed'")) {
   throw new Error('OPS-P6-001I self-test must reject an additional custom domain.');
 }
+if (!files.executor.includes("throw new Error('unconverged_8000039_not_rejected')")) {
+  throw new Error('OPS-P6-001I must reject 8000039 without exact-marker convergence.');
+}
+if (!files.executor.includes("alreadyVisible.mode !== 'already_visible'")) {
+  throw new Error('OPS-P6-001I self-test must cover already-visible activation.');
+}
+if (!files.executor.includes("normalRollback.mode !== 'rollback'")) {
+  throw new Error('OPS-P6-001I self-test must cover normal rollback activation.');
+}
+if (!files.executor.includes("raceConverged.mode !== 'race_converged'")) {
+  throw new Error('OPS-P6-001I self-test must cover propagation-race convergence.');
+}
+
 if (/['"]cryptopaymap\.com['"]/.test(files.executor)) {
   throw new Error('OPS-P6-001I executor must not permit the CryptoPayMap apex hostname.');
 }

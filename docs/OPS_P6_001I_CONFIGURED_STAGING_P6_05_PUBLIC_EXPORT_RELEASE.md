@@ -76,6 +76,8 @@ A missing, malformed, forged, wrong-environment, wrong-evidence, or incorrectly 
 10. Restore the exact candidate deployment and verify the candidate marker externally.
 11. Leave the exact candidate active for the P6-06 handoff.
 
+Before each activation or rollback call, the executor polls for the exact target release marker. If the target is already externally visible, no rollback request is sent. If Cloudflare returns `400 / 8000039`, the executor accepts the operation only when a bounded recheck proves that the exact requested release marker became active; otherwise the original failure is preserved. This handles control-plane and public-marker propagation races without accepting a wrong release.
+
 Cloudflare Pages rollback is used only with successful production deployments. Preview deployments are never rollback targets.
 
 ## Replay and failure behavior
