@@ -18,7 +18,7 @@ The workflow requires:
 - one selected protected zone, successful DNS reads, one Pages custom domain, one safe candidate, and no diagnostic exception;
 - a prior accepted configured-staging P6-06 receipt for the approved hostname;
 - prior cutover, external cutover, rollback, external rollback, final restore, and final external verification evidence;
-- no exception in the prior receipt.
+- an unexpired prior receipt with no exception.
 
 ## Current external verification
 
