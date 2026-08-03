@@ -44,10 +44,7 @@ const expectations = [
   [files.executor, "const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev'"],
   [files.executor, "const approvedStagingCustomDomain = 'staging.cryptopaymap.com'"],
   [files.executor, 'const priorP606ReceiptPath ='],
-  [
-    files.executor,
-    "'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'",
-  ],
+  [files.executor, "'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'"],
   [files.executor, "const markerPath = '/p6-05-release.json'"],
   [files.executor, 'cloudflareRequest(`/deployments/${deploymentId}/rollback`'],
   [files.executor, 'unrecognized_production_deployment'],
