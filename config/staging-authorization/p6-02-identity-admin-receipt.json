@@ -4,11 +4,11 @@
   "launchDomain": "identity_admin",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "7e7cccf35326d55f69085691bbce988cc5eae339",
-  "generatedAt": "2026-08-03T05:45:09.428Z",
-  "expiresAt": "2026-08-06T05:45:09.428Z",
-  "workflowRunId": "30787995697",
-  "owner": "sha256:b416c6ba6d36c9efe8a1c1c3b86e8f77642465fc5c71da8ec977af0883881671",
+  "commit": "a975fa58825d20e054e65f24bdbbf4240328df00",
+  "generatedAt": "2026-08-03T06:13:30.702Z",
+  "expiresAt": "2026-08-06T06:13:30.702Z",
+  "workflowRunId": "30789417248",
+  "owner": "sha256:e6af3d7920827215569208b1cf480d8858b1b73d7cb2baa623feb44bddc583cb",
   "procedure": "OPS-P6-001E configured staging identity and protected Admin evidence",
   "checks": {
     "exactMain": "success",
@@ -16,8 +16,8 @@
     "predecessor": {
       "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-03T05:43:56.641Z",
-      "expiresAt": "2026-08-06T05:43:56.641Z"
+      "generatedAt": "2026-08-03T06:12:05.022Z",
+      "expiresAt": "2026-08-06T06:12:05.022Z"
     },
     "routeInventory": {
       "status": "passed",
@@ -1414,7 +1414,7 @@
         "contentType": "application/json",
         "cacheControlSafe": true,
         "noPrivateLeakage": true,
-        "responseDigest": "b8c21202cfc68a7c78818fc11cb44fff32ae3f5bcff87b4a0d540e60b969a72a"
+        "responseDigest": "71041268e990b7e9df3c87d0f9f9181832da86bceb0d4b2a09d96f39cc329958"
       },
       "reviewerPublication": {
         "status": 403,
@@ -1447,7 +1447,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:9a0b579a0145b71d629826249ac666bdf2573910349c4e5a063a295ef401ab15",
+    "releaseId": "sha256:dc38d69fd44f258a1a13af78cb071d76603a425c949c2d59c9d17b67e845c759",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
