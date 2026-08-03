@@ -26,35 +26,28 @@ jobs:
       - name: Patch P6-05 topology authentication
         run: |
           python - <<'PY'
+          import re
           from pathlib import Path
 
           path = Path('scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs')
           text = path.read_text()
 
-          old_constants = """const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';
-          const markerPath = '/p6-05-release.json';"""
-          new_constants = """const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';
+          constant_marker = "const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';"
+          if text.count(constant_marker) != 1:
+              raise SystemExit('production base marker mismatch')
+          text = text.replace(
+              constant_marker,
+              """const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';
           const approvedStagingCustomDomain = 'staging.cryptopaymap.com';
           const priorP606ReceiptPath =
-            'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
-          const markerPath = '/p6-05-release.json';"""
+            'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';""",
+          )
 
-          shared_binding = """function sharedBinding(predecessors) {
-            if (predecessors.some((item) => item.state !== 'current' || item.binding === null)) return null;
-            const first = JSON.stringify(predecessors[0].binding);
-            return predecessors.every((item) => JSON.stringify(item.binding) === first)
-              ? predecessors[0].binding
-              : null;
-          }
-          """
-          topology_helpers = """function sharedBinding(predecessors) {
-            if (predecessors.some((item) => item.state !== 'current' || item.binding === null)) return null;
-            const first = JSON.stringify(predecessors[0].binding);
-            return predecessors.every((item) => JSON.stringify(item.binding) === first)
-              ? predecessors[0].binding
-              : null;
-          }
-
+          helper_marker = '\nfunction releaseMarker(kind, commit, treeDigest) {'
+          if text.count(helper_marker) != 1:
+              raise SystemExit('release marker function boundary mismatch')
+          helpers = """
+          
           function readPriorP606Topology(statusRoot, commit, now) {
             let receipt = null;
             try {
@@ -128,42 +121,26 @@ jobs:
             };
           }
           """
+          text = text.replace(helper_marker, helpers + helper_marker)
 
-          old_topology = """      const project = await cloudflareRequest('');
-                const platformDomain = `${projectName}.pages.dev`;
-                const projectDomains = Array.isArray(project?.domains)
-                  ? project.domains.filter((domain) => typeof domain === 'string')
-                  : [];
-                const platformDomainPresent = projectDomains.includes(platformDomain);
-                const platformDomainMatches = project?.subdomain === platformDomain;
-                const customDomains = projectDomains.filter((domain) => domain !== platformDomain);
-                checks.topology = {
-                  status:
-                    project?.name === projectName &&
-                    project?.production_branch === productionBranch &&
-                    platformDomainPresent &&
-                    platformDomainMatches &&
-                    customDomains.length === 0
-                      ? 'passed'
-                      : 'failed',
-                  productionBranch: project?.production_branch ?? null,
-                  platformDomainPresent,
-                  platformDomainMatches,
-                  customDomainCount: customDomains.length,
-                };
-                if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');"""
-          new_topology = """      const priorP606 = readPriorP606Topology(statusRoot, commit, now);
+          topology_pattern = re.compile(
+              r"      const project = await cloudflareRequest\(''\);\n"
+              r".*?"
+              r"      if \(checks\.topology\.status !== 'passed'\) throw new Error\('unsafe_pages_topology'\);",
+              re.DOTALL,
+          )
+          replacement = """      const priorP606 = readPriorP606Topology(statusRoot, commit, now);
                 const project = await cloudflareRequest('');
                 checks.topology = evaluateProjectTopology(project, priorP606);
                 if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');"""
+          text, count = topology_pattern.subn(replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'topology execution marker mismatch: {count}')
 
-          old_self_test = """    writeFileSync(join(root, 'data', 'manifest.json'), '{\"version\":2}\\n');
-              if (publicTreeDigest(root) === first) throw new Error('content_change_not_fingerprinted');
-              console.log('OPS-P6-001I configured staging public export/release self-test passed.');"""
-          new_self_test = """    writeFileSync(join(root, 'data', 'manifest.json'), '{\"version\":2}\\n');
-              if (publicTreeDigest(root) === first) throw new Error('content_change_not_fingerprinted');
-
-              const platformDomain = `${projectName}.pages.dev`;
+          self_test_marker = "    console.log('OPS-P6-001I configured staging public export/release self-test passed.');"
+          if text.count(self_test_marker) != 1:
+              raise SystemExit('self-test console marker mismatch')
+          self_tests = """    const platformDomain = `${projectName}.pages.dev`;
               const projectFixture = {
                 name: projectName,
                 production_branch: productionBranch,
@@ -203,18 +180,8 @@ jobs:
                 throw new Error('extra_custom_domain_not_rejected');
               }
 
-              console.log('OPS-P6-001I configured staging public export/release self-test passed.');"""
-
-          replacements = [
-              (old_constants, new_constants, 'constants'),
-              (shared_binding, topology_helpers, 'topology helpers'),
-              (old_topology, new_topology, 'topology execution'),
-              (old_self_test, new_self_test, 'self-test'),
-          ]
-          for old, new, label in replacements:
-              if text.count(old) != 1:
-                  raise SystemExit(f'{label} marker mismatch: {text.count(old)}')
-              text = text.replace(old, new)
+          """
+          text = text.replace(self_test_marker, self_tests + self_test_marker)
           path.write_text(text)
           PY
 
