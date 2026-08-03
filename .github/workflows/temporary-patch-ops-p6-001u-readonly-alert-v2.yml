@@ -80,8 +80,9 @@ jobs:
           )
           escalation_replacement = """  const blindDelivery = await channel.deliver(blindStateId, blindDetails);
           const escalationDeadline = new Date(
-            (validTimestamp(blindDelivery.createdAt) ? Date.parse(blindDelivery.createdAt) : Date.now()) +
-              2_000,
+            (channel.readOnlyEvidence && validTimestamp(blindDelivery.createdAt)
+              ? Date.parse(blindDelivery.createdAt)
+              : Date.now()) + 2_000,
           ).toISOString();
           if (!channel.readOnlyEvidence) await sleep(2_500);
           const escalation = await channel.escalate(blindStateId, {
@@ -144,7 +145,8 @@ jobs:
           set -euo pipefail
           rm -f \
             .github/workflows/temporary-patch-ops-p6-001u-readonly-alert.yml \
-            .github/workflows/temporary-patch-ops-p6-001u-readonly-alert-v2.yml
+            .github/workflows/temporary-patch-ops-p6-001u-readonly-alert-v2.yml \
+            .github/workflows/temporary-fix-ops-p6-001u-deadline-origin.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
