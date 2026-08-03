@@ -383,6 +383,43 @@ async function rollbackTo(deploymentId) {
   return cloudflareRequest(`/deployments/${deploymentId}/rollback`, { method: 'POST' });
 }
 
+async function markerVisible(baseUrl, expectedReleaseId, attempts = 5) {
+  for (let attempt = 0; attempt < attempts; attempt += 1) {
+    const marker = await fetchMarker(baseUrl);
+    if (marker?.releaseId === expectedReleaseId) return true;
+    await sleep(1_000);
+  }
+  return false;
+}
+
+async function activateRelease(
+  deploymentId,
+  expectedReleaseId,
+  {
+    markerVisibleImpl = markerVisible,
+    rollbackImpl = rollbackTo,
+    waitForMarkerImpl = waitForMarker,
+  } = {},
+) {
+  if (await markerVisibleImpl(productionBaseUrl, expectedReleaseId, 5)) {
+    return { status: 'passed', mode: 'already_visible' };
+  }
+  try {
+    await rollbackImpl(deploymentId);
+  } catch (error) {
+    const errorClass = safeException(error);
+    if (
+      errorClass === 'cloudflare_api_400_8000039' &&
+      (await markerVisibleImpl(productionBaseUrl, expectedReleaseId, 10))
+    ) {
+      return { status: 'passed', mode: 'race_converged' };
+    }
+    throw error;
+  }
+  await waitForMarkerImpl(productionBaseUrl, expectedReleaseId);
+  return { status: 'passed', mode: 'rollback' };
+}
+
 async function verifyExternal(baseUrl, expectedMarker, localDist) {
   await waitForMarker(baseUrl, expectedMarker.releaseId);
   const required = [
@@ -488,6 +525,65 @@ async function selfTest() {
     if (extraDomainTopology.status !== 'failed') {
       throw new Error('extra_custom_domain_not_rejected');
     }
+
+    let rollbackCalls = 0;
+    let waitCalls = 0;
+    const alreadyVisible = await activateRelease('already-visible', candidate.releaseId, {
+      markerVisibleImpl: async () => true,
+      rollbackImpl: async () => {
+        rollbackCalls += 1;
+      },
+      waitForMarkerImpl: async () => {
+        waitCalls += 1;
+      },
+    });
+    if (alreadyVisible.mode !== 'already_visible' || rollbackCalls !== 0 || waitCalls !== 0) {
+      throw new Error('already_visible_activation_failed');
+    }
+
+    const normalRollback = await activateRelease('normal-rollback', candidate.releaseId, {
+      markerVisibleImpl: async () => false,
+      rollbackImpl: async () => {
+        rollbackCalls += 1;
+      },
+      waitForMarkerImpl: async () => {
+        waitCalls += 1;
+      },
+    });
+    if (normalRollback.mode !== 'rollback' || rollbackCalls !== 1 || waitCalls !== 1) {
+      throw new Error('normal_rollback_activation_failed');
+    }
+
+    let raceChecks = 0;
+    const raceConverged = await activateRelease('race-converged', candidate.releaseId, {
+      markerVisibleImpl: async () => {
+        raceChecks += 1;
+        return raceChecks > 1;
+      },
+      rollbackImpl: async () => {
+        throw new Error('cloudflare_api_400_8000039');
+      },
+      waitForMarkerImpl: async () => {
+        throw new Error('race_convergence_must_not_wait_after_marker');
+      },
+    });
+    if (raceConverged.mode !== 'race_converged' || raceChecks !== 2) {
+      throw new Error('race_converged_activation_failed');
+    }
+
+    let rejected = false;
+    try {
+      await activateRelease('race-rejected', candidate.releaseId, {
+        markerVisibleImpl: async () => false,
+        rollbackImpl: async () => {
+          throw new Error('cloudflare_api_400_8000039');
+        },
+        waitForMarkerImpl: async () => {},
+      });
+    } catch (error) {
+      rejected = safeException(error) === 'cloudflare_api_400_8000039';
+    }
+    if (!rejected) throw new Error('unconverged_8000039_not_rejected');
 
     console.log('OPS-P6-001I configured staging public export/release self-test passed.');
   } finally {
@@ -639,12 +735,15 @@ async function execute(statusRoot, outputPath) {
         },
       };
 
-      const activeBefore = await fetchMarker(productionBaseUrl);
-      if (activeBefore?.releaseId !== candidateMarker.releaseId) {
-        await rollbackTo(candidate.deployment.id);
-      }
-      await waitForMarker(productionBaseUrl, candidateMarker.releaseId);
-      checks.activation = { status: 'passed', candidateVisible: true };
+      const candidateActivation = await activateRelease(
+        candidate.deployment.id,
+        candidateMarker.releaseId,
+      );
+      checks.activation = {
+        status: 'passed',
+        candidateVisible: true,
+        mode: candidateActivation.mode,
+      };
 
       const externalResults = await verifyExternal(
         productionBaseUrl,
@@ -657,13 +756,29 @@ async function execute(statusRoot, outputPath) {
         routeDigest: boundedHash(externalResults),
       };
 
-      await rollbackTo(baseline.deployment.id);
-      await waitForMarker(productionBaseUrl, baselineMarker.releaseId);
-      checks.rollback = { status: 'running', baselineVisible: true, candidateRestored: false };
+      const baselineActivation = await activateRelease(
+        baseline.deployment.id,
+        baselineMarker.releaseId,
+      );
+      checks.rollback = {
+        status: 'running',
+        baselineVisible: true,
+        candidateRestored: false,
+        baselineMode: baselineActivation.mode,
+        candidateRestoreMode: null,
+      };
 
-      await rollbackTo(candidate.deployment.id);
-      await waitForMarker(productionBaseUrl, candidateMarker.releaseId);
-      checks.rollback = { status: 'passed', baselineVisible: true, candidateRestored: true };
+      const candidateRestoration = await activateRelease(
+        candidate.deployment.id,
+        candidateMarker.releaseId,
+      );
+      checks.rollback = {
+        status: 'passed',
+        baselineVisible: true,
+        candidateRestored: true,
+        baselineMode: baselineActivation.mode,
+        candidateRestoreMode: candidateRestoration.mode,
+      };
       checks.finalState = { status: 'passed', activeKind: 'candidate' };
       state = 'accepted';
     } catch (error) {
