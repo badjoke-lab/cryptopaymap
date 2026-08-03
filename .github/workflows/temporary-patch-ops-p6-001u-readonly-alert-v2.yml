@@ -1,0 +1,151 @@
+name: Temporary patch OPS-P6-001U read-only alert evidence v2
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-patch-ops-p6-001u-readonly-alert-v2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-patch-ops-p6-001u-readonly-alert-v2
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out OPS-P6-001U branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001u-p6-07-monitoring-alert
+
+      - name: Patch executor and contract
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          script = Path('scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs')
+          text = script.read_text()
+
+          patches = [
+              (r"\s+Authorization: `Bearer \$\{token\}`,\n", "\n      ...(token ? { Authorization: `Bearer ${token}` } : {}),\n", 1),
+              (r"\n\s+if \(!token\) throw new Error\('missing_github_token'\);", '', 1),
+              (
+                  r"(if \(existing\) return \{ status: 'delivered', reused: true, \.\.\.safeCommentReference\(existing\) \};\n)",
+                  r"\1    if (!token) throw new Error(`missing_preseeded_channel_evidence_${kind}`);\n",
+                  1,
+              ),
+              (
+                  r"(destinationClass: 'github_issue',\n\s+issueNumber,)",
+                  r"\1\n    readOnlyEvidence: token.length === 0,",
+                  1,
+              ),
+              (
+                  r"firstDelivery\.reused === false &&\n\s+duplicateDelivery\.reused === true &&",
+                  "(firstDelivery.reused === false || channel.readOnlyEvidence === true) &&\n      duplicateDelivery.reused === true &&",
+                  1,
+              ),
+          ]
+          for pattern, replacement, expected in patches:
+              text, count = re.subn(pattern, replacement, text, count=expected)
+              if count != expected:
+                  raise SystemExit(f'patch mismatch: {pattern} count={count}')
+
+          text = text.replace(
+              "['wrong_release_http_200', bindingDigest, workflowRunId ?? 'manual'].join(':')",
+              "['wrong_release_http_200', bindingDigest, alertRuleRevision].join(':')",
+          )
+          text = text.replace(
+              "['monitor_blind_state', bindingDigest, workflowRunId ?? 'manual'].join(':')",
+              "['monitor_blind_state', bindingDigest, alertRuleRevision].join(':')",
+          )
+          if "workflowRunId ?? 'manual'" in text:
+              raise SystemExit('workflow-run-dependent alert identity remains')
+
+          escalation_pattern = re.compile(
+              r"  const blindDelivery = await channel\.deliver\(blindStateId, blindDetails\);\n"
+              r"  const escalationDeadline = new Date\(Date\.now\(\) \+ 2_000\)\.toISOString\(\);\n"
+              r"  await sleep\(2_500\);\n"
+              r"  const deadlineMissed = Date\.now\(\) > Date\.parse\(escalationDeadline\);\n"
+              r"  if \(!deadlineMissed\) throw new Error\('escalation_deadline_not_missed'\);\n"
+              r"  const escalation = await channel\.escalate\(blindStateId, \{\n"
+              r"    \.\.\.blindDetails,\n"
+              r"    evidenceAt: new Date\(\)\.toISOString\(\),\n"
+              r"  \}\);"
+          )
+          escalation_replacement = """  const blindDelivery = await channel.deliver(blindStateId, blindDetails);
+          const escalationDeadline = new Date(
+            (validTimestamp(blindDelivery.createdAt) ? Date.parse(blindDelivery.createdAt) : Date.now()) +
+              2_000,
+          ).toISOString();
+          if (!channel.readOnlyEvidence) await sleep(2_500);
+          const escalation = await channel.escalate(blindStateId, {
+            ...blindDetails,
+            evidenceAt: new Date().toISOString(),
+          });
+          const escalationObservedAt = validTimestamp(escalation.createdAt)
+            ? Date.parse(escalation.createdAt)
+            : Date.now();
+          const deadlineMissed = escalationObservedAt > Date.parse(escalationDeadline);
+          if (!deadlineMissed) throw new Error('escalation_deadline_not_missed');"""
+          text, count = escalation_pattern.subn(escalation_replacement, text, count=1)
+          if count != 1:
+              raise SystemExit(f'escalation patch mismatch: {count}')
+
+          text, count = re.subn(
+              r"sleep: async \(\) => \{\},",
+              "sleep: (milliseconds) =>\n      new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds)),",
+              text,
+          )
+          if count != 2:
+              raise SystemExit(f'self-test sleep patch mismatch: {count}')
+          script.write_text(text)
+
+          checker = Path('scripts/check-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs')
+          audit = checker.read_text()
+          replacements = {
+              "  [files.workflow, 'issues: write'],": "  [files.workflow, 'pre-delivered alert evidence'],",
+              "  [files.executor, \"destinationClass: 'github_issue'\"],": "  [files.executor, \"destinationClass: 'github_issue'\"],\n  [files.executor, 'readOnlyEvidence: token.length === 0'],",
+              "if (!files.executor.includes(\"['/', [200], 'text/html'\"))": "if (!files.executor.includes(\"probePath('/', [200], 'text/html'\"))",
+              "if (!files.executor.includes('firstDelivery.reused === false'))": "if (!files.executor.includes('firstDelivery.reused === false || channel.readOnlyEvidence === true'))",
+          }
+          for old, new in replacements.items():
+              if audit.count(old) != 1:
+                  raise SystemExit(f'checker patch mismatch: {old} count={audit.count(old)}')
+              audit = audit.replace(old, new)
+          checker.write_text(audit)
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format and verify OPS-P6-001U
+        run: |
+          npm run format
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs
+          node scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs --self-test
+
+      - name: Remove one-time workflows and publish normalization
+        run: |
+          set -euo pipefail
+          rm -f \
+            .github/workflows/temporary-patch-ops-p6-001u-readonly-alert.yml \
+            .github/workflows/temporary-patch-ops-p6-001u-readonly-alert-v2.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Verify pre-delivered P6-07 alert evidence read-only'
+          git push origin HEAD:agent/ops-p6-001u-p6-07-monitoring-alert
