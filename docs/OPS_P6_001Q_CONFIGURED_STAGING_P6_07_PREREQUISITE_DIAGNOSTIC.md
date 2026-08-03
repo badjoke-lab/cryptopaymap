@@ -48,4 +48,6 @@ Its state is `diagnosed`. Its decision is:
 - `configuration_blocked` when one or more required protected inputs are missing or unsafe;
 - `evidence_blocked` when predecessor or external evidence is missing, stale, mismatched, or failed.
 
+The receipt expires 24 hours after generation so later backup, restore, alert, and incident slices cannot reuse stale prerequisite evidence.
+
 A `ready` diagnostic does not satisfy P6-07 and does not authorize backup, restore, alert, incident, staging authorization, or production work. It only authorizes the next bounded implementation slices under Issue #349.
