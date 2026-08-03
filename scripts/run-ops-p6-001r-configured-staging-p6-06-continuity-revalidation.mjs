@@ -507,9 +507,12 @@ async function runSelfTest() {
   const priorCommit = 'a'.repeat(40);
   const now = new Date('2026-08-03T03:00:00.000Z');
   const expiresAt = '2026-08-05T03:00:00.000Z';
-  const binding = Object.fromEntries(
-    bindingKeys.map((key) => [key, `sha256:${key.padEnd(64, 'c').slice(0, 64)}`]),
-  );
+  const binding = {
+    releaseId: `sha256:${'1'.repeat(64)}`,
+    dataSnapshotId: `sha256:${'2'.repeat(64)}`,
+    configurationId: `sha256:${'3'.repeat(64)}`,
+    environmentId: `sha256:${'4'.repeat(64)}`,
+  };
   try {
     for (const [id, path] of predecessorPaths) {
       writeFixture(root, path, {
@@ -569,9 +572,12 @@ async function runSelfTest() {
         finalRestore: { status: 'passed' },
         externalFinal: { status: 'passed' },
       },
-      binding: Object.fromEntries(
-        bindingKeys.map((key) => [key, `sha256:${key.padEnd(64, 'd').slice(0, 64)}`]),
-      ),
+      binding: {
+        releaseId: `sha256:${'5'.repeat(64)}`,
+        dataSnapshotId: `sha256:${'6'.repeat(64)}`,
+        configurationId: `sha256:${'7'.repeat(64)}`,
+        environmentId: `sha256:${'8'.repeat(64)}`,
+      },
       exceptions: [],
     });
 
