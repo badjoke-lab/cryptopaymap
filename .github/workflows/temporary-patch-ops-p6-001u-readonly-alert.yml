@@ -32,41 +32,37 @@ jobs:
           script = Path('scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs')
           text = script.read_text()
 
-          text, count = re.subn(
-              r"\s+Authorization: `Bearer \$\{token\}`,\n",
-              "\n      ...(token ? { Authorization: `Bearer ${token}` } : {}),\n",
-              text,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit(f'optional authorization marker mismatch: {count}')
-
-          text, count = re.subn(
-              r"\n\s+if \(!token\) throw new Error\('missing_github_token'\);",
-              '',
-              text,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit(f'optional token guard mismatch: {count}')
-
-          text, count = re.subn(
-              r"(if \(existing\) return \{ status: 'delivered', reused: true, \.\.\.safeCommentReference\(existing\) \};\n)",
-              r"\1    if (!token) throw new Error(`missing_preseeded_channel_evidence_${kind}`);\n",
-              text,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit(f'missing evidence guard mismatch: {count}')
-
-          text, count = re.subn(
-              r"(destinationClass: 'github_issue',\n\s+issueNumber,)",
-              r"\1\n    readOnlyEvidence: token.length === 0,",
-              text,
-              count=1,
-          )
-          if count != 1:
-              raise SystemExit(f'read-only mode mismatch: {count}')
+          substitutions = [
+              (
+                  r"\s+Authorization: `Bearer \$\{token\}`,\n",
+                  "\n      ...(token ? { Authorization: `Bearer ${token}` } : {}),\n",
+                  'optional authorization',
+              ),
+              (
+                  r"\n\s+if \(!token\) throw new Error\('missing_github_token'\);",
+                  '',
+                  'optional token guard',
+              ),
+              (
+                  r"(if \(existing\) return \{ status: 'delivered', reused: true, \.\.\.safeCommentReference\(existing\) \};\n)",
+                  r"\1    if (!token) throw new Error(`missing_preseeded_channel_evidence_${kind}`);\n",
+                  'missing evidence guard',
+              ),
+              (
+                  r"(destinationClass: 'github_issue',\n\s+issueNumber,)",
+                  r"\1\n    readOnlyEvidence: token.length === 0,",
+                  'read-only mode',
+              ),
+              (
+                  r"firstDelivery\.reused === false &&\n\s+duplicateDelivery\.reused === true &&",
+                  "(firstDelivery.reused === false || channel.readOnlyEvidence === true) &&\n      duplicateDelivery.reused === true &&",
+                  'first delivery status',
+              ),
+          ]
+          for pattern, replacement, label in substitutions:
+              text, count = re.subn(pattern, replacement, text, count=1)
+              if count != 1:
+                  raise SystemExit(f'{label} marker mismatch: {count}')
 
           text = text.replace(
               "['wrong_release_http_200', bindingDigest, workflowRunId ?? 'manual'].join(':')",
@@ -106,14 +102,6 @@ jobs:
           if text.count(old_escalation) != 1:
               raise SystemExit(f'escalation block mismatch: {text.count(old_escalation)}')
           text = text.replace(old_escalation, new_escalation)
-
-          old_delivery = """      firstDelivery.reused === false &&
-            duplicateDelivery.reused === true &&"""
-          new_delivery = """      (firstDelivery.reused === false || channel.readOnlyEvidence === true) &&
-            duplicateDelivery.reused === true &&"""
-          if text.count(old_delivery) != 1:
-              raise SystemExit(f'first delivery block mismatch: {text.count(old_delivery)}')
-          text = text.replace(old_delivery, new_delivery)
 
           old_sleep = "    sleep: async () => {},"
           new_sleep = """    sleep: (milliseconds) =>
