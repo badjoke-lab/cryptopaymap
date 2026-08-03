@@ -40,7 +40,7 @@ A non-platform domain is accepted only when all of the following are true:
 - an unexpired prior configured-staging P6-06 receipt authenticates the hostname digest;
 - that receipt proves cutover or existing final state, external cutover verification, rollback, external rollback verification, final restore, final external verification, and zero exceptions.
 
-The authenticated exception applies only to configured staging and cannot authorize an apex, `www`, production, or unrelated hostname.
+The authenticated exception applies only to configured staging and cannot authorize an apex, `www`, production, or unrelated hostname. When the prior P6-06 receipt expires, P6-05 fails closed until continuity is revalidated.
 
 The executor retains only the prior receipt digest, hostname digest, evidence state, and domain count. It does not retain provider identifiers or use the prior receipt as current P6-06 evidence. Every other hostname remains disallowed and fails closed. An unauthenticated, stale, malformed, duplicate, ambiguous, or additional custom domain also fails closed.
 
