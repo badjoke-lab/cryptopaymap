@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Execute the repository-defined P6-05 public projection and release contract against an isolated Cloudflare Pages staging production target without touching CryptoPayMap production, custom domains, DNS, canonical data, or private material.
+Execute the repository-defined P6-05 public projection and release contract against an isolated Cloudflare Pages staging production target without touching CryptoPayMap production, DNS, canonical data, or private material.
 
 ## Exact-main boundary
 
@@ -25,12 +25,22 @@ Required topology:
 
 - production branch: `staging-review`;
 - exact project platform hostname: `cryptopaymap-staging.pages.dev`;
-- no non-platform custom domain;
+- before P6-06, no non-platform custom domain;
+- after an accepted P6-06 cutover, exactly `staging.cryptopaymap.com` may remain attached;
 - no CryptoPayMap production hostname;
 - no DNS mutation;
 - no production project mutation.
 
-The exact project-owned `.pages.dev` hostname is a Cloudflare platform domain, not a custom domain. It must be present in the project domain inventory and must match the project subdomain. Every other hostname remains disallowed and fails closed.
+The exact project-owned `.pages.dev` hostname is a Cloudflare platform domain, not a custom domain. It must be present in the project domain inventory and must match the project subdomain.
+
+A non-platform domain is accepted only when all of the following are true:
+
+- there is exactly one custom domain;
+- it is exactly `staging.cryptopaymap.com`;
+- an unexpired prior configured-staging P6-06 receipt authenticates the hostname digest;
+- that receipt proves cutover or existing final state, external cutover verification, rollback, external rollback verification, final restore, final external verification, and zero exceptions.
+
+The executor retains only the prior receipt digest, hostname digest, evidence state, and domain count. It does not retain provider identifiers or use the prior receipt as current P6-06 evidence. Every other hostname remains disallowed and fails closed. An unauthenticated, stale, malformed, duplicate, ambiguous, or additional custom domain also fails closed.
 
 The existing `review` deployment remains a preview deployment. It is not treated as a rollback target. P6-05 creates and verifies production-style deployments only inside the isolated staging project.
 
@@ -52,16 +62,17 @@ A missing, malformed, forged, wrong-environment, wrong-evidence, or incorrectly 
 
 ## Release sequence
 
-1. Detect existing successful production deployments in the staging project.
-2. Authenticate their P6-05 release markers and separate exact-current, historical, and unrecognized deployments.
-3. Reject any unrecognized production deployment.
-4. Reuse only a matching exact-current immutable baseline or candidate deployment when present.
-5. Create only a missing exact-current baseline or candidate deployment.
-6. Activate the exact candidate and verify its release marker at the Pages production hostname.
-7. Verify representative pages, detail routes, public JSON, manifest, robots policy, public Media, and 404 behavior.
-8. Roll back to the exact baseline deployment and verify the baseline marker externally.
-9. Restore the exact candidate deployment and verify the candidate marker externally.
-10. Leave the exact candidate active for the P6-06 handoff.
+1. Verify the isolated Pages project, production branch, platform domain, and permitted custom-domain state.
+2. Detect existing successful production deployments in the staging project.
+3. Authenticate their P6-05 release markers and separate exact-current, historical, and unrecognized deployments.
+4. Reject any unrecognized production deployment.
+5. Reuse only a matching exact-current immutable baseline or candidate deployment when present.
+6. Create only a missing exact-current baseline or candidate deployment.
+7. Activate the exact candidate and verify its release marker at the Pages production hostname.
+8. Verify representative pages, detail routes, public JSON, manifest, robots policy, public Media, and 404 behavior.
+9. Roll back to the exact baseline deployment and verify the baseline marker externally.
+10. Restore the exact candidate deployment and verify the candidate marker externally.
+11. Leave the exact candidate active for the P6-06 handoff.
 
 Cloudflare Pages rollback is used only with successful production deployments. Preview deployments are never rollback targets.
 
@@ -93,6 +104,8 @@ The retained receipt may include only:
 - dataset and schema versions;
 - platform-domain presence and exact subdomain-match booleans;
 - non-platform custom-domain count;
+- approved custom-domain presence and hostname digest;
+- prior P6-06 authentication state and receipt digest;
 - authenticated historical release count;
 - hashed exact-current Pages deployment identifiers and URLs;
 - representative route status/content-type/body digests;
@@ -116,4 +129,4 @@ P6-05 is complete only when:
 - the retained receipt is `accepted` on exact current main;
 - P6-01 through P6-05 are current in the configured authorization inventory;
 - P6-06 and P6-07 remain the only missing configured predecessors;
-- production CryptoPayMap, non-platform custom domains, DNS, canonical data, and private material remain unchanged.
+- production CryptoPayMap, unrelated custom domains, DNS, canonical data, and private material remain unchanged.
