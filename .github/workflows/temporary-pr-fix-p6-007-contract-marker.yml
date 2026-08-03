@@ -1,0 +1,52 @@
+name: Temporary fix P6-007 contract marker
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-pr-fix-p6-007-contract-marker.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-pr-fix-p6-007-contract-marker
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out fix branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/fix-p6-007-authenticated-staging-domain
+
+      - name: Make formatted constant check line-independent
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs')
+          text = path.read_text()
+          old = """  [files.executor, \"const priorP606ReceiptPath = 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'\"],"""
+          new = """  [files.executor, 'const priorP606ReceiptPath ='],
+            [
+              files.executor,
+              \"'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'\",
+            ],"""
+          if text.count(old) != 1:
+              raise SystemExit(f'contract marker mismatch: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
+      - name: Remove one-time marker workflow and publish fix
+        run: |
+          set -euo pipefail
+          rm .github/workflows/temporary-pr-fix-p6-007-contract-marker.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Make P6-05 topology contract format-stable'
+          git push origin HEAD:agent/fix-p6-007-authenticated-staging-domain
