@@ -41,7 +41,7 @@ const expectations = [
   [files.executor, "? 'evidence_blocked'"],
   [files.executor, "? 'configuration_blocked'"],
   [files.executor, "diagnostic: 'prerequisite_inventory'"],
-  [files.p607Contract, 'P6-07 configured operational monitoring backup restore and incident evidence contract passed.'],
+  [files.p607Contract, 'P6-07 configured operational evidence contract passed.'],
   [
     files.authorization,
     "['P6-07', 'config/staging-authorization/p6-07-operations-recovery-receipt.json']",
