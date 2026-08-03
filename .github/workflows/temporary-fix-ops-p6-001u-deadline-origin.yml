@@ -1,0 +1,50 @@
+name: Temporary fix OPS-P6-001U deadline origin
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-fix-ops-p6-001u-deadline-origin.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-fix-ops-p6-001u-deadline-origin
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out OPS-P6-001U branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-001u-p6-07-monitoring-alert
+
+      - name: Use the live clock for writable test deadlines
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('.github/workflows/temporary-patch-ops-p6-001u-readonly-alert-v2.yml')
+          text = path.read_text()
+          old = """            (validTimestamp(blindDelivery.createdAt) ? Date.parse(blindDelivery.createdAt) : Date.now()) +"""
+          new = """            (channel.readOnlyEvidence && validTimestamp(blindDelivery.createdAt)
+              ? Date.parse(blindDelivery.createdAt)
+              : Date.now()) +"""
+          if text.count(old) != 1:
+              raise SystemExit(f'deadline origin marker mismatch: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
+      - name: Remove one-time workflow and publish fix
+        run: |
+          set -euo pipefail
+          rm .github/workflows/temporary-fix-ops-p6-001u-deadline-origin.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Use the live clock for writable alert deadlines'
+          git push origin HEAD:agent/ops-p6-001u-p6-07-monitoring-alert
