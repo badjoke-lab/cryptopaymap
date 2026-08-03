@@ -1,0 +1,246 @@
+name: Temporary fix P6-007 authenticated staging domain
+
+on:
+  push:
+    branches:
+      - agent/fix-p6-007-authenticated-staging-domain
+    paths:
+      - '.github/workflows/temporary-fix-p6-007-authenticated-staging-domain.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-fix-p6-007-authenticated-staging-domain
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/fix-p6-007-authenticated-staging-domain
+
+      - name: Patch P6-05 topology authentication
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs')
+          text = path.read_text()
+
+          old_constants = """const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';
+          const markerPath = '/p6-05-release.json';"""
+          new_constants = """const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';
+          const approvedStagingCustomDomain = 'staging.cryptopaymap.com';
+          const priorP606ReceiptPath =
+            'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
+          const markerPath = '/p6-05-release.json';"""
+
+          shared_binding = """function sharedBinding(predecessors) {
+            if (predecessors.some((item) => item.state !== 'current' || item.binding === null)) return null;
+            const first = JSON.stringify(predecessors[0].binding);
+            return predecessors.every((item) => JSON.stringify(item.binding) === first)
+              ? predecessors[0].binding
+              : null;
+          }
+          """
+          topology_helpers = """function sharedBinding(predecessors) {
+            if (predecessors.some((item) => item.state !== 'current' || item.binding === null)) return null;
+            const first = JSON.stringify(predecessors[0].binding);
+            return predecessors.every((item) => JSON.stringify(item.binding) === first)
+              ? predecessors[0].binding
+              : null;
+          }
+
+          function readPriorP606Topology(statusRoot, commit, now) {
+            let receipt = null;
+            try {
+              const value = JSON.parse(readFileSync(resolve(statusRoot, priorP606ReceiptPath), 'utf8'));
+              receipt = isObject(value) ? value : null;
+            } catch {
+              receipt = null;
+            }
+            const generatedAt = safeTimestamp(receipt?.generatedAt);
+            const expiresAt = safeTimestamp(receipt?.expiresAt);
+            const valid =
+              receipt?.version === 1 &&
+              receipt?.evidenceId === 'P6-06' &&
+              receipt?.environment === 'configured_staging' &&
+              receipt?.state === 'accepted' &&
+              validCommit(receipt?.commit) &&
+              receipt.commit !== commit &&
+              generatedAt !== null &&
+              expiresAt !== null &&
+              Date.parse(expiresAt) > now.getTime() &&
+              receipt?.checks?.hostname?.digest === boundedHash(approvedStagingCustomDomain) &&
+              ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
+              receipt?.checks?.externalCutover?.status === 'passed' &&
+              receipt?.checks?.rollback?.status === 'passed' &&
+              receipt?.checks?.externalRollback?.status === 'passed' &&
+              receipt?.checks?.finalRestore?.status === 'passed' &&
+              receipt?.checks?.externalFinal?.status === 'passed' &&
+              Array.isArray(receipt?.exceptions) &&
+              receipt.exceptions.length === 0;
+            return {
+              state: valid ? 'authenticated_prior' : receipt === null ? 'missing' : 'failed',
+              generatedAt,
+              expiresAt,
+              digest: valid ? boundedHash(JSON.stringify(receipt)) : null,
+              hostnameDigest: valid ? boundedHash(approvedStagingCustomDomain) : null,
+            };
+          }
+
+          function evaluateProjectTopology(project, priorP606) {
+            const platformDomain = `${projectName}.pages.dev`;
+            const projectDomains = Array.isArray(project?.domains)
+              ? project.domains.filter((domain) => typeof domain === 'string').sort()
+              : [];
+            const platformDomainPresent = projectDomains.includes(platformDomain);
+            const platformDomainMatches = project?.subdomain === platformDomain;
+            const customDomains = projectDomains.filter((domain) => domain !== platformDomain);
+            const authenticatedExactCustomDomain =
+              priorP606.state === 'authenticated_prior' &&
+              customDomains.length === 1 &&
+              customDomains[0] === approvedStagingCustomDomain;
+            const status =
+              project?.name === projectName &&
+              project?.production_branch === productionBranch &&
+              platformDomainPresent &&
+              platformDomainMatches &&
+              (customDomains.length === 0 || authenticatedExactCustomDomain)
+                ? 'passed'
+                : 'failed';
+            return {
+              status,
+              productionBranch: project?.production_branch ?? null,
+              platformDomainPresent,
+              platformDomainMatches,
+              customDomainCount: customDomains.length,
+              approvedCustomDomainPresent: customDomains.includes(approvedStagingCustomDomain),
+              approvedCustomDomainDigest: customDomains.includes(approvedStagingCustomDomain)
+                ? boundedHash(approvedStagingCustomDomain)
+                : null,
+              priorP606State: priorP606.state,
+              priorP606ReceiptDigest: priorP606.digest,
+            };
+          }
+          """
+
+          old_topology = """      const project = await cloudflareRequest('');
+                const platformDomain = `${projectName}.pages.dev`;
+                const projectDomains = Array.isArray(project?.domains)
+                  ? project.domains.filter((domain) => typeof domain === 'string')
+                  : [];
+                const platformDomainPresent = projectDomains.includes(platformDomain);
+                const platformDomainMatches = project?.subdomain === platformDomain;
+                const customDomains = projectDomains.filter((domain) => domain !== platformDomain);
+                checks.topology = {
+                  status:
+                    project?.name === projectName &&
+                    project?.production_branch === productionBranch &&
+                    platformDomainPresent &&
+                    platformDomainMatches &&
+                    customDomains.length === 0
+                      ? 'passed'
+                      : 'failed',
+                  productionBranch: project?.production_branch ?? null,
+                  platformDomainPresent,
+                  platformDomainMatches,
+                  customDomainCount: customDomains.length,
+                };
+                if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');"""
+          new_topology = """      const priorP606 = readPriorP606Topology(statusRoot, commit, now);
+                const project = await cloudflareRequest('');
+                checks.topology = evaluateProjectTopology(project, priorP606);
+                if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');"""
+
+          old_self_test = """    writeFileSync(join(root, 'data', 'manifest.json'), '{\"version\":2}\\n');
+              if (publicTreeDigest(root) === first) throw new Error('content_change_not_fingerprinted');
+              console.log('OPS-P6-001I configured staging public export/release self-test passed.');"""
+          new_self_test = """    writeFileSync(join(root, 'data', 'manifest.json'), '{\"version\":2}\\n');
+              if (publicTreeDigest(root) === first) throw new Error('content_change_not_fingerprinted');
+
+              const platformDomain = `${projectName}.pages.dev`;
+              const projectFixture = {
+                name: projectName,
+                production_branch: productionBranch,
+                subdomain: platformDomain,
+                domains: [platformDomain],
+              };
+              const bootstrapTopology = evaluateProjectTopology(projectFixture, {
+                state: 'missing',
+                digest: null,
+              });
+              if (bootstrapTopology.status !== 'passed') throw new Error('bootstrap_topology_failed');
+
+              const authenticatedTopology = evaluateProjectTopology(
+                { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },
+                { state: 'authenticated_prior', digest: boundedHash('prior-p6-06') },
+              );
+              if (authenticatedTopology.status !== 'passed') {
+                throw new Error('authenticated_staging_domain_failed');
+              }
+
+              const unauthenticatedTopology = evaluateProjectTopology(
+                { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },
+                { state: 'missing', digest: null },
+              );
+              if (unauthenticatedTopology.status !== 'failed') {
+                throw new Error('unauthenticated_staging_domain_not_rejected');
+              }
+
+              const extraDomainTopology = evaluateProjectTopology(
+                {
+                  ...projectFixture,
+                  domains: [platformDomain, approvedStagingCustomDomain, 'unrelated.example'],
+                },
+                { state: 'authenticated_prior', digest: boundedHash('prior-p6-06') },
+              );
+              if (extraDomainTopology.status !== 'failed') {
+                throw new Error('extra_custom_domain_not_rejected');
+              }
+
+              console.log('OPS-P6-001I configured staging public export/release self-test passed.');"""
+
+          replacements = [
+              (old_constants, new_constants, 'constants'),
+              (shared_binding, topology_helpers, 'topology helpers'),
+              (old_topology, new_topology, 'topology execution'),
+              (old_self_test, new_self_test, 'self-test'),
+          ]
+          for old, new, label in replacements:
+              if text.count(old) != 1:
+                  raise SystemExit(f'{label} marker mismatch: {text.count(old)}')
+              text = text.replace(old, new)
+          path.write_text(text)
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format and verify P6-05 fix
+        run: |
+          npm run format
+          npm run check
+          node scripts/check-p6-05-configured-public-export-release-evidence.js
+          node scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs
+          node scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs --self-test
+
+      - name: Remove one-time patch and publish fix
+        run: |
+          set -euo pipefail
+          rm .github/workflows/temporary-fix-p6-007-authenticated-staging-domain.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'Allow authenticated staging domain in P6-05 topology'
+          git push origin HEAD:agent/fix-p6-007-authenticated-staging-domain
