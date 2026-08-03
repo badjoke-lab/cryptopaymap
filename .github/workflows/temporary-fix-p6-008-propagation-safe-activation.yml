@@ -133,16 +133,8 @@ jobs:
             raise SystemExit(f'rollback sequence marker mismatch: {text.count(rollback_old)}')
           text = text.replace(rollback_old, rollback_new)
 
-          self_test_marker = """    if (extraDomainTopology.status !== 'failed') {
-              throw new Error('extra_custom_domain_not_rejected');
-            }
-
-            console.log('OPS-P6-001I configured staging public export/release self-test passed.');"""
-          self_test_new = """    if (extraDomainTopology.status !== 'failed') {
-              throw new Error('extra_custom_domain_not_rejected');
-            }
-
-            let rollbackCalls = 0;
+          console_marker = "    console.log('OPS-P6-001I configured staging public export/release self-test passed.');"
+          self_tests = """    let rollbackCalls = 0;
             let waitCalls = 0;
             const alreadyVisible = await activateRelease('already-visible', candidate.releaseId, {
               markerVisibleImpl: async () => true,
@@ -201,10 +193,10 @@ jobs:
             }
             if (!rejected) throw new Error('unconverged_8000039_not_rejected');
 
-            console.log('OPS-P6-001I configured staging public export/release self-test passed.');"""
-          if text.count(self_test_marker) != 1:
-            raise SystemExit(f'self-test marker mismatch: {text.count(self_test_marker)}')
-          text = text.replace(self_test_marker, self_test_new)
+          """
+          if text.count(console_marker) != 1:
+            raise SystemExit(f'self-test console marker mismatch: {text.count(console_marker)}')
+          text = text.replace(console_marker, self_tests + console_marker)
           script_path.write_text(text)
 
           checker_path = Path('scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs')
