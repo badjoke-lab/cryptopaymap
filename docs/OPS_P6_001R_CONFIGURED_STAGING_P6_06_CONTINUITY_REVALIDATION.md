@@ -43,7 +43,7 @@ The continuity run:
 - fails closed when the topology diagnostic is missing, unsafe, ambiguous, or not exactly one approved existing candidate;
 - fails closed when prior rollback proof is missing, malformed, expired, or contains any exception.
 
-The pull-request and push jobs execute only repository validation and self-tests. Live continuity revalidation is available only through `workflow_dispatch` with exact confirmation `REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY`.
+The pull-request and push jobs execute only repository validation and self-tests. The self-test uses schema-valid SHA-256 binding fixtures and proves ambiguous topology remains fail-closed. Live continuity revalidation is available only through `workflow_dispatch` with exact confirmation `REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY`.
 
 ## Receipt
 
