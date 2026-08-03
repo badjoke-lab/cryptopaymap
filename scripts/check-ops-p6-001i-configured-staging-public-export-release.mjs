@@ -32,6 +32,7 @@ const expectations = [
   [files.workflow, "'src/pages/404.astro'"],
   [files.procedure, 'production branch: `staging-review`'],
   [files.procedure, 'exact project platform hostname: `cryptopaymap-staging.pages.dev`'],
+  [files.procedure, 'exactly `staging.cryptopaymap.com` may remain attached'],
   [files.procedure, 'Every other hostname remains disallowed and fails closed.'],
   [files.procedure, 'Preview deployments are never rollback targets.'],
   [files.procedure, 'top-level `404.html`'],
@@ -41,6 +42,9 @@ const expectations = [
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_05'"],
   [files.executor, "const productionBranch = 'staging-review'"],
   [files.executor, "const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev'"],
+  [files.executor, "const approvedStagingCustomDomain = 'staging.cryptopaymap.com'"],
+  [files.executor, 'const priorP606ReceiptPath ='],
+  [files.executor, "'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'"],
   [files.executor, "const markerPath = '/p6-05-release.json'"],
   [files.executor, 'cloudflareRequest(`/deployments/${deploymentId}/rollback`'],
   [files.executor, 'unrecognized_production_deployment'],
@@ -49,6 +53,12 @@ const expectations = [
   [files.executor, 'const platformDomainPresent = projectDomains.includes(platformDomain)'],
   [files.executor, 'const platformDomainMatches = project?.subdomain === platformDomain'],
   [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],
+  [files.executor, 'function readPriorP606Topology(statusRoot, commit, now)'],
+  [files.executor, "state: 'authenticated_prior'"],
+  [files.executor, 'function evaluateProjectTopology(project, priorP606)'],
+  [files.executor, 'approvedCustomDomainPresent'],
+  [files.executor, 'priorP606State: priorP606.state'],
+  [files.executor, 'priorP606ReceiptDigest: priorP606.digest'],
   [files.executor, 'platformDomainPresent: false'],
   [files.executor, 'platformDomainMatches: false'],
   [files.executor, "['/__p6_05_missing__', 404, 'text/html']"],
@@ -87,7 +97,6 @@ const forbidden = [
   'CLOUDFLARE_ACCOUNT_ID=',
   'X-Auth-Key:',
   'X-Amz-Signature=',
-  'cryptopaymap.com',
 ];
 for (const [name, content] of Object.entries(files)) {
   for (const marker of forbidden) {
@@ -109,8 +118,28 @@ if (!files.executor.includes('platformDomainPresent &&')) {
 if (!files.executor.includes('platformDomainMatches &&')) {
   throw new Error('OPS-P6-001I executor must require the project subdomain to match.');
 }
-if (!files.executor.includes('customDomains.length === 0')) {
-  throw new Error('OPS-P6-001I executor must refuse non-platform custom domains.');
+if (!files.executor.includes('customDomains.length === 0 || authenticatedExactCustomDomain')) {
+  throw new Error(
+    'OPS-P6-001I executor must allow only bootstrap absence or one authenticated staging domain.',
+  );
+}
+if (!files.executor.includes('customDomains.length === 1')) {
+  throw new Error('OPS-P6-001I executor must reject extra or ambiguous custom domains.');
+}
+if (!files.executor.includes('customDomains[0] === approvedStagingCustomDomain')) {
+  throw new Error('OPS-P6-001I executor must require the exact approved staging hostname.');
+}
+if (!files.executor.includes("priorP606.state === 'authenticated_prior'")) {
+  throw new Error('OPS-P6-001I executor must authenticate prior P6-06 evidence.');
+}
+if (!files.executor.includes("receipt?.checks?.rollback?.status === 'passed'")) {
+  throw new Error('OPS-P6-001I executor must require prior rollback proof.');
+}
+if (!files.executor.includes("receipt?.checks?.externalRollback?.status === 'passed'")) {
+  throw new Error('OPS-P6-001I executor must require prior external rollback proof.');
+}
+if (!files.executor.includes("receipt?.checks?.finalRestore?.status === 'passed'")) {
+  throw new Error('OPS-P6-001I executor must require prior final restore proof.');
 }
 if (!files.executor.includes('if (validP6ReleaseMarker(marker))')) {
   throw new Error('OPS-P6-001I executor must authenticate retained release markers.');
@@ -124,6 +153,24 @@ if (
 }
 if (!files.executor.includes('recognized.push(item);\n      } else {\n        historical.push({')) {
   throw new Error('OPS-P6-001I executor must not reuse historical releases as exact-current.');
+}
+if (!files.executor.includes("bootstrapTopology.status !== 'passed'")) {
+  throw new Error('OPS-P6-001I self-test must cover the no-domain bootstrap topology.');
+}
+if (!files.executor.includes("authenticatedTopology.status !== 'passed'")) {
+  throw new Error('OPS-P6-001I self-test must cover the authenticated staging domain.');
+}
+if (!files.executor.includes("unauthenticatedTopology.status !== 'failed'")) {
+  throw new Error('OPS-P6-001I self-test must reject an unauthenticated custom domain.');
+}
+if (!files.executor.includes("extraDomainTopology.status !== 'failed'")) {
+  throw new Error('OPS-P6-001I self-test must reject an additional custom domain.');
+}
+if (/['"]cryptopaymap\.com['"]/.test(files.executor)) {
+  throw new Error('OPS-P6-001I executor must not permit the CryptoPayMap apex hostname.');
+}
+if (files.executor.includes('www.cryptopaymap.com')) {
+  throw new Error('OPS-P6-001I executor must not permit the CryptoPayMap www hostname.');
 }
 
 console.log('OPS-P6-001I configured staging public export/release contract check passed.');
