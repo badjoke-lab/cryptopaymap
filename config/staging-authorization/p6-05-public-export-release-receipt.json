@@ -3,12 +3,12 @@
   "evidenceId": "P6-05",
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
-  "state": "failed",
-  "commit": "bb75eb94d19542abf3c40c828c1e0800a44a5d41",
-  "generatedAt": "2026-08-03T03:20:28.175Z",
-  "expiresAt": "2026-08-06T03:20:28.175Z",
-  "workflowRunId": "30781462745",
-  "owner": "sha256:be2e4f6583910da8d1e078f432ec86a1dce8b0bec2a6bcd0c638964540f75e12",
+  "state": "accepted",
+  "commit": "2dbfcadb8228474c1aab1b76ba6848c7b1ffc6e0",
+  "generatedAt": "2026-08-03T03:59:49.351Z",
+  "expiresAt": "2026-08-06T03:59:49.351Z",
+  "workflowRunId": "30783064495",
+  "owner": "sha256:2bb41fd701c37456ec18e8ad0eb6802950b3a31d1030d2bac375abd4a7142750",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
     "exactMain": "success",
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T03:11:06.139Z",
-        "expiresAt": "2026-08-06T03:11:06.139Z"
+        "generatedAt": "2026-08-03T03:50:48.225Z",
+        "expiresAt": "2026-08-06T03:50:48.225Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T03:12:19.091Z",
-        "expiresAt": "2026-08-06T03:12:19.091Z"
+        "generatedAt": "2026-08-03T03:52:39.274Z",
+        "expiresAt": "2026-08-06T03:52:39.274Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T03:14:49.539Z",
-        "expiresAt": "2026-08-06T03:14:49.539Z"
+        "generatedAt": "2026-08-03T03:53:59.430Z",
+        "expiresAt": "2026-08-06T03:53:59.430Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T03:17:29.337Z",
-        "expiresAt": "2026-08-06T03:17:29.337Z"
+        "generatedAt": "2026-08-03T03:56:23.206Z",
+        "expiresAt": "2026-08-06T03:56:23.206Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -57,45 +57,54 @@
       "schemaVersion": "1.0.0"
     },
     "topology": {
-      "status": "failed",
+      "status": "passed",
       "productionBranch": "staging-review",
       "platformDomainPresent": true,
       "platformDomainMatches": true,
-      "customDomainCount": 1
+      "customDomainCount": 1,
+      "approvedCustomDomainPresent": true,
+      "approvedCustomDomainDigest": "sha256:4e290730490e5fcdda9f5eb16ab0fb35aa04873d2ebf35c02143fac544fd143d",
+      "priorP606State": "authenticated_prior",
+      "priorP606ReceiptDigest": "sha256:b36bb52b4a93dcaae59ca1bde3ab972668220f9b04bbd05591d2c42f956d6a89"
     },
     "releases": {
-      "status": "not_run",
-      "historicalCount": 0,
-      "baseline": null,
-      "candidate": null
+      "status": "passed",
+      "historicalCount": 12,
+      "baseline": {
+        "id": "sha256:14b8d55948a537b93cc59ccbecc2b3e84c4f822cca85d08d05fb9daed66009da",
+        "releaseId": "sha256:9aaaa0c4c028c7d58ebd0621a2d2765d9bfdbe8048e909e405f577d6cae8fa3b",
+        "url": "sha256:f036b05fb2c9ce449e2bab66573c509fa5ce02d8b4f351efd7d8a49b1409ea73"
+      },
+      "candidate": {
+        "id": "sha256:c0954b1e001a0be110868a029e1e76c94031f733cd43e47871fef92aa91c9904",
+        "releaseId": "sha256:fea673fa0c38d467621f341c80220792266a98ee12780c84bf249bb5a096d4b9",
+        "url": "sha256:f38a3668bbe0878bc3368d985800f0bb517616bfdbb5d18bb1cc5a9539b6f26c"
+      }
     },
     "activation": {
-      "status": "not_run",
-      "candidateVisible": false
+      "status": "passed",
+      "candidateVisible": true
     },
     "rollback": {
-      "status": "not_run",
-      "baselineVisible": false,
-      "candidateRestored": false
+      "status": "passed",
+      "baselineVisible": true,
+      "candidateRestored": true
     },
     "external": {
-      "status": "not_run",
-      "routeCount": 0,
-      "routeDigest": null
+      "status": "passed",
+      "routeCount": 10,
+      "routeDigest": "sha256:d0eba8f8e94640eb41d440d0355a7f01c3d038fc7c1bf482014c16c64bed7e70"
     },
     "finalState": {
-      "status": "not_run",
-      "activeKind": null
+      "status": "passed",
+      "activeKind": "candidate"
     }
   },
   "binding": {
-    "releaseId": "sha256:6d859c4acd8e49a3f83de4483f8879e1ead2d1103eda7bea39241806d76f41d0",
+    "releaseId": "sha256:f7ef56dd261b6958b2907488c0b22eaa031b74d0d314d7f74b34add7dfcdd1f4",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "execution:unsafe_pages_topology",
-    "topology:failed"
-  ]
+  "exceptions": []
 }
