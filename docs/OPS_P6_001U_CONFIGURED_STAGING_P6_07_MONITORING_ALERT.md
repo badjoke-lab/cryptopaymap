@@ -45,7 +45,7 @@ Evaluator-controlled inputs prove:
 - a stale metric fails;
 - a missing or overdue heartbeat triggers dead-man detection;
 - an unauthorized disabled collector creates an explicit monitoring blind state;
-- a failed alert-channel delivery cannot produce an accepted receipt.
+- missing alert-channel evidence cannot produce an accepted receipt.
 
 Synthetic fault inputs are never sent to the live service and do not mutate release, DNS, data, Media, or protected Admin state.
 
@@ -53,16 +53,17 @@ Synthetic fault inputs are never sent to the live service and do not mutate rele
 
 Issue #349 is the bounded configured-staging test channel.
 
-The run writes only safe test-evidence comments:
+Before the live verification run, bounded evidence comments are explicitly delivered through the connected GitHub control path:
 
 1. a wrong-release test alert;
-2. duplicate delivery of the same immutable alert identity, which must converge without a second alert comment;
-3. acknowledgement and recovery comments;
-4. a monitoring blind-state alert;
-5. an intentionally missed short test deadline followed by an escalation comment;
-6. acknowledgement and recovery after escalation.
+2. acknowledgement and recovery comments for that alert;
+3. a monitoring blind-state alert;
+4. an intentionally delayed escalation comment;
+5. acknowledgement and recovery after escalation.
 
-Each comment includes an HTML marker with a digest-based immutable test identity. Before writing, the executor reads existing comments and reuses an exact marker when present. Comment IDs and URLs are retained only as SHA-256 digests.
+Duplicate convergence is proven by reading the same immutable wrong-release alert marker twice without creating a second alert comment.
+
+Each comment includes an HTML marker with a digest-based immutable test identity. The workflow has no Issue-write permission. It reads the public Issue comments, requires every exact marker to exist, verifies ordering and escalation timing, and retains only SHA-256 digests of comment identifiers and URLs.
 
 ## Safety boundary
 
@@ -71,7 +72,8 @@ The run:
 - performs no production authorization or production mutation;
 - performs no DNS, Pages custom-domain, certificate, registrar, cache, database, R2, canonical, release-activation, backup, or restore mutation;
 - does not intentionally interrupt configured staging;
-- writes only bounded test-alert, acknowledgement, escalation, and recovery comments to Issue #349;
+- does not write or modify Issue comments from GitHub Actions;
+- verifies only bounded test-alert, acknowledgement, escalation, and recovery evidence in Issue #349;
 - retains no API token, webhook, database credential, encryption key, private canonical payload, personal data, raw provider identifier, raw comment ID, or unrestricted log;
 - fails closed when exact-main, predecessor, binding, active-release, external monitoring, or alert-delivery evidence is missing or inconsistent.
 
