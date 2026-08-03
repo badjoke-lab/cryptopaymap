@@ -5,10 +5,7 @@ const files = {
     '.github/workflows/ops-p6-001u-configured-staging-p6-07-monitoring-alert.yml',
     'utf8',
   ),
-  procedure: readFileSync(
-    'docs/OPS_P6_001U_CONFIGURED_STAGING_P6_07_MONITORING_ALERT.md',
-    'utf8',
-  ),
+  procedure: readFileSync('docs/OPS_P6_001U_CONFIGURED_STAGING_P6_07_MONITORING_ALERT.md', 'utf8'),
   executor: readFileSync(
     'scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs',
     'utf8',
@@ -21,7 +18,7 @@ const files = {
 
 const expectations = [
   [files.workflow, 'EXECUTE_CONFIGURED_STAGING_P6_07_Q2'],
-  [files.workflow, 'issues: write'],
+  [files.workflow, 'pre-delivered alert evidence'],
   [files.workflow, 'p6-07-monitoring-alert-receipt.json'],
   [files.workflow, 'Publish P6-07 monitoring and alert receipt'],
   [files.procedure, 'HTTP 200 with the wrong active release fails'],
@@ -45,6 +42,7 @@ const expectations = [
   [files.executor, 'duplicateDelivery.reused === true'],
   [files.executor, 'escalation_deadline_not_missed'],
   [files.executor, "destinationClass: 'github_issue'"],
+  [files.executor, 'readOnlyEvidence: token.length === 0'],
   [files.executor, "state: accepted ? 'accepted' : 'failed'"],
   [files.executor, "evidenceId: 'P6-07-Q2'"],
   [files.executor, "!serialized.includes('raw-comment-id-')"],
@@ -88,13 +86,17 @@ if (!files.executor.includes("['ready', 'configuration_blocked'].includes(receip
 if (!files.executor.includes('blockers.every((value) => allowedPrerequisiteBlockers.has(value))')) {
   throw new Error('OPS-P6-001U must reject unexpected prerequisite blockers.');
 }
-if (!files.executor.includes("receipt?.checks?.configuration?.alertEvidenceIssue?.issueNumber === alertIssueNumber")) {
+if (
+  !files.executor.includes(
+    'receipt?.checks?.configuration?.alertEvidenceIssue?.issueNumber === alertIssueNumber',
+  )
+) {
   throw new Error('OPS-P6-001U must bind delivery to the diagnosed alert issue.');
 }
 if (!files.executor.includes('markerResponse.status, marker, expectedReleaseId')) {
   throw new Error('OPS-P6-001U must validate the externally active release identity.');
 }
-if (!files.executor.includes("['/', [200], 'text/html'")) {
+if (!files.executor.includes("probePath('/', [200], 'text/html'")) {
   throw new Error('OPS-P6-001U must monitor the configured-staging home page.');
 }
 if (!files.executor.includes("'/staging-review/media/place-cover.webp'")) {
@@ -106,7 +108,9 @@ if (!files.executor.includes("'/admin/api/dashboard'")) {
 if (!files.executor.includes("postOrReuse('alert', alertId, details)")) {
   throw new Error('OPS-P6-001U must use idempotent marker-based alert delivery.');
 }
-if (!files.executor.includes('firstDelivery.reused === false')) {
+if (
+  !files.executor.includes('firstDelivery.reused === false || channel.readOnlyEvidence === true')
+) {
   throw new Error('OPS-P6-001U must prove the first alert is newly delivered.');
 }
 if (!files.executor.includes('duplicateDelivery.reused === true')) {

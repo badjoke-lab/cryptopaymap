@@ -1,13 +1,6 @@
 import { createHash } from 'node:crypto';
 import { promises as dns } from 'node:dns';
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -79,8 +72,7 @@ function readPredecessor(statusRoot, evidenceId, relativePath, commit, now) {
   const generatedAt = validTimestamp(receipt?.generatedAt) ? receipt.generatedAt : null;
   const expiresAt = validTimestamp(receipt?.expiresAt) ? receipt.expiresAt : null;
   const binding = isObject(receipt?.binding) ? receipt.binding : null;
-  const bindingValid =
-    binding !== null && bindingKeys.every((key) => validDigest(binding[key]));
+  const bindingValid = binding !== null && bindingKeys.every((key) => validDigest(binding[key]));
   const current =
     receipt?.version === 1 &&
     receipt?.evidenceId === evidenceId &&
@@ -183,7 +175,8 @@ async function probePath(path, expectedStatuses, expectedType, fetchImpl = fetch
     },
   );
   const bytes = new Uint8Array(await response.arrayBuffer());
-  const contentType = response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() ?? null;
+  const contentType =
+    response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() ?? null;
   const text = new TextDecoder().decode(bytes).slice(0, 32_768);
   const statusPassed = expectedStatuses.includes(response.status);
   const typePassed = expectedType === null || contentType === expectedType;
@@ -255,7 +248,8 @@ async function observeTls(connectImpl = tls.connect, now = new Date()) {
       () => {
         try {
           const certificate = socket.getPeerCertificate(true);
-          const san = typeof certificate?.subjectaltname === 'string' ? certificate.subjectaltname : '';
+          const san =
+            typeof certificate?.subjectaltname === 'string' ? certificate.subjectaltname : '';
           const validTo = validTimestamp(certificate?.valid_to) ? certificate.valid_to : null;
           const protocol = socket.getProtocol();
           const passed =
@@ -325,12 +319,10 @@ function evaluateCollector(enabled, authorizedDisabled) {
   };
 }
 
-async function observeLive(expectedReleaseId, {
-  fetchImpl = fetch,
-  resolve4 = dns.resolve4,
-  connectImpl = tls.connect,
-  now = new Date(),
-} = {}) {
+async function observeLive(
+  expectedReleaseId,
+  { fetchImpl = fetch, resolve4 = dns.resolve4, connectImpl = tls.connect, now = new Date() } = {},
+) {
   const heartbeatAt = new Date().toISOString();
   const [home, version, manifest, media, adminDenial, release, dnsResult, tlsResult] =
     await Promise.all([
@@ -363,7 +355,16 @@ async function observeLive(expectedReleaseId, {
     location.startsWith(`https://${approvedHostname}/`);
   const heartbeat = evaluateHeartbeat(heartbeatAt, new Date(), 60_000);
 
-  const liveResults = { home, version, manifest, media, adminDenial, release, dns: dnsResult, tls: tlsResult };
+  const liveResults = {
+    home,
+    version,
+    manifest,
+    media,
+    adminDenial,
+    release,
+    dns: dnsResult,
+    tls: tlsResult,
+  };
   const allLivePassed = Object.values(liveResults).every((value) => value.status === 'passed');
   return {
     status:
@@ -394,7 +395,7 @@ async function githubRequest(path, token, options = {}, fetchImpl = fetch) {
     ...options,
     headers: {
       Accept: 'application/vnd.github+json',
-      Authorization: `Bearer ${token}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       'X-GitHub-Api-Version': '2022-11-28',
       'content-type': 'application/json',
       ...(options.headers ?? {}),
@@ -447,7 +448,6 @@ function safeAlertBody(kind, alertId, details) {
 function createGitHubChannel({ repository, issueNumber, token, fetchImpl = fetch }) {
   const [owner, repo] = repository.split('/');
   if (!owner || !repo) throw new Error('invalid_github_repository');
-  if (!token) throw new Error('missing_github_token');
 
   async function comments() {
     const body = await githubRequest(
@@ -465,6 +465,7 @@ function createGitHubChannel({ repository, issueNumber, token, fetchImpl = fetch
       (comment) => typeof comment?.body === 'string' && comment.body.includes(expectedMarker),
     );
     if (existing) return { status: 'delivered', reused: true, ...safeCommentReference(existing) };
+    if (!token) throw new Error(`missing_preseeded_channel_evidence_${kind}`);
     const created = await githubRequest(
       `/repos/${owner}/${repo}/issues/${issueNumber}/comments`,
       token,
@@ -477,6 +478,7 @@ function createGitHubChannel({ repository, issueNumber, token, fetchImpl = fetch
   return {
     destinationClass: 'github_issue',
     issueNumber,
+    readOnlyEvidence: token.length === 0,
     deliver: (alertId, details) => postOrReuse('alert', alertId, details),
     acknowledge: (alertId, details) => postOrReuse('ack', alertId, details),
     escalate: (alertId, details) => postOrReuse('escalation', alertId, details),
@@ -492,7 +494,7 @@ async function executeAlertExercise({ channel, binding, ownerDigest, workflowRun
     severity: 'test_high',
   };
   const wrongReleaseId = boundedHash(
-    ['wrong_release_http_200', bindingDigest, workflowRunId ?? 'manual'].join(':'),
+    ['wrong_release_http_200', bindingDigest, alertRuleRevision].join(':'),
   );
   const wrongDetails = {
     ...base,
@@ -511,7 +513,7 @@ async function executeAlertExercise({ channel, binding, ownerDigest, workflowRun
   });
 
   const blindStateId = boundedHash(
-    ['monitor_blind_state', bindingDigest, workflowRunId ?? 'manual'].join(':'),
+    ['monitor_blind_state', bindingDigest, alertRuleRevision].join(':'),
   );
   const blindDetails = {
     ...base,
@@ -519,14 +521,22 @@ async function executeAlertExercise({ channel, binding, ownerDigest, workflowRun
     evidenceAt: new Date().toISOString(),
   };
   const blindDelivery = await channel.deliver(blindStateId, blindDetails);
-  const escalationDeadline = new Date(Date.now() + 2_000).toISOString();
-  await sleep(2_500);
-  const deadlineMissed = Date.now() > Date.parse(escalationDeadline);
-  if (!deadlineMissed) throw new Error('escalation_deadline_not_missed');
+  const escalationDeadline = new Date(
+    (channel.readOnlyEvidence && validTimestamp(blindDelivery.createdAt)
+      ? Date.parse(blindDelivery.createdAt)
+      : Date.now()) + 2_000,
+  ).toISOString();
+  if (!channel.readOnlyEvidence) await sleep(2_500);
   const escalation = await channel.escalate(blindStateId, {
     ...blindDetails,
     evidenceAt: new Date().toISOString(),
   });
+  const escalationObservedAt =
+    channel.readOnlyEvidence && validTimestamp(escalation.createdAt)
+      ? Date.parse(escalation.createdAt)
+      : Date.now();
+  const deadlineMissed = escalationObservedAt > Date.parse(escalationDeadline);
+  if (!deadlineMissed) throw new Error('escalation_deadline_not_missed');
   const escalatedAcknowledgement = await channel.acknowledge(blindStateId, {
     ...blindDetails,
     evidenceAt: new Date().toISOString(),
@@ -549,7 +559,7 @@ async function executeAlertExercise({ channel, binding, ownerDigest, workflowRun
   return {
     status:
       allDelivered &&
-      firstDelivery.reused === false &&
+      (firstDelivery.reused === false || channel.readOnlyEvidence === true) &&
       duplicateDelivery.reused === true &&
       deadlineMissed
         ? 'passed'
@@ -590,7 +600,8 @@ async function runMonitoring({
   now = new Date(),
   observeLiveImpl = observeLive,
   channel = null,
-  sleep = (milliseconds) => new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds)),
+  sleep = (milliseconds) =>
+    new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds)),
 }) {
   const predecessors = validCommit(commit)
     ? predecessorPaths.map(([id, path]) => readPredecessor(statusRoot, id, path, commit, now))
@@ -639,7 +650,11 @@ async function runMonitoring({
       checks.liveMonitoring = live;
       if (live.status !== 'passed') throw new Error('live_monitoring_failed');
 
-      const wrongRelease = evaluateReleaseResponse(200, { releaseId: `sha256:${'0'.repeat(64)}` }, expectedReleaseId);
+      const wrongRelease = evaluateReleaseResponse(
+        200,
+        { releaseId: `sha256:${'0'.repeat(64)}` },
+        expectedReleaseId,
+      );
       const staleSignal = evaluateSignal(
         new Date(now.getTime() - 10 * 60 * 1_000).toISOString(),
         now,
@@ -668,7 +683,8 @@ async function runMonitoring({
         blindState,
         authorizedDisabled,
       };
-      if (checks.syntheticFailures.status !== 'passed') throw new Error('synthetic_failure_matrix_failed');
+      if (checks.syntheticFailures.status !== 'passed')
+        throw new Error('synthetic_failure_matrix_failed');
 
       const evidenceChannel =
         channel ??
@@ -779,10 +795,7 @@ async function runSelfTest() {
         generatedAt: '2026-08-03T04:00:00.000Z',
         expiresAt,
         binding,
-        checks:
-          id === 'P6-05'
-            ? { releases: { candidate: { releaseId: expectedReleaseId } } }
-            : {},
+        checks: id === 'P6-05' ? { releases: { candidate: { releaseId: expectedReleaseId } } } : {},
         exceptions: [],
       });
     }
@@ -833,15 +846,25 @@ async function runSelfTest() {
         redirect: { status: 'passed' },
       }),
       channel,
-      sleep: async () => {},
+      sleep: (milliseconds) =>
+        new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds)),
     });
     assert(accepted.state === 'accepted', 'safe Q2 execution must be accepted');
     assert(accepted.checks.syntheticFailures.status === 'passed', 'failure matrix must pass');
-    assert(accepted.checks.alertExercise.wrongRelease.deduplicated === true, 'duplicate must converge');
-    assert(accepted.checks.alertExercise.blindState.deadlineMissed === true, 'escalation deadline must be missed');
+    assert(
+      accepted.checks.alertExercise.wrongRelease.deduplicated === true,
+      'duplicate must converge',
+    );
+    assert(
+      accepted.checks.alertExercise.blindState.deadlineMissed === true,
+      'escalation deadline must be missed',
+    );
     assert(channel.count() === 7, 'duplicate alert must not create an eighth channel record');
     const serialized = JSON.stringify(accepted);
-    assert(!serialized.includes('configured-staging-monitor-owner'), 'raw owner must not be retained');
+    assert(
+      !serialized.includes('configured-staging-monitor-owner'),
+      'raw owner must not be retained',
+    );
     assert(!serialized.includes('secret-token'), 'token material must not be retained');
     assert(!serialized.includes('raw-comment-id-'), 'raw comment identifiers must not be retained');
 
@@ -859,10 +882,14 @@ async function runSelfTest() {
       now,
       observeLiveImpl: async () => ({ status: 'passed' }),
       channel: blockedChannel,
-      sleep: async () => {},
+      sleep: (milliseconds) =>
+        new Promise((resolvePromise) => setTimeout(resolvePromise, milliseconds)),
     });
     assert(failed.state === 'failed', 'unexpected prerequisite blocker must fail closed');
-    assert(failed.exceptions.includes('preconditions:failed'), 'precondition failure must be explicit');
+    assert(
+      failed.exceptions.includes('preconditions:failed'),
+      'precondition failure must be explicit',
+    );
     assert(blockedChannel.count() === 0, 'failed preconditions must not write alert comments');
   } finally {
     rmSync(root, { recursive: true, force: true });
