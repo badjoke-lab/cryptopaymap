@@ -78,6 +78,7 @@ jobs:
     timeout-minutes: 20
     env:
       APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      APPROVED_HOSTNAME: staging.cryptopaymap.com
       CONFIRMATION: ${{ inputs.confirmation }}
       OPERATIONS_OWNER: ${{ inputs.operations_owner }}
       WORKFLOW_RUN_ID: ${{ github.run_id }}
