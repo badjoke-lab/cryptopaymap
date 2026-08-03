@@ -88,9 +88,10 @@ jobs:
             ...blindDetails,
             evidenceAt: new Date().toISOString(),
           });
-          const escalationObservedAt = validTimestamp(escalation.createdAt)
-            ? Date.parse(escalation.createdAt)
-            : Date.now();
+          const escalationObservedAt =
+            channel.readOnlyEvidence && validTimestamp(escalation.createdAt)
+              ? Date.parse(escalation.createdAt)
+              : Date.now();
           const deadlineMissed = escalationObservedAt > Date.parse(escalationDeadline);
           if (!deadlineMissed) throw new Error('escalation_deadline_not_missed');"""
           text, count = escalation_pattern.subn(escalation_replacement, text, count=1)
