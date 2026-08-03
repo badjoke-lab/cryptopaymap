@@ -74,7 +74,9 @@ const forbidden = [
 ];
 for (const marker of forbidden) {
   if (files.executor.includes(marker)) {
-    throw new Error(`OPS-P6-001Q diagnostic contains forbidden mutation or secret marker: ${marker}`);
+    throw new Error(
+      `OPS-P6-001Q diagnostic contains forbidden mutation or secret marker: ${marker}`,
+    );
   }
 }
 
@@ -84,7 +86,7 @@ if (!files.executor.includes("predecessors.every((item) => item.state === 'curre
 if (!files.executor.includes("receipt.checks?.externalFinal?.status === 'passed'")) {
   throw new Error('OPS-P6-001Q must require accepted P6-06 final external evidence.');
 }
-if (!files.executor.includes("hash(source) !== hash(restore)")) {
+if (!files.executor.includes('hash(source) !== hash(restore)')) {
   throw new Error('OPS-P6-001Q must prove the isolated restore input differs from source.');
 }
 if (!files.executor.includes("!serialized.includes('postgresql://')")) {

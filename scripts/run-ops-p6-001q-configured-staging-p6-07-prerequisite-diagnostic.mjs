@@ -1,12 +1,5 @@
 import { createHash } from 'node:crypto';
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -81,7 +74,9 @@ function validatePredecessor(root, spec, approvedCommit, now) {
   const binding = isObject(receipt.binding) ? receipt.binding : null;
   const bindingValid =
     binding !== null &&
-    bindingKeys.every((key) => typeof binding[key] === 'string' && binding[key].startsWith('sha256:'));
+    bindingKeys.every(
+      (key) => typeof binding[key] === 'string' && binding[key].startsWith('sha256:'),
+    );
   const p606Valid =
     spec.evidenceId !== 'P6-06' ||
     (receipt.checks?.externalFinal?.status === 'passed' &&
@@ -112,7 +107,10 @@ function validatePredecessor(root, spec, approvedCommit, now) {
     state,
     generatedAt,
     expiresAt,
-    binding: state === 'current' ? Object.fromEntries(bindingKeys.map((key) => [key, binding[key]])) : null,
+    binding:
+      state === 'current'
+        ? Object.fromEntries(bindingKeys.map((key) => [key, binding[key]]))
+        : null,
   };
 }
 
@@ -144,7 +142,8 @@ async function externalCheck(fetchImpl, path, expectedStatuses, expectedType) {
 
 function inspectConfiguration(env) {
   const source = typeof env.DATABASE_URL === 'string' ? env.DATABASE_URL : '';
-  const restore = typeof env.P6_07_RESTORE_DATABASE_URL === 'string' ? env.P6_07_RESTORE_DATABASE_URL : '';
+  const restore =
+    typeof env.P6_07_RESTORE_DATABASE_URL === 'string' ? env.P6_07_RESTORE_DATABASE_URL : '';
   const encryptionKey =
     typeof env.P6_07_BACKUP_ENCRYPTION_KEY === 'string' ? env.P6_07_BACKUP_ENCRYPTION_KEY : '';
   const issueNumber = Number.parseInt(env.P6_07_ALERT_ISSUE_NUMBER ?? '', 10);
@@ -158,14 +157,16 @@ function inspectConfiguration(env) {
     isolatedRestoreDatabase: {
       status: restore.length > 0 ? 'configured' : 'missing',
       digest: restore.length > 0 ? hash(restore) : null,
-      distinctFromSource: source.length > 0 && restore.length > 0 ? hash(source) !== hash(restore) : false,
+      distinctFromSource:
+        source.length > 0 && restore.length > 0 ? hash(source) !== hash(restore) : false,
     },
     backupEncryption: {
       status: encryptionKey.length >= 32 ? 'configured' : 'missing_or_too_short',
       digest: encryptionKey.length >= 32 ? hash(encryptionKey) : null,
     },
     alertEvidenceIssue: {
-      status: Number.isInteger(issueNumber) && issueNumber > 0 ? 'configured' : 'missing_or_invalid',
+      status:
+        Number.isInteger(issueNumber) && issueNumber > 0 ? 'configured' : 'missing_or_invalid',
       issueNumber: Number.isInteger(issueNumber) && issueNumber > 0 ? issueNumber : null,
     },
     backupRetention: {
@@ -254,7 +255,9 @@ export async function runDiagnostic({
   return {
     version: 1,
     diagnosticId: hash(
-      ['configured_staging', 'P6-07', approvedCommit, workflowRunId ?? 'manual', generatedAt].join(':'),
+      ['configured_staging', 'P6-07', approvedCommit, workflowRunId ?? 'manual', generatedAt].join(
+        ':',
+      ),
     ),
     evidenceId: 'P6-07',
     diagnostic: 'prerequisite_inventory',
@@ -293,10 +296,7 @@ function writeFixture(root, spec, commit, binding, expiresAt) {
     generatedAt: '2026-08-03T00:00:00.000Z',
     expiresAt,
     binding,
-    checks:
-      spec.evidenceId === 'P6-06'
-        ? { externalFinal: { status: 'passed' } }
-        : {},
+    checks: spec.evidenceId === 'P6-06' ? { externalFinal: { status: 'passed' } } : {},
     exceptions: [],
   };
   const absolutePath = resolve(root, spec.path);
@@ -307,10 +307,16 @@ function writeFixture(root, spec, commit, binding, expiresAt) {
 function fakeFetch(url) {
   const path = new URL(url).pathname;
   const admin = path === '/admin/api/dashboard';
-  const body = admin ? 'Forbidden' : path.endsWith('.json') ? '{}' : '<!doctype html><title>CPM</title>';
+  const body = admin
+    ? 'Forbidden'
+    : path.endsWith('.json')
+      ? '{}'
+      : '<!doctype html><title>CPM</title>';
   return Promise.resolve({
     status: admin ? 403 : 200,
-    headers: { get: () => (admin ? 'text/plain' : path.endsWith('.json') ? 'application/json' : 'text/html') },
+    headers: {
+      get: () => (admin ? 'text/plain' : path.endsWith('.json') ? 'application/json' : 'text/html'),
+    },
     text: async () => body,
   });
 }
@@ -318,7 +324,9 @@ function fakeFetch(url) {
 async function runSelfTest() {
   const root = mkdtempSync(join(tmpdir(), 'cpm-p6-07-q1-'));
   const commit = 'a'.repeat(40);
-  const binding = Object.fromEntries(bindingKeys.map((key) => [key, `sha256:${key.padEnd(64, 'a').slice(0, 64)}`]));
+  const binding = Object.fromEntries(
+    bindingKeys.map((key) => [key, `sha256:${key.padEnd(64, 'a').slice(0, 64)}`]),
+  );
   const now = new Date('2026-08-03T01:00:00.000Z');
   const expiresAt = '2026-08-04T01:00:00.000Z';
   try {
