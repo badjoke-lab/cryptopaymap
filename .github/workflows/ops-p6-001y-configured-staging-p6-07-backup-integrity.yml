@@ -1,0 +1,203 @@
+name: OPS-P6-001Y configured staging P6-07 backup integrity evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-001y-configured-staging-p6-07-backup-integrity.yml'
+      - 'docs/OPS_P6_001Y_CONFIGURED_STAGING_P6_07_BACKUP_INTEGRITY.md'
+      - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
+      - 'scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs'
+      - 'scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-001y-configured-staging-p6-07-backup-integrity.yml'
+      - 'docs/OPS_P6_001Y_CONFIGURED_STAGING_P6_07_BACKUP_INTEGRITY.md'
+      - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
+      - 'scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs'
+      - 'scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_07_Q3 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      backup_owner:
+        description: Bounded configured-staging backup owner identity.
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-001y-configured-staging-p6-07-backup-integrity
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-07 evidence contract
+        run: node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+
+      - name: Check P6-07 backup integrity contract
+        run: node scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
+
+      - name: Run P6-07 backup integrity self-test
+        run: node scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      BACKUP_OWNER: ${{ inputs.backup_owner }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      P6_07_BACKUP_ENCRYPTION_KEY: ${{ secrets.P6_07_BACKUP_ENCRYPTION_KEY }}
+      P6_07_BACKUP_RETENTION_DAYS: '30'
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          test "$(git -C source rev-parse origin/main)" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
+          node scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs --self-test
+
+      - name: Execute encrypted backup and integrity verification
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs \
+            ../status \
+            ../p6-07-backup-integrity-receipt.json \
+            ../p6-07-q3-backup.enc.json
+
+      - name: Upload encrypted backup artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001y-configured-staging-p6-07-encrypted-backup-${{ github.run_id }}
+          path: p6-07-q3-backup.enc.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Upload bounded backup integrity receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-001y-configured-staging-p6-07-backup-integrity
+          path: p6-07-backup-integrity-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish backup integrity receipt
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-07-backup-integrity-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-07-backup-integrity-receipt.json \
+            status/config/staging-authorization/p6-07-backup-integrity-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-07-backup-integrity-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-07 backup integrity evidence'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Write backup integrity summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-07-backup-integrity-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('p6-07-backup-integrity-receipt.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-07 backup integrity evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Q2: \`${receipt.checks.q2.state}\``,
+              `- Prerequisite: \`${receipt.checks.prerequisite.state}\``,
+              `- Backup: \`${receipt.checks.backup.status}\``,
+              `- Encryption: \`${receipt.checks.backup.encryption?.status ?? 'not_run'}\``,
+              `- Inventory: \`${receipt.checks.backup.inventory?.status ?? 'not_run'}\``,
+              `- Corruption rejected: \`${receipt.checks.backup.integrity?.corruptionRejected ?? false}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce accepted backup integrity receipt
+        if: always()
+        run: |
+          node -e "const r=require('./p6-07-backup-integrity-receipt.json'); if(r.state!=='accepted'||r.exceptions.length!==0) process.exit(1)"
