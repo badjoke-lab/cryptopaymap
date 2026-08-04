@@ -1,0 +1,102 @@
+name: Temporary fix OPS-P6-002A disposal lint
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-fix-ops-p6-002a-disposal-lint.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Q4 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-002a-p6-07-isolated-restore
+
+      - name: Make disposal convergence lint-safe
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
+          text = path.read_text()
+          old = """      try {
+                dbOps.disposeTarget(restoreDatabaseUrl);
+                const remaining = dbOps.countUserObjects(restoreDatabaseUrl);
+                if (remaining !== 0) throw new Error('target_disposal_failed');
+                checks.disposal = {
+                  status: 'passed',
+                  mode: 'drop_and_recreate_public_schema',
+                  remainingUserObjectCount: 0,
+                };
+              } catch {
+                checks.disposal = { status: 'failed', mode: 'drop_and_recreate_public_schema' };
+                if (!receipt.exceptions.includes('target_disposal_failed')) {
+                  receipt.exceptions.push('target_disposal_failed');
+                }
+              }"""
+          new = """      try {
+                dbOps.disposeTarget(restoreDatabaseUrl);
+                const remaining = dbOps.countUserObjects(restoreDatabaseUrl);
+                if (remaining === 0) {
+                  checks.disposal = {
+                    status: 'passed',
+                    mode: 'drop_and_recreate_public_schema',
+                    remainingUserObjectCount: 0,
+                  };
+                } else {
+                  checks.disposal = {
+                    status: 'failed',
+                    mode: 'drop_and_recreate_public_schema',
+                    remainingUserObjectCount: remaining,
+                  };
+                  if (!receipt.exceptions.includes('target_disposal_failed')) {
+                    receipt.exceptions.push('target_disposal_failed');
+                  }
+                }
+              } catch {
+                checks.disposal = { status: 'failed', mode: 'drop_and_recreate_public_schema' };
+                if (!receipt.exceptions.includes('target_disposal_failed')) {
+                  receipt.exceptions.push('target_disposal_failed');
+                }
+              }"""
+          if text.count(old) != 1:
+            raise SystemExit(f'disposal block mismatch: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Verify disposal control flow
+        run: |
+          npm run format
+          ./node_modules/.bin/biome lint \
+            scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            --max-diagnostics=200
+          node --check scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+
+      - name: Publish disposal fix
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          git commit -m 'Make Q4 disposal convergence lint-safe'
+          git push origin HEAD:agent/ops-p6-002a-p6-07-isolated-restore
