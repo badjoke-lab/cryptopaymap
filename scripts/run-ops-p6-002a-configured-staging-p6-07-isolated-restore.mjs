@@ -428,7 +428,7 @@ function createActualDbOps(root) {
     identity(databaseUrl) {
       return runPsql(
         databaseUrl,
-        "select current_database() || '|' || current_user || '|' || coalesce(inet_server_addr()::text, 'local') || '|' || coalesce(inet_server_port()::text, 'local')",
+        "select current_database() || '|' || coalesce(inet_server_addr()::text, 'local') || '|' || coalesce(inet_server_port()::text, 'local')",
       );
     },
     databaseName(databaseUrl) {
@@ -523,7 +523,6 @@ function databaseIdentityFromUrl(databaseUrl) {
     host: url.hostname.toLowerCase(),
     port: url.port || '5432',
     database: decodeURIComponent(url.pathname.slice(1)),
-    user: decodeURIComponent(url.username),
   });
 }
 
@@ -590,6 +589,7 @@ async function execute(
     listImpl = actualList,
     dbOpsFactory = createActualDbOps,
     timer = () => performance.now(),
+    wallClock = () => Date.now(),
   } = {},
 ) {
   const generatedAt = now.toISOString();
@@ -787,7 +787,7 @@ async function execute(
     }
     const sourceRowCounts = dbOps.rowCounts(sourceDatabaseUrl, nonPrivateTables);
     const sourceSchemaDigest = dbOps.schemaDigest(sourceDatabaseUrl);
-    const restoreStartWallClock = now.getTime();
+    const restoreStartWallClock = wallClock();
     const restoreStartTimer = timer();
     const rpoMinutes = Math.max(0, (restoreStartWallClock - Date.parse(q3.generatedAt)) / 60_000);
     checks.objectives.rpo = {
@@ -1110,6 +1110,17 @@ async function selfTest() {
     const sourceUrl = 'postgresql://source:secret@source.invalid/source?sslmode=require';
     const targetUrl =
       'postgresql://restore:secret@restore.invalid/cpm_p6_07_restore_test?sslmode=require';
+    const sameDatabaseFirstUser =
+      'postgresql://first:secret@same.invalid/same_database?sslmode=require';
+    const sameDatabaseSecondUser =
+      'postgresql://second:secret@same.invalid/same_database?sslmode=require';
+    if (
+      databaseIdentityFromUrl(sameDatabaseFirstUser) !==
+      databaseIdentityFromUrl(sameDatabaseSecondUser)
+    ) {
+      throw new Error('same_database_auth_variation_not_rejected');
+    }
+    const fixedWallClock = () => now.getTime();
     const env = {
       APPROVED_COMMIT: commit,
       CONFIRMATION: exactConfirmation,
@@ -1133,6 +1144,7 @@ async function selfTest() {
     const accepted = await execute(statusRoot, artifactPath, acceptedPath, {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env,
       listImpl: () => inventoryText,
       dbOpsFactory: () => acceptedDb,
@@ -1162,6 +1174,7 @@ async function selfTest() {
     const sameIdentity = await execute(statusRoot, artifactPath, resolve(root, 'same.json'), {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env,
       listImpl: () => inventoryText,
       dbOpsFactory: () =>
@@ -1174,6 +1187,7 @@ async function selfTest() {
     const nonEmpty = await execute(statusRoot, artifactPath, resolve(root, 'non-empty.json'), {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env,
       listImpl: () => inventoryText,
       dbOpsFactory: () =>
@@ -1187,6 +1201,7 @@ async function selfTest() {
     const privateRows = await execute(statusRoot, artifactPath, resolve(root, 'private.json'), {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env,
       listImpl: () => inventoryText,
       dbOpsFactory: () => privateDb,
@@ -1199,6 +1214,7 @@ async function selfTest() {
     const objective = await execute(statusRoot, artifactPath, resolve(root, 'objective.json'), {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env: { ...env, RPO_OBJECTIVE_MINUTES: '1' },
       listImpl: () => inventoryText,
       dbOpsFactory: () => objectiveDb,
@@ -1210,6 +1226,7 @@ async function selfTest() {
     const disposal = await execute(statusRoot, artifactPath, resolve(root, 'disposal.json'), {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env,
       listImpl: () => inventoryText,
       dbOpsFactory: () =>
@@ -1224,6 +1241,7 @@ async function selfTest() {
     const corrupted = await execute(statusRoot, corruptedPath, resolve(root, 'corrupted.json'), {
       now,
       sourceRoot: root,
+      wallClock: fixedWallClock,
       env,
       listImpl: () => inventoryText,
       dbOpsFactory: () => makeMockDb(expectedTables, privateSubmissionTables),

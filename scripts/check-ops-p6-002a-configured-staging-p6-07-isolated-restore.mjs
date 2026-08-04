@@ -49,6 +49,9 @@ const expectations = [
   [files.executor, "receipt.state = 'accepted'"],
   [files.executor, "receipt.exceptions.push('precondition_failed')"],
   [files.executor, "throw new Error('same_database_identity_not_rejected')"],
+  [files.executor, "throw new Error('same_database_auth_variation_not_rejected')"],
+  [files.executor, 'wallClock = () => Date.now()'],
+  [files.executor, 'const restoreStartWallClock = wallClock()'],
   [files.executor, "throw new Error('non_empty_target_not_rejected')"],
   [files.executor, "throw new Error('private_rows_not_rejected')"],
   [files.executor, "throw new Error('objective_breach_not_rejected')"],
@@ -87,6 +90,13 @@ if (!files.executor.includes("state = 'configuration_blocked'")) {
 if (!files.executor.includes("throw new Error('artifact_digest_mismatch')")) {
   throw new Error('OPS-P6-002A must reject a downloaded artifact digest mismatch.');
 }
+if (files.executor.includes("current_database() || '|' || current_user")) {
+  throw new Error('OPS-P6-002A runtime database identity must not depend on the login role.');
+}
+if (/database:\s*decodeURIComponent\(url\.pathname\.slice\(1\)\),\s*user:/.test(files.executor)) {
+  throw new Error('OPS-P6-002A URL database identity must not depend on the login role.');
+}
+
 if (!files.executor.includes("throw new Error('target_disposal_failed')")) {
   throw new Error('OPS-P6-002A must fail closed when isolated-target disposal fails.');
 }
