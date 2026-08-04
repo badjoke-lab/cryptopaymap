@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-08-01
+**Last verified:** 2026-08-04
 
 ## Current phase
 
@@ -12,20 +12,21 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-OPS-P6-001K — Repair minimum Cloudflare DNS read permission and rerun the configured staging P6-06 topology diagnostic (Issue #335)
+P6-07 configured operational evidence — Q3 protected execution preparation and Q4 isolated-restore preparation (Issue #349)
 
 ## Authoritative current state
 
-- P6-08 repository definition work is complete. Repository contracts alone do not authorize configured staging or production launch.
-- Configured staging P6-01 through P6-05 were last refreshed and accepted together on exact main `46da212281bfbf80d0318747129217026a788328` with one shared release/data/configuration/environment binding.
-- The accepted P6-04 receipt proved the configured R2 Media lifecycle, replay behavior, public delivery, takedown, and complete fixture cleanup.
-- The accepted P6-05 receipt proved deterministic public generation, safe Pages topology, authenticated historical releases, candidate activation, representative external checks, baseline rollback, and candidate restoration.
-- The read-only P6-06 topology diagnostic completed on `46da212281bfbf80d0318747129217026a788328` with state `diagnosed` and decision `permission_blocked`.
-- The diagnostic verified the Cloudflare token, Pages project, production branch, expected Pages platform hostname, active-zone listing, exact-main predecessors, and shared binding. DNS record listing failed with HTTP 403 because the token lacked the required DNS read permission.
-- PR #336 merged the scoped-zone remediation at `9e83dade38ec01ec451ad8591daac3d519d024df`.
-- The P6-06 diagnostic now requires protected `P6_06_STAGING_ZONE_ID`, selects exactly one matching active zone, reads DNS records only for that selected zone, and fails closed on a missing or ambiguous zone match.
-- No DNS record, custom-domain binding, production hostname, certificate, redirect, cache, canonical data, or production deployment was changed.
-- Because repository work changed main after the last configured evidence refresh, deployment, live audit, and P6-01 through P6-05 must be refreshed on the exact post-merge main after the protected configuration is repaired.
+- Latest verified implementation baseline before this status-only reconciliation is `f1482a3e45ea45855f563720c494af798b9ac053`, produced by PR #365.
+- PR #361 repaired P6-05 Pages activation so an already-visible exact candidate is accepted without an unnecessary rollback request, a normal rollback remains verified, and Cloudflare `8000039` is accepted only after bounded exact-marker convergence.
+- On exact main `a975fa58825d20e054e65f24bdbbf4240328df00`, configured staging deployment, fixed-review live audit, and P6-01 through P6-06 were refreshed and accepted on one shared release/data/configuration/environment binding.
+- The accepted P6-05 receipt proved deterministic generation, authenticated staging topology, exact candidate visibility, baseline rollback, candidate restoration, representative external route checks, and final candidate state.
+- The accepted P6-06 continuity receipt proved the approved staging hostname, DNS, TLS, redirect, representative routes, and active P6-05 release identity without provider mutation.
+- P6-07 Q1 completed on `a975fa58825d20e054e65f24bdbbf4240328df00` with decision `configuration_blocked`. The only recorded protected-configuration blockers were `backup_encryption:missing` and `isolated_restore_database:missing`.
+- P6-07 Q2 monitoring and alert evidence was accepted on the same commit and binding. Live monitoring, heartbeat and freshness checks, active-release identity, wrong-release detection, dead-man and blind-state detection, deduplication, acknowledgement, deadline escalation, and recovery all passed with no exception.
+- PR #365 merged the fail-closed Q3 backup-integrity implementation. It creates a bounded PostgreSQL custom-format backup, excludes private Submission table data, encrypts the retained artifact with AES-256-GCM, reconciles inventory before and after authenticated decryption, retains no plaintext or protected configuration, records retention metadata, and rejects corrupted authentication tags.
+- The Q3 implementation passed its dedicated contract and self-test, Foundation validation, and Migration drift before merge.
+- PR #365 changed exact main after the retained P6-01 through P6-06, Q1, and Q2 receipts. This status-only reconciliation creates a later documentation commit, so those configured receipts remain historical evidence and must be refreshed on the exact post-reconciliation main before Q3 can be accepted.
+- No production hostname, DNS record, Pages custom-domain binding, certificate, cache, canonical data, R2 object, production deployment, backup artifact, or restore target was changed by PR #365.
 
 Configured state remains:
 
@@ -41,28 +42,36 @@ Repository CI, documentation, provider control-plane success, or an operator ass
 
 ## Next
 
-Complete OPS-P6-001K in Issue #335:
+Continue Issue #349 in this order:
 
-1. update the protected Cloudflare API token used by configured staging workflows so it preserves required Pages access and has only `Zone / DNS / Read` for the intended isolated staging zone;
-2. set the GitHub Actions secret `P6_06_STAGING_ZONE_ID` to the intended zone's Cloudflare zone identifier without placing the value in the repository, an Issue, a PR, or logs;
-3. refresh the configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
-4. refresh P6-01 through P6-05 on the same exact-main binding;
-5. rerun the read-only P6-06 topology diagnostic and require `dnsList: success` plus exactly one safe zone match;
-6. use the resulting `existing_candidate_requires_approval`, `no_candidate`, `ambiguous`, or `unsafe_topology` decision to define the next bounded P6-06 plan;
-7. do not perform a DNS or custom-domain mutation until that separate plan is reviewed and explicitly authorized.
+1. configure the protected GitHub Actions secret `P6_07_BACKUP_ENCRYPTION_KEY` without placing its value in the repository, an Issue, a PR, artifacts, or logs;
+2. provision a distinct isolated restore database and configure protected `P6_07_RESTORE_DATABASE_URL`, separate from the fixed-review canonical database;
+3. refresh configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
+4. refresh P6-01 through P6-06 on one exact-main binding;
+5. rerun Q1 and require the backup-encryption configuration to be present, with only the isolated-restore blocker permitted before Q3;
+6. rerun Q2 on the exact current-main binding;
+7. dispatch `EXECUTE_CONFIGURED_STAGING_P6_07_Q3` and require an accepted encrypted backup-integrity receipt;
+8. implement and execute Q4 isolated restore, reconciliation, RPO/RTO measurement, and safe disposal on the distinct restore target;
+9. execute the later incident-response and launch-authorization slices only after their exact predecessors are current and accepted.
 
 ## Blocked
 
-No repository implementation or CI blocker remains for the read-only P6-06 topology diagnostic.
+No repository implementation or CI blocker remains for Q3 backup integrity.
 
-Configured P6-06 execution is blocked by two protected settings outside the public repository:
+Configured Q3 execution is blocked by:
 
-- minimum zone-scoped Cloudflare `DNS Read` permission on the configured token;
-- GitHub Actions secret `P6_06_STAGING_ZONE_ID` for the intended isolated staging zone.
+- protected `P6_07_BACKUP_ENCRYPTION_KEY` not yet configured;
+- P6-01 through P6-06, Q1, and Q2 receipts not yet refreshed on the exact current main after this status reconciliation.
 
-P6-06 acceptance, P6-07, configured staging authorization, and all production work remain blocked until the read-only diagnostic succeeds and the later evidence procedures are executed. Production remains untouched.
+Configured Q4 execution is additionally blocked by:
 
-Protected operational credentials, raw account or zone identifiers, private database material, private Submission data, unrestricted database rows, raw Media fixture bytes, and raw object keys must not be placed in the public repository or public Issue content.
+- a distinct protected `P6_07_RESTORE_DATABASE_URL`;
+- an accepted exact-main Q3 receipt.
+
+Protected repository secrets must be configured through the repository secret-management surface and must never be committed to public repository content. Production remains untouched and unauthorized.
+
+Protected operational credentials, database URLs, encryption material, raw account or zone identifiers, private database rows, private Submission data, unrestricted logs, raw Media bytes, and raw object keys must not be placed in public repository or Issue content.
+
 
 ## Retained executable-audit snapshot
 
