@@ -28,5 +28,9 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Run Biome lint with diagnostics
-        run: npm run lint
+      - name: Run focused Biome lint with full diagnostics
+        run: |
+          ./node_modules/.bin/biome lint \
+            scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            --max-diagnostics=200
