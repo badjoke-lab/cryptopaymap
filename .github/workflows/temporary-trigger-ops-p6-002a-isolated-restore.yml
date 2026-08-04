@@ -72,3 +72,5 @@ jobs:
             scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
           git commit -m 'Implement configured staging P6-07 isolated restore evidence'
           git push origin HEAD:agent/ops-p6-002a-p6-07-isolated-restore
+
+# retry after formatting-stable contract update
