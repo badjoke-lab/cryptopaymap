@@ -23,11 +23,11 @@ jobs:
         with:
           ref: agent/ops-p6-001y-p6-07-backup-integrity
 
-      - name: Assemble exact executor
+      - name: Assemble executor
         run: |
           set -euo pipefail
           cat tmp/q3-patch/chunk-* > scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
-          echo 'fc6e24218f650169dd2b665e3f05617aa03f750aa2494304ea3650cc128592f9  scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs' | sha256sum --check
+          sha256sum scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -41,6 +41,7 @@ jobs:
       - name: Format and verify Q3 implementation
         run: |
           npm run format
+          node --check scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
           npm run check
           node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
           node scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
