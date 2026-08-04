@@ -19,8 +19,14 @@ const expectations = [
   [files.workflow, 'p6-07-q3-backup.enc.json'],
   [files.workflow, 'p6-07-backup-integrity-receipt.json'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_07_Q3'"],
-  [files.executor, "const q2Path = 'config/staging-authorization/p6-07-monitoring-alert-receipt.json'"],
-  [files.executor, "const receiptPath = 'config/staging-authorization/p6-07-backup-integrity-receipt.json'"],
+  [
+    files.executor,
+    "const q2Path = 'config/staging-authorization/p6-07-monitoring-alert-receipt.json'",
+  ],
+  [
+    files.executor,
+    "const receiptPath = 'config/staging-authorization/p6-07-backup-integrity-receipt.json'",
+  ],
   [files.executor, 'createCipheriv('],
   [files.executor, 'createDecipheriv('],
   [files.executor, "'aes-256-gcm'"],
@@ -36,7 +42,10 @@ const expectations = [
   [files.docs, 'encrypted backup artifact'],
   [files.docs, 'corruption rejection'],
   [files.docs, 'isolated restore'],
-  [files.evidence, 'A successful scheduled job without a verified backup artifact is not backup proof.'],
+  [
+    files.evidence,
+    'A successful scheduled job without a verified backup artifact is not backup proof.',
+  ],
 ];
 
 for (const [text, expected] of expectations) {
