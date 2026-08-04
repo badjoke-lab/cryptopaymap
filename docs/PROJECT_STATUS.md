@@ -16,7 +16,7 @@ P6-07 configured operational evidence — Q3 protected execution preparation and
 
 ## Authoritative current state
 
-- Latest verified `main` is `f1482a3e45ea45855f563720c494af798b9ac053`, produced by PR #365.
+- Latest verified implementation baseline before this status-only reconciliation is `f1482a3e45ea45855f563720c494af798b9ac053`, produced by PR #365.
 - PR #361 repaired P6-05 Pages activation so an already-visible exact candidate is accepted without an unnecessary rollback request, a normal rollback remains verified, and Cloudflare `8000039` is accepted only after bounded exact-marker convergence.
 - On exact main `a975fa58825d20e054e65f24bdbbf4240328df00`, configured staging deployment, fixed-review live audit, and P6-01 through P6-06 were refreshed and accepted on one shared release/data/configuration/environment binding.
 - The accepted P6-05 receipt proved deterministic generation, authenticated staging topology, exact candidate visibility, baseline rollback, candidate restoration, representative external route checks, and final candidate state.
@@ -25,7 +25,7 @@ P6-07 configured operational evidence — Q3 protected execution preparation and
 - P6-07 Q2 monitoring and alert evidence was accepted on the same commit and binding. Live monitoring, heartbeat and freshness checks, active-release identity, wrong-release detection, dead-man and blind-state detection, deduplication, acknowledgement, deadline escalation, and recovery all passed with no exception.
 - PR #365 merged the fail-closed Q3 backup-integrity implementation. It creates a bounded PostgreSQL custom-format backup, excludes private Submission table data, encrypts the retained artifact with AES-256-GCM, reconciles inventory before and after authenticated decryption, retains no plaintext or protected configuration, records retention metadata, and rejects corrupted authentication tags.
 - The Q3 implementation passed its dedicated contract and self-test, Foundation validation, and Migration drift before merge.
-- The merge to `f1482a3e45ea45855f563720c494af798b9ac053` changed exact main after the retained P6-01 through P6-06, Q1, and Q2 receipts. Those configured receipts remain historical evidence but must be refreshed before a Q3 execution can be accepted on current main.
+- PR #365 changed exact main after the retained P6-01 through P6-06, Q1, and Q2 receipts. This status-only reconciliation creates a later documentation commit, so those configured receipts remain historical evidence and must be refreshed on the exact post-reconciliation main before Q3 can be accepted.
 - No production hostname, DNS record, Pages custom-domain binding, certificate, cache, canonical data, R2 object, production deployment, backup artifact, or restore target was changed by PR #365.
 
 Configured state remains:
@@ -46,7 +46,7 @@ Continue Issue #349 in this order:
 
 1. configure the protected GitHub Actions secret `P6_07_BACKUP_ENCRYPTION_KEY` without placing its value in the repository, an Issue, a PR, artifacts, or logs;
 2. provision a distinct isolated restore database and configure protected `P6_07_RESTORE_DATABASE_URL`, separate from the fixed-review canonical database;
-3. refresh configured staging deployment and fixed-review live audit on exact current main `f1482a3e45ea45855f563720c494af798b9ac053`;
+3. refresh configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
 4. refresh P6-01 through P6-06 on one exact-main binding;
 5. rerun Q1 and require the backup-encryption configuration to be present, with only the isolated-restore blocker permitted before Q3;
 6. rerun Q2 on the exact current-main binding;
@@ -61,7 +61,7 @@ No repository implementation or CI blocker remains for Q3 backup integrity.
 Configured Q3 execution is blocked by:
 
 - protected `P6_07_BACKUP_ENCRYPTION_KEY` not yet configured;
-- P6-01 through P6-06, Q1, and Q2 receipts not yet refreshed on `f1482a3e45ea45855f563720c494af798b9ac053`.
+- P6-01 through P6-06, Q1, and Q2 receipts not yet refreshed on the exact current main after this status reconciliation.
 
 Configured Q4 execution is additionally blocked by:
 
