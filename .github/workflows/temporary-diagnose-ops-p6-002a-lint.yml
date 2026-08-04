@@ -1,0 +1,32 @@
+name: Temporary diagnose OPS-P6-002A lint
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-diagnose-ops-p6-002a-lint.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Q4 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-002a-p6-07-isolated-restore
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run Biome lint with diagnostics
+        run: npm run lint
