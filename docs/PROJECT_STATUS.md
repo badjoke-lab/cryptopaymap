@@ -68,7 +68,7 @@ Configured Q4 execution is additionally blocked by:
 - a distinct protected `P6_07_RESTORE_DATABASE_URL`;
 - an accepted exact-main Q3 receipt.
 
-The current GitHub connector can read and modify repository content, Issues, pull requests, and workflow runs, but it does not expose repository-secret creation. Protected values must therefore be configured outside public repository content. Production remains untouched and unauthorized.
+Protected repository secrets must be configured through the repository secret-management surface and must never be committed to public repository content. Production remains untouched and unauthorized.
 
 Protected operational credentials, database URLs, encryption material, raw account or zone identifiers, private database rows, private Submission data, unrestricted logs, raw Media bytes, and raw object keys must not be placed in public repository or Issue content.
 
