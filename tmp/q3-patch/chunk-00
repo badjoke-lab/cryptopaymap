@@ -1,0 +1,126 @@
+import { execFileSync } from 'node:child_process';
+import { createCipheriv, createDecipheriv, createHash, randomBytes } from 'node:crypto';
+import {
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+
+const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_07_Q3';
+const receiptPath = 'config/staging-authorization/p6-07-backup-integrity-receipt.json';
+const prerequisitePath = 'config/staging-authorization/p6-07-prerequisite-diagnostic.json';
+const q2Path = 'config/staging-authorization/p6-07-monitoring-alert-receipt.json';
+const expiryDays = 30;
+const bindingKeys = ['releaseId', 'dataSnapshotId', 'configurationId', 'environmentId'];
+const predecessorPaths = [
+  ['P6-01', 'config/staging-authorization/p6-01-data-qa-receipt.json'],
+  ['P6-02', 'config/staging-authorization/p6-02-identity-admin-receipt.json'],
+  ['P6-03', 'config/staging-authorization/p6-03-neon-transaction-receipt.json'],
+  ['P6-04', 'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json'],
+  ['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json'],
+  ['P6-06', 'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'],
+];
+const includedScope = [
+  'canonical_database',
+  'provenance_evidence',
+  'review_receipts',
+  'release_metadata',
+  'media_linkage',
+  'operational_configuration',
+];
+const excludedScope = [
+  'submission_private_payload_data',
+  'submission_private_contact_data',
+  'transient_build_output',
+  'cache_data',
+  'unrestricted_logs',
+  'credentials_and_secrets',
+  'external_provider_control_plane',
+];
+const excludedTableData = [
+  'public.submissions',
+  'public.submission_payloads',
+  'public.submission_contacts',
+  'public.submission_media',
+  'public.submission_events',
+  'public.submission_decisions',
+];
+
+function sha256(value) {
+  const hash = createHash('sha256');
+  if (typeof value === 'string' || value instanceof Uint8Array) hash.update(value);
+  else hash.update(JSON.stringify(value), 'utf8');
+  return hash.digest('hex');
+}
+
+function boundedHash(value) {
+  return `sha256:${sha256(value)}`;
+}
+
+function isObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function validCommit(value) {
+  return typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
+}
+
+function validDigest(value) {
+  return typeof value === 'string' && /^sha256:[a-f0-9]{64}$/.test(value);
+}
+
+function validTimestamp(value) {
+  return typeof value === 'string' && Number.isFinite(Date.parse(value));
+}
+
+function validOwner(value) {
+  return typeof value === 'string' && value.trim().length >= 2 && value.trim().length <= 100;
+}
+
+function validDatabaseUrl(value) {
+  if (typeof value !== 'string' || value.length < 20) return false;
+  try {
+    const url = new URL(value);
+    return ['postgres:', 'postgresql:'].includes(url.protocol) && Boolean(url.hostname) && Boolean(url.pathname.slice(1));
+  } catch {
+    return false;
+  }
+}
+
+function safeException(error) {
+  const value = error instanceof Error ? error.message : String(error);
+  if (/configuration_blocked/.test(value)) return 'configuration_blocked';
+  if (/pg_dump/.test(value)) return 'pg_dump_failed';
+  if (/pg_restore/.test(value)) return 'pg_restore_inventory_failed';
+  if (/artifact/.test(value)) return 'backup_artifact_failed';
+  if (/inventory/.test(value)) return 'backup_inventory_failed';
+  if (/decrypt|auth|cipher/i.test(value)) return 'backup_integrity_failed';
+  if (/schema_revision/.test(value)) return 'schema_revision_missing';
+  return 'backup_execution_failed';
+}
+
+function readJson(root, relativePath) {
+  try {
+    const value = JSON.parse(readFileSync(resolve(root, relativePath), 'utf8'));
+    return isObject(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeJson(path, value) {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
+}
+
+function readPredecessor(statusRoot, evidenceId, relativePath, commit, now) {
+  const receipt = readJson(statusRoot, relativePath);
+  const generatedAt = validTimestamp(receipt?.generatedAt) ? receipt.generatedAt : null;
+  const expiresAt = validTimestamp(receipt?.expiresAt) ? receipt.expiresAt : null;
+  const binding = isObject(receipt?.binding) ? receipt.binding : null;
+  const bindingValid = binding !== null && bindingKeys.every((key) => validDigest(bi
