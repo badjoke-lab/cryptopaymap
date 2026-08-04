@@ -1,0 +1,236 @@
+name: OPS-P6-002A configured staging P6-07 isolated restore evidence
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-002a-configured-staging-p6-07-isolated-restore.yml'
+      - 'docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md'
+      - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
+      - 'scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs'
+      - 'scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-002a-configured-staging-p6-07-isolated-restore.yml'
+      - 'docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md'
+      - 'docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md'
+      - 'scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs'
+      - 'scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_07_Q4 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      restore_owner:
+        description: Bounded configured-staging restore owner identity.
+        required: true
+        type: string
+      restore_target_database_name:
+        description: Exact isolated target database name beginning cpm_p6_07_restore_.
+        required: true
+        type: string
+      rpo_objective_minutes:
+        description: Explicit maximum recovery point objective in minutes.
+        required: true
+        type: string
+      rto_objective_minutes:
+        description: Explicit maximum recovery time objective in minutes.
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: write
+
+concurrency:
+  group: ops-p6-002a-configured-staging-p6-07-isolated-restore
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-07 evidence contract
+        run: node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+
+      - name: Check P6-07 isolated restore contract
+        run: node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+
+      - name: Run P6-07 isolated restore self-test
+        run: node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      RESTORE_OWNER: ${{ inputs.restore_owner }}
+      RESTORE_TARGET_DATABASE_NAME: ${{ inputs.restore_target_database_name }}
+      RPO_OBJECTIVE_MINUTES: ${{ inputs.rpo_objective_minutes }}
+      RTO_OBJECTIVE_MINUTES: ${{ inputs.rto_objective_minutes }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      P6_07_RESTORE_DATABASE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
+      P6_07_BACKUP_ENCRYPTION_KEY: ${{ secrets.P6_07_BACKUP_ENCRYPTION_KEY }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          test "$(git -C source rev-parse origin/main)" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+
+      - name: Resolve exact Q3 encrypted artifact
+        id: q3_reference
+        working-directory: source
+        run: |
+          set -euo pipefail
+          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            --resolve-artifact ../status ../q3-artifact-reference.json
+          node <<'NODE'
+          const { appendFileSync, readFileSync } = require('node:fs');
+          const reference = JSON.parse(readFileSync('../q3-artifact-reference.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_OUTPUT,
+            `run_id=${reference.runId}\nartifact_name=${reference.artifactName}\nartifact_file=${reference.artifactFile}\n`,
+          );
+          NODE
+
+      - name: Download exact Q3 encrypted backup artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ steps.q3_reference.outputs.artifact_name }}
+          run-id: ${{ steps.q3_reference.outputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: q3-artifact
+
+      - name: Execute isolated restore, reconciliation, objectives, and disposal
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            ../status \
+            ../q3-artifact/${{ steps.q3_reference.outputs.artifact_file }} \
+            ../p6-07-isolated-restore-receipt.json
+
+      - name: Upload bounded isolated restore receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-002a-configured-staging-p6-07-isolated-restore
+          path: p6-07-isolated-restore-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Publish isolated restore receipt
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-07-isolated-restore-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-07-isolated-restore-receipt.json \
+            status/config/staging-authorization/p6-07-isolated-restore-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-07-isolated-restore-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-07 isolated restore evidence'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Write isolated restore summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-07-isolated-restore-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('p6-07-isolated-restore-receipt.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-07 isolated restore evidence',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Q3: \`${receipt.checks.q3.state}\``,
+              `- Artifact: \`${receipt.checks.artifact.status}\``,
+              `- Target safety: \`${receipt.checks.targetSafety.status}\``,
+              `- Restore: \`${receipt.checks.restore.status}\``,
+              `- Reconciliation: \`${receipt.checks.reconciliation.status}\``,
+              `- RPO: \`${receipt.checks.objectives.rpo.status}\``,
+              `- RTO: \`${receipt.checks.objectives.rto.status}\``,
+              `- Disposal: \`${receipt.checks.disposal.status}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce accepted isolated restore receipt
+        if: always()
+        run: |
+          node -e "const r=require('./p6-07-isolated-restore-receipt.json'); if(r.state!=='accepted'||r.exceptions.length!==0) process.exit(1)"
