@@ -1,0 +1,74 @@
+name: Temporary trigger OPS-P6-002A isolated restore
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-trigger-ops-p6-002a-isolated-restore.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-trigger-ops-p6-002a-isolated-restore
+  cancel-in-progress: false
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Q4 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-002a-p6-07-isolated-restore
+
+      - name: Recover exact executor bundle
+        run: |
+          python - <<'PY'
+          from base64 import b64decode
+          from gzip import decompress
+          from pathlib import Path
+
+          workflow = Path('.github/workflows/temporary-patch-ops-p6-002a-isolated-restore.yml').read_text()
+          start = "cat > /tmp/q4-executor.b64 <<'EOF'\n"
+          end = "\nEOF\n          base64 -d /tmp/q4-executor.b64"
+          if workflow.count(start) != 1 or workflow.count(end) != 1:
+              raise SystemExit('Q4 executor bundle markers are invalid')
+          payload = workflow.split(start, 1)[1].split(end, 1)[0].strip()
+          Path('scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs').write_bytes(
+              decompress(b64decode(payload))
+          )
+          PY
+          echo '7656bbd0f2f3ec10f5dba827ba53408bc161489dd51615d777fca522f6e59d85  scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs' | sha256sum --check
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format and verify Q4 implementation
+        run: |
+          npm run format
+          node --check scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+
+      - name: Publish implementation
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            .github/workflows/ops-p6-002a-configured-staging-p6-07-isolated-restore.yml \
+            docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md \
+            scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          git commit -m 'Implement configured staging P6-07 isolated restore evidence'
+          git push origin HEAD:agent/ops-p6-002a-p6-07-isolated-restore
