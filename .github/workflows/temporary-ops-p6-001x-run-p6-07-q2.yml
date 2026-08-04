@@ -1,0 +1,89 @@
+name: Temporary OPS-P6-001X run P6-07 Q2
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-ops-p6-001x-run-p6-07-q2.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: temporary-ops-p6-001x-run-p6-07-q2
+  cancel-in-progress: false
+
+jobs:
+  execute:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      APPROVED_COMMIT: a975fa58825d20e054e65f24bdbbf4240328df00
+      CONFIRMATION: EXECUTE_CONFIGURED_STAGING_P6_07_Q2
+      MONITORING_OWNER: badjoke-lab
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Check out exact main source
+        uses: actions/checkout@v4
+        with:
+          ref: a975fa58825d20e054e65f24bdbbf4240328df00
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact unchanged main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          test "$(git -C source rev-parse origin/main)" = "$APPROVED_COMMIT"
+
+      - name: Recheck repository contracts
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs
+          node scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs --self-test
+
+      - name: Verify monitoring and pre-delivered alert evidence
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs \
+            ../status \
+            ../p6-07-monitoring-alert-receipt.json
+
+      - name: Publish accepted Q2 receipt
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f p6-07-monitoring-alert-receipt.json
+          node -e "const r=require('./p6-07-monitoring-alert-receipt.json'); if(r.state!=='accepted'||r.exceptions.length!==0) process.exit(1)"
+          mkdir -p status/config/staging-authorization
+          cp p6-07-monitoring-alert-receipt.json status/config/staging-authorization/p6-07-monitoring-alert-receipt.json
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/staging-authorization/p6-07-monitoring-alert-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-07 monitoring and alert evidence'
+            git -C status push origin HEAD:staging-review
+          fi
