@@ -21,8 +21,14 @@ const expectations = [
   [files.workflow, 'github-token: ${{ secrets.GITHUB_TOKEN }}'],
   [files.workflow, 'p6-07-isolated-restore-receipt.json'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_07_Q4'"],
-  [files.executor, "const q3Path = 'config/staging-authorization/p6-07-backup-integrity-receipt.json'"],
-  [files.executor, "const receiptPath = 'config/staging-authorization/p6-07-isolated-restore-receipt.json'"],
+  [
+    files.executor,
+    "const q3Path = 'config/staging-authorization/p6-07-backup-integrity-receipt.json'",
+  ],
+  [
+    files.executor,
+    "const receiptPath = 'config/staging-authorization/p6-07-isolated-restore-receipt.json'",
+  ],
   [files.executor, 'ops-p6-001y-configured-staging-p6-07-encrypted-backup-'],
   [files.executor, 'q3.workflowRunId'],
   [files.executor, 'createDecipheriv('],
@@ -31,7 +37,7 @@ const expectations = [
   [files.executor, "'--single-transaction'"],
   [files.executor, "'--no-owner'"],
   [files.executor, "'--no-privileges'"],
-  [files.executor, "targetNamePattern = /^cpm_p6_07_restore_[a-z0-9_]{4,48}$/"],
+  [files.executor, 'targetNamePattern = /^cpm_p6_07_restore_[a-z0-9_]{4,48}$/'],
   [files.executor, "'submission_private_payload_data'"],
   [files.executor, "'submission_private_contact_data'"],
   [files.executor, 'allExpectedNonPrivateTablesMatched'],
@@ -61,9 +67,15 @@ for (const [text, expected] of expectations) {
 }
 
 if (!files.workflow.includes('DATABASE_URL: ${{ secrets.DATABASE_URL }}')) {
-  throw new Error('OPS-P6-002A must bind the fixed-review source database through a protected secret.');
+  throw new Error(
+    'OPS-P6-002A must bind the fixed-review source database through a protected secret.',
+  );
 }
-if (/console\.log\([^\n]*(DATABASE_URL|P6_07_RESTORE_DATABASE_URL|P6_07_BACKUP_ENCRYPTION_KEY)/.test(files.executor)) {
+if (
+  /console\.log\([^\n]*(DATABASE_URL|P6_07_RESTORE_DATABASE_URL|P6_07_BACKUP_ENCRYPTION_KEY)/.test(
+    files.executor,
+  )
+) {
   throw new Error('OPS-P6-002A must not log protected configuration.');
 }
 if (/writeJson\([^\n]*(databaseUrl|restoreDatabaseUrl|encryptionKey)/.test(files.executor)) {
