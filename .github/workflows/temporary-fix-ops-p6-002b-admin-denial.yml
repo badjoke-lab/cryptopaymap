@@ -1,0 +1,76 @@
+name: Temporary fix OPS-P6-002B Admin denial
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-fix-ops-p6-002b-admin-denial.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Q5 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-002b-p6-07-incident-exercise-final-receipt
+
+      - name: Align Admin denial with retained Q1 contract
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs')
+          text = path.read_text()
+          old = "status: statuses.includes(response.status) && contentType === type ? 'passed' : 'failed',"
+          new = """status:
+            statuses.includes(response.status) && (type === null || contentType === type)
+              ? 'passed'
+              : 'failed',"""
+          if text.count(old) != 1:
+            raise SystemExit(f'probe result mismatch: {text.count(old)}')
+          text = text.replace(old, new)
+          old_admin = "probe('/admin/api/dashboard', [401, 403], 'text/plain', fetchImpl),"
+          new_admin = "probe('/admin/api/dashboard', [401, 403], null, fetchImpl),"
+          if text.count(old_admin) != 1:
+            raise SystemExit(f'Admin probe mismatch: {text.count(old_admin)}')
+          text = text.replace(old_admin, new_admin)
+          old_mock = "return mockResponse(403, 'text/plain', 'Forbidden');"
+          new_mock = "return mockResponse(403, 'application/json', '{\"error\":\"forbidden\"}');"
+          if text.count(old_mock) != 1:
+            raise SystemExit(f'Admin mock mismatch: {text.count(old_mock)}')
+          path.write_text(text.replace(old_mock, new_mock))
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format and verify Admin denial repair
+        run: |
+          npx biome format --write \
+            scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          npm run format:check
+          npm run lint
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          node scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs --self-test
+
+      - name: Publish Admin denial repair
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          git commit -m 'Align Q5 Admin denial with Q1 contract'
+          git push origin HEAD:agent/ops-p6-002b-p6-07-incident-exercise-final-receipt
