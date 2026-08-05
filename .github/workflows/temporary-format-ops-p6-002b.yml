@@ -28,32 +28,29 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Format Q5 sources and repair workflow path
+      - name: Format and verify Q5 sources
         run: |
           set -euo pipefail
           npx biome format --write \
             scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs \
             scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs \
             scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
-          sed -i \
-            's#scripts/check-p6-07-configured-operational-monitorING_BACKUP_RESTORE_INCIDENT_EVIDENCE.js#scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js#' \
-            .github/workflows/ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml
           npm run format:check
-          npm run lint
           node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
           node scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
 
-      - name: Publish formatted sources and remove temporary workflow
+      - name: Publish formatted sources
         run: |
           set -euo pipefail
-          rm -f .github/workflows/temporary-format-ops-p6-002b.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
             scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs \
             scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs \
-            scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js \
-            .github/workflows/ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml \
-            .github/workflows/temporary-format-ops-p6-002b.yml
+            scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          if git diff --cached --quiet; then
+            echo 'Q5 sources are already formatted.'
+            exit 0
+          fi
           git commit -m 'Format P6-07 Q5 implementation'
           git push origin HEAD:agent/ops-p6-002b-p6-07-incident-exercise-final-receipt
