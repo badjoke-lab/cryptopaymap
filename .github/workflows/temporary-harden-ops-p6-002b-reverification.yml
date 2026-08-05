@@ -65,11 +65,13 @@ jobs:
               if (external.status !== 'passed') throw new Error('external_reverification_failed');
               const recovered = stage('recovery_verified');
               const reverified = stage('externally_reverified');"""
+          old_timeline = old_timeline.replace('              ', '    ')
           new_timeline = """    const mitigation = stage('mitigation_started');
               const recovered = stage('recovery_verified');
               const external = await reverify(binding, fetchImpl);
               if (external.status !== 'passed') throw new Error('external_reverification_failed');
               const reverified = stage('externally_reverified');"""
+          new_timeline = new_timeline.replace('              ', '    ')
           if text.count(old_timeline) != 1:
             raise SystemExit(f'timeline block mismatch: {text.count(old_timeline)}')
           text = text.replace(old_timeline, new_timeline)
@@ -88,7 +90,7 @@ jobs:
             raise SystemExit(f'mock body mismatch: {text.count(old_body)}')
           text = text.replace(old_body, new_body)
           anchor = """    assert(receipt.state === 'failed', 'wrong release must fail');
-              const q4 = readJson(statusRoot, qPaths.q4);"""
+              const q4 = readJson(statusRoot, qPaths.q4);""".replace('              ', '    ')
           replacement = """    assert(receipt.state === 'failed', 'wrong release must fail');
               receipt = await executeQ5({
                 ...base,
@@ -96,7 +98,7 @@ jobs:
                 fetchImpl: mockFetch(binding, false, true),
               });
               assert(receipt.state === 'failed', 'private leakage must fail');
-              const q4 = readJson(statusRoot, qPaths.q4);"""
+              const q4 = readJson(statusRoot, qPaths.q4);""".replace('              ', '    ')
           if text.count(anchor) != 1:
             raise SystemExit(f'privacy self-test anchor mismatch: {text.count(anchor)}')
           path.write_text(text.replace(anchor, replacement))
