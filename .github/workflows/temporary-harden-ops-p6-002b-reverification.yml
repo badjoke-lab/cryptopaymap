@@ -1,0 +1,132 @@
+name: Temporary harden OPS-P6-002B reverification
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/temporary-harden-ops-p6-002b-reverification.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out Q5 branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-002b-p6-07-incident-exercise-final-receipt
+
+      - name: Preserve route privacy and timeline ordering
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs')
+          text = path.read_text()
+          old = """  const bytes = new Uint8Array(await response.arrayBuffer());
+          const contentType =
+            response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() ?? null;
+          return {
+            status:
+              statuses.includes(response.status) && (type === null || contentType === type)
+                ? 'passed'
+                : 'failed',
+            httpStatus: response.status,
+            contentType,
+            byteLength: bytes.byteLength,
+            bodyDigest: digest(bytes),
+          };"""
+          new = """  const bytes = new Uint8Array(await response.arrayBuffer());
+          const contentType =
+            response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() ?? null;
+          const boundedBody = new TextDecoder().decode(bytes).slice(0, 16_384);
+          const leakageFree = noLeakage(boundedBody);
+          return {
+            status:
+              statuses.includes(response.status) &&
+              (type === null || contentType === type) &&
+              leakageFree
+                ? 'passed'
+                : 'failed',
+            httpStatus: response.status,
+            contentType,
+            byteLength: bytes.byteLength,
+            bodyDigest: digest(bytes),
+            leakageFree,
+          };"""
+          if text.count(old) != 1:
+            raise SystemExit(f'probe privacy block mismatch: {text.count(old)}')
+          text = text.replace(old, new)
+          old_timeline = """    const mitigation = stage('mitigation_started');
+              const external = await reverify(binding, fetchImpl);
+              if (external.status !== 'passed') throw new Error('external_reverification_failed');
+              const recovered = stage('recovery_verified');
+              const reverified = stage('externally_reverified');"""
+          new_timeline = """    const mitigation = stage('mitigation_started');
+              const recovered = stage('recovery_verified');
+              const external = await reverify(binding, fetchImpl);
+              if (external.status !== 'passed') throw new Error('external_reverification_failed');
+              const reverified = stage('externally_reverified');"""
+          if text.count(old_timeline) != 1:
+            raise SystemExit(f'timeline block mismatch: {text.count(old_timeline)}')
+          text = text.replace(old_timeline, new_timeline)
+          old_signature = 'function mockFetch(binding, wrongRelease = false) {'
+          new_signature = 'function mockFetch(binding, wrongRelease = false, privateLeakage = false) {'
+          if text.count(old_signature) != 1:
+            raise SystemExit(f'mock signature mismatch: {text.count(old_signature)}')
+          text = text.replace(old_signature, new_signature)
+          old_body = "return mockResponse(200, 'text/html', '<html></html>');"
+          new_body = """return mockResponse(
+              200,
+              'text/html',
+              privateLeakage ? '<html>DATABASE_URL=redacted</html>' : '<html></html>',
+            );"""
+          if text.count(old_body) != 1:
+            raise SystemExit(f'mock body mismatch: {text.count(old_body)}')
+          text = text.replace(old_body, new_body)
+          anchor = """    assert(receipt.state === 'failed', 'wrong release must fail');
+              const q4 = readJson(statusRoot, qPaths.q4);"""
+          replacement = """    assert(receipt.state === 'failed', 'wrong release must fail');
+              receipt = await executeQ5({
+                ...base,
+                incidentId: 'cpm-p6-07-q5-private-leakage',
+                fetchImpl: mockFetch(binding, false, true),
+              });
+              assert(receipt.state === 'failed', 'private leakage must fail');
+              const q4 = readJson(statusRoot, qPaths.q4);"""
+          if text.count(anchor) != 1:
+            raise SystemExit(f'privacy self-test anchor mismatch: {text.count(anchor)}')
+          path.write_text(text.replace(anchor, replacement))
+          PY
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format and verify reverification hardening
+        run: |
+          npx biome format --write \
+            scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          npm run format:check
+          npm run lint
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          node scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs --self-test
+
+      - name: Publish reverification hardening
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          git commit -m 'Harden Q5 route privacy and timeline evidence'
+          git push origin HEAD:agent/ops-p6-002b-p6-07-incident-exercise-final-receipt
