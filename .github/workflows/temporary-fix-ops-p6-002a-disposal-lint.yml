@@ -23,48 +23,31 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+
           path = Path('scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
           text = path.read_text()
-          old = """      try {
-                dbOps.disposeTarget(restoreDatabaseUrl);
-                const remaining = dbOps.countUserObjects(restoreDatabaseUrl);
-                if (remaining !== 0) throw new Error('target_disposal_failed');
-                checks.disposal = {
-                  status: 'passed',
-                  mode: 'drop_and_recreate_public_schema',
-                  remainingUserObjectCount: 0,
-                };
-              } catch {
-                checks.disposal = { status: 'failed', mode: 'drop_and_recreate_public_schema' };
-                if (!receipt.exceptions.includes('target_disposal_failed')) {
-                  receipt.exceptions.push('target_disposal_failed');
-                }
-              }"""
-          new = """      try {
-                dbOps.disposeTarget(restoreDatabaseUrl);
-                const remaining = dbOps.countUserObjects(restoreDatabaseUrl);
-                if (remaining === 0) {
-                  checks.disposal = {
-                    status: 'passed',
-                    mode: 'drop_and_recreate_public_schema',
-                    remainingUserObjectCount: 0,
-                  };
-                } else {
-                  checks.disposal = {
-                    status: 'failed',
-                    mode: 'drop_and_recreate_public_schema',
-                    remainingUserObjectCount: remaining,
-                  };
-                  if (!receipt.exceptions.includes('target_disposal_failed')) {
-                    receipt.exceptions.push('target_disposal_failed');
-                  }
-                }
-              } catch {
-                checks.disposal = { status: 'failed', mode: 'drop_and_recreate_public_schema' };
-                if (!receipt.exceptions.includes('target_disposal_failed')) {
-                  receipt.exceptions.push('target_disposal_failed');
-                }
-              }"""
+          old = """        if (remaining !== 0) throw new Error('target_disposal_failed');
+        checks.disposal = {
+          status: 'passed',
+          mode: 'drop_and_recreate_public_schema',
+          remainingUserObjectCount: 0,
+        };"""
+          new = """        if (remaining === 0) {
+          checks.disposal = {
+            status: 'passed',
+            mode: 'drop_and_recreate_public_schema',
+            remainingUserObjectCount: 0,
+          };
+        } else {
+          checks.disposal = {
+            status: 'failed',
+            mode: 'drop_and_recreate_public_schema',
+            remainingUserObjectCount: remaining,
+          };
+          if (!receipt.exceptions.includes('target_disposal_failed')) {
+            receipt.exceptions.push('target_disposal_failed');
+          }
+        }"""
           if text.count(old) != 1:
             raise SystemExit(f'disposal block mismatch: {text.count(old)}')
           path.write_text(text.replace(old, new))
@@ -81,7 +64,8 @@ jobs:
 
       - name: Verify disposal control flow
         run: |
-          npm run format
+          ./node_modules/.bin/biome format --write \
+            scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
           ./node_modules/.bin/biome lint \
             scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
             scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
@@ -92,11 +76,17 @@ jobs:
           node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
           node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
 
-      - name: Publish disposal fix
+      - name: Remove temporary workflows and publish fix
         run: |
           set -euo pipefail
+          rm -f \
+            .github/workflows/temporary-diagnose-ops-p6-002a-lint.yml \
+            .github/workflows/temporary-fix-ops-p6-002a-disposal-lint.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
-          git commit -m 'Make Q4 disposal convergence lint-safe'
+          git add \
+            scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
+            .github/workflows/temporary-diagnose-ops-p6-002a-lint.yml \
+            .github/workflows/temporary-fix-ops-p6-002a-disposal-lint.yml
+          git commit -m 'Fix Q4 disposal convergence lint'
           git push origin HEAD:agent/ops-p6-002a-p6-07-isolated-restore
