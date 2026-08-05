@@ -197,10 +197,21 @@ async function probe(path, statuses, type, fetchImpl) {
 }
 
 async function reverify(binding, fetchImpl) {
-  const [home, locations, businesses, version, manifest, adminDenial] = await Promise.all([
+  const [
+    home,
+    places,
+    representativePlace,
+    online,
+    representativeService,
+    version,
+    manifest,
+    adminDenial,
+  ] = await Promise.all([
     probe('/', [200], 'text/html', fetchImpl),
-    probe('/locations/', [200], 'text/html', fetchImpl),
-    probe('/businesses/', [200], 'text/html', fetchImpl),
+    probe('/places/', [200], 'text/html', fetchImpl),
+    probe('/place/staging-coffee-tokyo/', [200], 'text/html', fetchImpl),
+    probe('/online/', [200], 'text/html', fetchImpl),
+    probe('/service/staging-vpn/', [200], 'text/html', fetchImpl),
     probe('/version.json', [200], 'application/json', fetchImpl),
     probe('/data/manifest.json', [200], 'application/json', fetchImpl),
     probe('/admin/api/dashboard', [401, 403], 'text/plain', fetchImpl),
@@ -218,7 +229,17 @@ async function reverify(binding, fetchImpl) {
     expectedReleaseDigest: digest(binding.releaseId),
     observedReleaseDigest: validDigest(marker?.releaseId) ? digest(marker.releaseId) : null,
   };
-  const checks = { home, locations, businesses, version, manifest, adminDenial, release };
+  const checks = {
+    home,
+    places,
+    representativePlace,
+    online,
+    representativeService,
+    version,
+    manifest,
+    adminDenial,
+    release,
+  };
   return {
     status: Object.values(checks).every((item) => item.status === 'passed') ? 'passed' : 'failed',
     hostnameDigest: digest(hostname),
@@ -571,7 +592,15 @@ function mockFetch(binding, wrongRelease = false) {
     }
     if (url.pathname === '/admin/api/dashboard')
       return mockResponse(403, 'text/plain', 'Forbidden');
-    if (['/', '/locations/', '/businesses/'].includes(url.pathname)) {
+    if (
+      [
+        '/',
+        '/places/',
+        '/place/staging-coffee-tokyo/',
+        '/online/',
+        '/service/staging-vpn/',
+      ].includes(url.pathname)
+    ) {
       return mockResponse(200, 'text/html', '<html></html>');
     }
     return mockResponse(200, 'application/json', '{}');
