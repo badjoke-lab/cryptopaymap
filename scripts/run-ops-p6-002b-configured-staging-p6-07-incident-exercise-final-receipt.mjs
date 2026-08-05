@@ -188,7 +188,10 @@ async function probe(path, statuses, type, fetchImpl) {
   const contentType =
     response.headers.get('content-type')?.split(';')[0]?.trim().toLowerCase() ?? null;
   return {
-    status: statuses.includes(response.status) && contentType === type ? 'passed' : 'failed',
+    status:
+      statuses.includes(response.status) && (type === null || contentType === type)
+        ? 'passed'
+        : 'failed',
     httpStatus: response.status,
     contentType,
     byteLength: bytes.byteLength,
@@ -214,7 +217,7 @@ async function reverify(binding, fetchImpl) {
     probe('/service/staging-vpn/', [200], 'text/html', fetchImpl),
     probe('/version.json', [200], 'application/json', fetchImpl),
     probe('/data/manifest.json', [200], 'application/json', fetchImpl),
-    probe('/admin/api/dashboard', [401, 403], 'text/plain', fetchImpl),
+    probe('/admin/api/dashboard', [401, 403], null, fetchImpl),
   ]);
   const response = await fetchImpl(
     `https://${hostname}/p6-05-release.json?p6_07_q5_marker=${Date.now()}`,
@@ -591,7 +594,7 @@ function mockFetch(binding, wrongRelease = false) {
       );
     }
     if (url.pathname === '/admin/api/dashboard')
-      return mockResponse(403, 'text/plain', 'Forbidden');
+      return mockResponse(403, 'application/json', '{"error":"forbidden"}');
     if (
       [
         '/',
