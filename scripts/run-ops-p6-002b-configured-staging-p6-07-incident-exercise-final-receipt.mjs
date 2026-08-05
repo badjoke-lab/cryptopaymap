@@ -111,7 +111,8 @@ function currentAccepted(root, evidenceId, path, commit, now) {
 
 function qEvidence(root, path, evidenceId, commit, binding, now, predicate) {
   const result = currentAccepted(root, evidenceId, path, commit, now);
-  const current = result.state === 'current' && sameBinding(result.binding, binding) && predicate(result.value);
+  const current =
+    result.state === 'current' && sameBinding(result.binding, binding) && predicate(result.value);
   return {
     path,
     state: current ? 'current' : result.state === 'missing' ? 'missing' : 'failed',
@@ -568,7 +569,8 @@ function mockFetch(binding, wrongRelease = false) {
         JSON.stringify({ releaseId: wrongRelease ? digest('wrong') : binding.releaseId }),
       );
     }
-    if (url.pathname === '/admin/api/dashboard') return mockResponse(403, 'text/plain', 'Forbidden');
+    if (url.pathname === '/admin/api/dashboard')
+      return mockResponse(403, 'text/plain', 'Forbidden');
     if (['/', '/locations/', '/businesses/'].includes(url.pathname)) {
       return mockResponse(200, 'text/html', '<html></html>');
     }
