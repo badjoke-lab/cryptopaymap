@@ -40,9 +40,7 @@
   },
   "overrides": [
     {
-      "includes": [
-        "scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs"
-      ],
+      "includes": ["scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs"],
       "linter": {
         "rules": {
           "correctness": {
