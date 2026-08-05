@@ -16,7 +16,7 @@ on:
       - 'docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md'
       - 'scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs'
       - 'scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs'
-      - 'scripts/check-p6-07-configured-operational-monitorING_BACKUP_RESTORE_INCIDENT_EVIDENCE.js'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
   workflow_dispatch:
     inputs:
       confirmation:
@@ -182,12 +182,17 @@ jobs:
         with:
           script: |
             const marker = `<!-- cpm-p6-07-q5-declaration:${process.env.INCIDENT_ID} -->`;
+            const closureMarker = `<!-- cpm-p6-07-q5-closure:${process.env.INCIDENT_ID} -->`;
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: 349,
               per_page: 100,
             });
+            if (comments.some((comment) => comment.body?.includes(closureMarker))) {
+              core.setFailed('incident_identity_already_used');
+              return;
+            }
             if (!comments.some((comment) => comment.body?.includes(marker))) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
