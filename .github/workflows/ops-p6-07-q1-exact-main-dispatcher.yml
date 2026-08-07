@@ -1,0 +1,42 @@
+name: One-time P6-07 Q1 exact-main dispatcher
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-07-q1-exact-main-dispatcher.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Dispatch P6-07 Q1 prerequisite diagnostic against exact main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          APPROVED_COMMIT: d4fb1cc00175142b7472794736120bb210abde4a
+        run: |
+          set -euo pipefail
+          payload="$(jq -nc \
+            --arg ref main \
+            --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_07 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg operations_owner badjoke-lab \
+            '{ref:$ref,inputs:{confirmation:$confirmation,approved_commit:$approved_commit,operations_owner:$operations_owner}}')"
+          http_code="$(curl --silent --show-error --output /tmp/response --write-out '%{http_code}' \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/$REPOSITORY/actions/workflows/ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.yml/dispatches" \
+            -d "$payload")"
+          if [ "$http_code" != '204' ]; then
+            cat /tmp/response
+            echo "workflow dispatch failed with HTTP $http_code" >&2
+            exit 1
+          fi
+          echo "Q1 workflow_dispatch accepted for $APPROVED_COMMIT"
