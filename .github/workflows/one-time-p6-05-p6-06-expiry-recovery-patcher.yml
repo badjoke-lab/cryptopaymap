@@ -1,0 +1,358 @@
+name: One-time P6-05 P6-06 expiry recovery patcher
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-05-p6-06-expiry-recovery-patcher.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out patch branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Apply bounded expiry-deadlock recovery patch
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          def replace_once(path, old, new):
+              p = Path(path)
+              text = p.read_text()
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one replacement target, found {count}')
+              p.write_text(text.replace(old, new, 1))
+
+          def regex_once(path, pattern, replacement):
+              p = Path(path)
+              text = p.read_text()
+              new_text, count = re.subn(pattern, replacement, text, count=1, flags=re.S)
+              if count != 1:
+                  raise SystemExit(f'{path}: expected exactly one regex target, found {count}')
+              p.write_text(new_text)
+
+          p605 = 'scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs'
+          replace_once(
+              p605,
+              "const priorP606ReceiptPath =\n  'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';\nconst markerPath = '/p6-05-release.json';",
+              "const priorP606ReceiptPath =\n  'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';\nconst p606DiagnosticPath =\n  'config/staging-authorization/p6-06-domain-topology-diagnostic.json';\nconst markerPath = '/p6-05-release.json';",
+          )
+
+          regex_once(
+              p605,
+              r"function readPriorP606Topology\(statusRoot, commit, now\) \{.*?\n\}\n\nfunction evaluateProjectTopology\(project, priorP606\) \{.*?\n\}\n\nfunction releaseMarker",
+              '''function readPriorP606Topology(statusRoot, commit, now) {
+  let receipt = null;
+  try {
+    const value = JSON.parse(readFileSync(resolve(statusRoot, priorP606ReceiptPath), 'utf8'));
+    receipt = isObject(value) ? value : null;
+  } catch {
+    receipt = null;
+  }
+  const generatedAt = safeTimestamp(receipt?.generatedAt);
+  const expiresAt = safeTimestamp(receipt?.expiresAt);
+  const proofValid =
+    receipt?.version === 1 &&
+    receipt?.evidenceId === 'P6-06' &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'accepted' &&
+    validCommit(receipt?.commit) &&
+    generatedAt !== null &&
+    expiresAt !== null &&
+    receipt?.checks?.hostname?.digest === boundedHash(approvedStagingCustomDomain) &&
+    ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
+    receipt?.checks?.externalCutover?.status === 'passed' &&
+    receipt?.checks?.rollback?.status === 'passed' &&
+    receipt?.checks?.externalRollback?.status === 'passed' &&
+    receipt?.checks?.finalRestore?.status === 'passed' &&
+    receipt?.checks?.externalFinal?.status === 'passed' &&
+    Array.isArray(receipt?.exceptions) &&
+    receipt.exceptions.length === 0;
+  const unexpired = proofValid && Date.parse(expiresAt) > now.getTime();
+  const expiredProof = proofValid && Date.parse(expiresAt) <= now.getTime();
+  return {
+    state: unexpired
+      ? 'authenticated_prior'
+      : expiredProof
+        ? 'expired_prior_proof'
+        : receipt === null
+          ? 'missing'
+          : 'failed',
+    generatedAt,
+    expiresAt,
+    digest: proofValid ? boundedHash(JSON.stringify(receipt)) : null,
+    hostnameDigest: proofValid ? boundedHash(approvedStagingCustomDomain) : null,
+  };
+}
+
+function readCurrentP606Diagnostic(statusRoot, commit, now) {
+  let receipt = null;
+  try {
+    const value = JSON.parse(readFileSync(resolve(statusRoot, p606DiagnosticPath), 'utf8'));
+    receipt = isObject(value) ? value : null;
+  } catch {
+    receipt = null;
+  }
+  const expiresAt = safeTimestamp(receipt?.expiresAt);
+  const current =
+    receipt?.version === 1 &&
+    receipt?.evidenceId === 'P6-06-DIAGNOSTIC' &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'diagnosed' &&
+    receipt?.decision === 'existing_candidate_requires_approval' &&
+    receipt?.commit === commit &&
+    expiresAt !== null &&
+    Date.parse(expiresAt) > now.getTime() &&
+    receipt?.checks?.permissions?.dnsList === 'success' &&
+    receipt?.checks?.topology?.projectSafe === true &&
+    receipt?.checks?.topology?.zoneMatchesExpected === true &&
+    receipt?.checks?.topology?.platformDomainPresent === true &&
+    receipt?.checks?.topology?.platformDomainMatches === true &&
+    receipt?.checks?.inventory?.selectedZoneCount === 1 &&
+    receipt?.checks?.inventory?.projectCustomDomainCount === 1 &&
+    receipt?.checks?.inventory?.candidateCount === 1 &&
+    Array.isArray(receipt?.exceptions) &&
+    receipt.exceptions.length === 0;
+  return {
+    state: current ? 'current_existing_candidate' : receipt === null ? 'missing' : 'failed',
+    generatedAt: safeTimestamp(receipt?.generatedAt),
+    expiresAt,
+    digest: current ? boundedHash(JSON.stringify(receipt)) : null,
+  };
+}
+
+function evaluateProjectTopology(project, priorP606, diagnostic = null) {
+  const platformDomain = `${projectName}.pages.dev`;
+  const projectDomains = Array.isArray(project?.domains)
+    ? project.domains.filter((domain) => typeof domain === 'string').sort()
+    : [];
+  const platformDomainPresent = projectDomains.includes(platformDomain);
+  const platformDomainMatches = project?.subdomain === platformDomain;
+  const customDomains = projectDomains.filter((domain) => domain !== platformDomain);
+  const expiredPriorRevalidated =
+    priorP606.state === 'expired_prior_proof' &&
+    diagnostic?.state === 'current_existing_candidate' &&
+    typeof diagnostic?.digest === 'string';
+  const authenticatedExactCustomDomain =
+    (priorP606.state === 'authenticated_prior' || expiredPriorRevalidated) &&
+    customDomains.length === 1 &&
+    customDomains[0] === approvedStagingCustomDomain;
+  const status =
+    project?.name === projectName &&
+    project?.production_branch === productionBranch &&
+    platformDomainPresent &&
+    platformDomainMatches &&
+    (customDomains.length === 0 || authenticatedExactCustomDomain)
+      ? 'passed'
+      : 'failed';
+  return {
+    status,
+    productionBranch: project?.production_branch ?? null,
+    platformDomainPresent,
+    platformDomainMatches,
+    customDomainCount: customDomains.length,
+    approvedCustomDomainPresent: customDomains.includes(approvedStagingCustomDomain),
+    approvedCustomDomainDigest: customDomains.includes(approvedStagingCustomDomain)
+      ? boundedHash(approvedStagingCustomDomain)
+      : null,
+    priorP606State: expiredPriorRevalidated ? 'expired_prior_revalidated' : priorP606.state,
+    priorP606ReceiptDigest: priorP606.digest,
+    recoveryDiagnosticState: diagnostic?.state ?? null,
+    recoveryDiagnosticDigest: diagnostic?.digest ?? null,
+  };
+}
+
+function releaseMarker''',
+          )
+
+          replace_once(
+              p605,
+              "      const priorP606 = readPriorP606Topology(statusRoot, commit, now);\n      const project = await cloudflareRequest('');\n      checks.topology = evaluateProjectTopology(project, priorP606);",
+              "      const priorP606 = readPriorP606Topology(statusRoot, commit, now);\n      const p606Diagnostic = readCurrentP606Diagnostic(statusRoot, commit, now);\n      const project = await cloudflareRequest('');\n      checks.topology = evaluateProjectTopology(project, priorP606, p606Diagnostic);",
+          )
+
+          replace_once(
+              p605,
+              "    const unauthenticatedTopology = evaluateProjectTopology(\n      { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },\n      { state: 'missing', digest: null },\n    );",
+              "    const expiredRevalidatedTopology = evaluateProjectTopology(\n      { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },\n      { state: 'expired_prior_proof', digest: boundedHash('expired-prior-p6-06') },\n      { state: 'current_existing_candidate', digest: boundedHash('fresh-p6-06-diagnostic') },\n    );\n    if (\n      expiredRevalidatedTopology.status !== 'passed' ||\n      expiredRevalidatedTopology.priorP606State !== 'expired_prior_revalidated'\n    ) {\n      throw new Error('expired_prior_revalidation_failed');\n    }\n    const expiredUnrevalidatedTopology = evaluateProjectTopology(\n      { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },\n      { state: 'expired_prior_proof', digest: boundedHash('expired-prior-p6-06') },\n      { state: 'failed', digest: null },\n    );\n    if (expiredUnrevalidatedTopology.status !== 'failed') {\n      throw new Error('expired_prior_without_fresh_diagnostic_not_rejected');\n    }\n    const unauthenticatedTopology = evaluateProjectTopology(\n      { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },\n      { state: 'missing', digest: null },\n    );",
+          )
+
+          p606 = 'scripts/run-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs'
+          regex_once(
+              p606,
+              r"function readPriorAccepted\(statusRoot, commit, now\) \{.*?\n\}\n\nasync function queryDoh",
+              '''function readPriorAccepted(statusRoot, commit, now) {
+  const receipt = readJson(statusRoot, acceptedReceiptPath);
+  const generatedAt = safeTimestamp(receipt?.generatedAt);
+  const expiresAt = safeTimestamp(receipt?.expiresAt);
+  const proofValid =
+    receipt?.version === 1 &&
+    receipt?.evidenceId === evidenceId &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'accepted' &&
+    validCommit(receipt?.commit) &&
+    generatedAt !== null &&
+    expiresAt !== null &&
+    receipt?.checks?.hostname?.digest === boundedHash(approvedHostname) &&
+    ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
+    receipt?.checks?.externalCutover?.status === 'passed' &&
+    receipt?.checks?.rollback?.status === 'passed' &&
+    receipt?.checks?.externalRollback?.status === 'passed' &&
+    receipt?.checks?.finalRestore?.status === 'passed' &&
+    receipt?.checks?.externalFinal?.status === 'passed' &&
+    Array.isArray(receipt?.exceptions) &&
+    receipt.exceptions.length === 0;
+  const unexpired = proofValid && Date.parse(expiresAt) > now.getTime();
+  const expiredProof = proofValid && Date.parse(expiresAt) <= now.getTime();
+  if (!unexpired && !expiredProof) {
+    return {
+      state: receipt === null ? 'missing' : 'failed',
+      commit: receipt?.commit ?? null,
+      generatedAt,
+      expiresAt,
+      digest: null,
+      rollbackDigest: null,
+      finalRestoreDigest: null,
+    };
+  }
+  return {
+    state: unexpired ? 'authenticated_prior' : 'expired_prior_proof',
+    commit: receipt.commit,
+    generatedAt,
+    expiresAt,
+    digest: boundedHash(JSON.stringify(receipt)),
+    rollbackDigest: boundedHash({
+      rollback: receipt.checks.rollback,
+      externalRollback: receipt.checks.externalRollback,
+    }),
+    finalRestoreDigest: boundedHash({
+      finalRestore: receipt.checks.finalRestore,
+      externalFinal: receipt.checks.externalFinal,
+    }),
+  };
+}
+
+async function queryDoh''',
+          )
+
+          replace_once(
+              p606,
+              "      status: prior.state === 'authenticated_prior' ? 'prior_authenticated' : 'failed',",
+              "      status:\n        prior.state === 'authenticated_prior'\n          ? 'prior_authenticated'\n          : prior.state === 'expired_prior_proof'\n            ? 'expired_prior_pending_revalidation'\n            : 'failed',",
+          )
+          replace_once(
+              p606,
+              "    diagnostic.state === 'current_existing_candidate' &&\n    prior.state === 'authenticated_prior';",
+              "    diagnostic.state === 'current_existing_candidate' &&\n    ['authenticated_prior', 'expired_prior_proof'].includes(prior.state);",
+          )
+          replace_once(
+              p606,
+              "      const external = await observeExternal(p6Receipt);\n      if (external?.status !== 'passed') throw new Error('external_continuity_failed');\n      checks.duplicate = { status: 'passed', reused: true };",
+              "      const external = await observeExternal(p6Receipt);\n      if (external?.status !== 'passed') throw new Error('external_continuity_failed');\n      if (prior.state === 'expired_prior_proof') {\n        checks.continuity.status = 'expired_prior_revalidated';\n      }\n      checks.duplicate = { status: 'passed', reused: true };",
+          )
+          replace_once(
+              p606,
+              "    const diagnostic = readJson(root, diagnosticPath);\n    diagnostic.checks.inventory.candidateCount = 2;",
+              "    const expiredPrior = readJson(root, acceptedReceiptPath);\n    expiredPrior.expiresAt = '2026-08-03T02:30:00.000Z';\n    writeFixture(root, acceptedReceiptPath, expiredPrior);\n    const recovered = await runContinuity({\n      statusRoot: root,\n      outputPath,\n      commit,\n      confirmation: exactConfirmation,\n      owner: 'continuity-test-owner',\n      workflowRunId: 'self-test-expired',\n      repositoryContract: true,\n      now,\n      observeExternal: async () => ({\n        status: 'passed',\n        dns: { passed: true },\n        tls: { passed: true },\n        routeCount: 11,\n        releaseId: 'sha256:current-release',\n      }),\n    });\n    assert(recovered.state === 'accepted', 'expired historical proof must recover only with fresh checks');\n    assert(\n      recovered.checks.continuity.status === 'expired_prior_revalidated',\n      'expired prior proof must be explicitly classified as revalidated',\n    );\n\n    const diagnostic = readJson(root, diagnosticPath);\n    diagnostic.checks.inventory.candidateCount = 2;",
+          )
+
+          p605_doc = 'docs/OPS_P6_001I_CONFIGURED_STAGING_P6_05_PUBLIC_EXPORT_RELEASE.md'
+          replace_once(
+              p605_doc,
+              "- an unexpired prior configured-staging P6-06 receipt authenticates the hostname digest;\n- that receipt proves cutover or existing final state, external cutover verification, rollback, external rollback verification, final restore, final external verification, and zero exceptions.",
+              "- a prior configured-staging P6-06 receipt authenticates the hostname digest and proves cutover or existing final state, external cutover verification, rollback, external rollback verification, final restore, final external verification, and zero exceptions;\n- when that prior P6-06 receipt is expired, a current exact-main P6-06 read-only diagnostic must additionally report exactly one approved existing candidate with successful DNS read, safe Pages topology, the protected zone match, and zero exceptions.",
+          )
+          replace_once(
+              p605_doc,
+              "When the prior P6-06 receipt expires, P6-05 fails closed until continuity is revalidated.",
+              "When the prior P6-06 receipt is expired, it is historical proof only: P6-05 accepts the existing staging hostname solely when a fresh exact-main P6-06 read-only diagnostic independently revalidates that one approved topology. The receipt records this bounded path as `expired_prior_revalidated`; a missing, stale, ambiguous, or failed diagnostic remains fail-closed.",
+          )
+
+          p606_doc = 'docs/OPS_P6_001R_CONFIGURED_STAGING_P6_06_CONTINUITY_REVALIDATION.md'
+          replace_once(
+              p606_doc,
+              "- a prior accepted configured-staging P6-06 receipt for the approved hostname;\n- prior cutover, external cutover, rollback, external rollback, final restore, and final external verification evidence;\n- an unexpired prior receipt with no exception.",
+              "- a prior accepted configured-staging P6-06 receipt for the approved hostname;\n- prior cutover, external cutover, rollback, external rollback, final restore, and final external verification evidence;\n- zero exceptions in that prior receipt; when it is expired, it is treated only as historical rollback/final-restore proof and must be revalidated by the current diagnostic plus the fresh external checks in this run.",
+          )
+          replace_once(
+              p606_doc,
+              "- fails closed when prior rollback proof is missing, malformed, expired, or contains any exception.",
+              "- fails closed when prior rollback proof is missing, malformed, or contains any exception; expired proof is accepted only as historical evidence after the current exact-main diagnostic is safe and this run's fresh DNS, TLS, route, Admin-boundary, and release-identity checks all pass.",
+          )
+
+          p605_check = 'scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs'
+          replace_once(
+              p605_check,
+              "  [files.executor, \"state: 'authenticated_prior'\"],\n  [files.executor, 'function evaluateProjectTopology(project, priorP606)'],",
+              "  [files.executor, \"state: 'authenticated_prior'\"],\n  [files.executor, \"'expired_prior_proof'\"],\n  [files.executor, \"'current_existing_candidate'\"],\n  [files.executor, \"'expired_prior_revalidated'\"],\n  [files.executor, 'function evaluateProjectTopology(project, priorP606, diagnostic = null)'],",
+          )
+          replace_once(
+              p605_check,
+              "if (!files.executor.includes(\"priorP606.state === 'authenticated_prior'\")) {\n  throw new Error('OPS-P6-001I executor must authenticate prior P6-06 evidence.');\n}",
+              "if (!files.executor.includes(\"priorP606.state === 'authenticated_prior'\")) {\n  throw new Error('OPS-P6-001I executor must authenticate prior P6-06 evidence.');\n}\nif (!files.executor.includes(\"priorP606.state === 'expired_prior_proof'\")) {\n  throw new Error('OPS-P6-001I executor must classify expired prior P6-06 only as historical proof.');\n}\nif (!files.executor.includes(\"diagnostic?.state === 'current_existing_candidate'\")) {\n  throw new Error('OPS-P6-001I expired-proof recovery must require a fresh exact-main P6-06 diagnostic.');\n}\nif (!files.executor.includes(\"expiredPriorRevalidated ? 'expired_prior_revalidated'\")) {\n  throw new Error('OPS-P6-001I must retain an explicit expired-proof recovery classification.');\n}",
+          )
+          replace_once(
+              p605_check,
+              "if (!files.executor.includes(\"unauthenticatedTopology.status !== 'failed'\")) {",
+              "if (!files.executor.includes(\"expiredRevalidatedTopology.status !== 'passed'\")) {\n  throw new Error('OPS-P6-001I self-test must cover expired prior proof with a fresh diagnostic.');\n}\nif (!files.executor.includes(\"expiredUnrevalidatedTopology.status !== 'failed'\")) {\n  throw new Error('OPS-P6-001I self-test must reject expired prior proof without a fresh diagnostic.');\n}\nif (!files.executor.includes(\"unauthenticatedTopology.status !== 'failed'\")) {",
+          )
+
+          p606_check = 'scripts/check-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs'
+          replace_once(
+              p606_check,
+              "  [files.executor, \"prior.state === 'authenticated_prior'\"],\n  [files.executor, \"evidenceSource: 'prior_accepted_receipt'\"],",
+              "  [files.executor, \"'expired_prior_proof'\"],\n  [files.executor, \"'expired_prior_pending_revalidation'\"],\n  [files.executor, \"'expired_prior_revalidated'\"],\n  [files.executor, \"evidenceSource: 'prior_accepted_receipt'\"],",
+          )
+          replace_once(
+              p606_check,
+              "if (!files.executor.includes(\"receipt?.checks?.rollback?.status === 'passed'\")) {",
+              "if (!files.executor.includes(\"['authenticated_prior', 'expired_prior_proof'].includes(prior.state)\")) {\n  throw new Error('OPS-P6-001R must support bounded renewal from expired historical proof.');\n}\nif (!files.executor.includes(\"checks.continuity.status = 'expired_prior_revalidated'\")) {\n  throw new Error('OPS-P6-001R must classify expired proof as revalidated only after fresh external checks.');\n}\nif (!files.executor.includes(\"receipt?.checks?.rollback?.status === 'passed'\")) {",
+          )
+
+          PY
+
+      - name: Format changed sources
+        run: npx prettier --write scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs scripts/run-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs scripts/check-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs docs/OPS_P6_001I_CONFIGURED_STAGING_P6_05_PUBLIC_EXPORT_RELEASE.md docs/OPS_P6_001R_CONFIGURED_STAGING_P6_06_CONTINUITY_REVALIDATION.md
+
+      - name: Validate recovery contracts
+        run: |
+          npm run check
+          node scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs
+          node scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs --self-test
+          node scripts/check-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs
+          node scripts/run-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs --self-test
+
+      - name: Commit recovery patch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs \
+            scripts/run-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs \
+            scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs \
+            scripts/check-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs \
+            docs/OPS_P6_001I_CONFIGURED_STAGING_P6_05_PUBLIC_EXPORT_RELEASE.md \
+            docs/OPS_P6_001R_CONFIGURED_STAGING_P6_06_CONTINUITY_REVALIDATION.md
+          git diff --cached --check
+          git commit -m 'Recover configured staging evidence after P6-06 expiry'
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
