@@ -1,4 +1,4 @@
-name: One-time P6-07 Q1 exact-main dispatcher
+name: One-time P6-07 exact-main predecessor refresh dispatcher
 
 on:
   pull_request:
@@ -10,33 +10,134 @@ permissions:
   contents: read
 
 jobs:
-  dispatch:
+  refresh:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      APPROVED_COMMIT: d4fb1cc00175142b7472794736120bb210abde4a
     steps:
-      - name: Dispatch P6-07 Q1 prerequisite diagnostic against exact main
-        env:
-          GH_TOKEN: ${{ github.token }}
-          REPOSITORY: ${{ github.repository }}
-          APPROVED_COMMIT: d4fb1cc00175142b7472794736120bb210abde4a
+      - name: Deploy exact main and refresh P6-01 through P6-06 evidence
+        shell: bash
         run: |
           set -euo pipefail
-          payload="$(jq -nc \
-            --arg ref main \
-            --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_07 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg operations_owner badjoke-lab \
-            '{ref:$ref,inputs:{confirmation:$confirmation,approved_commit:$approved_commit,operations_owner:$operations_owner}}')"
-          http_code="$(curl --silent --show-error --output /tmp/response --write-out '%{http_code}' \
-            -X POST \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H 'Accept: application/vnd.github+json' \
-            -H 'X-GitHub-Api-Version: 2022-11-28' \
-            "https://api.github.com/repos/$REPOSITORY/actions/workflows/ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.yml/dispatches" \
-            -d "$payload")"
-          if [ "$http_code" != '204' ]; then
-            cat /tmp/response
-            echo "workflow dispatch failed with HTTP $http_code" >&2
+
+          api_get() {
+            curl --fail --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/$1"
+          }
+
+          dispatch_and_wait() {
+            local workflow="$1"
+            local inputs_json="$2"
+            local started marker payload http_code response run_json run_id status conclusion
+            marker="$(date -u +%s)"
+            if [ "$inputs_json" = '{}' ]; then
+              payload="$(jq -nc --arg ref main '{ref:$ref}')"
+            else
+              payload="$(jq -nc --arg ref main --argjson inputs "$inputs_json" '{ref:$ref,inputs:$inputs}')"
+            fi
+            response="$(mktemp)"
+            http_code="$(curl --silent --show-error --output "$response" --write-out '%{http_code}' \
+              -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/actions/workflows/$workflow/dispatches" \
+              -d "$payload")"
+            if [ "$http_code" != '204' ]; then
+              cat "$response"
+              echo "dispatch failed for $workflow with HTTP $http_code" >&2
+              exit 1
+            fi
+            rm -f "$response"
+            echo "Dispatched $workflow"
+
+            run_id=''
+            for _ in $(seq 1 90); do
+              sleep 5
+              run_json="$(api_get "actions/workflows/$workflow/runs?event=workflow_dispatch&branch=main&per_page=20")"
+              run_id="$(jq -r --arg sha "$APPROVED_COMMIT" --argjson marker "$marker" '
+                [.workflow_runs[] | select(.head_sha == $sha and ((.created_at | fromdateiso8601) >= ($marker - 5)))]
+                | sort_by(.created_at) | last | .id // empty
+              ' <<<"$run_json")"
+              [ -n "$run_id" ] && break
+            done
+            if [ -z "$run_id" ]; then
+              echo "could not locate dispatched run for $workflow" >&2
+              exit 1
+            fi
+            echo "Tracking run $run_id for $workflow"
+
+            for _ in $(seq 1 1080); do
+              run_json="$(api_get "actions/runs/$run_id")"
+              status="$(jq -r '.status' <<<"$run_json")"
+              conclusion="$(jq -r '.conclusion // empty' <<<"$run_json")"
+              if [ "$status" = 'completed' ]; then
+                if [ "$conclusion" != 'success' ]; then
+                  echo "$workflow run $run_id completed with $conclusion" >&2
+                  exit 1
+                fi
+                echo "$workflow run $run_id succeeded"
+                return 0
+              fi
+              sleep 10
+            done
+            echo "timed out waiting for $workflow run $run_id" >&2
             exit 1
-          fi
-          echo "Q1 workflow_dispatch accepted for $APPROVED_COMMIT"
+          }
+
+          owner='badjoke-lab'
+
+          dispatch_and_wait 'staging-deploy.yml' '{}'
+
+          dispatch_and_wait 'ops-p6-001d-configured-staging-p6-01-data-qa.yml' "$(jq -nc \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_01 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg data_owner "$owner" \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,data_owner:$data_owner}')"
+
+          dispatch_and_wait 'ops-p6-001e-configured-staging-p6-02-identity-admin.yml' "$(jq -nc \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_02 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg identity_owner "$owner" \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,identity_owner:$identity_owner}')"
+
+          dispatch_and_wait 'ops-p6-001g-configured-staging-p6-03-neon-transaction.yml' "$(jq -nc \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_03 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg transaction_owner "$owner" \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,transaction_owner:$transaction_owner}')"
+
+          dispatch_and_wait 'ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml' "$(jq -nc \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_04 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg media_owner "$owner" \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,media_owner:$media_owner}')"
+
+          dispatch_and_wait 'ops-p6-001i-configured-staging-p6-05-public-export-release.yml' "$(jq -nc \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_05 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg release_owner "$owner" \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,release_owner:$release_owner}')"
+
+          dispatch_and_wait 'ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml' "$(jq -nc \
+            --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_06 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg domain_owner "$owner" \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
+
+          dispatch_and_wait 'ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml' "$(jq -nc \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_06 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg approved_hostname staging.cryptopaymap.com \
+            --arg domain_owner "$owner" \
+            --arg change_window p6-07-refresh-2026-08-08 \
+            '{confirmation:$confirmation,approved_commit:$approved_commit,approved_hostname:$approved_hostname,domain_owner:$domain_owner,change_window:$change_window}')"
+
+          echo 'Exact-main predecessor refresh chain completed successfully.'
