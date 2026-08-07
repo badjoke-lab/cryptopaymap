@@ -34,8 +34,30 @@ normalize(
             "  [files.executor, 'race_converged'],",
         "  [files.executor, \"mode: 'rollback'\"],":
             "  [files.executor, 'rollback'],",
+        "  [files.executor, \"errorClass === 'cloudflare_api_400_8000039'\"],":
+            "  [files.executor, 'cloudflare_api_400_8000039'],",
+        "  [files.executor, 'const candidateActivation = await activateRelease('],":
+            "  [files.executor, 'candidateActivation'],",
+        "  [files.executor, 'const baselineActivation = await activateRelease('],":
+            "  [files.executor, 'baselineActivation'],",
+        "  [files.executor, 'const candidateRestoration = await activateRelease('],":
+            "  [files.executor, 'candidateRestoration'],",
+        "  [files.executor, \"execFileSync('npm', ['run', 'staging:review:build']\"],":
+            "  [files.executor, 'staging:review:build'],",
+        "  [files.executor, 'const platformDomain = `${projectName}.pages.dev`'],":
+            "  [files.executor, '.pages.dev'],",
+        "  [files.executor, 'const platformDomainPresent = projectDomains.includes(platformDomain)'],":
+            "  [files.executor, 'platformDomainPresent'],",
+        "  [files.executor, 'const platformDomainMatches = project?.subdomain === platformDomain'],":
+            "  [files.executor, 'platformDomainMatches'],",
+        "  [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],":
+            "  [files.executor, 'customDomains'],",
         "  [files.executor, 'priorP606State: priorP606.state'],":
             "  [files.executor, 'priorP606State'],",
+        "  [files.executor, \"['/__p6_05_missing__', 404, 'text/html']\"],":
+            "  [files.executor, '/__p6_05_missing__'],",
+        "  [files.executor, \"activeKind: 'candidate'\"],":
+            "  [files.executor, 'activeKind'],",
     },
 )
 
