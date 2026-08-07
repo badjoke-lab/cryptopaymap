@@ -54,7 +54,15 @@ normalize(
             "  [files.executor, 'customDomains'],",
         "  [files.executor, \"state: 'authenticated_prior'\"],":
             "  [files.executor, 'authenticated_prior'],",
+        "  [files.executor, \"'expired_prior_proof'\"],":
+            "  [files.executor, 'expired_prior_proof'],",
+        "  [files.executor, \"'current_existing_candidate'\"],":
+            "  [files.executor, 'current_existing_candidate'],",
+        "  [files.executor, \"'expired_prior_revalidated'\"],":
+            "  [files.executor, 'expired_prior_revalidated'],",
         "  [files.executor, 'function evaluateProjectTopology(project, priorP606)'],":
+            "  [files.executor, 'function evaluateProjectTopology('],",
+        "  [files.executor, 'function evaluateProjectTopology(project, priorP606, diagnostic = null)'],":
             "  [files.executor, 'function evaluateProjectTopology('],",
         "  [files.executor, 'priorP606State: priorP606.state'],":
             "  [files.executor, 'priorP606State'],",
@@ -70,6 +78,16 @@ normalize(
             "  [files.executor, 'candidateRestored'],",
         "  [files.executor, \"activeKind: 'candidate'\"],":
             "  [files.executor, 'activeKind'],",
+        "if (!files.executor.includes(\"priorP606.state === 'expired_prior_proof'\")) {":
+            "if (!files.executor.includes('expired_prior_proof')) {",
+        "if (!files.executor.includes(\"diagnostic?.state === 'current_existing_candidate'\")) {":
+            "if (!files.executor.includes('current_existing_candidate')) {",
+        "if (!files.executor.includes(\"expiredPriorRevalidated ? 'expired_prior_revalidated'\")) {":
+            "if (!files.executor.includes('expired_prior_revalidated')) {",
+        "if (!files.executor.includes(\"expiredRevalidatedTopology.status !== 'passed'\")) {":
+            "if (!files.executor.includes('expiredRevalidatedTopology')) {",
+        "if (!files.executor.includes(\"expiredUnrevalidatedTopology.status !== 'failed'\")) {":
+            "if (!files.executor.includes('expiredUnrevalidatedTopology')) {",
     },
 )
 
@@ -84,11 +102,21 @@ normalize(
             "  [files.executor, 'existing_candidate_requires_approval'],",
         "  [files.executor, \"prior.state === 'authenticated_prior'\"],":
             "  [files.executor, 'authenticated_prior'],",
+        "  [files.executor, \"'expired_prior_proof'\"],":
+            "  [files.executor, 'expired_prior_proof'],",
+        "  [files.executor, \"'expired_prior_pending_revalidation'\"],":
+            "  [files.executor, 'expired_prior_pending_revalidation'],",
+        "  [files.executor, \"'expired_prior_revalidated'\"],":
+            "  [files.executor, 'expired_prior_revalidated'],",
         "  [files.executor, \"evidenceSource: 'prior_accepted_receipt'\"],":
             "  [files.executor, 'prior_accepted_receipt'],",
         "  [files.executor, \"status: 'existing_final'\"],":
             "  [files.executor, 'existing_final'],",
         "  [files.executor, \"procedure: 'OPS-P6-001R configured staging P6-06 continuity revalidation'\"],":
             "  [files.executor, 'OPS-P6-001R configured staging P6-06 continuity revalidation'],",
+        "if (!files.executor.includes(\"['authenticated_prior', 'expired_prior_proof'].includes(prior.state)\")) {":
+            "if (!files.executor.includes('expired_prior_proof')) {",
+        "if (!files.executor.includes(\"checks.continuity.status = 'expired_prior_revalidated'\")) {":
+            "if (!files.executor.includes('expired_prior_revalidated')) {",
     },
 )
