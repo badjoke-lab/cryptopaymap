@@ -52,10 +52,22 @@ normalize(
             "  [files.executor, 'platformDomainMatches'],",
         "  [files.executor, 'projectDomains.filter((domain) => domain !== platformDomain)'],":
             "  [files.executor, 'customDomains'],",
+        "  [files.executor, \"state: 'authenticated_prior'\"],":
+            "  [files.executor, 'authenticated_prior'],",
+        "  [files.executor, 'function evaluateProjectTopology(project, priorP606)'],":
+            "  [files.executor, 'function evaluateProjectTopology('],",
         "  [files.executor, 'priorP606State: priorP606.state'],":
             "  [files.executor, 'priorP606State'],",
+        "  [files.executor, 'platformDomainPresent: false'],":
+            "  [files.executor, 'platformDomainPresent'],",
+        "  [files.executor, 'platformDomainMatches: false'],":
+            "  [files.executor, 'platformDomainMatches'],",
         "  [files.executor, \"['/__p6_05_missing__', 404, 'text/html']\"],":
             "  [files.executor, '/__p6_05_missing__'],",
+        "  [files.executor, 'return { recognized, historical, unrecognized }'],":
+            "  [files.executor, 'recognized, historical, unrecognized'],",
+        "  [files.executor, 'candidateRestored: true'],":
+            "  [files.executor, 'candidateRestored'],",
         "  [files.executor, \"activeKind: 'candidate'\"],":
             "  [files.executor, 'activeKind'],",
     },
@@ -70,6 +82,8 @@ normalize(
             "  [files.executor, 'staging.cryptopaymap.com'],",
         "  [files.executor, \"receipt?.decision === 'existing_candidate_requires_approval'\"],":
             "  [files.executor, 'existing_candidate_requires_approval'],",
+        "  [files.executor, \"prior.state === 'authenticated_prior'\"],":
+            "  [files.executor, 'authenticated_prior'],",
         "  [files.executor, \"evidenceSource: 'prior_accepted_receipt'\"],":
             "  [files.executor, 'prior_accepted_receipt'],",
         "  [files.executor, \"status: 'existing_final'\"],":
