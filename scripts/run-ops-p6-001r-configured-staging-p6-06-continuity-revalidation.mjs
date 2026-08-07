@@ -1,65 +1,45 @@
-import { createHash } from "node:crypto";
-import { promises as dns } from "node:dns";
-import {
-  existsSync,
-  mkdirSync,
-  mkdtempSync,
-  readFileSync,
-  rmSync,
-  writeFileSync,
-} from "node:fs";
-import { tmpdir } from "node:os";
-import { dirname, join, resolve } from "node:path";
-import { pathToFileURL } from "node:url";
-import tls from "node:tls";
+import { createHash } from 'node:crypto';
+import { promises as dns } from 'node:dns';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { dirname, join, resolve } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import tls from 'node:tls';
 
-const exactConfirmation = "REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY";
-const evidenceId = "P6-06";
-const approvedHostname = "staging.cryptopaymap.com";
+const exactConfirmation = 'REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY';
+const evidenceId = 'P6-06';
+const approvedHostname = 'staging.cryptopaymap.com';
 const expiryHours = 72;
-const bindingKeys = [
-  "releaseId",
-  "dataSnapshotId",
-  "configurationId",
-  "environmentId",
-];
+const bindingKeys = ['releaseId', 'dataSnapshotId', 'configurationId', 'environmentId'];
 const predecessorPaths = [
-  ["P6-01", "config/staging-authorization/p6-01-data-qa-receipt.json"],
-  ["P6-02", "config/staging-authorization/p6-02-identity-admin-receipt.json"],
-  ["P6-03", "config/staging-authorization/p6-03-neon-transaction-receipt.json"],
-  [
-    "P6-04",
-    "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
-  ],
-  [
-    "P6-05",
-    "config/staging-authorization/p6-05-public-export-release-receipt.json",
-  ],
+  ['P6-01', 'config/staging-authorization/p6-01-data-qa-receipt.json'],
+  ['P6-02', 'config/staging-authorization/p6-02-identity-admin-receipt.json'],
+  ['P6-03', 'config/staging-authorization/p6-03-neon-transaction-receipt.json'],
+  ['P6-04', 'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json'],
+  ['P6-05', 'config/staging-authorization/p6-05-public-export-release-receipt.json'],
 ];
-const diagnosticPath =
-  "config/staging-authorization/p6-06-domain-topology-diagnostic.json";
+const diagnosticPath = 'config/staging-authorization/p6-06-domain-topology-diagnostic.json';
 const acceptedReceiptPath =
-  "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json";
+  'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
 const publicRoutes = [
-  ["/", 200, "text/html"],
-  ["/places/", 200, "text/html"],
-  ["/place/staging-coffee-tokyo/", 200, "text/html"],
-  ["/online/", 200, "text/html"],
-  ["/service/staging-vpn/", 200, "text/html"],
-  ["/version.json", 200, "application/json"],
-  ["/data/manifest.json", 200, "application/json"],
-  ["/robots.txt", 200, "text/plain"],
-  ["/staging-review/media/place-cover.webp", 200, "image/webp"],
-  ["/__p6_06_missing__", 404, "text/html"],
-  ["/admin/api/dashboard", 403, "text/plain"],
+  ['/', 200, 'text/html'],
+  ['/places/', 200, 'text/html'],
+  ['/place/staging-coffee-tokyo/', 200, 'text/html'],
+  ['/online/', 200, 'text/html'],
+  ['/service/staging-vpn/', 200, 'text/html'],
+  ['/version.json', 200, 'application/json'],
+  ['/data/manifest.json', 200, 'application/json'],
+  ['/robots.txt', 200, 'text/plain'],
+  ['/staging-review/media/place-cover.webp', 200, 'image/webp'],
+  ['/__p6_06_missing__', 404, 'text/html'],
+  ['/admin/api/dashboard', 403, 'text/plain'],
 ];
 
 function sha256(value) {
-  const hash = createHash("sha256");
-  if (typeof value === "string" || value instanceof Uint8Array)
-    hash.update(value);
-  else hash.update(JSON.stringify(value), "utf8");
-  return hash.digest("hex");
+  const hash = createHash('sha256');
+  if (typeof value === 'string' || value instanceof Uint8Array) hash.update(value);
+  else hash.update(JSON.stringify(value), 'utf8');
+  return hash.digest('hex');
 }
 
 function boundedHash(value) {
@@ -67,43 +47,31 @@ function boundedHash(value) {
 }
 
 function isObject(value) {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
 function validCommit(value) {
-  return typeof value === "string" && /^[a-f0-9]{40}$/.test(value);
+  return typeof value === 'string' && /^[a-f0-9]{40}$/.test(value);
 }
 
 function validOperator(value) {
-  return (
-    typeof value === "string" &&
-    value.trim().length >= 2 &&
-    value.trim().length <= 100
-  );
+  return typeof value === 'string' && value.trim().length >= 2 && value.trim().length <= 100;
 }
 
 function safeTimestamp(value) {
-  return typeof value === "string" && Number.isFinite(Date.parse(value))
-    ? value
-    : null;
+  return typeof value === 'string' && Number.isFinite(Date.parse(value)) ? value : null;
 }
 
 function readJson(root, relativePath) {
   try {
-    const value = JSON.parse(readFileSync(resolve(root, relativePath), "utf8"));
+    const value = JSON.parse(readFileSync(resolve(root, relativePath), 'utf8'));
     return isObject(value) ? value : null;
   } catch {
     return null;
   }
 }
 
-function readPredecessor(
-  statusRoot,
-  expectedEvidenceId,
-  relativePath,
-  commit,
-  now,
-) {
+function readPredecessor(statusRoot, expectedEvidenceId, relativePath, commit, now) {
   const receipt = readJson(statusRoot, relativePath);
   const generatedAt = safeTimestamp(receipt?.generatedAt);
   const expiresAt = safeTimestamp(receipt?.expiresAt);
@@ -111,15 +79,13 @@ function readPredecessor(
   const bindingValid =
     binding !== null &&
     bindingKeys.every(
-      (key) =>
-        typeof binding[key] === "string" &&
-        /^sha256:[a-f0-9]{64}$/.test(binding[key]),
+      (key) => typeof binding[key] === 'string' && /^sha256:[a-f0-9]{64}$/.test(binding[key]),
     );
   const current =
     receipt?.version === 1 &&
     receipt?.evidenceId === expectedEvidenceId &&
-    receipt?.environment === "configured_staging" &&
-    receipt?.state === "accepted" &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'accepted' &&
     receipt?.commit === commit &&
     generatedAt !== null &&
     expiresAt !== null &&
@@ -129,28 +95,21 @@ function readPredecessor(
     evidenceId: expectedEvidenceId,
     path: relativePath,
     state: current
-      ? "current"
+      ? 'current'
       : receipt === null
-        ? "missing"
+        ? 'missing'
         : expiresAt !== null && Date.parse(expiresAt) <= now.getTime()
-          ? "stale"
-          : "failed",
+          ? 'stale'
+          : 'failed',
     generatedAt,
     expiresAt,
-    binding: current
-      ? Object.fromEntries(bindingKeys.map((key) => [key, binding[key]]))
-      : null,
+    binding: current ? Object.fromEntries(bindingKeys.map((key) => [key, binding[key]])) : null,
     receipt: current ? receipt : null,
   };
 }
 
 function sharedBinding(predecessors) {
-  if (
-    predecessors.some(
-      (item) => item.state !== "current" || item.binding === null,
-    )
-  )
-    return null;
+  if (predecessors.some((item) => item.state !== 'current' || item.binding === null)) return null;
   const first = JSON.stringify(predecessors[0].binding);
   return predecessors.every((item) => JSON.stringify(item.binding) === first)
     ? predecessors[0].binding
@@ -162,14 +121,14 @@ function readDiagnostic(statusRoot, commit, now) {
   const expiresAt = safeTimestamp(receipt?.expiresAt);
   const current =
     receipt?.version === 1 &&
-    receipt?.evidenceId === "P6-06-DIAGNOSTIC" &&
-    receipt?.environment === "configured_staging" &&
-    receipt?.state === "diagnosed" &&
-    receipt?.decision === "existing_candidate_requires_approval" &&
+    receipt?.evidenceId === 'P6-06-DIAGNOSTIC' &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'diagnosed' &&
+    receipt?.decision === 'existing_candidate_requires_approval' &&
     receipt?.commit === commit &&
     expiresAt !== null &&
     Date.parse(expiresAt) > now.getTime() &&
-    receipt?.checks?.permissions?.dnsList === "success" &&
+    receipt?.checks?.permissions?.dnsList === 'success' &&
     receipt?.checks?.topology?.projectSafe === true &&
     receipt?.checks?.topology?.zoneMatchesExpected === true &&
     receipt?.checks?.topology?.platformDomainPresent === true &&
@@ -181,11 +140,7 @@ function readDiagnostic(statusRoot, commit, now) {
     receipt.exceptions.length === 0;
   return {
     path: diagnosticPath,
-    state: current
-      ? "current_existing_candidate"
-      : receipt === null
-        ? "missing"
-        : "failed",
+    state: current ? 'current_existing_candidate' : receipt === null ? 'missing' : 'failed',
     decision: receipt?.decision ?? null,
     generatedAt: safeTimestamp(receipt?.generatedAt),
     expiresAt,
@@ -200,25 +155,25 @@ function readPriorAccepted(statusRoot, commit, now) {
   const proofValid =
     receipt?.version === 1 &&
     receipt?.evidenceId === evidenceId &&
-    receipt?.environment === "configured_staging" &&
-    receipt?.state === "accepted" &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'accepted' &&
     validCommit(receipt?.commit) &&
     generatedAt !== null &&
     expiresAt !== null &&
     receipt?.checks?.hostname?.digest === boundedHash(approvedHostname) &&
-    ["passed", "existing"].includes(receipt?.checks?.cutover?.status) &&
-    receipt?.checks?.externalCutover?.status === "passed" &&
-    receipt?.checks?.rollback?.status === "passed" &&
-    receipt?.checks?.externalRollback?.status === "passed" &&
-    receipt?.checks?.finalRestore?.status === "passed" &&
-    receipt?.checks?.externalFinal?.status === "passed" &&
+    ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
+    receipt?.checks?.externalCutover?.status === 'passed' &&
+    receipt?.checks?.rollback?.status === 'passed' &&
+    receipt?.checks?.externalRollback?.status === 'passed' &&
+    receipt?.checks?.finalRestore?.status === 'passed' &&
+    receipt?.checks?.externalFinal?.status === 'passed' &&
     Array.isArray(receipt?.exceptions) &&
     receipt.exceptions.length === 0;
   const unexpired = proofValid && Date.parse(expiresAt) > now.getTime();
   const expiredProof = proofValid && Date.parse(expiresAt) <= now.getTime();
   if (!unexpired && !expiredProof) {
     return {
-      state: receipt === null ? "missing" : "failed",
+      state: receipt === null ? 'missing' : 'failed',
       commit: receipt?.commit ?? null,
       generatedAt,
       expiresAt,
@@ -228,7 +183,7 @@ function readPriorAccepted(statusRoot, commit, now) {
     };
   }
   return {
-    state: unexpired ? "authenticated_prior" : "expired_prior_proof",
+    state: unexpired ? 'authenticated_prior' : 'expired_prior_proof',
     commit: receipt.commit,
     generatedAt,
     expiresAt,
@@ -245,19 +200,16 @@ function readPriorAccepted(statusRoot, commit, now) {
 }
 
 async function queryDoh(endpoint, hostname) {
-  const response = await fetch(
-    `${endpoint}?name=${encodeURIComponent(hostname)}&type=A`,
-    {
-      headers: { Accept: "application/dns-json" },
-      cache: "no-store",
-      signal: AbortSignal.timeout(20_000),
-    },
-  );
+  const response = await fetch(`${endpoint}?name=${encodeURIComponent(hostname)}&type=A`, {
+    headers: { Accept: 'application/dns-json' },
+    cache: 'no-store',
+    signal: AbortSignal.timeout(20_000),
+  });
   const body = await response.json();
   const answers = Array.isArray(body?.Answer)
     ? body.Answer.map((item) => ({
         type: item?.type ?? null,
-        dataDigest: boundedHash(item?.data ?? "missing"),
+        dataDigest: boundedHash(item?.data ?? 'missing'),
       }))
     : [];
   return {
@@ -270,8 +222,8 @@ async function queryDoh(endpoint, hostname) {
 async function observeDns() {
   const [system, cloudflare, google] = await Promise.all([
     dns.resolve4(approvedHostname, { ttl: true }),
-    queryDoh("https://cloudflare-dns.com/dns-query", approvedHostname),
-    queryDoh("https://dns.google/resolve", approvedHostname),
+    queryDoh('https://cloudflare-dns.com/dns-query', approvedHostname),
+    queryDoh('https://dns.google/resolve', approvedHostname),
   ]);
   const passed =
     system.length > 0 &&
@@ -306,9 +258,7 @@ async function observeTls() {
         try {
           const certificate = socket.getPeerCertificate(true);
           const san =
-            typeof certificate?.subjectaltname === "string"
-              ? certificate.subjectaltname
-              : "";
+            typeof certificate?.subjectaltname === 'string' ? certificate.subjectaltname : '';
           const validTo = safeTimestamp(certificate?.valid_to);
           const protocol = socket.getProtocol();
           const passed =
@@ -316,20 +266,16 @@ async function observeTls() {
             san.toLowerCase().includes(approvedHostname) &&
             validTo !== null &&
             Date.parse(validTo) > Date.now() + 7 * 24 * 60 * 60 * 1_000 &&
-            ["TLSv1.2", "TLSv1.3"].includes(protocol);
+            ['TLSv1.2', 'TLSv1.3'].includes(protocol);
           socket.end();
           resolvePromise({
             passed,
             protocol,
             validTo,
             certificateDigest: boundedHash(
-              certificate?.fingerprint256 ??
-                certificate?.fingerprint ??
-                "missing",
+              certificate?.fingerprint256 ?? certificate?.fingerprint ?? 'missing',
             ),
-            issuerDigest: boundedHash(
-              JSON.stringify(certificate?.issuer ?? {}),
-            ),
+            issuerDigest: boundedHash(JSON.stringify(certificate?.issuer ?? {})),
             hostnameCovered: san.toLowerCase().includes(approvedHostname),
           });
         } catch (error) {
@@ -338,8 +284,8 @@ async function observeTls() {
         }
       },
     );
-    socket.on("timeout", () => socket.destroy(new Error("tls_timeout")));
-    socket.on("error", rejectPromise);
+    socket.on('timeout', () => socket.destroy(new Error('tls_timeout')));
+    socket.on('error', rejectPromise);
   });
 }
 
@@ -351,22 +297,19 @@ function noPrivateLeakage(text) {
 
 async function verifyExternal(p6Receipt) {
   const dnsResult = await observeDns();
-  if (!dnsResult.passed) throw new Error("dns_continuity_failed");
+  if (!dnsResult.passed) throw new Error('dns_continuity_failed');
   const tlsResult = await observeTls();
-  if (!tlsResult.passed) throw new Error("tls_continuity_failed");
+  if (!tlsResult.passed) throw new Error('tls_continuity_failed');
 
-  const redirect = await fetch(
-    `http://${approvedHostname}/?p6_06_continuity=${Date.now()}`,
-    {
-      redirect: "manual",
-      cache: "no-store",
-      signal: AbortSignal.timeout(20_000),
-    },
-  );
-  const location = redirect.headers.get("location");
+  const redirect = await fetch(`http://${approvedHostname}/?p6_06_continuity=${Date.now()}`, {
+    redirect: 'manual',
+    cache: 'no-store',
+    signal: AbortSignal.timeout(20_000),
+  });
+  const location = redirect.headers.get('location');
   if (
     ![301, 302, 307, 308].includes(redirect.status) ||
-    typeof location !== "string" ||
+    typeof location !== 'string' ||
     !location.startsWith(`https://${approvedHostname}/`)
   ) {
     throw new Error(`http_redirect_invalid_${redirect.status}`);
@@ -377,22 +320,19 @@ async function verifyExternal(p6Receipt) {
     const response = await fetch(
       `https://${approvedHostname}${path}?p6_06_continuity=${Date.now()}-${Math.random()}`,
       {
-        redirect: "manual",
-        cache: "no-store",
+        redirect: 'manual',
+        cache: 'no-store',
         signal: AbortSignal.timeout(20_000),
       },
     );
     const bytes = new Uint8Array(await response.arrayBuffer());
-    const contentType =
-      response.headers.get("content-type")?.split(";")[0] ?? null;
+    const contentType = response.headers.get('content-type')?.split(';')[0] ?? null;
     const text = new TextDecoder().decode(bytes).slice(0, 32_768);
     if (response.status !== expectedStatus) {
       throw new Error(`route_status_${path}_${response.status}`);
     }
-    if (contentType !== expectedType)
-      throw new Error(`route_type_${path}_${contentType}`);
-    if (!noPrivateLeakage(text))
-      throw new Error(`route_private_leakage_${path}`);
+    if (contentType !== expectedType) throw new Error(`route_type_${path}_${contentType}`);
+    if (!noPrivateLeakage(text)) throw new Error(`route_private_leakage_${path}`);
     routeResults.push({
       path,
       status: response.status,
@@ -403,22 +343,19 @@ async function verifyExternal(p6Receipt) {
 
   const markerResponse = await fetch(
     `https://${approvedHostname}/p6-05-release.json?p6_06_continuity_marker=${Date.now()}`,
-    { cache: "no-store", signal: AbortSignal.timeout(20_000) },
+    { cache: 'no-store', signal: AbortSignal.timeout(20_000) },
   );
   if (markerResponse.status !== 200) {
     throw new Error(`release_marker_status_${markerResponse.status}`);
   }
   const marker = await markerResponse.json();
   const expectedReleaseId = p6Receipt?.checks?.releases?.candidate?.releaseId;
-  if (
-    typeof expectedReleaseId !== "string" ||
-    marker?.releaseId !== expectedReleaseId
-  ) {
-    throw new Error("active_release_identity_mismatch");
+  if (typeof expectedReleaseId !== 'string' || marker?.releaseId !== expectedReleaseId) {
+    throw new Error('active_release_identity_mismatch');
   }
 
   return {
-    status: "passed",
+    status: 'passed',
     dns: dnsResult,
     tls: tlsResult,
     redirect: {
@@ -443,13 +380,11 @@ async function runContinuity({
   observeExternal = verifyExternal,
 }) {
   const predecessors = validCommit(commit)
-    ? predecessorPaths.map(([id, path]) =>
-        readPredecessor(statusRoot, id, path, commit, now),
-      )
+    ? predecessorPaths.map(([id, path]) => readPredecessor(statusRoot, id, path, commit, now))
     : predecessorPaths.map(([id, path]) => ({
         evidenceId: id,
         path,
-        state: "failed",
+        state: 'failed',
         generatedAt: null,
         expiresAt: null,
         binding: null,
@@ -458,118 +393,110 @@ async function runContinuity({
   const binding = sharedBinding(predecessors);
   const diagnostic = validCommit(commit)
     ? readDiagnostic(statusRoot, commit, now)
-    : { path: diagnosticPath, state: "failed", decision: null, digest: null };
+    : { path: diagnosticPath, state: 'failed', decision: null, digest: null };
   const prior = validCommit(commit)
     ? readPriorAccepted(statusRoot, commit, now)
     : {
-        state: "failed",
+        state: 'failed',
         digest: null,
         rollbackDigest: null,
         finalRestoreDigest: null,
       };
-  const p6Receipt =
-    predecessors.find((item) => item.evidenceId === "P6-05")?.receipt ?? null;
+  const p6Receipt = predecessors.find((item) => item.evidenceId === 'P6-05')?.receipt ?? null;
   const checks = {
-    exactMain: validCommit(commit) ? "success" : "failed",
-    confirmation: confirmation === exactConfirmation ? "success" : "failed",
-    hostname: { status: "success", digest: boundedHash(approvedHostname) },
-    owner: validOperator(owner) ? "success" : "failed",
-    repositoryContract: repositoryContract ? "success" : "failed",
-    predecessors: predecessors.map(
-      ({ binding: _binding, receipt: _receipt, ...item }) => item,
-    ),
-    predecessorBinding: binding === null ? "failed" : "matched",
+    exactMain: validCommit(commit) ? 'success' : 'failed',
+    confirmation: confirmation === exactConfirmation ? 'success' : 'failed',
+    hostname: { status: 'success', digest: boundedHash(approvedHostname) },
+    owner: validOperator(owner) ? 'success' : 'failed',
+    repositoryContract: repositoryContract ? 'success' : 'failed',
+    predecessors: predecessors.map(({ binding: _binding, receipt: _receipt, ...item }) => item),
+    predecessorBinding: binding === null ? 'failed' : 'matched',
     diagnostic,
     continuity: {
       status:
-        prior.state === "authenticated_prior"
-          ? "prior_authenticated"
-          : prior.state === "expired_prior_proof"
-            ? "expired_prior_pending_revalidation"
-            : "failed",
-      previousCommitDigest: validCommit(prior.commit)
-        ? boundedHash(prior.commit)
-        : null,
+        prior.state === 'authenticated_prior'
+          ? 'prior_authenticated'
+          : prior.state === 'expired_prior_proof'
+            ? 'expired_prior_pending_revalidation'
+            : 'failed',
+      previousCommitDigest: validCommit(prior.commit) ? boundedHash(prior.commit) : null,
       previousGeneratedAt: prior.generatedAt ?? null,
       previousReceiptDigest: prior.digest,
       previousRollbackDigest: prior.rollbackDigest,
       previousFinalRestoreDigest: prior.finalRestoreDigest,
     },
-    duplicate: { status: "not_run", reused: false },
-    preState: { status: "not_run", digest: null, recheckMatched: false },
-    cutover: { status: "not_run", providerDigest: diagnostic.digest },
-    externalCutover: { status: "not_run" },
-    rollback: { status: "not_run", evidenceSource: null, evidenceDigest: null },
+    duplicate: { status: 'not_run', reused: false },
+    preState: { status: 'not_run', digest: null, recheckMatched: false },
+    cutover: { status: 'not_run', providerDigest: diagnostic.digest },
+    externalCutover: { status: 'not_run' },
+    rollback: { status: 'not_run', evidenceSource: null, evidenceDigest: null },
     externalRollback: {
-      status: "not_run",
+      status: 'not_run',
       evidenceSource: null,
       evidenceDigest: null,
     },
     finalRestore: {
-      status: "not_run",
+      status: 'not_run',
       evidenceSource: null,
       evidenceDigest: null,
     },
-    externalFinal: { status: "not_run" },
+    externalFinal: { status: 'not_run' },
   };
   const exceptions = [];
   const preconditions =
-    checks.exactMain === "success" &&
-    checks.confirmation === "success" &&
-    checks.owner === "success" &&
-    checks.repositoryContract === "success" &&
-    predecessors.every((item) => item.state === "current") &&
+    checks.exactMain === 'success' &&
+    checks.confirmation === 'success' &&
+    checks.owner === 'success' &&
+    checks.repositoryContract === 'success' &&
+    predecessors.every((item) => item.state === 'current') &&
     binding !== null &&
-    diagnostic.state === "current_existing_candidate" &&
-    ["authenticated_prior", "expired_prior_proof"].includes(prior.state);
+    diagnostic.state === 'current_existing_candidate' &&
+    ['authenticated_prior', 'expired_prior_proof'].includes(prior.state);
 
-  let state = "failed";
+  let state = 'failed';
   if (!preconditions) {
-    exceptions.push("preconditions:failed");
+    exceptions.push('preconditions:failed');
   } else {
     try {
       const external = await observeExternal(p6Receipt);
-      if (external?.status !== "passed")
-        throw new Error("external_continuity_failed");
-      if (prior.state === "expired_prior_proof") {
-        checks.continuity.status = "expired_prior_revalidated";
+      if (external?.status !== 'passed') throw new Error('external_continuity_failed');
+      if (prior.state === 'expired_prior_proof') {
+        checks.continuity.status = 'expired_prior_revalidated';
       }
-      checks.duplicate = { status: "passed", reused: true };
+      checks.duplicate = { status: 'passed', reused: true };
       checks.preState = {
-        status: "existing_final",
+        status: 'existing_final',
         digest: diagnostic.digest,
         recheckMatched: true,
       };
       checks.cutover = {
-        status: "existing",
+        status: 'existing',
         providerDigest: diagnostic.digest,
       };
       checks.externalCutover = {
-        status: "passed",
-        evidenceSource: "current_external_revalidation",
+        status: 'passed',
+        evidenceSource: 'current_external_revalidation',
         evidenceDigest: boundedHash(external),
       };
       checks.rollback = {
-        status: "passed",
-        evidenceSource: "prior_accepted_receipt",
+        status: 'passed',
+        evidenceSource: 'prior_accepted_receipt',
         evidenceDigest: prior.rollbackDigest,
       };
       checks.externalRollback = {
-        status: "passed",
-        evidenceSource: "prior_accepted_receipt",
+        status: 'passed',
+        evidenceSource: 'prior_accepted_receipt',
         evidenceDigest: prior.rollbackDigest,
       };
       checks.finalRestore = {
-        status: "passed",
-        evidenceSource: "prior_accepted_receipt",
+        status: 'passed',
+        evidenceSource: 'prior_accepted_receipt',
         evidenceDigest: prior.finalRestoreDigest,
       };
       checks.externalFinal = external;
-      state = "accepted";
+      state = 'accepted';
     } catch (error) {
-      exceptions.push(
-        `execution:${error instanceof Error ? error.message : String(error)}`,
-      );
+      exceptions.push(`execution:${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -577,18 +504,15 @@ async function runContinuity({
   const receipt = {
     version: 1,
     evidenceId,
-    launchDomain: "domain_cutover_rollback",
-    environment: "configured_staging",
-    state:
-      state === "accepted" && exceptions.length === 0 ? "accepted" : "failed",
+    launchDomain: 'domain_cutover_rollback',
+    environment: 'configured_staging',
+    state: state === 'accepted' && exceptions.length === 0 ? 'accepted' : 'failed',
     commit: validCommit(commit) ? commit : null,
     generatedAt,
-    expiresAt: new Date(
-      now.getTime() + expiryHours * 60 * 60 * 1_000,
-    ).toISOString(),
+    expiresAt: new Date(now.getTime() + expiryHours * 60 * 60 * 1_000).toISOString(),
     workflowRunId,
     owner: validOperator(owner) ? boundedHash(owner.trim()) : null,
-    procedure: "OPS-P6-001R configured staging P6-06 continuity revalidation",
+    procedure: 'OPS-P6-001R configured staging P6-06 continuity revalidation',
     checks,
     ...(binding === null ? {} : { binding }),
     exceptions: [...new Set(exceptions)].sort(),
@@ -609,33 +533,33 @@ function writeFixture(root, relativePath, value) {
 }
 
 async function runSelfTest() {
-  const root = mkdtempSync(join(tmpdir(), "cpm-p6-06-continuity-"));
-  const commit = "b".repeat(40);
-  const priorCommit = "a".repeat(40);
-  const now = new Date("2026-08-03T03:00:00.000Z");
-  const expiresAt = "2026-08-05T03:00:00.000Z";
+  const root = mkdtempSync(join(tmpdir(), 'cpm-p6-06-continuity-'));
+  const commit = 'b'.repeat(40);
+  const priorCommit = 'a'.repeat(40);
+  const now = new Date('2026-08-03T03:00:00.000Z');
+  const expiresAt = '2026-08-05T03:00:00.000Z';
   const binding = {
-    releaseId: `sha256:${"1".repeat(64)}`,
-    dataSnapshotId: `sha256:${"2".repeat(64)}`,
-    configurationId: `sha256:${"3".repeat(64)}`,
-    environmentId: `sha256:${"4".repeat(64)}`,
+    releaseId: `sha256:${'1'.repeat(64)}`,
+    dataSnapshotId: `sha256:${'2'.repeat(64)}`,
+    configurationId: `sha256:${'3'.repeat(64)}`,
+    environmentId: `sha256:${'4'.repeat(64)}`,
   };
   try {
     for (const [id, path] of predecessorPaths) {
       writeFixture(root, path, {
         version: 1,
         evidenceId: id,
-        environment: "configured_staging",
-        state: "accepted",
+        environment: 'configured_staging',
+        state: 'accepted',
         commit,
-        generatedAt: "2026-08-03T02:00:00.000Z",
+        generatedAt: '2026-08-03T02:00:00.000Z',
         expiresAt,
         binding,
         checks:
-          id === "P6-05"
+          id === 'P6-05'
             ? {
                 releases: {
-                  candidate: { releaseId: "sha256:current-release" },
+                  candidate: { releaseId: 'sha256:current-release' },
                 },
               }
             : {},
@@ -643,15 +567,15 @@ async function runSelfTest() {
     }
     writeFixture(root, diagnosticPath, {
       version: 1,
-      evidenceId: "P6-06-DIAGNOSTIC",
-      environment: "configured_staging",
-      state: "diagnosed",
-      decision: "existing_candidate_requires_approval",
+      evidenceId: 'P6-06-DIAGNOSTIC',
+      environment: 'configured_staging',
+      state: 'diagnosed',
+      decision: 'existing_candidate_requires_approval',
       commit,
-      generatedAt: "2026-08-03T02:30:00.000Z",
+      generatedAt: '2026-08-03T02:30:00.000Z',
       expiresAt,
       checks: {
-        permissions: { dnsList: "success" },
+        permissions: { dnsList: 'success' },
         topology: {
           projectSafe: true,
           zoneMatchesExpected: true,
@@ -669,97 +593,85 @@ async function runSelfTest() {
     writeFixture(root, acceptedReceiptPath, {
       version: 1,
       evidenceId,
-      environment: "configured_staging",
-      state: "accepted",
+      environment: 'configured_staging',
+      state: 'accepted',
       commit: priorCommit,
-      generatedAt: "2026-08-02T17:15:00.000Z",
+      generatedAt: '2026-08-02T17:15:00.000Z',
       expiresAt,
       checks: {
         hostname: { digest: boundedHash(approvedHostname) },
-        cutover: { status: "passed" },
-        externalCutover: { status: "passed" },
-        rollback: { status: "passed" },
-        externalRollback: { status: "passed" },
-        finalRestore: { status: "passed" },
-        externalFinal: { status: "passed" },
+        cutover: { status: 'passed' },
+        externalCutover: { status: 'passed' },
+        rollback: { status: 'passed' },
+        externalRollback: { status: 'passed' },
+        finalRestore: { status: 'passed' },
+        externalFinal: { status: 'passed' },
       },
       binding: {
-        releaseId: `sha256:${"5".repeat(64)}`,
-        dataSnapshotId: `sha256:${"6".repeat(64)}`,
-        configurationId: `sha256:${"7".repeat(64)}`,
-        environmentId: `sha256:${"8".repeat(64)}`,
+        releaseId: `sha256:${'5'.repeat(64)}`,
+        dataSnapshotId: `sha256:${'6'.repeat(64)}`,
+        configurationId: `sha256:${'7'.repeat(64)}`,
+        environmentId: `sha256:${'8'.repeat(64)}`,
       },
       exceptions: [],
     });
 
-    const outputPath = resolve(root, "output.json");
+    const outputPath = resolve(root, 'output.json');
     const accepted = await runContinuity({
       statusRoot: root,
       outputPath,
       commit,
       confirmation: exactConfirmation,
-      owner: "continuity-test-owner",
-      workflowRunId: "self-test",
+      owner: 'continuity-test-owner',
+      workflowRunId: 'self-test',
       repositoryContract: true,
       now,
       observeExternal: async () => ({
-        status: "passed",
+        status: 'passed',
         dns: { passed: true },
         tls: { passed: true },
         routeCount: 11,
-        releaseId: "sha256:current-release",
+        releaseId: 'sha256:current-release',
       }),
     });
-    assert(accepted.state === "accepted", "safe continuity must be accepted");
+    assert(accepted.state === 'accepted', 'safe continuity must be accepted');
+    assert(accepted.checks.duplicate.reused === true, 'existing topology must be reused');
     assert(
-      accepted.checks.duplicate.reused === true,
-      "existing topology must be reused",
+      accepted.checks.rollback.evidenceSource === 'prior_accepted_receipt',
+      'rollback proof must remain attributed to the prior receipt',
     );
-    assert(
-      accepted.checks.rollback.evidenceSource === "prior_accepted_receipt",
-      "rollback proof must remain attributed to the prior receipt",
-    );
-    assert(
-      accepted.binding.releaseId === binding.releaseId,
-      "current binding must be retained",
-    );
+    assert(accepted.binding.releaseId === binding.releaseId, 'current binding must be retained');
     const serialized = JSON.stringify(accepted);
-    assert(
-      !serialized.includes(priorCommit),
-      "raw prior commit must not be retained",
-    );
-    assert(
-      !serialized.includes(approvedHostname),
-      "raw hostname must not be retained",
-    );
+    assert(!serialized.includes(priorCommit), 'raw prior commit must not be retained');
+    assert(!serialized.includes(approvedHostname), 'raw hostname must not be retained');
 
     const expiredPrior = readJson(root, acceptedReceiptPath);
-    expiredPrior.expiresAt = "2026-08-03T02:30:00.000Z";
+    expiredPrior.expiresAt = '2026-08-03T02:30:00.000Z';
     writeFixture(root, acceptedReceiptPath, expiredPrior);
     const recovered = await runContinuity({
       statusRoot: root,
       outputPath,
       commit,
       confirmation: exactConfirmation,
-      owner: "continuity-test-owner",
-      workflowRunId: "self-test-expired",
+      owner: 'continuity-test-owner',
+      workflowRunId: 'self-test-expired',
       repositoryContract: true,
       now,
       observeExternal: async () => ({
-        status: "passed",
+        status: 'passed',
         dns: { passed: true },
         tls: { passed: true },
         routeCount: 11,
-        releaseId: "sha256:current-release",
+        releaseId: 'sha256:current-release',
       }),
     });
     assert(
-      recovered.state === "accepted",
-      "expired historical proof must recover only with fresh checks",
+      recovered.state === 'accepted',
+      'expired historical proof must recover only with fresh checks',
     );
     assert(
-      recovered.checks.continuity.status === "expired_prior_revalidated",
-      "expired prior proof must be explicitly classified as revalidated",
+      recovered.checks.continuity.status === 'expired_prior_revalidated',
+      'expired prior proof must be explicitly classified as revalidated',
     );
 
     const diagnostic = readJson(root, diagnosticPath);
@@ -770,48 +682,40 @@ async function runSelfTest() {
       outputPath,
       commit,
       confirmation: exactConfirmation,
-      owner: "continuity-test-owner",
+      owner: 'continuity-test-owner',
       repositoryContract: true,
       now,
-      observeExternal: async () => ({ status: "passed" }),
+      observeExternal: async () => ({ status: 'passed' }),
     });
-    assert(
-      failed.state === "failed",
-      "ambiguous candidate inventory must fail",
-    );
-    assert(
-      failed.exceptions.includes("preconditions:failed"),
-      "failure must be fail-closed",
-    );
+    assert(failed.state === 'failed', 'ambiguous candidate inventory must fail');
+    assert(failed.exceptions.includes('preconditions:failed'), 'failure must be fail-closed');
   } finally {
     rmSync(root, { recursive: true, force: true });
   }
-  console.log(
-    "OPS-P6-001R configured staging P6-06 continuity self-test passed.",
-  );
+  console.log('OPS-P6-001R configured staging P6-06 continuity self-test passed.');
 }
 
 async function main() {
-  if (process.argv.includes("--self-test")) {
+  if (process.argv.includes('--self-test')) {
     await runSelfTest();
     return;
   }
   const statusRoot = process.argv[2];
   const outputPath = process.argv[3];
   if (!statusRoot || !outputPath || !existsSync(statusRoot)) {
-    throw new Error("Usage: node script.mjs <status-root> <output-path>");
+    throw new Error('Usage: node script.mjs <status-root> <output-path>');
   }
   const receipt = await runContinuity({
     statusRoot,
     outputPath,
-    commit: process.env.APPROVED_COMMIT ?? "",
-    confirmation: process.env.CONFIRMATION ?? "",
-    owner: process.env.DOMAIN_OWNER ?? "",
+    commit: process.env.APPROVED_COMMIT ?? '',
+    confirmation: process.env.CONFIRMATION ?? '',
+    owner: process.env.DOMAIN_OWNER ?? '',
     workflowRunId: process.env.WORKFLOW_RUN_ID ?? null,
-    repositoryContract: process.env.REPOSITORY_CONTRACT_OUTCOME === "success",
+    repositoryContract: process.env.REPOSITORY_CONTRACT_OUTCOME === 'success',
   });
   console.log(`OPS-P6-001R receipt state: ${receipt.state}`);
-  if (receipt.state !== "accepted") process.exitCode = 1;
+  if (receipt.state !== 'accepted') process.exitCode = 1;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
