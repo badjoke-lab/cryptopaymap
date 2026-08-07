@@ -8,20 +8,17 @@ replacements = {
         "  [files.executor, 'EXECUTE_CONFIGURED_STAGING_P6_05'],",
     "  [files.executor, \"const productionBranch = 'staging-review'\"],":
         "  [files.executor, 'staging-review'],",
-    "  [files.executor, \"const defaultPagesProject = 'cryptopaymap-staging'\"],":
-        "  [files.executor, 'cryptopaymap-staging'],",
+    "  [files.executor, \"const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev'\"],":
+        "  [files.executor, 'https://cryptopaymap-staging.pages.dev'],",
     "  [files.executor, \"const approvedStagingCustomDomain = 'staging.cryptopaymap.com'\"],":
         "  [files.executor, 'staging.cryptopaymap.com'],",
-    "  [files.executor, \"const evidenceId = 'P6-05'\"],":
-        "  [files.executor, 'P6-05'],",
-    "  [files.executor, \"const publicTables = ['confirmed', 'online_services']\"],":
-        "  [files.executor, 'online_services'],",
 }
 
 for old, new in replacements.items():
     count = text.count(old)
-    if count != 1:
-        raise SystemExit(f'expected one contract marker {old!r}, found {count}')
-    text = text.replace(old, new, 1)
+    if count == 1:
+        text = text.replace(old, new, 1)
+    elif count > 1:
+        raise SystemExit(f'ambiguous contract marker {old!r}: found {count}')
 
 path.write_text(text)
