@@ -1,0 +1,343 @@
+name: OPS-P6-002B configured staging P6-07 incident exercise and final receipt
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml'
+      - 'docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md'
+      - 'scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs'
+      - 'scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml'
+      - 'docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md'
+      - 'scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs'
+      - 'scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs'
+      - 'scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter EXECUTE_CONFIGURED_STAGING_P6_07_Q5 exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA.
+        required: true
+        type: string
+      incident_id:
+        description: Unique lowercase identity beginning cpm-p6-07-q5-.
+        required: true
+        type: string
+      command_owner:
+        description: Bounded incident command-owner identity.
+        required: true
+        type: string
+      observer:
+        description: Bounded independent-observer identity.
+        required: true
+        type: string
+      follow_up_owner:
+        description: Bounded follow-up owner identity.
+        required: true
+        type: string
+      incident_scenario:
+        description: Supported configured-staging incident scenario.
+        required: true
+        type: choice
+        options:
+          - stale_monitoring
+          - failed_release_verification
+          - canonical_database_degradation
+          - media_delivery_degradation
+          - domain_or_certificate_failure
+      incident_severity:
+        description: Exercise severity.
+        required: true
+        type: choice
+        options:
+          - exercise_high
+          - sev1
+          - sev2
+          - sev3
+      acknowledgement_objective_minutes:
+        description: Acknowledgement objective, maximum 15 minutes.
+        required: true
+        default: '15'
+        type: string
+      decision_objective_minutes:
+        description: Mitigation-decision objective, maximum 30 minutes.
+        required: true
+        default: '30'
+        type: string
+      recovery_objective_minutes:
+        description: Recovery objective, maximum 45 minutes.
+        required: true
+        default: '45'
+        type: string
+      status_cadence_minutes:
+        description: Maximum status-update gap, between 5 and 30 minutes.
+        required: true
+        default: '15'
+        type: string
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check repository P6-07 evidence contract
+        run: node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+
+      - name: Check P6-07 Q5 incident exercise contract
+        run: node scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+
+      - name: Run P6-07 Q5 self-test
+        run: node scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs --self-test
+
+  execute:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      INCIDENT_ID: ${{ inputs.incident_id }}
+      COMMAND_OWNER: ${{ inputs.command_owner }}
+      OBSERVER: ${{ inputs.observer }}
+      FOLLOW_UP_OWNER: ${{ inputs.follow_up_owner }}
+      INCIDENT_SCENARIO: ${{ inputs.incident_scenario }}
+      INCIDENT_SEVERITY: ${{ inputs.incident_severity }}
+      ACKNOWLEDGEMENT_OBJECTIVE_MINUTES: ${{ inputs.acknowledgement_objective_minutes }}
+      DECISION_OBJECTIVE_MINUTES: ${{ inputs.decision_objective_minutes }}
+      RECOVERY_OBJECTIVE_MINUTES: ${{ inputs.recovery_objective_minutes }}
+      STATUS_CADENCE_MINUTES: ${{ inputs.status_cadence_minutes }}
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          test "$(git -C source rev-parse origin/main)" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          node scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs --self-test
+
+      - name: Record incident exercise declaration
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = `<!-- cpm-p6-07-q5-declaration:${process.env.INCIDENT_ID} -->`;
+            const closureMarker = `<!-- cpm-p6-07-q5-closure:${process.env.INCIDENT_ID} -->`;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 349,
+              per_page: 100,
+            });
+            if (comments.some((comment) => comment.body?.includes(closureMarker))) {
+              core.setFailed('incident_identity_already_used');
+              return;
+            }
+            if (!comments.some((comment) => comment.body?.includes(marker))) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 349,
+                body: [
+                  marker,
+                  '### P6-07 configured-staging incident exercise declared',
+                  '',
+                  `- Incident: \`${process.env.INCIDENT_ID}\``,
+                  `- Scenario: \`${process.env.INCIDENT_SCENARIO}\``,
+                  `- Severity: \`${process.env.INCIDENT_SEVERITY}\``,
+                  `- Exact commit: \`${process.env.APPROVED_COMMIT}\``,
+                  '',
+                  'No intentional live-service degradation or production mutation is introduced.',
+                ].join('\n'),
+              });
+            }
+
+      - name: Execute incident exercise and external reverification
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs \
+            ../status \
+            ../p6-07-operations-recovery-receipt.json
+
+      - name: Upload bounded P6-07 final receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt
+          path: p6-07-operations-recovery-receipt.json
+          if-no-files-found: warn
+          retention-days: 30
+
+      - name: Refresh configured-staging inventory
+        if: always()
+        env:
+          CONFIRMATION: AUTHORIZE_CONFIGURED_STAGING
+          LAUNCH_OWNER: inventory:q5-command-owner
+          OBSERVER: inventory:q5-observer
+          ROLLBACK_OWNER: inventory:q5-rollback-owner
+          EVALUATION_MODE: inventory
+        run: |
+          set -euo pipefail
+          test -f p6-07-operations-recovery-receipt.json
+          mkdir -p status/config/staging-authorization
+          cp p6-07-operations-recovery-receipt.json \
+            status/config/staging-authorization/p6-07-operations-recovery-receipt.json
+          node source/scripts/evaluate-ops-p6-001c-staging-authorization.mjs \
+            status \
+            configured-staging-authorization-receipt.json
+          cp configured-staging-authorization-receipt.json \
+            status/config/staging-authorization/authorization-receipt.json
+
+      - name: Publish P6-07 final receipt and inventory
+        if: always()
+        run: |
+          set -euo pipefail
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add \
+            config/staging-authorization/p6-07-operations-recovery-receipt.json \
+            config/staging-authorization/authorization-receipt.json
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured staging P6-07 operations recovery evidence'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Record incident exercise closure
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('node:fs');
+            if (!fs.existsSync('p6-07-operations-recovery-receipt.json')) return;
+            const receipt = JSON.parse(
+              fs.readFileSync('p6-07-operations-recovery-receipt.json', 'utf8'),
+            );
+            const marker = `<!-- cpm-p6-07-q5-closure:${process.env.INCIDENT_ID} -->`;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: 349,
+              per_page: 100,
+            });
+            if (!comments.some((comment) => comment.body?.includes(marker))) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: 349,
+                body: [
+                  marker,
+                  '### P6-07 configured-staging incident exercise closed',
+                  '',
+                  `- Incident: \`${process.env.INCIDENT_ID}\``,
+                  `- State: \`${receipt.state}\``,
+                  `- Decision: \`${receipt.decision}\``,
+                  `- External reverification: \`${receipt.checks.externalReverification.status}\``,
+                  `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+                  '',
+                  'Production authorization and go-live remain separate P6-08 decisions.',
+                ].join('\n'),
+              });
+            }
+
+      - name: Write P6-07 final summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('p6-07-operations-recovery-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(
+            readFileSync('p6-07-operations-recovery-receipt.json', 'utf8'),
+          );
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured staging P6-07 incident exercise and final receipt',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Decision: \`${receipt.decision}\``,
+              `- Commit: \`${receipt.commit}\``,
+              `- Incident: \`${receipt.incidentId}\``,
+              `- Timeline: \`${receipt.checks.timeline.status}\``,
+              `- Objectives: \`${receipt.checks.objectives.status}\``,
+              `- External reverification: \`${receipt.checks.externalReverification.status}\``,
+              `- Follow-up: \`${receipt.checks.followUp.status}\``,
+              `- Exceptions: ${receipt.exceptions.length === 0 ? 'none' : receipt.exceptions.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce accepted P6-07 receipt and inventory-only authorization
+        if: always()
+        run: |
+          node <<'NODE'
+          const finalReceipt = require('./p6-07-operations-recovery-receipt.json');
+          const inventory = require('./configured-staging-authorization-receipt.json');
+          const p607 = inventory.checks.predecessors.find((item) => item.evidenceId === 'P6-07');
+          if (finalReceipt.state !== 'accepted' || finalReceipt.exceptions.length !== 0) process.exit(1);
+          if (p607?.state !== 'current') process.exit(1);
+          if (inventory.mode !== 'inventory' || inventory.state !== 'not_authorized') process.exit(1);
+          if (!inventory.blockers.includes('explicit_dispatch:required')) process.exit(1);
+          NODE
