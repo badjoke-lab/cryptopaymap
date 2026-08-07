@@ -3,11 +3,11 @@
   "evidenceId": "P6-01",
   "launchDomain": "data_qa",
   "environment": "configured_staging",
-  "state": "failed",
+  "state": "accepted",
   "commit": "d4fb1cc00175142b7472794736120bb210abde4a",
-  "generatedAt": "2026-08-07T16:04:43.898Z",
-  "expiresAt": "2026-08-10T16:04:43.898Z",
-  "workflowRunId": "31195641023",
+  "generatedAt": "2026-08-07T16:10:31.044Z",
+  "expiresAt": "2026-08-10T16:10:31.044Z",
+  "workflowRunId": "31196173310",
   "owner": "sha256:4a5701af8e3ea2fb4bca65bd906ff5ca207275391449d555160c85744a3dd3b5",
   "procedure": "OPS-P6-001D configured staging data QA",
   "checks": {
@@ -26,8 +26,8 @@
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
-      "state": "failed",
-      "generatedAt": "2026-08-03T06:10:41.722Z"
+      "state": "current",
+      "generatedAt": "2026-08-07T16:08:58.078Z"
     },
     "publicProjection": {
       "status": "passed",
@@ -91,7 +91,5 @@
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "live_audit_receipt:failed"
-  ]
+  "exceptions": []
 }
