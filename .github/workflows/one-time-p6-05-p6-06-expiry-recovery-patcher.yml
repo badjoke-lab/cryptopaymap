@@ -8,6 +8,7 @@ on:
       - '.github/workflows/one-time-p6-05-p6-06-expiry-recovery-patcher.yml'
       - 'scripts/one-time-p6-05-p6-06-expiry-recovery-patcher.py'
       - 'scripts/one-time-p6-05-p6-06-checker-normalizer.py'
+      - 'scripts/one-time-p6-05-p6-06-checker-normalizer-extra.py'
 
 permissions:
   contents: write
@@ -34,6 +35,7 @@ jobs:
         run: |
           python3 scripts/one-time-p6-05-p6-06-expiry-recovery-patcher.py
           python3 scripts/one-time-p6-05-p6-06-checker-normalizer.py
+          python3 scripts/one-time-p6-05-p6-06-checker-normalizer-extra.py
 
       - name: Format changed sources
         run: npx prettier --write scripts/run-ops-p6-001i-configured-staging-public-export-release.mjs scripts/run-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs scripts/check-ops-p6-001i-configured-staging-public-export-release.mjs scripts/check-ops-p6-001r-configured-staging-p6-06-continuity-revalidation.mjs docs/OPS_P6_001I_CONFIGURED_STAGING_P6_05_PUBLIC_EXPORT_RELEASE.md docs/OPS_P6_001R_CONFIGURED_STAGING_P6_06_CONTINUITY_REVALIDATION.md
@@ -52,6 +54,7 @@ jobs:
           rm -f .github/workflows/one-time-p6-05-p6-06-expiry-recovery-patcher.yml
           rm -f scripts/one-time-p6-05-p6-06-expiry-recovery-patcher.py
           rm -f scripts/one-time-p6-05-p6-06-checker-normalizer.py
+          rm -f scripts/one-time-p6-05-p6-06-checker-normalizer-extra.py
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
