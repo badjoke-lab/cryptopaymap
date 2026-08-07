@@ -2,13 +2,13 @@
   "version": 1,
   "evidenceId": "P6-06-DIAGNOSTIC",
   "environment": "configured_staging",
-  "state": "diagnosed",
-  "decision": "existing_candidate_requires_approval",
-  "commit": "a975fa58825d20e054e65f24bdbbf4240328df00",
-  "generatedAt": "2026-08-03T06:23:56.365Z",
-  "expiresAt": "2026-08-06T06:23:56.365Z",
-  "workflowRunId": "30789960148",
-  "owner": "sha256:e6af3d7920827215569208b1cf480d8858b1b73d7cb2baa623feb44bddc583cb",
+  "state": "failed",
+  "decision": "permission_blocked",
+  "commit": "8c70c8b6cf575068ed59af935016dc79e6a356a2",
+  "generatedAt": "2026-08-07T17:32:41.593Z",
+  "expiresAt": "2026-08-10T17:32:41.593Z",
+  "workflowRunId": "31202623175",
+  "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "checks": {
     "exactMain": "success",
     "confirmation": "success",
@@ -19,68 +19,64 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T06:12:05.022Z",
-        "expiresAt": "2026-08-06T06:12:05.022Z"
+        "generatedAt": "2026-08-07T17:24:36.239Z",
+        "expiresAt": "2026-08-10T17:24:36.239Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T06:13:30.702Z",
-        "expiresAt": "2026-08-06T06:13:30.702Z"
+        "generatedAt": "2026-08-07T17:25:50.327Z",
+        "expiresAt": "2026-08-10T17:25:50.327Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T06:15:05.051Z",
-        "expiresAt": "2026-08-06T06:15:05.051Z"
+        "generatedAt": "2026-08-07T17:27:38.145Z",
+        "expiresAt": "2026-08-10T17:27:38.145Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-03T06:17:39.384Z",
-        "expiresAt": "2026-08-06T06:17:39.384Z"
+        "generatedAt": "2026-08-07T17:30:05.359Z",
+        "expiresAt": "2026-08-10T17:30:05.359Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
-        "state": "current",
-        "generatedAt": "2026-08-03T06:21:39.773Z",
-        "expiresAt": "2026-08-06T06:21:39.773Z"
+        "state": "failed",
+        "generatedAt": "2026-08-07T16:18:31.594Z",
+        "expiresAt": "2026-08-10T16:18:31.594Z"
       }
     ],
-    "predecessorBinding": "matched",
+    "predecessorBinding": "failed",
     "permissions": {
-      "tokenVerify": "success",
-      "pagesProject": "success",
-      "zoneList": "success",
-      "dnsList": "success"
+      "tokenVerify": "not_run",
+      "pagesProject": "not_run",
+      "zoneList": "not_run",
+      "dnsList": "not_run"
     },
     "topology": {
-      "productionBranch": "staging-review",
-      "platformDomainPresent": true,
-      "platformDomainMatches": true,
-      "projectSafe": true,
-      "zoneMatchesExpected": true
+      "productionBranch": null,
+      "platformDomainPresent": false,
+      "platformDomainMatches": false,
+      "projectSafe": false,
+      "zoneMatchesExpected": false
     },
     "inventory": {
-      "activeZoneCount": 2,
-      "selectedZoneCount": 1,
-      "dnsRecordCount": 4,
-      "projectCustomDomainCount": 1,
-      "successfulProductionDeploymentCount": 18,
-      "candidateCount": 1,
-      "candidateDigest": "sha256:487fca92b265cecc4314a998e2cc640458d187d724264a4134767db51949bc73",
-      "deploymentDigest": "sha256:6b84d2b0c4d4033c6f07b1121e93aea10f861db1da38d37de45c42670a802a0e"
+      "activeZoneCount": 0,
+      "selectedZoneCount": 0,
+      "dnsRecordCount": 0,
+      "projectCustomDomainCount": 0,
+      "successfulProductionDeploymentCount": 0,
+      "candidateCount": 0,
+      "candidateDigest": null,
+      "deploymentDigest": null
     }
   },
-  "binding": {
-    "releaseId": "sha256:dc38d69fd44f258a1a13af78cb071d76603a425c949c2d59c9d17b67e845c759",
-    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
-    "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
-    "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
-  },
-  "exceptions": []
+  "exceptions": [
+    "preconditions:failed"
+  ]
 }
