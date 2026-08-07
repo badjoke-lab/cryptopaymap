@@ -152,16 +152,14 @@ function readPriorAccepted(statusRoot, commit, now) {
   const receipt = readJson(statusRoot, acceptedReceiptPath);
   const generatedAt = safeTimestamp(receipt?.generatedAt);
   const expiresAt = safeTimestamp(receipt?.expiresAt);
-  const valid =
+  const proofValid =
     receipt?.version === 1 &&
     receipt?.evidenceId === evidenceId &&
     receipt?.environment === 'configured_staging' &&
     receipt?.state === 'accepted' &&
     validCommit(receipt?.commit) &&
-    receipt.commit !== commit &&
     generatedAt !== null &&
     expiresAt !== null &&
-    Date.parse(expiresAt) > now.getTime() &&
     receipt?.checks?.hostname?.digest === boundedHash(approvedHostname) &&
     ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
     receipt?.checks?.externalCutover?.status === 'passed' &&
@@ -171,7 +169,9 @@ function readPriorAccepted(statusRoot, commit, now) {
     receipt?.checks?.externalFinal?.status === 'passed' &&
     Array.isArray(receipt?.exceptions) &&
     receipt.exceptions.length === 0;
-  if (!valid) {
+  const unexpired = proofValid && Date.parse(expiresAt) > now.getTime();
+  const expiredProof = proofValid && Date.parse(expiresAt) <= now.getTime();
+  if (!unexpired && !expiredProof) {
     return {
       state: receipt === null ? 'missing' : 'failed',
       commit: receipt?.commit ?? null,
@@ -183,7 +183,7 @@ function readPriorAccepted(statusRoot, commit, now) {
     };
   }
   return {
-    state: 'authenticated_prior',
+    state: unexpired ? 'authenticated_prior' : 'expired_prior_proof',
     commit: receipt.commit,
     generatedAt,
     expiresAt,
@@ -319,7 +319,11 @@ async function verifyExternal(p6Receipt) {
   for (const [path, expectedStatus, expectedType] of publicRoutes) {
     const response = await fetch(
       `https://${approvedHostname}${path}?p6_06_continuity=${Date.now()}-${Math.random()}`,
-      { redirect: 'manual', cache: 'no-store', signal: AbortSignal.timeout(20_000) },
+      {
+        redirect: 'manual',
+        cache: 'no-store',
+        signal: AbortSignal.timeout(20_000),
+      },
     );
     const bytes = new Uint8Array(await response.arrayBuffer());
     const contentType = response.headers.get('content-type')?.split(';')[0] ?? null;
@@ -354,7 +358,10 @@ async function verifyExternal(p6Receipt) {
     status: 'passed',
     dns: dnsResult,
     tls: tlsResult,
-    redirect: { status: redirect.status, locationDigest: boundedHash(location) },
+    redirect: {
+      status: redirect.status,
+      locationDigest: boundedHash(location),
+    },
     routeCount: routeResults.length,
     routeDigest: boundedHash(routeResults),
     releaseId: expectedReleaseId,
@@ -389,7 +396,12 @@ async function runContinuity({
     : { path: diagnosticPath, state: 'failed', decision: null, digest: null };
   const prior = validCommit(commit)
     ? readPriorAccepted(statusRoot, commit, now)
-    : { state: 'failed', digest: null, rollbackDigest: null, finalRestoreDigest: null };
+    : {
+        state: 'failed',
+        digest: null,
+        rollbackDigest: null,
+        finalRestoreDigest: null,
+      };
   const p6Receipt = predecessors.find((item) => item.evidenceId === 'P6-05')?.receipt ?? null;
   const checks = {
     exactMain: validCommit(commit) ? 'success' : 'failed',
@@ -401,7 +413,12 @@ async function runContinuity({
     predecessorBinding: binding === null ? 'failed' : 'matched',
     diagnostic,
     continuity: {
-      status: prior.state === 'authenticated_prior' ? 'prior_authenticated' : 'failed',
+      status:
+        prior.state === 'authenticated_prior'
+          ? 'prior_authenticated'
+          : prior.state === 'expired_prior_proof'
+            ? 'expired_prior_pending_revalidation'
+            : 'failed',
       previousCommitDigest: validCommit(prior.commit) ? boundedHash(prior.commit) : null,
       previousGeneratedAt: prior.generatedAt ?? null,
       previousReceiptDigest: prior.digest,
@@ -413,8 +430,16 @@ async function runContinuity({
     cutover: { status: 'not_run', providerDigest: diagnostic.digest },
     externalCutover: { status: 'not_run' },
     rollback: { status: 'not_run', evidenceSource: null, evidenceDigest: null },
-    externalRollback: { status: 'not_run', evidenceSource: null, evidenceDigest: null },
-    finalRestore: { status: 'not_run', evidenceSource: null, evidenceDigest: null },
+    externalRollback: {
+      status: 'not_run',
+      evidenceSource: null,
+      evidenceDigest: null,
+    },
+    finalRestore: {
+      status: 'not_run',
+      evidenceSource: null,
+      evidenceDigest: null,
+    },
     externalFinal: { status: 'not_run' },
   };
   const exceptions = [];
@@ -426,7 +451,7 @@ async function runContinuity({
     predecessors.every((item) => item.state === 'current') &&
     binding !== null &&
     diagnostic.state === 'current_existing_candidate' &&
-    prior.state === 'authenticated_prior';
+    ['authenticated_prior', 'expired_prior_proof'].includes(prior.state);
 
   let state = 'failed';
   if (!preconditions) {
@@ -435,13 +460,19 @@ async function runContinuity({
     try {
       const external = await observeExternal(p6Receipt);
       if (external?.status !== 'passed') throw new Error('external_continuity_failed');
+      if (prior.state === 'expired_prior_proof') {
+        checks.continuity.status = 'expired_prior_revalidated';
+      }
       checks.duplicate = { status: 'passed', reused: true };
       checks.preState = {
         status: 'existing_final',
         digest: diagnostic.digest,
         recheckMatched: true,
       };
-      checks.cutover = { status: 'existing', providerDigest: diagnostic.digest };
+      checks.cutover = {
+        status: 'existing',
+        providerDigest: diagnostic.digest,
+      };
       checks.externalCutover = {
         status: 'passed',
         evidenceSource: 'current_external_revalidation',
@@ -526,7 +557,11 @@ async function runSelfTest() {
         binding,
         checks:
           id === 'P6-05'
-            ? { releases: { candidate: { releaseId: 'sha256:current-release' } } }
+            ? {
+                releases: {
+                  candidate: { releaseId: 'sha256:current-release' },
+                },
+              }
             : {},
       });
     }
@@ -609,6 +644,35 @@ async function runSelfTest() {
     const serialized = JSON.stringify(accepted);
     assert(!serialized.includes(priorCommit), 'raw prior commit must not be retained');
     assert(!serialized.includes(approvedHostname), 'raw hostname must not be retained');
+
+    const expiredPrior = readJson(root, acceptedReceiptPath);
+    expiredPrior.expiresAt = '2026-08-03T02:30:00.000Z';
+    writeFixture(root, acceptedReceiptPath, expiredPrior);
+    const recovered = await runContinuity({
+      statusRoot: root,
+      outputPath,
+      commit,
+      confirmation: exactConfirmation,
+      owner: 'continuity-test-owner',
+      workflowRunId: 'self-test-expired',
+      repositoryContract: true,
+      now,
+      observeExternal: async () => ({
+        status: 'passed',
+        dns: { passed: true },
+        tls: { passed: true },
+        routeCount: 11,
+        releaseId: 'sha256:current-release',
+      }),
+    });
+    assert(
+      recovered.state === 'accepted',
+      'expired historical proof must recover only with fresh checks',
+    );
+    assert(
+      recovered.checks.continuity.status === 'expired_prior_revalidated',
+      'expired prior proof must be explicitly classified as revalidated',
+    );
 
     const diagnostic = readJson(root, diagnosticPath);
     diagnostic.checks.inventory.candidateCount = 2;

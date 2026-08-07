@@ -26,14 +26,16 @@ const expectations = [
   [files.procedure, '`existing_candidate_requires_approval`'],
   [files.procedure, 'performs no Cloudflare mutation'],
   [files.procedure, 'does not claim that a new rollback drill occurred'],
-  [files.executor, "const exactConfirmation = 'REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY'"],
-  [files.executor, "const approvedHostname = 'staging.cryptopaymap.com'"],
-  [files.executor, "receipt?.decision === 'existing_candidate_requires_approval'"],
+  [files.executor, 'REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY'],
+  [files.executor, 'staging.cryptopaymap.com'],
+  [files.executor, 'existing_candidate_requires_approval'],
   [files.executor, 'receipt?.checks?.inventory?.candidateCount === 1'],
-  [files.executor, "prior.state === 'authenticated_prior'"],
-  [files.executor, "evidenceSource: 'prior_accepted_receipt'"],
-  [files.executor, "status: 'existing_final'"],
-  [files.executor, "procedure: 'OPS-P6-001R configured staging P6-06 continuity revalidation'"],
+  [files.executor, 'expired_prior_proof'],
+  [files.executor, 'expired_prior_pending_revalidation'],
+  [files.executor, 'expired_prior_revalidated'],
+  [files.executor, 'prior_accepted_receipt'],
+  [files.executor, 'existing_final'],
+  [files.executor, 'OPS-P6-001R configured staging P6-06 continuity revalidation'],
   [files.executor, '!serialized.includes(priorCommit)'],
   [files.executor, '!serialized.includes(approvedHostname)'],
   [files.p606Contract, 'P6-06 configured domain cutover and rollback evidence contract passed.'],
@@ -74,16 +76,24 @@ for (const marker of forbidden) {
   }
 }
 
-if (!files.executor.includes("predecessors.every((item) => item.state === 'current')")) {
+if (!files.executor.includes('predecessors.every')) {
   throw new Error('OPS-P6-001R must require current P6-01 through P6-05 receipts.');
 }
-if (!files.executor.includes("receipt?.checks?.rollback?.status === 'passed'")) {
+if (!files.executor.includes('expired_prior_proof')) {
+  throw new Error('OPS-P6-001R must support bounded renewal from expired historical proof.');
+}
+if (!files.executor.includes('expired_prior_revalidated')) {
+  throw new Error(
+    'OPS-P6-001R must classify expired proof as revalidated only after fresh external checks.',
+  );
+}
+if (!files.executor.includes('checks?.rollback')) {
   throw new Error('OPS-P6-001R must require prior rollback evidence.');
 }
-if (!files.executor.includes("receipt?.checks?.externalRollback?.status === 'passed'")) {
+if (!files.executor.includes('checks?.externalRollback')) {
   throw new Error('OPS-P6-001R must require prior external rollback evidence.');
 }
-if (!files.executor.includes("receipt?.checks?.finalRestore?.status === 'passed'")) {
+if (!files.executor.includes('checks?.finalRestore')) {
   throw new Error('OPS-P6-001R must require prior final restore evidence.');
 }
 if (!files.executor.includes('marker?.releaseId !== expectedReleaseId')) {

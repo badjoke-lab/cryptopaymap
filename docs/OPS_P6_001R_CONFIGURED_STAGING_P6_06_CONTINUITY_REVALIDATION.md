@@ -6,6 +6,8 @@ An accepted P6-06 rollback drill already established and then restored the appro
 
 This slice revalidates the existing final topology and the newly active P6-05 release without repeating DNS or Pages mutations. It retains the prior rollback proof by authenticated digest and writes a current accepted P6-06 receipt only after the current read-only topology diagnostic and external observations pass.
 
+Expiry recovery never makes an expired P6-06 receipt current again by itself. The expired receipt remains historical proof only until every current predecessor, the exact-main topology diagnostic, and the fresh external continuity checks pass in the same revalidation run.
+
 Parent operational issue: #351.
 
 ## Preconditions
@@ -18,7 +20,7 @@ The workflow requires:
 - one selected protected zone, successful DNS reads, one Pages custom domain, one safe candidate, and no diagnostic exception;
 - a prior accepted configured-staging P6-06 receipt for the approved hostname;
 - prior cutover, external cutover, rollback, external rollback, final restore, and final external verification evidence;
-- an unexpired prior receipt with no exception.
+- zero exceptions in that prior receipt; when it is expired, it is treated only as historical rollback/final-restore proof and must be revalidated by the current diagnostic plus the fresh external checks in this run.
 
 ## Current external verification
 
@@ -41,7 +43,7 @@ The continuity run:
 - does not claim that a new rollback drill occurred;
 - retains only hashes, status classes, counts, timestamps, protocol results, expiry information, and bounded prior-evidence references;
 - fails closed when the topology diagnostic is missing, unsafe, ambiguous, or not exactly one approved existing candidate;
-- fails closed when prior rollback proof is missing, malformed, expired, or contains any exception.
+- fails closed when prior rollback proof is missing, malformed, or contains any exception; expired proof is accepted only as historical evidence after the current exact-main diagnostic is safe and this run's fresh DNS, TLS, route, Admin-boundary, and release-identity checks all pass.
 
 The pull-request and push jobs execute only repository validation and self-tests. The self-test uses schema-valid SHA-256 binding fixtures and proves ambiguous topology remains fail-closed. Live continuity revalidation is available only through `workflow_dispatch` with exact confirmation `REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY`.
 

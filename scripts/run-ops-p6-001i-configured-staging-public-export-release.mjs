@@ -23,6 +23,7 @@ const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev';
 const approvedStagingCustomDomain = 'staging.cryptopaymap.com';
 const priorP606ReceiptPath =
   'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
+const p606DiagnosticPath = 'config/staging-authorization/p6-06-domain-topology-diagnostic.json';
 const markerPath = '/p6-05-release.json';
 const predecessorPaths = [
   ['P6-01', 'config/staging-authorization/p6-01-data-qa-receipt.json'],
@@ -143,16 +144,14 @@ function readPriorP606Topology(statusRoot, commit, now) {
   }
   const generatedAt = safeTimestamp(receipt?.generatedAt);
   const expiresAt = safeTimestamp(receipt?.expiresAt);
-  const valid =
+  const proofValid =
     receipt?.version === 1 &&
     receipt?.evidenceId === 'P6-06' &&
     receipt?.environment === 'configured_staging' &&
     receipt?.state === 'accepted' &&
     validCommit(receipt?.commit) &&
-    receipt.commit !== commit &&
     generatedAt !== null &&
     expiresAt !== null &&
-    Date.parse(expiresAt) > now.getTime() &&
     receipt?.checks?.hostname?.digest === boundedHash(approvedStagingCustomDomain) &&
     ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
     receipt?.checks?.externalCutover?.status === 'passed' &&
@@ -162,16 +161,60 @@ function readPriorP606Topology(statusRoot, commit, now) {
     receipt?.checks?.externalFinal?.status === 'passed' &&
     Array.isArray(receipt?.exceptions) &&
     receipt.exceptions.length === 0;
+  const unexpired = proofValid && Date.parse(expiresAt) > now.getTime();
+  const expiredProof = proofValid && Date.parse(expiresAt) <= now.getTime();
   return {
-    state: valid ? 'authenticated_prior' : receipt === null ? 'missing' : 'failed',
+    state: unexpired
+      ? 'authenticated_prior'
+      : expiredProof
+        ? 'expired_prior_proof'
+        : receipt === null
+          ? 'missing'
+          : 'failed',
     generatedAt,
     expiresAt,
-    digest: valid ? boundedHash(JSON.stringify(receipt)) : null,
-    hostnameDigest: valid ? boundedHash(approvedStagingCustomDomain) : null,
+    digest: proofValid ? boundedHash(JSON.stringify(receipt)) : null,
+    hostnameDigest: proofValid ? boundedHash(approvedStagingCustomDomain) : null,
   };
 }
 
-function evaluateProjectTopology(project, priorP606) {
+function readCurrentP606Diagnostic(statusRoot, commit, now) {
+  let receipt = null;
+  try {
+    const value = JSON.parse(readFileSync(resolve(statusRoot, p606DiagnosticPath), 'utf8'));
+    receipt = isObject(value) ? value : null;
+  } catch {
+    receipt = null;
+  }
+  const expiresAt = safeTimestamp(receipt?.expiresAt);
+  const current =
+    receipt?.version === 1 &&
+    receipt?.evidenceId === 'P6-06-DIAGNOSTIC' &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'diagnosed' &&
+    receipt?.decision === 'existing_candidate_requires_approval' &&
+    receipt?.commit === commit &&
+    expiresAt !== null &&
+    Date.parse(expiresAt) > now.getTime() &&
+    receipt?.checks?.permissions?.dnsList === 'success' &&
+    receipt?.checks?.topology?.projectSafe === true &&
+    receipt?.checks?.topology?.zoneMatchesExpected === true &&
+    receipt?.checks?.topology?.platformDomainPresent === true &&
+    receipt?.checks?.topology?.platformDomainMatches === true &&
+    receipt?.checks?.inventory?.selectedZoneCount === 1 &&
+    receipt?.checks?.inventory?.projectCustomDomainCount === 1 &&
+    receipt?.checks?.inventory?.candidateCount === 1 &&
+    Array.isArray(receipt?.exceptions) &&
+    receipt.exceptions.length === 0;
+  return {
+    state: current ? 'current_existing_candidate' : receipt === null ? 'missing' : 'failed',
+    generatedAt: safeTimestamp(receipt?.generatedAt),
+    expiresAt,
+    digest: current ? boundedHash(JSON.stringify(receipt)) : null,
+  };
+}
+
+function evaluateProjectTopology(project, priorP606, diagnostic = null) {
   const platformDomain = `${projectName}.pages.dev`;
   const projectDomains = Array.isArray(project?.domains)
     ? project.domains.filter((domain) => typeof domain === 'string').sort()
@@ -179,8 +222,12 @@ function evaluateProjectTopology(project, priorP606) {
   const platformDomainPresent = projectDomains.includes(platformDomain);
   const platformDomainMatches = project?.subdomain === platformDomain;
   const customDomains = projectDomains.filter((domain) => domain !== platformDomain);
+  const expiredPriorRevalidated =
+    priorP606.state === 'expired_prior_proof' &&
+    diagnostic?.state === 'current_existing_candidate' &&
+    typeof diagnostic?.digest === 'string';
   const authenticatedExactCustomDomain =
-    priorP606.state === 'authenticated_prior' &&
+    (priorP606.state === 'authenticated_prior' || expiredPriorRevalidated) &&
     customDomains.length === 1 &&
     customDomains[0] === approvedStagingCustomDomain;
   const status =
@@ -201,8 +248,10 @@ function evaluateProjectTopology(project, priorP606) {
     approvedCustomDomainDigest: customDomains.includes(approvedStagingCustomDomain)
       ? boundedHash(approvedStagingCustomDomain)
       : null,
-    priorP606State: priorP606.state,
+    priorP606State: expiredPriorRevalidated ? 'expired_prior_revalidated' : priorP606.state,
     priorP606ReceiptDigest: priorP606.digest,
+    recoveryDiagnosticState: diagnostic?.state ?? null,
+    recoveryDiagnosticDigest: diagnostic?.digest ?? null,
   };
 }
 
@@ -380,7 +429,9 @@ async function findReleaseDeployment(marker, attempts = 40) {
 }
 
 async function rollbackTo(deploymentId) {
-  return cloudflareRequest(`/deployments/${deploymentId}/rollback`, { method: 'POST' });
+  return cloudflareRequest(`/deployments/${deploymentId}/rollback`, {
+    method: 'POST',
+  });
 }
 
 async function markerVisible(baseUrl, expectedReleaseId, attempts = 5) {
@@ -452,7 +503,12 @@ async function verifyExternal(baseUrl, expectedMarker, localDist) {
     if (path === '/robots.txt' && !text.includes('Disallow: /')) {
       throw new Error('external_robots_policy_missing');
     }
-    results.push({ path, status: response.status, contentType, bodyDigest: sha256(bytes) });
+    results.push({
+      path,
+      status: response.status,
+      contentType,
+      bodyDigest: sha256(bytes),
+    });
   }
   const localVersion = JSON.parse(readFileSync(join(localDist, 'version.json'), 'utf8'));
   const externalVersion = await fetch(
@@ -502,14 +558,54 @@ async function selfTest() {
     });
     if (bootstrapTopology.status !== 'passed') throw new Error('bootstrap_topology_failed');
     const authenticatedTopology = evaluateProjectTopology(
-      { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },
+      {
+        ...projectFixture,
+        domains: [platformDomain, approvedStagingCustomDomain],
+      },
       { state: 'authenticated_prior', digest: boundedHash('prior-p6-06') },
     );
     if (authenticatedTopology.status !== 'passed') {
       throw new Error('authenticated_staging_domain_failed');
     }
+    const expiredRevalidatedTopology = evaluateProjectTopology(
+      {
+        ...projectFixture,
+        domains: [platformDomain, approvedStagingCustomDomain],
+      },
+      {
+        state: 'expired_prior_proof',
+        digest: boundedHash('expired-prior-p6-06'),
+      },
+      {
+        state: 'current_existing_candidate',
+        digest: boundedHash('fresh-p6-06-diagnostic'),
+      },
+    );
+    if (
+      expiredRevalidatedTopology.status !== 'passed' ||
+      expiredRevalidatedTopology.priorP606State !== 'expired_prior_revalidated'
+    ) {
+      throw new Error('expired_prior_revalidation_failed');
+    }
+    const expiredUnrevalidatedTopology = evaluateProjectTopology(
+      {
+        ...projectFixture,
+        domains: [platformDomain, approvedStagingCustomDomain],
+      },
+      {
+        state: 'expired_prior_proof',
+        digest: boundedHash('expired-prior-p6-06'),
+      },
+      { state: 'failed', digest: null },
+    );
+    if (expiredUnrevalidatedTopology.status !== 'failed') {
+      throw new Error('expired_prior_without_fresh_diagnostic_not_rejected');
+    }
     const unauthenticatedTopology = evaluateProjectTopology(
-      { ...projectFixture, domains: [platformDomain, approvedStagingCustomDomain] },
+      {
+        ...projectFixture,
+        domains: [platformDomain, approvedStagingCustomDomain],
+      },
       { state: 'missing', digest: null },
     );
     if (unauthenticatedTopology.status !== 'failed') {
@@ -616,8 +712,16 @@ async function execute(statusRoot, outputPath) {
     repositoryContract: repositoryContract ? 'success' : 'failed',
     predecessors: predecessors.map(({ binding: _binding, ...item }) => item),
     predecessorBinding: binding === null ? 'failed' : 'matched',
-    deterministicGeneration: { status: 'not_run', firstDigest: null, secondDigest: null },
-    artifactValidation: { status: 'not_run', datasetVersion: null, schemaVersion: null },
+    deterministicGeneration: {
+      status: 'not_run',
+      firstDigest: null,
+      secondDigest: null,
+    },
+    artifactValidation: {
+      status: 'not_run',
+      datasetVersion: null,
+      schemaVersion: null,
+    },
     topology: {
       status: 'not_run',
       productionBranch: null,
@@ -632,7 +736,11 @@ async function execute(statusRoot, outputPath) {
       candidate: null,
     },
     activation: { status: 'not_run', candidateVisible: false },
-    rollback: { status: 'not_run', baselineVisible: false, candidateRestored: false },
+    rollback: {
+      status: 'not_run',
+      baselineVisible: false,
+      candidateRestored: false,
+    },
     external: { status: 'not_run', routeCount: 0, routeDigest: null },
     finalState: { status: 'not_run', activeKind: null },
   };
@@ -657,11 +765,15 @@ async function execute(statusRoot, outputPath) {
       const baselineDist = join(workspace, 'baseline');
       const candidateDist = join(workspace, 'candidate');
 
-      execFileSync('npm', ['run', 'staging:review:build'], { stdio: 'inherit' });
+      execFileSync('npm', ['run', 'staging:review:build'], {
+        stdio: 'inherit',
+      });
       cpSync(resolve('dist'), firstDist, { recursive: true });
       const firstDigest = publicTreeDigest(firstDist);
 
-      execFileSync('npm', ['run', 'staging:review:build'], { stdio: 'inherit' });
+      execFileSync('npm', ['run', 'staging:review:build'], {
+        stdio: 'inherit',
+      });
       const secondDigest = publicTreeDigest(resolve('dist'));
       checks.deterministicGeneration = {
         status: firstDigest === secondDigest ? 'passed' : 'failed',
@@ -696,8 +808,9 @@ async function execute(statusRoot, outputPath) {
         throw new Error('artifact_identity_failed');
 
       const priorP606 = readPriorP606Topology(statusRoot, commit, now);
+      const p606Diagnostic = readCurrentP606Diagnostic(statusRoot, commit, now);
       const project = await cloudflareRequest('');
-      checks.topology = evaluateProjectTopology(project, priorP606);
+      checks.topology = evaluateProjectTopology(project, priorP606, p606Diagnostic);
       if (checks.topology.status !== 'passed') throw new Error('unsafe_pages_topology');
 
       let classified = await classifiedDeployments(commit, firstDigest);

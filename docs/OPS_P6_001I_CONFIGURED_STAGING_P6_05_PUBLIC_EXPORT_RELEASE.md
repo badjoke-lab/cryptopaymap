@@ -37,10 +37,10 @@ A non-platform domain is accepted only when all of the following are true:
 
 - there is exactly one custom domain;
 - it is exactly `staging.cryptopaymap.com`;
-- an unexpired prior configured-staging P6-06 receipt authenticates the hostname digest;
-- that receipt proves cutover or existing final state, external cutover verification, rollback, external rollback verification, final restore, final external verification, and zero exceptions.
+- a prior configured-staging P6-06 receipt authenticates the hostname digest and proves cutover or existing final state, external cutover verification, rollback, external rollback verification, final restore, final external verification, and zero exceptions;
+- when that prior P6-06 receipt is expired, a current exact-main P6-06 read-only diagnostic must additionally report exactly one approved existing candidate with successful DNS read, safe Pages topology, the protected zone match, and zero exceptions.
 
-The authenticated exception applies only to configured staging and cannot authorize an apex, `www`, production, or unrelated hostname. When the prior P6-06 receipt expires, P6-05 fails closed until continuity is revalidated.
+The authenticated exception applies only to configured staging and cannot authorize an apex, `www`, production, or unrelated hostname. When the prior P6-06 receipt is expired, it is historical proof only: P6-05 accepts the existing staging hostname solely when a fresh exact-main P6-06 read-only diagnostic independently revalidates that one approved topology. The receipt records this bounded path as `expired_prior_revalidated`; a missing, stale, ambiguous, or failed diagnostic remains fail-closed.
 
 The executor retains only the prior receipt digest, hostname digest, evidence state, and domain count. It does not retain provider identifiers or use the prior receipt as current P6-06 evidence. Every other hostname remains disallowed and fails closed. An unauthenticated, stale, malformed, duplicate, ambiguous, or additional custom domain also fails closed.
 
