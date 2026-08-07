@@ -9,9 +9,13 @@ replacements = {
     "  [files.executor, \"const productionBranch = 'staging-review'\"],":
         "  [files.executor, 'staging-review'],",
     "  [files.executor, \"const productionBaseUrl = 'https://cryptopaymap-staging.pages.dev'\"],":
-        "  [files.executor, 'https://cryptopaymap-staging.pages.dev'],",
+        "  [files.executor, 'cryptopaymap-staging.pages.dev'],",
     "  [files.executor, \"const approvedStagingCustomDomain = 'staging.cryptopaymap.com'\"],":
         "  [files.executor, 'staging.cryptopaymap.com'],",
+    "  [files.executor, \"'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json'\"],":
+        "  [files.executor, 'p6-06-domain-cutover-rollback-receipt.json'],",
+    "  [files.executor, \"const markerPath = '/p6-05-release.json'\"],":
+        "  [files.executor, '/p6-05-release.json'],",
 }
 
 for old, new in replacements.items():
