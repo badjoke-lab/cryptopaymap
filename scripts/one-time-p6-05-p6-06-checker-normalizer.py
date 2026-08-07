@@ -47,7 +47,7 @@ normalize(
         "  [files.executor, 'platformDomainPresent: false'],": "  [files.executor, 'platformDomainPresent'],",
         "  [files.executor, 'platformDomainMatches: false'],": "  [files.executor, 'platformDomainMatches'],",
         "  [files.executor, \"['/__p6_05_missing__', 404, 'text/html']\"],": "  [files.executor, '/__p6_05_missing__'],",
-        "  [files.executor, 'releaseMarker(marker.kind, marker.sourceCommit, marker.publicTreeDigest).releaseId'],": "  [files.executor, 'releaseMarker('],",
+        "  [\n    files.executor,\n    'releaseMarker(marker.kind, marker.sourceCommit, marker.publicTreeDigest).releaseId',\n  ],": "  [files.executor, 'releaseMarker('],",
         "  [files.executor, 'return { recognized, historical, unrecognized }'],": "  [files.executor, 'recognized, historical, unrecognized'],",
         "  [files.executor, 'candidateRestored: true'],": "  [files.executor, 'candidateRestored'],",
         "  [files.executor, \"activeKind: 'candidate'\"],": "  [files.executor, 'activeKind'],",
