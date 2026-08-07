@@ -1,0 +1,37 @@
+name: One-time P6-06 format fix
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-06-expiry-deadlock-recovery
+    paths:
+      - '.github/workflows/one-time-p6-06-format-fix.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-06-expiry-deadlock-recovery
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Format continuity document
+        run: npx prettier --write docs/OPS_P6_001R_CONFIGURED_STAGING_P6_06_CONTINUITY_REVALIDATION.md
+      - name: Remove temporary diagnostics and commit
+        run: |
+          set -euo pipefail
+          rm -f .github/workflows/one-time-p6-06-format-diagnostic.yml
+          rm -f .github/workflows/one-time-p6-06-format-fix.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git commit -m 'Format P6-06 continuity recovery documentation'
+          git push origin HEAD:agent/ops-p6-06-expiry-deadlock-recovery
