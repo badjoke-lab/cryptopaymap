@@ -6,6 +6,8 @@ An accepted P6-06 rollback drill already established and then restored the appro
 
 This slice revalidates the existing final topology and the newly active P6-05 release without repeating DNS or Pages mutations. It retains the prior rollback proof by authenticated digest and writes a current accepted P6-06 receipt only after the current read-only topology diagnostic and external observations pass.
 
+Expiry recovery does not make an expired P6-06 receipt current again by itself. The expired receipt remains historical proof only until every current predecessor, the exact-main topology diagnostic, and the fresh external continuity checks pass in the same revalidation run.
+
 Parent operational issue: #351.
 
 ## Preconditions
