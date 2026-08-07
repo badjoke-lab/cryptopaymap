@@ -19,7 +19,7 @@ jobs:
       REPOSITORY: ${{ github.repository }}
       APPROVED_COMMIT: d4fb1cc00175142b7472794736120bb210abde4a
     steps:
-      - name: Deploy exact main and refresh P6-01 through P6-06 evidence
+      - name: Refresh P6-01 through P6-06 evidence against deployed exact main
         shell: bash
         run: |
           set -euo pipefail
@@ -32,16 +32,27 @@ jobs:
               "https://api.github.com/repos/$REPOSITORY/$1"
           }
 
+          api_post() {
+            curl --fail-with-body --silent --show-error \
+              -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/$1" \
+              ${2:+-d "$2"}
+          }
+
+          # The fixed staging-review deployment for APPROVED_COMMIT already succeeded on main.
+          # Cancel the redundant generic staging deploy and its old dispatcher before continuing.
+          api_post 'actions/runs/31195035503/cancel' '{}' || true
+          api_post 'actions/runs/31195027952/cancel' '{}' || true
+
           dispatch_and_wait() {
             local workflow="$1"
             local inputs_json="$2"
-            local started marker payload http_code response run_json run_id status conclusion
+            local marker payload http_code response run_json run_id status conclusion
             marker="$(date -u +%s)"
-            if [ "$inputs_json" = '{}' ]; then
-              payload="$(jq -nc --arg ref main '{ref:$ref}')"
-            else
-              payload="$(jq -nc --arg ref main --argjson inputs "$inputs_json" '{ref:$ref,inputs:$inputs}')"
-            fi
+            payload="$(jq -nc --arg ref main --argjson inputs "$inputs_json" '{ref:$ref,inputs:$inputs}')"
             response="$(mktemp)"
             http_code="$(curl --silent --show-error --output "$response" --write-out '%{http_code}' \
               -X POST \
@@ -94,50 +105,12 @@ jobs:
 
           owner='badjoke-lab'
 
-          dispatch_and_wait 'staging-deploy.yml' '{}'
-
-          dispatch_and_wait 'ops-p6-001d-configured-staging-p6-01-data-qa.yml' "$(jq -nc \
-            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_01 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg data_owner "$owner" \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,data_owner:$data_owner}')"
-
-          dispatch_and_wait 'ops-p6-001e-configured-staging-p6-02-identity-admin.yml' "$(jq -nc \
-            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_02 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg identity_owner "$owner" \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,identity_owner:$identity_owner}')"
-
-          dispatch_and_wait 'ops-p6-001g-configured-staging-p6-03-neon-transaction.yml' "$(jq -nc \
-            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_03 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg transaction_owner "$owner" \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,transaction_owner:$transaction_owner}')"
-
-          dispatch_and_wait 'ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml' "$(jq -nc \
-            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_04 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg media_owner "$owner" \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,media_owner:$media_owner}')"
-
-          dispatch_and_wait 'ops-p6-001i-configured-staging-p6-05-public-export-release.yml' "$(jq -nc \
-            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_05 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg release_owner "$owner" \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,release_owner:$release_owner}')"
-
-          dispatch_and_wait 'ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml' "$(jq -nc \
-            --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_06 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg domain_owner "$owner" \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
-
-          dispatch_and_wait 'ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml' "$(jq -nc \
-            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_06 \
-            --arg approved_commit "$APPROVED_COMMIT" \
-            --arg approved_hostname staging.cryptopaymap.com \
-            --arg domain_owner "$owner" \
-            --arg change_window p6-07-refresh-2026-08-08 \
-            '{confirmation:$confirmation,approved_commit:$approved_commit,approved_hostname:$approved_hostname,domain_owner:$domain_owner,change_window:$change_window}')"
+          dispatch_and_wait 'ops-p6-001d-configured-staging-p6-01-data-qa.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_01 --arg approved_commit "$APPROVED_COMMIT" --arg data_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,data_owner:$data_owner}')"
+          dispatch_and_wait 'ops-p6-001e-configured-staging-p6-02-identity-admin.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_02 --arg approved_commit "$APPROVED_COMMIT" --arg identity_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,identity_owner:$identity_owner}')"
+          dispatch_and_wait 'ops-p6-001g-configured-staging-p6-03-neon-transaction.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_03 --arg approved_commit "$APPROVED_COMMIT" --arg transaction_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,transaction_owner:$transaction_owner}')"
+          dispatch_and_wait 'ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_04 --arg approved_commit "$APPROVED_COMMIT" --arg media_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,media_owner:$media_owner}')"
+          dispatch_and_wait 'ops-p6-001i-configured-staging-p6-05-public-export-release.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_05 --arg approved_commit "$APPROVED_COMMIT" --arg release_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,release_owner:$release_owner}')"
+          dispatch_and_wait 'ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml' "$(jq -nc --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_06 --arg approved_commit "$APPROVED_COMMIT" --arg domain_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
+          dispatch_and_wait 'ops-p6-001l-configured-staging-p6-06-domain-cutover-rollback.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_06 --arg approved_commit "$APPROVED_COMMIT" --arg approved_hostname staging.cryptopaymap.com --arg domain_owner "$owner" --arg change_window p6-07-refresh-2026-08-08 '{confirmation:$confirmation,approved_commit:$approved_commit,approved_hostname:$approved_hostname,domain_owner:$domain_owner,change_window:$change_window}')"
 
           echo 'Exact-main predecessor refresh chain completed successfully.'
