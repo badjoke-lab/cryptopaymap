@@ -1,0 +1,63 @@
+name: One-time OPS-P6-004 bounded P6-06 diagnostic patcher
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-004-p6-06-diagnostic-expiry-recovery
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out patch branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-004-p6-06-diagnostic-expiry-recovery
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Apply bounded recovery patch
+        run: python3 scripts/ops-p6-004-one-time-patch.py
+
+      - name: Format changed production files with repository rules
+        run: |
+          npx biome format --write \
+            scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md
+          npx biome format \
+            scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md
+
+      - name: Verify repository and recovery contracts
+        run: |
+          npm run check
+          node scripts/check-p6-06-configured-domain-cutover-rollback-evidence.js
+          node scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs
+          node scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs --self-test
+
+      - name: Remove one-time helpers and publish patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm scripts/ops-p6-004-one-time-patch.py .github/workflows/ops-p6-004-one-time-patcher.yml
+          git add \
+            scripts/run-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            scripts/check-ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.mjs \
+            docs/OPS_P6_001J_CONFIGURED_STAGING_P6_06_DOMAIN_TOPOLOGY_DIAGNOSTIC.md
+          git diff --cached --check
+          git commit -m 'OPS-P6-004: allow bounded P6-06 diagnostic expiry recovery'
+          git push origin HEAD:agent/ops-p6-004-p6-06-diagnostic-expiry-recovery
