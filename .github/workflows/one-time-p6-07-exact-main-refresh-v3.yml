@@ -1,0 +1,101 @@
+name: One-time P6-07 exact-main evidence refresh v3
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-exact-main-refresh-v3.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  refresh:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      APPROVED_COMMIT: fccedfa7a5169abda0d0a3d8475eeb0aaa9da72d
+    steps:
+      - name: Refresh configured-staging evidence on exact main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          api_get() {
+            curl --fail --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/$1"
+          }
+
+          dispatch_and_wait() {
+            local workflow="$1"
+            local inputs_json="$2"
+            local marker payload response http_code run_json run_id status conclusion
+            marker="$(date -u +%s)"
+            if [ "$inputs_json" = '{}' ]; then
+              payload="$(jq -nc --arg ref main '{ref:$ref}')"
+            else
+              payload="$(jq -nc --arg ref main --argjson inputs "$inputs_json" '{ref:$ref,inputs:$inputs}')"
+            fi
+            response="$(mktemp)"
+            http_code="$(curl --silent --show-error --output "$response" --write-out '%{http_code}' \
+              -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/actions/workflows/$workflow/dispatches" \
+              -d "$payload")"
+            if [ "$http_code" != '204' ]; then
+              cat "$response"
+              echo "dispatch failed for $workflow with HTTP $http_code" >&2
+              exit 1
+            fi
+            rm -f "$response"
+
+            run_id=''
+            for _ in $(seq 1 90); do
+              sleep 5
+              run_json="$(api_get "actions/workflows/$workflow/runs?event=workflow_dispatch&branch=main&per_page=20")"
+              run_id="$(jq -r --arg sha "$APPROVED_COMMIT" --argjson marker "$marker" '
+                [.workflow_runs[] | select(.head_sha == $sha and ((.created_at | fromdateiso8601) >= ($marker - 5)))]
+                | sort_by(.created_at) | last | .id // empty
+              ' <<<"$run_json")"
+              [ -n "$run_id" ] && break
+            done
+            [ -n "$run_id" ] || { echo "could not locate run for $workflow" >&2; exit 1; }
+            echo "Tracking $workflow run $run_id"
+
+            for _ in $(seq 1 1080); do
+              run_json="$(api_get "actions/runs/$run_id")"
+              status="$(jq -r '.status' <<<"$run_json")"
+              conclusion="$(jq -r '.conclusion // empty' <<<"$run_json")"
+              if [ "$status" = 'completed' ]; then
+                [ "$conclusion" = 'success' ] || { echo "$workflow run $run_id ended $conclusion" >&2; exit 1; }
+                echo "$workflow run $run_id succeeded"
+                return 0
+              fi
+              sleep 10
+            done
+            echo "timed out waiting for $workflow run $run_id" >&2
+            exit 1
+          }
+
+          owner='badjoke-lab'
+
+          dispatch_and_wait 'staging-review-deploy.yml' '{}'
+          dispatch_and_wait 'p5-02r-fixed-review-live-audit.yml' '{}'
+          dispatch_and_wait 'ops-p6-001d-configured-staging-p6-01-data-qa.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_01 --arg approved_commit "$APPROVED_COMMIT" --arg data_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,data_owner:$data_owner}')"
+          dispatch_and_wait 'ops-p6-001e-configured-staging-p6-02-identity-admin.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_02 --arg approved_commit "$APPROVED_COMMIT" --arg identity_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,identity_owner:$identity_owner}')"
+          dispatch_and_wait 'ops-p6-001g-configured-staging-p6-03-neon-transaction.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_03 --arg approved_commit "$APPROVED_COMMIT" --arg transaction_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,transaction_owner:$transaction_owner}')"
+          dispatch_and_wait 'ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_04 --arg approved_commit "$APPROVED_COMMIT" --arg media_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,media_owner:$media_owner}')"
+          dispatch_and_wait 'ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml' "$(jq -nc --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_06 --arg approved_commit "$APPROVED_COMMIT" --arg domain_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
+          dispatch_and_wait 'ops-p6-001i-configured-staging-p6-05-public-export-release.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_05 --arg approved_commit "$APPROVED_COMMIT" --arg release_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,release_owner:$release_owner}')"
+          dispatch_and_wait 'ops-p6-001r-configured-staging-p6-06-continuity-revalidation.yml' "$(jq -nc --arg confirmation REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY --arg approved_commit "$APPROVED_COMMIT" --arg domain_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
+          dispatch_and_wait 'ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.yml' "$(jq -nc --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_07 --arg approved_commit "$APPROVED_COMMIT" --arg operations_owner "$owner" '{confirmation:$confirmation,approved_commit:$approved_commit,operations_owner:$operations_owner}')"
+
+          echo 'Exact-main configured-staging predecessor and Q1 refresh completed.'
