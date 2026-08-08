@@ -50,13 +50,13 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          node <<'NODE'
-          const fs = require('node:fs');
+          RESTORE_BOOTSTRAP_URL="$(node <<'NODE'
           const url = new URL(process.env.DATABASE_URL);
           url.pathname = `/${process.env.TARGET_DB}`;
-          const value = url.toString();
-          fs.appendFileSync(process.env.GITHUB_ENV, `RESTORE_BOOTSTRAP_URL=${value}\n`);
+          process.stdout.write(url.toString());
           NODE
+          )"
+          export RESTORE_BOOTSTRAP_URL
           if ! actual="$(psql "$RESTORE_BOOTSTRAP_URL" -v ON_ERROR_STOP=1 -Atqc 'SELECT current_database()' 2>/dev/null)"; then
             echo 'isolated_restore_database_connect_failed' >&2
             exit 1
