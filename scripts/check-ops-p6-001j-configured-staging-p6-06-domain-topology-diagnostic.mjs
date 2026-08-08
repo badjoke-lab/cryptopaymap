@@ -63,6 +63,12 @@ const expectations = [
   [files.executor, 'candidateDigest: boundedHash'],
   [files.executor, 'deploymentDigest: boundedHash'],
   [files.executor, 'raw hostname must not be retained'],
+  [files.executor, "const approvedStagingCustomDomain = 'staging.cryptopaymap.com'"],
+  [files.executor, 'function readHistoricalP606Proof(statusRoot)'],
+  [files.executor, "state: proofValid ? 'authenticated_historical_proof'"],
+  [files.executor, "mode: 'p6_05_expiry_recovery'"],
+  [files.executor, 'prerequisiteMode: prerequisites.mode'],
+  [files.executor, "prerequisites.mode !== 'failed'"],
   [files.p606Contract, 'P6-06 configured domain cutover and rollback evidence contract passed.'],
   [
     files.authorization,
@@ -119,7 +125,13 @@ if (!files.executor.includes("cache: 'no-store'")) {
   throw new Error('OPS-P6-001J provider reads must bypass response caches.');
 }
 if (!files.executor.includes("predecessors.every((item) => item.state === 'current')")) {
-  throw new Error('OPS-P6-001J must require current P6-01 through P6-05 receipts.');
+  throw new Error('OPS-P6-001J normal mode must require current P6-01 through P6-05 receipts.');
+}
+if (!files.executor.includes("foundational.every((item) => item.state === 'current')")) {
+  throw new Error('OPS-P6-001J recovery mode must require current P6-01 through P6-04 receipts.');
+}
+if (!files.executor.includes("historicalP606.state === 'authenticated_historical_proof'")) {
+  throw new Error('OPS-P6-001J recovery mode must require authenticated historical P6-06 proof.');
 }
 
 console.log('OPS-P6-001J configured staging P6-06 topology diagnostic contract passed.');

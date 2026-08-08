@@ -9,6 +9,9 @@ const evidenceId = 'P6-06-DIAGNOSTIC';
 const projectName = 'cryptopaymap-staging';
 const productionBranch = 'staging-review';
 const expiryHours = 72;
+const approvedStagingCustomDomain = 'staging.cryptopaymap.com';
+const priorP606ReceiptPath =
+  'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json';
 const bindingKeys = ['releaseId', 'dataSnapshotId', 'configurationId', 'environmentId'];
 const predecessorPaths = [
   ['P6-01', 'config/staging-authorization/p6-01-data-qa-receipt.json'],
@@ -111,6 +114,62 @@ function sharedBinding(predecessors) {
   return predecessors.every((item) => JSON.stringify(item.binding) === first)
     ? predecessors[0].binding
     : null;
+}
+
+function readHistoricalP606Proof(statusRoot) {
+  let receipt = null;
+  try {
+    const value = JSON.parse(readFileSync(resolve(statusRoot, priorP606ReceiptPath), 'utf8'));
+    receipt = isObject(value) ? value : null;
+  } catch {
+    receipt = null;
+  }
+  const generatedAt = safeTimestamp(receipt?.generatedAt);
+  const expiresAt = safeTimestamp(receipt?.expiresAt);
+  const proofValid =
+    receipt?.version === 1 &&
+    receipt?.evidenceId === 'P6-06' &&
+    receipt?.environment === 'configured_staging' &&
+    receipt?.state === 'accepted' &&
+    validCommit(receipt?.commit) &&
+    generatedAt !== null &&
+    expiresAt !== null &&
+    receipt?.checks?.hostname?.digest === boundedHash(approvedStagingCustomDomain) &&
+    ['passed', 'existing'].includes(receipt?.checks?.cutover?.status) &&
+    receipt?.checks?.externalCutover?.status === 'passed' &&
+    receipt?.checks?.rollback?.status === 'passed' &&
+    receipt?.checks?.externalRollback?.status === 'passed' &&
+    receipt?.checks?.finalRestore?.status === 'passed' &&
+    receipt?.checks?.externalFinal?.status === 'passed' &&
+    Array.isArray(receipt?.exceptions) &&
+    receipt.exceptions.length === 0;
+  return {
+    state: proofValid ? 'authenticated_historical_proof' : receipt === null ? 'missing' : 'failed',
+    generatedAt,
+    expiresAt,
+    digest: proofValid ? boundedHash(JSON.stringify(receipt)) : null,
+  };
+}
+
+function selectPrerequisites(predecessors, historicalP606) {
+  const fullBinding = sharedBinding(predecessors);
+  if (predecessors.every((item) => item.state === 'current') && fullBinding !== null) {
+    return { mode: 'normal', binding: fullBinding };
+  }
+
+  const foundational = predecessors.filter((item) => item.evidenceId !== 'P6-05');
+  const p605 = predecessors.find((item) => item.evidenceId === 'P6-05');
+  const recoveryBinding = sharedBinding(foundational);
+  const recoveryEligible =
+    foundational.length === 4 &&
+    foundational.every((item) => item.state === 'current') &&
+    recoveryBinding !== null &&
+    p605 !== undefined &&
+    ['missing', 'stale', 'failed'].includes(p605.state) &&
+    historicalP606.state === 'authenticated_historical_proof';
+  return recoveryEligible
+    ? { mode: 'p6_05_expiry_recovery', binding: recoveryBinding }
+    : { mode: 'failed', binding: null };
 }
 
 class CloudflareApiError extends Error {
@@ -251,7 +310,11 @@ async function runDiagnostic(statusRoot, outputPath) {
         expiresAt: null,
         binding: null,
       }));
-  const binding = sharedBinding(predecessors);
+  const historicalP606 = validCommit(commit)
+    ? readHistoricalP606Proof(statusRoot)
+    : { state: 'failed', generatedAt: null, expiresAt: null, digest: null };
+  const prerequisites = selectPrerequisites(predecessors, historicalP606);
+  const binding = prerequisites.binding;
   const exceptions = [];
   const permissions = {
     tokenVerify: 'not_run',
@@ -266,6 +329,13 @@ async function runDiagnostic(statusRoot, outputPath) {
     repositoryContract: repositoryContract ? 'success' : 'failed',
     predecessors: predecessors.map(({ binding: _binding, ...item }) => item),
     predecessorBinding: binding === null ? 'failed' : 'matched',
+    prerequisiteMode: prerequisites.mode,
+    historicalP606: {
+      state: historicalP606.state,
+      generatedAt: historicalP606.generatedAt,
+      expiresAt: historicalP606.expiresAt,
+      digest: historicalP606.digest,
+    },
     permissions,
     topology: {
       productionBranch: null,
@@ -291,7 +361,7 @@ async function runDiagnostic(statusRoot, outputPath) {
     checks.confirmation === 'success' &&
     checks.owner === 'success' &&
     checks.repositoryContract === 'success' &&
-    predecessors.every((item) => item.state === 'current') &&
+    prerequisites.mode !== 'failed' &&
     binding !== null &&
     typeof accountId === 'string' &&
     accountId.length > 0 &&
@@ -496,6 +566,62 @@ function runSelfTest() {
       readPredecessor(root, id, path, commit, new Date('2026-08-02T00:00:00.000Z')),
     );
     assert(sharedBinding(predecessors) !== null, 'current predecessors must share binding');
+    const normal = selectPrerequisites(predecessors, { state: 'missing' });
+    assert(normal.mode === 'normal', 'normal path must require current P6-01 through P6-05');
+
+    const p605Path = predecessorPaths.find(([id]) => id === 'P6-05')[1];
+    const p605 = JSON.parse(readFileSync(resolve(root, p605Path), 'utf8'));
+    p605.state = 'failed';
+    writeFixture(root, p605Path, p605);
+    writeFixture(root, priorP606ReceiptPath, {
+      version: 1,
+      evidenceId: 'P6-06',
+      environment: 'configured_staging',
+      state: 'accepted',
+      commit: 'b'.repeat(40),
+      generatedAt: '2026-07-31T00:00:00.000Z',
+      expiresAt: '2026-08-01T00:00:00.000Z',
+      checks: {
+        hostname: { digest: boundedHash(approvedStagingCustomDomain) },
+        cutover: { status: 'existing' },
+        externalCutover: { status: 'passed' },
+        rollback: { status: 'passed' },
+        externalRollback: { status: 'passed' },
+        finalRestore: { status: 'passed' },
+        externalFinal: { status: 'passed' },
+      },
+      exceptions: [],
+    });
+    const recoveryPredecessors = predecessorPaths.map(([id, path]) =>
+      readPredecessor(root, id, path, commit, new Date('2026-08-02T00:00:00.000Z')),
+    );
+    const historical = readHistoricalP606Proof(root);
+    assert(
+      historical.state === 'authenticated_historical_proof',
+      'expired accepted P6-06 may authenticate only as historical proof',
+    );
+    const recovery = selectPrerequisites(recoveryPredecessors, historical);
+    assert(
+      recovery.mode === 'p6_05_expiry_recovery',
+      'failed P6-05 may enter only the bounded read-only recovery path',
+    );
+    assert(recovery.binding !== null, 'recovery must preserve the P6-01 through P6-04 binding');
+    assert(
+      selectPrerequisites(recoveryPredecessors, { state: 'missing' }).mode === 'failed',
+      'recovery must fail without authenticated historical P6-06 proof',
+    );
+
+    const p604Path = predecessorPaths.find(([id]) => id === 'P6-04')[1];
+    const p604 = JSON.parse(readFileSync(resolve(root, p604Path), 'utf8'));
+    p604.binding.releaseId = boundedHash('different-release');
+    writeFixture(root, p604Path, p604);
+    const brokenBinding = predecessorPaths.map(([id, path]) =>
+      readPredecessor(root, id, path, commit, new Date('2026-08-02T00:00:00.000Z')),
+    );
+    assert(
+      selectPrerequisites(brokenBinding, historical).mode === 'failed',
+      'recovery must fail when P6-01 through P6-04 do not share one binding',
+    );
   } finally {
     rmSync(root, { recursive: true, force: true });
   }

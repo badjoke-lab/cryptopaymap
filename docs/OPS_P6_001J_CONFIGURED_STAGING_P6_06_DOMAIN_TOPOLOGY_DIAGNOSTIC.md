@@ -11,14 +11,15 @@ This diagnostic is not P6-06 acceptance evidence. It determines the exact next e
 Execution requires:
 
 - exact current `main` commit;
-- current accepted P6-01 through P6-05 receipts on the same commit;
-- one matching release/data/configuration/environment binding;
+- normal execution: current accepted P6-01 through P6-05 receipts on the same commit;
+- bounded P6-05 expiry recovery: current accepted P6-01 through P6-04 receipts on the same commit, a non-current P6-05 receipt, and one authenticated historical P6-06 accepted receipt;
+- one matching release/data/configuration/environment binding across every current predecessor required by the selected mode;
 - the exact confirmation `DIAGNOSE_CONFIGURED_STAGING_P6_06`;
 - a bounded domain owner identity;
 - successful repository and execution-contract checks;
 - one protected `P6_06_STAGING_ZONE_ID` secret identifying the isolated staging zone.
 
-A changed main commit, stale predecessor, mismatched binding, missing credential, or unexpected Pages project stops the diagnostic.
+A changed main commit, a stale P6-01 through P6-04 predecessor, mismatched binding, missing credential, invalid historical P6-06 proof, or unexpected Pages project stops the diagnostic. P6-05 may be non-current only in the bounded expiry-recovery mode. Historical P6-06 evidence is authentication material for a read-only recheck and is never treated as current P6-06 authorization.
 
 ## Read-only provider boundary
 
@@ -52,6 +53,7 @@ No decision authorizes a cutover. Even an existing candidate requires a separate
 The retained diagnostic may include only:
 
 - exact source commit, timestamps, and expiry;
+- the prerequisite mode (`normal` or `p6_05_expiry_recovery`) and a bounded digest/state for historical P6-06 proof when recovery mode is used;
 - bounded owner hash;
 - predecessor states and shared binding;
 - token, Pages, zone-list, and DNS-list permission outcomes;
