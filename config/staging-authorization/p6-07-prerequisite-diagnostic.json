@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "diagnosticId": "sha256:60dc0362045d9ebfac5356f95b206ddcbcec520f1ccf3951dd34231414a2678e",
+  "diagnosticId": "sha256:3967e0850383196560579b9486a61934d6c8977d98936f8bffddc7267b1db9e0",
   "evidenceId": "P6-07",
   "diagnostic": "prerequisite_inventory",
   "environment": "configured_staging",
   "state": "diagnosed",
-  "decision": "configuration_blocked",
+  "decision": "ready",
   "commit": "fccedfa7a5169abda0d0a3d8475eeb0aaa9da72d",
-  "generatedAt": "2026-08-08T15:19:46.395Z",
-  "expiresAt": "2026-08-09T15:19:46.395Z",
-  "workflowRunId": "31264090929",
-  "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
+  "generatedAt": "2026-08-09T04:40:59.363Z",
+  "expiresAt": "2026-08-10T04:40:59.363Z",
+  "workflowRunId": "31295007764",
+  "owner": "sha256:f7b4664dabc4b206a67ce8566e0307a763ff4b376ef4197ed1112e13bb34d5f7",
   "checks": {
     "exactMain": "success",
     "predecessors": [
@@ -94,13 +94,13 @@
         "digest": "sha256:f9435ba2640d9ec66091da2da8e0c23cc4fefcef954d84fe9dc7bb8f3b50889e"
       },
       "isolatedRestoreDatabase": {
-        "status": "missing",
-        "digest": null,
-        "distinctFromSource": false
+        "status": "configured",
+        "digest": "sha256:c6d417d28b5e89042a44027a11183cf3c620b8fdf0a1da6ea093c6bd6d4ca10f",
+        "distinctFromSource": true
       },
       "backupEncryption": {
-        "status": "missing_or_too_short",
-        "digest": null
+        "status": "configured",
+        "digest": "sha256:1c8a4575e0b854ff165463ee127abf7b538dbcb19896dc4337791ca77df69fac"
       },
       "alertEvidenceIssue": {
         "status": "configured",
@@ -118,9 +118,6 @@
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "blockers": [
-    "backup_encryption:missing",
-    "isolated_restore_database:missing"
-  ],
+  "blockers": [],
   "exceptions": []
 }
