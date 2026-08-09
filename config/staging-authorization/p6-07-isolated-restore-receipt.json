@@ -1,0 +1,207 @@
+{
+  "version": 1,
+  "evidenceId": "P6-07-Q4",
+  "launchDomain": "isolated_restore",
+  "environment": "configured_staging",
+  "state": "failed",
+  "commit": "fc77f588c2897d63409067e10ce3c39b6fc2c60a",
+  "generatedAt": "2026-08-09T05:36:25.547Z",
+  "expiresAt": "2026-09-08T05:36:25.547Z",
+  "workflowRunId": "31296974999",
+  "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
+  "procedure": "OPS-P6-002A configured staging P6-07 isolated restore evidence",
+  "checks": {
+    "exactMain": "success",
+    "confirmation": "success",
+    "owner": "success",
+    "repositoryContract": "success",
+    "predecessors": [
+      {
+        "evidenceId": "P6-01",
+        "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-09T05:05:35.178Z",
+        "expiresAt": "2026-08-12T05:05:35.178Z",
+        "binding": {
+          "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+          "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+          "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+          "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+        }
+      },
+      {
+        "evidenceId": "P6-02",
+        "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-09T05:06:50.057Z",
+        "expiresAt": "2026-08-12T05:06:50.057Z",
+        "binding": {
+          "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+          "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+          "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+          "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+        }
+      },
+      {
+        "evidenceId": "P6-03",
+        "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-09T05:08:10.361Z",
+        "expiresAt": "2026-08-12T05:08:10.361Z",
+        "binding": {
+          "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+          "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+          "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+          "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+        }
+      },
+      {
+        "evidenceId": "P6-04",
+        "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-09T05:10:36.921Z",
+        "expiresAt": "2026-08-12T05:10:36.921Z",
+        "binding": {
+          "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+          "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+          "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+          "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+        }
+      },
+      {
+        "evidenceId": "P6-05",
+        "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-09T05:18:30.469Z",
+        "expiresAt": "2026-08-12T05:18:30.469Z",
+        "binding": {
+          "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+          "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+          "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+          "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+        }
+      },
+      {
+        "evidenceId": "P6-06",
+        "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-09T05:20:39.131Z",
+        "expiresAt": "2026-08-12T05:20:39.131Z",
+        "binding": {
+          "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+          "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+          "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+          "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+        }
+      }
+    ],
+    "predecessorBinding": "matched",
+    "prerequisite": {
+      "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
+      "state": "current",
+      "decision": "ready",
+      "generatedAt": "2026-08-09T05:23:23.733Z",
+      "expiresAt": "2026-08-10T05:23:23.733Z",
+      "digest": "sha256:5e39009c4338e2fb42c24126b279ab3dd2d2f0faf9eeec3b76de2a4c5b8317e5",
+      "blockers": [],
+      "configuration": {
+        "sourceDatabase": {
+          "status": "configured",
+          "digest": "sha256:f9435ba2640d9ec66091da2da8e0c23cc4fefcef954d84fe9dc7bb8f3b50889e"
+        },
+        "isolatedRestoreDatabase": {
+          "status": "configured",
+          "digest": "sha256:c6d417d28b5e89042a44027a11183cf3c620b8fdf0a1da6ea093c6bd6d4ca10f",
+          "distinctFromSource": true
+        },
+        "backupEncryption": {
+          "status": "configured",
+          "digest": "sha256:1c8a4575e0b854ff165463ee127abf7b538dbcb19896dc4337791ca77df69fac"
+        },
+        "alertEvidenceIssue": {
+          "status": "configured",
+          "issueNumber": 349
+        },
+        "backupRetention": {
+          "status": "configured",
+          "days": 30
+        }
+      }
+    },
+    "q2": {
+      "path": "config/staging-authorization/p6-07-monitoring-alert-receipt.json",
+      "state": "current",
+      "generatedAt": "2026-08-09T05:29:49.009Z",
+      "expiresAt": "2026-09-08T05:29:49.009Z",
+      "digest": "sha256:a83a987104df127522af3cb39998e20f1001e9b8bd38d4c860ddf0c8569d15c2"
+    },
+    "q3": {
+      "path": "config/staging-authorization/p6-07-backup-integrity-receipt.json",
+      "state": "current",
+      "generatedAt": "2026-08-09T05:33:25.159Z",
+      "expiresAt": "2026-09-08T05:33:25.159Z",
+      "digest": "sha256:d4c75556966c363a1b25a534d8bc38ee401e889cea061a5a4c275e4dadc387b5",
+      "workflowRunId": "31296861924"
+    },
+    "configuration": {
+      "sourceDatabase": "configured",
+      "restoreDatabase": "configured",
+      "backupEncryption": "configured",
+      "targetDatabaseName": "configured",
+      "rpoObjectiveMinutes": 60,
+      "rtoObjectiveMinutes": 30
+    },
+    "artifact": {
+      "status": "passed",
+      "workflowRunIdentity": "sha256:27a69f255f5684db85027bd0e6fe370ebd7769c6405501411f3d323b68807dd7",
+      "artifactIdentity": "sha256:61a6d318b4e8059eb43bc04030e2c14eec0b48943894bb9d82830ed9c4645c98",
+      "artifactDigest": "sha256:04816aaac66953be51acb6abb496544128b06f5e0d63e052b7f776010582bfe8",
+      "plaintextDigest": "sha256:0e0c5b2a5dbf9c8d85b3cdcd4182e377f7ea57d656e6434c64d5c4d20efffdbe",
+      "inventoryDigest": "sha256:0b284e196ea3540364421580308a6dd6a9c44fe664f4de40b630a23a7119d934",
+      "inventoryObjectCount": 425,
+      "schemaRevision": "sha256:8a0179645552059035ef1e3ceb5eebd166cbe166114c637cf538d578460bb809",
+      "encrypted": true,
+      "algorithm": "aes-256-gcm",
+      "immutability": "q3_run_scoped_artifact"
+    },
+    "targetSafety": {
+      "status": "passed",
+      "sourceIdentity": "sha256:917bc3e50a11de1cd851562e9329771f3ef95018813a8ba9f01a75ea020c6588",
+      "targetIdentity": "sha256:d09aaa0909208c5f9833c2b08086ded74f089a846297ed954f4d2afc15a4263d",
+      "sourceUrlIdentity": "sha256:76b20490f326a139fd621828ec3dcf11b9323278e93f0b60251d041673510b67",
+      "targetUrlIdentity": "sha256:a6fc34a9b59db25b2bc4f31bffc0ca94130e685eada80ebda4db024fe4140b6c",
+      "distinct": true,
+      "targetNameDigest": "sha256:232a94f06367f6986cbfd20c0707bf644c7b3ce0ef0e93ab574f276b37fee09d",
+      "initialUserObjectCount": 0,
+      "destructiveScopeAuthorized": true
+    },
+    "restore": {
+      "status": "not_run"
+    },
+    "reconciliation": {
+      "status": "not_run"
+    },
+    "objectives": {
+      "rpo": {
+        "status": "not_run",
+        "objectiveMinutes": 60
+      },
+      "rto": {
+        "status": "not_run",
+        "objectiveMinutes": 30
+      }
+    },
+    "disposal": {
+      "status": "not_run"
+    }
+  },
+  "binding": {
+    "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+    "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+    "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+  },
+  "exceptions": [
+    "isolated_restore_failed"
+  ]
+}
