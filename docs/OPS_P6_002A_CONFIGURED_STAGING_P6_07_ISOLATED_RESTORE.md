@@ -53,6 +53,8 @@ The executor never selects a target by discovery and never falls back to the sou
 
 ## Restore and reconciliation
 
+The expected Drizzle schema snapshot is resolved from the latest `_journal.json` entry's numeric `idx`, zero-padded to the canonical `NNNN_snapshot.json` filename. The human-readable journal `tag` is retained only as bounded receipt metadata and is never used as the snapshot filename. A missing, invalid, or unresolved index fails closed before any restore mutation.
+
 After authenticated decryption and Q3 inventory revalidation, the executor restores the custom-format dump with:
 
 ```text

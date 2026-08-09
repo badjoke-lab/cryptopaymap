@@ -41,6 +41,10 @@ const expectations = [
   [files.executor, "'--no-owner'"],
   [files.executor, "'--no-privileges'"],
   [files.executor, 'targetNamePattern = /^cpm_p6_07_restore_[a-z0-9_]{4,48}$/'],
+  [files.executor, 'const index = latest?.idx'],
+  [files.executor, "String(index).padStart(4, '0')"],
+  [files.executor, "resolve(sourceRoot, 'drizzle/meta', snapshotFile)"],
+  [files.executor, "entries: [{ idx: 1, tag: '0001_test' }]"],
   [files.executor, "'submission_private_payload_data'"],
   [files.executor, "'submission_private_contact_data'"],
   [files.executor, 'allExpectedNonPrivateTablesMatched'],
@@ -105,6 +109,10 @@ if (!files.executor.includes("throw new Error('target_disposal_failed')")) {
 }
 if (files.workflow.includes('sudo apt-get install --yes postgresql-client\n')) {
   throw new Error('OPS-P6-002A must pin the PostgreSQL 17 client.');
+}
+
+if (files.executor.includes('drizzle/meta/${tag}_snapshot.json')) {
+  throw new Error('OPS-P6-002A must resolve Drizzle snapshots by journal index, not tag.');
 }
 
 console.log('OPS-P6-002A configured staging P6-07 isolated restore contract passed.');
