@@ -122,16 +122,56 @@ jobs:
         working-directory: source
         run: npm ci
 
-      - name: Install PostgreSQL client
+      - name: Install PostgreSQL 17 client
+        shell: bash
         run: |
+          set -euo pipefail
           sudo apt-get update
-          sudo apt-get install --yes postgresql-client
+          sudo apt-get install --yes curl ca-certificates
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            --fail --silent --show-error \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          . /etc/os-release
+          dpkg_arch="$(dpkg --print-architecture)"
+          sudo tee /etc/apt/sources.list.d/pgdg.sources >/dev/null <<EOF
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: ${VERSION_CODENAME}-pgdg
+          Architectures: ${dpkg_arch}
+          Components: main
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          EOF
+          sudo apt-get update
+          sudo apt-get install --yes postgresql-client-17
+          test "$(/usr/lib/postgresql/17/bin/pg_dump --version | sed -E 's/^pg_dump \(PostgreSQL\) ([0-9]+).*/\1/')" = '17'
+          test "$(/usr/lib/postgresql/17/bin/pg_restore --version | sed -E 's/^pg_restore \(PostgreSQL\) ([0-9]+).*/\1/')" = '17'
+          echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
 
       - name: Verify exact current main
         run: |
           set -euo pipefail
           git -C source fetch origin main --depth=1
           test "$(git -C source rev-parse origin/main)" = "$APPROVED_COMMIT"
+
+      - name: Verify PostgreSQL client/server compatibility
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(command -v pg_restore)" = '/usr/lib/postgresql/17/bin/pg_restore'
+          client_major="$(pg_restore --version | sed -E 's/^pg_restore \(PostgreSQL\) ([0-9]+).*/\1/')"
+          source_version_num="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+          restore_version_num="$(psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+          test -n "$source_version_num"
+          test -n "$restore_version_num"
+          source_major="$((source_version_num / 10000))"
+          restore_major="$((restore_version_num / 10000))"
+          echo "postgres_client_major=$client_major"
+          echo "postgres_source_server_major=$source_major"
+          echo "postgres_restore_server_major=$restore_major"
+          test "$client_major" = '17'
+          test "$client_major" -ge "$source_major"
+          test "$client_major" -ge "$restore_major"
 
       - name: Recheck exact-source repository contract
         id: repository_contract

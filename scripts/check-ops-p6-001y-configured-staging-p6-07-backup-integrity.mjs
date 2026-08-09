@@ -15,7 +15,9 @@ const expectations = [
   [files.workflow, 'EXECUTE_CONFIGURED_STAGING_P6_07_Q3'],
   [files.workflow, 'P6_07_BACKUP_ENCRYPTION_KEY: ${{ secrets.P6_07_BACKUP_ENCRYPTION_KEY }}'],
   [files.workflow, 'DATABASE_URL: ${{ secrets.DATABASE_URL }}'],
-  [files.workflow, 'postgresql-client'],
+  [files.workflow, 'postgresql-client-17'],
+  [files.workflow, '/usr/lib/postgresql/17/bin'],
+  [files.workflow, 'SHOW server_version_num'],
   [files.workflow, 'p6-07-q3-backup.enc.json'],
   [files.workflow, 'p6-07-backup-integrity-receipt.json'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_07_Q3'"],
@@ -72,6 +74,9 @@ if (!files.executor.includes("throw new Error('corruption_not_rejected')")) {
 }
 if (!files.executor.includes("throw new Error('secret_leakage_self_test_failed')")) {
   throw new Error('OPS-P6-001Y self-test must prove secret redaction.');
+}
+if (files.workflow.includes('sudo apt-get install --yes postgresql-client\n')) {
+  throw new Error('OPS-P6-001Y must pin the PostgreSQL 17 client.');
 }
 
 console.log('OPS-P6-001Y configured staging P6-07 backup integrity contract passed.');
