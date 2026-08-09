@@ -1,0 +1,219 @@
+name: One-time P6-07 Q1-Q5 exact-main dispatcher 20260809
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-q1-q5-dispatch-20260809.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 240
+    env:
+      APPROVED_COMMIT: fccedfa7a5169abda0d0a3d8475eeb0aaa9da72d
+      RESTORE_TARGET_DATABASE_NAME: cpm_p6_07_restore_20260808
+    steps:
+      - name: Verify exact current main and dispatch Q1 through Q5 serially
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const owner = 'badjoke-lab';
+          const repo = 'cryptopaymap';
+          const sha = process.env.APPROVED_COMMIT;
+          const token = process.env.GH_TOKEN;
+          const restoreTarget = process.env.RESTORE_TARGET_DATABASE_NAME;
+          const apiBase = 'https://api.github.com';
+
+          async function api(path, options = {}) {
+            const response = await fetch(`${apiBase}${path}`, {
+              ...options,
+              headers: {
+                Accept: 'application/vnd.github+json',
+                Authorization: `Bearer ${token}`,
+                'X-GitHub-Api-Version': '2022-11-28',
+                ...(options.headers || {}),
+              },
+            });
+            if (!response.ok) {
+              const body = await response.text();
+              throw new Error(`github_api_${response.status}:${body.slice(0, 500)}`);
+            }
+            if (response.status === 204) return null;
+            return response.json();
+          }
+
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+          async function getMainSha() {
+            const value = await api(`/repos/${owner}/${repo}/commits/main`);
+            return value.sha;
+          }
+
+          async function dispatchAndWait(workflow, inputs, timeoutMinutes) {
+            const encoded = encodeURIComponent(workflow);
+            const before = await api(
+              `/repos/${owner}/${repo}/actions/workflows/${encoded}/runs?event=workflow_dispatch&branch=main&per_page=30`,
+            );
+            const beforeIds = new Set(before.workflow_runs.map((run) => run.id));
+            const startedAt = Date.now();
+            await api(`/repos/${owner}/${repo}/actions/workflows/${encoded}/dispatches`, {
+              method: 'POST',
+              body: JSON.stringify({ ref: 'main', inputs }),
+              headers: { 'Content-Type': 'application/json' },
+            });
+
+            let run = null;
+            for (let attempt = 0; attempt < 60; attempt += 1) {
+              await sleep(5000);
+              const listed = await api(
+                `/repos/${owner}/${repo}/actions/workflows/${encoded}/runs?event=workflow_dispatch&branch=main&per_page=30`,
+              );
+              run = listed.workflow_runs.find(
+                (candidate) =>
+                  !beforeIds.has(candidate.id) &&
+                  candidate.head_sha === sha &&
+                  Date.parse(candidate.created_at) >= startedAt - 10000,
+              );
+              if (run) break;
+            }
+            if (!run) throw new Error(`workflow_run_not_found:${workflow}`);
+            console.log(`${workflow}:run_id=${run.id}`);
+
+            const deadline = Date.now() + timeoutMinutes * 60 * 1000;
+            while (Date.now() < deadline) {
+              const current = await api(`/repos/${owner}/${repo}/actions/runs/${run.id}`);
+              if (current.status === 'completed') {
+                if (current.conclusion !== 'success') {
+                  throw new Error(`workflow_failed:${workflow}:run_id=${run.id}:conclusion=${current.conclusion}`);
+                }
+                console.log(`${workflow}:success:run_id=${run.id}`);
+                return run.id;
+              }
+              await sleep(10000);
+            }
+            throw new Error(`workflow_timeout:${workflow}:run_id=${run.id}`);
+          }
+
+          async function readStatusJson(path) {
+            const value = await api(
+              `/repos/${owner}/${repo}/contents/${path}?ref=staging-review`,
+            );
+            return JSON.parse(Buffer.from(value.content, 'base64').toString('utf8'));
+          }
+
+          const mainSha = await getMainSha();
+          if (mainSha !== sha) throw new Error(`main_changed:${mainSha}`);
+
+          await dispatchAndWait(
+            'ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.yml',
+            {
+              confirmation: 'DIAGNOSE_CONFIGURED_STAGING_P6_07',
+              approved_commit: sha,
+              operations_owner: 'badjoke-lab:p6-07-operations',
+            },
+            30,
+          );
+
+          const q1 = await readStatusJson(
+            'config/staging-authorization/p6-07-prerequisite-diagnostic.json',
+          );
+          if (
+            q1.commit !== sha ||
+            q1.state !== 'diagnosed' ||
+            q1.decision !== 'ready' ||
+            !Array.isArray(q1.blockers) ||
+            q1.blockers.length !== 0 ||
+            !Array.isArray(q1.exceptions) ||
+            q1.exceptions.length !== 0
+          ) {
+            throw new Error(
+              `q1_not_ready:decision=${q1.decision}:blockers=${JSON.stringify(q1.blockers || [])}:exceptions=${JSON.stringify(q1.exceptions || [])}`,
+            );
+          }
+          console.log('Q1:ready');
+
+          await dispatchAndWait(
+            'ops-p6-001y-configured-staging-p6-07-backup-integrity.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q3',
+              approved_commit: sha,
+              backup_owner: 'badjoke-lab:p6-07-backup',
+            },
+            45,
+          );
+
+          const q3 = await readStatusJson(
+            'config/staging-authorization/p6-07-backup-integrity-receipt.json',
+          );
+          if (q3.commit !== sha || q3.state !== 'accepted' || q3.exceptions?.length !== 0) {
+            throw new Error(`q3_not_accepted:state=${q3.state}`);
+          }
+          console.log(`Q3:accepted:run_id=${q3.workflowRunId}`);
+
+          await dispatchAndWait(
+            'ops-p6-002a-configured-staging-p6-07-isolated-restore.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q4',
+              approved_commit: sha,
+              restore_owner: 'badjoke-lab:p6-07-restore',
+              restore_target_database_name: restoreTarget,
+              rpo_objective_minutes: '60',
+              rto_objective_minutes: '30',
+            },
+            60,
+          );
+
+          const q4 = await readStatusJson(
+            'config/staging-authorization/p6-07-isolated-restore-receipt.json',
+          );
+          if (q4.commit !== sha || q4.state !== 'accepted' || q4.exceptions?.length !== 0) {
+            throw new Error(`q4_not_accepted:state=${q4.state}`);
+          }
+          console.log(`Q4:accepted:run_id=${q4.workflowRunId}`);
+
+          await dispatchAndWait(
+            'ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q5',
+              approved_commit: sha,
+              incident_id: 'cpm-p6-07-q5-20260809-fccedfa7',
+              command_owner: 'badjoke-lab:q5-command',
+              observer: 'badjoke-lab:q5-observer',
+              follow_up_owner: 'badjoke-lab:q5-follow-up',
+              incident_scenario: 'canonical_database_degradation',
+              incident_severity: 'exercise_high',
+              acknowledgement_objective_minutes: '15',
+              decision_objective_minutes: '30',
+              recovery_objective_minutes: '45',
+              status_cadence_minutes: '15',
+            },
+            45,
+          );
+
+          const q5 = await readStatusJson(
+            'config/staging-authorization/p6-07-operations-recovery-receipt.json',
+          );
+          if (q5.commit !== sha || q5.state !== 'accepted' || q5.exceptions?.length !== 0) {
+            throw new Error(`q5_not_accepted:state=${q5.state}:decision=${q5.decision}`);
+          }
+          const inventory = await readStatusJson(
+            'config/staging-authorization/authorization-receipt.json',
+          );
+          const p607 = inventory.checks?.predecessors?.find((item) => item.evidenceId === 'P6-07');
+          if (
+            p607?.state !== 'current' ||
+            inventory.mode !== 'inventory' ||
+            inventory.state !== 'not_authorized'
+          ) {
+            throw new Error('final_inventory_invalid');
+          }
+          console.log(`Q5:accepted:run_id=${q5.workflowRunId}`);
+          console.log('P6-07:current; production authorization remains not authorized');
+          NODE
