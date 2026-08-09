@@ -291,13 +291,22 @@ function loadExpectedSchema(sourceRoot) {
     readFileSync(resolve(sourceRoot, 'drizzle/meta/_journal.json'), 'utf8'),
   );
   const entries = Array.isArray(journal?.entries) ? journal.entries : [];
-  const tag = entries.at(-1)?.tag;
-  if (typeof tag !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(tag)) {
+  const latest = entries.at(-1);
+  const tag = latest?.tag;
+  const index = latest?.idx;
+  if (
+    typeof tag !== 'string' ||
+    !/^[a-zA-Z0-9_-]+$/.test(tag) ||
+    !Number.isInteger(index) ||
+    index < 0 ||
+    index > 9_999
+  ) {
     throw new Error('schema_snapshot_missing');
   }
-  const snapshot = JSON.parse(
-    readFileSync(resolve(sourceRoot, `drizzle/meta/${tag}_snapshot.json`), 'utf8'),
-  );
+  const snapshotFile = `${String(index).padStart(4, '0')}_snapshot.json`;
+  const snapshotPath = resolve(sourceRoot, 'drizzle/meta', snapshotFile);
+  if (!existsSync(snapshotPath)) throw new Error('schema_snapshot_missing');
+  const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
   const tables = isObject(snapshot?.tables) ? snapshot.tables : {};
   const expectedTables = Object.keys(tables)
     .filter((key) => key.startsWith('public.'))
@@ -1019,8 +1028,10 @@ async function selfTest() {
         },
       ]),
     );
-    writeJson(resolve(root, 'drizzle/meta/_journal.json'), { entries: [{ tag: '0001_test' }] });
-    writeJson(resolve(root, 'drizzle/meta/0001_test_snapshot.json'), { tables: snapshotTables });
+    writeJson(resolve(root, 'drizzle/meta/_journal.json'), {
+      entries: [{ idx: 1, tag: '0001_test' }],
+    });
+    writeJson(resolve(root, 'drizzle/meta/0001_snapshot.json'), { tables: snapshotTables });
     writeFileSync(resolve(root, 'drizzle.config.ts'), 'export default {};\n');
     writeFileSync(resolve(root, 'scripts/materialize-drizzle-snapshot.mjs'), 'export {};\n');
     for (const [evidenceId, path] of predecessorPaths) {
