@@ -1,0 +1,366 @@
+name: One-time P6-07 final exact-main dispatcher 0cbcb
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-final-exact-main-dispatch-0cbcb.yml'
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      APPROVED_COMMIT: 0cbcb3820de762c6d1d3f894f3d4b9cf5e539297
+      RESTORE_TARGET_DATABASE_NAME: cpm_p6_07_restore_20260808
+    steps:
+      - name: Execute exact-main P6-01 through P6-07 evidence serially
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { createHash } = require('node:crypto');
+
+          const owner = 'badjoke-lab';
+          const repo = 'cryptopaymap';
+          const sha = process.env.APPROVED_COMMIT;
+          const restoreTarget = process.env.RESTORE_TARGET_DATABASE_NAME;
+          const token = process.env.GH_TOKEN;
+          const apiBase = 'https://api.github.com';
+          const issueNumber = 349;
+          const operator = 'badjoke-lab';
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+          function boundedHash(value) {
+            return `sha256:${createHash('sha256').update(String(value), 'utf8').digest('hex')}`;
+          }
+
+          async function api(path, options = {}) {
+            const response = await fetch(`${apiBase}${path}`, {
+              ...options,
+              headers: {
+                Accept: 'application/vnd.github+json',
+                Authorization: `Bearer ${token}`,
+                'X-GitHub-Api-Version': '2022-11-28',
+                ...(options.headers || {}),
+              },
+            });
+            if (!response.ok) {
+              const body = await response.text();
+              throw new Error(`github_api_${response.status}:${body.slice(0, 500)}`);
+            }
+            if (response.status === 204) return null;
+            return response.json();
+          }
+
+          async function currentMain() {
+            const main = await api(`/repos/${owner}/${repo}/commits/main`);
+            return main.sha;
+          }
+
+          async function assertMain() {
+            const main = await currentMain();
+            if (main !== sha) throw new Error(`main_changed:${main}`);
+          }
+
+          async function dispatchAndWait(workflow, inputs = {}, timeoutMinutes = 45) {
+            await assertMain();
+            const encoded = encodeURIComponent(workflow);
+            const before = await api(
+              `/repos/${owner}/${repo}/actions/workflows/${encoded}/runs?event=workflow_dispatch&branch=main&per_page=30`,
+            );
+            const beforeIds = new Set(before.workflow_runs.map((run) => run.id));
+            const startedAt = Date.now();
+            const payload = Object.keys(inputs).length === 0 ? { ref: 'main' } : { ref: 'main', inputs };
+            await api(`/repos/${owner}/${repo}/actions/workflows/${encoded}/dispatches`, {
+              method: 'POST',
+              body: JSON.stringify(payload),
+              headers: { 'Content-Type': 'application/json' },
+            });
+
+            let run = null;
+            for (let attempt = 0; attempt < 90; attempt += 1) {
+              await sleep(5000);
+              const listed = await api(
+                `/repos/${owner}/${repo}/actions/workflows/${encoded}/runs?event=workflow_dispatch&branch=main&per_page=30`,
+              );
+              run = listed.workflow_runs.find(
+                (candidate) =>
+                  !beforeIds.has(candidate.id) &&
+                  candidate.head_sha === sha &&
+                  Date.parse(candidate.created_at) >= startedAt - 10000,
+              );
+              if (run) break;
+            }
+            if (!run) throw new Error(`workflow_run_not_found:${workflow}`);
+            console.log(`${workflow}:run_id=${run.id}`);
+
+            const deadline = Date.now() + timeoutMinutes * 60 * 1000;
+            while (Date.now() < deadline) {
+              const current = await api(`/repos/${owner}/${repo}/actions/runs/${run.id}`);
+              if (current.status === 'completed') {
+                if (current.conclusion !== 'success') {
+                  throw new Error(
+                    `workflow_failed:${workflow}:run_id=${run.id}:conclusion=${current.conclusion}`,
+                  );
+                }
+                console.log(`${workflow}:success:run_id=${run.id}`);
+                return run.id;
+              }
+              await sleep(10000);
+            }
+            throw new Error(`workflow_timeout:${workflow}:run_id=${run.id}`);
+          }
+
+          async function readStatus(path) {
+            const value = await api(`/repos/${owner}/${repo}/contents/${path}?ref=staging-review`);
+            return JSON.parse(Buffer.from(value.content, 'base64').toString('utf8'));
+          }
+
+          async function addIssueComment(body) {
+            await api(`/repos/${owner}/${repo}/issues/${issueNumber}/comments`, {
+              method: 'POST',
+              body: JSON.stringify({ body }),
+              headers: { 'Content-Type': 'application/json' },
+            });
+          }
+
+          function channelComment(kind, alertId, signalClass, sourceBinding, ownerDigest, extra = '') {
+            const labels = {
+              alert: 'configured-staging test alert',
+              ack: 'test alert acknowledged',
+              escalation: 'test alert escalated',
+              recovery: 'test alert recovered',
+            };
+            return [
+              `<!-- cpm-p6-07-${kind}:${alertId} -->`,
+              `### P6-07 ${labels[kind]}`,
+              '',
+              `- Alert identity: \`${alertId}\``,
+              '- Rule revision: `p6-07-q2-v1`',
+              `- Signal class: \`${signalClass}\``,
+              '- Severity: `test_high`',
+              `- Source binding: \`${sourceBinding}\``,
+              `- Owner: \`${ownerDigest}\``,
+              '',
+              extra || 'This is a bounded operational evidence test. No live service degradation was introduced.',
+            ].join('\n');
+          }
+
+          await assertMain();
+
+          await dispatchAndWait('staging-review-deploy.yml', {}, 45);
+          await dispatchAndWait('p5-02r-fixed-review-live-audit.yml', {}, 45);
+          await dispatchAndWait(
+            'ops-p6-001d-configured-staging-p6-01-data-qa.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_01',
+              approved_commit: sha,
+              data_owner: operator,
+            },
+            45,
+          );
+          await dispatchAndWait(
+            'ops-p6-001e-configured-staging-p6-02-identity-admin.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_02',
+              approved_commit: sha,
+              identity_owner: operator,
+            },
+            45,
+          );
+          await dispatchAndWait(
+            'ops-p6-001g-configured-staging-p6-03-neon-transaction.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_03',
+              approved_commit: sha,
+              transaction_owner: operator,
+            },
+            45,
+          );
+          await dispatchAndWait(
+            'ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_04',
+              approved_commit: sha,
+              media_owner: operator,
+            },
+            45,
+          );
+          await dispatchAndWait(
+            'ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml',
+            {
+              confirmation: 'DIAGNOSE_CONFIGURED_STAGING_P6_06',
+              approved_commit: sha,
+              domain_owner: operator,
+            },
+            45,
+          );
+          await dispatchAndWait(
+            'ops-p6-001i-configured-staging-p6-05-public-export-release.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_05',
+              approved_commit: sha,
+              release_owner: operator,
+            },
+            60,
+          );
+          await dispatchAndWait(
+            'ops-p6-001r-configured-staging-p6-06-continuity-revalidation.yml',
+            {
+              confirmation: 'REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY',
+              approved_commit: sha,
+              domain_owner: operator,
+            },
+            45,
+          );
+          await dispatchAndWait(
+            'ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.yml',
+            {
+              confirmation: 'DIAGNOSE_CONFIGURED_STAGING_P6_07',
+              approved_commit: sha,
+              operations_owner: operator,
+            },
+            45,
+          );
+
+          const q1 = await readStatus('config/staging-authorization/p6-07-prerequisite-diagnostic.json');
+          if (
+            q1.commit !== sha ||
+            q1.state !== 'diagnosed' ||
+            q1.decision !== 'ready' ||
+            !Array.isArray(q1.blockers) ||
+            q1.blockers.length !== 0 ||
+            !Array.isArray(q1.exceptions) ||
+            q1.exceptions.length !== 0
+          ) throw new Error('q1_not_ready');
+          console.log('Q1:ready');
+
+          const binding = {
+            releaseId: q1.binding?.releaseId,
+            dataSnapshotId: q1.binding?.dataSnapshotId,
+            configurationId: q1.binding?.configurationId,
+            environmentId: q1.binding?.environmentId,
+          };
+          if (Object.values(binding).some((value) => typeof value !== 'string')) {
+            throw new Error('q1_binding_invalid');
+          }
+          const sourceBinding = boundedHash(JSON.stringify(binding));
+          const ownerDigest = boundedHash(operator);
+          const ruleRevision = 'p6-07-q2-v1';
+          const wrongSignal = 'wrong_release_http_200';
+          const blindSignal = 'monitor_blind_state';
+          const wrongAlertId = boundedHash(`${wrongSignal}:${sourceBinding}:${ruleRevision}`);
+          const blindAlertId = boundedHash(`${blindSignal}:${sourceBinding}:${ruleRevision}`);
+
+          await addIssueComment(channelComment('alert', wrongAlertId, wrongSignal, sourceBinding, ownerDigest));
+          await addIssueComment(channelComment('ack', wrongAlertId, wrongSignal, sourceBinding, ownerDigest));
+          await addIssueComment(channelComment('recovery', wrongAlertId, wrongSignal, sourceBinding, ownerDigest));
+          await addIssueComment(channelComment('alert', blindAlertId, blindSignal, sourceBinding, ownerDigest));
+          await sleep(3500);
+          await addIssueComment(
+            channelComment(
+              'escalation',
+              blindAlertId,
+              blindSignal,
+              sourceBinding,
+              ownerDigest,
+              'The bounded acknowledgement deadline was intentionally missed and the test alert escalated. No live service degradation was introduced.',
+            ),
+          );
+          await addIssueComment(channelComment('ack', blindAlertId, blindSignal, sourceBinding, ownerDigest));
+          await addIssueComment(channelComment('recovery', blindAlertId, blindSignal, sourceBinding, ownerDigest));
+          console.log('Q2 channel evidence preseeded on exact binding.');
+
+          await dispatchAndWait(
+            'ops-p6-001u-configured-staging-p6-07-monitoring-alert.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q2',
+              approved_commit: sha,
+              monitoring_owner: operator,
+            },
+            45,
+          );
+          const q2 = await readStatus('config/staging-authorization/p6-07-monitoring-alert-receipt.json');
+          if (
+            q2.commit !== sha ||
+            q2.state !== 'accepted' ||
+            q2.checks?.alertExercise?.status !== 'passed' ||
+            q2.exceptions?.length !== 0
+          ) throw new Error('q2_not_accepted');
+          console.log(`Q2:accepted:run_id=${q2.workflowRunId}`);
+
+          await dispatchAndWait(
+            'ops-p6-001y-configured-staging-p6-07-backup-integrity.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q3',
+              approved_commit: sha,
+              backup_owner: operator,
+            },
+            45,
+          );
+          const q3 = await readStatus('config/staging-authorization/p6-07-backup-integrity-receipt.json');
+          if (q3.commit !== sha || q3.state !== 'accepted' || q3.exceptions?.length !== 0) {
+            throw new Error(`q3_not_accepted:${q3.state}`);
+          }
+          console.log(`Q3:accepted:run_id=${q3.workflowRunId}`);
+
+          await dispatchAndWait(
+            'ops-p6-002a-configured-staging-p6-07-isolated-restore.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q4',
+              approved_commit: sha,
+              restore_owner: operator,
+              restore_target_database_name: restoreTarget,
+              rpo_objective_minutes: '60',
+              rto_objective_minutes: '30',
+            },
+            75,
+          );
+          const q4 = await readStatus('config/staging-authorization/p6-07-isolated-restore-receipt.json');
+          if (q4.commit !== sha || q4.state !== 'accepted' || q4.exceptions?.length !== 0) {
+            throw new Error(`q4_not_accepted:${q4.state}`);
+          }
+          console.log(`Q4:accepted:run_id=${q4.workflowRunId}`);
+
+          await dispatchAndWait(
+            'ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml',
+            {
+              confirmation: 'EXECUTE_CONFIGURED_STAGING_P6_07_Q5',
+              approved_commit: sha,
+              incident_id: 'cpm-p6-07-q5-20260809-0cbcb382',
+              command_owner: 'badjoke-lab:q5-command',
+              observer: 'badjoke-lab:q5-observer',
+              follow_up_owner: 'badjoke-lab:q5-follow-up',
+              incident_scenario: 'canonical_database_degradation',
+              incident_severity: 'exercise_high',
+              acknowledgement_objective_minutes: '15',
+              decision_objective_minutes: '30',
+              recovery_objective_minutes: '45',
+              status_cadence_minutes: '15',
+            },
+            45,
+          );
+          const q5 = await readStatus('config/staging-authorization/p6-07-operations-recovery-receipt.json');
+          if (q5.commit !== sha || q5.state !== 'accepted' || q5.exceptions?.length !== 0) {
+            throw new Error(`q5_not_accepted:${q5.state}`);
+          }
+
+          const inventory = await readStatus('config/staging-authorization/authorization-receipt.json');
+          const p607 = inventory.checks?.predecessors?.find((item) => item.evidenceId === 'P6-07');
+          if (
+            p607?.state !== 'current' ||
+            inventory.mode !== 'inventory' ||
+            inventory.state !== 'not_authorized'
+          ) throw new Error('final_inventory_invalid');
+
+          console.log(`Q5:accepted:run_id=${q5.workflowRunId}`);
+          console.log('P6-07:current');
+          console.log('production_authorization:not_authorized');
+          NODE
