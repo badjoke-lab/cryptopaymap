@@ -1,0 +1,89 @@
+name: One-time P6-07 Q2 exact-main dispatcher fc77
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-q2-dispatch-fc77.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  dispatch:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      APPROVED_COMMIT: fc77f588c2897d63409067e10ce3c39b6fc2c60a
+    steps:
+      - name: Dispatch and verify exact-main Q2
+        shell: bash
+        run: |
+          set -euo pipefail
+          current_main="$(curl --fail --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/$REPOSITORY/commits/main" | jq -r '.sha')"
+          test "$current_main" = "$APPROVED_COMMIT"
+
+          marker="$(date -u +%s)"
+          payload="$(jq -nc \
+            --arg ref main \
+            --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_07_Q2 \
+            --arg approved_commit "$APPROVED_COMMIT" \
+            --arg monitoring_owner badjoke-lab \
+            '{ref:$ref,inputs:{confirmation:$confirmation,approved_commit:$approved_commit,monitoring_owner:$monitoring_owner}}')"
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/$REPOSITORY/actions/workflows/ops-p6-001u-configured-staging-p6-07-monitoring-alert.yml/dispatches" \
+            -d "$payload"
+
+          run_id=''
+          for _ in $(seq 1 90); do
+            sleep 5
+            runs="$(curl --fail --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/actions/workflows/ops-p6-001u-configured-staging-p6-07-monitoring-alert.yml/runs?event=workflow_dispatch&branch=main&per_page=20")"
+            run_id="$(jq -r --arg sha "$APPROVED_COMMIT" --argjson marker "$marker" '
+              [.workflow_runs[] | select(.head_sha == $sha and ((.created_at | fromdateiso8601) >= ($marker - 5)))]
+              | sort_by(.created_at) | last | .id // empty
+            ' <<<"$runs")"
+            [ -n "$run_id" ] && break
+          done
+          test -n "$run_id"
+          echo "Q2 run_id=$run_id"
+
+          for _ in $(seq 1 360); do
+            run="$(curl --fail --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/actions/runs/$run_id")"
+            status="$(jq -r '.status' <<<"$run")"
+            conclusion="$(jq -r '.conclusion // empty' <<<"$run")"
+            if [ "$status" = completed ]; then
+              test "$conclusion" = success
+              break
+            fi
+            sleep 10
+          done
+
+          receipt_json="$(curl --fail --silent --show-error \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H 'Accept: application/vnd.github+json' \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "https://api.github.com/repos/$REPOSITORY/contents/config/staging-authorization/p6-07-monitoring-alert-receipt.json?ref=staging-review" | jq -r '.content' | base64 -d)"
+          test "$(jq -r '.commit' <<<"$receipt_json")" = "$APPROVED_COMMIT"
+          test "$(jq -r '.state' <<<"$receipt_json")" = accepted
+          test "$(jq '.exceptions | length' <<<"$receipt_json")" = 0
+          test "$(jq -r '.checks.alertExercise.status' <<<"$receipt_json")" = passed
+          echo 'Q2 accepted on exact main.'
