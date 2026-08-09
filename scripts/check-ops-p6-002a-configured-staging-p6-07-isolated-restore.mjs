@@ -20,6 +20,9 @@ const expectations = [
   [files.workflow, 'run-id: ${{ steps.q3_reference.outputs.run_id }}'],
   [files.workflow, 'github-token: ${{ secrets.GITHUB_TOKEN }}'],
   [files.workflow, 'p6-07-isolated-restore-receipt.json'],
+  [files.workflow, 'postgresql-client-17'],
+  [files.workflow, '/usr/lib/postgresql/17/bin'],
+  [files.workflow, 'SHOW server_version_num'],
   [files.executor, "const exactConfirmation = 'EXECUTE_CONFIGURED_STAGING_P6_07_Q4'"],
   [
     files.executor,
@@ -99,6 +102,9 @@ if (/database:\s*decodeURIComponent\(url\.pathname\.slice\(1\)\),\s*user:/.test(
 
 if (!files.executor.includes("throw new Error('target_disposal_failed')")) {
   throw new Error('OPS-P6-002A must fail closed when isolated-target disposal fails.');
+}
+if (files.workflow.includes('sudo apt-get install --yes postgresql-client\n')) {
+  throw new Error('OPS-P6-002A must pin the PostgreSQL 17 client.');
 }
 
 console.log('OPS-P6-002A configured staging P6-07 isolated restore contract passed.');
