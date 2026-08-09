@@ -1,0 +1,224 @@
+name: One-time OPS-P6-005 PostgreSQL 17 patcher
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-ops-p6-005-postgresql17-patcher.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'agent/ops-p6-005-postgresql17-client'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out patch branch
+        uses: actions/checkout@v4
+        with:
+          ref: agent/ops-p6-005-postgresql17-client
+
+      - name: Apply bounded PostgreSQL 17 client fix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 <<'PY'
+          from pathlib import Path
+
+          q3_workflow = Path('.github/workflows/ops-p6-001y-configured-staging-p6-07-backup-integrity.yml')
+          q4_workflow = Path('.github/workflows/ops-p6-002a-configured-staging-p6-07-isolated-restore.yml')
+          q3_checker = Path('scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs')
+          q4_checker = Path('scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
+          q3_docs = Path('docs/OPS_P6_001Y_CONFIGURED_STAGING_P6_07_BACKUP_INTEGRITY.md')
+          q4_docs = Path('docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md')
+
+          old_install = """      - name: Install PostgreSQL client
+                run: |
+                  sudo apt-get update
+                  sudo apt-get install --yes postgresql-client
+          """
+          new_install = """      - name: Install PostgreSQL 17 client
+                shell: bash
+                run: |
+                  set -euo pipefail
+                  sudo apt-get update
+                  sudo apt-get install --yes curl ca-certificates
+                  sudo install -d /usr/share/postgresql-common/pgdg
+                  sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \\
+                    --fail --silent --show-error \\
+                    https://www.postgresql.org/media/keys/ACCC4CF8.asc
+                  . /etc/os-release
+                  dpkg_arch="$(dpkg --print-architecture)"
+                  sudo tee /etc/apt/sources.list.d/pgdg.sources >/dev/null <<EOF
+                  Types: deb
+                  URIs: https://apt.postgresql.org/pub/repos/apt
+                  Suites: ${VERSION_CODENAME}-pgdg
+                  Architectures: ${dpkg_arch}
+                  Components: main
+                  Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+                  EOF
+                  sudo apt-get update
+                  sudo apt-get install --yes postgresql-client-17
+                  test "$(/usr/lib/postgresql/17/bin/pg_dump --version | sed -E 's/^pg_dump \\(PostgreSQL\\) ([0-9]+).*/\\1/')" = '17'
+                  test "$(/usr/lib/postgresql/17/bin/pg_restore --version | sed -E 's/^pg_restore \\(PostgreSQL\\) ([0-9]+).*/\\1/')" = '17'
+                  echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
+          """
+
+          exact_main = """      - name: Verify exact current main
+                run: |
+                  set -euo pipefail
+                  git -C source fetch origin main --depth=1
+                  test "$(git -C source rev-parse origin/main)" = "$APPROVED_COMMIT"
+          """
+          q3_compat = exact_main + """
+                - name: Verify PostgreSQL client/server compatibility
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    test "$(command -v pg_dump)" = '/usr/lib/postgresql/17/bin/pg_dump'
+                    client_major="$(pg_dump --version | sed -E 's/^pg_dump \\(PostgreSQL\\) ([0-9]+).*/\\1/')"
+                    server_version_num="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+                    test -n "$server_version_num"
+                    server_major="$((server_version_num / 10000))"
+                    echo "postgres_client_major=$client_major"
+                    echo "postgres_source_server_major=$server_major"
+                    test "$client_major" = '17'
+                    test "$client_major" -ge "$server_major"
+          """
+          q4_compat = exact_main + """
+                - name: Verify PostgreSQL client/server compatibility
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    test "$(command -v pg_restore)" = '/usr/lib/postgresql/17/bin/pg_restore'
+                    client_major="$(pg_restore --version | sed -E 's/^pg_restore \\(PostgreSQL\\) ([0-9]+).*/\\1/')"
+                    source_version_num="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+                    restore_version_num="$(psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+                    test -n "$source_version_num"
+                    test -n "$restore_version_num"
+                    source_major="$((source_version_num / 10000))"
+                    restore_major="$((restore_version_num / 10000))"
+                    echo "postgres_client_major=$client_major"
+                    echo "postgres_source_server_major=$source_major"
+                    echo "postgres_restore_server_major=$restore_major"
+                    test "$client_major" = '17'
+                    test "$client_major" -ge "$source_major"
+                    test "$client_major" -ge "$restore_major"
+          """
+
+          def replace_once(path, old, new):
+              text = path.read_text()
+              if text.count(old) != 1:
+                  raise SystemExit(f'expected exactly one match in {path}: {text.count(old)}')
+              path.write_text(text.replace(old, new, 1))
+
+          for path in (q3_workflow, q4_workflow):
+              replace_once(path, old_install, new_install)
+          replace_once(q3_workflow, exact_main, q3_compat)
+          replace_once(q4_workflow, exact_main, q4_compat)
+
+          q3_text = q3_checker.read_text()
+          q3_text = q3_text.replace(
+              "  [files.workflow, 'postgresql-client'],\n",
+              "  [files.workflow, 'postgresql-client-17'],\n"
+              "  [files.workflow, '/usr/lib/postgresql/17/bin'],\n"
+              "  [files.workflow, 'SHOW server_version_num'],\n",
+              1,
+          )
+          marker = "if (files.workflow.includes('P6_07_RESTORE_DATABASE_URL')) {\n"
+          if marker not in q3_text:
+              raise SystemExit('Q3 checker marker not found')
+          q3_text = q3_text.replace(
+              marker,
+              "if (files.workflow.includes('sudo apt-get install --yes postgresql-client\\n')) {\n"
+              "  throw new Error('OPS-P6-001Y must pin the PostgreSQL 17 client.');\n"
+              "}\n"
+              + marker,
+              1,
+          )
+          q3_checker.write_text(q3_text)
+
+          q4_text = q4_checker.read_text()
+          marker = "  [files.workflow, 'github-token: ${{ secrets.GITHUB_TOKEN }}'],\n"
+          if marker not in q4_text:
+              raise SystemExit('Q4 checker expectation marker not found')
+          q4_text = q4_text.replace(
+              marker,
+              marker
+              + "  [files.workflow, 'postgresql-client-17'],\n"
+              + "  [files.workflow, '/usr/lib/postgresql/17/bin'],\n"
+              + "  [files.workflow, 'SHOW server_version_num'],\n",
+              1,
+          )
+          marker2 = "if (!files.workflow.includes('DATABASE_URL: ${{ secrets.DATABASE_URL }}')) {\n"
+          if marker2 not in q4_text:
+              raise SystemExit('Q4 checker guard marker not found')
+          q4_text = q4_text.replace(
+              marker2,
+              "if (files.workflow.includes('sudo apt-get install --yes postgresql-client\\n')) {\n"
+              "  throw new Error('OPS-P6-002A must pin the PostgreSQL 17 client.');\n"
+              "}\n"
+              + marker2,
+              1,
+          )
+          q4_checker.write_text(q4_text)
+
+          q3_doc_text = q3_docs.read_text()
+          q3_anchor = "The implementation may merge before protected configuration is supplied. Execution remains fail-closed until `P6_07_BACKUP_ENCRYPTION_KEY` is configured and Q1 is rerun without the `backup_encryption:missing` blocker.\n"
+          q3_insert = q3_anchor + "\nRuntime backup tooling is pinned to PostgreSQL client major 17 from the official PGDG Apt repository because the configured Neon source is PostgreSQL 17. The workflow verifies both the selected `pg_dump` binary and the live server major before backup execution. An unversioned Ubuntu `postgresql-client` or a client older than the source server fails closed before any backup artifact is created.\n"
+          if q3_doc_text.count(q3_anchor) != 1:
+              raise SystemExit('Q3 docs anchor not found exactly once')
+          q3_docs.write_text(q3_doc_text.replace(q3_anchor, q3_insert, 1))
+
+          q4_doc_text = q4_docs.read_text()
+          q4_anchor = "The repository implementation may merge before protected configuration is supplied. Execution remains fail-closed until the exact current-main P6-01 through P6-06, Q1, Q2, and Q3 receipts are accepted and a distinct protected restore database is configured.\n"
+          q4_insert = q4_anchor + "\nRuntime restore tooling is pinned to PostgreSQL client major 17 from the official PGDG Apt repository. Before artifact download or restore mutation, the workflow verifies that the selected `pg_restore` is major 17 and that both the fixed-review source and isolated restore target are not newer than that client. An unversioned Ubuntu `postgresql-client` or an older incompatible client fails closed before restore execution.\n"
+          if q4_doc_text.count(q4_anchor) != 1:
+              raise SystemExit('Q4 docs anchor not found exactly once')
+          q4_docs.write_text(q4_doc_text.replace(q4_anchor, q4_insert, 1))
+          PY
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Format changed JavaScript contract files
+        run: |
+          npx biome format --write \
+            scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs \
+            scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+
+      - name: Validate bounded fix
+        run: |
+          set -euo pipefail
+          npm run format:check
+          npm run check
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs
+          node scripts/run-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs --self-test
+          node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+
+      - name: Commit real fix only
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            .github/workflows/ops-p6-001y-configured-staging-p6-07-backup-integrity.yml \
+            .github/workflows/ops-p6-002a-configured-staging-p6-07-isolated-restore.yml \
+            docs/OPS_P6_001Y_CONFIGURED_STAGING_P6_07_BACKUP_INTEGRITY.md \
+            docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md \
+            scripts/check-ops-p6-001y-configured-staging-p6-07-backup-integrity.mjs \
+            scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
+          git diff --cached --check
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = '6'
+          git commit -m 'OPS-P6-005: pin PostgreSQL 17 backup and restore client'
+          git push origin HEAD:agent/ops-p6-005-postgresql17-client
+
+      - name: Remove one-time patcher from final diff
+        run: |
+          set -euo pipefail
+          git rm .github/workflows/one-time-ops-p6-005-postgresql17-patcher.yml
+          git commit -m 'Remove one-time OPS-P6-005 patcher'
+          git push origin HEAD:agent/ops-p6-005-postgresql17-client
