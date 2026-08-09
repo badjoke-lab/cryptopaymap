@@ -6,6 +6,8 @@ This slice implements Q3 of Issue #349 after accepted Q2 monitoring and alert ev
 
 The implementation may merge before protected configuration is supplied. Execution remains fail-closed until `P6_07_BACKUP_ENCRYPTION_KEY` is configured and Q1 is rerun without the `backup_encryption:missing` blocker.
 
+Runtime backup tooling is pinned to PostgreSQL client major 17 from the official PGDG Apt repository because the configured Neon source is PostgreSQL 17. The workflow verifies both the selected `pg_dump` binary and the live server major before backup execution. An unversioned Ubuntu `postgresql-client` or a client older than the source server fails closed before any backup artifact is created.
+
 ## Preconditions
 
 Execution requires:
