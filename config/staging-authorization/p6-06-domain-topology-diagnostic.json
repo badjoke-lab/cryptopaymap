@@ -4,10 +4,10 @@
   "environment": "configured_staging",
   "state": "diagnosed",
   "decision": "existing_candidate_requires_approval",
-  "commit": "fc77f588c2897d63409067e10ce3c39b6fc2c60a",
-  "generatedAt": "2026-08-09T05:12:51.136Z",
-  "expiresAt": "2026-08-12T05:12:51.136Z",
-  "workflowRunId": "31296135319",
+  "commit": "0cbcb3820de762c6d1d3f894f3d4b9cf5e539297",
+  "generatedAt": "2026-08-09T06:06:32.990Z",
+  "expiresAt": "2026-08-12T06:06:32.990Z",
+  "workflowRunId": "31298074143",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "checks": {
     "exactMain": "success",
@@ -19,45 +19,45 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T05:05:35.178Z",
-        "expiresAt": "2026-08-12T05:05:35.178Z"
+        "generatedAt": "2026-08-09T05:58:49.472Z",
+        "expiresAt": "2026-08-12T05:58:49.472Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T05:06:50.057Z",
-        "expiresAt": "2026-08-12T05:06:50.057Z"
+        "generatedAt": "2026-08-09T06:00:22.844Z",
+        "expiresAt": "2026-08-12T06:00:22.844Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T05:08:10.361Z",
-        "expiresAt": "2026-08-12T05:08:10.361Z"
+        "generatedAt": "2026-08-09T06:01:44.556Z",
+        "expiresAt": "2026-08-12T06:01:44.556Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T05:10:36.921Z",
-        "expiresAt": "2026-08-12T05:10:36.921Z"
+        "generatedAt": "2026-08-09T06:04:07.910Z",
+        "expiresAt": "2026-08-12T06:04:07.910Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "failed",
-        "generatedAt": "2026-08-08T15:14:58.585Z",
-        "expiresAt": "2026-08-11T15:14:58.585Z"
+        "generatedAt": "2026-08-09T05:18:30.469Z",
+        "expiresAt": "2026-08-12T05:18:30.469Z"
       }
     ],
     "predecessorBinding": "matched",
     "prerequisiteMode": "p6_05_expiry_recovery",
     "historicalP606": {
       "state": "authenticated_historical_proof",
-      "generatedAt": "2026-08-08T15:17:14.855Z",
-      "expiresAt": "2026-08-11T15:17:14.855Z",
-      "digest": "sha256:f6175a2495067d0fd147c22e42dba67379523d7919583468d9db960b53590257"
+      "generatedAt": "2026-08-09T05:20:39.131Z",
+      "expiresAt": "2026-08-12T05:20:39.131Z",
+      "digest": "sha256:dd0ef3668363cae07d6b9b734ee0bc5d36e6536319b99d8fa30279a0fc7e2a56"
     },
     "permissions": {
       "tokenVerify": "success",
@@ -77,14 +77,14 @@
       "selectedZoneCount": 1,
       "dnsRecordCount": 4,
       "projectCustomDomainCount": 1,
-      "successfulProductionDeploymentCount": 20,
+      "successfulProductionDeploymentCount": 22,
       "candidateCount": 1,
       "candidateDigest": "sha256:487fca92b265cecc4314a998e2cc640458d187d724264a4134767db51949bc73",
-      "deploymentDigest": "sha256:ccdb5a5da83434f03404682df2fc5fdcc316eb22123933649f9515e5e08d1b82"
+      "deploymentDigest": "sha256:6ba6c79966d325c0c92b060af50f4fb2f0dd19e8110fc42bae34d46d6e7d4e65"
     }
   },
   "binding": {
-    "releaseId": "sha256:2557a9bf6afc55375afae00f13778a6f1d26da96d8fea5929a3aaddcb4686170",
+    "releaseId": "sha256:ab682a6df68f1d94306b6117760dc56792cd0fb0377d36948084c69c50dd5830",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
