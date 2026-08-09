@@ -31,16 +31,13 @@ jobs:
           docs = Path('docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md')
 
           text = executor.read_text()
-          old = """  const entries = Array.isArray(journal?.entries) ? journal.entries : [];
-          const tag = entries.at(-1)?.tag;
-          if (typeof tag !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(tag)) {
-            throw new Error('schema_snapshot_missing');
-          }
-          const snapshot = JSON.parse(
-            readFileSync(resolve(sourceRoot, `drizzle/meta/${tag}_snapshot.json`), 'utf8'),
-          );
-          """
-          new = """  const entries = Array.isArray(journal?.entries) ? journal.entries : [];
+          start_marker = "  const entries = Array.isArray(journal?.entries) ? journal.entries : [];\n"
+          end_marker = "  const tables = isObject(snapshot?.tables) ? snapshot.tables : {};\n"
+          start = text.find(start_marker)
+          end = text.find(end_marker, start + len(start_marker)) if start >= 0 else -1
+          if start < 0 or end < 0:
+              raise SystemExit('loadExpectedSchema boundaries not found')
+          replacement = """  const entries = Array.isArray(journal?.entries) ? journal.entries : [];
           const latest = entries.at(-1);
           const tag = latest?.tag;
           const index = latest?.idx;
@@ -58,27 +55,26 @@ jobs:
           if (!existsSync(snapshotPath)) throw new Error('schema_snapshot_missing');
           const snapshot = JSON.parse(readFileSync(snapshotPath, 'utf8'));
           """
-          if text.count(old) != 1:
-              raise SystemExit(f'loadExpectedSchema block match count={text.count(old)}')
-          text = text.replace(old, new, 1)
+          text = text[:start] + replacement + text[end:]
 
-          old_self = """    writeJson(resolve(root, 'drizzle/meta/_journal.json'), { entries: [{ tag: '0001_test' }] });
-              writeJson(resolve(root, 'drizzle/meta/0001_test_snapshot.json'), { tables: snapshotTables });
-          """
-          new_self = """    writeJson(resolve(root, 'drizzle/meta/_journal.json'), {
-                entries: [{ idx: 1, tag: '0001_test' }],
-              });
-              writeJson(resolve(root, 'drizzle/meta/0001_snapshot.json'), { tables: snapshotTables });
-          """
-          if text.count(old_self) != 1:
-              raise SystemExit(f'self-test snapshot block match count={text.count(old_self)}')
-          text = text.replace(old_self, new_self, 1)
+          old_journal = "writeJson(resolve(root, 'drizzle/meta/_journal.json'), { entries: [{ tag: '0001_test' }] });"
+          if text.count(old_journal) != 1:
+              raise SystemExit(f'self-test journal match count={text.count(old_journal)}')
+          text = text.replace(
+              old_journal,
+              "writeJson(resolve(root, 'drizzle/meta/_journal.json'), {\n      entries: [{ idx: 1, tag: '0001_test' }],\n    });",
+              1,
+          )
+          old_snapshot = "resolve(root, 'drizzle/meta/0001_test_snapshot.json')"
+          if text.count(old_snapshot) != 1:
+              raise SystemExit(f'self-test snapshot filename match count={text.count(old_snapshot)}')
+          text = text.replace(old_snapshot, "resolve(root, 'drizzle/meta/0001_snapshot.json')", 1)
           executor.write_text(text)
 
           check_text = checker.read_text()
           anchor = "  [files.executor, 'targetNamePattern = /^cpm_p6_07_restore_[a-z0-9_]{4,48}$/'],\n"
           if check_text.count(anchor) != 1:
-              raise SystemExit('checker expectation anchor not found exactly once')
+              raise SystemExit(f'checker expectation anchor count={check_text.count(anchor)}')
           check_text = check_text.replace(
               anchor,
               anchor
@@ -90,7 +86,7 @@ jobs:
           )
           footer = "\nconsole.log('OPS-P6-002A configured staging P6-07 isolated restore contract passed.');\n"
           if check_text.count(footer) != 1:
-              raise SystemExit('checker footer not found exactly once')
+              raise SystemExit(f'checker footer count={check_text.count(footer)}')
           check_text = check_text.replace(
               footer,
               "\nif (files.executor.includes('drizzle/meta/${tag}_snapshot.json')) {\n"
@@ -103,13 +99,10 @@ jobs:
 
           doc_text = docs.read_text()
           anchor_doc = "## Restore and reconciliation\n\n"
-          paragraph = (
-              "The expected Drizzle schema snapshot is resolved from the latest `_journal.json` entry's numeric `idx`, zero-padded to the canonical `NNNN_snapshot.json` filename. The human-readable journal `tag` is retained only as bounded receipt metadata and is never used as the snapshot filename. A missing, invalid, or unresolved index fails closed before any restore mutation.\n\n"
-          )
+          paragraph = "The expected Drizzle schema snapshot is resolved from the latest `_journal.json` entry's numeric `idx`, zero-padded to the canonical `NNNN_snapshot.json` filename. The human-readable journal `tag` is retained only as bounded receipt metadata and is never used as the snapshot filename. A missing, invalid, or unresolved index fails closed before any restore mutation.\n\n"
           if doc_text.count(anchor_doc) != 1:
-              raise SystemExit('docs restore heading not found exactly once')
-          doc_text = doc_text.replace(anchor_doc, anchor_doc + paragraph, 1)
-          docs.write_text(doc_text)
+              raise SystemExit(f'docs restore heading count={doc_text.count(anchor_doc)}')
+          docs.write_text(doc_text.replace(anchor_doc, anchor_doc + paragraph, 1))
           PY
 
       - name: Install locked dependencies
