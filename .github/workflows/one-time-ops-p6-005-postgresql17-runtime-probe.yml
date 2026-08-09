@@ -1,0 +1,79 @@
+name: One-time OPS-P6-005 PostgreSQL 17 runtime probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-ops-p6-005-postgresql17-runtime-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      P6_07_RESTORE_DATABASE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
+    steps:
+      - name: Install PostgreSQL 17 client exactly as Q3 and Q4
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes curl ca-certificates >/dev/null
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            --fail --silent --show-error \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          . /etc/os-release
+          dpkg_arch="$(dpkg --print-architecture)"
+          sudo tee /etc/apt/sources.list.d/pgdg.sources >/dev/null <<EOF
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: ${VERSION_CODENAME}-pgdg
+          Architectures: ${dpkg_arch}
+          Components: main
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          EOF
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes postgresql-client-17 >/dev/null
+          test "$(/usr/lib/postgresql/17/bin/pg_dump --version | sed -E 's/^pg_dump \(PostgreSQL\) ([0-9]+).*/\1/')" = '17'
+          test "$(/usr/lib/postgresql/17/bin/pg_restore --version | sed -E 's/^pg_restore \(PostgreSQL\) ([0-9]+).*/\1/')" = '17'
+          echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
+
+      - name: Verify source and restore compatibility without mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DATABASE_URL"
+          test -n "$P6_07_RESTORE_DATABASE_URL"
+          test "$(command -v pg_dump)" = '/usr/lib/postgresql/17/bin/pg_dump'
+          test "$(command -v pg_restore)" = '/usr/lib/postgresql/17/bin/pg_restore'
+          source_version_num="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+          restore_version_num="$(psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+          source_major="$((source_version_num / 10000))"
+          restore_major="$((restore_version_num / 10000))"
+          test "$source_major" = '17'
+          test "$restore_major" = '17'
+          echo 'postgres_client_major=17'
+          echo "postgres_source_server_major=$source_major"
+          echo "postgres_restore_server_major=$restore_major"
+
+      - name: Prove pg_dump and pg_restore can read the PostgreSQL 17 source
+        shell: bash
+        run: |
+          set -euo pipefail
+          trap 'rm -f /tmp/cpm-p6-005-probe.dump' EXIT
+          pg_dump \
+            --format=custom \
+            --schema-only \
+            --no-owner \
+            --no-privileges \
+            --file=/tmp/cpm-p6-005-probe.dump \
+            "$DATABASE_URL" \
+            2>/dev/null
+          test -s /tmp/cpm-p6-005-probe.dump
+          pg_restore --list /tmp/cpm-p6-005-probe.dump >/dev/null
+          echo 'postgresql17_schema_probe=passed'
