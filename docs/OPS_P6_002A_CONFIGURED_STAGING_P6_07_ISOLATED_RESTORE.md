@@ -6,6 +6,8 @@ This slice implements Q4 of Issue #349 after accepted Q2 monitoring and alert ev
 
 The repository implementation may merge before protected configuration is supplied. Execution remains fail-closed until the exact current-main P6-01 through P6-06, Q1, Q2, and Q3 receipts are accepted and a distinct protected restore database is configured.
 
+Runtime restore tooling is pinned to PostgreSQL client major 17 from the official PGDG Apt repository. Before artifact download or restore mutation, the workflow verifies that the selected `pg_restore` is major 17 and that both the fixed-review source and isolated restore target are not newer than that client. An unversioned Ubuntu `postgresql-client` or an older incompatible client fails closed before restore execution.
+
 ## Preconditions
 
 Execution requires:
