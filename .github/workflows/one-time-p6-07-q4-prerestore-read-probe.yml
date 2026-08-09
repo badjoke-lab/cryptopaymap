@@ -1,0 +1,140 @@
+name: One-time P6-07 Q4 pre-restore read probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-q4-prerestore-read-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Check out exact main source
+        uses: actions/checkout@v4
+        with:
+          ref: fc77f588c2897d63409067e10ce3c39b6fc2c60a
+
+      - name: Install PostgreSQL 17 client
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes curl ca-certificates >/dev/null
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            --fail --silent --show-error \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          . /etc/os-release
+          dpkg_arch="$(dpkg --print-architecture)"
+          sudo tee /etc/apt/sources.list.d/pgdg.sources >/dev/null <<EOF
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: ${VERSION_CODENAME}-pgdg
+          Architectures: ${dpkg_arch}
+          Components: main
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          EOF
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes postgresql-client-17 >/dev/null
+
+      - name: Mirror Q4 read-only pre-restore source checks
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { execFileSync } = require('node:child_process');
+          const { readFileSync } = require('node:fs');
+
+          const databaseUrl = process.env.DATABASE_URL || '';
+          const privateTables = [
+            'submissions',
+            'submission_payloads',
+            'submission_contacts',
+            'submission_media',
+            'submission_events',
+            'submission_decisions',
+          ];
+
+          function dbEnv() {
+            const url = new URL(databaseUrl);
+            return {
+              ...process.env,
+              PGHOST: url.hostname,
+              PGPORT: url.port || '5432',
+              PGUSER: decodeURIComponent(url.username),
+              PGPASSWORD: decodeURIComponent(url.password),
+              PGDATABASE: decodeURIComponent(url.pathname.slice(1)),
+              PGSSLMODE: url.searchParams.get('sslmode') || 'require',
+              PGCONNECT_TIMEOUT: '20',
+            };
+          }
+
+          function psql(sql) {
+            return execFileSync(
+              '/usr/lib/postgresql/17/bin/psql',
+              ['--no-psqlrc','--tuples-only','--no-align','--set','ON_ERROR_STOP=1','--command',sql],
+              { env: dbEnv(), encoding: 'utf8', maxBuffer: 128 * 1024 * 1024, stdio: ['ignore','pipe','pipe'] },
+            ).trim();
+          }
+
+          function safeStage(name, fn) {
+            try {
+              const value = fn();
+              console.log(`${name}=passed`);
+              return value;
+            } catch {
+              console.log(`${name}=failed`);
+              process.exit(17);
+            }
+          }
+
+          if (!databaseUrl) process.exit(17);
+
+          const expected = safeStage('snapshot_load', () => {
+            const journal = JSON.parse(readFileSync('drizzle/meta/_journal.json','utf8'));
+            const entries = Array.isArray(journal?.entries) ? journal.entries : [];
+            const tag = entries.at(-1)?.tag;
+            if (typeof tag !== 'string' || !/^[a-zA-Z0-9_-]+$/.test(tag)) throw new Error('bad tag');
+            const snapshot = JSON.parse(readFileSync(`drizzle/meta/${tag}_snapshot.json`,'utf8'));
+            const tables = snapshot?.tables && typeof snapshot.tables === 'object' ? snapshot.tables : {};
+            const expectedTables = Object.keys(tables).filter((key) => key.startsWith('public.')).map((key) => key.slice(7)).sort();
+            const privatePresent = privateTables.filter((table) => expectedTables.includes(table));
+            const nonPrivate = expectedTables.filter((table) => !privatePresent.includes(table));
+            if (expectedTables.length === 0 || privatePresent.length === 0 || nonPrivate.length === 0) throw new Error('scope');
+            return { expectedTables, nonPrivate };
+          });
+
+          safeStage('source_table_set', () => {
+            const raw = psql("select table_name from information_schema.tables where table_schema = 'public' and table_type = 'BASE TABLE' order by table_name");
+            const actual = raw.length === 0 ? [] : raw.split(/\r?\n/).filter(Boolean).sort();
+            if (JSON.stringify(actual) !== JSON.stringify(expected.expectedTables)) throw new Error('mismatch');
+          });
+
+          safeStage('source_row_counts', () => {
+            for (const table of expected.nonPrivate) {
+              if (!/^[a-z_][a-z0-9_]*$/.test(table)) throw new Error('unsafe');
+              const count = psql(`select count(*) from public."${table}"`);
+              if (!/^\d+$/.test(count)) throw new Error('bad count');
+            }
+          });
+
+          safeStage('source_schema_dump', () => {
+            const value = execFileSync(
+              '/usr/lib/postgresql/17/bin/pg_dump',
+              ['--schema-only','--no-owner','--no-privileges'],
+              { env: dbEnv(), encoding: 'utf8', maxBuffer: 128 * 1024 * 1024, stdio: ['ignore','pipe','pipe'] },
+            );
+            if (!value || value.length === 0) throw new Error('empty');
+          });
+
+          console.log(`expected_table_count=${expected.expectedTables.length}`);
+          console.log(`non_private_table_count=${expected.nonPrivate.length}`);
+          console.log('q4_prerestore_read_probe=passed');
+          NODE
