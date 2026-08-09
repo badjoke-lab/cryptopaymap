@@ -1,0 +1,54 @@
+name: One-time P6-07 Q4 target empty probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-q4-target-empty-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      P6_07_RESTORE_DATABASE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
+      EXPECTED_TARGET: cpm_p6_07_restore_20260808
+    steps:
+      - name: Install PostgreSQL 17 client
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes curl ca-certificates >/dev/null
+          sudo install -d /usr/share/postgresql-common/pgdg
+          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
+            --fail --silent --show-error \
+            https://www.postgresql.org/media/keys/ACCC4CF8.asc
+          . /etc/os-release
+          dpkg_arch="$(dpkg --print-architecture)"
+          sudo tee /etc/apt/sources.list.d/pgdg.sources >/dev/null <<EOF
+          Types: deb
+          URIs: https://apt.postgresql.org/pub/repos/apt
+          Suites: ${VERSION_CODENAME}-pgdg
+          Architectures: ${dpkg_arch}
+          Components: main
+          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
+          EOF
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes postgresql-client-17 >/dev/null
+
+      - name: Verify isolated target remains empty
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$P6_07_RESTORE_DATABASE_URL"
+          actual="$(/usr/lib/postgresql/17/bin/psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SELECT current_database()' 2>/dev/null)"
+          test "$actual" = "$EXPECTED_TARGET"
+          count="$(/usr/lib/postgresql/17/bin/psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname NOT IN ('pg_catalog','information_schema') AND n.nspname !~ '^pg_toast' AND c.relkind IN ('r','p','v','m','S','f')" 2>/dev/null)"
+          test "$count" = '0'
+          echo "restore_target_database=$actual"
+          echo "user_object_count=$count"
+          echo 'restore_target_empty=true'
