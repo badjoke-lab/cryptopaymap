@@ -1,0 +1,39 @@
+name: One-time P6-07 PostgreSQL client/server version probe
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-postgres-client-version-probe.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Install workflow-equivalent PostgreSQL client
+        run: |
+          set -euo pipefail
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes postgresql-client >/dev/null
+
+      - name: Report bounded client and server major versions
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DATABASE_URL"
+          client_version="$(pg_dump --version | sed -E 's/^pg_dump \(PostgreSQL\) ([0-9]+).*/\1/')"
+          server_version_num="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'SHOW server_version_num' 2>/dev/null)"
+          server_major="$((server_version_num / 10000))"
+          echo "pg_dump_major=$client_version"
+          echo "server_major=$server_major"
+          if [ "$client_version" -lt "$server_major" ]; then
+            echo 'client_server_version_incompatible=true'
+            exit 17
+          fi
+          echo 'client_server_version_incompatible=false'
