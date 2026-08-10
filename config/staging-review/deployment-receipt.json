@@ -1,8 +1,8 @@
 {
   "status": "missing_credentials",
-  "commit": "dd0c573952dfdc3fd84deb939adae5cb0269b5ad",
+  "commit": "8ca123dffe3ea813ae90e307e588944535f3e4c1",
   "url": "https://review.cryptopaymap-staging.pages.dev",
-  "generatedAt": "2026-08-10T07:40:00.108Z",
+  "generatedAt": "2026-08-10T07:40:15.686Z",
   "checks": {
     "credentials": "skipped",
     "configuredInputs": "skipped",
