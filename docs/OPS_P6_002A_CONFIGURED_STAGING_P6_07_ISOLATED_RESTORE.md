@@ -63,7 +63,10 @@ pg_restore
 --single-transaction
 --no-owner
 --no-privileges
+--dbname <validated isolated target database name>
 ```
+
+Only the already validated isolated target database name is supplied with `--dbname`; host, user, password, SSL mode, and other protected connection material remain in the PostgreSQL environment and are never placed on the command line. Omitting the explicit target database fails repository contract validation.
 
 The executor then proves:
 
