@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "0cbcb3820de762c6d1d3f894f3d4b9cf5e539297",
-  "generatedAt": "2026-08-09T06:04:07.910Z",
-  "expiresAt": "2026-08-12T06:04:07.910Z",
-  "workflowRunId": "31297979051",
+  "generatedAt": "2026-08-10T06:57:20.723Z",
+  "expiresAt": "2026-08-13T06:57:20.723Z",
+  "workflowRunId": "31363712790",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001H configured staging Media lifecycle evidence",
   "checks": {
@@ -18,22 +18,22 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T05:58:49.472Z",
-        "expiresAt": "2026-08-12T05:58:49.472Z"
+        "generatedAt": "2026-08-10T06:49:06.911Z",
+        "expiresAt": "2026-08-13T06:49:06.911Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T06:00:22.844Z",
-        "expiresAt": "2026-08-12T06:00:22.844Z"
+        "generatedAt": "2026-08-10T06:52:05.599Z",
+        "expiresAt": "2026-08-13T06:52:05.599Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-09T06:01:44.556Z",
-        "expiresAt": "2026-08-12T06:01:44.556Z"
+        "generatedAt": "2026-08-10T06:53:36.069Z",
+        "expiresAt": "2026-08-13T06:53:36.069Z"
       }
     ],
     "mode": "durable_object_staging_media",
@@ -119,8 +119,8 @@
     "retainedDigests": {
       "fixtureIdentity": "sha256:80e6a42333a04026ea204ccf5aef5e5989f745de8572b67dac834bd03e3e5287",
       "objectKeys": "sha256:1c57a0c0494d8bd0c19312cfa66d63bb2a0384650d2914fd0919984d32cd5590",
-      "approvalReceipt": "sha256:b08a8b2e3109dfdad143eda2ee11989e2e2f17a88fb5bda4a9c239a3dc281314",
-      "restrictionReceipt": "sha256:70a4f04d351f5d8f18c3d7d4a66708752852e7897adc45f56a1003686ecf8af6"
+      "approvalReceipt": "sha256:fda46b32100637578b60c5841f8330f01f8404bd50eae0318a05feafe999cc88",
+      "restrictionReceipt": "sha256:5e0d955940b79b674cc47bc7399cf541f01c1777000ee7e916abdc6c2e253b57"
     }
   },
   "binding": {
