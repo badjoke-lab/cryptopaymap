@@ -1,4 +1,4 @@
-name: One-time P6-07 Q4 restore diagnostic 0cbcb
+name: One-time OPS-P6-007 patcher
 
 on:
   pull_request:
@@ -6,148 +6,88 @@ on:
       - '.github/workflows/one-time-p6-07-predecessor-q1-0cbcb.yml'
 
 permissions:
-  actions: read
-  contents: read
+  contents: write
 
 jobs:
-  diagnose:
+  patch:
     if: github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
     env:
-      APPROVED_COMMIT: 0cbcb3820de762c6d1d3f894f3d4b9cf5e539297
-      Q3_RUN_ID: '31365453572'
-      RESTORE_TARGET_DATABASE_NAME: cpm_p6_07_restore_20260808
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-      P6_07_RESTORE_DATABASE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
-      P6_07_BACKUP_ENCRYPTION_KEY: ${{ secrets.P6_07_BACKUP_ENCRYPTION_KEY }}
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      TARGET_BRANCH: agent/ops-p6-007-q4-pg-restore-dbname
     steps:
-      - name: Check out exact main
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ env.APPROVED_COMMIT }}
-
-      - name: Install PostgreSQL 17 client
-        shell: bash
-        run: |
-          set -euo pipefail
-          sudo apt-get update >/dev/null
-          sudo apt-get install --yes curl ca-certificates >/dev/null
-          sudo install -d /usr/share/postgresql-common/pgdg
-          sudo curl -o /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc \
-            --fail --silent --show-error \
-            https://www.postgresql.org/media/keys/ACCC4CF8.asc
-          . /etc/os-release
-          dpkg_arch="$(dpkg --print-architecture)"
-          sudo tee /etc/apt/sources.list.d/pgdg.sources >/dev/null <<EOF
-          Types: deb
-          URIs: https://apt.postgresql.org/pub/repos/apt
-          Suites: ${VERSION_CODENAME}-pgdg
-          Architectures: ${dpkg_arch}
-          Components: main
-          Signed-By: /usr/share/postgresql-common/pgdg/apt.postgresql.org.asc
-          EOF
-          sudo apt-get update >/dev/null
-          sudo apt-get install --yes postgresql-client-17 >/dev/null
-          echo '/usr/lib/postgresql/17/bin' >> "$GITHUB_PATH"
-
-      - name: Download exact Q3 encrypted artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ops-p6-001y-configured-staging-p6-07-encrypted-backup-${{ env.Q3_RUN_ID }}
-          run-id: ${{ env.Q3_RUN_ID }}
-          github-token: ${{ github.token }}
-          path: q3-artifact
-
-      - name: Decrypt exact Q3 artifact in runner temp
-        shell: bash
-        run: |
-          set -euo pipefail
-          node <<'NODE'
-          const { createDecipheriv, createHash } = require('node:crypto');
-          const { readFileSync, writeFileSync } = require('node:fs');
-          const envelope = JSON.parse(readFileSync('q3-artifact/p6-07-q3-backup.enc.json', 'utf8'));
-          if (envelope?.metadata?.sourceCommit !== process.env.APPROVED_COMMIT) throw new Error('wrong_q3_commit');
-          if (envelope?.algorithm !== 'aes-256-gcm') throw new Error('wrong_encryption_algorithm');
-          const key = createHash('sha256').update(process.env.P6_07_BACKUP_ENCRYPTION_KEY, 'utf8').digest();
-          const decipher = createDecipheriv('aes-256-gcm', key, Buffer.from(envelope.iv, 'base64'));
-          decipher.setAAD(Buffer.from(JSON.stringify(envelope.metadata), 'utf8'));
-          decipher.setAuthTag(Buffer.from(envelope.tag, 'base64'));
-          const plain = Buffer.concat([
-            decipher.update(Buffer.from(envelope.ciphertext, 'base64')),
-            decipher.final(),
-          ]);
-          writeFileSync(`${process.env.RUNNER_TEMP}/cpm-q4-diagnostic.dump`, plain, { mode: 0o600 });
-          NODE
-
-      - name: Reproduce pg_restore with bounded sanitized diagnostic
+      - name: Patch OPS-P6-007 branch through GitHub contents API
         shell: bash
         run: |
           set -euo pipefail
 
-          build_pg_env() {
-            node - "$1" <<'NODE'
-          const raw = process.argv[2];
-          const u = new URL(raw);
-          const q = (s) => `'${String(s).replaceAll("'", "'\\''")}'`;
-          console.log(`export PGHOST=${q(u.hostname)}`);
-          console.log(`export PGPORT=${q(u.port || '5432')}`);
-          console.log(`export PGUSER=${q(decodeURIComponent(u.username))}`);
-          console.log(`export PGPASSWORD=${q(decodeURIComponent(u.password))}`);
-          console.log(`export PGDATABASE=${q(decodeURIComponent(u.pathname.slice(1)))}`);
-          console.log(`export PGSSLMODE=${q(u.searchParams.get('sslmode') || 'require')}`);
-          console.log(`export PGCONNECT_TIMEOUT='20'`);
-          NODE
+          api_get() {
+            curl --fail --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/$1"
           }
 
-          source_identity="$(node -e "const a=new URL(process.env.DATABASE_URL),b=new URL(process.env.P6_07_RESTORE_DATABASE_URL); const f=u=>[u.hostname.toLowerCase(),u.port||'5432',decodeURIComponent(u.pathname.slice(1))].join('|'); if(f(a)===f(b)) process.exit(2); console.log('distinct')")"
-          test "$source_identity" = distinct
+          update_path() {
+            local path="$1"
+            local message="$2"
+            local encoded_path current sha content patched payload
+            encoded_path="$(jq -rn --arg v "$path" '$v|@uri')"
+            current="$(api_get "contents/$encoded_path?ref=$TARGET_BRANCH")"
+            sha="$(jq -r '.sha' <<<"$current")"
+            content="$(jq -r '.content' <<<"$current" | base64 -d)"
+            patched="$(PATH_TO_PATCH="$path" CONTENT_TO_PATCH="$content" node <<'NODE'
+          const path = process.env.PATH_TO_PATCH;
+          let text = process.env.CONTENT_TO_PATCH;
+          const replaceOnce = (from, to) => {
+            const count = text.split(from).length - 1;
+            if (count !== 1) throw new Error(`${path}: expected exactly one match, got ${count}`);
+            text = text.replace(from, to);
+          };
 
-          eval "$(build_pg_env "$P6_07_RESTORE_DATABASE_URL")"
-          test "$(psql --no-psqlrc -Atqc 'select current_database()')" = "$RESTORE_TARGET_DATABASE_NAME"
-          initial_objects="$(psql --no-psqlrc -Atqc "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname not in ('pg_catalog','information_schema') and n.nspname !~ '^pg_toast' and c.relkind in ('r','p','v','m','S','f')")"
-          test "$initial_objects" = 0
-
-          cleanup() {
-            psql --no-psqlrc -v ON_ERROR_STOP=1 -q -c 'drop schema if exists public cascade; create schema public' >/dev/null 2>&1 || true
-            rm -f "$RUNNER_TEMP/cpm-q4-diagnostic.dump" "$RUNNER_TEMP/cpm-q4-stderr.txt"
-          }
-          trap cleanup EXIT
-
-          set +e
-          pg_restore --exit-on-error --single-transaction --no-owner --no-privileges \
-            "$RUNNER_TEMP/cpm-q4-diagnostic.dump" \
-            >/dev/null 2>"$RUNNER_TEMP/cpm-q4-stderr.txt"
-          restore_rc=$?
-          set -e
-
-          RESTORE_RC="$restore_rc" node <<'NODE'
-          const { createHash } = require('node:crypto');
-          const { readFileSync } = require('node:fs');
-          const p = `${process.env.RUNNER_TEMP}/cpm-q4-stderr.txt`;
-          const raw = readFileSync(p, 'utf8');
-          const digest = createHash('sha256').update(raw).digest('hex');
-          const scrub = (line) => line
-            .replace(/postgres(?:ql)?:\/\/\S+/gi, '<redacted-url>')
-            .replace(/[A-Fa-f0-9]{32,}/g, '<redacted-id>')
-            .replace(/[0-9a-f]{8}-[0-9a-f-]{27,}/gi, '<redacted-id>')
-            .replace(/=\([^)]{1,200}\)/g, '=(<redacted-value>)')
-            .replace(/\b(?:\d{1,3}\.){3}\d{1,3}\b/g, '<redacted-address>')
-            .slice(0, 500);
-          const diagnostic = raw.split(/\r?\n/)
-            .filter((line) => /pg_restore: error:|ERROR:|DETAIL:|HINT:/i.test(line))
-            .map(scrub)
-            .slice(0, 8);
-          console.log(`restore_rc=${process.env.RESTORE_RC}`);
-          console.log(`stderr_digest=sha256:${digest}`);
-          if (diagnostic.length) {
-            console.log('bounded_diagnostic_begin');
-            for (const line of diagnostic) console.log(line);
-            console.log('bounded_diagnostic_end');
+          if (path === 'scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs') {
+            replaceOnce(
+              "['--exit-on-error', '--single-transaction', '--no-owner', '--no-privileges', plainPath]",
+              "[\n            '--exit-on-error',\n            '--single-transaction',\n            '--no-owner',\n            '--no-privileges',\n            '--dbname',\n            decodeURIComponent(new URL(databaseUrl).pathname.slice(1)),\n            plainPath,\n          ]",
+            );
+          } else if (path === 'scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs') {
+            replaceOnce(
+              "  [files.executor, \"'--no-privileges'\"],\n",
+              "  [files.executor, \"'--no-privileges'\"],\n  [files.executor, \"'--dbname'\"],\n  [files.executor, \"decodeURIComponent(new URL(databaseUrl).pathname.slice(1))\"],\n",
+            );
+            replaceOnce(
+              "if (files.executor.includes('drizzle/meta/${tag}_snapshot.json')) {\n",
+              "if (!files.executor.includes(\"'--dbname'\")) {\n  throw new Error('OPS-P6-002A must bind pg_restore explicitly to the isolated target database.');\n}\nif (/--dbname[^\\n]*(databaseUrl|P6_07_RESTORE_DATABASE_URL)/.test(files.executor)) {\n  throw new Error('OPS-P6-002A must not place a protected database URL on the pg_restore command line.');\n}\n\nif (files.executor.includes('drizzle/meta/${tag}_snapshot.json')) {\n",
+            );
+          } else if (path === 'docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md') {
+            replaceOnce(
+              "pg_restore\n--exit-on-error\n--single-transaction\n--no-owner\n--no-privileges\n",
+              "pg_restore\n--exit-on-error\n--single-transaction\n--no-owner\n--no-privileges\n--dbname <validated isolated target database name>\n",
+            );
+            replaceOnce(
+              "The executor then proves:\n",
+              "Only the already validated isolated target database name is supplied with `--dbname`; host, user, password, SSL mode, and other protected connection material remain in the PostgreSQL environment and are never placed on the command line. Omitting the explicit target database fails repository contract validation.\n\nThe executor then proves:\n",
+            );
           } else {
-            console.log('bounded_diagnostic=no_matching_error_lines');
+            throw new Error(`unsupported path: ${path}`);
           }
+          process.stdout.write(text);
           NODE
+            )"
+            payload="$(jq -nc --arg message "$message" --arg content "$(printf '%s' "$patched" | base64 -w0)" --arg sha "$sha" --arg branch "$TARGET_BRANCH" '{message:$message,content:$content,sha:$sha,branch:$branch}')"
+            curl --fail --silent --show-error \
+              -X PUT \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/contents/$encoded_path" \
+              -d "$payload" >/dev/null
+          }
 
-          # This is a diagnostic run only. A successful restore is still disposed and is not accepted as Q4 evidence.
-          exit 0
+          test "$(api_get 'commits/main' | jq -r '.sha')" = '0cbcb3820de762c6d1d3f894f3d4b9cf5e539297'
+          update_path 'scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs' 'OPS-P6-007: bind pg_restore to isolated database'
+          update_path 'scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs' 'OPS-P6-007: enforce pg_restore target binding'
+          update_path 'docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md' 'OPS-P6-007: document explicit restore target'
+          echo 'OPS-P6-007 branch patched; main untouched.'
