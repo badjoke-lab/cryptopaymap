@@ -40,6 +40,8 @@ const expectations = [
   [files.executor, "'--single-transaction'"],
   [files.executor, "'--no-owner'"],
   [files.executor, "'--no-privileges'"],
+  [files.executor, "'--dbname'"],
+  [files.executor, "decodeURIComponent(new URL(databaseUrl).pathname.slice(1))"],
   [files.executor, 'targetNamePattern = /^cpm_p6_07_restore_[a-z0-9_]{4,48}$/'],
   [files.executor, 'const index = latest?.idx'],
   [files.executor, "String(index).padStart(4, '0')"],
@@ -109,6 +111,13 @@ if (!files.executor.includes("throw new Error('target_disposal_failed')")) {
 }
 if (files.workflow.includes('sudo apt-get install --yes postgresql-client\n')) {
   throw new Error('OPS-P6-002A must pin the PostgreSQL 17 client.');
+}
+
+if (!files.executor.includes("'--dbname'")) {
+  throw new Error('OPS-P6-002A must bind pg_restore explicitly to the isolated target database.');
+}
+if (/--dbname[^\n]*(databaseUrl|P6_07_RESTORE_DATABASE_URL)/.test(files.executor)) {
+  throw new Error('OPS-P6-002A must not place a protected database URL on the pg_restore command line.');
 }
 
 if (files.executor.includes('drizzle/meta/${tag}_snapshot.json')) {
