@@ -1,0 +1,52 @@
+name: One-time P6-07 isolated target cleanup eb5aa
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-isolated-target-cleanup-eb5aa.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      EXPECTED_MAIN: eb5aa45676ad18c28c3a16fc00b46432050fc2a2
+      EXPECTED_TARGET: cpm_p6_07_restore_20260808
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      RESTORE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          set -euo pipefail
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes postgresql-client >/dev/null
+
+      - name: Verify exact main and isolated target identity
+        shell: bash
+        run: |
+          set -euo pipefail
+          test '${{ github.event.pull_request.base.sha }}' = "$EXPECTED_MAIN"
+          test -n "$DATABASE_URL"
+          test -n "$RESTORE_URL"
+          source_identity="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "select current_database() || '|' || coalesce(inet_server_addr()::text,'local') || '|' || coalesce(inet_server_port()::text,'local')" 2>/dev/null)"
+          target_identity="$(psql "$RESTORE_URL" -v ON_ERROR_STOP=1 -Atqc "select current_database() || '|' || coalesce(inet_server_addr()::text,'local') || '|' || coalesce(inet_server_port()::text,'local')" 2>/dev/null)"
+          test "$source_identity" != "$target_identity"
+          target_name="$(psql "$RESTORE_URL" -v ON_ERROR_STOP=1 -Atqc 'select current_database()' 2>/dev/null)"
+          test "$target_name" = "$EXPECTED_TARGET"
+          echo 'isolated_target_identity=verified'
+
+      - name: Dispose failed Q4 residue and verify global zero objects
+        shell: bash
+        run: |
+          set -euo pipefail
+          before="$(psql "$RESTORE_URL" -v ON_ERROR_STOP=1 -Atqc "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname not in ('pg_catalog','information_schema') and n.nspname !~ '^pg_toast' and c.relkind in ('r','p','v','m','S','f')" 2>/dev/null)"
+          echo "isolated_target_user_objects_before=$before"
+          psql "$RESTORE_URL" -v ON_ERROR_STOP=1 -qc 'drop schema if exists drizzle cascade; drop schema if exists public cascade; create schema public' >/dev/null 2>/dev/null
+          after="$(psql "$RESTORE_URL" -v ON_ERROR_STOP=1 -Atqc "select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname not in ('pg_catalog','information_schema') and n.nspname !~ '^pg_toast' and c.relkind in ('r','p','v','m','S','f')" 2>/dev/null)"
+          test "$after" = '0'
+          echo 'isolated_target_user_objects_after=0'
+          echo 'isolated_target_cleanup=passed'
