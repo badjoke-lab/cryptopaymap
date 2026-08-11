@@ -72,7 +72,7 @@ The executor then proves:
 
 - the current Drizzle snapshot revision matches the Q3 schema revision;
 - every expected public table from the current Drizzle snapshot exists in the fixed-review source and isolated target;
-- source and target schema-only digests match;
+- source and target semantic application-schema digests match across the restored `public` and `drizzle` schemas, including relations, columns/defaults, constraints, sequences, and indexes;
 - every expected non-private table has the same row count in source and target;
 - private Submission tables excluded by Q3 contain zero restored rows;
 - expected foreign-key and check constraints are present and validated;
@@ -80,7 +80,7 @@ The executor then proves:
 - at least one expected non-private table contains a representative restored row;
 - canonical records, relationships, provenance, review and audit records, release and publication metadata, Media linkage, and operational configuration covered by the Q3 backup are represented by the all-table reconciliation.
 
-The executor records only table-set, row-count, constraint, schema, and invariant digests. It does not retain row values, private payloads, contacts, credentials, database URLs, or unrestricted logs.
+The executor records only table-set, row-count, constraint, semantic application-schema, and invariant digests. The semantic schema digest is derived from PostgreSQL catalogs for `public` and `drizzle`; it excludes environment-sensitive raw whole-database dump text, ownership, privileges, and connection identity. It does not retain row values, private payloads, contacts, credentials, database URLs, or unrestricted logs.
 
 ## RPO and RTO
 
@@ -90,7 +90,7 @@ Both objectives are explicit workflow-dispatch inputs. The executor does not inv
 
 ## Disposal
 
-After restore execution begins, the isolated target is disposed in a `finally` path regardless of success or failure. Disposal drops the restored `public` schema with cascade, recreates an empty `public` schema, and verifies that no user object remains.
+After restore execution begins, the isolated target is disposed in a `finally` path regardless of success or failure. Disposal drops both restored application schemas (`drizzle` and `public`) with cascade, recreates an empty `public` schema, and verifies across all non-system schemas that no user object remains.
 
 An accepted receipt requires successful disposal. A partial restore, failed invariant, objective breach, or other execution failure does not permit an uncleared target to be treated as ready. Disposal failure remains a launch-blocking exception requiring operator remediation.
 
