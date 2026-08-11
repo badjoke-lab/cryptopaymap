@@ -4,10 +4,10 @@
   "launchDomain": "operational_monitoring_alert",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "dd1264f8a1fd97640c3f010fb7f50453354e8b6e",
-  "generatedAt": "2026-08-11T06:45:48.104Z",
-  "expiresAt": "2026-09-10T06:45:48.104Z",
-  "workflowRunId": "31466163793",
+  "commit": "eb5aa45676ad18c28c3a16fc00b46432050fc2a2",
+  "generatedAt": "2026-08-11T07:44:08.967Z",
+  "expiresAt": "2026-09-10T07:44:08.967Z",
+  "workflowRunId": "31470025886",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001U configured staging P6-07 monitoring and alert evidence",
   "checks": {
@@ -20,43 +20,43 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-11T06:26:21.880Z",
-        "expiresAt": "2026-08-14T06:26:21.880Z"
+        "generatedAt": "2026-08-11T07:25:11.853Z",
+        "expiresAt": "2026-08-14T07:25:11.853Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-11T06:27:35.692Z",
-        "expiresAt": "2026-08-14T06:27:35.692Z"
+        "generatedAt": "2026-08-11T07:26:39.314Z",
+        "expiresAt": "2026-08-14T07:26:39.314Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-11T06:29:04.390Z",
-        "expiresAt": "2026-08-14T06:29:04.390Z"
+        "generatedAt": "2026-08-11T07:27:50.496Z",
+        "expiresAt": "2026-08-14T07:27:50.496Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-11T06:31:31.973Z",
-        "expiresAt": "2026-08-14T06:31:31.973Z"
+        "generatedAt": "2026-08-11T07:30:25.480Z",
+        "expiresAt": "2026-08-14T07:30:25.480Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-11T06:38:48.210Z",
-        "expiresAt": "2026-08-14T06:38:48.210Z"
+        "generatedAt": "2026-08-11T07:36:59.773Z",
+        "expiresAt": "2026-08-14T07:36:59.773Z"
       },
       {
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-11T06:40:57.966Z",
-        "expiresAt": "2026-08-14T06:40:57.966Z"
+        "generatedAt": "2026-08-11T07:39:17.313Z",
+        "expiresAt": "2026-08-14T07:39:17.313Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -64,17 +64,17 @@
       "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
       "state": "current",
       "decision": "ready",
-      "generatedAt": "2026-08-11T06:43:26.167Z",
-      "expiresAt": "2026-08-12T06:43:26.167Z",
-      "digest": "sha256:0303ac345e4edb443420837a4c3a9f03d2229cad6b3d718f64d54d789b3a0d27",
+      "generatedAt": "2026-08-11T07:41:38.104Z",
+      "expiresAt": "2026-08-12T07:41:38.104Z",
+      "digest": "sha256:401773e370e298a081b7b74537246240a28f537f77cabc32763acfc5a5752267",
       "blockers": []
     },
     "liveMonitoring": {
       "status": "passed",
       "heartbeat": {
         "status": "healthy",
-        "emittedAt": "2026-08-11T06:45:48.106Z",
-        "ageMs": 773,
+        "emittedAt": "2026-08-11T07:44:08.969Z",
+        "ageMs": 815,
         "timestampSanity": "current"
       },
       "public": {
@@ -82,7 +82,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "text/html",
-          "latencyMs": 152,
+          "latencyMs": 742,
           "bodyDigest": "sha256:d2d5de4b664936613af9566e46c487cac3d4762c00babd9aec0cd102108594ae",
           "byteLength": 32388
         },
@@ -90,7 +90,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "application/json",
-          "latencyMs": 659,
+          "latencyMs": 555,
           "bodyDigest": "sha256:c018fa88dbb51736500dee4ab0cc1607885af113f235a643ec12d8948ba37569",
           "byteLength": 310
         },
@@ -98,7 +98,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "application/json",
-          "latencyMs": 439,
+          "latencyMs": 606,
           "bodyDigest": "sha256:304c35366752cca14d5e45bb9ee7c9d13de689d0684f981ad873b66c7c885916",
           "byteLength": 1583
         },
@@ -106,7 +106,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "image/webp",
-          "latencyMs": 70,
+          "latencyMs": 558,
           "bodyDigest": "sha256:ac2df9da8e777d2e5b97aa90bde743c2adc99430127750a99caf079c4f3f2b66",
           "byteLength": 458
         },
@@ -114,7 +114,7 @@
           "status": "passed",
           "httpStatus": 403,
           "contentType": "text/plain",
-          "latencyMs": 67,
+          "latencyMs": 527,
           "bodyDigest": "sha256:6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314",
           "byteLength": 33
         },
@@ -122,14 +122,14 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "application/json",
-          "latencyMs": 439,
-          "bodyDigest": "sha256:917eb98eb4cf2e3e4990d325a7d7f1a0dd53398837ff709bc9e90610bd6ae3f9",
+          "latencyMs": 578,
+          "bodyDigest": "sha256:ea7f72f5da36e0f929dca002487d0080fd3815343991a0cce68833d7475b6846",
           "byteLength": 348
         },
         "dns": {
           "status": "passed",
           "resolverCount": 3,
-          "digest": "sha256:7927165bfbeedded707b03640efc187821a5567bfc3ff75defe313ce5bf84f3d"
+          "digest": "sha256:a89c0827d0d70c92d052d4c7839807b5430714638a8ffa82e370b6d750e18847"
         },
         "tls": {
           "status": "passed",
@@ -144,13 +144,13 @@
         "status": "healthy",
         "httpStatus": 200,
         "releaseMatches": true,
-        "expectedReleaseDigest": "sha256:f925ce22dfc8ce03286d1b13a5b3ebae946ee6462c5de295acd9c39fe7fc5a6d",
-        "observedReleaseDigest": "sha256:f925ce22dfc8ce03286d1b13a5b3ebae946ee6462c5de295acd9c39fe7fc5a6d"
+        "expectedReleaseDigest": "sha256:ff638b52e718bbe175200f093afa23969e1a3dd2dac581bf946088436ebc2ca5",
+        "observedReleaseDigest": "sha256:ff638b52e718bbe175200f093afa23969e1a3dd2dac581bf946088436ebc2ca5"
       },
       "redirect": {
         "status": "passed",
         "httpStatus": 301,
-        "locationDigest": "sha256:b74decbe1375b324a6f910a620e104cf952c5fcbc9149a7574ce54c4ec8bd4a2"
+        "locationDigest": "sha256:dc024caa15d76deccec9589e7aeeaba393266cb7e8b817b98f35202c1a80499c"
       }
     },
     "syntheticFailures": {
@@ -159,7 +159,7 @@
         "status": "alert",
         "httpStatus": 200,
         "releaseMatches": false,
-        "expectedReleaseDigest": "sha256:f925ce22dfc8ce03286d1b13a5b3ebae946ee6462c5de295acd9c39fe7fc5a6d",
+        "expectedReleaseDigest": "sha256:ff638b52e718bbe175200f093afa23969e1a3dd2dac581bf946088436ebc2ca5",
         "observedReleaseDigest": "sha256:e191bc1aec7e9a1d2e95a24550e97dd2dd947b6d99ca244d85cae37f8d82c61b"
       },
       "staleSignal": {
@@ -190,74 +190,74 @@
       "issueNumber": 349,
       "ruleRevision": "p6-07-q2-v1",
       "wrongRelease": {
-        "alertId": "sha256:26fbce799b64a42e49a6dc3883edac538623721d9c88b5abcabbe7cef602fe61",
+        "alertId": "sha256:d78f1c1bef53f4eaf5c0132c5fdb39edb989c995279c51c5188e8439e2e9beba",
         "delivery": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:f377359a2b3db8b90230f8e0cd02baedfe9888cd0a553dc4119b158fa30bc4a3",
-          "createdAt": "2026-08-11T06:43:38Z",
+          "referenceDigest": "sha256:ae6bae135a58b78c2e83dc1d8b5305ec7043d464809f4eaabd35ecfd6d396ef4",
+          "createdAt": "2026-08-11T07:41:48Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
         "duplicate": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:f377359a2b3db8b90230f8e0cd02baedfe9888cd0a553dc4119b158fa30bc4a3",
-          "createdAt": "2026-08-11T06:43:38Z",
+          "referenceDigest": "sha256:ae6bae135a58b78c2e83dc1d8b5305ec7043d464809f4eaabd35ecfd6d396ef4",
+          "createdAt": "2026-08-11T07:41:48Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
         "acknowledgement": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:09d75d8d70470d6e260106abea650990dbf9806237d0f83f07e26098b6d2dbcb",
-          "createdAt": "2026-08-11T06:43:39Z",
+          "referenceDigest": "sha256:bc559e80c6fb404d6cfda78c2f948ade680d4b794bca6d943865fb5403b22853",
+          "createdAt": "2026-08-11T07:41:48Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
         "recovery": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:9180dd9ca9445608495c9c7e8193ea5e37d6d2ad888c43cfe41bb709bf346c15",
-          "createdAt": "2026-08-11T06:43:40Z",
+          "referenceDigest": "sha256:be9e3ad00669602a7658a17a8b9457774b7493de83a74e5a9c05f7bcadfa08d4",
+          "createdAt": "2026-08-11T07:41:49Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
         "deduplicated": true
       },
       "blindState": {
-        "alertId": "sha256:6ee8e98883b690ab80775bb07d1c30f76456aab9dc15287a734c985d5344b681",
+        "alertId": "sha256:17a54a0be8c0a9e1a7939a009e36a6a305798dfb900130fa71f50e14388f0165",
         "delivery": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:f0a1e2123c59363ad777bfc0ffd545281eee5ea5bb951aa0479896540d760f2c",
-          "createdAt": "2026-08-11T06:43:40Z",
+          "referenceDigest": "sha256:cf07262d4fba6b880a057903f0e72c8e65a903e4c233f47d8ba9fdd8ee45f367",
+          "createdAt": "2026-08-11T07:41:49Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
-        "escalationDeadline": "2026-08-11T06:43:42.000Z",
+        "escalationDeadline": "2026-08-11T07:41:51.000Z",
         "deadlineMissed": true,
         "escalation": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:54fb8d80914bb928fe2a43955793b343638b60810c6ca80e595972167997f93a",
-          "createdAt": "2026-08-11T06:43:44Z",
+          "referenceDigest": "sha256:5855c688867e0a2dac8273330a34b97dcb31b273432f85c488ca3b0114da5bd6",
+          "createdAt": "2026-08-11T07:41:53Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
         "acknowledgement": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:eab14edcc0bc5e321026779caa19827798b8bd70e8327179f8abef8a9fe5265d",
-          "createdAt": "2026-08-11T06:43:45Z",
+          "referenceDigest": "sha256:bffe514682eb13d0d49ecf6bdaa18d8066f14a16f136a346107b866789705d1c",
+          "createdAt": "2026-08-11T07:41:53Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         },
         "recovery": {
           "status": "delivered",
           "reused": true,
-          "referenceDigest": "sha256:e4e530db8d50a484c82d9b632d0623cd9febd5e8c263ae72b99a26bf555fc5e1",
-          "createdAt": "2026-08-11T06:43:46Z",
+          "referenceDigest": "sha256:3d3a699ead0c9190c7a8acce3571afe054fb0def2032c19e3fe873696c0e776f",
+          "createdAt": "2026-08-11T07:41:54Z",
           "actorDigest": "sha256:1578c373f64286f72bfc596c25131edcedeab3afdc3cffca976d0751f3935967"
         }
       }
     }
   },
   "binding": {
-    "releaseId": "sha256:134955f75af1f7befee3bbb0aa5a5f9b3b026cf70c44f7c93996fa352939b125",
+    "releaseId": "sha256:fd8977203e9b746aad8711646f034d0272879fb462cfa15211a1b64062e6616e",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
