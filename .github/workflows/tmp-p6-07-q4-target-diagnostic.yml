@@ -1,0 +1,44 @@
+name: Temporary P6-07 Q4 isolated-target diagnostic
+
+on:
+  push:
+    branches:
+      - agent/ops-p6-07-final-exact-main-dispatch-dd1264f
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      APPROVED_COMMIT: dd1264f8a1fd97640c3f010fb7f50453354e8b6e
+      RESTORE_TARGET_DATABASE_NAME: cpm_p6_07_restore_20260808
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      P6_07_RESTORE_DATABASE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: dd1264f8a1fd97640c3f010fb7f50453354e8b6e
+      - name: Install PostgreSQL client
+        run: |
+          set -euo pipefail
+          sudo apt-get update >/dev/null
+          sudo apt-get install --yes postgresql-client >/dev/null
+      - name: Diagnose isolated target without mutation
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$DATABASE_URL"
+          test -n "$P6_07_RESTORE_DATABASE_URL"
+          source_identity="$(psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "select current_database() || '|' || coalesce(inet_server_addr()::text, 'local') || '|' || coalesce(inet_server_port()::text, 'local')" 2>/dev/null)"
+          target_identity="$(psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "select current_database() || '|' || coalesce(inet_server_addr()::text, 'local') || '|' || coalesce(inet_server_port()::text, 'local')" 2>/dev/null)"
+          test "$source_identity" != "$target_identity"
+          target_name="$(psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'select current_database()' 2>/dev/null)"
+          test "$target_name" = "$RESTORE_TARGET_DATABASE_NAME"
+          echo "isolated_target_identity=verified"
+          echo 'remaining_user_relations_by_schema_and_kind:'
+          psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -AtF '|' -c "select n.nspname, c.relkind, count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname not in ('pg_catalog','information_schema') and n.nspname !~ '^pg_toast' and c.relkind in ('r','p','v','m','S','f') group by n.nspname,c.relkind order by n.nspname,c.relkind" 2>/dev/null
+          echo 'non_system_schemas:'
+          psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "select nspname from pg_namespace where nspname not in ('pg_catalog','information_schema') and nspname !~ '^pg_toast' order by nspname" 2>/dev/null
