@@ -51,6 +51,11 @@ const expectations = [
   [files.executor, "'submission_private_contact_data'"],
   [files.executor, 'allExpectedNonPrivateTablesMatched'],
   [files.executor, 'privateTablesZeroRows'],
+  [files.executor, "const applicationSchemaNames = ['public', 'drizzle']"],
+  [files.executor, 'jsonb_build_array(n.nspname,c.relname,c.relkind)'],
+  [files.executor, 'pg_get_constraintdef(c.oid,true)'],
+  [files.executor, 'pg_get_indexdef(i.oid)'],
+  [files.executor, 'drop schema if exists drizzle cascade'],
   [files.executor, 'rpoObjectiveMinutes'],
   [files.executor, 'rtoObjectiveMinutes'],
   [files.executor, "immutability: 'q3_run_scoped_artifact'"],
@@ -108,6 +113,18 @@ if (/database:\s*decodeURIComponent\(url\.pathname\.slice\(1\)\),\s*user:/.test(
 
 if (!files.executor.includes("throw new Error('target_disposal_failed')")) {
   throw new Error('OPS-P6-002A must fail closed when isolated-target disposal fails.');
+}
+if (files.executor.includes("pg_dump', ['--schema-only'")) {
+  throw new Error(
+    'OPS-P6-002A must use semantic application-schema reconciliation, not raw pg_dump text.',
+  );
+}
+if (
+  !files.executor.includes(
+    'drop schema if exists drizzle cascade; drop schema if exists public cascade',
+  )
+) {
+  throw new Error('OPS-P6-002A disposal must clear both restored application schemas.');
 }
 if (files.workflow.includes('sudo apt-get install --yes postgresql-client\n')) {
   throw new Error('OPS-P6-002A must pin the PostgreSQL 17 client.');

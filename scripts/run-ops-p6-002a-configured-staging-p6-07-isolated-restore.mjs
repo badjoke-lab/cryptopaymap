@@ -29,6 +29,7 @@ const privateSubmissionTables = [
   'submission_events',
   'submission_decisions',
 ];
+const applicationSchemaNames = ['public', 'drizzle'];
 const excludedScope = [
   'submission_private_payload_data',
   'submission_private_contact_data',
@@ -409,15 +410,6 @@ function quoteIdentifier(value) {
   return `"${value}"`;
 }
 
-function normalizeSchemaDump(text) {
-  return text
-    .split(/\r?\n/)
-    .filter((line) => !/^-- Dumped (from|by)/.test(line))
-    .filter((line) => !/^\\(un)?restrict\b/.test(line))
-    .join('\n')
-    .trim();
-}
-
 function actualList(buffer, root) {
   const plainPath = join(root, 'backup.dump');
   writeFileSync(plainPath, buffer);
@@ -467,13 +459,24 @@ function createActualDbOps(root) {
       );
     },
     schemaDigest(databaseUrl) {
-      const value = execFileSync('pg_dump', ['--schema-only', '--no-owner', '--no-privileges'], {
-        env: buildPgEnvironment(databaseUrl),
-        encoding: 'utf8',
-        maxBuffer: 128 * 1024 * 1024,
-        stdio: ['ignore', 'pipe', 'pipe'],
-      });
-      return boundedHash(normalizeSchemaDump(value));
+      const scope = "('public','drizzle')";
+      const relations = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,c.relname,c.relkind)::text from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in ${scope} and c.relkind in ('r','p','v','m','S','f') order by n.nspname,c.relname,c.relkind`,
+      );
+      const columns = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,c.relname,a.attnum,a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,coalesce(pg_get_expr(ad.adbin,ad.adrelid),''))::text from pg_class c join pg_namespace n on n.oid=c.relnamespace join pg_attribute a on a.attrelid=c.oid and a.attnum>0 and not a.attisdropped left join pg_attrdef ad on ad.adrelid=c.oid and ad.adnum=a.attnum where n.nspname in ${scope} and c.relkind in ('r','p','v','m','f') order by n.nspname,c.relname,a.attnum`,
+      );
+      const constraints = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,t.relname,c.conname,c.contype,c.convalidated,pg_get_constraintdef(c.oid,true))::text from pg_constraint c join pg_class t on t.oid=c.conrelid join pg_namespace n on n.oid=t.relnamespace where n.nspname in ${scope} order by n.nspname,t.relname,c.conname`,
+      );
+      const indexes = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,t.relname,i.relname,pg_get_indexdef(i.oid))::text from pg_index x join pg_class t on t.oid=x.indrelid join pg_namespace n on n.oid=t.relnamespace join pg_class i on i.oid=x.indexrelid where n.nspname in ${scope} order by n.nspname,t.relname,i.relname`,
+      );
+      return boundedHash([relations, columns, constraints, indexes].join('\n---\n'));
     },
     invalidConstraintCount(databaseUrl) {
       return Number(
@@ -528,7 +531,10 @@ function createActualDbOps(root) {
       }
     },
     disposeTarget(databaseUrl) {
-      runPsql(databaseUrl, 'drop schema if exists public cascade; create schema public');
+      runPsql(
+        databaseUrl,
+        'drop schema if exists drizzle cascade; drop schema if exists public cascade; create schema public',
+      );
       if (this.countUserObjects(databaseUrl) !== 0) throw new Error('target_disposal_failed');
     },
   };
@@ -1008,6 +1014,9 @@ function makeMockDb(expectedTables, privateTables, options = {}) {
 }
 
 async function selfTest() {
+  if (!sameSortedValues(applicationSchemaNames, ['public', 'drizzle'])) {
+    throw new Error('application_schema_scope_self_test_failed');
+  }
   const root = mkdtempSync(join(tmpdir(), 'cpm-p6-07-q4-self-test-'));
   try {
     const statusRoot = resolve(root, 'status');
