@@ -505,7 +505,15 @@ function createActualDbOps(root) {
       try {
         execFileSync(
           'pg_restore',
-          ['--exit-on-error', '--single-transaction', '--no-owner', '--no-privileges', plainPath],
+          [
+            '--exit-on-error',
+            '--single-transaction',
+            '--no-owner',
+            '--no-privileges',
+            '--dbname',
+            decodeURIComponent(new URL(databaseUrl).pathname.slice(1)),
+            plainPath,
+          ],
           {
             env: buildPgEnvironment(databaseUrl),
             encoding: 'utf8',
