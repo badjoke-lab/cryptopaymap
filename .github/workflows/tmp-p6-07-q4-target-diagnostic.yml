@@ -26,7 +26,7 @@ jobs:
           set -euo pipefail
           sudo apt-get update >/dev/null
           sudo apt-get install --yes postgresql-client >/dev/null
-      - name: Diagnose isolated target without mutation
+      - name: Compare source and isolated-target schema inventories without mutation
         shell: bash
         run: |
           set -euo pipefail
@@ -37,8 +37,14 @@ jobs:
           test "$source_identity" != "$target_identity"
           target_name="$(psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc 'select current_database()' 2>/dev/null)"
           test "$target_name" = "$RESTORE_TARGET_DATABASE_NAME"
-          echo "isolated_target_identity=verified"
-          echo 'remaining_user_relations_by_schema_and_kind:'
-          psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -AtF '|' -c "select n.nspname, c.relkind, count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname not in ('pg_catalog','information_schema') and n.nspname !~ '^pg_toast' and c.relkind in ('r','p','v','m','S','f') group by n.nspname,c.relkind order by n.nspname,c.relkind" 2>/dev/null
-          echo 'non_system_schemas:'
-          psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "select nspname from pg_namespace where nspname not in ('pg_catalog','information_schema') and nspname !~ '^pg_toast' order by nspname" 2>/dev/null
+          echo 'isolated_target_identity=verified'
+          query="select n.nspname, c.relkind, count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname not in ('pg_catalog','information_schema') and n.nspname !~ '^pg_toast' and c.relkind in ('r','p','v','m','S','f') group by n.nspname,c.relkind order by n.nspname,c.relkind"
+          schema_query="select nspname from pg_namespace where nspname not in ('pg_catalog','information_schema') and nspname !~ '^pg_toast' order by nspname"
+          echo 'source_user_relations_by_schema_and_kind:'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -AtF '|' -c "$query" 2>/dev/null
+          echo 'source_non_system_schemas:'
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "$schema_query" 2>/dev/null
+          echo 'target_user_relations_by_schema_and_kind:'
+          psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -AtF '|' -c "$query" 2>/dev/null
+          echo 'target_non_system_schemas:'
+          psql "$P6_07_RESTORE_DATABASE_URL" -v ON_ERROR_STOP=1 -Atqc "$schema_query" 2>/dev/null
