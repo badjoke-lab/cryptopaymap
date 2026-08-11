@@ -1,0 +1,102 @@
+from pathlib import Path
+import re
+
+executor = Path('scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
+s = executor.read_text()
+
+s, n = re.subn(
+    r"(const privateSubmissionTables = \[.*?\n\];\n)(const excludedScope =)",
+    r"\1const applicationSchemaNames = ['public', 'drizzle'];\n\2",
+    s,
+    count=1,
+    flags=re.S,
+)
+assert n == 1, 'application schema constant insertion failed'
+
+s, n = re.subn(
+    r"function normalizeSchemaDump\(text\) \{.*?\n\}\n\n(?=function actualList)",
+    '',
+    s,
+    count=1,
+    flags=re.S,
+)
+assert n == 1, 'raw schema normalizer removal failed'
+
+semantic = '''    schemaDigest(databaseUrl) {
+      const scope = "('public','drizzle')";
+      const relations = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,c.relname,c.relkind)::text from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in ${scope} and c.relkind in ('r','p','v','m','S','f') order by n.nspname,c.relname,c.relkind`,
+      );
+      const columns = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,c.relname,a.attnum,a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,coalesce(pg_get_expr(ad.adbin,ad.adrelid),''))::text from pg_class c join pg_namespace n on n.oid=c.relnamespace join pg_attribute a on a.attrelid=c.oid and a.attnum>0 and not a.attisdropped left join pg_attrdef ad on ad.adrelid=c.oid and ad.adnum=a.attnum where n.nspname in ${scope} and c.relkind in ('r','p','v','m','f') order by n.nspname,c.relname,a.attnum`,
+      );
+      const constraints = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,t.relname,c.conname,c.contype,c.convalidated,pg_get_constraintdef(c.oid,true))::text from pg_constraint c join pg_class t on t.oid=c.conrelid join pg_namespace n on n.oid=t.relnamespace where n.nspname in ${scope} order by n.nspname,t.relname,c.conname`,
+      );
+      const indexes = runPsql(
+        databaseUrl,
+        `select jsonb_build_array(n.nspname,t.relname,i.relname,pg_get_indexdef(i.oid))::text from pg_index x join pg_class t on t.oid=x.indrelid join pg_namespace n on n.oid=t.relnamespace join pg_class i on i.oid=x.indexrelid where n.nspname in ${scope} order by n.nspname,t.relname,i.relname`,
+      );
+      return boundedHash([relations, columns, constraints, indexes].join('\\n---\\n'));
+    },
+'''
+s, n = re.subn(
+    r"    schemaDigest\(databaseUrl\) \{.*?\n    \},\n(?=    invalidConstraintCount)",
+    lambda _: semantic,
+    s,
+    count=1,
+    flags=re.S,
+)
+assert n == 1, 'schema digest replacement failed'
+
+disposal = '''    disposeTarget(databaseUrl) {
+      runPsql(
+        databaseUrl,
+        'drop schema if exists drizzle cascade; drop schema if exists public cascade; create schema public',
+      );
+      if (this.countUserObjects(databaseUrl) !== 0) throw new Error('target_disposal_failed');
+    },
+'''
+s, n = re.subn(
+    r"    disposeTarget\(databaseUrl\) \{.*?\n    \},\n(?=  \};\n\})",
+    lambda _: disposal,
+    s,
+    count=1,
+    flags=re.S,
+)
+assert n == 1, 'disposal replacement failed'
+
+s, n = re.subn(
+    r"async function selfTest\(\) \{\n",
+    "async function selfTest() {\n  if (!sameSortedValues(applicationSchemaNames, ['public', 'drizzle'])) {\n    throw new Error('application_schema_scope_self_test_failed');\n  }\n",
+    s,
+    count=1,
+)
+assert n == 1, 'self-test scope insertion failed'
+executor.write_text(s)
+
+checker = Path('scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
+s = checker.read_text()
+anchor = "  [files.executor, 'privateTablesZeroRows'],\n"
+assert anchor in s
+s = s.replace(anchor, anchor + "  [files.executor, \"const applicationSchemaNames = ['public', 'drizzle']\"],\n  [files.executor, 'jsonb_build_array(n.nspname,c.relname,c.relkind)'],\n  [files.executor, 'pg_get_constraintdef(c.oid,true)'],\n  [files.executor, 'pg_get_indexdef(i.oid)'],\n  [files.executor, 'drop schema if exists drizzle cascade'],\n", 1)
+anchor = "if (!files.executor.includes(\"throw new Error('target_disposal_failed')\")) {\n  throw new Error('OPS-P6-002A must fail closed when isolated-target disposal fails.');\n}\n"
+assert anchor in s
+s = s.replace(anchor, anchor + "if (files.executor.includes(\"pg_dump', ['--schema-only'\")) {\n  throw new Error('OPS-P6-002A must use semantic application-schema reconciliation, not raw pg_dump text.');\n}\nif (!files.executor.includes('drop schema if exists drizzle cascade; drop schema if exists public cascade')) {\n  throw new Error('OPS-P6-002A disposal must clear both restored application schemas.');\n}\n", 1)
+checker.write_text(s)
+
+doc = Path('docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md')
+s = doc.read_text()
+old = '- source and target schema-only digests match;'
+assert old in s
+s = s.replace(old, '- source and target semantic application-schema digests match across the restored `public` and `drizzle` schemas, including relations, columns/defaults, constraints, sequences, and indexes;', 1)
+old = 'Disposal drops the restored `public` schema with cascade, recreates an empty `public` schema, and verifies that no user object remains.'
+assert old in s
+s = s.replace(old, 'Disposal drops both restored application schemas (`drizzle` and `public`) with cascade, recreates an empty `public` schema, and verifies across all non-system schemas that no user object remains.', 1)
+old = 'The executor records only table-set, row-count, constraint, schema, and invariant digests.'
+assert old in s
+s = s.replace(old, 'The executor records only table-set, row-count, constraint, semantic application-schema, and invariant digests. The semantic schema digest is derived from PostgreSQL catalogs for `public` and `drizzle`; it excludes environment-sensitive raw whole-database dump text, ownership, privileges, and connection identity.', 1)
+doc.write_text(s)
