@@ -29,47 +29,31 @@ jobs:
           set -euo pipefail
           python3 <<'PY'
           from pathlib import Path
+          import re
 
           p = Path('scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
           s = p.read_text()
-          old = """const privateSubmissionTables = [
-            'submissions',
-            'submission_payloads',
-            'submission_contacts',
-            'submission_media',
-            'submission_events',
-            'submission_decisions',
-          ];
-          """
-          new = old + "const applicationSchemaNames = ['public', 'drizzle'];\n"
-          assert old in s
-          s = s.replace(old, new, 1)
 
-          old = """function normalizeSchemaDump(text) {
-            return text
-              .split(/\\r?\\n/)
-              .filter((line) => !/^-- Dumped (from|by)/.test(line))
-              .filter((line) => !/^\\\\(un)?restrict\\b/.test(line))
-              .join('\\n')
-              .trim();
-          }
+          s, n = re.subn(
+            r"(const privateSubmissionTables = \[.*?\n\];\n)(const excludedScope =)",
+            r"\1const applicationSchemaNames = ['public', 'drizzle'];\n\2",
+            s,
+            count=1,
+            flags=re.S,
+          )
+          assert n == 1
 
-          """
-          assert old in s
-          s = s.replace(old, '', 1)
+          s, n = re.subn(
+            r"function normalizeSchemaDump\(text\) \{.*?\n\}\n\n(?=function actualList)",
+            '',
+            s,
+            count=1,
+            flags=re.S,
+          )
+          assert n == 1
 
-          old = """    schemaDigest(databaseUrl) {
-              const value = execFileSync('pg_dump', ['--schema-only', '--no-owner', '--no-privileges'], {
-                env: buildPgEnvironment(databaseUrl),
-                encoding: 'utf8',
-                maxBuffer: 128 * 1024 * 1024,
-                stdio: ['ignore', 'pipe', 'pipe'],
-              });
-              return boundedHash(normalizeSchemaDump(value));
-            },
-          """
-          new = """    schemaDigest(databaseUrl) {
-              const scope = \"('public','drizzle')\";
+          semantic = r'''    schemaDigest(databaseUrl) {
+              const scope = "('public','drizzle')";
               const relations = runPsql(
                 databaseUrl,
                 `select jsonb_build_array(n.nspname,c.relname,c.relkind)::text from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname in ${scope} and c.relkind in ('r','p','v','m','S','f') order by n.nspname,c.relname,c.relkind`,
@@ -86,82 +70,65 @@ jobs:
                 databaseUrl,
                 `select jsonb_build_array(n.nspname,t.relname,i.relname,pg_get_indexdef(i.oid))::text from pg_index x join pg_class t on t.oid=x.indrelid join pg_namespace n on n.oid=t.relnamespace join pg_class i on i.oid=x.indexrelid where n.nspname in ${scope} order by n.nspname,t.relname,i.relname`,
               );
-              return boundedHash([relations, columns, constraints, indexes].join('\\n---\\n'));
+              return boundedHash([relations, columns, constraints, indexes].join('\n---\n'));
             },
-          """
-          assert old in s
-          s = s.replace(old, new, 1)
+'''
+          s, n = re.subn(
+            r"    schemaDigest\(databaseUrl\) \{.*?\n    \},\n(?=    invalidConstraintCount)",
+            semantic,
+            s,
+            count=1,
+            flags=re.S,
+          )
+          assert n == 1
 
-          old = """    disposeTarget(databaseUrl) {
-              runPsql(databaseUrl, 'drop schema if exists public cascade; create schema public');
-              if (this.countUserObjects(databaseUrl) !== 0) throw new Error('target_disposal_failed');
-            },
-          """
-          new = """    disposeTarget(databaseUrl) {
+          disposal = r'''    disposeTarget(databaseUrl) {
               runPsql(
                 databaseUrl,
                 'drop schema if exists drizzle cascade; drop schema if exists public cascade; create schema public',
               );
               if (this.countUserObjects(databaseUrl) !== 0) throw new Error('target_disposal_failed');
             },
-          """
-          assert old in s
-          s = s.replace(old, new, 1)
+'''
+          s, n = re.subn(
+            r"    disposeTarget\(databaseUrl\) \{.*?\n    \},\n(?=  \};\n\})",
+            disposal,
+            s,
+            count=1,
+            flags=re.S,
+          )
+          assert n == 1
 
-          marker = """async function selfTest() {
-            const root = mkdtempSync(join(tmpdir(), 'cpm-p6-07-q4-self-test-'));
-          """
-          replacement = """async function selfTest() {
-            if (!sameSortedValues(applicationSchemaNames, ['public', 'drizzle'])) {
-              throw new Error('application_schema_scope_self_test_failed');
-            }
-            const root = mkdtempSync(join(tmpdir(), 'cpm-p6-07-q4-self-test-'));
-          """
-          assert marker in s
-          s = s.replace(marker, replacement, 1)
+          s, n = re.subn(
+            r"async function selfTest\(\) \{\n",
+            "async function selfTest() {\n  if (!sameSortedValues(applicationSchemaNames, ['public', 'drizzle'])) {\n    throw new Error('application_schema_scope_self_test_failed');\n  }\n",
+            s,
+            count=1,
+          )
+          assert n == 1
           p.write_text(s)
 
           p = Path('scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs')
           s = p.read_text()
-          needle = """  [files.executor, 'privateTablesZeroRows'],
-          """
-          repl = needle + """  [files.executor, \"const applicationSchemaNames = ['public', 'drizzle']\"],
-            [files.executor, 'jsonb_build_array(n.nspname,c.relname,c.relkind)'],
-            [files.executor, 'pg_get_constraintdef(c.oid,true)'],
-            [files.executor, 'pg_get_indexdef(i.oid)'],
-            [files.executor, 'drop schema if exists drizzle cascade'],
-          """
-          assert needle in s
-          s = s.replace(needle, repl, 1)
-          needle = """if (!files.executor.includes(\"throw new Error('target_disposal_failed')\")) {
-            throw new Error('OPS-P6-002A must fail closed when isolated-target disposal fails.');
-          }
-          """
-          repl = needle + """if (files.executor.includes("pg_dump', ['--schema-only'")) {
-            throw new Error('OPS-P6-002A must use semantic application-schema reconciliation, not raw pg_dump text.');
-          }
-          if (!files.executor.includes("drop schema if exists drizzle cascade; drop schema if exists public cascade")) {
-            throw new Error('OPS-P6-002A disposal must clear both restored application schemas.');
-          }
-          """
-          assert needle in s
-          s = s.replace(needle, repl, 1)
+          anchor = "  [files.executor, 'privateTablesZeroRows'],\n"
+          assert anchor in s
+          s = s.replace(anchor, anchor + "  [files.executor, \"const applicationSchemaNames = ['public', 'drizzle']\"],\n  [files.executor, 'jsonb_build_array(n.nspname,c.relname,c.relkind)'],\n  [files.executor, 'pg_get_constraintdef(c.oid,true)'],\n  [files.executor, 'pg_get_indexdef(i.oid)'],\n  [files.executor, 'drop schema if exists drizzle cascade'],\n", 1)
+          anchor = "if (!files.executor.includes(\"throw new Error('target_disposal_failed')\")) {\n  throw new Error('OPS-P6-002A must fail closed when isolated-target disposal fails.');\n}\n"
+          assert anchor in s
+          s = s.replace(anchor, anchor + "if (files.executor.includes(\"pg_dump', ['--schema-only'\")) {\n  throw new Error('OPS-P6-002A must use semantic application-schema reconciliation, not raw pg_dump text.');\n}\nif (!files.executor.includes('drop schema if exists drizzle cascade; drop schema if exists public cascade')) {\n  throw new Error('OPS-P6-002A disposal must clear both restored application schemas.');\n}\n", 1)
           p.write_text(s)
 
           p = Path('docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md')
           s = p.read_text()
-          s = s.replace(
-            '- source and target schema-only digests match;',
-            '- source and target semantic application-schema digests match across the restored `public` and `drizzle` schemas, including relations, columns/defaults, constraints, sequences, and indexes;',
-          )
-          s = s.replace(
-            'Disposal drops the restored `public` schema with cascade, recreates an empty `public` schema, and verifies that no user object remains.',
-            'Disposal drops both restored application schemas (`drizzle` and `public`) with cascade, recreates an empty `public` schema, and verifies across all non-system schemas that no user object remains.',
-          )
-          s = s.replace(
-            'The executor records only table-set, row-count, constraint, schema, and invariant digests.',
-            'The executor records only table-set, row-count, constraint, semantic application-schema, and invariant digests. The semantic schema digest is derived from PostgreSQL catalogs for `public` and `drizzle`; it excludes environment-sensitive raw whole-database dump text, ownership, privileges, and connection identity.',
-          )
+          old = '- source and target schema-only digests match;'
+          assert old in s
+          s = s.replace(old, '- source and target semantic application-schema digests match across the restored `public` and `drizzle` schemas, including relations, columns/defaults, constraints, sequences, and indexes;', 1)
+          old = 'Disposal drops the restored `public` schema with cascade, recreates an empty `public` schema, and verifies that no user object remains.'
+          assert old in s
+          s = s.replace(old, 'Disposal drops both restored application schemas (`drizzle` and `public`) with cascade, recreates an empty `public` schema, and verifies across all non-system schemas that no user object remains.', 1)
+          old = 'The executor records only table-set, row-count, constraint, schema, and invariant digests.'
+          assert old in s
+          s = s.replace(old, 'The executor records only table-set, row-count, constraint, semantic application-schema, and invariant digests. The semantic schema digest is derived from PostgreSQL catalogs for `public` and `drizzle`; it excludes environment-sensitive raw whole-database dump text, ownership, privileges, and connection identity.', 1)
           p.write_text(s)
           PY
 
@@ -169,9 +136,9 @@ jobs:
             scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
             scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs \
             docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md
-
           node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
           node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+
           rm .github/workflows/tmp-ops-p6-008-patcher.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
