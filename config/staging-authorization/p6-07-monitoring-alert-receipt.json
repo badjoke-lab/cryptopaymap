@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "5875b2d8cef9f01015434888beb487cd448bc266",
-  "generatedAt": "2026-08-12T08:54:25.864Z",
-  "expiresAt": "2026-09-11T08:54:25.864Z",
-  "workflowRunId": "31580337219",
+  "generatedAt": "2026-08-12T10:39:45.006Z",
+  "expiresAt": "2026-09-11T10:39:45.006Z",
+  "workflowRunId": "31588257978",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001U configured staging P6-07 monitoring and alert evidence",
   "checks": {
@@ -20,43 +20,43 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:35:39.055Z",
-        "expiresAt": "2026-08-15T08:35:39.055Z"
+        "generatedAt": "2026-08-12T09:16:30.720Z",
+        "expiresAt": "2026-08-15T09:16:30.720Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:36:57.208Z",
-        "expiresAt": "2026-08-15T08:36:57.208Z"
+        "generatedAt": "2026-08-12T09:17:48.463Z",
+        "expiresAt": "2026-08-15T09:17:48.463Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:38:25.866Z",
-        "expiresAt": "2026-08-15T08:38:25.866Z"
+        "generatedAt": "2026-08-12T09:19:10.724Z",
+        "expiresAt": "2026-08-15T09:19:10.724Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:40:55.994Z",
-        "expiresAt": "2026-08-15T08:40:55.994Z"
+        "generatedAt": "2026-08-12T09:21:35.104Z",
+        "expiresAt": "2026-08-15T09:21:35.104Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:47:14.642Z",
-        "expiresAt": "2026-08-15T08:47:14.642Z"
+        "generatedAt": "2026-08-12T09:26:54.436Z",
+        "expiresAt": "2026-08-15T09:26:54.436Z"
       },
       {
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:49:34.408Z",
-        "expiresAt": "2026-08-15T08:49:34.408Z"
+        "generatedAt": "2026-08-12T10:31:05.390Z",
+        "expiresAt": "2026-08-15T10:31:05.390Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -64,17 +64,17 @@
       "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
       "state": "current",
       "decision": "ready",
-      "generatedAt": "2026-08-12T08:52:04.701Z",
-      "expiresAt": "2026-08-13T08:52:04.701Z",
-      "digest": "sha256:16e1ce18bf5745d15d64538c81b8ad94ef460a98a9fab35f3f60fee3b57646c6",
+      "generatedAt": "2026-08-12T10:37:23.752Z",
+      "expiresAt": "2026-08-13T10:37:23.752Z",
+      "digest": "sha256:f8c28e0d37695dfe9d1bb69c1f14bc43bfe668c90e834c6dfb98dedb48ada334",
       "blockers": []
     },
     "liveMonitoring": {
       "status": "passed",
       "heartbeat": {
         "status": "healthy",
-        "emittedAt": "2026-08-12T08:54:25.865Z",
-        "ageMs": 1035,
+        "emittedAt": "2026-08-12T10:39:45.008Z",
+        "ageMs": 992,
         "timestampSanity": "current"
       },
       "public": {
@@ -82,7 +82,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "text/html",
-          "latencyMs": 617,
+          "latencyMs": 598,
           "bodyDigest": "sha256:d2d5de4b664936613af9566e46c487cac3d4762c00babd9aec0cd102108594ae",
           "byteLength": 32388
         },
@@ -90,7 +90,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "application/json",
-          "latencyMs": 588,
+          "latencyMs": 521,
           "bodyDigest": "sha256:c018fa88dbb51736500dee4ab0cc1607885af113f235a643ec12d8948ba37569",
           "byteLength": 310
         },
@@ -98,7 +98,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "application/json",
-          "latencyMs": 576,
+          "latencyMs": 505,
           "bodyDigest": "sha256:304c35366752cca14d5e45bb9ee7c9d13de689d0684f981ad873b66c7c885916",
           "byteLength": 1583
         },
@@ -106,7 +106,7 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "image/webp",
-          "latencyMs": 720,
+          "latencyMs": 883,
           "bodyDigest": "sha256:ac2df9da8e777d2e5b97aa90bde743c2adc99430127750a99caf079c4f3f2b66",
           "byteLength": 458
         },
@@ -114,7 +114,7 @@
           "status": "passed",
           "httpStatus": 403,
           "contentType": "text/plain",
-          "latencyMs": 895,
+          "latencyMs": 583,
           "bodyDigest": "sha256:6b45d3e8d5106c4b57f67c3e4e252c21350c84296dfd3acc91bc28b3a6fe4314",
           "byteLength": 33
         },
@@ -122,14 +122,14 @@
           "status": "passed",
           "httpStatus": 200,
           "contentType": "application/json",
-          "latencyMs": 918,
+          "latencyMs": 800,
           "bodyDigest": "sha256:1c1ede6b16c4ce67f1058bcd88facf85b454795a4fdf0b749f1d2ab5e3d4476b",
           "byteLength": 348
         },
         "dns": {
           "status": "passed",
           "resolverCount": 3,
-          "digest": "sha256:dbec9e3a401b148904591193508108b63c48b00af2c8185a738db33dbd304831"
+          "digest": "sha256:0dbdf53c3f8f40aa14ce5c1e8e0354b312ff1b5f750e8506279b8d3951fadcba"
         },
         "tls": {
           "status": "passed",
@@ -150,7 +150,7 @@
       "redirect": {
         "status": "passed",
         "httpStatus": 301,
-        "locationDigest": "sha256:a26bc6c352a37df5a611d3a17b2de1a773e1a136fd368ef5e366a5e82802b5a5"
+        "locationDigest": "sha256:edd981dd5d85122a77cdbfcd046ea3f0b0a2dc34b23c094c5b2ad71d7e93cbd6"
       }
     },
     "syntheticFailures": {
