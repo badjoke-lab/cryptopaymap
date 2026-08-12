@@ -1,0 +1,209 @@
+name: OPS-P6-012 configured production authorization
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/ops-p6-012-configured-production-authorization.yml'
+      - 'docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md'
+      - 'scripts/evaluate-ops-p6-012-production-authorization.mjs'
+      - 'scripts/check-ops-p6-012-production-authorization.mjs'
+  push:
+    branches:
+      - main
+    paths:
+      - '.github/workflows/ops-p6-012-configured-production-authorization.yml'
+      - 'docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md'
+      - 'scripts/evaluate-ops-p6-012-production-authorization.mjs'
+      - 'scripts/check-ops-p6-012-production-authorization.mjs'
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter AUTHORIZE_CONFIGURED_PRODUCTION exactly.
+        required: true
+        type: string
+      approved_commit:
+        description: Exact 40-character current main commit SHA to authorize.
+        required: true
+        type: string
+      launch_owner:
+        description: Bounded production launch-owner identity.
+        required: true
+        type: string
+      observer:
+        description: Bounded independent-observer identity.
+        required: true
+        type: string
+      rollback_owner:
+        description: Bounded production rollback-owner identity.
+        required: true
+        type: string
+      communication_owner:
+        description: Bounded production communication-owner identity.
+        required: true
+        type: string
+      execution_window_minutes:
+        description: Maximum bounded go-live execution window in minutes (5-60).
+        required: true
+        default: '30'
+        type: string
+      authorization_ttl_minutes:
+        description: Production authorization lifetime in minutes (5-60), bounded by predecessor expiry.
+        required: true
+        default: '30'
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ops-p6-012-configured-production-authorization
+  cancel-in-progress: false
+
+jobs:
+  contract:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Check Astro and TypeScript
+        run: npm run check
+
+      - name: Check configured production authorization contract
+        run: node scripts/check-ops-p6-012-production-authorization.mjs
+
+      - name: Run configured production authorization self-test
+        run: node scripts/evaluate-ops-p6-012-production-authorization.mjs --self-test
+
+  authorize:
+    if: github.event_name == 'workflow_dispatch'
+    needs: contract
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      APPROVED_COMMIT: ${{ inputs.approved_commit }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      LAUNCH_OWNER: ${{ inputs.launch_owner }}
+      OBSERVER: ${{ inputs.observer }}
+      ROLLBACK_OWNER: ${{ inputs.rollback_owner }}
+      COMMUNICATION_OWNER: ${{ inputs.communication_owner }}
+      EXECUTION_WINDOW_MINUTES: ${{ inputs.execution_window_minutes }}
+      AUTHORIZATION_TTL_MINUTES: ${{ inputs.authorization_ttl_minutes }}
+      EVALUATION_MODE: authorization
+      WORKFLOW_RUN_ID: ${{ github.run_id }}
+    steps:
+      - name: Check out evaluated source
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.approved_commit }}
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: source/package-lock.json
+
+      - name: Install locked dependencies
+        working-directory: source
+        run: npm ci
+
+      - name: Verify exact current main
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main_commit="$(git -C source rev-parse origin/main)"
+          test "$current_main_commit" = "$APPROVED_COMMIT"
+
+      - name: Recheck exact-source repository contract
+        id: repository_contract
+        continue-on-error: true
+        working-directory: source
+        run: |
+          npm run check
+          node scripts/check-ops-p6-012-production-authorization.mjs
+          node scripts/evaluate-ops-p6-012-production-authorization.mjs --self-test
+
+      - name: Evaluate configured production authorization
+        env:
+          REPOSITORY_CONTRACT_OUTCOME: ${{ steps.repository_contract.outcome }}
+        working-directory: source
+        run: |
+          node scripts/evaluate-ops-p6-012-production-authorization.mjs \
+            ../status \
+            ../production-authorization-attempt-receipt.json
+
+      - name: Upload bounded production authorization attempt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-012-configured-production-authorization
+          path: production-authorization-attempt-receipt.json
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Publish authorized production receipt
+        if: always()
+        run: |
+          set -euo pipefail
+          test -f production-authorization-attempt-receipt.json
+          mkdir -p status/config/production-authorization
+          cp production-authorization-attempt-receipt.json \
+            status/config/production-authorization/last-attempt-receipt.json
+          state="$(node -e "const r=require('./production-authorization-attempt-receipt.json'); process.stdout.write(r.state)")"
+          if [ "$state" = authorized ]; then
+            cp production-authorization-attempt-receipt.json \
+              status/config/production-authorization/authorization-receipt.json
+          fi
+          git -C status config user.name 'github-actions[bot]'
+          git -C status config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git -C status add config/production-authorization
+          if ! git -C status diff --cached --quiet; then
+            git -C status commit -m 'Record configured production authorization attempt'
+            git -C status push origin HEAD:staging-review
+          fi
+
+      - name: Write configured production authorization summary
+        if: always()
+        run: |
+          node <<'NODE'
+          const { appendFileSync, existsSync, readFileSync } = require('node:fs');
+          if (!existsSync('production-authorization-attempt-receipt.json')) process.exit(0);
+          const receipt = JSON.parse(readFileSync('production-authorization-attempt-receipt.json', 'utf8'));
+          appendFileSync(
+            process.env.GITHUB_STEP_SUMMARY,
+            [
+              '## Configured production authorization',
+              '',
+              `- State: \`${receipt.state}\``,
+              `- Approved commit: \`${receipt.approvedCommit}\``,
+              `- Staging authorization: \`${receipt.checks.configuredStagingAuthorization.state}\``,
+              `- Predecessor binding: \`${receipt.checks.predecessorBinding}\``,
+              `- Production mutation: \`${receipt.checks.productionMutation}\``,
+              `- Blockers: ${receipt.blockers.length === 0 ? 'none' : receipt.blockers.map((value) => `\`${value}\``).join(', ')}`,
+              '',
+            ].join('\n'),
+          );
+          NODE
+
+      - name: Enforce explicit production authorization result
+        if: always()
+        run: |
+          node -e "const r=require('./production-authorization-attempt-receipt.json'); if(r.state!=='authorized') process.exit(1)"
+          node -e "const r=require('./production-authorization-attempt-receipt.json'); if(r.checks.productionMutation!==false) process.exit(1)"
