@@ -194,6 +194,8 @@ jobs:
               `- State: \`${receipt.state}\``,
               `- Approved commit: \`${receipt.approvedCommit}\``,
               `- Staging authorization: \`${receipt.checks.configuredStagingAuthorization.state}\``,
+              `- Production candidate: \`${receipt.checks.productionCandidateBootstrap.state}\``,
+              `- Production readiness: \`${receipt.checks.productionReadiness.state}\``,
               `- Predecessor binding: \`${receipt.checks.predecessorBinding}\``,
               `- Production mutation: \`${receipt.checks.productionMutation}\``,
               `- Blockers: ${receipt.blockers.length === 0 ? 'none' : receipt.blockers.map((value) => `\`${value}\``).join(', ')}`,
