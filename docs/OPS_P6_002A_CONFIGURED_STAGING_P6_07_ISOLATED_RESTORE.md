@@ -82,6 +82,8 @@ The executor then proves:
 
 The executor records only table-set, row-count, constraint, semantic application-schema, and invariant digests. The semantic schema digest is derived from PostgreSQL catalogs for `public` and `drizzle`; it excludes environment-sensitive raw whole-database dump text, ownership, privileges, and connection identity. It does not retain row values, private payloads, contacts, credentials, database URLs, or unrestricted logs.
 
+PostgreSQL can deparse an equivalent constant `character varying` array cast to `text[]` after dump/restore either as a whole-array `::text[]` cast or as redundant per-element `::text` casts. Before hashing CHECK-constraint catalog rows, Q4 canonicalizes only that narrow constant-array cast representation. Constraint identity, type, validation state, all other expression text, and any substantive value or predicate change remain exact and fail closed.
+
 ## RPO and RTO
 
 RPO is measured from the selected Q3 backup creation time to the Q4 restore start. RTO is measured from the restore start through schema, table, row-count, constraint, privacy, and representative-read verification.
