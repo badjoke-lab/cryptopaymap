@@ -1,0 +1,194 @@
+name: One-time P6-07 exact-main completion 5875b2
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-exact-main-5875b2.yml'
+
+permissions:
+  actions: write
+  contents: read
+  issues: write
+
+concurrency:
+  group: cpm-p6-07-final-exact-main-5875b2
+  cancel-in-progress: false
+
+jobs:
+  complete:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 360
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      APPROVED_COMMIT: 5875b2d8cef9f01015434888beb487cd448bc266
+    steps:
+      - name: Rebuild configured-staging P6-07 evidence on exact main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          api_get() {
+            curl --fail --silent --show-error \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/$1"
+          }
+
+          api_post() {
+            local endpoint="$1"
+            local payload="$2"
+            curl --fail --silent --show-error -X POST \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$REPOSITORY/$endpoint" \
+              -d "$payload"
+          }
+
+          assert_exact_main() {
+            test "$(api_get 'commits/main' | jq -r '.sha')" = "$APPROVED_COMMIT"
+          }
+
+          dispatch_and_wait() {
+            local workflow="$1"
+            local inputs_json="$2"
+            local marker payload runs run_id status conclusion
+            assert_exact_main
+            marker="$(date -u +%s)"
+            if [ "$inputs_json" = '{}' ]; then
+              payload="$(jq -nc --arg ref main '{ref:$ref}')"
+            else
+              payload="$(jq -nc --arg ref main --argjson inputs "$inputs_json" '{ref:$ref,inputs:$inputs}')"
+            fi
+            api_post "actions/workflows/$workflow/dispatches" "$payload" >/dev/null
+            run_id=''
+            for _ in $(seq 1 90); do
+              sleep 5
+              runs="$(api_get "actions/workflows/$workflow/runs?event=workflow_dispatch&branch=main&per_page=20")"
+              run_id="$(jq -r --arg sha "$APPROVED_COMMIT" --argjson marker "$marker" '[.workflow_runs[] | select(.head_sha == $sha and ((.created_at | fromdateiso8601) >= ($marker - 5)))] | sort_by(.created_at) | last | .id // empty' <<<"$runs")"
+              [ -n "$run_id" ] && break
+            done
+            [ -n "$run_id" ] || { echo "could not locate exact-main run for $workflow" >&2; exit 1; }
+            echo "Tracking $workflow run $run_id"
+            for _ in $(seq 1 1080); do
+              runs="$(api_get "actions/runs/$run_id")"
+              status="$(jq -r '.status' <<<"$runs")"
+              conclusion="$(jq -r '.conclusion // empty' <<<"$runs")"
+              if [ "$status" = completed ]; then
+                [ "$conclusion" = success ] || { echo "$workflow run $run_id ended $conclusion" >&2; exit 1; }
+                assert_exact_main
+                echo "$workflow run $run_id succeeded"
+                return 0
+              fi
+              sleep 10
+            done
+            echo "timed out waiting for $workflow run $run_id" >&2
+            exit 1
+          }
+
+          read_status_json() {
+            api_get "contents/$1?ref=staging-review" | jq -r '.content' | base64 -d
+          }
+
+          assert_current_accepted() {
+            local receipt
+            receipt="$(read_status_json "$1")"
+            test "$(jq -r '.commit' <<<"$receipt")" = "$APPROVED_COMMIT"
+            test "$(jq -r '.evidenceId' <<<"$receipt")" = "$2"
+            test "$(jq -r '.state' <<<"$receipt")" = accepted
+            test "$(jq '.exceptions | length' <<<"$receipt")" = 0
+          }
+
+          post_marker() {
+            local kind="$1" alert_id="$2" signal_class="$3" evidence_at body
+            evidence_at="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+            body="$(printf '<!-- cpm-p6-07-%s:%s -->\n### P6-07 configured-staging test %s\n\n- Alert identity: `%s`\n- Rule revision: `p6-07-q2-v1`\n- Signal class: `%s`\n- Severity: `test_high`\n- Source binding: `%s`\n- Owner: `%s`\n- Evidence time: `%s`\n\nThis is a bounded operational evidence test. No live service degradation was introduced.' "$kind" "$alert_id" "$kind" "$alert_id" "$signal_class" "$binding_digest" "$owner_digest" "$evidence_at")"
+            api_post 'issues/349/comments' "$(jq -nc --arg body "$body" '{body:$body}')" >/dev/null
+          }
+
+          assert_exact_main
+          operator='badjoke-lab'
+          observer='cpm-staging-independent-observer'
+          restore_target='cpm_p6_07_restore_20260808'
+          incident_id='cpm-p6-07-q5-5875b2-20260812-a'
+
+          dispatch_and_wait 'staging-review-deploy.yml' '{}'
+          dispatch_and_wait 'p5-02r-fixed-review-live-audit.yml' '{}'
+          dispatch_and_wait 'ops-p6-001d-configured-staging-p6-01-data-qa.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_01 --arg approved_commit "$APPROVED_COMMIT" --arg data_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,data_owner:$data_owner}')"
+          dispatch_and_wait 'ops-p6-001e-configured-staging-p6-02-identity-admin.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_02 --arg approved_commit "$APPROVED_COMMIT" --arg identity_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,identity_owner:$identity_owner}')"
+          dispatch_and_wait 'ops-p6-001g-configured-staging-p6-03-neon-transaction.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_03 --arg approved_commit "$APPROVED_COMMIT" --arg transaction_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,transaction_owner:$transaction_owner}')"
+          dispatch_and_wait 'ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_04 --arg approved_commit "$APPROVED_COMMIT" --arg media_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,media_owner:$media_owner}')"
+          dispatch_and_wait 'ops-p6-001j-configured-staging-p6-06-domain-topology-diagnostic.yml' "$(jq -nc --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_06 --arg approved_commit "$APPROVED_COMMIT" --arg domain_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
+          dispatch_and_wait 'ops-p6-001i-configured-staging-p6-05-public-export-release.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_05 --arg approved_commit "$APPROVED_COMMIT" --arg release_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,release_owner:$release_owner}')"
+          dispatch_and_wait 'ops-p6-001r-configured-staging-p6-06-continuity-revalidation.yml' "$(jq -nc --arg confirmation REVALIDATE_CONFIGURED_STAGING_P6_06_CONTINUITY --arg approved_commit "$APPROVED_COMMIT" --arg domain_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,domain_owner:$domain_owner}')"
+          dispatch_and_wait 'ops-p6-001q-configured-staging-p6-07-prerequisite-diagnostic.yml' "$(jq -nc --arg confirmation DIAGNOSE_CONFIGURED_STAGING_P6_07 --arg approved_commit "$APPROVED_COMMIT" --arg operations_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,operations_owner:$operations_owner}')"
+
+          q1="$(read_status_json 'config/staging-authorization/p6-07-prerequisite-diagnostic.json')"
+          test "$(jq -r '.commit' <<<"$q1")" = "$APPROVED_COMMIT"
+          test "$(jq -r '.state' <<<"$q1")" = diagnosed
+          test "$(jq -r '.decision' <<<"$q1")" = ready
+          test "$(jq '.blockers | length' <<<"$q1")" = 0
+          test "$(jq '.exceptions | length' <<<"$q1")" = 0
+          test "$(date -u -d "$(jq -r '.expiresAt' <<<"$q1")" +%s)" -gt "$(date -u +%s)"
+
+          ids="$(Q1_JSON="$q1" node <<'NODE'
+          const crypto = require('node:crypto');
+          const q1 = JSON.parse(process.env.Q1_JSON);
+          const sha = (value) => `sha256:${crypto.createHash('sha256').update(value).digest('hex')}`;
+          const binding = sha(JSON.stringify(q1.binding));
+          process.stdout.write([
+            binding,
+            sha(['wrong_release_http_200', binding, 'p6-07-q2-v1'].join(':')),
+            sha(['monitor_blind_state', binding, 'p6-07-q2-v1'].join(':')),
+            sha('badjoke-lab'),
+          ].join('\n'));
+          NODE
+          )"
+          binding_digest="$(sed -n '1p' <<<"$ids")"
+          wrong_id="$(sed -n '2p' <<<"$ids")"
+          blind_id="$(sed -n '3p' <<<"$ids")"
+          owner_digest="$(sed -n '4p' <<<"$ids")"
+
+          post_marker alert "$wrong_id" wrong_release_http_200
+          post_marker ack "$wrong_id" wrong_release_http_200
+          post_marker recovery "$wrong_id" wrong_release_http_200
+          post_marker alert "$blind_id" monitor_blind_state
+          sleep 3
+          post_marker escalation "$blind_id" monitor_blind_state
+          post_marker ack "$blind_id" monitor_blind_state
+          post_marker recovery "$blind_id" monitor_blind_state
+
+          dispatch_and_wait 'ops-p6-001u-configured-staging-p6-07-monitoring-alert.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_07_Q2 --arg approved_commit "$APPROVED_COMMIT" --arg monitoring_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,monitoring_owner:$monitoring_owner}')"
+          assert_current_accepted 'config/staging-authorization/p6-07-monitoring-alert-receipt.json' 'P6-07-Q2'
+
+          dispatch_and_wait 'ops-p6-001y-configured-staging-p6-07-backup-integrity.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_07_Q3 --arg approved_commit "$APPROVED_COMMIT" --arg backup_owner "$operator" '{confirmation:$confirmation,approved_commit:$approved_commit,backup_owner:$backup_owner}')"
+          assert_current_accepted 'config/staging-authorization/p6-07-backup-integrity-receipt.json' 'P6-07-Q3'
+
+          dispatch_and_wait 'ops-p6-002a-configured-staging-p6-07-isolated-restore.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_07_Q4 --arg approved_commit "$APPROVED_COMMIT" --arg restore_owner "$operator" --arg restore_target_database_name "$restore_target" --arg rpo_objective_minutes '60' --arg rto_objective_minutes '30' '{confirmation:$confirmation,approved_commit:$approved_commit,restore_owner:$restore_owner,restore_target_database_name:$restore_target_database_name,rpo_objective_minutes:$rpo_objective_minutes,rto_objective_minutes:$rto_objective_minutes}')"
+          assert_current_accepted 'config/staging-authorization/p6-07-isolated-restore-receipt.json' 'P6-07-Q4'
+          q4="$(read_status_json 'config/staging-authorization/p6-07-isolated-restore-receipt.json')"
+          test "$(jq -r '.checks.restore.status' <<<"$q4")" = passed
+          test "$(jq -r '.checks.reconciliation.status' <<<"$q4")" = passed
+          test "$(jq -r '.checks.objectives.rpo.status' <<<"$q4")" = passed
+          test "$(jq -r '.checks.objectives.rto.status' <<<"$q4")" = passed
+          test "$(jq -r '.checks.disposal.status' <<<"$q4")" = passed
+          test "$(jq -r '.checks.disposal.remainingUserObjectCount' <<<"$q4")" = 0
+
+          dispatch_and_wait 'ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml' "$(jq -nc --arg confirmation EXECUTE_CONFIGURED_STAGING_P6_07_Q5 --arg approved_commit "$APPROVED_COMMIT" --arg incident_id "$incident_id" --arg command_owner "$operator" --arg observer "$observer" --arg follow_up_owner "$operator" --arg incident_scenario canonical_database_degradation --arg incident_severity exercise_high --arg acknowledgement_objective_minutes '15' --arg decision_objective_minutes '30' --arg recovery_objective_minutes '45' --arg status_cadence_minutes '15' '{confirmation:$confirmation,approved_commit:$approved_commit,incident_id:$incident_id,command_owner:$command_owner,observer:$observer,follow_up_owner:$follow_up_owner,incident_scenario:$incident_scenario,incident_severity:$incident_severity,acknowledgement_objective_minutes:$acknowledgement_objective_minutes,decision_objective_minutes:$decision_objective_minutes,recovery_objective_minutes:$recovery_objective_minutes,status_cadence_minutes:$status_cadence_minutes}')"
+          assert_current_accepted 'config/staging-authorization/p6-07-operations-recovery-receipt.json' 'P6-07'
+          final="$(read_status_json 'config/staging-authorization/p6-07-operations-recovery-receipt.json')"
+          test "$(jq -r '.decision' <<<"$final")" = accepted
+          test "$(jq -r '.checks.externalReverification.status' <<<"$final")" = passed
+          test "$(jq -r '.checks.objectives.status' <<<"$final")" = passed
+          test "$(jq -r '.checks.followUp.status' <<<"$final")" = passed
+
+          inventory="$(read_status_json 'config/staging-authorization/authorization-receipt.json')"
+          test "$(jq -r '.mode' <<<"$inventory")" = inventory
+          test "$(jq -r '.state' <<<"$inventory")" = not_authorized
+          test "$(jq '[.checks.predecessors[] | select(.evidenceId == "P6-07" and .state == "current")] | length' <<<"$inventory")" = 1
+          test "$(jq '[.blockers[] | select(. == "explicit_dispatch:required")] | length' <<<"$inventory")" = 1
+          assert_exact_main
+          echo 'Configured-staging P6-07 accepted on exact main 5875b2; production authorization remains not_authorized.'
