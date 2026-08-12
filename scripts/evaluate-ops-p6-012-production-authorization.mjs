@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -62,9 +62,7 @@ function stagingAuthorization(statusRoot, commit, now) {
     const item = predecessorMap.get(evidenceId) ?? null;
     const expiresAt = safeTimestamp(item?.expiresAt);
     const current =
-      item?.state === 'current' &&
-      expiresAt !== null &&
-      Date.parse(expiresAt) > now.getTime();
+      item?.state === 'current' && expiresAt !== null && Date.parse(expiresAt) > now.getTime();
     return {
       evidenceId,
       state: current ? 'current' : item === null ? 'missing' : 'stale_or_failed',
@@ -72,10 +70,11 @@ function stagingAuthorization(statusRoot, commit, now) {
       expiresAt,
     };
   });
-  const earliestExpiry = expectedPredecessors
-    .map((item) => (item.expiresAt === null ? Number.NaN : Date.parse(item.expiresAt)))
-    .filter(Number.isFinite)
-    .sort((a, b) => a - b)[0] ?? null;
+  const earliestExpiry =
+    expectedPredecessors
+      .map((item) => (item.expiresAt === null ? Number.NaN : Date.parse(item.expiresAt)))
+      .filter(Number.isFinite)
+      .sort((a, b) => a - b)[0] ?? null;
   const current =
     receipt?.version === 1 &&
     receipt?.state === 'authorized' &&
@@ -119,14 +118,16 @@ export function evaluateProductionAuthorization(options) {
 
   if (!validCommit(commit)) blockers.push('approved_commit:invalid');
   if (repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
-  if (staging.state !== 'current_authorized') blockers.push('configured_staging_authorization:not_current');
+  if (staging.state !== 'current_authorized')
+    blockers.push('configured_staging_authorization:not_current');
   if (!validOwner(launchOwner)) blockers.push('launch_owner:invalid');
   if (!validOwner(observer)) blockers.push('observer:invalid');
   if (!validOwner(rollbackOwner)) blockers.push('rollback_owner:invalid');
   if (!validOwner(communicationOwner)) blockers.push('communication_owner:invalid');
 
   const owners = [launchOwner, observer, rollbackOwner, communicationOwner].filter(validOwner);
-  if (owners.length === 4 && new Set(owners).size !== owners.length) blockers.push('operator_roles:not_distinct');
+  if (owners.length === 4 && new Set(owners).size !== owners.length)
+    blockers.push('operator_roles:not_distinct');
   if (executionWindowMinutes === null) blockers.push('execution_window:invalid');
   if (authorizationTtlMinutes === null) blockers.push('authorization_ttl:invalid');
 
@@ -200,7 +201,8 @@ export function evaluateProductionAuthorization(options) {
             ? 'passed'
             : 'failed',
         minutes: authorizationTtlMinutes,
-        boundedByPredecessorExpiry: staging.earliestExpiry === null ? null : new Date(staging.earliestExpiry).toISOString(),
+        boundedByPredecessorExpiry:
+          staging.earliestExpiry === null ? null : new Date(staging.earliestExpiry).toISOString(),
       },
       productionMutation: false,
     },
@@ -252,7 +254,6 @@ function selfTest() {
   const authPath = resolve(statusRoot, stagingAuthorizationPath);
   const commit = 'a'.repeat(40);
   const now = new Date('2026-08-12T00:00:00.000Z');
-  const { mkdirSync } = await import('node:fs');
   mkdirSync(resolve(authPath, '..'), { recursive: true });
 
   const base = {
@@ -272,7 +273,10 @@ function selfTest() {
   };
 
   try {
-    writeFileSync(authPath, `${JSON.stringify(fixtureStagingAuthorization(commit, now), null, 2)}\n`);
+    writeFileSync(
+      authPath,
+      `${JSON.stringify(fixtureStagingAuthorization(commit, now), null, 2)}\n`,
+    );
     let receipt = evaluateProductionAuthorization(base);
     assert(receipt.state === 'authorized', 'valid explicit authorization must pass');
     assert(receipt.checks.productionMutation === false, 'authorization must not mutate production');
@@ -280,23 +284,38 @@ function selfTest() {
 
     receipt = evaluateProductionAuthorization({ ...base, mode: 'inventory' });
     assert(receipt.state === 'not_authorized', 'inventory must not authorize');
-    assert(receipt.blockers.includes('explicit_dispatch:required'), 'inventory must require explicit dispatch');
+    assert(
+      receipt.blockers.includes('explicit_dispatch:required'),
+      'inventory must require explicit dispatch',
+    );
 
     receipt = evaluateProductionAuthorization({ ...base, confirmation: 'WRONG' });
     assert(receipt.blockers.includes('confirmation:invalid'), 'wrong confirmation must fail');
 
     receipt = evaluateProductionAuthorization({ ...base, observer: base.launchOwner });
-    assert(receipt.blockers.includes('operator_roles:not_distinct'), 'duplicate operator roles must fail');
+    assert(
+      receipt.blockers.includes('operator_roles:not_distinct'),
+      'duplicate operator roles must fail',
+    );
 
     const stale = fixtureStagingAuthorization(commit, now);
     stale.checks.predecessors[0].expiresAt = new Date(now.getTime() - 1_000).toISOString();
     writeFileSync(authPath, `${JSON.stringify(stale, null, 2)}\n`);
     receipt = evaluateProductionAuthorization(base);
-    assert(receipt.blockers.includes('configured_staging_authorization:not_current'), 'stale staging evidence must fail');
+    assert(
+      receipt.blockers.includes('configured_staging_authorization:not_current'),
+      'stale staging evidence must fail',
+    );
 
-    writeFileSync(authPath, `${JSON.stringify(fixtureStagingAuthorization('b'.repeat(40), now), null, 2)}\n`);
+    writeFileSync(
+      authPath,
+      `${JSON.stringify(fixtureStagingAuthorization('b'.repeat(40), now), null, 2)}\n`,
+    );
     receipt = evaluateProductionAuthorization(base);
-    assert(receipt.blockers.includes('configured_staging_authorization:not_current'), 'wrong staging commit must fail');
+    assert(
+      receipt.blockers.includes('configured_staging_authorization:not_current'),
+      'wrong staging commit must fail',
+    );
 
     const short = fixtureStagingAuthorization(commit, now);
     for (const item of short.checks.predecessors) {
@@ -304,7 +323,10 @@ function selfTest() {
     }
     writeFileSync(authPath, `${JSON.stringify(short, null, 2)}\n`);
     receipt = evaluateProductionAuthorization(base);
-    assert(receipt.blockers.includes('authorization_ttl:exceeds_predecessor_expiry'), 'authorization may not outlive evidence');
+    assert(
+      receipt.blockers.includes('authorization_ttl:exceeds_predecessor_expiry'),
+      'authorization may not outlive evidence',
+    );
 
     console.log('OPS-P6-012 configured production authorization self-test passed.');
   } finally {

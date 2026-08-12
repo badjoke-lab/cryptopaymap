@@ -1,8 +1,14 @@
 import { readFileSync } from 'node:fs';
 
 const files = {
-  evaluator: readFileSync('scripts/evaluate-ops-p6-012-production-authorization.mjs', 'utf8').toLowerCase(),
-  workflow: readFileSync('.github/workflows/ops-p6-012-configured-production-authorization.yml', 'utf8').toLowerCase(),
+  evaluator: readFileSync(
+    'scripts/evaluate-ops-p6-012-production-authorization.mjs',
+    'utf8',
+  ).toLowerCase(),
+  workflow: readFileSync(
+    '.github/workflows/ops-p6-012-configured-production-authorization.yml',
+    'utf8',
+  ).toLowerCase(),
   doc: readFileSync('docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md', 'utf8').toLowerCase(),
 };
 
