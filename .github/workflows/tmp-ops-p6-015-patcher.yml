@@ -8,7 +8,7 @@ on:
       - '.github/workflows/tmp-ops-p6-015-patcher.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   patch:
@@ -22,7 +22,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - name: Patch authorization binding, validate, and remove temporary files
+      - name: Patch and validate authorization binding
         run: |
           set -euo pipefail
           python tmp-ops-p6-015-patch.py
@@ -31,13 +31,15 @@ jobs:
             scripts/check-ops-p6-012-production-authorization.mjs
           node scripts/check-ops-p6-012-production-authorization.mjs
           node scripts/evaluate-ops-p6-012-production-authorization.mjs --self-test
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git rm .github/workflows/tmp-ops-p6-015-patcher.yml tmp-ops-p6-015-patch.py
-          git add \
-            scripts/evaluate-ops-p6-012-production-authorization.mjs \
-            scripts/check-ops-p6-012-production-authorization.mjs \
-            .github/workflows/ops-p6-012-configured-production-authorization.yml \
-            docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md
-          git commit -m 'OPS-P6-015: bind production authorization to candidate readiness'
-          git push origin HEAD:ops-p6-015-bind-production-authorization
+          mkdir -p validated-patch/scripts validated-patch/.github/workflows validated-patch/docs
+          cp scripts/evaluate-ops-p6-012-production-authorization.mjs validated-patch/scripts/
+          cp scripts/check-ops-p6-012-production-authorization.mjs validated-patch/scripts/
+          cp .github/workflows/ops-p6-012-configured-production-authorization.yml validated-patch/.github/workflows/
+          cp docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md validated-patch/docs/
+      - name: Upload validated authorization patch
+        uses: actions/upload-artifact@v4
+        with:
+          name: ops-p6-015-validated-patch
+          path: validated-patch
+          if-no-files-found: error
+          retention-days: 1
