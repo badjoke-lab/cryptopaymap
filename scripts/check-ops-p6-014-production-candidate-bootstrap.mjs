@@ -1,9 +1,18 @@
 import { readFileSync } from 'node:fs';
 
 const files = {
-  runner: readFileSync('scripts/run-ops-p6-014-production-candidate-bootstrap.mjs', 'utf8').toLowerCase(),
-  workflow: readFileSync('.github/workflows/ops-p6-014-configured-production-candidate-bootstrap.yml', 'utf8').toLowerCase(),
-  doc: readFileSync('docs/OPS_P6_014_CONFIGURED_PRODUCTION_CANDIDATE_BOOTSTRAP.md', 'utf8').toLowerCase(),
+  runner: readFileSync(
+    'scripts/run-ops-p6-014-production-candidate-bootstrap.mjs',
+    'utf8',
+  ).toLowerCase(),
+  workflow: readFileSync(
+    '.github/workflows/ops-p6-014-configured-production-candidate-bootstrap.yml',
+    'utf8',
+  ).toLowerCase(),
+  doc: readFileSync(
+    'docs/OPS_P6_014_CONFIGURED_PRODUCTION_CANDIDATE_BOOTSTRAP.md',
+    'utf8',
+  ).toLowerCase(),
 };
 
 function expectIncludes(label, content, markers) {
@@ -34,7 +43,7 @@ expectIncludes('workflow', files.workflow, [
   'workflow_dispatch',
   'bootstrap_configured_production_candidate',
   'inspect protected production environment before mutation',
-  "environment: production",
+  'environment: production',
   'cryptopaymap-production',
   'wrangler pages project create',
   'wrangler pages secret bulk',

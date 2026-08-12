@@ -1,11 +1,10 @@
-import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import {
-  existsSync,
   mkdirSync,
   mkdtempSync,
-  readFileSync,
   readdirSync,
+  readFileSync,
   rmSync,
   statSync,
   writeFileSync,
@@ -34,7 +33,9 @@ const requiredDataFiles = [
 
 function sha256(value) {
   const hash = createHash('sha256');
-  hash.update(typeof value === 'string' || value instanceof Uint8Array ? value : JSON.stringify(value));
+  hash.update(
+    typeof value === 'string' || value instanceof Uint8Array ? value : JSON.stringify(value),
+  );
   return hash.digest('hex');
 }
 
@@ -236,12 +237,15 @@ async function cloudflareRequest(path, label) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const token = process.env.CLOUDFLARE_API_TOKEN;
   if (!accountId || !token) throw new Error('cloudflare_credentials_missing');
-  const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}${path}`, {
-    method: 'GET',
-    headers: { Authorization: `Bearer ${token}` },
-    cache: 'no-store',
-    signal: AbortSignal.timeout(20_000),
-  });
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}${path}`,
+    {
+      method: 'GET',
+      headers: { Authorization: `Bearer ${token}` },
+      cache: 'no-store',
+      signal: AbortSignal.timeout(20_000),
+    },
+  );
   const body = await response.json().catch(() => null);
   if (!response.ok || body?.success !== true) throw new Error(`${label}:${response.status}`);
   return body.result;
@@ -279,7 +283,11 @@ async function fetchJson(path) {
     signal: AbortSignal.timeout(20_000),
   });
   const value = await response.json().catch(() => null);
-  return { status: response.status, contentType: response.headers.get('content-type')?.split(';')[0] ?? null, value };
+  return {
+    status: response.status,
+    contentType: response.headers.get('content-type')?.split(';')[0] ?? null,
+    value,
+  };
 }
 
 async function verifyExternal(plan) {
@@ -298,9 +306,15 @@ async function verifyExternal(plan) {
     });
     const bytes = new Uint8Array(await response.arrayBuffer());
     const contentType = response.headers.get('content-type')?.split(';')[0] ?? null;
-    if (response.status !== expectedStatus) throw new Error(`external_status:${path}:${response.status}`);
+    if (response.status !== expectedStatus)
+      throw new Error(`external_status:${path}:${response.status}`);
     if (contentType !== expectedType) throw new Error(`external_type:${path}:${contentType}`);
-    observations.push({ path, status: response.status, contentType, bodyDigest: boundedHash(bytes) });
+    observations.push({
+      path,
+      status: response.status,
+      contentType,
+      bodyDigest: boundedHash(bytes),
+    });
   }
 
   const marker = await fetchJson(`/${markerPath}`);
@@ -334,7 +348,15 @@ function writeJson(path, value) {
   writeFileSync(path, `${JSON.stringify(value, null, 2)}\n`);
 }
 
-export function prepareCandidate({ statusRoot, outputPath, commit, confirmation, owner, repositoryContractOutcome, now = new Date() }) {
+export function prepareCandidate({
+  statusRoot,
+  outputPath,
+  commit,
+  confirmation,
+  owner,
+  repositoryContractOutcome,
+  now = new Date(),
+}) {
   const p605 = readP605(statusRoot, commit, now);
   const blockers = [];
   if (!validCommit(commit)) blockers.push('approved_commit:invalid');
@@ -388,7 +410,12 @@ export function prepareCandidate({ statusRoot, outputPath, commit, confirmation,
   return plan;
 }
 
-export async function verifyCandidate({ planPath, outputPath, workflowRunId = null, now = new Date() }) {
+export async function verifyCandidate({
+  planPath,
+  outputPath,
+  workflowRunId = null,
+  now = new Date(),
+}) {
   const plan = readJson(planPath);
   if (
     plan?.state !== 'prepared' ||
@@ -445,9 +472,10 @@ function assert(value, message) {
 function writeFixtureData(root) {
   mkdirSync(resolve(root, 'data'), { recursive: true });
   for (const [path] of requiredDataFiles) {
-    const value = path === 'data/stats.json'
-      ? { schemaVersion: '1.0.0', generatedAt: '2026-08-12T00:00:00.000Z', stats: { places: 0 } }
-      : { schemaVersion: '1.0.0', generatedAt: '2026-08-12T00:00:00.000Z', records: [] };
+    const value =
+      path === 'data/stats.json'
+        ? { schemaVersion: '1.0.0', generatedAt: '2026-08-12T00:00:00.000Z', stats: { places: 0 } }
+        : { schemaVersion: '1.0.0', generatedAt: '2026-08-12T00:00:00.000Z', records: [] };
     writeJson(resolve(root, path), value);
   }
   writeFileSync(resolve(root, 'index.html'), '<!doctype html><title>candidate</title>');
@@ -524,7 +552,9 @@ async function main() {
     console.log(`Production candidate verification state: ${result.state}`);
     return;
   }
-  throw new Error('Usage: --self-test | prepare <status-root> <output-path> | verify <plan-path> <output-path>');
+  throw new Error(
+    'Usage: --self-test | prepare <status-root> <output-path> | verify <plan-path> <output-path>',
+  );
 }
 
 const entrypoint = process.argv[1] ? pathToFileURL(resolve(process.argv[1])).href : null;

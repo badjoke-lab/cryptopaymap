@@ -93,7 +93,7 @@ This slice does not attach `cryptopaymap.com`.
 
 It does not change DNS.
 
-It does not switch the canonical host, create redirects for the live hostname, alter certificates, purge live caches, or execute cutover.
+It does not switch the canonical host, create redirects for the live hostname, alter certificates, or purge live caches. It does not execute cutover.
 
 It does not authorize configured production and does not close P6-08 launch evidence.
 
