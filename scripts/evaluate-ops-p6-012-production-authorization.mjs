@@ -41,8 +41,10 @@ function validOwner(value) {
 }
 
 function boundedInt(value, min, max) {
-  const parsed = Number.parseInt(String(value), 10);
-  return Number.isInteger(parsed) && parsed >= min && parsed <= max ? parsed : null;
+  const raw = String(value).trim();
+  if (!/^\d+$/.test(raw)) return null;
+  const parsed = Number(raw);
+  return Number.isSafeInteger(parsed) && parsed >= min && parsed <= max ? parsed : null;
 }
 
 function stagingAuthorization(statusRoot, commit, now) {
@@ -291,6 +293,15 @@ function selfTest() {
 
     receipt = evaluateProductionAuthorization({ ...base, confirmation: 'WRONG' });
     assert(receipt.blockers.includes('confirmation:invalid'), 'wrong confirmation must fail');
+
+    receipt = evaluateProductionAuthorization({ ...base, executionWindowMinutes: '30abc' });
+    assert(
+      receipt.blockers.includes('execution_window:invalid'),
+      'non-numeric execution window must fail',
+    );
+
+    receipt = evaluateProductionAuthorization({ ...base, authorizationTtlMinutes: '30m' });
+    assert(receipt.blockers.includes('authorization_ttl:invalid'), 'non-numeric TTL must fail');
 
     receipt = evaluateProductionAuthorization({ ...base, observer: base.launchOwner });
     assert(
