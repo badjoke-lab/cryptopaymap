@@ -66,9 +66,13 @@ The mutation job runs under the protected GitHub `production` environment and re
 - `P6_08_PRODUCTION_DATABASE_URL`;
 - `P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL`;
 - `P6_08_PRODUCTION_TURNSTILE_SECRET_KEY`;
-- `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`.
+- `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`;
+- `P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN`;
+- `P6_08_PRODUCTION_CF_ACCESS_AUD`.
 
 Raw values are never written to the repository, retained receipt, summary, or artifact.
+
+Production Admin uses `CPM_ADMIN_AUTH_MODE=cloudflare_access` with the protected Cloudflare Access team domain and audience. Staging-derived Admin HMAC keys are deliberately not installed as production Admin credentials.
 
 The production seed is used only to derive the existing bounded runtime secrets before a protected Pages secret bulk update. Production Turnstile values are mapped to the runtime names used by the application. The intended Turnstile hostname remains `cryptopaymap.com`; the candidate pages.dev hostname is not treated as the canonical live hostname.
 
@@ -83,7 +87,8 @@ After deployment the workflow verifies the candidate through `https://cryptopaym
 - exact P6-05 release authority in `p6-05-release.json`;
 - exact `candidateArtifactId` and public tree digest;
 - exact dataset/schema identity and `canonicalOnly: true` in machine-readable metadata;
-- safe Pages topology with no custom domains.
+- safe Pages topology with no custom domains;
+- unauthenticated `/admin/` returns exactly 403, not 200/redirect/503, with `private, no-store`, `noindex, nofollow, noarchive`, and `nosniff` security headers.
 
 HTTP success without the expected marker and candidate artifact identity is not sufficient.
 

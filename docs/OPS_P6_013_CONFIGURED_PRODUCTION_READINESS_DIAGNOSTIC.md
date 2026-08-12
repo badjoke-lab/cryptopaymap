@@ -45,11 +45,15 @@ The workflow checks only whether the following production-specific runtime input
 - `P6_08_PRODUCTION_DATABASE_URL`;
 - `P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL`;
 - `P6_08_PRODUCTION_TURNSTILE_SECRET_KEY`;
-- `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`.
+- `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`;
+- `P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN`;
+- `P6_08_PRODUCTION_CF_ACCESS_AUD`.
 
 Their raw values are never written to the diagnostic receipt. Missing input names may be retained as bounded blockers.
 
 Staging/test Turnstile keys or staging-derived identities are not treated as production readiness.
+
+Production Admin must be configured in `cloudflare_access` mode with the protected Cloudflare Access team domain and audience. Readiness performs an unauthenticated request to `/admin/` and requires exactly 403 with private/no-store/noindex/nosniff security headers. A 503 configuration-unavailable response is not launch-ready.
 
 ## Release authority
 
@@ -92,7 +96,8 @@ Readiness fails closed on any of the following:
 - missing or inaccessible production Pages project;
 - missing or ambiguous Cloudflare zone;
 - missing current production-host DNS observation;
-- candidate Pages release marker missing or not matching the P6-05 candidate release.
+- candidate Pages release marker missing or not matching the P6-05 candidate release;
+- production Admin `/admin/` not enforcing unauthenticated 403 with the required security headers.
 
 ## Next boundary
 
