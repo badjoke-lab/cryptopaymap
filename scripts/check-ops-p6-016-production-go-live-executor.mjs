@@ -1,8 +1,14 @@
 import { readFileSync } from 'node:fs';
 
 const files = {
-  runner: readFileSync('scripts/run-ops-p6-016-production-go-live-executor.mjs', 'utf8').toLowerCase(),
-  workflow: readFileSync('.github/workflows/ops-p6-016-configured-production-go-live.yml', 'utf8').toLowerCase(),
+  runner: readFileSync(
+    'scripts/run-ops-p6-016-production-go-live-executor.mjs',
+    'utf8',
+  ).toLowerCase(),
+  workflow: readFileSync(
+    '.github/workflows/ops-p6-016-configured-production-go-live.yml',
+    'utf8',
+  ).toLowerCase(),
   doc: readFileSync('docs/OPS_P6_016_CONFIGURED_PRODUCTION_GO_LIVE.md', 'utf8').toLowerCase(),
 };
 

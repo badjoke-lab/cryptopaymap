@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 import { promises as dns } from 'node:dns';
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
+import { dirname, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
 const exactConfirmation = 'EXECUTE_CONFIGURED_PRODUCTION_GO_LIVE';
@@ -16,14 +16,17 @@ const apexHost = 'cryptopaymap.com';
 const canonicalHost = 'www.cryptopaymap.com';
 const legacyA = '216.198.79.1';
 const legacyWwwCname = '02eeaa61ea1e3365.vercel-dns-017.com';
-const legacyVerificationTxt = '"google-site-verification=TbZusMHCz2uUVjaRZ920mzqaK1DTYYYk7KHSpUTCIJY"';
+const legacyVerificationTxt =
+  '"google-site-verification=TbZusMHCz2uUVjaRZ920mzqaK1DTYYYk7KHSpUTCIJY"';
 const authorizationPath = 'config/production-authorization/authorization-receipt.json';
 const candidatePath = 'config/production-authorization/production-candidate-bootstrap-receipt.json';
 const readinessPath = 'config/production-authorization/readiness-diagnostic.json';
 
 function digest(value) {
   const hash = createHash('sha256');
-  hash.update(typeof value === 'string' || value instanceof Uint8Array ? value : JSON.stringify(value));
+  hash.update(
+    typeof value === 'string' || value instanceof Uint8Array ? value : JSON.stringify(value),
+  );
   return `sha256:${hash.digest('hex')}`;
 }
 
@@ -113,9 +116,12 @@ function exactTxtRecord(record) {
 }
 
 export function classifyProviderSnapshot(snapshot) {
-  if (!snapshot?.projectSafe || !snapshot?.zoneSafe || !snapshot?.stagingProjectSafe) return 'conflict';
-  if (!Array.isArray(snapshot.apexRecords) || !Array.isArray(snapshot.wwwRecords)) return 'conflict';
-  if (!Array.isArray(snapshot.customDomains) || !Array.isArray(snapshot.wwwDomains)) return 'conflict';
+  if (!snapshot?.projectSafe || !snapshot?.zoneSafe || !snapshot?.stagingProjectSafe)
+    return 'conflict';
+  if (!Array.isArray(snapshot.apexRecords) || !Array.isArray(snapshot.wwwRecords))
+    return 'conflict';
+  if (!Array.isArray(snapshot.customDomains) || !Array.isArray(snapshot.wwwDomains))
+    return 'conflict';
 
   const legacyARecords = snapshot.apexRecords.filter((record) =>
     exactDnsRecord(record, {
@@ -128,7 +134,9 @@ export function classifyProviderSnapshot(snapshot) {
   );
   const verificationRecords = snapshot.apexRecords.filter(exactTxtRecord);
   const apexExact =
-    snapshot.apexRecords.length === 2 && legacyARecords.length === 1 && verificationRecords.length === 1;
+    snapshot.apexRecords.length === 2 &&
+    legacyARecords.length === 1 &&
+    verificationRecords.length === 1;
 
   const legacyWww =
     snapshot.wwwRecords.length === 1 &&
@@ -183,13 +191,29 @@ function safeSnapshot(snapshot) {
   };
 }
 
-function readEvidenceBundle(statusRoot, commit, expectedAuthorizationId, executionOwner, rollbackOwner, now) {
+function readEvidenceBundle(
+  statusRoot,
+  commit,
+  expectedAuthorizationId,
+  executionOwner,
+  rollbackOwner,
+  now,
+) {
   const authorization = readJson(resolve(statusRoot, authorizationPath));
   const candidate = readJson(resolve(statusRoot, candidatePath));
   const readiness = readJson(resolve(statusRoot, readinessPath));
   const blockers = [];
 
+  const authorizationGenerated = safeTimestamp(authorization?.generatedAt);
   const authorizationExpires = safeTimestamp(authorization?.expiresAt);
+  const executionWindowMinutes = authorization?.checks?.executionWindow?.minutes;
+  const executionWindowEnds =
+    authorizationGenerated !== null &&
+    Number.isInteger(executionWindowMinutes) &&
+    executionWindowMinutes >= 5 &&
+    executionWindowMinutes <= 60
+      ? Date.parse(authorizationGenerated) + executionWindowMinutes * 60_000
+      : null;
   const candidateExpires = safeTimestamp(candidate?.expiresAt);
   const readinessExpires = safeTimestamp(readiness?.expiresAt);
 
@@ -201,13 +225,23 @@ function readEvidenceBundle(statusRoot, commit, expectedAuthorizationId, executi
     authorization?.approvedCommit === commit &&
     validDigest(authorization?.authorizationId) &&
     authorization.authorizationId === expectedAuthorizationId &&
+    authorizationGenerated !== null &&
     authorizationExpires !== null &&
     Date.parse(authorizationExpires) > now.getTime() &&
+    executionWindowEnds !== null &&
+    executionWindowEnds > now.getTime() &&
+    authorization?.checks?.executionWindow?.status === 'passed' &&
     authorization?.checks?.productionMutation === false &&
     authorization?.checks?.productionCandidateBootstrap?.state === 'current_accepted' &&
     authorization?.checks?.productionReadiness?.state === 'current_ready' &&
     isObject(authorization?.productionEvidenceBinding);
   if (!authorizationCurrent) blockers.push('production_authorization:not_current');
+  if (
+    authorizationGenerated !== null &&
+    executionWindowEnds !== null &&
+    executionWindowEnds <= now.getTime()
+  )
+    blockers.push('execution_window:expired');
 
   const candidateCurrent =
     candidate?.version === 1 &&
@@ -269,9 +303,15 @@ function readEvidenceBundle(statusRoot, commit, expectedAuthorizationId, executi
       blockers.push('evidence_binding:readiness_receipt_mismatch');
   }
 
-  if (!validOwner(executionOwner) || authorization?.operators?.launchOwner !== digest(executionOwner))
+  if (
+    !validOwner(executionOwner) ||
+    authorization?.operators?.launchOwner !== digest(executionOwner)
+  )
     blockers.push('execution_owner:not_authorized');
-  if (!validOwner(rollbackOwner) || authorization?.operators?.rollbackOwner !== digest(rollbackOwner))
+  if (
+    !validOwner(rollbackOwner) ||
+    authorization?.operators?.rollbackOwner !== digest(rollbackOwner)
+  )
     blockers.push('rollback_owner:not_authorized');
   if (validOwner(executionOwner) && validOwner(rollbackOwner) && executionOwner === rollbackOwner)
     blockers.push('operator_separation:failed');
@@ -296,7 +336,11 @@ class CloudflareApiError extends Error {
   }
 }
 
-async function cloudflareRequest(path, label, { method = 'GET', body = undefined, allowNotFound = false } = {}) {
+async function cloudflareRequest(
+  path,
+  label,
+  { method = 'GET', body = undefined, allowNotFound = false } = {},
+) {
   const token = process.env.CLOUDFLARE_API_TOKEN;
   if (!token) throw new Error('cloudflare_token_missing');
   const response = await fetch(`https://api.cloudflare.com/client/v4${path}`, {
@@ -537,7 +581,12 @@ async function rollbackToLegacy() {
     });
   }
   if (legacyRecords.length === 0) {
-    await createWwwRecord(zoneId, legacyWwwCname, false, 'Restored CryptoPayMap legacy Vercel CNAME');
+    await createWwwRecord(
+      zoneId,
+      legacyWwwCname,
+      false,
+      'Restored CryptoPayMap legacy Vercel CNAME',
+    );
   } else if (legacyRecords.length !== 1) {
     throw new Error('rollback_multiple_legacy_records');
   }
@@ -551,7 +600,11 @@ async function publicDnsObservation(mode) {
     const cnames = await dns.resolveCname(canonicalHost);
     if (cnames.length !== 1 || normalizeHostname(cnames[0]) !== legacyWwwCname)
       throw new Error('legacy_www_dns_not_converged');
-    return { mode, apexDigest: digest(apexAddresses.sort()), canonicalDigest: digest(cnames.sort()) };
+    return {
+      mode,
+      apexDigest: digest(apexAddresses.sort()),
+      canonicalDigest: digest(cnames.sort()),
+    };
   }
   const addresses = await dns.resolve4(canonicalHost);
   if (addresses.length === 0) throw new Error('candidate_www_dns_missing');
@@ -561,7 +614,11 @@ async function publicDnsObservation(mode) {
   } catch {}
   if (cnames.some((value) => normalizeHostname(value) === legacyWwwCname))
     throw new Error('candidate_www_dns_still_legacy');
-  return { mode, apexDigest: digest(apexAddresses.sort()), canonicalDigest: digest(addresses.sort()) };
+  return {
+    mode,
+    apexDigest: digest(apexAddresses.sort()),
+    canonicalDigest: digest(addresses.sort()),
+  };
 }
 
 async function verifyApexRedirect(phase) {
@@ -575,7 +632,8 @@ async function verifyApexRedirect(phase) {
   });
   const expectedLocation = `https://${canonicalHost}${path}?${query}`;
   if (response.status !== 307) throw new Error(`apex_redirect_status:${response.status}`);
-  if (response.headers.get('location') !== expectedLocation) throw new Error('apex_redirect_location_mismatch');
+  if (response.headers.get('location') !== expectedLocation)
+    throw new Error('apex_redirect_location_mismatch');
   if ((response.headers.get('server') ?? '').toLowerCase() !== 'vercel')
     throw new Error('apex_redirect_provider_changed');
   return { status: response.status, locationDigest: digest(expectedLocation), server: 'vercel' };
@@ -625,9 +683,16 @@ async function verifyCandidateExternal(candidate) {
     });
     const bytes = new Uint8Array(await response.arrayBuffer());
     const contentType = response.headers.get('content-type')?.split(';')[0] ?? null;
-    if (response.status !== expectedStatus) throw new Error(`candidate_route_status:${path}:${response.status}`);
-    if (contentType !== expectedType) throw new Error(`candidate_route_type:${path}:${contentType}`);
-    routeObservations.push({ path, status: response.status, contentType, bodyDigest: digest(bytes) });
+    if (response.status !== expectedStatus)
+      throw new Error(`candidate_route_status:${path}:${response.status}`);
+    if (contentType !== expectedType)
+      throw new Error(`candidate_route_type:${path}:${contentType}`);
+    routeObservations.push({
+      path,
+      status: response.status,
+      contentType,
+      bodyDigest: digest(bytes),
+    });
   }
 
   const marker = await fetchJson('/p6-05-release.json');
@@ -680,7 +745,9 @@ async function waitForExternal(mode, candidate, attempts = 120, delayMs = 5_000)
   let lastError = null;
   for (let attempt = 0; attempt < attempts; attempt += 1) {
     try {
-      return mode === 'legacy' ? await verifyLegacyExternal() : await verifyCandidateExternal(candidate);
+      return mode === 'legacy'
+        ? await verifyLegacyExternal()
+        : await verifyCandidateExternal(candidate);
     } catch (error) {
       lastError = error;
       await sleep(delayMs);
@@ -721,7 +788,9 @@ async function execute(statusRoot, outputPath) {
     evidenceId,
     environment,
     commit: validCommit(commit) ? commit : null,
-    authorizationIdDigest: validDigest(expectedAuthorizationId) ? digest(expectedAuthorizationId) : null,
+    authorizationIdDigest: validDigest(expectedAuthorizationId)
+      ? digest(expectedAuthorizationId)
+      : null,
     generatedAt: now.toISOString(),
     workflowRunId,
     operators: {
@@ -763,7 +832,10 @@ async function execute(statusRoot, outputPath) {
 
     mutationStarted = true;
     candidateFirst = await establishCandidate();
-    if (safeSnapshot(candidateFirst).apexRecordDigest !== safeSnapshot(legacySnapshot).apexRecordDigest)
+    if (
+      safeSnapshot(candidateFirst).apexRecordDigest !==
+      safeSnapshot(legacySnapshot).apexRecordDigest
+    )
       throw new Error('apex_records_changed_during_cutover');
     if (candidateFirst.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
       throw new Error('staging_project_changed_during_cutover');
@@ -771,7 +843,10 @@ async function execute(statusRoot, outputPath) {
 
     rollbackSnapshot = await rollbackToLegacy();
     rollbackSucceeded = true;
-    if (safeSnapshot(rollbackSnapshot).apexRecordDigest !== safeSnapshot(legacySnapshot).apexRecordDigest)
+    if (
+      safeSnapshot(rollbackSnapshot).apexRecordDigest !==
+      safeSnapshot(legacySnapshot).apexRecordDigest
+    )
       throw new Error('apex_records_changed_during_rollback');
     if (rollbackSnapshot.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
       throw new Error('staging_project_changed_during_rollback');
@@ -779,7 +854,10 @@ async function execute(statusRoot, outputPath) {
 
     candidateFinal = await establishCandidate();
     rollbackSucceeded = false;
-    if (safeSnapshot(candidateFinal).apexRecordDigest !== safeSnapshot(legacySnapshot).apexRecordDigest)
+    if (
+      safeSnapshot(candidateFinal).apexRecordDigest !==
+      safeSnapshot(legacySnapshot).apexRecordDigest
+    )
       throw new Error('apex_records_changed_during_final_restore');
     if (candidateFinal.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
       throw new Error('staging_project_changed_during_final_restore');
@@ -808,7 +886,10 @@ async function execute(statusRoot, outputPath) {
       repositoryContract: 'passed',
       authorization: 'passed',
       preState: legacySnapshot
-        ? { status: classifyProviderSnapshot(legacySnapshot) === 'legacy_v1' ? 'passed' : 'failed', digest: digest(safeSnapshot(legacySnapshot)) }
+        ? {
+            status: classifyProviderSnapshot(legacySnapshot) === 'legacy_v1' ? 'passed' : 'failed',
+            digest: digest(safeSnapshot(legacySnapshot)),
+          }
         : { status: 'not_run', digest: null },
       candidateCutover: candidateFirst
         ? { status: 'passed', digest: digest(safeSnapshot(candidateFirst)) }
@@ -817,13 +898,19 @@ async function execute(statusRoot, outputPath) {
         ? { status: 'passed', digest: digest(externalFirst) }
         : { status: 'not_run', digest: null },
       rollback: rollbackSnapshot
-        ? { status: rollbackSucceeded || state === 'accepted' ? 'passed' : 'failed', digest: digest(safeSnapshot(rollbackSnapshot)) }
+        ? {
+            status: rollbackSucceeded || state === 'accepted' ? 'passed' : 'failed',
+            digest: digest(safeSnapshot(rollbackSnapshot)),
+          }
         : { status: 'not_run', digest: null },
       rollbackExternal: externalRollback
         ? { status: 'passed', digest: digest(externalRollback) }
         : { status: 'not_run', digest: null },
       finalRestore: candidateFinal
-        ? { status: state === 'accepted' ? 'passed' : 'failed', digest: digest(safeSnapshot(candidateFinal)) }
+        ? {
+            status: state === 'accepted' ? 'passed' : 'failed',
+            digest: digest(safeSnapshot(candidateFinal)),
+          }
         : { status: 'not_run', digest: null },
       finalExternal: externalFinal
         ? { status: state === 'accepted' ? 'passed' : 'failed', digest: digest(externalFinal) }
@@ -897,7 +984,10 @@ function selfTest() {
   const legacy = fixtureSnapshot('legacy');
   const candidate = fixtureSnapshot('candidate');
   assert(classifyProviderSnapshot(legacy) === 'legacy_v1', 'legacy topology must classify');
-  assert(classifyProviderSnapshot(candidate) === 'candidate_active', 'candidate topology must classify');
+  assert(
+    classifyProviderSnapshot(candidate) === 'candidate_active',
+    'candidate topology must classify',
+  );
 
   const changedApex = structuredClone(legacy);
   changedApex.apexRecords[0].content = '203.0.113.1';
@@ -916,7 +1006,10 @@ function selfTest() {
 
   const pending = structuredClone(candidate);
   pending.wwwDomains[0].status = 'pending';
-  assert(classifyProviderSnapshot(pending) === 'candidate_pending', 'pending candidate must classify');
+  assert(
+    classifyProviderSnapshot(pending) === 'candidate_pending',
+    'pending candidate must classify',
+  );
 
   assert(
     exactDnsRecord(legacy.wwwRecords[0], {
@@ -1003,6 +1096,7 @@ function selfTest() {
       expiresAt: new Date(now.getTime() + 30 * 60_000).toISOString(),
       operators: { launchOwner: digest(executionOwner), rollbackOwner: digest(rollbackOwner) },
       checks: {
+        executionWindow: { status: 'passed', minutes: 30 },
         productionCandidateBootstrap: { state: 'current_accepted' },
         productionReadiness: { state: 'current_ready' },
         productionMutation: false,
@@ -1021,6 +1115,25 @@ function selfTest() {
       now,
     );
     assert(evidence.blockers.length === 0, 'valid evidence bundle must pass');
+    const expiredAuthorization = {
+      ...authorizationReceipt,
+      generatedAt: new Date(now.getTime() - 31 * 60_000).toISOString(),
+      expiresAt: new Date(now.getTime() + 10 * 60_000).toISOString(),
+    };
+    writeJson(resolve(statusRoot, authorizationPath), expiredAuthorization);
+    evidence = readEvidenceBundle(
+      statusRoot,
+      commit,
+      authorizationId,
+      executionOwner,
+      rollbackOwner,
+      now,
+    );
+    assert(
+      evidence.blockers.includes('execution_window:expired'),
+      'expired execution window must fail closed',
+    );
+    writeJson(resolve(statusRoot, authorizationPath), authorizationReceipt);
     evidence = readEvidenceBundle(
       statusRoot,
       commit,
@@ -1042,7 +1155,8 @@ function selfTest() {
 async function main() {
   if (process.argv.includes('--self-test')) return selfTest();
   const [statusRoot, outputPath] = process.argv.slice(2);
-  if (!statusRoot || !outputPath) throw new Error('Usage: go-live-executor <status-root> <output-path>');
+  if (!statusRoot || !outputPath)
+    throw new Error('Usage: go-live-executor <status-root> <output-path>');
   const receipt = await execute(statusRoot, outputPath);
   console.log(`Production go-live execution state: ${receipt.state}`);
   if (receipt.state !== 'accepted') process.exitCode = 1;
