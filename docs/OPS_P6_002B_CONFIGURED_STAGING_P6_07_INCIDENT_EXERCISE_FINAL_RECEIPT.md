@@ -68,7 +68,9 @@ Before closure, configured staging is externally reverified through:
 - `/version.json`;
 - `/data/manifest.json`;
 - protected Admin denial;
-- `/p6-05-release.json` matching the intended active-release identity, not HTTP status alone.
+- `/p6-05-release.json` matching the exact candidate release ID retained by the current accepted P6-05 receipt, not HTTP status alone.
+
+The shared predecessor `binding.releaseId` remains part of the cross-evidence binding and is not the P6-05 deployment marker ID. Q5 separately requires P6-05 to prove `releases.status: passed`, `external.status: passed`, `finalState.status: passed`, `finalState.activeKind: candidate`, and a valid candidate release ID before using that exact ID for live marker reverification.
 
 Service and release identity must be externally reverified before closure.
 
@@ -112,7 +114,7 @@ The executor rejects the receipt on any of the following:
 - invalid owner, scenario, severity, cadence, or objective;
 - missing or out-of-order timeline stage;
 - acknowledgement, decision, recovery, or cadence breach;
-- wrong active release despite HTTP 200;
+- missing or invalid accepted P6-05 candidate-release evidence, or a wrong live active release despite HTTP 200;
 - failed public route, machine-readable file, or protected Admin check;
 - unresolved exception, failed evidence preservation, or missing follow-up ownership;
 - sensitive-data leakage;
