@@ -20,6 +20,13 @@ Authorization fails closed unless the current configured-staging authorization r
 
 A previous staging authorization for another commit, a stale P6 receipt, a changed binding, or a missing receipt cannot authorize production.
 
+Authorization also requires two separately retained pre-live production controls on the same exact commit:
+
+- an accepted, non-expired production candidate bootstrap receipt for the dedicated `cryptopaymap-production` project;
+- a non-expired production readiness diagnostic with `decision: ready`.
+
+The production candidate bootstrap must retain a valid candidate artifact identity, dataset/schema identity, successful external verification, zero live-domain/DNS/canonical-host mutation, and a release-authority digest matching the current accepted P6-05 candidate release. The readiness receipt must independently bind that same P6-05 release authority and prove the protected production environment, production-specific runtime-input presence, dedicated Pages project observation, active zone/DNS observation, and candidate release marker. Any mismatch fails closed.
+
 ## Explicit production authorization
 
 The workflow requires the exact confirmation:
@@ -33,7 +40,7 @@ The authorization is rejected unless the repository contract passes and the disp
 - rollback owner;
 - communication owner.
 
-The dispatch also supplies a bounded execution-window length and authorization TTL. Authorization expires before any mandatory predecessor evidence expires. It cannot extend the usable lifetime of stale evidence. Numeric inputs are accepted only as complete decimal integer strings; malformed values such as a number with a suffix fail closed instead of being partially parsed.
+The dispatch also supplies a bounded execution-window length and authorization TTL. Authorization expires before any mandatory predecessor evidence, P6-05 release authority, production candidate bootstrap, or production readiness evidence expires. It cannot extend the usable lifetime of stale evidence. Numeric inputs are accepted only as complete decimal integer strings; malformed values such as a number with a suffix fail closed instead of being partially parsed.
 
 Inventory or non-explicit evaluation remains `not_authorized` with `explicit_dispatch:required`.
 
@@ -48,6 +55,10 @@ The retained production authorization receipt contains only bounded evidence:
 - configured-staging authorization state and workflow run ID;
 - P6-01 through P6-07 current/stale summaries;
 - matched binding;
+- P6-05 release-authority state;
+- production candidate bootstrap state, candidate artifact ID, and dataset/schema identity;
+- production readiness state;
+- a production-evidence binding incorporated into the authorization ID;
 - execution-window and TTL checks;
 - blockers.
 
