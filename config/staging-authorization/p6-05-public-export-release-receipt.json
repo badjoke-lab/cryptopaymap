@@ -4,10 +4,10 @@
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "6fbdad2e0e0bc7452ec59be439ddeaaf51466c31",
-  "generatedAt": "2026-08-12T07:51:01.327Z",
-  "expiresAt": "2026-08-15T07:51:01.327Z",
-  "workflowRunId": "31575376637",
+  "commit": "5875b2d8cef9f01015434888beb487cd448bc266",
+  "generatedAt": "2026-08-12T08:47:14.642Z",
+  "expiresAt": "2026-08-15T08:47:14.642Z",
+  "workflowRunId": "31579643512",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T07:38:17.371Z",
-        "expiresAt": "2026-08-15T07:38:17.371Z"
+        "generatedAt": "2026-08-12T08:35:39.055Z",
+        "expiresAt": "2026-08-15T08:35:39.055Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T07:39:46.216Z",
-        "expiresAt": "2026-08-15T07:39:46.216Z"
+        "generatedAt": "2026-08-12T08:36:57.208Z",
+        "expiresAt": "2026-08-15T08:36:57.208Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T07:41:00.834Z",
-        "expiresAt": "2026-08-15T07:41:00.834Z"
+        "generatedAt": "2026-08-12T08:38:25.866Z",
+        "expiresAt": "2026-08-15T08:38:25.866Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T07:43:24.803Z",
-        "expiresAt": "2026-08-15T07:43:24.803Z"
+        "generatedAt": "2026-08-12T08:40:55.994Z",
+        "expiresAt": "2026-08-15T08:40:55.994Z"
       }
     ],
     "predecessorBinding": "matched",
@@ -65,22 +65,22 @@
       "approvedCustomDomainPresent": true,
       "approvedCustomDomainDigest": "sha256:4e290730490e5fcdda9f5eb16ab0fb35aa04873d2ebf35c02143fac544fd143d",
       "priorP606State": "authenticated_prior",
-      "priorP606ReceiptDigest": "sha256:7a555123f08af2613e14dd86ddf9bba96c950794915c2c98f03f63968119923e",
+      "priorP606ReceiptDigest": "sha256:599f7b04242421f81372995ec25050d747e4ce4afc06381ab2be92c8dd69163e",
       "recoveryDiagnosticState": "current_existing_candidate",
-      "recoveryDiagnosticDigest": "sha256:c007699ff81915025eebc36acc5e1b8973395f85397632ae73f71e7970095f5c"
+      "recoveryDiagnosticDigest": "sha256:807afe5e7c79a8ea33ae89520d6aee32532db03983ad346fd819a9d66d563d00"
     },
     "releases": {
       "status": "passed",
       "historicalCount": 25,
       "baseline": {
-        "id": "sha256:11342fc35f9fbe17d9fba1dacb8831d9220c8edd6d62361feb4164c27b5784eb",
-        "releaseId": "sha256:a52a2aa30c618679db87bab3c41beedbf4520fe7195339115216953f11137196",
-        "url": "sha256:7d985852cbfa5c958869b66e3cea2b5df700f6d1a061dcfc400a06f6536b705e"
+        "id": "sha256:975cd86f31a52bf6fb602af76191e784d559ca8550aa96c17008dfaeb15cdc9c",
+        "releaseId": "sha256:9a4657208008b4fa9224a593f9d05fecf70c2f5d12c05234d89bed0392aa88b3",
+        "url": "sha256:247ce981bb3b21b437752b7f8accb1882e69c883847c04e7ed2d75c368fe213d"
       },
       "candidate": {
-        "id": "sha256:69b9792d5acdbd261dbcb45eea3302fb3a6a38b4ca11b3de0d94f280fd07ffa4",
-        "releaseId": "sha256:e0ab7f0a7b61350201fc5c35a2b9ff8d014420d25b674824762760e2df0653e6",
-        "url": "sha256:7afc9207720ee4b12bd5366c2ea15c20cd0fdfca82e10b55ebcfe6f685e8640a"
+        "id": "sha256:2a0aac437d2bbe9ff25324b88953ac828d43fda27f18711d65d5666d7adc400d",
+        "releaseId": "sha256:a9b69ec14f6b48cac6c25f348a24f93cae876776c2acbfa8e787d9d809f192c3",
+        "url": "sha256:e3e56da93e2f5aa1e9472b0aa70b5324f487523fcc06f20e1e5914a08f3dfdf7"
       }
     },
     "activation": {
@@ -106,7 +106,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:7a2e3df2e8434c52d4306b51ab23106028c162e306ac14e4f13b02959383168f",
+    "releaseId": "sha256:77df60b74a1f54f61e95dd105f50d5576e168cc81f960890da22f095095e3eae",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
