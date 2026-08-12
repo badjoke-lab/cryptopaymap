@@ -163,6 +163,22 @@ function q1Evidence(root, commit, binding, now) {
   };
 }
 
+function p605ReleaseEvidence(predecessors) {
+  const receipt = predecessors.find((item) => item.evidenceId === 'P6-05')?.value ?? null;
+  const candidateReleaseId = receipt?.checks?.releases?.candidate?.releaseId ?? null;
+  const current =
+    receipt?.checks?.releases?.status === 'passed' &&
+    receipt?.checks?.external?.status === 'passed' &&
+    receipt?.checks?.finalState?.status === 'passed' &&
+    receipt?.checks?.finalState?.activeKind === 'candidate' &&
+    validDigest(candidateReleaseId);
+  return {
+    state: current ? 'current' : 'failed',
+    candidateReleaseId: current ? candidateReleaseId : null,
+    candidateReleaseIdDigest: current ? digest(candidateReleaseId) : null,
+  };
+}
+
 function safeFailure(error) {
   const message = error instanceof Error ? error.message : String(error);
   if (message.includes('duplicate')) return 'incident_identity_already_used';
@@ -199,7 +215,7 @@ async function probe(path, statuses, type, fetchImpl) {
   };
 }
 
-async function reverify(binding, fetchImpl) {
+async function reverify(expectedReleaseId, fetchImpl) {
   const [
     home,
     places,
@@ -224,12 +240,12 @@ async function reverify(binding, fetchImpl) {
     { cache: 'no-store', signal: AbortSignal.timeout(20_000) },
   );
   const marker = await response.json().catch(() => null);
-  const releaseMatches = response.status === 200 && marker?.releaseId === binding.releaseId;
+  const releaseMatches = response.status === 200 && marker?.releaseId === expectedReleaseId;
   const release = {
     status: releaseMatches ? 'passed' : 'failed',
     httpStatus: response.status,
     releaseMatches,
-    expectedReleaseDigest: digest(binding.releaseId),
+    expectedReleaseDigest: digest(expectedReleaseId),
     observedReleaseDigest: validDigest(marker?.releaseId) ? digest(marker.releaseId) : null,
   };
   const checks = {
@@ -329,6 +345,7 @@ export async function executeQ5(options) {
       checks?.disposal?.remainingUserObjectCount === 0
     );
   });
+  const p6Release = p605ReleaseEvidence(predecessors);
   const objectives = {
     acknowledgement: acceptedInput(options.acknowledgementObjectiveMinutes, 1, 15),
     decision: acceptedInput(options.decisionObjectiveMinutes, 1, 30),
@@ -375,6 +392,10 @@ export async function executeQ5(options) {
       q2,
       q3,
       q4,
+      p6Release: {
+        state: p6Release.state,
+        candidateReleaseIdDigest: p6Release.candidateReleaseIdDigest,
+      },
       scenario: {
         status: scenarios.has(scenario) ? 'passed' : 'failed',
         value: scenarios.has(scenario) ? scenario : null,
@@ -423,7 +444,11 @@ export async function executeQ5(options) {
       Object.values(objectives).every((value) => value !== null) &&
       repositoryContractOutcome === 'success';
     if (!inputOk) throw new Error('input_invalid');
-    if (!bindingMatched || [q1, q2, q3, q4].some((item) => item.state !== 'current')) {
+    if (
+      !bindingMatched ||
+      [q1, q2, q3, q4].some((item) => item.state !== 'current') ||
+      p6Release.state !== 'current'
+    ) {
       throw new Error('precondition_failed');
     }
     if (readJson(statusRoot, finalPath)?.incidentId === incidentId) {
@@ -444,7 +469,7 @@ export async function executeQ5(options) {
     const contained = stage('contained');
     const decision = stage('rollback_or_restore_decision_recorded');
     const mitigation = stage('mitigation_started');
-    const external = await reverify(binding, fetchImpl);
+    const external = await reverify(p6Release.candidateReleaseId, fetchImpl);
     if (external.status !== 'passed') throw new Error('external_reverification_failed');
     const recovered = stage('recovery_verified');
     const reverified = stage('externally_reverified');
@@ -583,14 +608,14 @@ function mockResponse(status, type, body) {
   };
 }
 
-function mockFetch(binding, wrongRelease = false) {
+function mockFetch(expectedReleaseId, wrongRelease = false) {
   return async (rawUrl) => {
     const url = new URL(rawUrl);
     if (url.pathname === '/p6-05-release.json') {
       return mockResponse(
         200,
         'application/json',
-        JSON.stringify({ releaseId: wrongRelease ? digest('wrong') : binding.releaseId }),
+        JSON.stringify({ releaseId: wrongRelease ? digest('wrong') : expectedReleaseId }),
       );
     }
     if (url.pathname === '/admin/api/dashboard')
@@ -621,6 +646,7 @@ async function selfTest() {
   const now = new Date('2026-08-05T00:00:00.000Z');
   const commit = 'a'.repeat(40);
   const binding = Object.fromEntries(bindingKeys.map((key) => [key, digest(`q5:${key}`)]));
+  const candidateReleaseId = digest('q5:p6-05-candidate-release');
   let tick = now.getTime();
   const base = {
     statusRoot,
@@ -644,11 +670,21 @@ async function selfTest() {
       tick += 1_000;
       return tick;
     },
-    fetchImpl: mockFetch(binding),
+    fetchImpl: mockFetch(candidateReleaseId),
   };
   try {
     for (const [id, path] of predecessorSpecs) {
-      writeJson(resolve(statusRoot, path), fixtureReceipt(id, commit, binding, now));
+      const extra =
+        id === 'P6-05'
+          ? {
+              checks: {
+                releases: { status: 'passed', candidate: { releaseId: candidateReleaseId } },
+                external: { status: 'passed' },
+                finalState: { status: 'passed', activeKind: 'candidate' },
+              },
+            }
+          : {};
+      writeJson(resolve(statusRoot, path), fixtureReceipt(id, commit, binding, now, extra));
     }
     writeJson(resolve(statusRoot, qPaths.q1), {
       ...fixtureReceipt('P6-07', commit, binding, now),
@@ -710,12 +746,24 @@ async function selfTest() {
     let receipt = await executeQ5(base);
     assert(receipt.state === 'accepted', 'complete evidence must pass');
     assert(receipt.checks.externalReverification.status === 'passed', 'external checks must pass');
+    assert(receipt.checks.p6Release.state === 'current', 'P6-05 candidate release must be current');
     receipt = await executeQ5({
       ...base,
       incidentId: 'cpm-p6-07-q5-wrong-release',
-      fetchImpl: mockFetch(binding, true),
+      fetchImpl: mockFetch(candidateReleaseId, true),
     });
     assert(receipt.state === 'failed', 'wrong release must fail');
+    const p605Path = predecessorSpecs.find(([id]) => id === 'P6-05')[1];
+    const p605 = readJson(statusRoot, p605Path);
+    p605.checks.releases.candidate.releaseId = 'invalid-release-id';
+    writeJson(resolve(statusRoot, p605Path), p605);
+    receipt = await executeQ5({
+      ...base,
+      incidentId: 'cpm-p6-07-q5-invalid-p6-05-release',
+    });
+    assert(receipt.exceptions.includes('precondition_failed'), 'invalid P6-05 release must fail');
+    p605.checks.releases.candidate.releaseId = candidateReleaseId;
+    writeJson(resolve(statusRoot, p605Path), p605);
     const q4 = readJson(statusRoot, qPaths.q4);
     q4.expiresAt = new Date(now.getTime() - 1_000).toISOString();
     writeJson(resolve(statusRoot, qPaths.q4), q4);
