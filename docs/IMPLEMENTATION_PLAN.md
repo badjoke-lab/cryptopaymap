@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-08-12
 
 This file tracks the current repository implementation and operational handoff. GitHub `main`, merged pull requests, actual CI results, protected configured-environment receipts, and external observations are authoritative when this file differs from reality.
 
@@ -108,7 +108,7 @@ Phase 5 closed in #275. Configured launch execution was not claimed.
 
 ## Phase 6 — Launch and cutover evidence
 
-**Status:** Repository definition complete; configured execution active
+**Status:** Repository definition complete; configured staging P6-01 through P6-07 accepted; explicit production authorization pending
 
 | ID | Item | Status | Pull request |
 |---|---|---|---|
@@ -120,9 +120,15 @@ Phase 5 closed in #275. Configured launch execution was not claimed.
 | P6-06 | Configured domain cutover and rollback evidence | Completed | #287 |
 | P6-07 | Configured monitoring, alerting, backup, restore, and incident evidence | Completed | #289 |
 | P6-08 | Final launch authorization, go-live, verification, rollback, observation, and close contract | Completed | #291 |
-| OPS-P6-001 | Execute configured staging and production launch evidence | Active | Issue #293 |
+| OPS-P6-001 | Execute configured staging and production launch evidence | Active — staging P6-01 through P6-07 accepted; production authorization pending | Issue #293 |
 
 P6-08 merged at `46b89747797e06d62e94f8d974fd1ab0d72dfaff`. The associated repository workflows passed. That result proves the evidence contract is present; it does not prove configured staging or production authorization, execution, verification, or launch close.
+
+### Current configured execution checkpoint — 2026-08-12
+
+Configured-staging P6-01 through P6-07 are now current and accepted on exact main `5875b2d8cef9f01015434888beb487cd448bc266` with one matched binding. Q1 through Q5 completed in runs `31588045213`, `31588257978`, `31588417455`, `31588668939`, and `31589176974`. Q4 proved isolated restore, reconciliation, RPO/RTO, and zero-object disposal; Q5 retained an accepted final receipt after external reverification. Issue #349 is completed.
+
+The resulting authorization inventory remains `mode: inventory`, `state: not_authorized`, with blocker `explicit_dispatch:required`. This is the intended boundary: configured-staging evidence is complete, while production authorization, cutover, post-cutover verification, observation, and launch close remain unexecuted under Issue #293.
 
 ### OPS-P6-001 sequence
 

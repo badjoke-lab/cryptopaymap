@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-08-04
+**Last verified:** 2026-08-12
 
 ## Current phase
 
@@ -10,67 +10,59 @@ Phase 6 — Launch and cutover evidence
 
 OPS-P6-001 — Configured launch authorization, bounded go-live execution, external verification, observation, and launch close (Issue #293)
 
-## Current operational slice
+## Current operational state
 
-P6-07 configured operational evidence — Q3 protected execution preparation and Q4 isolated-restore preparation (Issue #349)
+P6-07 configured-staging operations and recovery evidence is complete. Issue #349 is closed as completed.
 
 ## Authoritative current state
 
-- Latest verified implementation baseline before this status-only reconciliation is `f1482a3e45ea45855f563720c494af798b9ac053`, produced by PR #365.
-- PR #361 repaired P6-05 Pages activation so an already-visible exact candidate is accepted without an unnecessary rollback request, a normal rollback remains verified, and Cloudflare `8000039` is accepted only after bounded exact-marker convergence.
-- On exact main `a975fa58825d20e054e65f24bdbbf4240328df00`, configured staging deployment, fixed-review live audit, and P6-01 through P6-06 were refreshed and accepted on one shared release/data/configuration/environment binding.
-- The accepted P6-05 receipt proved deterministic generation, authenticated staging topology, exact candidate visibility, baseline rollback, candidate restoration, representative external route checks, and final candidate state.
-- The accepted P6-06 continuity receipt proved the approved staging hostname, DNS, TLS, redirect, representative routes, and active P6-05 release identity without provider mutation.
-- P6-07 Q1 completed on `a975fa58825d20e054e65f24bdbbf4240328df00` with decision `configuration_blocked`. The only recorded protected-configuration blockers were `backup_encryption:missing` and `isolated_restore_database:missing`.
-- P6-07 Q2 monitoring and alert evidence was accepted on the same commit and binding. Live monitoring, heartbeat and freshness checks, active-release identity, wrong-release detection, dead-man and blind-state detection, deduplication, acknowledgement, deadline escalation, and recovery all passed with no exception.
-- PR #365 merged the fail-closed Q3 backup-integrity implementation. It creates a bounded PostgreSQL custom-format backup, excludes private Submission table data, encrypts the retained artifact with AES-256-GCM, reconciles inventory before and after authenticated decryption, retains no plaintext or protected configuration, records retention metadata, and rejects corrupted authentication tags.
-- The Q3 implementation passed its dedicated contract and self-test, Foundation validation, and Migration drift before merge.
-- PR #365 changed exact main after the retained P6-01 through P6-06, Q1, and Q2 receipts. This status-only reconciliation creates a later documentation commit, so those configured receipts remain historical evidence and must be refreshed on the exact post-reconciliation main before Q3 can be accepted.
-- No production hostname, DNS record, Pages custom-domain binding, certificate, cache, canonical data, R2 object, production deployment, backup artifact, or restore target was changed by PR #365.
+- Exact current `main`: `5875b2d8cef9f01015434888beb487cd448bc266` from PR #408.
+- Configured staging deployment and fixed-review live audit are current on the exact main.
+- P6-01 through P6-07 are current on one matched release/data/configuration/environment binding.
+- Q1 prerequisite diagnostic run `31588045213` completed with decision `ready`, blockers 0, and exceptions 0.
+- Q2 monitoring and alert run `31588257978` was accepted with alert evidence derived from the fresh Q1 binding.
+- Q3 backup-integrity run `31588417455` was accepted after encrypted backup generation, integrity verification, and artifact retention.
+- Q4 isolated-restore run `31588668939` was accepted. Restore, reconciliation, RPO, RTO, and disposal passed; the isolated target ended with `remainingUserObjectCount: 0`.
+- Q5 incident-exercise/final-receipt run `31589176974` was accepted. External reverification, objectives, evidence preservation, and follow-up checks passed without live-service degradation.
+- The configured-staging authorization inventory lists P6-01 through P6-07 as current with `predecessorBinding: matched`.
+- Authorization remains inventory-only: `state: not_authorized`, with the remaining blocker `explicit_dispatch:required`.
+- Temporary dispatcher PR #409 was closed without merge after the exact-main evidence chain completed.
+- No production authorization, production DNS change, production cutover, or production canonical mutation has been executed.
 
 Configured state remains:
 
 ```text
-Configured staging authorization: not authorized
+Configured staging evidence: P6-01 through P6-07 current / accepted
+Configured launch authorization: not authorized
 Configured production authorization: not authorized
 Go-live execution: not executed
 Post-cutover verification: not proven
 Launch-close evidence: not proven
 ```
 
-Repository CI, documentation, provider control-plane success, or an operator assertion alone cannot change those configured states.
+Repository CI, documentation, configured-staging evidence, or an operator assertion alone cannot authorize production. Production requires the separate bounded authorization defined by the P6-08 / OPS-P6-001 contract.
 
 ## Next
 
-Continue Issue #349 in this order:
+Continue Issue #293 from the explicit authorization boundary:
 
-1. configure the protected GitHub Actions secret `P6_07_BACKUP_ENCRYPTION_KEY` without placing its value in the repository, an Issue, a PR, artifacts, or logs;
-2. provision a distinct isolated restore database and configure protected `P6_07_RESTORE_DATABASE_URL`, separate from the fixed-review canonical database;
-3. refresh configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
-4. refresh P6-01 through P6-06 on one exact-main binding;
-5. rerun Q1 and require the backup-encryption configuration to be present, with only the isolated-restore blocker permitted before Q3;
-6. rerun Q2 on the exact current-main binding;
-7. dispatch `EXECUTE_CONFIGURED_STAGING_P6_07_Q3` and require an accepted encrypted backup-integrity receipt;
-8. implement and execute Q4 isolated restore, reconciliation, RPO/RTO measurement, and safe disposal on the distinct restore target;
-9. execute the later incident-response and launch-authorization slices only after their exact predecessors are current and accepted.
+1. verify the current P6-01 through P6-07 inventory remains unexpired and bound to exact main `5875b2d8cef9f01015434888beb487cd448bc266`;
+2. perform the separate bounded authorization decision required by `explicit_dispatch:required`;
+3. if and only if that authorization is explicitly issued, execute the P6-08 production go-live contract with named launch, observer, and rollback ownership;
+4. require external post-cutover verification, observation-window completion, rollback readiness, and immutable launch-close evidence before Phase 6 can close;
+5. begin Phase 7 stabilization only after production launch close is proven.
 
 ## Blocked
 
-No repository implementation or CI blocker remains for Q3 backup integrity.
+No configured-staging P6-07 implementation or evidence blocker remains.
 
-Configured Q3 execution is blocked by:
+Production go-live is intentionally blocked by:
 
-- protected `P6_07_BACKUP_ENCRYPTION_KEY` not yet configured;
-- P6-01 through P6-06, Q1, and Q2 receipts not yet refreshed on the exact current main after this status reconciliation.
+- `explicit_dispatch:required`;
+- no separate production authorization having been issued;
+- no production cutover, post-cutover verification, observation-window completion, or launch-close receipt having been executed.
 
-Configured Q4 execution is additionally blocked by:
-
-- a distinct protected `P6_07_RESTORE_DATABASE_URL`;
-- an accepted exact-main Q3 receipt.
-
-Protected repository secrets must be configured through the repository secret-management surface and must never be committed to public repository content. Production remains untouched and unauthorized.
-
-Protected operational credentials, database URLs, encryption material, raw account or zone identifiers, private database rows, private Submission data, unrestricted logs, raw Media bytes, and raw object keys must not be placed in public repository or Issue content.
+Protected credentials, database URLs, encryption material, raw account or zone identifiers, private database rows, private Submission data, unrestricted logs, raw Media bytes, and raw object keys must not be placed in public repository or Issue content.
 
 
 ## Retained executable-audit snapshot
@@ -167,38 +159,18 @@ Repository reality is determined by current `main`, merged pull requests, actual
 
 ## Current references
 
-- Issue #293 — OPS-P6-001 configured launch execution
-- Issue #312 — OPS-P6-001H configured staging P6-04 Media lifecycle evidence
-- PR #313 — configured staging P6-04 executor
-- Issue #309 — completed configured staging P6-03 Neon transaction evidence
-- PR #310 — completed configured staging P6-03 executor
-- Issue #304 — completed configured staging P6-02 identity and protected Admin evidence
-- PR #307 — completed derived staging service authentication
-- Issue #300 — completed configured staging P6-01 data QA
-- PR #303 — completed staging public metadata fix
-- PR #301 — configured staging P6-01 executor
-- PR #299 — completed configured staging authorization gate
+- Issue #293 — OPS-P6-001 configured launch execution and explicit authorization boundary
+- Issue #349 — completed configured-staging P6-07 operations and recovery evidence
+- Issue #410 — this status reconciliation
+- PR #408 — Q5 P6-05 candidate-release marker authority fix
+- PR #409 — temporary exact-main dispatcher, closed without merge
 - `config/staging-review/deployment-receipt.json` on the `staging-review` branch
 - `config/staging-review/p5-02r-live-audit-receipt.json` on the `staging-review` branch
 - `config/staging-authorization/authorization-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/p6-01-data-qa-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/p6-02-identity-admin-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/p6-03-neon-transaction-receipt.json` on the `staging-review` branch
-- `config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json` on the `staging-review` branch after execution
-- `docs/OPS_P6_001H_CONFIGURED_STAGING_P6_04_MEDIA_LIFECYCLE.md`
-- `docs/OPS_P6_001G_CONFIGURED_STAGING_P6_03_NEON_TRANSACTION.md`
-- `docs/OPS_P6_001E_CONFIGURED_STAGING_P6_02_IDENTITY_ADMIN.md`
-- `docs/OPS_P6_001D_CONFIGURED_STAGING_P6_01_DATA_QA.md`
-- `docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md`
+- `config/staging-authorization/p6-01-data-qa-receipt.json` through `p6-07-operations-recovery-receipt.json` on the `staging-review` branch
 - `docs/P6_08_FINAL_LAUNCH_AUTHORIZATION_GO_LIVE_CLOSE_EVIDENCE.md`
+- `docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md`
 - `docs/P6_07_CONFIGURED_OPERATIONAL_MONITORING_BACKUP_RESTORE_INCIDENT_EVIDENCE.md`
-- `docs/P6_06_CONFIGURED_DOMAIN_CUTOVER_ROLLBACK_EVIDENCE.md`
-- `docs/P6_05_CONFIGURED_PUBLIC_EXPORT_RELEASE_EVIDENCE.md`
-- `docs/P6_04_CONFIGURED_R2_MEDIA_LIFECYCLE_EVIDENCE.md`
-- `docs/P6_03_LIVE_NEON_TRANSACTION_RECEIPT_EVIDENCE.md`
-- `docs/P6_02_CONFIGURED_IDENTITY_ADMIN_EVIDENCE.md`
-- `docs/P6_01_LAUNCH_EVIDENCE_REGISTER_DATA_QA_BASELINE.md`
-- `docs/P5_08F_MVP_B_FINAL_CLOSE_PHASE6_HANDOFF.md`
 - `docs/LAUNCH_CRITERIA.md`
 - `docs/MIGRATION_AND_CUTOVER.md`
 - `docs/SECURITY_AND_PRIVACY.md`
