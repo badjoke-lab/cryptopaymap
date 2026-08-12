@@ -1,0 +1,170 @@
+{
+  "version": 1,
+  "evidenceId": "P6-07",
+  "exerciseId": "P6-07-Q5",
+  "environment": "configured_staging",
+  "state": "failed",
+  "decision": "rejected",
+  "commit": "6fbdad2e0e0bc7452ec59be439ddeaaf51466c31",
+  "generatedAt": "2026-08-12T08:09:20.992Z",
+  "expiresAt": "2026-09-11T08:09:20.992Z",
+  "workflowRunId": "31576926681",
+  "incidentId": "cpm-p6-07-q5-6fbdad-20260812-a",
+  "incidentIdentity": "sha256:150dc51a05b0bc2ceda81c9464739b59f2aa461f7ecfc973a8b02c7fe3e37fb8",
+  "procedure": "OPS-P6-002B configured staging P6-07 incident exercise and final receipt",
+  "binding": {
+    "releaseId": "sha256:7a2e3df2e8434c52d4306b51ab23106028c162e306ac14e4f13b02959383168f",
+    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+    "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+    "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+  },
+  "operators": {
+    "commandOwner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
+    "observer": "sha256:0076b1e4bf8354037e86329d4c9a92d32f4a2dde2514a86a433f72dc24068dd9",
+    "followUpOwner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07"
+  },
+  "checks": {
+    "exactMain": "success",
+    "confirmation": "success",
+    "repositoryContract": "success",
+    "incidentIdentity": "unique",
+    "commandOwnership": "exclusive_workflow_concurrency",
+    "predecessors": [
+      {
+        "evidenceId": "P6-01",
+        "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-12T07:38:17.371Z",
+        "expiresAt": "2026-08-15T07:38:17.371Z",
+        "digest": "sha256:25577a14d768e29c7a26febe77709ad9bfc966d9c9a65ef34914e29d550a36b0"
+      },
+      {
+        "evidenceId": "P6-02",
+        "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-12T07:39:46.216Z",
+        "expiresAt": "2026-08-15T07:39:46.216Z",
+        "digest": "sha256:b58f71cc8be05531a3cba5b74df09b584a2cda8b237d4e77b0ec15d2edfbf30e"
+      },
+      {
+        "evidenceId": "P6-03",
+        "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-12T07:41:00.834Z",
+        "expiresAt": "2026-08-15T07:41:00.834Z",
+        "digest": "sha256:c42c41c8d1bcfa0232372c90692c04f30fe8f2342f84ef3d37abce0f71bf89af"
+      },
+      {
+        "evidenceId": "P6-04",
+        "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-12T07:43:24.803Z",
+        "expiresAt": "2026-08-15T07:43:24.803Z",
+        "digest": "sha256:3b57398d0e68adfc2033f995110b2b00e6d3170a00127e5f2c5e2788c3688be0"
+      },
+      {
+        "evidenceId": "P6-05",
+        "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-12T07:51:01.327Z",
+        "expiresAt": "2026-08-15T07:51:01.327Z",
+        "digest": "sha256:0f7452c5a10966072d42e986438cd5d29d98c9f16307ef1e85ef17fc6b486ddd"
+      },
+      {
+        "evidenceId": "P6-06",
+        "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
+        "state": "current",
+        "generatedAt": "2026-08-12T07:53:23.383Z",
+        "expiresAt": "2026-08-15T07:53:23.383Z",
+        "digest": "sha256:599f7b04242421f81372995ec25050d747e4ce4afc06381ab2be92c8dd69163e"
+      }
+    ],
+    "predecessorBinding": "matched",
+    "q1": {
+      "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
+      "state": "current",
+      "decision": "ready",
+      "generatedAt": "2026-08-12T07:55:50.808Z",
+      "expiresAt": "2026-08-13T07:55:50.808Z",
+      "digest": "sha256:eb86653079dbe665a5a5100eaad1c536fe867303616409dab0f6d9f96d433090"
+    },
+    "q2": {
+      "path": "config/staging-authorization/p6-07-monitoring-alert-receipt.json",
+      "state": "current",
+      "generatedAt": "2026-08-12T07:58:11.737Z",
+      "expiresAt": "2026-09-11T07:58:11.737Z",
+      "digest": "sha256:5aa0133302701bbb253747fa5c8bbe757d0578560c5d82b3e097c3a42c545c1f"
+    },
+    "q3": {
+      "path": "config/staging-authorization/p6-07-backup-integrity-receipt.json",
+      "state": "current",
+      "generatedAt": "2026-08-12T08:00:38.163Z",
+      "expiresAt": "2026-09-11T08:00:38.163Z",
+      "digest": "sha256:fe02eab762d55df608ec3455b10a8b6945b14e7fa7fff0bd3b7a43876c5b23d3"
+    },
+    "q4": {
+      "path": "config/staging-authorization/p6-07-isolated-restore-receipt.json",
+      "state": "current",
+      "generatedAt": "2026-08-12T08:03:39.174Z",
+      "expiresAt": "2026-09-11T08:03:39.174Z",
+      "digest": "sha256:5a13b8944f158cf32408ed44e948d591290d92ae25dee71d8e54f41814c71de3"
+    },
+    "scenario": {
+      "status": "passed",
+      "value": "canonical_database_degradation",
+      "severity": "exercise_high",
+      "expectedDecision": "restore_database",
+      "mutationMode": "simulation_only_no_live_degradation"
+    },
+    "objectives": {
+      "status": "not_run",
+      "configured": {
+        "acknowledgement": 15,
+        "decision": 30,
+        "recovery": 45,
+        "cadence": 15
+      }
+    },
+    "communication": {
+      "status": "not_run",
+      "destinationClass": "github_issue",
+      "issueNumber": 349
+    },
+    "timeline": {
+      "status": "not_run",
+      "stages": []
+    },
+    "containment": {
+      "status": "not_run"
+    },
+    "decision": {
+      "status": "not_run"
+    },
+    "recovery": {
+      "status": "not_run"
+    },
+    "externalReverification": {
+      "status": "not_run"
+    },
+    "evidencePreservation": {
+      "status": "not_run"
+    },
+    "followUp": {
+      "status": "not_run"
+    },
+    "safetyBoundary": {
+      "status": "passed",
+      "productionMutation": false,
+      "dnsMutation": false,
+      "pagesMutation": false,
+      "r2Mutation": false,
+      "canonicalDataMutation": false,
+      "databaseMutation": false,
+      "backupOrRestoreExecution": false,
+      "liveServiceDegradationIntroduced": false
+    }
+  },
+  "exceptions": [
+    "external_reverification_failed"
+  ]
+}
