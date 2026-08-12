@@ -1,0 +1,50 @@
+name: Temporary OPS-P6-012 patcher
+
+on:
+  push:
+    branches:
+      - ops-p6-012-production-authorization
+    paths:
+      - '.github/tmp-ops-p6-012-fix.py'
+      - '.github/workflows/tmp-ops-p6-012-patcher.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-012-production-authorization
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply fix, format, and validate bounded production authorization slice
+        run: |
+          set -euo pipefail
+          python .github/tmp-ops-p6-012-fix.py
+          npx biome check --write \
+            scripts/evaluate-ops-p6-012-production-authorization.mjs \
+            scripts/check-ops-p6-012-production-authorization.mjs \
+            docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md \
+            .github/workflows/ops-p6-012-configured-production-authorization.yml
+          node scripts/check-ops-p6-012-production-authorization.mjs
+          node scripts/evaluate-ops-p6-012-production-authorization.mjs --self-test
+          git diff --check
+          rm .github/tmp-ops-p6-012-fix.py .github/workflows/tmp-ops-p6-012-patcher.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            scripts/evaluate-ops-p6-012-production-authorization.mjs \
+            scripts/check-ops-p6-012-production-authorization.mjs \
+            docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md \
+            .github/workflows/ops-p6-012-configured-production-authorization.yml \
+            .github/tmp-ops-p6-012-fix.py \
+            .github/workflows/tmp-ops-p6-012-patcher.yml
+          git commit -m 'OPS-P6-012: add fail-closed configured production authorization'
+          git push origin HEAD:ops-p6-012-production-authorization
