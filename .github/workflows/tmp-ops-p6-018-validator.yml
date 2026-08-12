@@ -25,6 +25,7 @@ jobs:
       - name: Apply and validate production Access patch
         run: |
           set -euo pipefail
+          python tmp-ops-p6-018-anchor-fix.py
           python tmp-ops-p6-018-patch.py
           npx biome check --write \
             scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
