@@ -25,7 +25,7 @@ expectIncludes('runner', files.runner, [
   'production_authorization:not_current',
   'evidence_binding:candidate_artifact_mismatch',
   "return 'legacy_v1'",
-  "return 'candidate_active'",
+  "'candidate_active' : 'candidate_pending'",
   'unsafe_dns_delete_candidate',
   'apex_redirect_location_mismatch',
   'candidate_release_marker_mismatch',
