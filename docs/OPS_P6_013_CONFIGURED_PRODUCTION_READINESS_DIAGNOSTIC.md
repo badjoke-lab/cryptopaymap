@@ -18,7 +18,7 @@ The diagnostic may perform only observations:
 - read the Cloudflare account, zone, Pages-project, custom-domain, and DNS state;
 - fetch the candidate Pages release marker over HTTPS.
 
-It does not create the production Pages project, deploy an artifact, synchronize Pages secrets, attach the production domain, change DNS, mutate Neon, mutate R2, alter canonical data, or execute cutover.
+It does not create the production Pages project or deploy an artifact. It does not attach the production domain. It does not change DNS. It does not synchronize Pages secrets, mutate Neon, mutate R2, alter canonical data, or execute cutover.
 
 ## Dedicated production target
 
