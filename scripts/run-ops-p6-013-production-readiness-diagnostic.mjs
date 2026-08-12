@@ -85,15 +85,18 @@ class CloudflareApiError extends Error {
 }
 
 async function cloudflareRequest(path, label) {
+  const method = 'GET';
   const token = process.env.CLOUDFLARE_API_TOKEN;
   if (!token) throw new Error('cloudflare_token_missing');
   const response = await fetch(`https://api.cloudflare.com/client/v4${path}`, {
+    method,
     headers: { Authorization: `Bearer ${token}` },
     cache: 'no-store',
     signal: AbortSignal.timeout(20_000),
   });
   const payload = await response.json().catch(() => null);
-  if (!response.ok || payload?.success !== true) throw new CloudflareApiError(label, response.status);
+  if (!response.ok || payload?.success !== true)
+    throw new CloudflareApiError(label, response.status);
   return { result: payload.result, resultInfo: payload.result_info ?? null };
 }
 
@@ -119,7 +122,9 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
     'zone_lookup',
   );
   const zoneList = Array.isArray(zones.result) ? zones.result : [];
-  const exactZones = zoneList.filter((zone) => zone?.name === zoneName && zone?.status === 'active');
+  const exactZones = zoneList.filter(
+    (zone) => zone?.name === zoneName && zone?.status === 'active',
+  );
   const zone = exactZones.length === 1 ? exactZones[0] : null;
 
   let dnsRecords = [];
@@ -203,7 +208,10 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
 
 function runtimeSecrets() {
   return Object.fromEntries(
-    requiredRuntimeSecrets.map((key) => [key, typeof process.env[key] === 'string' && process.env[key].length > 0]),
+    requiredRuntimeSecrets.map((key) => [
+      key,
+      typeof process.env[key] === 'string' && process.env[key].length > 0,
+    ]),
   );
 }
 
@@ -214,7 +222,10 @@ export async function executeProductionReadiness(options) {
   const readinessOwner = String(options.readinessOwner ?? '').trim();
   const repositoryContractOutcome = String(options.repositoryContractOutcome ?? 'failed');
   const githubEnvironmentStatus = String(options.githubEnvironmentStatus ?? 'missing');
-  const protectionCount = Number.parseInt(String(options.githubEnvironmentProtectionCount ?? '0'), 10);
+  const protectionCount = Number.parseInt(
+    String(options.githubEnvironmentProtectionCount ?? '0'),
+    10,
+  );
   const p605 = p605Evidence(options.statusRoot, commit, now);
   const secrets = options.runtimeSecrets ?? runtimeSecrets();
   const blockers = [];
@@ -225,7 +236,8 @@ export async function executeProductionReadiness(options) {
   if (repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
   if (p605.state !== 'current') blockers.push('p6_05_release:not_current');
   if (githubEnvironmentStatus !== 'present') blockers.push('github_environment:production_missing');
-  if (!Number.isInteger(protectionCount) || protectionCount < 1) blockers.push('github_environment:protection_missing');
+  if (!Number.isInteger(protectionCount) || protectionCount < 1)
+    blockers.push('github_environment:protection_missing');
 
   const missingSecrets = requiredRuntimeSecrets.filter((key) => secrets[key] !== true);
   for (const key of missingSecrets) blockers.push(`runtime_secret:${key}:missing`);
@@ -236,18 +248,28 @@ export async function executeProductionReadiness(options) {
       external = await collectExternal(p605.releaseId, options.fetchImpl ?? fetch);
     } catch (error) {
       external = {
-        error: error instanceof Error ? error.message.replace(/[^a-zA-Z0-9:_-]/g, '_').slice(0, 160) : 'unknown',
+        error:
+          error instanceof Error
+            ? error.message.replace(/[^a-zA-Z0-9:_-]/g, '_').slice(0, 160)
+            : 'unknown',
       };
     }
   }
 
-  if (external?.cloudflare?.project?.distinctFromStaging !== true) blockers.push('pages_project:not_distinct');
-  if (external?.cloudflare?.project?.accessible !== true) blockers.push('pages_project:missing_or_inaccessible');
-  if (external?.cloudflare?.zone?.exactActiveZoneCount !== 1) blockers.push('cloudflare_zone:ambiguous_or_missing');
-  if (!Number.isInteger(external?.cloudflare?.dns?.recordCount) || external.cloudflare.dns.recordCount < 1) {
+  if (external?.cloudflare?.project?.distinctFromStaging !== true)
+    blockers.push('pages_project:not_distinct');
+  if (external?.cloudflare?.project?.accessible !== true)
+    blockers.push('pages_project:missing_or_inaccessible');
+  if (external?.cloudflare?.zone?.exactActiveZoneCount !== 1)
+    blockers.push('cloudflare_zone:ambiguous_or_missing');
+  if (
+    !Number.isInteger(external?.cloudflare?.dns?.recordCount) ||
+    external.cloudflare.dns.recordCount < 1
+  ) {
     blockers.push('production_dns:missing');
   }
-  if (external?.intendedDeployment?.markerMatches !== true) blockers.push('intended_release:not_observed');
+  if (external?.intendedDeployment?.markerMatches !== true)
+    blockers.push('intended_release:not_observed');
 
   const uniqueBlockers = [...new Set(blockers)];
   const decision = uniqueBlockers.length === 0 ? 'ready' : 'blocked';
@@ -326,7 +348,11 @@ function readyExternal(releaseId) {
       },
       zone: { name: zoneName, exactActiveZoneCount: 1, zoneIdDigest: digest('zone-id') },
       dns: { hostname: productionHostname, recordCount: 1, records: [] },
-      customDomain: { hostname: productionHostname, attachedToCandidateProject: false, domainCount: 0 },
+      customDomain: {
+        hostname: productionHostname,
+        attachedToCandidateProject: false,
+        domainCount: 0,
+      },
     },
     intendedDeployment: {
       baseUrl: `https://${productionProject}.pages.dev`,
@@ -371,24 +397,39 @@ async function selfTest() {
     assert(receipt.checks.productionMutation === false, 'diagnostic must not mutate production');
 
     receipt = await executeProductionReadiness({ ...base, githubEnvironmentStatus: 'missing' });
-    assert(receipt.blockers.includes('github_environment:production_missing'), 'missing environment must block');
+    assert(
+      receipt.blockers.includes('github_environment:production_missing'),
+      'missing environment must block',
+    );
 
     receipt = await executeProductionReadiness({ ...base, githubEnvironmentProtectionCount: '0' });
-    assert(receipt.blockers.includes('github_environment:protection_missing'), 'unprotected environment must block');
+    assert(
+      receipt.blockers.includes('github_environment:protection_missing'),
+      'unprotected environment must block',
+    );
 
     const missingSecret = { ...allSecrets, P6_08_PRODUCTION_DATABASE_URL: false };
     receipt = await executeProductionReadiness({ ...base, runtimeSecrets: missingSecret });
-    assert(receipt.blockers.includes('runtime_secret:P6_08_PRODUCTION_DATABASE_URL:missing'), 'missing runtime secret must block');
+    assert(
+      receipt.blockers.includes('runtime_secret:P6_08_PRODUCTION_DATABASE_URL:missing'),
+      'missing runtime secret must block',
+    );
 
     const missingProject = structuredClone(base.externalOverride);
     missingProject.cloudflare.project.accessible = false;
     receipt = await executeProductionReadiness({ ...base, externalOverride: missingProject });
-    assert(receipt.blockers.includes('pages_project:missing_or_inaccessible'), 'missing project must block');
+    assert(
+      receipt.blockers.includes('pages_project:missing_or_inaccessible'),
+      'missing project must block',
+    );
 
     const wrongRelease = structuredClone(base.externalOverride);
     wrongRelease.intendedDeployment.markerMatches = false;
     receipt = await executeProductionReadiness({ ...base, externalOverride: wrongRelease });
-    assert(receipt.blockers.includes('intended_release:not_observed'), 'wrong intended release must block');
+    assert(
+      receipt.blockers.includes('intended_release:not_observed'),
+      'wrong intended release must block',
+    );
 
     receipt = await executeProductionReadiness({ ...base, confirmation: 'WRONG' });
     assert(receipt.blockers.includes('confirmation:invalid'), 'wrong confirmation must block');

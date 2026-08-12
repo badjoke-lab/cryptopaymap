@@ -1,9 +1,18 @@
 import { readFileSync } from 'node:fs';
 
 const files = {
-  runner: readFileSync('scripts/run-ops-p6-013-production-readiness-diagnostic.mjs', 'utf8').toLowerCase(),
-  workflow: readFileSync('.github/workflows/ops-p6-013-configured-production-readiness-diagnostic.yml', 'utf8').toLowerCase(),
-  doc: readFileSync('docs/OPS_P6_013_CONFIGURED_PRODUCTION_READINESS_DIAGNOSTIC.md', 'utf8').toLowerCase(),
+  runner: readFileSync(
+    'scripts/run-ops-p6-013-production-readiness-diagnostic.mjs',
+    'utf8',
+  ).toLowerCase(),
+  workflow: readFileSync(
+    '.github/workflows/ops-p6-013-configured-production-readiness-diagnostic.yml',
+    'utf8',
+  ).toLowerCase(),
+  doc: readFileSync(
+    'docs/OPS_P6_013_CONFIGURED_PRODUCTION_READINESS_DIAGNOSTIC.md',
+    'utf8',
+  ).toLowerCase(),
 };
 
 function expectIncludes(label, content, markers) {
