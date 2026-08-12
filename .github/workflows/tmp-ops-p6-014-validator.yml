@@ -25,7 +25,17 @@ jobs:
       - name: Format, validate, and remove temporary workflow
         run: |
           set -euo pipefail
-          npx biome check --write \
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('docs/OPS_P6_014_CONFIGURED_PRODUCTION_CANDIDATE_BOOTSTRAP.md')
+          text = path.read_text()
+          text = text.replace(
+              'It does not switch the canonical host, create redirects for the live hostname, alter certificates, purge live caches, or execute cutover.',
+              'It does not switch the canonical host, create redirects for the live hostname, alter certificates, or purge live caches. It does not execute cutover.',
+          )
+          path.write_text(text)
+          PY
+          npx biome check --write --unsafe \
             scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
             scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
           node scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
