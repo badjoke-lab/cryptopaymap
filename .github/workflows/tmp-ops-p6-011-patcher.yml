@@ -1,0 +1,34 @@
+name: Temporary OPS-P6-011 status patcher
+
+on:
+  push:
+    branches:
+      - ops-p6-011-status-reconciliation
+    paths:
+      - '.github/tmp-ops-p6-011-patch.py'
+      - '.github/workflows/tmp-ops-p6-011-patcher.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-011-status-reconciliation
+          fetch-depth: 0
+      - name: Apply bounded documentation reconciliation
+        run: |
+          set -euo pipefail
+          python .github/tmp-ops-p6-011-patch.py
+          git diff --check
+          grep -F 'P6-07 configured-staging operations and recovery evidence is complete' docs/PROJECT_STATUS.md
+          grep -F 'Configured-staging P6-01 through P6-07 are now current and accepted' docs/IMPLEMENTATION_PLAN.md
+          rm .github/tmp-ops-p6-011-patch.py .github/workflows/tmp-ops-p6-011-patcher.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add docs/PROJECT_STATUS.md docs/IMPLEMENTATION_PLAN.md .github/tmp-ops-p6-011-patch.py .github/workflows/tmp-ops-p6-011-patcher.yml
+          git commit -m 'OPS-P6-011: reconcile configured-staging P6-07 status'
+          git push origin HEAD:ops-p6-011-status-reconciliation
