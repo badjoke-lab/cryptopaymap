@@ -33,7 +33,7 @@ The authorization is rejected unless the repository contract passes and the disp
 - rollback owner;
 - communication owner.
 
-The dispatch also supplies a bounded execution-window length and authorization TTL. Authorization expires before any mandatory predecessor evidence expires. It cannot extend the usable lifetime of stale evidence.
+The dispatch also supplies a bounded execution-window length and authorization TTL. Authorization expires before any mandatory predecessor evidence expires. It cannot extend the usable lifetime of stale evidence. Numeric inputs are accepted only as complete decimal integer strings; malformed values such as a number with a suffix fail closed instead of being partially parsed.
 
 Inventory or non-explicit evaluation remains `not_authorized` with `explicit_dispatch:required`.
 
