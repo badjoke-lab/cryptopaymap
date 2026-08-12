@@ -410,6 +410,33 @@ function quoteIdentifier(value) {
   return `"${value}"`;
 }
 
+function normalizePostgresConstraintDefinition(value) {
+  const constantVarcharArrayToTextArray =
+    /ARRAY\[((?:'(?:''|[^'])*'::character varying)(?:, '(?:''|[^'])*'::character varying)*)\]::text\[\]/g;
+  return value.replace(constantVarcharArrayToTextArray, (_, entries) => {
+    const normalizedEntries = entries.replace(
+      /::character varying(?=,|$)/g,
+      '::character varying::text',
+    );
+    return `ARRAY[${normalizedEntries}]`;
+  });
+}
+
+function normalizeConstraintCatalogRows(value) {
+  if (value.length === 0) return value;
+  return value
+    .split(/\r?\n/)
+    .filter(Boolean)
+    .map((line) => {
+      const row = JSON.parse(line);
+      if (row[3] === 'c' && typeof row[5] === 'string') {
+        row[5] = normalizePostgresConstraintDefinition(row[5]);
+      }
+      return JSON.stringify(row);
+    })
+    .join('\n');
+}
+
 function actualList(buffer, root) {
   const plainPath = join(root, 'backup.dump');
   writeFileSync(plainPath, buffer);
@@ -468,9 +495,11 @@ function createActualDbOps(root) {
         databaseUrl,
         `select jsonb_build_array(n.nspname,c.relname,a.attnum,a.attname,format_type(a.atttypid,a.atttypmod),a.attnotnull,coalesce(pg_get_expr(ad.adbin,ad.adrelid),''))::text from pg_class c join pg_namespace n on n.oid=c.relnamespace join pg_attribute a on a.attrelid=c.oid and a.attnum>0 and not a.attisdropped left join pg_attrdef ad on ad.adrelid=c.oid and ad.adnum=a.attnum where n.nspname in ${scope} and c.relkind in ('r','p','v','m','f') order by n.nspname,c.relname,a.attnum`,
       );
-      const constraints = runPsql(
-        databaseUrl,
-        `select jsonb_build_array(n.nspname,t.relname,c.conname,c.contype,c.convalidated,pg_get_constraintdef(c.oid,true))::text from pg_constraint c join pg_class t on t.oid=c.conrelid join pg_namespace n on n.oid=t.relnamespace where n.nspname in ${scope} order by n.nspname,t.relname,c.conname`,
+      const constraints = normalizeConstraintCatalogRows(
+        runPsql(
+          databaseUrl,
+          `select jsonb_build_array(n.nspname,t.relname,c.conname,c.contype,c.convalidated,pg_get_constraintdef(c.oid,true))::text from pg_constraint c join pg_class t on t.oid=c.conrelid join pg_namespace n on n.oid=t.relnamespace where n.nspname in ${scope} order by n.nspname,t.relname,c.conname`,
+        ),
       );
       const indexes = runPsql(
         databaseUrl,
@@ -1016,6 +1045,23 @@ function makeMockDb(expectedTables, privateTables, options = {}) {
 async function selfTest() {
   if (!sameSortedValues(applicationSchemaNames, ['public', 'drizzle'])) {
     throw new Error('application_schema_scope_self_test_failed');
+  }
+  const sourceConstraint =
+    "CHECK (storage_scope <> 'public'::media_storage_scope OR variant <> 'original'::media_variant AND (mime_type::text = ANY (ARRAY['image/jpeg'::character varying, 'image/webp'::character varying]::text[])))";
+  const restoredConstraint =
+    "CHECK (storage_scope <> 'public'::media_storage_scope OR variant <> 'original'::media_variant AND (mime_type::text = ANY (ARRAY['image/jpeg'::character varying::text, 'image/webp'::character varying::text])))";
+  if (
+    normalizePostgresConstraintDefinition(sourceConstraint) !==
+    normalizePostgresConstraintDefinition(restoredConstraint)
+  ) {
+    throw new Error('equivalent_constraint_deparser_form_self_test_failed');
+  }
+  const changedConstraint = restoredConstraint.replace('image/webp', 'image/png');
+  if (
+    normalizePostgresConstraintDefinition(sourceConstraint) ===
+    normalizePostgresConstraintDefinition(changedConstraint)
+  ) {
+    throw new Error('substantive_constraint_change_self_test_failed');
   }
   const root = mkdtempSync(join(tmpdir(), 'cpm-p6-07-q4-self-test-'));
   try {
