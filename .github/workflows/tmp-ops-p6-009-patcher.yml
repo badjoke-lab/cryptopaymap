@@ -28,11 +28,10 @@ jobs:
         run: |
           set -euo pipefail
           python3 .github/tmp-ops-p6-009-patch.py
+          npx biome format --write scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md
           node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
           node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
-          npx prettier --write scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md
-          node scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs
-          node scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs --self-test
+          npx biome format scripts/run-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs scripts/check-ops-p6-002a-configured-staging-p6-07-isolated-restore.mjs docs/OPS_P6_002A_CONFIGURED_STAGING_P6_07_ISOLATED_RESTORE.md
           rm .github/tmp-ops-p6-009-patch.py .github/workflows/tmp-ops-p6-009-patcher.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
