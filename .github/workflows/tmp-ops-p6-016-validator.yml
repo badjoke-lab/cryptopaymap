@@ -38,3 +38,4 @@ jobs:
             scripts/check-ops-p6-016-production-go-live-executor.mjs
           git commit -m 'OPS-P6-016: harden production go-live execution window'
           git push origin HEAD:ops-p6-016-production-go-live-executor
+          echo 'validator rerun passed'
