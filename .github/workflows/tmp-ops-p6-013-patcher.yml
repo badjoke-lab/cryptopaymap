@@ -54,3 +54,5 @@ jobs:
             docs/OPS_P6_013_CONFIGURED_PRODUCTION_READINESS_DIAGNOSTIC.md
           git commit -m 'OPS-P6-013: finalize read-only production readiness diagnostic'
           git push origin HEAD:ops-p6-013-production-readiness
+
+# retry after explicit no-mutation documentation fix
