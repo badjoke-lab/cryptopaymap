@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "5875b2d8cef9f01015434888beb487cd448bc266",
-  "generatedAt": "2026-08-12T09:02:46.560Z",
-  "expiresAt": "2026-09-11T09:02:46.560Z",
-  "workflowRunId": "31580949371",
+  "generatedAt": "2026-08-12T10:42:20.296Z",
+  "expiresAt": "2026-09-11T10:42:20.296Z",
+  "workflowRunId": "31588417455",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001Y configured staging P6-07 backup integrity evidence",
   "checks": {
@@ -20,60 +20,60 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:35:39.055Z",
-        "expiresAt": "2026-08-15T08:35:39.055Z"
+        "generatedAt": "2026-08-12T09:16:30.720Z",
+        "expiresAt": "2026-08-15T09:16:30.720Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:36:57.208Z",
-        "expiresAt": "2026-08-15T08:36:57.208Z"
+        "generatedAt": "2026-08-12T09:17:48.463Z",
+        "expiresAt": "2026-08-15T09:17:48.463Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:38:25.866Z",
-        "expiresAt": "2026-08-15T08:38:25.866Z"
+        "generatedAt": "2026-08-12T09:19:10.724Z",
+        "expiresAt": "2026-08-15T09:19:10.724Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:40:55.994Z",
-        "expiresAt": "2026-08-15T08:40:55.994Z"
+        "generatedAt": "2026-08-12T09:21:35.104Z",
+        "expiresAt": "2026-08-15T09:21:35.104Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:47:14.642Z",
-        "expiresAt": "2026-08-15T08:47:14.642Z"
+        "generatedAt": "2026-08-12T09:26:54.436Z",
+        "expiresAt": "2026-08-15T09:26:54.436Z"
       },
       {
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-12T08:49:34.408Z",
-        "expiresAt": "2026-08-15T08:49:34.408Z"
+        "generatedAt": "2026-08-12T10:31:05.390Z",
+        "expiresAt": "2026-08-15T10:31:05.390Z"
       }
     ],
     "predecessorBinding": "matched",
     "q2": {
       "path": "config/staging-authorization/p6-07-monitoring-alert-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-12T08:54:25.864Z",
-      "expiresAt": "2026-09-11T08:54:25.864Z",
-      "digest": "sha256:bd28158c08f2ecca1f3a754b1e96448f2a53e0657cbe79a782caeb1a79d4bb00"
+      "generatedAt": "2026-08-12T10:39:45.006Z",
+      "expiresAt": "2026-09-11T10:39:45.006Z",
+      "digest": "sha256:88036b28aa48f5e8f5b3c452ec689e574d4f8f93581a4ffb80e51f0beb12c0f0"
     },
     "prerequisite": {
       "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
       "state": "current",
       "decision": "ready",
-      "generatedAt": "2026-08-12T08:52:04.701Z",
-      "expiresAt": "2026-08-13T08:52:04.701Z",
-      "digest": "sha256:16e1ce18bf5745d15d64538c81b8ad94ef460a98a9fab35f3f60fee3b57646c6",
+      "generatedAt": "2026-08-12T10:37:23.752Z",
+      "expiresAt": "2026-08-13T10:37:23.752Z",
+      "digest": "sha256:f8c28e0d37695dfe9d1bb69c1f14bc43bfe668c90e834c6dfb98dedb48ada334",
       "blockers": []
     },
     "configuration": {
@@ -83,7 +83,7 @@
     },
     "backup": {
       "status": "passed",
-      "backupIdentity": "sha256:fee42270eb4dbbe969a09a11b974ec2144be597c2906a865a2e19385657c0389",
+      "backupIdentity": "sha256:460b3a19e4bd048d199d17350a0f52e6265a5499d0964fd82f2c8ced6c89cc87",
       "sourceStoreClass": "fixed_review_canonical",
       "schemaRevision": "sha256:8a0179645552059035ef1e3ceb5eebd166cbe166114c637cf538d578460bb809",
       "scope": {
@@ -112,8 +112,8 @@
         "algorithm": "aes-256-gcm",
         "encrypted": true,
         "byteLength": 308799,
-        "digest": "sha256:59cec173f5f4fb5582152b446b8f53a1d796d0d102510ebeac983d39c55c8d15",
-        "plaintextDigest": "sha256:b3b74a2604e949cb60789159c489e4adc3a4e19b3addd996ca69484d3814d397"
+        "digest": "sha256:4e8ab731952a8bf54cb1a8257dfe6d36888481722fcf01438277119593d1be8f",
+        "plaintextDigest": "sha256:a140e59919f16fbb1b5cde8e0d94e6e3cb0c43582faaf9045ff51f5dc8d89355"
       },
       "inventory": {
         "status": "passed",
@@ -133,7 +133,7 @@
       "retention": {
         "status": "passed",
         "days": 30,
-        "deleteAfter": "2026-09-11T09:02:46.560Z",
+        "deleteAfter": "2026-09-11T10:42:20.296Z",
         "immutability": "run_scoped_artifact"
       },
       "integrity": {
