@@ -1,0 +1,51 @@
+name: Temporary OPS-P6-018 validator
+
+on:
+  push:
+    branches:
+      - ops-p6-018-production-cloudflare-access
+    paths:
+      - '.github/workflows/tmp-ops-p6-018-validator.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-018-production-cloudflare-access
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Apply and validate production Access patch
+        run: |
+          set -euo pipefail
+          python tmp-ops-p6-018-patch.py
+          npx biome check --write \
+            scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/check-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/run-ops-p6-013-production-readiness-diagnostic.mjs \
+            scripts/check-ops-p6-013-production-readiness-diagnostic.mjs
+          node scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
+          node scripts/run-ops-p6-014-production-candidate-bootstrap.mjs --self-test
+          node scripts/check-ops-p6-013-production-readiness-diagnostic.mjs
+          node scripts/run-ops-p6-013-production-readiness-diagnostic.mjs --self-test
+          git checkout -- \
+            .github/workflows/ops-p6-014-configured-production-candidate-bootstrap.yml \
+            .github/workflows/ops-p6-013-configured-production-readiness-diagnostic.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/check-ops-p6-014-production-candidate-bootstrap.mjs \
+            docs/OPS_P6_014_CONFIGURED_PRODUCTION_CANDIDATE_BOOTSTRAP.md \
+            scripts/run-ops-p6-013-production-readiness-diagnostic.mjs \
+            scripts/check-ops-p6-013-production-readiness-diagnostic.mjs \
+            docs/OPS_P6_013_CONFIGURED_PRODUCTION_READINESS_DIAGNOSTIC.md
+          git commit -m 'OPS-P6-018: enforce production Cloudflare Access readiness'
+          git push origin HEAD:ops-p6-018-production-cloudflare-access
