@@ -1,0 +1,61 @@
+name: One-time P6-07 Q5 external probe diagnostic 6fbdad
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-07-q5-external-probe-diagnostic-6fbdad.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      EXPECTED_MAIN: 6fbdad2e0e0bc7452ec59be439ddeaaf51466c31
+      HOST: staging.cryptopaymap.com
+      EXPECTED_RELEASE: sha256:7a2e3df2e8434c52d4306b51ab23106028c162e306ac14e4f13b02959383168f
+    steps:
+      - name: Verify exact main
+        shell: bash
+        run: |
+          set -euo pipefail
+          actual="$(git ls-remote https://github.com/${{ github.repository }} refs/heads/main | cut -f1)"
+          test "$actual" = "$EXPECTED_MAIN"
+
+      - name: Probe Q5 external routes read-only
+        shell: bash
+        run: |
+          set -euo pipefail
+          probe() {
+            local name="$1" path="$2"
+            local out
+            out="$(curl --silent --show-error --max-time 20 \
+              --user-agent 'CryptoPayMap-P6-07-Q5-Incident-Exercise/1' \
+              --output /dev/null \
+              --write-out '%{http_code}|%{content_type}' \
+              "https://${HOST}${path}${path#*\?}" 2>/dev/null || true)"
+            echo "${name}=${out}"
+          }
+          nonce="$(date +%s%N)"
+          probe home "/?p6_07_q5=${nonce}"
+          probe places "/places/?p6_07_q5=${nonce}"
+          probe representative_place "/place/staging-coffee-tokyo/?p6_07_q5=${nonce}"
+          probe online "/online/?p6_07_q5=${nonce}"
+          probe representative_service "/service/staging-vpn/?p6_07_q5=${nonce}"
+          probe version "/version.json?p6_07_q5=${nonce}"
+          probe manifest "/data/manifest.json?p6_07_q5=${nonce}"
+          probe admin_denial "/admin/api/dashboard?p6_07_q5=${nonce}"
+          marker_file="$(mktemp)"
+          code="$(curl --silent --show-error --max-time 20 --output "$marker_file" --write-out '%{http_code}' "https://${HOST}/p6-05-release.json?p6_07_q5_marker=${nonce}" || true)"
+          observed="$(jq -r '.releaseId // empty' "$marker_file" 2>/dev/null || true)"
+          rm -f "$marker_file"
+          echo "release_http=${code}"
+          if [ "$observed" = "$EXPECTED_RELEASE" ]; then
+            echo 'release_match=true'
+          else
+            echo 'release_match=false'
+            printf '%s' "$observed" | sha256sum | awk '{print "observed_release_value_digest=sha256:"$1}'
+          fi
