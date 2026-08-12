@@ -1,0 +1,42 @@
+name: Temporary OPS-P6-010 patcher
+
+on:
+  push:
+    branches:
+      - ops-p6-010-q5-release-marker-binding
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-010-q5-release-marker-binding
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Apply and verify bounded patch
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 .github/tmp-ops-p6-010-patch.py
+          npx biome format --write scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md
+          node scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs
+          node scripts/check-p6-07-configured-operational-monitoring-backup-restore-incident-evidence.js
+          node scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs --self-test
+          npx biome format scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md
+          rm .github/tmp-ops-p6-010-patch.py .github/workflows/tmp-ops-p6-010-patcher.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add scripts/run-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs scripts/check-ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.mjs docs/OPS_P6_002B_CONFIGURED_STAGING_P6_07_INCIDENT_EXERCISE_FINAL_RECEIPT.md .github/tmp-ops-p6-010-patch.py .github/workflows/tmp-ops-p6-010-patcher.yml
+          git diff --cached --check
+          git commit -m 'OPS-P6-010: bind Q5 to P6-05 candidate release marker'
+          git push origin HEAD:ops-p6-010-q5-release-marker-binding
