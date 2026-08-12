@@ -44,6 +44,8 @@ expectIncludes('workflow', files.workflow, [
   'diagnose_configured_production_readiness',
   'verify exact current main',
   'inspect github production environment read-only',
+  "node --input-type=module <<'node'",
+  "method: 'get'",
   'production_environment_status',
   'production_environment_protection_count',
   'production-readiness-diagnostic.json',
