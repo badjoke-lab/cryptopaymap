@@ -184,6 +184,7 @@ jobs:
       P6_08_PRODUCTION_TURNSTILE_SITE_KEY: ${{ secrets.P6_08_PRODUCTION_TURNSTILE_SITE_KEY }}
       P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN: ${{ secrets.P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN }}
       P6_08_PRODUCTION_CF_ACCESS_AUD: ${{ secrets.P6_08_PRODUCTION_CF_ACCESS_AUD }}
+      P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID: ${{ secrets.P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID }}
     steps:
       - name: Check out exact evaluated source
         uses: actions/checkout@v4
@@ -235,6 +236,7 @@ jobs:
             P6_08_PRODUCTION_TURNSTILE_SITE_KEY
             P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN
             P6_08_PRODUCTION_CF_ACCESS_AUD
+            P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID
           )
           for key in "${required[@]}"; do
             test -n "${!key:-}" || { echo "Missing protected production input: $key"; exit 1; }

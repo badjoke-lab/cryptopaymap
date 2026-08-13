@@ -18,6 +18,7 @@ const requiredRuntimeSecrets = [
   'P6_08_PRODUCTION_TURNSTILE_SITE_KEY',
   'P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN',
   'P6_08_PRODUCTION_CF_ACCESS_AUD',
+  'P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID',
 ];
 
 function digest(value) {
@@ -260,6 +261,11 @@ export async function executeProductionReadiness(options) {
   );
   const p605 = p605Evidence(options.statusRoot, commit, now);
   const secrets = options.runtimeSecrets ?? runtimeSecrets();
+  const credentialGenerationId = String(
+    options.credentialGenerationId ?? process.env.P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID ?? '',
+  ).trim();
+  const generationValid =
+    credentialGenerationId.length >= 8 && credentialGenerationId.length <= 200;
   const blockers = [];
 
   if (confirmation !== exactConfirmation) blockers.push('confirmation:invalid');
@@ -267,6 +273,7 @@ export async function executeProductionReadiness(options) {
   if (!validOwner(readinessOwner)) blockers.push('readiness_owner:invalid');
   if (repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
   if (p605.state !== 'current') blockers.push('p6_05_release:not_current');
+  if (!generationValid) blockers.push('credential_generation:invalid');
   if (githubEnvironmentStatus !== 'present') blockers.push('github_environment:production_missing');
   if (!Number.isInteger(protectionCount) || protectionCount < 1)
     blockers.push('github_environment:protection_missing');
@@ -317,6 +324,7 @@ export async function executeProductionReadiness(options) {
     expiresAt: new Date(now.getTime() + 30 * 60_000).toISOString(),
     workflowRunId: options.workflowRunId ?? null,
     ownerDigest: validOwner(readinessOwner) ? digest(readinessOwner) : null,
+    credentialGenerationDigest: generationValid ? digest(credentialGenerationId) : null,
     checks: {
       exactRepositoryContract: repositoryContractOutcome === 'success' ? 'passed' : 'failed',
       p605: {
@@ -428,12 +436,23 @@ async function selfTest() {
     runtimeSecrets: allSecrets,
     externalOverride: readyExternal(releaseId),
     workflowRunId: '3003',
+    credentialGenerationId: 'production-generation-v1',
     now,
   };
 
   try {
     let receipt = await executeProductionReadiness(base);
     assert(receipt.decision === 'ready', 'complete readiness must pass');
+    assert(
+      receipt.credentialGenerationDigest === digest('production-generation-v1'),
+      'readiness must bind production credential generation',
+    );
+    receipt = await executeProductionReadiness({ ...base, credentialGenerationId: 'short' });
+    assert(
+      receipt.blockers.includes('credential_generation:invalid'),
+      'invalid credential generation must block readiness',
+    );
+    receipt = await executeProductionReadiness(base);
     assert(receipt.checks.productionMutation === false, 'diagnostic must not mutate production');
 
     receipt = await executeProductionReadiness({ ...base, githubEnvironmentStatus: 'missing' });

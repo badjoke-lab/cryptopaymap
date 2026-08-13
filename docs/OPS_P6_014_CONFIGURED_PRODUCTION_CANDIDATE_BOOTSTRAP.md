@@ -127,3 +127,9 @@ After this implementation and any remaining pre-live executor work are merged, r
 Production authorization is still not go-live execution. Live-domain mutation remains a later separately bounded operation.
 
 Parent: #293. Implementation: #417.
+
+## Production credential generation binding
+
+The protected `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID` is an opaque generation marker for the complete configured-production credential and security-configuration set. Raw marker and credential values are never retained or logged; only a SHA-256 digest is retained as evidence.
+
+Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, Cloudflare Access configuration, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.

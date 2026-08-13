@@ -63,4 +63,9 @@ expectIncludes('documentation', files.doc, [
   'separate go-live execution',
 ]);
 
+expectIncludes('evaluator', files.evaluator, [
+  'credentialgenerationdigest',
+  'production_credential_generation:mismatch',
+]);
+
 console.log('OPS-P6-012 configured production authorization contract passed.');

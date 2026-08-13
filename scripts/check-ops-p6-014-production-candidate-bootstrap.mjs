@@ -83,4 +83,10 @@ expectIncludes('documentation', files.doc, [
   '403',
 ]);
 
+expectIncludes('runner', files.runner, [
+  'p6_08_production_credential_generation_id',
+  'credentialgenerationdigest',
+]);
+expectIncludes('workflow', files.workflow, ['p6_08_production_credential_generation_id']);
+
 console.log('OPS-P6-014 configured production candidate bootstrap contract passed.');

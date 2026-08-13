@@ -76,4 +76,10 @@ expectIncludes('documentation', files.doc, [
   'does not close launch',
 ]);
 
+expectIncludes('runner', files.runner, [
+  'credential_generation:changed',
+  'evidence_binding:credential_generation_mismatch',
+]);
+expectIncludes('workflow', files.workflow, ['p6_08_production_credential_generation_id']);
+
 console.log('OPS-P6-016 configured production go-live executor contract passed.');

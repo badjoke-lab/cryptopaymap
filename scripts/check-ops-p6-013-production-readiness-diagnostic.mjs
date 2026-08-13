@@ -76,4 +76,11 @@ expectIncludes('documentation', files.doc, [
   'production mutation: none',
 ]);
 
+expectIncludes('runner', files.runner, [
+  'p6_08_production_credential_generation_id',
+  'credentialgenerationdigest',
+  'credential_generation:invalid',
+]);
+expectIncludes('workflow', files.workflow, ['p6_08_production_credential_generation_id']);
+
 console.log('OPS-P6-013 configured production readiness diagnostic contract passed.');
