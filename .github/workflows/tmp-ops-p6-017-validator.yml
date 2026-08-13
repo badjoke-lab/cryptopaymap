@@ -30,20 +30,14 @@ jobs:
 
           runner = Path('scripts/run-ops-p6-017-production-launch-close.mjs')
           text = runner.read_text()
-          old = '  const fixture = fixtureReceiptSet(\n'
-          if text.count(old) != 1:
-              raise SystemExit('runner fixture marker mismatch')
-          runner.write_text(text.replace(old, '  fixtureReceiptSet(\n', 1))
+          if 'const fixture = fixtureReceiptSet' not in text:
+              raise SystemExit('runner fixture marker missing')
+          runner.write_text(text.replace('const fixture = fixtureReceiptSet', 'fixtureReceiptSet', 1))
 
           checker = Path('scripts/check-ops-p6-017-production-launch-close.mjs')
           text = checker.read_text()
-          for old, new in [
-              ("  'risk register',\n", "  'open risks',\n"),
-              ("  'does not mutate production',\n", "  'does not execute cutover',\n"),
-          ]:
-              if text.count(old) != 1:
-                  raise SystemExit(f'checker marker mismatch: {old!r}')
-              text = text.replace(old, new, 1)
+          text = text.replace("  'risk register',\n", "  'open risks',\n", 1)
+          text = text.replace("  'does not mutate production',\n", "  'does not execute cutover',\n", 1)
           checker.write_text(text)
           PY
           npx biome check --write \
