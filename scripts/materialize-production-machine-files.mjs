@@ -1,4 +1,12 @@
-import { mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -166,7 +174,10 @@ function selfTest() {
     const validation = validateProductionMachineFiles(root);
     assert(first.routes.join(',') === '/,/about/', 'only public HTML routes must enter sitemap');
     assert(validation.routeCount === 2, 'sitemap route count must be deterministic');
-    assert(!readFileSync(resolve(root, 'sitemap.xml'), 'utf8').includes('/admin/'), 'admin excluded');
+    assert(
+      !readFileSync(resolve(root, 'sitemap.xml'), 'utf8').includes('/admin/'),
+      'admin excluded',
+    );
 
     const before = [
       readFileSync(resolve(root, 'robots.txt'), 'utf8'),
