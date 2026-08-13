@@ -1,0 +1,43 @@
+name: Temporary OPS-P6-017 validator
+
+on:
+  push:
+    branches:
+      - ops-p6-017-launch-close-observer
+    paths:
+      - '.github/workflows/tmp-ops-p6-017-validator.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-017-launch-close-observer
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Validate launch-close implementation
+        run: |
+          set -euo pipefail
+          npx biome check --write \
+            scripts/run-ops-p6-017-production-launch-close.mjs \
+            scripts/check-ops-p6-017-production-launch-close.mjs
+          npm run check
+          node scripts/check-ops-p6-017-production-launch-close.mjs
+          node scripts/run-ops-p6-017-production-launch-close.mjs --self-test
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/tmp-ops-p6-017-validator.yml
+          git add \
+            .github/workflows/ops-p6-017-configured-production-launch-close.yml \
+            docs/OPS_P6_017_CONFIGURED_PRODUCTION_LAUNCH_CLOSE.md \
+            scripts/check-ops-p6-017-production-launch-close.mjs \
+            scripts/run-ops-p6-017-production-launch-close.mjs
+          git commit -m 'OPS-P6-017: finalize production launch-close observer'
+          git push origin HEAD:ops-p6-017-launch-close-observer
