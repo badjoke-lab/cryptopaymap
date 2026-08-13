@@ -1,0 +1,66 @@
+name: Temporary OPS-P6-020 validator
+
+on:
+  push:
+    branches:
+      - ops-p6-020-production-credential-generation
+    paths:
+      - '.github/workflows/tmp-ops-p6-020-validator.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-020-production-credential-generation
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Patch and validate bounded generation binding
+        run: |
+          set -euo pipefail
+          python3 scripts/tmp-p6-020-patch.py
+          npx biome check --write \
+            scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/check-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/run-ops-p6-013-production-readiness-diagnostic.mjs \
+            scripts/check-ops-p6-013-production-readiness-diagnostic.mjs \
+            scripts/evaluate-ops-p6-012-production-authorization.mjs \
+            scripts/check-ops-p6-012-production-authorization.mjs \
+            scripts/run-ops-p6-016-production-go-live-executor.mjs \
+            scripts/check-ops-p6-016-production-go-live-executor.mjs
+          npm run check
+          node scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
+          node scripts/run-ops-p6-014-production-candidate-bootstrap.mjs --self-test
+          node scripts/check-ops-p6-013-production-readiness-diagnostic.mjs
+          node scripts/run-ops-p6-013-production-readiness-diagnostic.mjs --self-test
+          node scripts/check-ops-p6-012-production-authorization.mjs
+          node scripts/evaluate-ops-p6-012-production-authorization.mjs --self-test
+          node scripts/check-ops-p6-016-production-go-live-executor.mjs
+          node scripts/run-ops-p6-016-production-go-live-executor.mjs --self-test
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/tmp-ops-p6-020-validator.yml scripts/tmp-p6-020-patch.py
+          git add .github/workflows/ops-p6-013-configured-production-readiness-diagnostic.yml \
+            .github/workflows/ops-p6-014-configured-production-candidate-bootstrap.yml \
+            .github/workflows/ops-p6-016-configured-production-go-live.yml \
+            docs/OPS_P6_012_CONFIGURED_PRODUCTION_AUTHORIZATION.md \
+            docs/OPS_P6_013_CONFIGURED_PRODUCTION_READINESS_DIAGNOSTIC.md \
+            docs/OPS_P6_014_CONFIGURED_PRODUCTION_CANDIDATE_BOOTSTRAP.md \
+            docs/OPS_P6_016_CONFIGURED_PRODUCTION_GO_LIVE.md \
+            scripts/evaluate-ops-p6-012-production-authorization.mjs \
+            scripts/check-ops-p6-012-production-authorization.mjs \
+            scripts/run-ops-p6-013-production-readiness-diagnostic.mjs \
+            scripts/check-ops-p6-013-production-readiness-diagnostic.mjs \
+            scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/check-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/run-ops-p6-016-production-go-live-executor.mjs \
+            scripts/check-ops-p6-016-production-go-live-executor.mjs
+          git commit -m 'OPS-P6-020: bind production credential generation'
+          git push origin HEAD:ops-p6-020-production-credential-generation
