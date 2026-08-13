@@ -1,0 +1,47 @@
+name: Temporary OPS-P6-021 validator
+
+on:
+  push:
+    branches:
+      - ops-p6-021-production-machine-files
+    paths:
+      - '.github/workflows/tmp-ops-p6-021-validator.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops-p6-021-production-machine-files
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Integrate and validate production machine files
+        run: |
+          set -euo pipefail
+          python3 scripts/tmp-p6-021-patch.py
+          npx biome check --write \
+            scripts/materialize-production-machine-files.mjs \
+            scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
+          npm run check
+          node scripts/materialize-production-machine-files.mjs --self-test
+          node scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
+          node scripts/run-ops-p6-014-production-candidate-bootstrap.mjs --self-test
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git rm .github/workflows/tmp-ops-p6-021-validator.yml scripts/tmp-p6-021-patch.py
+          git add \
+            .github/workflows/ops-p6-014-configured-production-candidate-bootstrap.yml \
+            docs/OPS_P6_021_PRODUCTION_MACHINE_READABLE_FILES.md \
+            scripts/materialize-production-machine-files.mjs \
+            scripts/run-ops-p6-014-production-candidate-bootstrap.mjs \
+            scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
+          git commit -m 'OPS-P6-021: materialize production machine-readable files'
+          git push origin HEAD:ops-p6-021-production-machine-files
