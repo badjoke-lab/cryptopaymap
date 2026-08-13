@@ -132,3 +132,9 @@ Secrets, raw provider tokens, raw database URLs, private submission data, and un
 This slice does not close launch. Even an `accepted` receipt must enter the separate P6-08 post-cutover observation and launch-close evaluator before Phase 6 can close.
 
 Parent: #293. Implementation: #420.
+
+## Production credential generation binding
+
+The protected `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID` is an opaque generation marker for the complete configured-production credential and security-configuration set. Raw marker and credential values are never retained or logged; only a SHA-256 digest is retained as evidence.
+
+Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, Cloudflare Access configuration, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.

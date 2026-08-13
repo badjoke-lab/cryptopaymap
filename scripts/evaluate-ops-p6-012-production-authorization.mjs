@@ -149,6 +149,7 @@ function productionCandidateEvidence(statusRoot, commit, now) {
     validDigest(receipt?.releaseAuthorityDigest) &&
     validDigest(receipt?.p605ReceiptDigest) &&
     validDigest(receipt?.candidateArtifactId) &&
+    validDigest(receipt?.credentialGenerationDigest) &&
     typeof receipt?.publicTreeDigest === 'string' &&
     /^[a-f0-9]{64}$/.test(receipt.publicTreeDigest) &&
     typeof receipt?.datasetVersion === 'string' &&
@@ -171,6 +172,7 @@ function productionCandidateEvidence(statusRoot, commit, now) {
     releaseAuthorityDigest: current ? receipt.releaseAuthorityDigest : null,
     p605ReceiptDigest: current ? receipt.p605ReceiptDigest : null,
     candidateArtifactId: current ? receipt.candidateArtifactId : null,
+    credentialGenerationDigest: current ? receipt.credentialGenerationDigest : null,
     publicTreeDigest: current ? receipt.publicTreeDigest : null,
     datasetVersion: current ? receipt.datasetVersion : null,
     schemaVersion: current ? receipt.schemaVersion : null,
@@ -211,6 +213,7 @@ function productionReadinessEvidence(statusRoot, commit, now) {
     receipt.checks.external.cloudflare.dns.recordCount >= 1 &&
     receipt?.checks?.external?.intendedDeployment?.markerMatches === true &&
     validDigest(expectedReleaseDigest) &&
+    validDigest(receipt?.credentialGenerationDigest) &&
     receipt?.checks?.productionMutation === false &&
     Array.isArray(receipt?.blockers) &&
     receipt.blockers.length === 0;
@@ -221,6 +224,7 @@ function productionReadinessEvidence(statusRoot, commit, now) {
     expiresAt,
     p605ReleaseIdDigest: current ? p605ReleaseIdDigest : null,
     expectedReleaseDigest: current ? expectedReleaseDigest : null,
+    credentialGenerationDigest: current ? receipt.credentialGenerationDigest : null,
     receiptDigest: current ? digest(JSON.stringify(receipt)) : null,
   };
 }
@@ -269,6 +273,10 @@ export function evaluateProductionAuthorization(options) {
       blockers.push('production_candidate:release_authority_mismatch');
     if (candidate.p605ReceiptDigest !== p605.receiptDigest)
       blockers.push('production_candidate:p6_05_receipt_mismatch');
+  }
+  if (candidate.state === 'current_accepted' && readiness.state === 'current_ready') {
+    if (candidate.credentialGenerationDigest !== readiness.credentialGenerationDigest)
+      blockers.push('production_credential_generation:mismatch');
   }
   if (p605.state === 'current' && readiness.state === 'current_ready') {
     if (
@@ -328,6 +336,7 @@ export function evaluateProductionAuthorization(options) {
           publicTreeDigest: candidate.publicTreeDigest,
           datasetVersion: candidate.datasetVersion,
           schemaVersion: candidate.schemaVersion,
+          credentialGenerationDigest: candidate.credentialGenerationDigest,
           candidateReceiptDigest: candidate.receiptDigest,
           readinessReceiptDigest: readiness.receiptDigest,
         }
@@ -475,6 +484,7 @@ function fixtureCandidate(commit, now, p605) {
     p605ReceiptDigest: digest(JSON.stringify(p605)),
     publicTreeDigest: 'a'.repeat(64),
     candidateArtifactId: digest('candidate-artifact'),
+    credentialGenerationDigest: digest('production-generation-v1'),
     datasetVersion: 'production-candidate-test',
     schemaVersion: '1.0.0',
     checks: {
@@ -501,6 +511,7 @@ function fixtureReadiness(commit, now, p605) {
     commit,
     generatedAt: now.toISOString(),
     expiresAt: new Date(now.getTime() + 45 * 60_000).toISOString(),
+    credentialGenerationDigest: digest('production-generation-v1'),
     checks: {
       exactRepositoryContract: 'passed',
       p605: { state: 'current', releaseIdDigest },
@@ -581,6 +592,22 @@ function selfTest() {
         candidateFixture.candidateArtifactId,
       'authorization must bind candidate artifact',
     );
+    assert(
+      receipt.productionEvidenceBinding?.credentialGenerationDigest ===
+        candidateFixture.credentialGenerationDigest,
+      'authorization must bind credential generation',
+    );
+
+    writeFileSync(
+      readinessFile,
+      `${JSON.stringify({ ...readinessFixture, credentialGenerationDigest: digest('production-generation-v2') }, null, 2)}\n`,
+    );
+    receipt = evaluateProductionAuthorization(base);
+    assert(
+      receipt.blockers.includes('production_credential_generation:mismatch'),
+      'credential generation mismatch must fail',
+    );
+    writeFileSync(readinessFile, `${JSON.stringify(readinessFixture, null, 2)}\n`);
 
     writeFileSync(
       candidateFile,

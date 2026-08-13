@@ -47,6 +47,12 @@ function isObject(value) {
   return value !== null && typeof value === 'object' && !Array.isArray(value);
 }
 
+function credentialGenerationDigest(value) {
+  const normalized = typeof value === 'string' ? value.trim() : '';
+  if (normalized.length < 8 || normalized.length > 200) return null;
+  return boundedHash(normalized);
+}
+
 function readJson(path) {
   try {
     const value = JSON.parse(readFileSync(path, 'utf8'));
@@ -441,6 +447,11 @@ export async function verifyCandidate({
     throw new Error('candidate_plan_invalid_or_expired');
   }
 
+  const generationDigest = credentialGenerationDigest(
+    process.env.P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID ?? '',
+  );
+  if (generationDigest === null) throw new Error('credential_generation_missing_or_invalid');
+
   const topology = await verifyProjectTopology();
   if (!topology.safe) throw new Error('production_candidate_project_topology_unsafe');
   const external = await verifyExternal(plan);
@@ -459,6 +470,7 @@ export async function verifyCandidate({
     candidateArtifactId: plan.candidateArtifactId,
     datasetVersion: plan.datasetVersion,
     schemaVersion: plan.schemaVersion,
+    credentialGenerationDigest: generationDigest,
     checks: {
       projectTopology: topology,
       runtimeSecrets: 'configured_by_protected_workflow',
@@ -505,6 +517,14 @@ async function selfTest() {
     assert(marker.authorityReleaseId === releaseId, 'authority must be explicit');
     assert(publicTreeDigest(dist) === digest, 'marker must not change public tree digest');
     assert(first.version.canonicalOnly === true, 'version must remain canonical-only');
+    assert(
+      validDigest(credentialGenerationDigest('production-generation-v1')),
+      'credential generation marker must reduce to a bounded digest',
+    );
+    assert(
+      credentialGenerationDigest('short') === null,
+      'short credential generation marker must fail closed',
+    );
 
     const statusRoot = resolve(root, 'status');
     const p605File = resolve(statusRoot, p605Path);

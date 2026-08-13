@@ -104,3 +104,9 @@ Readiness fails closed on any of the following:
 A `ready` diagnostic is not authorization. Production still requires the separate explicit configured-production authorization gate and, after that, a separately bounded go-live execution that revalidates all evidence immediately before mutation.
 
 Parent: #293. Implementation: #415.
+
+## Production credential generation binding
+
+The protected `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID` is an opaque generation marker for the complete configured-production credential and security-configuration set. Raw marker and credential values are never retained or logged; only a SHA-256 digest is retained as evidence.
+
+Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, Cloudflare Access configuration, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.

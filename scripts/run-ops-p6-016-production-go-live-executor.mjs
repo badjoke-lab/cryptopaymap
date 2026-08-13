@@ -253,6 +253,7 @@ function readEvidenceBundle(
     Date.parse(candidateExpires) > now.getTime() &&
     validDigest(candidate?.releaseAuthorityDigest) &&
     validDigest(candidate?.candidateArtifactId) &&
+    validDigest(candidate?.credentialGenerationDigest) &&
     typeof candidate?.publicTreeDigest === 'string' &&
     /^[a-f0-9]{64}$/.test(candidate.publicTreeDigest) &&
     typeof candidate?.datasetVersion === 'string' &&
@@ -279,6 +280,7 @@ function readEvidenceBundle(
     readinessExpires !== null &&
     Date.parse(readinessExpires) > now.getTime() &&
     readiness?.checks?.productionMutation === false &&
+    validDigest(readiness?.credentialGenerationDigest) &&
     Array.isArray(readiness?.blockers) &&
     readiness.blockers.length === 0;
   if (!readinessCurrent) blockers.push('production_readiness:not_ready');
@@ -297,10 +299,14 @@ function readEvidenceBundle(
       blockers.push('evidence_binding:release_authority_mismatch');
     if (binding?.candidateReceiptDigest !== digest(JSON.stringify(candidate)))
       blockers.push('evidence_binding:candidate_receipt_mismatch');
+    if (binding?.credentialGenerationDigest !== candidate.credentialGenerationDigest)
+      blockers.push('evidence_binding:credential_generation_mismatch');
   }
   if (authorizationCurrent && readinessCurrent) {
     if (binding?.readinessReceiptDigest !== digest(JSON.stringify(readiness)))
       blockers.push('evidence_binding:readiness_receipt_mismatch');
+    if (binding?.credentialGenerationDigest !== readiness.credentialGenerationDigest)
+      blockers.push('evidence_binding:credential_generation_mismatch');
   }
 
   if (
@@ -771,6 +777,11 @@ async function execute(statusRoot, outputPath) {
   if (confirmation !== exactConfirmation) blockers.push('confirmation:invalid');
   if (!validDigest(expectedAuthorizationId)) blockers.push('authorization_id:invalid');
   if (repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
+  const credentialGenerationId = String(
+    process.env.P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID ?? '',
+  ).trim();
+  if (credentialGenerationId.length < 8 || credentialGenerationId.length > 200)
+    blockers.push('credential_generation:missing_or_invalid');
 
   const evidence = readEvidenceBundle(
     statusRoot,
@@ -781,6 +792,13 @@ async function execute(statusRoot, outputPath) {
     now,
   );
   blockers.push(...evidence.blockers);
+  if (
+    credentialGenerationId.length >= 8 &&
+    credentialGenerationId.length <= 200 &&
+    evidence.authorization?.productionEvidenceBinding?.credentialGenerationDigest !==
+      digest(credentialGenerationId)
+  )
+    blockers.push('credential_generation:changed');
   const uniqueBlockers = [...new Set(blockers)];
 
   const baseReceipt = {
@@ -1049,6 +1067,7 @@ function selfTest() {
       p605ReceiptDigest: digest('p605'),
       publicTreeDigest: 'b'.repeat(64),
       candidateArtifactId: digest('candidate'),
+      credentialGenerationDigest: digest('production-generation-v1'),
       datasetVersion: 'candidate-dataset',
       schemaVersion: '1.0.0',
       checks: {
@@ -1070,6 +1089,7 @@ function selfTest() {
       commit,
       generatedAt: now.toISOString(),
       expiresAt: new Date(now.getTime() + 45 * 60_000).toISOString(),
+      credentialGenerationDigest: digest('production-generation-v1'),
       checks: { productionMutation: false },
       blockers: [],
     };
@@ -1079,6 +1099,7 @@ function selfTest() {
       publicTreeDigest: candidateReceipt.publicTreeDigest,
       datasetVersion: candidateReceipt.datasetVersion,
       schemaVersion: candidateReceipt.schemaVersion,
+      credentialGenerationDigest: candidateReceipt.credentialGenerationDigest,
       candidateReceiptDigest: digest(JSON.stringify(candidateReceipt)),
       readinessReceiptDigest: digest(JSON.stringify(readinessReceipt)),
     };
@@ -1115,6 +1136,24 @@ function selfTest() {
       now,
     );
     assert(evidence.blockers.length === 0, 'valid evidence bundle must pass');
+    const changedGenerationReadiness = {
+      ...readinessReceipt,
+      credentialGenerationDigest: digest('production-generation-v2'),
+    };
+    writeJson(resolve(statusRoot, readinessPath), changedGenerationReadiness);
+    evidence = readEvidenceBundle(
+      statusRoot,
+      commit,
+      authorizationId,
+      executionOwner,
+      rollbackOwner,
+      now,
+    );
+    assert(
+      evidence.blockers.includes('evidence_binding:credential_generation_mismatch'),
+      'changed credential generation evidence must fail closed',
+    );
+    writeJson(resolve(statusRoot, readinessPath), readinessReceipt);
     const expiredAuthorization = {
       ...authorizationReceipt,
       generatedAt: new Date(now.getTime() - 31 * 60_000).toISOString(),
