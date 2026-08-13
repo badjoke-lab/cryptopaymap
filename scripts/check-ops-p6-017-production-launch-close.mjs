@@ -18,7 +18,7 @@ expectIncludes('runner', files.runner, [
   'observe_and_close_configured_production',
   'no_launch_blocking_incident',
   "evidenceid = 'p6-08-launch-close'",
-  "go_live:not_accepted_or_incomplete",
+  'go_live:not_accepted_or_incomplete',
   'p6-07-q2',
   'p6-07-q3',
   'p6-07-q4',
@@ -77,7 +77,7 @@ expectIncludes('documentation', files.doc, [
   'at least three samples',
   'p6-07-q2 through p6-07-q5',
   'credential generation',
-  'risk register',
+  'open risks',
   'deferred items',
   'next operational review',
   '`llms.txt`',
@@ -85,7 +85,7 @@ expectIncludes('documentation', files.doc, [
   '`sitemap.xml`',
   'cloudflare access',
   'phase 7',
-  'does not mutate production',
+  'does not execute cutover',
 ]);
 
 console.log('OPS-P6-017 configured production launch-close contract passed.');

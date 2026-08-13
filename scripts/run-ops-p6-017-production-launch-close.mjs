@@ -95,7 +95,8 @@ function parseRegister(raw, kind, now, observationEnd) {
       blockers.push(`${kind}_register:item_${index}_invalid`);
       return null;
     }
-    const id = typeof item.id === 'string' && /^[A-Za-z0-9._-]{1,40}$/.test(item.id) ? item.id : null;
+    const id =
+      typeof item.id === 'string' && /^[A-Za-z0-9._-]{1,40}$/.test(item.id) ? item.id : null;
     const owner = typeof item.owner === 'string' ? item.owner.trim() : '';
     const deadline = safeTimestamp(item.deadline);
     const status = typeof item.status === 'string' ? item.status : null;
@@ -104,7 +105,8 @@ function parseRegister(raw, kind, now, observationEnd) {
       blockers.push(`${kind}_register:item_${index}_invalid`);
       return null;
     }
-    if (Date.parse(deadline) <= now.getTime()) blockers.push(`${kind}_register:${id}:deadline_expired`);
+    if (Date.parse(deadline) <= now.getTime())
+      blockers.push(`${kind}_register:${id}:deadline_expired`);
     if (Date.parse(deadline) <= observationEnd.getTime())
       blockers.push(`${kind}_register:${id}:deadline_inside_observation`);
     if (kind === 'risk' && !['low', 'medium', 'high', 'launch_blocking'].includes(severity))
@@ -165,7 +167,8 @@ function readEvidenceBundle(statusRoot, commit, observationEnd) {
     authorization?.approvedCommit === commit &&
     validDigest(authorization?.authorizationId) &&
     digest(authorization.authorizationId) === goLive?.authorizationIdDigest &&
-    digest(authorization?.productionEvidenceBinding ?? null) === digest(goLive?.evidenceBinding ?? null) &&
+    digest(authorization?.productionEvidenceBinding ?? null) ===
+      digest(goLive?.evidenceBinding ?? null) &&
     isObject(authorization?.binding) &&
     ['releaseId', 'dataSnapshotId', 'configurationId', 'environmentId'].every((key) =>
       validDigest(authorization.binding[key]),
@@ -266,7 +269,8 @@ async function fetchBytes(path, expectedStatus, expectedType) {
   });
   const bytes = new Uint8Array(await response.arrayBuffer());
   const contentType = response.headers.get('content-type')?.split(';')[0] ?? null;
-  if (response.status !== expectedStatus) throw new Error(`route_status:${path}:${response.status}`);
+  if (response.status !== expectedStatus)
+    throw new Error(`route_status:${path}:${response.status}`);
   if (contentType !== expectedType) throw new Error(`route_type:${path}:${contentType}`);
   return { response, bytes, text: new TextDecoder().decode(bytes), contentType };
 }
@@ -317,7 +321,12 @@ async function collectExternalSample(expected, observedAt = new Date()) {
   const bodies = new Map();
   for (const [path, status, type] of routes) {
     const result = await fetchBytes(path, status, type);
-    routeObservations.push({ path, status, contentType: result.contentType, bodyDigest: digest(result.bytes) });
+    routeObservations.push({
+      path,
+      status,
+      contentType: result.contentType,
+      bodyDigest: digest(result.bytes),
+    });
     bodies.set(path, result.text);
   }
 
@@ -458,7 +467,8 @@ export async function executeProductionLaunchClose(options) {
   if (confirmation !== exactConfirmation) blockers.push('confirmation:invalid');
   if (!validOwner(observationOwner)) blockers.push('observation_owner:invalid');
   if (!validOwner(incidentOwner)) blockers.push('incident_owner:invalid');
-  if (incidentClearance !== exactIncidentClearance) blockers.push('incident_clearance:not_explicit');
+  if (incidentClearance !== exactIncidentClearance)
+    blockers.push('incident_clearance:not_explicit');
   if (repositoryContractOutcome !== 'success') blockers.push('repository_contract:failed');
   if (observationMinutes === null) blockers.push('observation_window:invalid');
   if (sampleIntervalMinutes === null) blockers.push('sample_interval:invalid');
@@ -485,7 +495,8 @@ export async function executeProductionLaunchClose(options) {
 
   const evidence = readEvidenceBundle(options.statusRoot, commit, observationEnd);
   blockers.push(...evidence.blockers);
-  const expectedGenerationDigest = evidence.goLive?.evidenceBinding?.credentialGenerationDigest ?? null;
+  const expectedGenerationDigest =
+    evidence.goLive?.evidenceBinding?.credentialGenerationDigest ?? null;
   if (
     credentialGenerationId.length < 8 ||
     credentialGenerationId.length > 200 ||
@@ -538,7 +549,12 @@ export async function executeProductionLaunchClose(options) {
 
   const uniquePreflightBlockers = [...new Set(blockers)];
   if (uniquePreflightBlockers.length > 0) {
-    const receipt = { ...baseReceipt, blockers: uniquePreflightBlockers, exceptions: [], samples: [] };
+    const receipt = {
+      ...baseReceipt,
+      blockers: uniquePreflightBlockers,
+      exceptions: [],
+      samples: [],
+    };
     writeJson(options.outputPath, receipt);
     return receipt;
   }
@@ -568,7 +584,8 @@ export async function executeProductionLaunchClose(options) {
   if (digest(credentialGenerationId) !== expectedGenerationDigest)
     closeBlockers.push('credential_generation:changed_during_observation');
 
-  const state = closeBlockers.length === 0 && exceptions.length === 0 ? 'closed' : 'verification_failed';
+  const state =
+    closeBlockers.length === 0 && exceptions.length === 0 ? 'closed' : 'verification_failed';
   const sampleDigests = samples.map((sample) => digest(sample));
   const receipt = {
     ...baseReceipt,
@@ -592,14 +609,17 @@ export async function executeProductionLaunchClose(options) {
       dataIntegrity: state === 'closed' ? 'passed' : 'failed',
       dnsTlsCanonical: state === 'closed' ? 'passed' : 'failed',
       adminBoundary: state === 'closed' ? 'passed' : 'failed',
-      monitoringAndAlerts: evidence.operations.find((item) => item.evidenceId === 'P6-07-Q2')?.state,
+      monitoringAndAlerts: evidence.operations.find((item) => item.evidenceId === 'P6-07-Q2')
+        ?.state,
       backupIntegrity: evidence.operations.find((item) => item.evidenceId === 'P6-07-Q3')?.state,
       restoreEvidence: evidence.operations.find((item) => item.evidenceId === 'P6-07-Q4')?.state,
       operationsRecovery: evidence.operations.find((item) => item.evidenceId === 'P6-07-Q5')?.state,
       incidentClearance: incidentClearance === exactIncidentClearance ? 'passed' : 'failed',
-      credentialGeneration: digest(credentialGenerationId) === expectedGenerationDigest ? 'matched' : 'failed',
+      credentialGeneration:
+        digest(credentialGenerationId) === expectedGenerationDigest ? 'matched' : 'failed',
       rollbackReadiness:
-        baseReceipt.rollback.drillStatus === 'passed' && baseReceipt.rollback.externalStatus === 'passed'
+        baseReceipt.rollback.drillStatus === 'passed' &&
+        baseReceipt.rollback.externalStatus === 'passed'
           ? 'passed'
           : 'failed',
       productionMutation: false,
@@ -709,10 +729,29 @@ function fixtureSample(expected, observedAt) {
     status: 'passed',
     observedAt: observedAt.toISOString(),
     apexRedirect: { status: 307, locationDigest: digest('location') },
-    dns: { apexDigest: digest('apex'), canonicalAddressCount: 2, canonicalDigest: digest('www'), legacyCnamePresent: false },
-    tls: { protocol: 'TLSv1.3', validTo: '2026-12-01T00:00:00.000Z', certificateDigest: digest('cert'), hostnameCovered: true },
-    release: { markerDigest: digest('marker'), candidateArtifactId: expected.candidateArtifactId, publicTreeDigest: expected.publicTreeDigest },
-    data: { datasetVersion: expected.datasetVersion, schemaVersion: expected.schemaVersion, manifestFileCount: 5, manifestDigest: digest('manifest') },
+    dns: {
+      apexDigest: digest('apex'),
+      canonicalAddressCount: 2,
+      canonicalDigest: digest('www'),
+      legacyCnamePresent: false,
+    },
+    tls: {
+      protocol: 'TLSv1.3',
+      validTo: '2026-12-01T00:00:00.000Z',
+      certificateDigest: digest('cert'),
+      hostnameCovered: true,
+    },
+    release: {
+      markerDigest: digest('marker'),
+      candidateArtifactId: expected.candidateArtifactId,
+      publicTreeDigest: expected.publicTreeDigest,
+    },
+    data: {
+      datasetVersion: expected.datasetVersion,
+      schemaVersion: expected.schemaVersion,
+      manifestFileCount: 5,
+      manifestDigest: digest('manifest'),
+    },
     routes: { count: 14, digest: digest('routes') },
     admin: { status: 403, policyDigest: digest('admin') },
     machineFilesDigest: digest('machine'),
@@ -732,7 +771,7 @@ async function selfTest() {
   const observationEnd = new Date(start.getTime() + 15 * 60_000);
   const observer = 'independent-production-observer';
   const incidentOwner = 'production-communication-owner';
-  const fixture = fixtureReceiptSet(statusRoot, commit, start, observationEnd, observer, incidentOwner);
+  fixtureReceiptSet(statusRoot, commit, start, observationEnd, observer, incidentOwner);
   let clockMs = start.getTime();
   const base = {
     statusRoot,
@@ -761,14 +800,23 @@ async function selfTest() {
     let receipt = await executeProductionLaunchClose(base);
     assert(receipt.state === 'closed', 'complete sustained observation must close launch');
     assert(receipt.checks.productionMutation === false, 'launch-close must remain read-only');
-    assert(receipt.observation.sampleCount === 4, '15-minute window at 5 minutes requires four samples');
+    assert(
+      receipt.observation.sampleCount === 4,
+      '15-minute window at 5 minutes requires four samples',
+    );
 
     clockMs = start.getTime();
     receipt = await executeProductionLaunchClose({ ...base, confirmation: 'WRONG' });
-    assert(receipt.blockers.includes('confirmation:invalid'), 'wrong confirmation must fail closed');
+    assert(
+      receipt.blockers.includes('confirmation:invalid'),
+      'wrong confirmation must fail closed',
+    );
 
     clockMs = start.getTime();
-    receipt = await executeProductionLaunchClose({ ...base, credentialGenerationId: 'production-generation-v2' });
+    receipt = await executeProductionLaunchClose({
+      ...base,
+      credentialGenerationId: 'production-generation-v2',
+    });
     assert(
       receipt.blockers.includes('credential_generation:changed_or_invalid'),
       'changed credential generation must fail closed',
@@ -807,7 +855,8 @@ async function selfTest() {
 async function main() {
   if (process.argv.includes('--self-test')) return selfTest();
   const [statusRoot, outputPath] = process.argv.slice(2);
-  if (!statusRoot || !outputPath) throw new Error('Usage: production-launch-close <status-root> <output-path>');
+  if (!statusRoot || !outputPath)
+    throw new Error('Usage: production-launch-close <status-root> <output-path>');
   await executeProductionLaunchClose({
     statusRoot,
     outputPath,
