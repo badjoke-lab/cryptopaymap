@@ -12,6 +12,11 @@ import {
 import { tmpdir } from 'node:os';
 import { dirname, join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
+import {
+  canonicalOrigin,
+  materializeProductionMachineFiles,
+  validateProductionMachineFiles,
+} from './materialize-production-machine-files.mjs';
 
 const exactConfirmation = 'BOOTSTRAP_CONFIGURED_PRODUCTION_CANDIDATE';
 const evidenceId = 'P6-08-CANDIDATE';
@@ -226,6 +231,8 @@ function buildCandidateArtifact(commit, releaseAuthorityId) {
     rmSync(root, { recursive: true, force: true });
     execFileSync('npm', ['run', 'build'], { stdio: 'inherit' });
     identity = materializeMachineMetadata(root, commit);
+    materializeProductionMachineFiles(root);
+    validateProductionMachineFiles(root);
     digests.push(publicTreeDigest(root));
   }
 
@@ -302,6 +309,9 @@ async function verifyExternal(plan) {
     ['/version.json', 200, 'application/json'],
     ['/data/manifest.json', 200, 'application/json'],
     ['/robots.txt', 200, 'text/plain'],
+    ['/llms.txt', 200, 'text/plain'],
+    ['/ai.txt', 200, 'text/plain'],
+    ['/sitemap.xml', 200, 'application/xml'],
     ['/admin/', 403, 'text/plain'],
   ];
   const observations = [];
@@ -316,6 +326,34 @@ async function verifyExternal(plan) {
     if (response.status !== expectedStatus)
       throw new Error(`external_status:${path}:${response.status}`);
     if (contentType !== expectedType) throw new Error(`external_type:${path}:${contentType}`);
+    const bodyText = new TextDecoder().decode(bytes);
+    if (path === '/robots.txt') {
+      if (
+        !bodyText.includes('Allow: /') ||
+        !bodyText.includes('Disallow: /admin/') ||
+        !bodyText.includes(`Sitemap: ${canonicalOrigin}/sitemap.xml`)
+      )
+        throw new Error('external_robots_contract_mismatch');
+    }
+    if (path === '/llms.txt') {
+      if (!bodyText.includes('# CryptoPayMap') || !bodyText.includes('/data/manifest.json'))
+        throw new Error('external_llms_contract_mismatch');
+    }
+    if (path === '/ai.txt') {
+      if (
+        !bodyText.includes('Project: CryptoPayMap') ||
+        !bodyText.includes('reviewed public records only')
+      )
+        throw new Error('external_ai_contract_mismatch');
+    }
+    if (path === '/sitemap.xml') {
+      if (
+        !bodyText.includes(`<loc>${canonicalOrigin}/</loc>`) ||
+        bodyText.includes('/admin/') ||
+        bodyText.includes('/404.html')
+      )
+        throw new Error('external_sitemap_contract_mismatch');
+    }
     if (path === '/admin/') {
       const cacheControl = response.headers.get('cache-control') ?? '';
       const robots = response.headers.get('x-robots-tag') ?? '';
@@ -510,6 +548,10 @@ async function selfTest() {
     const dist = resolve(root, 'dist');
     writeFixtureData(dist);
     const first = materializeMachineMetadata(dist, 'a'.repeat(40));
+    const machine = materializeProductionMachineFiles(dist);
+    const machineValidation = validateProductionMachineFiles(dist);
+    assert(machine.routeCount === 1, 'fixture sitemap must contain the public home route');
+    assert(machineValidation.sitemap === 'passed', 'fixture sitemap must validate');
     const digest = publicTreeDigest(dist);
     const releaseId = boundedHash('release-authority');
     const marker = writeAuthorityMarker(dist, 'a'.repeat(40), releaseId, digest);

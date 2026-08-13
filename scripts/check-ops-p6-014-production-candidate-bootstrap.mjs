@@ -13,6 +13,11 @@ const files = {
     'docs/OPS_P6_014_CONFIGURED_PRODUCTION_CANDIDATE_BOOTSTRAP.md',
     'utf8',
   ).toLowerCase(),
+  machine: readFileSync('scripts/materialize-production-machine-files.mjs', 'utf8').toLowerCase(),
+  machineDoc: readFileSync(
+    'docs/OPS_P6_021_PRODUCTION_MACHINE_READABLE_FILES.md',
+    'utf8',
+  ).toLowerCase(),
 };
 
 function expectIncludes(label, content, markers) {
@@ -88,5 +93,35 @@ expectIncludes('runner', files.runner, [
   'credentialgenerationdigest',
 ]);
 expectIncludes('workflow', files.workflow, ['p6_08_production_credential_generation_id']);
+
+expectIncludes('runner', files.runner, [
+  'materializeproductionmachinefiles',
+  "['/llms.txt', 200, 'text/plain']",
+  "['/ai.txt', 200, 'text/plain']",
+  "['/sitemap.xml', 200, 'application/xml']",
+  'external_robots_contract_mismatch',
+  'external_llms_contract_mismatch',
+  'external_ai_contract_mismatch',
+  'external_sitemap_contract_mismatch',
+]);
+expectIncludes('machine materializer', files.machine, [
+  'robots.txt',
+  'llms.txt',
+  'ai.txt',
+  'sitemap.xml',
+  'disallow: /admin/',
+  'reviewed public records only',
+  "!route.startswith('/admin/')",
+]);
+expectIncludes('machine documentation', files.machineDoc, [
+  'production machine-readable launch files',
+  '`/robots.txt`',
+  '`/llms.txt`',
+  '`/ai.txt`',
+  '`/sitemap.xml`',
+  'staging:review:build',
+  'global `disallow: /`',
+  'candidate records',
+]);
 
 console.log('OPS-P6-014 configured production candidate bootstrap contract passed.');
