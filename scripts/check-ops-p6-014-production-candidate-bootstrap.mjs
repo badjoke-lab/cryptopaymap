@@ -36,6 +36,8 @@ expectIncludes('runner', files.runner, [
   'livedomainmutation: false',
   'dnsmutation: false',
   'canonicalhostmutation: false',
+  "['/admin/', 403, 'text/plain']",
+  'admin_access_cache_policy_missing',
   "method: 'get'",
 ]);
 
@@ -53,6 +55,12 @@ expectIncludes('workflow', files.workflow, [
   'p6_08_production_review_secret_seed_base64url',
   'p6_08_production_turnstile_secret_key',
   'p6_08_production_turnstile_site_key',
+  'p6_08_production_cf_access_team_domain',
+  'p6_08_production_cf_access_aud',
+  'cpm_admin_auth_mode',
+  'cloudflare_access',
+  'cf_access_team_domain',
+  'cf_access_aud',
   'config/production-authorization/production-candidate-bootstrap-receipt.json',
   'cryptopaymap.com',
   'do not attach live domain',
@@ -69,6 +77,10 @@ expectIncludes('documentation', files.doc, [
   'does not change dns',
   'does not execute cutover',
   'synthetic staging review data is not materialized',
+  'cloudflare access',
+  'unauthenticated',
+  '`/admin/`',
+  '403',
 ]);
 
 console.log('OPS-P6-014 configured production candidate bootstrap contract passed.');

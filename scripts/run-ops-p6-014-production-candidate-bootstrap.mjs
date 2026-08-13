@@ -296,6 +296,7 @@ async function verifyExternal(plan) {
     ['/version.json', 200, 'application/json'],
     ['/data/manifest.json', 200, 'application/json'],
     ['/robots.txt', 200, 'text/plain'],
+    ['/admin/', 403, 'text/plain'],
   ];
   const observations = [];
   for (const [path, expectedStatus, expectedType] of routes) {
@@ -309,6 +310,16 @@ async function verifyExternal(plan) {
     if (response.status !== expectedStatus)
       throw new Error(`external_status:${path}:${response.status}`);
     if (contentType !== expectedType) throw new Error(`external_type:${path}:${contentType}`);
+    if (path === '/admin/') {
+      const cacheControl = response.headers.get('cache-control') ?? '';
+      const robots = response.headers.get('x-robots-tag') ?? '';
+      const contentOptions = response.headers.get('x-content-type-options') ?? '';
+      if (cacheControl !== 'private, no-store')
+        throw new Error('admin_access_cache_policy_missing');
+      if (robots !== 'noindex, nofollow, noarchive')
+        throw new Error('admin_access_robots_policy_missing');
+      if (contentOptions !== 'nosniff') throw new Error('admin_access_content_policy_missing');
+    }
     observations.push({
       path,
       status: response.status,

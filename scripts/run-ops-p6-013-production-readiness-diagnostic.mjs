@@ -16,6 +16,8 @@ const requiredRuntimeSecrets = [
   'P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL',
   'P6_08_PRODUCTION_TURNSTILE_SECRET_KEY',
   'P6_08_PRODUCTION_TURNSTILE_SITE_KEY',
+  'P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN',
+  'P6_08_PRODUCTION_CF_ACCESS_AUD',
 ];
 
 function digest(value) {
@@ -162,6 +164,35 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
   const markerMatches =
     markerStatus === 200 && validDigest(markerReleaseId) && markerReleaseId === expectedReleaseId;
 
+  let adminAccess = {
+    status: 0,
+    cacheControl: null,
+    robots: null,
+    contentOptions: null,
+    enforced: false,
+  };
+  try {
+    const response = await fetchImpl(`https://${productionProject}.pages.dev/admin/`, {
+      cache: 'no-store',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(20_000),
+    });
+    const cacheControl = response.headers.get('cache-control');
+    const robots = response.headers.get('x-robots-tag');
+    const contentOptions = response.headers.get('x-content-type-options');
+    adminAccess = {
+      status: response.status,
+      cacheControl,
+      robots,
+      contentOptions,
+      enforced:
+        response.status === 403 &&
+        cacheControl === 'private, no-store' &&
+        robots === 'noindex, nofollow, noarchive' &&
+        contentOptions === 'nosniff',
+    };
+  } catch {}
+
   return {
     cloudflare: {
       accountConfigured: true,
@@ -203,6 +234,7 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
       expectedReleaseDigest: digest(expectedReleaseId),
       observedReleaseDigest: validDigest(markerReleaseId) ? digest(markerReleaseId) : null,
     },
+    adminAccess,
   };
 }
 
@@ -270,6 +302,7 @@ export async function executeProductionReadiness(options) {
   }
   if (external?.intendedDeployment?.markerMatches !== true)
     blockers.push('intended_release:not_observed');
+  if (external?.adminAccess?.enforced !== true) blockers.push('admin_access:not_enforced');
 
   const uniqueBlockers = [...new Set(blockers)];
   const decision = uniqueBlockers.length === 0 ? 'ready' : 'blocked';
@@ -361,6 +394,13 @@ function readyExternal(releaseId) {
       expectedReleaseDigest: digest(releaseId),
       observedReleaseDigest: digest(releaseId),
     },
+    adminAccess: {
+      status: 403,
+      cacheControl: 'private, no-store',
+      robots: 'noindex, nofollow, noarchive',
+      contentOptions: 'nosniff',
+      enforced: true,
+    },
   };
 }
 
@@ -421,6 +461,20 @@ async function selfTest() {
     assert(
       receipt.blockers.includes('pages_project:missing_or_inaccessible'),
       'missing project must block',
+    );
+
+    const adminUnavailable = structuredClone(base.externalOverride);
+    adminUnavailable.adminAccess = {
+      status: 503,
+      cacheControl: 'private, no-store',
+      robots: 'noindex, nofollow, noarchive',
+      contentOptions: 'nosniff',
+      enforced: false,
+    };
+    receipt = await executeProductionReadiness({ ...base, externalOverride: adminUnavailable });
+    assert(
+      receipt.blockers.includes('admin_access:not_enforced'),
+      'Admin 503 must block production readiness',
     );
 
     const wrongRelease = structuredClone(base.externalOverride);
