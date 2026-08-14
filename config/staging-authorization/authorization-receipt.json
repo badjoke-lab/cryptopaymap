@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "authorizationId": "sha256:07fd8dd2c253e711d0b4d7726d4fa256b5da6035219e43791418b3a628f481d1",
-  "state": "not_authorized",
+  "authorizationId": "sha256:0b442f76853cd3c3c4ba86c6209080eb52f5564095836a45a137b6d596b71694",
+  "state": "authorized",
   "environment": "configured_staging",
-  "mode": "inventory",
+  "mode": "authorization",
   "approvedCommit": "f921d39d6eebb7d91bc5a24d4c39e716d2efbe52",
-  "generatedAt": "2026-08-14T16:09:37.810Z",
-  "workflowRunId": "31817830107",
+  "generatedAt": "2026-08-14T16:10:08.634Z",
+  "workflowRunId": "31818018401",
   "operators": {
-    "launchOwner": "sha256:10fb0dfd95c7499eb980e3206b8dad33c012f6a99c4604f4b1218039cdf4645e",
-    "observer": "sha256:c7092a72d60bc73f98de77e691652bcff87aeda871d48dd0021190de3ed53ee4",
-    "rollbackOwner": "sha256:6cee91579d343c5433c575e9d8e8e98cb6c936d3964fab1901beaa8f57818743"
+    "launchOwner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
+    "observer": "sha256:0076b1e4bf8354037e86329d4c9a92d32f4a2dde2514a86a433f72dc24068dd9",
+    "rollbackOwner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07"
   },
   "checks": {
     "deployment": {
@@ -76,7 +76,11 @@
     ],
     "predecessorBinding": "matched"
   },
-  "blockers": [
-    "explicit_dispatch:required"
-  ]
+  "binding": {
+    "releaseId": "sha256:907d28f34179226a3e9e70e437e162b16bf0746a02af645fffb674b6656df03f",
+    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+    "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+    "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+  },
+  "blockers": []
 }
