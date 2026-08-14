@@ -3,11 +3,11 @@
   "evidenceId": "P6-07-Q4",
   "launchDomain": "isolated_restore",
   "environment": "configured_staging",
-  "state": "failed",
+  "state": "accepted",
   "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
-  "generatedAt": "2026-08-14T14:44:26.874Z",
-  "expiresAt": "2026-09-13T14:44:26.874Z",
-  "workflowRunId": "31810822008",
+  "generatedAt": "2026-08-14T14:58:29.414Z",
+  "expiresAt": "2026-09-13T14:58:29.414Z",
+  "workflowRunId": "31811710449",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-002A configured staging P6-07 isolated restore evidence",
   "checks": {
@@ -138,10 +138,10 @@
     "q3": {
       "path": "config/staging-authorization/p6-07-backup-integrity-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T07:26:48.594Z",
-      "expiresAt": "2026-09-13T07:26:48.594Z",
-      "digest": "sha256:7212da7f970132d11bfd73cba490e3efa27845f9ae9592bd03b687831bd11205",
-      "workflowRunId": "31779804975"
+      "generatedAt": "2026-08-14T14:51:57.519Z",
+      "expiresAt": "2026-09-13T14:51:57.519Z",
+      "digest": "sha256:b6bd0fcded0d00eb954f6880c54349205a671b515c00bc5e072fcb88555f7961",
+      "workflowRunId": "31811451446"
     },
     "configuration": {
       "sourceDatabase": "configured",
@@ -153,10 +153,10 @@
     },
     "artifact": {
       "status": "passed",
-      "workflowRunIdentity": "sha256:e37ae4244189c39afc90c81799d2ae28469b3573e35f02b6d59cd18468e812c8",
-      "artifactIdentity": "sha256:809791ee32cd3c17ca0f055cc57df30738e58a18119f8b0eda63289868c62081",
-      "artifactDigest": "sha256:88aea916d57b299151f744619e52fb5cee2e9ccfd1b9d40250bf03c773748761",
-      "plaintextDigest": "sha256:f3440ae6646107930d3a6f2fdf51bdb4dd4025083245989c394bbc42ec4ea90a",
+      "workflowRunIdentity": "sha256:151e40c2b19fa5babdafbdbe6f696d45a6847bd0c093673bd5d7c52830addd35",
+      "artifactIdentity": "sha256:abd0563cf21f53a492832b3136a837473dcb7452228c2ff31eae193c424b71ce",
+      "artifactDigest": "sha256:5fd43774e47003fa05683ef21f2c355fdd74cc2efd2e33fa79e91296f0dd9a4c",
+      "plaintextDigest": "sha256:d59dd75a9c478db08267fa9819c985d336cc56868328b01dd919f5cac551f623",
       "inventoryDigest": "sha256:0b284e196ea3540364421580308a6dd6a9c44fe664f4de40b630a23a7119d934",
       "inventoryObjectCount": 425,
       "schemaRevision": "sha256:8a0179645552059035ef1e3ceb5eebd166cbe166114c637cf538d578460bb809",
@@ -178,7 +178,7 @@
     "restore": {
       "status": "passed",
       "mode": "pg_restore_single_transaction",
-      "sourceArtifactIdentity": "sha256:809791ee32cd3c17ca0f055cc57df30738e58a18119f8b0eda63289868c62081"
+      "sourceArtifactIdentity": "sha256:abd0563cf21f53a492832b3136a837473dcb7452228c2ff31eae193c424b71ce"
     },
     "reconciliation": {
       "status": "passed",
@@ -204,15 +204,15 @@
     },
     "objectives": {
       "rpo": {
-        "status": "failed",
+        "status": "passed",
         "objectiveMinutes": 60,
-        "measuredMinutes": 438.667,
-        "backupGeneratedAt": "2026-08-14T07:26:48.594Z"
+        "measuredMinutes": 7.54,
+        "backupGeneratedAt": "2026-08-14T14:51:57.519Z"
       },
       "rto": {
         "status": "passed",
         "objectiveMinutes": 30,
-        "measuredMinutes": 2.545
+        "measuredMinutes": 2.523
       }
     },
     "disposal": {
@@ -227,7 +227,5 @@
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
-  "exceptions": [
-    "rpo_objective_breached"
-  ]
+  "exceptions": []
 }
