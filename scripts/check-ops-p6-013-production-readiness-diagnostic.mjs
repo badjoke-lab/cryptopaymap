@@ -17,7 +17,9 @@ const files = {
 
 function expectIncludes(label, content, markers) {
   const missing = markers.filter((marker) => !content.includes(marker.toLowerCase()));
-  if (missing.length > 0) throw new Error(`${label} missing markers:\n- ${missing.join('\n- ')}`);
+  if (missing.length > 0) {
+    throw new Error(`${label} missing markers:\n- ${missing.join('\n- ')}`);
+  }
 }
 
 expectIncludes('runner', files.runner, [
@@ -46,8 +48,11 @@ expectIncludes('runner', files.runner, [
 expectIncludes('workflow', files.workflow, [
   'workflow_dispatch',
   'diagnose_configured_production_readiness',
+  'production_environment_probe:',
+  'inspect github production environment read-only before any environment binding',
+  'diagnose_blocked_environment:',
+  'environment: production',
   'verify exact current main',
-  'inspect github production environment read-only',
   "node --input-type=module <<'node'",
   "method: 'get'",
   'production_environment_status',
@@ -55,8 +60,46 @@ expectIncludes('workflow', files.workflow, [
   'production-readiness-diagnostic.json',
   'config/production-authorization/readiness-diagnostic.json',
   "if(r.decision!=='ready')",
+  'actions: read',
   'contents: write',
 ]);
+
+const probeStart = files.workflow.indexOf('\n  production_environment_probe:');
+const blockedStart = files.workflow.indexOf('\n  diagnose_blocked_environment:');
+const protectedStart = files.workflow.indexOf('\n  diagnose:\n');
+if (!(probeStart >= 0 && blockedStart > probeStart && protectedStart > blockedStart)) {
+  throw new Error(
+    'workflow job ordering does not preserve probe -> blocked/protected diagnostic boundary',
+  );
+}
+const probeSection = files.workflow.slice(probeStart, blockedStart);
+const blockedSection = files.workflow.slice(blockedStart, protectedStart);
+const protectedSection = files.workflow.slice(protectedStart);
+if (probeSection.includes('environment: production')) {
+  throw new Error('production environment probe must not bind environment: production');
+}
+if (blockedSection.includes('environment: production')) {
+  throw new Error('blocked-environment diagnostic must not bind environment: production');
+}
+if (!protectedSection.includes('environment: production')) {
+  throw new Error('protected diagnostic must bind environment: production');
+}
+for (const secretName of [
+  'p6_08_production_database_url',
+  'p6_08_production_review_secret_seed_base64url',
+  'p6_08_production_turnstile_secret_key',
+  'p6_08_production_turnstile_site_key',
+  'p6_08_production_cf_access_team_domain',
+  'p6_08_production_cf_access_aud',
+  'p6_08_production_credential_generation_id',
+]) {
+  if (blockedSection.includes(`secrets.${secretName}`)) {
+    throw new Error(`blocked-environment diagnostic must not read protected secret ${secretName}`);
+  }
+  if (!protectedSection.includes(`secrets.${secretName}`)) {
+    throw new Error(`protected diagnostic missing Environment secret ${secretName}`);
+  }
+}
 
 expectIncludes('documentation', files.doc, [
   'read-only',
@@ -64,6 +107,11 @@ expectIncludes('documentation', files.doc, [
   '`cryptopaymap-staging`',
   'github `production` environment',
   'protection rule',
+  'unbound probe job',
+  'does not bind `environment: production`',
+  'protected diagnostic job',
+  'binds `environment: production`',
+  'environment secrets',
   'p6-05 candidate release',
   'production-specific runtime inputs',
   'cloudflare access',

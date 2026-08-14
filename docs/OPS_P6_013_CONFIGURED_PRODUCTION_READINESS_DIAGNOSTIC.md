@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This slice adds the read-only production runtime readiness diagnostic required before any configured production authorization or go-live attempt under Issue #293 and the P6-08 contract.
+This slice provides the read-only production runtime readiness diagnostic required before any configured production authorization or go-live attempt under Issue #293 and the P6-08 contract.
 
 The diagnostic determines whether the production control-plane and runtime prerequisites are present for one exact current `main` commit. It does not authorize production and it does not execute production.
 
@@ -32,24 +32,34 @@ It must be distinct from the configured-staging project:
 
 Readiness cannot pass if the production project is missing or inaccessible.
 
-## GitHub production environment
+## GitHub production environment guard
 
-A GitHub `production` environment must already exist and must have at least one protection rule before readiness can pass.
+A GitHub `production` environment must already exist and must have at least one protection rule before protected readiness evaluation can run.
 
-The diagnostic deliberately does not reference `environment: production` in its workflow job because GitHub can create a missing environment implicitly. A missing production environment must remain an explicit blocker rather than being silently created by a diagnostic run.
+P6-013 uses two stages so the diagnostic never creates a missing environment merely by referring to it:
+
+1. an **unbound probe job** performs a GET-only inspection of the repository `production` environment and its protection-rule count. This job does not bind `environment: production`;
+2. only when that probe reports the environment as present with at least one protection rule does the **protected diagnostic job** run. That job binds `environment: production`, which is the only job allowed to read the production Environment secrets.
+
+If the environment is missing or unprotected, a separate blocked-environment diagnostic path records a bounded blocked readiness receipt without binding `environment: production`. It therefore cannot implicitly create the missing environment and cannot read the protected production Environment secrets.
+
+This preserves both requirements: missing/unprotected environment state remains an explicit fail-closed blocker, while correctly scoped Environment secrets become available once the guard has proven that the protected environment already exists.
 
 ## Production-specific runtime inputs
 
-The workflow checks only whether the following production-specific runtime inputs are non-empty:
+The protected diagnostic job checks whether the following production-specific runtime inputs are non-empty Environment secrets:
 
 - `P6_08_PRODUCTION_DATABASE_URL`;
 - `P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL`;
 - `P6_08_PRODUCTION_TURNSTILE_SECRET_KEY`;
 - `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`;
 - `P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN`;
-- `P6_08_PRODUCTION_CF_ACCESS_AUD`.
+- `P6_08_PRODUCTION_CF_ACCESS_AUD`;
+- `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID`.
 
-Their raw values are never written to the diagnostic receipt. Missing input names may be retained as bounded blockers.
+Their raw values are never written to the diagnostic receipt. Missing input names may be retained as bounded blockers. The production values belong in the protected GitHub `production` Environment rather than being duplicated into repository-scoped secrets merely to make the diagnostic see them.
+
+The blocked-environment path does not inspect those protected values. Because the environment gate has already failed, readiness remains blocked before any protected runtime evaluation can become authoritative.
 
 Staging/test Turnstile keys or staging-derived identities are not treated as production readiness.
 
@@ -91,7 +101,7 @@ Readiness fails closed on any of the following:
 - stale, failed, or wrong-commit P6-05 evidence;
 - missing GitHub `production` environment;
 - missing production-environment protection rule;
-- missing production-specific runtime input;
+- missing production-specific runtime input once protected evaluation is allowed;
 - production/staging Pages-project collision;
 - missing or inaccessible production Pages project;
 - missing or ambiguous Cloudflare zone;
@@ -99,11 +109,13 @@ Readiness fails closed on any of the following:
 - candidate Pages release marker missing or not matching the P6-05 candidate release;
 - production Admin `/admin/` not enforcing unauthenticated 403 with the required security headers.
 
+A blocked result is evidence of a failed readiness condition, not authorization to provision or mutate anything outside the separately authorized operational step.
+
 ## Next boundary
 
 A `ready` diagnostic is not authorization. Production still requires the separate explicit configured-production authorization gate and, after that, a separately bounded go-live execution that revalidates all evidence immediately before mutation.
 
-Parent: #293. Implementation: #415.
+Parent: #293. Original implementation: #415. Protected Environment secret-scope correction: #440.
 
 ## Production credential generation binding
 
