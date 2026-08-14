@@ -1,16 +1,16 @@
 {
   "version": 1,
-  "authorizationId": "sha256:5732f87e39d532940770d2f1429b73b65bc1f76fab9e449eed5707b7b6928641",
+  "authorizationId": "sha256:ae4fa1cdb581cacecb584cc6a25dc46ed55dcb6101b346b37630d9b6682fc848",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "44faf2db63da72a8b4697e72ec43663b108216bf",
-  "generatedAt": "2026-08-14T05:00:30.902Z",
-  "workflowRunId": "31771414511",
+  "generatedAt": "2026-08-14T05:19:53.478Z",
+  "workflowRunId": "31772552907",
   "operators": {
-    "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
-    "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
-    "rollbackOwner": "sha256:d0cd171be8090d5e3b850f17a2cf6be2d8f587c99e9e4621cd350e1e6ba51506"
+    "launchOwner": "sha256:10fb0dfd95c7499eb980e3206b8dad33c012f6a99c4604f4b1218039cdf4645e",
+    "observer": "sha256:c7092a72d60bc73f98de77e691652bcff87aeda871d48dd0021190de3ed53ee4",
+    "rollbackOwner": "sha256:6cee91579d343c5433c575e9d8e8e98cb6c936d3964fab1901beaa8f57818743"
   },
   "checks": {
     "deployment": {
@@ -62,23 +62,21 @@
       {
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-13T03:29:51.685Z",
-        "expiresAt": "2026-08-16T03:29:51.685Z"
+        "state": "current",
+        "generatedAt": "2026-08-14T05:02:47.487Z",
+        "expiresAt": "2026-08-17T05:02:47.487Z"
       },
       {
         "evidenceId": "P6-07",
         "path": "config/staging-authorization/p6-07-operations-recovery-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-13T03:46:32.980Z",
-        "expiresAt": "2026-09-12T03:46:32.980Z"
+        "state": "current",
+        "generatedAt": "2026-08-14T05:19:51.373Z",
+        "expiresAt": "2026-09-13T05:19:51.373Z"
       }
     ],
-    "predecessorBinding": "unproven"
+    "predecessorBinding": "matched"
   },
   "blockers": [
-    "P6-06:failed",
-    "P6-07:failed",
     "explicit_dispatch:required"
   ]
 }
