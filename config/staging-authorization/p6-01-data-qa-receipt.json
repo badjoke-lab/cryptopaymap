@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
-  "generatedAt": "2026-08-14T06:57:53.674Z",
-  "expiresAt": "2026-08-17T06:57:53.674Z",
-  "workflowRunId": "31778082836",
+  "generatedAt": "2026-08-14T07:05:49.838Z",
+  "expiresAt": "2026-08-17T07:05:49.838Z",
+  "workflowRunId": "31778556609",
   "owner": "sha256:4a5701af8e3ea2fb4bca65bd906ff5ca207275391449d555160c85744a3dd3b5",
   "procedure": "OPS-P6-001D configured staging data QA",
   "checks": {
@@ -22,12 +22,12 @@
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T06:55:28.372Z"
+      "generatedAt": "2026-08-14T07:03:41.332Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T06:56:40.231Z"
+      "generatedAt": "2026-08-14T07:04:27.947Z"
     },
     "publicProjection": {
       "status": "passed",
