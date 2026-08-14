@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "failed",
   "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
-  "generatedAt": "2026-08-14T07:30:06.152Z",
-  "expiresAt": "2026-09-13T07:30:06.152Z",
-  "workflowRunId": "31780012450",
+  "generatedAt": "2026-08-14T14:44:26.874Z",
+  "expiresAt": "2026-09-13T14:44:26.874Z",
+  "workflowRunId": "31810822008",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-002A configured staging P6-07 isolated restore evidence",
   "checks": {
@@ -165,26 +165,60 @@
       "immutability": "q3_run_scoped_artifact"
     },
     "targetSafety": {
-      "status": "not_run"
+      "status": "passed",
+      "sourceIdentity": "sha256:917bc3e50a11de1cd851562e9329771f3ef95018813a8ba9f01a75ea020c6588",
+      "targetIdentity": "sha256:d09aaa0909208c5f9833c2b08086ded74f089a846297ed954f4d2afc15a4263d",
+      "sourceUrlIdentity": "sha256:76b20490f326a139fd621828ec3dcf11b9323278e93f0b60251d041673510b67",
+      "targetUrlIdentity": "sha256:a6fc34a9b59db25b2bc4f31bffc0ca94130e685eada80ebda4db024fe4140b6c",
+      "distinct": true,
+      "targetNameDigest": "sha256:232a94f06367f6986cbfd20c0707bf644c7b3ce0ef0e93ab574f276b37fee09d",
+      "initialUserObjectCount": 0,
+      "destructiveScopeAuthorized": true
     },
     "restore": {
-      "status": "not_run"
+      "status": "passed",
+      "mode": "pg_restore_single_transaction",
+      "sourceArtifactIdentity": "sha256:809791ee32cd3c17ca0f055cc57df30738e58a18119f8b0eda63289868c62081"
     },
     "reconciliation": {
-      "status": "not_run"
+      "status": "passed",
+      "snapshotTag": "0027_far_alice",
+      "expectedTableCount": 42,
+      "restoredTableCount": 42,
+      "tableSetDigest": "sha256:9381bc61955f00a734f8bb130bd441adf8dbf2bbd57e93246f65936946cb6090",
+      "allExpectedNonPrivateTablesMatched": true,
+      "nonPrivateTableCount": 38,
+      "nonPrivateRowCountDigest": "sha256:3e85721946ee062ef55ff710de4f13696a79a13b8f95917095fc99c471026ed5",
+      "privateTablesZeroRows": true,
+      "privateTableCount": 4,
+      "privateScopeDigest": "sha256:a50c743c6adabb318b419b1e5c7c427956d745645d864fa0694d1bdaff5e29af",
+      "sourceSchemaDigest": "sha256:28e7ee1e99aa61214d4ed46a95d99668a170fc6c66c9be81623c3191bfb49872",
+      "targetSchemaDigest": "sha256:28e7ee1e99aa61214d4ed46a95d99668a170fc6c66c9be81623c3191bfb49872",
+      "foreignKeyCount": 65,
+      "expectedForeignKeyCount": 65,
+      "checkConstraintCount": 232,
+      "expectedCheckConstraintCount": 232,
+      "invalidConstraintCount": 0,
+      "representativeRead": "passed",
+      "representativeRowCount": 1
     },
     "objectives": {
       "rpo": {
-        "status": "not_run",
-        "objectiveMinutes": 60
+        "status": "failed",
+        "objectiveMinutes": 60,
+        "measuredMinutes": 438.667,
+        "backupGeneratedAt": "2026-08-14T07:26:48.594Z"
       },
       "rto": {
-        "status": "not_run",
-        "objectiveMinutes": 30
+        "status": "passed",
+        "objectiveMinutes": 30,
+        "measuredMinutes": 2.545
       }
     },
     "disposal": {
-      "status": "not_run"
+      "status": "passed",
+      "mode": "drop_and_recreate_public_schema",
+      "remainingUserObjectCount": 0
     }
   },
   "binding": {
@@ -194,6 +228,6 @@
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
   "exceptions": [
-    "restore_target_name_failed"
+    "rpo_objective_breached"
   ]
 }
