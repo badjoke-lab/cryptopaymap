@@ -4,10 +4,10 @@
   "launchDomain": "isolated_restore",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "2ca7114e351465479d121ea776a414d3ceddd510",
-  "generatedAt": "2026-08-13T03:40:10.168Z",
-  "expiresAt": "2026-09-12T03:40:10.168Z",
-  "workflowRunId": "31664511848",
+  "commit": "44faf2db63da72a8b4697e72ec43663b108216bf",
+  "generatedAt": "2026-08-14T05:13:03.866Z",
+  "expiresAt": "2026-09-13T05:13:03.866Z",
+  "workflowRunId": "31772192232",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-002A configured staging P6-07 isolated restore evidence",
   "checks": {
@@ -20,10 +20,10 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-13T03:15:41.436Z",
-        "expiresAt": "2026-08-16T03:15:41.436Z",
+        "generatedAt": "2026-08-14T04:43:35.789Z",
+        "expiresAt": "2026-08-17T04:43:35.789Z",
         "binding": {
-          "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+          "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
           "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
           "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
           "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -33,10 +33,10 @@
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-13T03:17:00.222Z",
-        "expiresAt": "2026-08-16T03:17:00.222Z",
+        "generatedAt": "2026-08-14T04:45:28.340Z",
+        "expiresAt": "2026-08-17T04:45:28.340Z",
         "binding": {
-          "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+          "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
           "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
           "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
           "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -46,10 +46,10 @@
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-13T03:18:20.477Z",
-        "expiresAt": "2026-08-16T03:18:20.477Z",
+        "generatedAt": "2026-08-14T04:51:07.772Z",
+        "expiresAt": "2026-08-17T04:51:07.772Z",
         "binding": {
-          "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+          "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
           "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
           "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
           "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -59,10 +59,10 @@
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-13T03:21:02.735Z",
-        "expiresAt": "2026-08-16T03:21:02.735Z",
+        "generatedAt": "2026-08-14T04:53:33.676Z",
+        "expiresAt": "2026-08-17T04:53:33.676Z",
         "binding": {
-          "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+          "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
           "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
           "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
           "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -72,10 +72,10 @@
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-13T03:27:44.724Z",
-        "expiresAt": "2026-08-16T03:27:44.724Z",
+        "generatedAt": "2026-08-14T05:00:28.440Z",
+        "expiresAt": "2026-08-17T05:00:28.440Z",
         "binding": {
-          "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+          "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
           "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
           "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
           "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -85,10 +85,10 @@
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-13T03:29:51.685Z",
-        "expiresAt": "2026-08-16T03:29:51.685Z",
+        "generatedAt": "2026-08-14T05:02:47.487Z",
+        "expiresAt": "2026-08-17T05:02:47.487Z",
         "binding": {
-          "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+          "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
           "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
           "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
           "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -100,9 +100,9 @@
       "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
       "state": "current",
       "decision": "ready",
-      "generatedAt": "2026-08-13T03:32:00.005Z",
-      "expiresAt": "2026-08-14T03:32:00.005Z",
-      "digest": "sha256:d51aa5c002f4c67c489cec8d51085ba6ef1d4cd67c16a96d67572e5686210dc0",
+      "generatedAt": "2026-08-14T05:05:06.362Z",
+      "expiresAt": "2026-08-15T05:05:06.362Z",
+      "digest": "sha256:6a22b0d3db9aa43aaf97d300476ec9560b19737b9eddc6496b5699ea4edfd86a",
       "blockers": [],
       "configuration": {
         "sourceDatabase": {
@@ -131,17 +131,17 @@
     "q2": {
       "path": "config/staging-authorization/p6-07-monitoring-alert-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-13T03:34:38.812Z",
-      "expiresAt": "2026-09-12T03:34:38.812Z",
-      "digest": "sha256:e5d368f732828c2243252c153a8b869ba61d9c4503809e7f7c339deca9a2047c"
+      "generatedAt": "2026-08-14T05:07:27.143Z",
+      "expiresAt": "2026-09-13T05:07:27.143Z",
+      "digest": "sha256:4a0c9c109d7a726de0e783773f0e3f150f737187f62fe1446e0e79cb2d28692b"
     },
     "q3": {
       "path": "config/staging-authorization/p6-07-backup-integrity-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-13T03:37:07.384Z",
-      "expiresAt": "2026-09-12T03:37:07.384Z",
-      "digest": "sha256:9abcb8f19ceb15a761ff1fa9b3b02df30b2a162e45f439339cdd574577965b4b",
-      "workflowRunId": "31664355834"
+      "generatedAt": "2026-08-14T05:09:50.319Z",
+      "expiresAt": "2026-09-13T05:09:50.319Z",
+      "digest": "sha256:ef9a180bf1d4736d0c2e82b5cb9d318987a90e9a5d430996bbdbf16466b6e0c4",
+      "workflowRunId": "31772018841"
     },
     "configuration": {
       "sourceDatabase": "configured",
@@ -153,10 +153,10 @@
     },
     "artifact": {
       "status": "passed",
-      "workflowRunIdentity": "sha256:adc26d0b57b9920918aecfacd2ae3571bfb31f6053c832744f7ccce9d1625469",
-      "artifactIdentity": "sha256:f2adccd9632d6bd6f4593e1cf984e16f7ab6edeb5c4212c5892d937ec64c2a48",
-      "artifactDigest": "sha256:a9ad47f5944f783f1b15e0f57f5d43918993f7db834f8a6208bed584869511f1",
-      "plaintextDigest": "sha256:0dddb942094f55800afb6caa50ce30aefc820d80a3a2055f1573dffe49ff3b00",
+      "workflowRunIdentity": "sha256:f5b76eb9d16d2249cb5190da657cc80f2c2c6cb3942b37adea1c6635734d8249",
+      "artifactIdentity": "sha256:1e26d457e5e8ca0691816a79926dfcef32655efa352c89afb9e6b3a27b2c89d6",
+      "artifactDigest": "sha256:8c7af6b5b016dab3207a139b77d0a5089d7e1bd70c8c700a33ba5ff228c79199",
+      "plaintextDigest": "sha256:a712405a0728b2ab02d1f61b0b53651966d012ea75fcc5c4b8b793c4a221b2df",
       "inventoryDigest": "sha256:0b284e196ea3540364421580308a6dd6a9c44fe664f4de40b630a23a7119d934",
       "inventoryObjectCount": 425,
       "schemaRevision": "sha256:8a0179645552059035ef1e3ceb5eebd166cbe166114c637cf538d578460bb809",
@@ -178,7 +178,7 @@
     "restore": {
       "status": "passed",
       "mode": "pg_restore_single_transaction",
-      "sourceArtifactIdentity": "sha256:f2adccd9632d6bd6f4593e1cf984e16f7ab6edeb5c4212c5892d937ec64c2a48"
+      "sourceArtifactIdentity": "sha256:1e26d457e5e8ca0691816a79926dfcef32655efa352c89afb9e6b3a27b2c89d6"
     },
     "reconciliation": {
       "status": "passed",
@@ -206,13 +206,13 @@
       "rpo": {
         "status": "passed",
         "objectiveMinutes": 60,
-        "measuredMinutes": 4.171,
-        "backupGeneratedAt": "2026-08-13T03:37:07.384Z"
+        "measuredMinutes": 4.498,
+        "backupGeneratedAt": "2026-08-14T05:09:50.319Z"
       },
       "rto": {
         "status": "passed",
         "objectiveMinutes": 30,
-        "measuredMinutes": 2.826
+        "measuredMinutes": 3.212
       }
     },
     "disposal": {
@@ -222,7 +222,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:625891788d70f741f9f30ecd71d7664cd8b7319c122b95ac35641f013ce17377",
+    "releaseId": "sha256:43303ae6a3091fe599d0d2eb03d901e10378c5814cfce606ee45da2c28989d4c",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
