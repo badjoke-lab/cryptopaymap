@@ -65,6 +65,8 @@ Duplicate convergence is proven by reading the same immutable wrong-release aler
 
 Each comment includes an HTML marker with a digest-based immutable test identity. The workflow has no Issue-write permission. It reads the public Issue comments, requires every exact marker to exist, verifies ordering and escalation timing, and retains only SHA-256 digests of comment identifiers and URLs.
 
+Comment lookup paginates beyond the first 100 comments and continues until the final Issue-comment page. The read-only lookup is bounded to 100 pages and fails closed if that bound is exhausted, so older audit history never makes current exact-marker evidence invisible. The regression self-test fixes this boundary by placing 100 irrelevant comments on page 1 and the required immutable marker on page 2.
+
 ## Safety boundary
 
 The run:
