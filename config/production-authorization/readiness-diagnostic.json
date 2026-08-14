@@ -4,10 +4,10 @@
   "state": "diagnosed",
   "decision": "blocked",
   "environment": "configured_production",
-  "commit": "2ca7114e351465479d121ea776a414d3ceddd510",
-  "generatedAt": "2026-08-13T14:55:06.761Z",
-  "expiresAt": "2026-08-13T15:25:06.761Z",
-  "workflowRunId": "31712486367",
+  "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
+  "generatedAt": "2026-08-14T15:10:23.705Z",
+  "expiresAt": "2026-08-14T15:40:23.705Z",
+  "workflowRunId": "31812978979",
   "ownerDigest": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "credentialGenerationDigest": null,
   "checks": {
@@ -15,9 +15,9 @@
     "p605": {
       "state": "current",
       "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
-      "generatedAt": "2026-08-13T03:27:44.724Z",
-      "expiresAt": "2026-08-16T03:27:44.724Z",
-      "releaseIdDigest": "sha256:740a930cd6608778155092ab0c561e31833a011d6f9b5c86745aff3019873196"
+      "generatedAt": "2026-08-14T07:17:05.080Z",
+      "expiresAt": "2026-08-17T07:17:05.080Z",
+      "releaseIdDigest": "sha256:ecf26f28942cc74fbc6ff693346fe00c0a0206c2c43e4ba29d1225edb7162cfd"
     },
     "githubEnvironment": {
       "name": "production",
@@ -80,7 +80,7 @@
         "baseUrl": "https://cryptopaymap-production.pages.dev",
         "markerStatus": 0,
         "markerMatches": false,
-        "expectedReleaseDigest": "sha256:740a930cd6608778155092ab0c561e31833a011d6f9b5c86745aff3019873196",
+        "expectedReleaseDigest": "sha256:ecf26f28942cc74fbc6ff693346fe00c0a0206c2c43e4ba29d1225edb7162cfd",
         "observedReleaseDigest": null
       },
       "adminAccess": {
