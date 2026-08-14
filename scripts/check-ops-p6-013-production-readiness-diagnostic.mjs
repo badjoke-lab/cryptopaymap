@@ -94,9 +94,7 @@ for (const secretName of [
   'p6_08_production_credential_generation_id',
 ]) {
   if (blockedSection.includes(`secrets.${secretName}`)) {
-    throw new Error(
-      `blocked-environment diagnostic must not read protected secret ${secretName}`,
-    );
+    throw new Error(`blocked-environment diagnostic must not read protected secret ${secretName}`);
   }
   if (!protectedSection.includes(`secrets.${secretName}`)) {
     throw new Error(`protected diagnostic missing Environment secret ${secretName}`);
