@@ -17,7 +17,9 @@ const files = {
 
 function expectIncludes(label, content, markers) {
   const missing = markers.filter((marker) => !content.includes(marker.toLowerCase()));
-  if (missing.length > 0) throw new Error(`${label} missing markers:\n- ${missing.join('\n- ')}`);
+  if (missing.length > 0) {
+    throw new Error(`${label} missing markers:\n- ${missing.join('\n- ')}`);
+  }
 }
 
 expectIncludes('runner', files.runner, [
@@ -58,6 +60,7 @@ expectIncludes('workflow', files.workflow, [
   'production-readiness-diagnostic.json',
   'config/production-authorization/readiness-diagnostic.json',
   "if(r.decision!=='ready')",
+  'actions: read',
   'contents: write',
 ]);
 
@@ -65,7 +68,9 @@ const probeStart = files.workflow.indexOf('\n  production_environment_probe:');
 const blockedStart = files.workflow.indexOf('\n  diagnose_blocked_environment:');
 const protectedStart = files.workflow.indexOf('\n  diagnose:\n');
 if (!(probeStart >= 0 && blockedStart > probeStart && protectedStart > blockedStart)) {
-  throw new Error('workflow job ordering does not preserve probe -> blocked/protected diagnostic boundary');
+  throw new Error(
+    'workflow job ordering does not preserve probe -> blocked/protected diagnostic boundary',
+  );
 }
 const probeSection = files.workflow.slice(probeStart, blockedStart);
 const blockedSection = files.workflow.slice(blockedStart, protectedStart);
@@ -89,7 +94,9 @@ for (const secretName of [
   'p6_08_production_credential_generation_id',
 ]) {
   if (blockedSection.includes(`secrets.${secretName}`)) {
-    throw new Error(`blocked-environment diagnostic must not read protected secret ${secretName}`);
+    throw new Error(
+      `blocked-environment diagnostic must not read protected secret ${secretName}`,
+    );
   }
   if (!protectedSection.includes(`secrets.${secretName}`)) {
     throw new Error(`protected diagnostic missing Environment secret ${secretName}`);
