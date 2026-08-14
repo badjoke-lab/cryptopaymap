@@ -26,6 +26,7 @@ const stagingProjectName = 'cryptopaymap-staging';
 const productionBranch = 'main';
 const platformHost = `${projectName}.pages.dev`;
 const baseUrl = `https://${platformHost}`;
+const productionTurnstileHostname = new URL(canonicalOrigin).hostname;
 const markerPath = 'p6-05-release.json';
 const p605Path = 'config/staging-authorization/p6-05-public-export-release-receipt.json';
 const requiredDataFiles = [
@@ -559,6 +560,10 @@ async function selfTest() {
     assert(marker.authorityReleaseId === releaseId, 'authority must be explicit');
     assert(publicTreeDigest(dist) === digest, 'marker must not change public tree digest');
     assert(first.version.canonicalOnly === true, 'version must remain canonical-only');
+    assert(
+      productionTurnstileHostname === 'www.cryptopaymap.com',
+      'production Turnstile hostname must equal the canonical WWW hostname',
+    );
     assert(
       validDigest(credentialGenerationDigest('production-generation-v1')),
       'credential generation marker must reduce to a bounded digest',
