@@ -5,15 +5,15 @@
   "environment": "configured_staging",
   "state": "accepted",
   "decision": "accepted",
-  "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
-  "generatedAt": "2026-08-14T15:04:13.166Z",
-  "expiresAt": "2026-09-13T15:04:13.166Z",
-  "workflowRunId": "31812482678",
-  "incidentId": "cpm-p6-07-q5-9745aad-20260814-fresh",
-  "incidentIdentity": "sha256:e3844040401580d8f32c826d6723f67c4d9167c106f10baa7a5ec43e37f6c335",
+  "commit": "f921d39d6eebb7d91bc5a24d4c39e716d2efbe52",
+  "generatedAt": "2026-08-14T16:09:35.867Z",
+  "expiresAt": "2026-09-13T16:09:35.867Z",
+  "workflowRunId": "31817830107",
+  "incidentId": "cpm-p6-07-q5-f921d39-20260814",
+  "incidentIdentity": "sha256:38141336e47c95d373fbdd419ef8ce995afede3d2eef829adb96e344ed2b5c51",
   "procedure": "OPS-P6-002B configured staging P6-07 incident exercise and final receipt",
   "binding": {
-    "releaseId": "sha256:0d1909d9faa9bf09913b2a774401793fea020bf594eaeab5b0ce24c4ef912c05",
+    "releaseId": "sha256:907d28f34179226a3e9e70e437e162b16bf0746a02af645fffb674b6656df03f",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
@@ -34,49 +34,49 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-14T07:05:49.838Z",
-        "expiresAt": "2026-08-17T07:05:49.838Z",
-        "digest": "sha256:970ffe5abc07ce4efc38fc07ed5d6cc96edb8894ab555c1ec68e7b7b930be8f6"
+        "generatedAt": "2026-08-14T15:38:27.229Z",
+        "expiresAt": "2026-08-17T15:38:27.229Z",
+        "digest": "sha256:ec5c15bd54f57d1c2a88ebbfe1a5e9222587d9c4a0fd8d11422c26b62919c51d"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-14T07:07:08.207Z",
-        "expiresAt": "2026-08-17T07:07:08.207Z",
-        "digest": "sha256:15228dee075db2e782c27c7b767a8cb04aa98b385ecbad0dc7eea17c312e51f7"
+        "generatedAt": "2026-08-14T15:39:45.240Z",
+        "expiresAt": "2026-08-17T15:39:45.240Z",
+        "digest": "sha256:f6103756d00c3a5674cb6b30023f17e2ad45e3212c849e51c8a5553a9133b445"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-14T07:08:32.227Z",
-        "expiresAt": "2026-08-17T07:08:32.227Z",
-        "digest": "sha256:2092bb005f31c9c8e4bab46722559b30774e47cc9f3fbe2bf0890901a8351f4e"
+        "generatedAt": "2026-08-14T15:41:35.089Z",
+        "expiresAt": "2026-08-17T15:41:35.089Z",
+        "digest": "sha256:19024bf37d9ed99bde4c2e1c93c65b720eaff01ef619cf10fe64159351f51c03"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-14T07:10:35.772Z",
-        "expiresAt": "2026-08-17T07:10:35.772Z",
-        "digest": "sha256:c6c539f88ea4a5cd772cf69c2afbf2c045508822e4d17338cd2db609b1a6cf8c"
+        "generatedAt": "2026-08-14T15:44:03.292Z",
+        "expiresAt": "2026-08-17T15:44:03.292Z",
+        "digest": "sha256:6b798aca1f5e14de5f571e9d7d51c324d48a44173c46329699871f069412e366"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-14T07:17:05.080Z",
-        "expiresAt": "2026-08-17T07:17:05.080Z",
-        "digest": "sha256:2c299f001ae32cf75893160cc3a2e0292a480389e922dc86bf48decc655ddbba"
+        "generatedAt": "2026-08-14T15:50:46.339Z",
+        "expiresAt": "2026-08-17T15:50:46.339Z",
+        "digest": "sha256:bd7063742866ce9e7f0da3519f6d29008d85184226484c4e754c7f1cdb6f4039"
       },
       {
         "evidenceId": "P6-06",
         "path": "config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-14T07:19:36.214Z",
-        "expiresAt": "2026-08-17T07:19:36.214Z",
-        "digest": "sha256:ee6acec94604ae6d590fa2d8aaf295cd80a5fef379ade18e5835045035e76211"
+        "generatedAt": "2026-08-14T15:53:04.734Z",
+        "expiresAt": "2026-08-17T15:53:04.734Z",
+        "digest": "sha256:706eea209168b51771e776210d2b0409fd95ff93f03869eaa4b2284ac1c2932b"
       }
     ],
     "predecessorBinding": "matched",
@@ -84,34 +84,34 @@
       "path": "config/staging-authorization/p6-07-prerequisite-diagnostic.json",
       "state": "current",
       "decision": "ready",
-      "generatedAt": "2026-08-14T07:21:49.503Z",
-      "expiresAt": "2026-08-15T07:21:49.503Z",
-      "digest": "sha256:b936428aeb7cc4fd0c4bfccccc0ef48d40a0f5dfcc511d400e63ad0671fd9048"
+      "generatedAt": "2026-08-14T15:55:12.795Z",
+      "expiresAt": "2026-08-15T15:55:12.795Z",
+      "digest": "sha256:1897fd0cda14963c4ce52b63ad7e0542b2fd61aedadefd5ea57c48448dfda782"
     },
     "q2": {
       "path": "config/staging-authorization/p6-07-monitoring-alert-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T07:24:12.331Z",
-      "expiresAt": "2026-09-13T07:24:12.331Z",
-      "digest": "sha256:4bcd5cff8b5a4f9b17481f8699cf6b61d6dab926befc7537a6ad0dfdc3f7ce8a"
+      "generatedAt": "2026-08-14T15:57:43.433Z",
+      "expiresAt": "2026-09-13T15:57:43.433Z",
+      "digest": "sha256:1f7f6d8bb4be07a5676ec214a12b0c26266d1439056d62079f43dc1ec728e3ec"
     },
     "q3": {
       "path": "config/staging-authorization/p6-07-backup-integrity-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T14:51:57.519Z",
-      "expiresAt": "2026-09-13T14:51:57.519Z",
-      "digest": "sha256:b6bd0fcded0d00eb954f6880c54349205a671b515c00bc5e072fcb88555f7961"
+      "generatedAt": "2026-08-14T16:00:05.571Z",
+      "expiresAt": "2026-09-13T16:00:05.571Z",
+      "digest": "sha256:cc0c66ed2ca21a052c6f7fc3e65ddd6a0cfc3125f82bc533f2db87653b016b79"
     },
     "q4": {
       "path": "config/staging-authorization/p6-07-isolated-restore-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T14:58:29.414Z",
-      "expiresAt": "2026-09-13T14:58:29.414Z",
-      "digest": "sha256:457a9a8a397d20aabdf259e9889c94a1725a3a04bcc4a465ed85d5a501c41d39"
+      "generatedAt": "2026-08-14T16:03:32.290Z",
+      "expiresAt": "2026-09-13T16:03:32.290Z",
+      "digest": "sha256:b3c66f0ce222270cea9c4e66f3a11bf684fc9483d032cba82399c2b455aef589"
     },
     "p6Release": {
       "state": "current",
-      "candidateReleaseIdDigest": "sha256:ecf26f28942cc74fbc6ff693346fe00c0a0206c2c43e4ba29d1225edb7162cfd"
+      "candidateReleaseIdDigest": "sha256:53e85e2f614e393a76bf27ecaa570342998010204c756a9be8141e9275e49984"
     },
     "scenario": {
       "status": "passed",
@@ -141,12 +141,12 @@
         },
         "recovery": {
           "objectiveMinutes": 45,
-          "measuredMinutes": 0.016,
+          "measuredMinutes": 0.018,
           "status": "passed"
         },
         "cadence": {
           "objectiveMinutes": 15,
-          "measuredMinutes": 0.016,
+          "measuredMinutes": 0.018,
           "status": "passed"
         }
       }
@@ -156,7 +156,7 @@
       "destinationClass": "github_issue",
       "issueNumber": 349,
       "evidenceSource": "accepted_q2_monitoring_alert_receipt",
-      "q2ReceiptDigest": "sha256:4bcd5cff8b5a4f9b17481f8699cf6b61d6dab926befc7537a6ad0dfdc3f7ce8a",
+      "q2ReceiptDigest": "sha256:1f7f6d8bb4be07a5676ec214a12b0c26266d1439056d62079f43dc1ec728e3ec",
       "workflowCommentMarkers": [
         "declaration",
         "closure"
@@ -168,75 +168,75 @@
       "stages": [
         {
           "name": "declared",
-          "at": "2026-08-14T15:04:13.169Z",
+          "at": "2026-08-14T16:09:35.871Z",
           "status": "completed"
         },
         {
           "name": "detected",
-          "at": "2026-08-14T15:04:13.169Z",
+          "at": "2026-08-14T16:09:35.871Z",
           "status": "completed"
         },
         {
           "name": "acknowledged",
-          "at": "2026-08-14T15:04:13.169Z",
+          "at": "2026-08-14T16:09:35.871Z",
           "status": "completed"
         },
         {
           "name": "contained",
-          "at": "2026-08-14T15:04:13.169Z",
+          "at": "2026-08-14T16:09:35.871Z",
           "status": "completed"
         },
         {
           "name": "rollback_or_restore_decision_recorded",
-          "at": "2026-08-14T15:04:13.169Z",
+          "at": "2026-08-14T16:09:35.871Z",
           "status": "completed"
         },
         {
           "name": "mitigation_started",
-          "at": "2026-08-14T15:04:13.169Z",
+          "at": "2026-08-14T16:09:35.871Z",
           "status": "completed"
         },
         {
           "name": "recovery_verified",
-          "at": "2026-08-14T15:04:14.155Z",
+          "at": "2026-08-14T16:09:36.958Z",
           "status": "completed"
         },
         {
           "name": "externally_reverified",
-          "at": "2026-08-14T15:04:14.155Z",
+          "at": "2026-08-14T16:09:36.958Z",
           "status": "completed"
         },
         {
           "name": "closed",
-          "at": "2026-08-14T15:04:14.155Z",
+          "at": "2026-08-14T16:09:36.958Z",
           "status": "completed"
         },
         {
           "name": "follow_up_assigned",
-          "at": "2026-08-14T15:04:14.155Z",
+          "at": "2026-08-14T16:09:36.958Z",
           "status": "completed"
         }
       ],
-      "timelineDigest": "sha256:5eee899219a2a436d10af718c26c51db4b2ebc9b77caf41c5ba06ff20d3d6e59"
+      "timelineDigest": "sha256:e833e24e62ded720004da6f8fa701606237acd37741afa65fcdffe84c1befb33"
     },
     "containment": {
       "status": "passed",
       "mode": "bounded_scenario_simulation",
-      "stageAt": "2026-08-14T15:04:13.169Z",
+      "stageAt": "2026-08-14T16:09:35.871Z",
       "liveServiceDegradationIntroduced": false
     },
     "decision": {
       "status": "passed",
       "selected": "restore_database",
-      "stageAt": "2026-08-14T15:04:13.169Z",
+      "stageAt": "2026-08-14T16:09:35.871Z",
       "mutationExecuted": false,
       "providerEscalation": "not_required"
     },
     "recovery": {
       "status": "passed",
       "mode": "read_only_external_reverification",
-      "mitigationStageAt": "2026-08-14T15:04:13.169Z",
-      "recoveryStageAt": "2026-08-14T15:04:14.155Z"
+      "mitigationStageAt": "2026-08-14T16:09:35.871Z",
+      "recoveryStageAt": "2026-08-14T16:09:36.958Z"
     },
     "externalReverification": {
       "status": "passed",
@@ -302,23 +302,23 @@
           "status": "passed",
           "httpStatus": 200,
           "releaseMatches": true,
-          "expectedReleaseDigest": "sha256:ecf26f28942cc74fbc6ff693346fe00c0a0206c2c43e4ba29d1225edb7162cfd",
-          "observedReleaseDigest": "sha256:ecf26f28942cc74fbc6ff693346fe00c0a0206c2c43e4ba29d1225edb7162cfd"
+          "expectedReleaseDigest": "sha256:53e85e2f614e393a76bf27ecaa570342998010204c756a9be8141e9275e49984",
+          "observedReleaseDigest": "sha256:53e85e2f614e393a76bf27ecaa570342998010204c756a9be8141e9275e49984"
         }
       },
       "routeDigest": "sha256:4badf204e7cade7f125c8cd9966217247b8a35f214435c738cb53999a26ccfcb"
     },
     "evidencePreservation": {
       "status": "passed",
-      "predecessorDigest": "sha256:b6c2e622009e338cc07814a8edb98085adecff0b063fa68f9d7a93df63ce8656",
-      "timelineDigest": "sha256:5eee899219a2a436d10af718c26c51db4b2ebc9b77caf41c5ba06ff20d3d6e59",
+      "predecessorDigest": "sha256:0721178ff1dbcbebe6401ae9e103603dc376cadc8d243c630a811ee14ca76464",
+      "timelineDigest": "sha256:e833e24e62ded720004da6f8fa701606237acd37741afa65fcdffe84c1befb33",
       "redactedOnly": true,
       "unrestrictedLogsRetained": false
     },
     "followUp": {
       "status": "passed",
       "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
-      "dueAt": "2026-08-21T15:04:14.155Z",
+      "dueAt": "2026-08-21T16:09:36.958Z",
       "actionClass": "review_exercise_findings_and_operational_runbook"
     },
     "safetyBoundary": {
@@ -334,8 +334,8 @@
     }
   },
   "exceptions": [],
-  "declaredAt": "2026-08-14T15:04:13.169Z",
-  "externallyReverifiedAt": "2026-08-14T15:04:14.155Z",
-  "closedAt": "2026-08-14T15:04:14.155Z",
-  "receiptId": "sha256:817f9c9919aea7f3fc93cbc2e15b9f1981def379068e7e540680a58744b702d3"
+  "declaredAt": "2026-08-14T16:09:35.871Z",
+  "externallyReverifiedAt": "2026-08-14T16:09:36.958Z",
+  "closedAt": "2026-08-14T16:09:36.958Z",
+  "receiptId": "sha256:7f8e70b14ca1c152281c8d77f9ce3228b7efdb76c1ec603a88f0470160e564f9"
 }
