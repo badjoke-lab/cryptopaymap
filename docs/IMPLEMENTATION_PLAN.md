@@ -1,7 +1,7 @@
 # CryptoPayMap implementation plan
 
 **Status:** Active  
-**Last updated:** 2026-07-29
+**Last updated:** 2026-08-14
 
 This file tracks the current repository implementation and operational handoff. GitHub `main`, merged pull requests, actual CI results, protected configured-environment receipts, and external observations are authoritative when this file differs from reality.
 
@@ -29,7 +29,7 @@ GitHub Issue: #293
 Current configured state:
 
 ```text
-Configured staging authorization: not authorized
+Configured staging authorization: authorized on pre-reconciliation exact-main evidence; rebind required after this documentation merge
 Configured production authorization: not authorized
 Go-live execution: not executed
 Post-cutover verification: not proven
@@ -108,7 +108,7 @@ Phase 5 closed in #275. Configured launch execution was not claimed.
 
 ## Phase 6 — Launch and cutover evidence
 
-**Status:** Repository definition complete; configured execution active
+**Status:** Repository definition complete; configured staging proven and pending post-documentation rebind; configured production blocked on operator-controlled prerequisites
 
 | ID | Item | Status | Pull request |
 |---|---|---|---|
@@ -123,6 +123,8 @@ Phase 5 closed in #275. Configured launch execution was not claimed.
 | OPS-P6-001 | Execute configured staging and production launch evidence | Active | Issue #293 |
 
 P6-08 merged at `46b89747797e06d62e94f8d974fd1ab0d72dfaff`. The associated repository workflows passed. That result proves the evidence contract is present; it does not prove configured staging or production authorization, execution, verification, or launch close.
+
+Current execution reconciliation on exact main `9745aada90ad3ad2c230588b1caa803146e1f109` proves configured staging was authorized with P6-01 through P6-07 current, one matched binding, and zero blockers. Fresh P6-07 Q3/Q4/Q5 evidence passed, including isolated-restore RPO 7.54 minutes, RTO 2.523 minutes, and zero remaining user objects after disposal. Read-only P6-013 run `31812978979` then recorded configured production as blocked with no production mutation because the protected `production` Environment, all seven production runtime secrets, the dedicated candidate Pages project/release, and production Admin Access are not yet configured. This documentation reconciliation changes the exact main when merged, so staging evidence must be rebound before production readiness continues. Issue #434 remains the operator-controlled gate before P6-014 candidate bootstrap.
 
 ### OPS-P6-001 sequence
 

@@ -1,6 +1,6 @@
 # CryptoPayMap project status
 
-**Last verified:** 2026-08-04
+**Last verified:** 2026-08-14
 
 ## Current phase
 
@@ -12,66 +12,59 @@ OPS-P6-001 — Configured launch authorization, bounded go-live execution, exter
 
 ## Current operational slice
 
-P6-07 configured operational evidence — Q3 protected execution preparation and Q4 isolated-restore preparation (Issue #349)
+P6-08 configured production readiness and candidate provisioning (Issues #427 and #434)
 
 ## Authoritative current state
 
-- Latest verified implementation baseline before this status-only reconciliation is `f1482a3e45ea45855f563720c494af798b9ac053`, produced by PR #365.
-- PR #361 repaired P6-05 Pages activation so an already-visible exact candidate is accepted without an unnecessary rollback request, a normal rollback remains verified, and Cloudflare `8000039` is accepted only after bounded exact-marker convergence.
-- On exact main `a975fa58825d20e054e65f24bdbbf4240328df00`, configured staging deployment, fixed-review live audit, and P6-01 through P6-06 were refreshed and accepted on one shared release/data/configuration/environment binding.
-- The accepted P6-05 receipt proved deterministic generation, authenticated staging topology, exact candidate visibility, baseline rollback, candidate restoration, representative external route checks, and final candidate state.
-- The accepted P6-06 continuity receipt proved the approved staging hostname, DNS, TLS, redirect, representative routes, and active P6-05 release identity without provider mutation.
-- P6-07 Q1 completed on `a975fa58825d20e054e65f24bdbbf4240328df00` with decision `configuration_blocked`. The only recorded protected-configuration blockers were `backup_encryption:missing` and `isolated_restore_database:missing`.
-- P6-07 Q2 monitoring and alert evidence was accepted on the same commit and binding. Live monitoring, heartbeat and freshness checks, active-release identity, wrong-release detection, dead-man and blind-state detection, deduplication, acknowledgement, deadline escalation, and recovery all passed with no exception.
-- PR #365 merged the fail-closed Q3 backup-integrity implementation. It creates a bounded PostgreSQL custom-format backup, excludes private Submission table data, encrypts the retained artifact with AES-256-GCM, reconciles inventory before and after authenticated decryption, retains no plaintext or protected configuration, records retention metadata, and rejects corrupted authentication tags.
-- The Q3 implementation passed its dedicated contract and self-test, Foundation validation, and Migration drift before merge.
-- PR #365 changed exact main after the retained P6-01 through P6-06, Q1, and Q2 receipts. This status-only reconciliation creates a later documentation commit, so those configured receipts remain historical evidence and must be refreshed on the exact post-reconciliation main before Q3 can be accepted.
-- No production hostname, DNS record, Pages custom-domain binding, certificate, cache, canonical data, R2 object, production deployment, backup artifact, or restore target was changed by PR #365.
+- Exact verified `main` before this documentation-only reconciliation is `9745aada90ad3ad2c230588b1caa803146e1f109`.
+- Configured staging P6-01 through P6-07 are current on that exact-main binding, and configured-staging authorization is `authorized` with 7/7 predecessors current, matched predecessor binding, and zero blockers.
+- P6-07 Q2 monitoring and alert evidence is accepted against the real Issue #349 evidence channel. PR #444 fixed bounded pagination so exact markers remain discoverable beyond the first 100 comments; the regression contract and the live configured-staging run both passed.
+- P6-07 Q3 produced a fresh authenticated AES-256-GCM encrypted backup with private Submission rows excluded from the retained payload.
+- P6-07 Q4 isolated restore is accepted. Restore and reconciliation passed for 42/42 tables, 38 non-private tables, 65/65 foreign keys, and 232/232 CHECK constraints; private restored rows remained zero. Measured RPO was 7.54 minutes against a 60-minute objective, measured RTO was 2.523 minutes against a 30-minute objective, and disposal left zero user objects in the isolated target.
+- P6-07 Q5 incident exercise and final operations/recovery receipt are accepted with external reverification, objectives, follow-up, and safety boundaries all passed.
+- Production machine-readable/indexing materialization is repository-complete: production `robots.txt`, `llms.txt`, `ai.txt`, and `sitemap.xml` are deterministically generated for canonical `https://www.cryptopaymap.com` while excluding Admin and error routes.
+- Exact-main P6-013 configured-production readiness run `31812978979` completed read-only and recorded `decision=blocked` with `productionMutation=false`.
+- The GitHub `production` Environment is missing with zero protection rules, all seven required `P6_08_PRODUCTION_*` Environment secrets are absent, the dedicated `cryptopaymap-production` Pages candidate is missing or inaccessible, its intended release is not observed, and production Admin Access is not yet enforced.
+- The Cloudflare account and exactly one active `cryptopaymap.com` zone are readable. Existing DNS was observed only; no production DNS, custom-domain, candidate Pages, production database, canonical data, R2, or go-live mutation was performed by the readiness diagnostic.
+- This documentation-only reconciliation changes `main` when merged, so configured-staging receipts must be rebound to the resulting exact main before any subsequent production readiness or authorization step.
 
-Configured state remains:
+Configured state is now:
 
 ```text
-Configured staging authorization: not authorized
+Configured staging authorization: authorized on the pre-reconciliation exact-main evidence binding; rebind required after this documentation merge
 Configured production authorization: not authorized
 Go-live execution: not executed
 Post-cutover verification: not proven
 Launch-close evidence: not proven
 ```
 
-Repository CI, documentation, provider control-plane success, or an operator assertion alone cannot change those configured states.
+Repository CI, documentation, provider control-plane success, or an operator assertion alone cannot advance the remaining configured-production states.
 
 ## Next
 
-Continue Issue #349 in this order:
-
-1. configure the protected GitHub Actions secret `P6_07_BACKUP_ENCRYPTION_KEY` without placing its value in the repository, an Issue, a PR, artifacts, or logs;
-2. provision a distinct isolated restore database and configure protected `P6_07_RESTORE_DATABASE_URL`, separate from the fixed-review canonical database;
-3. refresh configured staging deployment and fixed-review live audit on the exact current main after this status reconciliation merges;
-4. refresh P6-01 through P6-06 on one exact-main binding;
-5. rerun Q1 and require the backup-encryption configuration to be present, with only the isolated-restore blocker permitted before Q3;
-6. rerun Q2 on the exact current-main binding;
-7. dispatch `EXECUTE_CONFIGURED_STAGING_P6_07_Q3` and require an accepted encrypted backup-integrity receipt;
-8. implement and execute Q4 isolated restore, reconciliation, RPO/RTO measurement, and safe disposal on the distinct restore target;
-9. execute the later incident-response and launch-authorization slices only after their exact predecessors are current and accepted.
+1. merge this bounded status reconciliation after CI passes;
+2. refresh/rebind configured staging P6-01 through P6-07 and configured-staging authorization on the resulting exact main without weakening any accepted evidence boundary;
+3. continue Issue #434 by creating GitHub Environment `production` with at least one deployment protection rule through the operator-controlled repository settings surface;
+4. configure all seven required `P6_08_PRODUCTION_*` Environment secrets using actual production provider values rather than staging/test credentials;
+5. rerun read-only P6-013 and require the Environment/secret blockers to disappear;
+6. only after that gate, execute guarded P6-014 candidate bootstrap to `cryptopaymap-production.pages.dev`, with zero custom domains and zero live DNS mutation;
+7. rerun P6-013 and require `decision=ready`;
+8. only then consider P6-012 configured-production authorization;
+9. P6-016 go-live and P6-017 observation/launch-close remain separate explicit later gates.
 
 ## Blocked
 
-No repository implementation or CI blocker remains for Q3 backup integrity.
+No repository implementation blocker remains for configured staging.
 
-Configured Q3 execution is blocked by:
+Configured production remains blocked by Issue #434 and P6-013 run `31812978979`:
 
-- protected `P6_07_BACKUP_ENCRYPTION_KEY` not yet configured;
-- P6-01 through P6-06, Q1, and Q2 receipts not yet refreshed on the exact current main after this status reconciliation.
+- missing protected GitHub Environment `production` and deployment protection;
+- seven missing production Environment secrets;
+- missing/inaccessible dedicated `cryptopaymap-production` Pages candidate;
+- intended production candidate release not yet observed;
+- production Admin Access not yet enforced.
 
-Configured Q4 execution is additionally blocked by:
-
-- a distinct protected `P6_07_RESTORE_DATABASE_URL`;
-- an accepted exact-main Q3 receipt.
-
-Protected repository secrets must be configured through the repository secret-management surface and must never be committed to public repository content. Production remains untouched and unauthorized.
-
-Protected operational credentials, database URLs, encryption material, raw account or zone identifiers, private database rows, private Submission data, unrestricted logs, raw Media bytes, and raw object keys must not be placed in public repository or Issue content.
-
+Raw credentials, database URLs, encryption material, provider identifiers, private database rows, private Submission data, protected Admin sessions, and unrestricted logs must not be placed in public repository content, Issues, PRs, or retained public artifacts.
 
 ## Retained executable-audit snapshot
 
