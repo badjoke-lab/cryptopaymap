@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
-  "generatedAt": "2026-08-14T07:26:48.594Z",
-  "expiresAt": "2026-09-13T07:26:48.594Z",
-  "workflowRunId": "31779804975",
+  "generatedAt": "2026-08-14T14:51:57.519Z",
+  "expiresAt": "2026-09-13T14:51:57.519Z",
+  "workflowRunId": "31811451446",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001Y configured staging P6-07 backup integrity evidence",
   "checks": {
@@ -83,7 +83,7 @@
     },
     "backup": {
       "status": "passed",
-      "backupIdentity": "sha256:07c23703db95ea401451074388e4124128e408ba7cb9fa05233c7b0ebfe1c87e",
+      "backupIdentity": "sha256:f66d6f5563455fcc388c1f07f8716797f3cdaf9783b384b1bb830c91b3abe7ca",
       "sourceStoreClass": "fixed_review_canonical",
       "schemaRevision": "sha256:8a0179645552059035ef1e3ceb5eebd166cbe166114c637cf538d578460bb809",
       "scope": {
@@ -112,8 +112,8 @@
         "algorithm": "aes-256-gcm",
         "encrypted": true,
         "byteLength": 308799,
-        "digest": "sha256:88aea916d57b299151f744619e52fb5cee2e9ccfd1b9d40250bf03c773748761",
-        "plaintextDigest": "sha256:f3440ae6646107930d3a6f2fdf51bdb4dd4025083245989c394bbc42ec4ea90a"
+        "digest": "sha256:5fd43774e47003fa05683ef21f2c355fdd74cc2efd2e33fa79e91296f0dd9a4c",
+        "plaintextDigest": "sha256:d59dd75a9c478db08267fa9819c985d336cc56868328b01dd919f5cac551f623"
       },
       "inventory": {
         "status": "passed",
@@ -133,7 +133,7 @@
       "retention": {
         "status": "passed",
         "days": 30,
-        "deleteAfter": "2026-09-13T07:26:48.594Z",
+        "deleteAfter": "2026-09-13T14:51:57.519Z",
         "immutability": "run_scoped_artifact"
       },
       "integrity": {
