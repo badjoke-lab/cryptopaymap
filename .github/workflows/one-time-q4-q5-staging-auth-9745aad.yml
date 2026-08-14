@@ -1,0 +1,191 @@
+name: One-time Q4 Q5 staging authorization 9745aad
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-q4-q5-staging-auth-9745aad.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  execute:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      APPROVED_COMMIT: 9745aada90ad3ad2c230588b1caa803146e1f109
+      RESTORE_URL: ${{ secrets.P6_07_RESTORE_DATABASE_URL }}
+    steps:
+      - name: Resume Q4 through configured-staging authorization
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          assert_main() {
+            local actual=''
+            for _ in $(seq 1 12); do
+              actual="$(gh api "repos/$REPO/commits/main" --jq .sha 2>/dev/null || true)"
+              [ -n "$actual" ] && break
+              sleep 5
+            done
+            test "$actual" = "$APPROVED_COMMIT"
+          }
+
+          wait_run() {
+            local id="$1" status='' conclusion=''
+            for _ in $(seq 1 720); do
+              status="$(gh api "repos/$REPO/actions/runs/$id" --jq .status 2>/dev/null || true)"
+              if [ "$status" = completed ]; then
+                conclusion="$(gh api "repos/$REPO/actions/runs/$id" --jq .conclusion 2>/dev/null || true)"
+                echo "run=$id conclusion=$conclusion"
+                test "$conclusion" = success
+                return
+              fi
+              sleep 5
+            done
+            echo "run_timeout:$id" >&2
+            return 1
+          }
+
+          dispatch() {
+            local wf="$1"; shift
+            local before='' id='' dispatched='false'
+            assert_main
+            before="$(gh run list --repo "$REPO" --workflow "$wf" --branch main --event workflow_dispatch --limit 30 --json databaseId,headSha,createdAt --jq "map(select(.headSha == \"$APPROVED_COMMIT\")) | sort_by(.createdAt) | last | .databaseId // empty" 2>/dev/null || true)"
+            for attempt in $(seq 1 12); do
+              if gh workflow run "$wf" --repo "$REPO" --ref main "$@"; then
+                dispatched='true'
+                break
+              fi
+              echo "dispatch_retry:$wf:$attempt" >&2
+              sleep 5
+            done
+            test "$dispatched" = true
+            for _ in $(seq 1 120); do
+              sleep 5
+              id="$(gh run list --repo "$REPO" --workflow "$wf" --branch main --event workflow_dispatch --limit 30 --json databaseId,headSha,createdAt --jq "map(select(.headSha == \"$APPROVED_COMMIT\")) | sort_by(.createdAt) | last | .databaseId // empty" 2>/dev/null || true)"
+              [ -n "$id" ] && [ "$id" != "$before" ] && break
+            done
+            [ -n "$id" ] && [ "$id" != "$before" ]
+            echo "tracking:$wf:$id"
+            wait_run "$id"
+            assert_main
+          }
+
+          status_json() {
+            local out=''
+            for _ in $(seq 1 12); do
+              out="$(gh api "repos/$REPO/contents/$1?ref=staging-review" --jq .content 2>/dev/null | base64 -d 2>/dev/null || true)"
+              [ -n "$out" ] && break
+              sleep 5
+            done
+            test -n "$out"
+            printf '%s' "$out"
+          }
+
+          assert_current_receipt() {
+            local path="$1" evidence="$2" receipt
+            receipt="$(status_json "$path")"
+            test "$(jq -r .commit <<<"$receipt")" = "$APPROVED_COMMIT"
+            test "$(jq -r .evidenceId <<<"$receipt")" = "$evidence"
+            test "$(jq -r .state <<<"$receipt")" = accepted
+            test "$(jq '.exceptions | length' <<<"$receipt")" = 0
+          }
+
+          assert_main
+
+          for pair in \
+            'config/staging-authorization/p6-01-data-qa-receipt.json P6-01' \
+            'config/staging-authorization/p6-02-identity-admin-receipt.json P6-02' \
+            'config/staging-authorization/p6-03-neon-transaction-receipt.json P6-03' \
+            'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json P6-04' \
+            'config/staging-authorization/p6-05-public-export-release-receipt.json P6-05' \
+            'config/staging-authorization/p6-06-domain-cutover-rollback-receipt.json P6-06' \
+            'config/staging-authorization/p6-07-monitoring-alert-receipt.json P6-07-Q2' \
+            'config/staging-authorization/p6-07-backup-integrity-receipt.json P6-07-Q3'; do
+            set -- $pair
+            assert_current_receipt "$1" "$2"
+          done
+
+          q1="$(status_json 'config/staging-authorization/p6-07-prerequisite-diagnostic.json')"
+          test "$(jq -r .commit <<<"$q1")" = "$APPROVED_COMMIT"
+          test "$(jq -r .state <<<"$q1")" = diagnosed
+          test "$(jq -r .decision <<<"$q1")" = ready
+          test "$(jq '.blockers | length' <<<"$q1")" = 0
+          test "$(jq '.exceptions | length' <<<"$q1")" = 0
+
+          test -n "$RESTORE_URL"
+          target="$(node - <<'NODE'
+          const value = process.env.RESTORE_URL;
+          const url = new URL(value);
+          process.stdout.write(decodeURIComponent(url.pathname.replace(/^\//, '')));
+          NODE
+          )"
+          [[ "$target" =~ ^cpm_p6_07_restore_[a-z0-9_]{4,48}$ ]]
+          echo "::add-mask::$target"
+          unset RESTORE_URL
+
+          echo '=== Q4 isolated restore with configured target identity ==='
+          dispatch ops-p6-002a-configured-staging-p6-07-isolated-restore.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_07_Q4 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f restore_owner=badjoke-lab \
+            -f restore_target_database_name="$target" \
+            -f rpo_objective_minutes=60 \
+            -f rto_objective_minutes=30
+          unset target
+
+          assert_current_receipt 'config/staging-authorization/p6-07-isolated-restore-receipt.json' P6-07-Q4
+          q4="$(status_json 'config/staging-authorization/p6-07-isolated-restore-receipt.json')"
+          test "$(jq -r .checks.targetSafety.status <<<"$q4")" = passed
+          test "$(jq -r .checks.restore.status <<<"$q4")" = passed
+          test "$(jq -r .checks.reconciliation.status <<<"$q4")" = passed
+          test "$(jq -r .checks.objectives.rpo.status <<<"$q4")" = passed
+          test "$(jq -r .checks.objectives.rto.status <<<"$q4")" = passed
+          test "$(jq -r .checks.disposal.status <<<"$q4")" = passed
+          test "$(jq -r .checks.disposal.remainingUserObjectCount <<<"$q4")" = 0
+
+          echo '=== Q5 incident exercise and final P6-07 receipt ==='
+          dispatch ops-p6-002b-configured-staging-p6-07-incident-exercise-final-receipt.yml \
+            -f confirmation=EXECUTE_CONFIGURED_STAGING_P6_07_Q5 \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f incident_id=cpm-p6-07-q5-9745aad-20260814-recovery \
+            -f command_owner=badjoke-lab \
+            -f observer=cpm-staging-independent-observer \
+            -f follow_up_owner=badjoke-lab \
+            -f incident_scenario=canonical_database_degradation \
+            -f incident_severity=exercise_high \
+            -f acknowledgement_objective_minutes=15 \
+            -f decision_objective_minutes=30 \
+            -f recovery_objective_minutes=45 \
+            -f status_cadence_minutes=15
+
+          assert_current_receipt 'config/staging-authorization/p6-07-operations-recovery-receipt.json' P6-07
+          final="$(status_json 'config/staging-authorization/p6-07-operations-recovery-receipt.json')"
+          test "$(jq -r .decision <<<"$final")" = accepted
+          test "$(jq -r .checks.externalReverification.status <<<"$final")" = passed
+          test "$(jq -r .checks.objectives.status <<<"$final")" = passed
+          test "$(jq -r .checks.followUp.status <<<"$final")" = passed
+
+          echo '=== Explicit configured-staging authorization ==='
+          dispatch ops-p6-001c-configured-staging-authorization.yml \
+            -f confirmation=AUTHORIZE_CONFIGURED_STAGING \
+            -f approved_commit="$APPROVED_COMMIT" \
+            -f launch_owner=badjoke-lab \
+            -f observer=cpm-staging-independent-observer \
+            -f rollback_owner=badjoke-lab
+
+          authorization="$(status_json 'config/staging-authorization/authorization-receipt.json')"
+          test "$(jq -r .approvedCommit <<<"$authorization")" = "$APPROVED_COMMIT"
+          test "$(jq -r .mode <<<"$authorization")" = authorization
+          test "$(jq -r .state <<<"$authorization")" = authorized
+          test "$(jq -r .checks.predecessorBinding <<<"$authorization")" = matched
+          test "$(jq '[.checks.predecessors[] | select(.state == "current")] | length' <<<"$authorization")" = 7
+          test "$(jq '.blockers | length' <<<"$authorization")" = 0
+
+          assert_main
+          echo "EXACT-MAIN CONFIGURED-STAGING AUTHORIZED on $APPROVED_COMMIT. Production untouched."
