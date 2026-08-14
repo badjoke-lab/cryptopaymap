@@ -1,0 +1,64 @@
+name: One-time P6-013 readonly diagnostic f921d39
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/one-time-p6-013-readonly-f921d39.yml'
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  execute:
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      REPO: ${{ github.repository }}
+      APPROVED_COMMIT: f921d39d6eebb7d91bc5a24d4c39e716d2efbe52
+    steps:
+      - name: Dispatch exact-main read-only P6-013 and observe completion
+        shell: bash
+        run: |
+          set -euo pipefail
+          current="$(gh api "repos/$REPO/commits/main" --jq .sha)"
+          test "$current" = "$APPROVED_COMMIT"
+
+          wf='ops-p6-013-configured-production-readiness-diagnostic.yml'
+          before="$(gh run list --repo "$REPO" --workflow "$wf" --branch main --event workflow_dispatch --limit 20 --json databaseId,headSha,createdAt --jq "map(select(.headSha == \"$APPROVED_COMMIT\")) | sort_by(.createdAt) | last | .databaseId // empty" 2>/dev/null || true)"
+          dispatched=false
+          for attempt in $(seq 1 12); do
+            if gh workflow run "$wf" --repo "$REPO" --ref main \
+              -f confirmation=DIAGNOSE_CONFIGURED_PRODUCTION_READINESS \
+              -f approved_commit="$APPROVED_COMMIT" \
+              -f readiness_owner=badjoke-lab; then
+              dispatched=true
+              break
+            fi
+            echo "dispatch_retry:$attempt" >&2
+            sleep 5
+          done
+          test "$dispatched" = true
+
+          id=''
+          for _ in $(seq 1 120); do
+            sleep 5
+            id="$(gh run list --repo "$REPO" --workflow "$wf" --branch main --event workflow_dispatch --limit 20 --json databaseId,headSha,createdAt --jq "map(select(.headSha == \"$APPROVED_COMMIT\")) | sort_by(.createdAt) | last | .databaseId // empty" 2>/dev/null || true)"
+            [ -n "$id" ] && [ "$id" != "$before" ] && break
+          done
+          [ -n "$id" ] && [ "$id" != "$before" ]
+          echo "p6_013_run_id=$id"
+
+          for _ in $(seq 1 720); do
+            status="$(gh api "repos/$REPO/actions/runs/$id" --jq .status 2>/dev/null || true)"
+            if [ "$status" = completed ]; then
+              conclusion="$(gh api "repos/$REPO/actions/runs/$id" --jq .conclusion 2>/dev/null || true)"
+              echo "p6_013_conclusion=$conclusion"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "p6_013_timeout:$id" >&2
+          exit 1
