@@ -4,10 +4,10 @@
   "launchDomain": "identity_admin",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "15a5af3be4418d61035cb75485020fec47e669c8",
-  "generatedAt": "2026-08-14T06:21:24.753Z",
-  "expiresAt": "2026-08-17T06:21:24.753Z",
-  "workflowRunId": "31775936882",
+  "commit": "9745aada90ad3ad2c230588b1caa803146e1f109",
+  "generatedAt": "2026-08-14T06:59:10.004Z",
+  "expiresAt": "2026-08-17T06:59:10.004Z",
+  "workflowRunId": "31778157293",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001E configured staging identity and protected Admin evidence",
   "checks": {
@@ -16,8 +16,8 @@
     "predecessor": {
       "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-14T06:20:05.930Z",
-      "expiresAt": "2026-08-17T06:20:05.930Z"
+      "generatedAt": "2026-08-14T06:57:53.674Z",
+      "expiresAt": "2026-08-17T06:57:53.674Z"
     },
     "routeInventory": {
       "status": "passed",
@@ -1414,7 +1414,7 @@
         "contentType": "application/json",
         "cacheControlSafe": true,
         "noPrivateLeakage": true,
-        "responseDigest": "ebe713a81d6a3175b32b77bcf1ae88bbec64b2fa2830a702034c84b09f8a2183"
+        "responseDigest": "1a123e31523a6e2f5ffd36c474c0c6cb1528a28e37e4bb0aeb9d3568e28272fb"
       },
       "reviewerPublication": {
         "status": 403,
@@ -1447,7 +1447,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:d02aacd3e0da291215528830f207e6b1528768050153eb611fcf93f887c184f4",
+    "releaseId": "sha256:0d1909d9faa9bf09913b2a774401793fea020bf594eaeab5b0ce24c4ef912c05",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
