@@ -24,110 +24,122 @@ jobs:
           python - <<'PY'
           from pathlib import Path
 
+          def lines(*items):
+              return '\n'.join(items) + '\n'
+
           executor_path = Path('scripts/run-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs')
           executor = executor_path.read_text()
-          old_comments = '''  async function comments() {
-            const body = await githubRequest(
-              `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100`,
-              token,
-              { method: 'GET' },
-              fetchImpl,
-            );
-            return Array.isArray(body) ? body : [];
-          }
-          '''
-          new_comments = '''  async function comments() {
-            const collected = [];
-            for (let page = 1; page <= 100; page += 1) {
-              const body = await githubRequest(
-                `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100&page=${page}`,
-                token,
-                { method: 'GET' },
-                fetchImpl,
-              );
-              if (!Array.isArray(body)) throw new Error('github_channel_comments_invalid');
-              collected.push(...body);
-              if (body.length < 100) return collected;
-            }
-            throw new Error('github_channel_comment_pagination_limit');
-          }
-          '''
+          old_comments = lines(
+              '  async function comments() {',
+              '    const body = await githubRequest(',
+              '      `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100`,',
+              '      token,',
+              "      { method: 'GET' },",
+              '      fetchImpl,',
+              '    );',
+              '    return Array.isArray(body) ? body : [];',
+              '  }',
+          )
+          new_comments = lines(
+              '  async function comments() {',
+              '    const collected = [];',
+              '    for (let page = 1; page <= 100; page += 1) {',
+              '      const body = await githubRequest(',
+              '        `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100&page=${page}`,',
+              '        token,',
+              "        { method: 'GET' },",
+              '        fetchImpl,',
+              '      );',
+              "      if (!Array.isArray(body)) throw new Error('github_channel_comments_invalid');",
+              '      collected.push(...body);',
+              '      if (body.length < 100) return collected;',
+              '    }',
+              "    throw new Error('github_channel_comment_pagination_limit');",
+              '  }',
+          )
           if executor.count(old_comments) != 1:
-            raise SystemExit('executor comments() anchor mismatch')
+              raise SystemExit('executor comments() anchor mismatch')
           executor = executor.replace(old_comments, new_comments)
 
-          old_self_test = '''  const expectedReleaseId = `sha256:${'5'.repeat(64)}`;
-          try {
-            for (const [id, path] of predecessorPaths) {
-          '''
-          new_self_test = '''  const expectedReleaseId = `sha256:${'5'.repeat(64)}`;
-          try {
-            const pagedAlertId = boundedHash('pagination-regression-alert');
-            const pagedRequests = [];
-            const pagedFetch = async (url) => {
-              const page = Number(new URL(url).searchParams.get('page') ?? '1');
-              pagedRequests.push(page);
-              const body =
-                page === 1
-                  ? Array.from({ length: 100 }, (_, index) => ({
-                      id: index + 1,
-                      html_url: `https://github.com/badjoke-lab/cryptopaymap/issues/349#irrelevant-${index + 1}`,
-                      created_at: '2026-08-03T04:40:00.000Z',
-                      body: `irrelevant-${index + 1}`,
-                      user: { login: 'github-actions[bot]' },
-                    }))
-                  : page === 2
-                    ? [
-                        {
-                          id: 101,
-                          html_url:
-                            'https://github.com/badjoke-lab/cryptopaymap/issues/349#issuecomment-101',
-                          created_at: '2026-08-03T04:41:00.000Z',
-                          body: marker('alert', pagedAlertId),
-                          user: { login: 'github-actions[bot]' },
-                        },
-                      ]
-                    : [];
-              return new Response(JSON.stringify(body), {
-                status: 200,
-                headers: { 'content-type': 'application/json' },
-              });
-            };
-            const pagedChannel = createGitHubChannel({
-              repository: 'badjoke-lab/cryptopaymap',
-              issueNumber: alertIssueNumber,
-              token: '',
-              fetchImpl: pagedFetch,
-            });
-            const pagedDelivery = await pagedChannel.deliver(pagedAlertId, {
-              signalClass: 'pagination_regression',
-              severity: 'test_high',
-              bindingDigest: boundedHash(binding),
-              ownerDigest: boundedHash('configured-staging-monitor-owner'),
-              evidenceAt: now.toISOString(),
-            });
-            assert(
-              pagedDelivery.reused === true,
-              'read-only channel must reuse evidence beyond first page',
-            );
-            assert(
-              pagedRequests.join(',') === '1,2',
-              'comment lookup must continue beyond a full first page and stop on the final page',
-            );
-
-            for (const [id, path] of predecessorPaths) {
-          '''
+          old_self_test = lines(
+              "  const expectedReleaseId = `sha256:${'5'.repeat(64)}`;",
+              '  try {',
+              '    for (const [id, path] of predecessorPaths) {',
+          )
+          new_self_test = lines(
+              "  const expectedReleaseId = `sha256:${'5'.repeat(64)}`;",
+              '  try {',
+              "    const pagedAlertId = boundedHash('pagination-regression-alert');",
+              '    const pagedRequests = [];',
+              '    const pagedFetch = async (url) => {',
+              "      const page = Number(new URL(url).searchParams.get('page') ?? '1');",
+              '      pagedRequests.push(page);',
+              '      const body =',
+              '        page === 1',
+              '          ? Array.from({ length: 100 }, (_, index) => ({',
+              '              id: index + 1,',
+              '              html_url: `https://github.com/badjoke-lab/cryptopaymap/issues/349#irrelevant-${index + 1}`,',
+              "              created_at: '2026-08-03T04:40:00.000Z',",
+              '              body: `irrelevant-${index + 1}`,',
+              "              user: { login: 'github-actions[bot]' },",
+              '            }))',
+              '          : page === 2',
+              '            ? [',
+              '                {',
+              '                  id: 101,',
+              '                  html_url:',
+              "                    'https://github.com/badjoke-lab/cryptopaymap/issues/349#issuecomment-101',",
+              "                  created_at: '2026-08-03T04:41:00.000Z',",
+              "                  body: marker('alert', pagedAlertId),",
+              "                  user: { login: 'github-actions[bot]' },",
+              '                },',
+              '              ]',
+              '            : [];',
+              '      return new Response(JSON.stringify(body), {',
+              '        status: 200,',
+              "        headers: { 'content-type': 'application/json' },",
+              '      });',
+              '    };',
+              '    const pagedChannel = createGitHubChannel({',
+              "      repository: 'badjoke-lab/cryptopaymap',",
+              '      issueNumber: alertIssueNumber,',
+              "      token: '',",
+              '      fetchImpl: pagedFetch,',
+              '    });',
+              '    const pagedDelivery = await pagedChannel.deliver(pagedAlertId, {',
+              "      signalClass: 'pagination_regression',",
+              "      severity: 'test_high',",
+              '      bindingDigest: boundedHash(binding),',
+              "      ownerDigest: boundedHash('configured-staging-monitor-owner'),",
+              '      evidenceAt: now.toISOString(),',
+              '    });',
+              '    assert(',
+              '      pagedDelivery.reused === true,',
+              "      'read-only channel must reuse evidence beyond first page',",
+              '    );',
+              '    assert(',
+              "      pagedRequests.join(',') === '1,2',",
+              "      'comment lookup must continue beyond a full first page and stop on the final page',",
+              '    );',
+              '',
+              '    for (const [id, path] of predecessorPaths) {',
+          )
           if executor.count(old_self_test) != 1:
-            raise SystemExit('executor self-test anchor mismatch')
+              raise SystemExit('executor self-test anchor mismatch')
           executor = executor.replace(old_self_test, new_self_test)
           executor_path.write_text(executor)
 
           checker_path = Path('scripts/check-ops-p6-001u-configured-staging-p6-07-monitoring-alert.mjs')
           checker = checker_path.read_text()
           checker_anchor = "  [files.executor, 'readOnlyEvidence: token.length === 0'],\n"
-          checker_insert = checker_anchor + "  [files.executor, 'comments?per_page=100&page=${page}'],\n  [files.executor, 'github_channel_comment_pagination_limit'],\n  [files.executor, 'read-only channel must reuse evidence beyond first page'],\n  [files.executor, \"pagedRequests.join(',') === '1,2'\"],\n"
+          checker_insert = checker_anchor + (
+              "  [files.executor, 'comments?per_page=100&page=${page}'],\n"
+              "  [files.executor, 'github_channel_comment_pagination_limit'],\n"
+              "  [files.executor, 'read-only channel must reuse evidence beyond first page'],\n"
+              "  [files.executor, \"pagedRequests.join(',') === '1,2'\"],\n"
+          )
           if checker.count(checker_anchor) != 1:
-            raise SystemExit('checker expectation anchor mismatch')
+              raise SystemExit('checker expectation anchor mismatch')
           checker = checker.replace(checker_anchor, checker_insert)
           checker_path.write_text(checker)
 
@@ -136,7 +148,7 @@ jobs:
           doc_anchor = 'Each comment includes an HTML marker with a digest-based immutable test identity. The workflow has no Issue-write permission. It reads the public Issue comments, requires every exact marker to exist, verifies ordering and escalation timing, and retains only SHA-256 digests of comment identifiers and URLs.\n'
           doc_insert = doc_anchor + '\nComment lookup paginates beyond the first 100 comments and continues until the final Issue-comment page. The read-only lookup is bounded to 100 pages and fails closed if that bound is exhausted, so older audit history never makes current exact-marker evidence invisible.\n'
           if doc.count(doc_anchor) != 1:
-            raise SystemExit('documentation anchor mismatch')
+              raise SystemExit('documentation anchor mismatch')
           doc = doc.replace(doc_anchor, doc_insert)
           doc_path.write_text(doc)
           PY
