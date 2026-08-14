@@ -450,13 +450,19 @@ function createGitHubChannel({ repository, issueNumber, token, fetchImpl = fetch
   if (!owner || !repo) throw new Error('invalid_github_repository');
 
   async function comments() {
-    const body = await githubRequest(
-      `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100`,
-      token,
-      { method: 'GET' },
-      fetchImpl,
-    );
-    return Array.isArray(body) ? body : [];
+    const collected = [];
+    for (let page = 1; page <= 100; page += 1) {
+      const body = await githubRequest(
+        `/repos/${owner}/${repo}/issues/${issueNumber}/comments?per_page=100&page=${page}`,
+        token,
+        { method: 'GET' },
+        fetchImpl,
+      );
+      if (!Array.isArray(body)) throw new Error('github_channel_comments_invalid');
+      collected.push(...body);
+      if (body.length < 100) return collected;
+    }
+    throw new Error('github_channel_comment_pagination_limit');
   }
 
   async function postOrReuse(kind, alertId, details) {
@@ -785,6 +791,59 @@ async function runSelfTest() {
   };
   const expectedReleaseId = `sha256:${'5'.repeat(64)}`;
   try {
+    const pagedAlertId = boundedHash('pagination-regression-alert');
+    const pagedRequests = [];
+    const pagedFetch = async (url) => {
+      const page = Number(new URL(url).searchParams.get('page') ?? '1');
+      pagedRequests.push(page);
+      const body =
+        page === 1
+          ? Array.from({ length: 100 }, (_, index) => ({
+              id: index + 1,
+              html_url: `https://github.com/badjoke-lab/cryptopaymap/issues/349#irrelevant-${index + 1}`,
+              created_at: '2026-08-03T04:40:00.000Z',
+              body: `irrelevant-${index + 1}`,
+              user: { login: 'github-actions[bot]' },
+            }))
+          : page === 2
+            ? [
+                {
+                  id: 101,
+                  html_url:
+                    'https://github.com/badjoke-lab/cryptopaymap/issues/349#issuecomment-101',
+                  created_at: '2026-08-03T04:41:00.000Z',
+                  body: marker('alert', pagedAlertId),
+                  user: { login: 'github-actions[bot]' },
+                },
+              ]
+            : [];
+      return new Response(JSON.stringify(body), {
+        status: 200,
+        headers: { 'content-type': 'application/json' },
+      });
+    };
+    const pagedChannel = createGitHubChannel({
+      repository: 'badjoke-lab/cryptopaymap',
+      issueNumber: alertIssueNumber,
+      token: '',
+      fetchImpl: pagedFetch,
+    });
+    const pagedDelivery = await pagedChannel.deliver(pagedAlertId, {
+      signalClass: 'pagination_regression',
+      severity: 'test_high',
+      bindingDigest: boundedHash(binding),
+      ownerDigest: boundedHash('configured-staging-monitor-owner'),
+      evidenceAt: now.toISOString(),
+    });
+    assert(
+      pagedDelivery.reused === true,
+      'read-only channel must reuse evidence beyond first page',
+    );
+    assert(
+      pagedRequests.join(',') === '1,2',
+      'comment lookup must continue beyond a full first page and stop on the final page',
+    );
+
     for (const [id, path] of predecessorPaths) {
       writeFixture(root, path, {
         version: 1,
