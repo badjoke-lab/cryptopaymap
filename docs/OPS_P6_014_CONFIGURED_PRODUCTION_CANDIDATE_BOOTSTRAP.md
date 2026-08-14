@@ -74,7 +74,7 @@ Raw values are never written to the repository, retained receipt, summary, or ar
 
 Production Admin uses `CPM_ADMIN_AUTH_MODE=cloudflare_access` with the protected Cloudflare Access team domain and audience. Staging-derived Admin HMAC keys are deliberately not installed as production Admin credentials.
 
-The production seed is used only to derive the existing bounded runtime secrets before a protected Pages secret bulk update. Production Turnstile values are mapped to the runtime names used by the application. The intended Turnstile hostname remains `cryptopaymap.com`; the candidate pages.dev hostname is not treated as the canonical live hostname.
+The production seed is used only to derive the existing bounded runtime secrets before a protected Pages secret bulk update. Production Turnstile values are mapped to the runtime names used by the application. The intended Turnstile hostname is the canonical `www.cryptopaymap.com`. The apex `cryptopaymap.com` is the redirect host and must not be accepted as the server-side Turnstile hostname; the candidate pages.dev hostname is also not treated as the canonical live hostname.
 
 ## External verification
 
