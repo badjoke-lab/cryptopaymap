@@ -1,0 +1,72 @@
+name: temporary P6 apex base runner
+
+on:
+  pull_request:
+    branches:
+      - ops/p6-apex-runner-base
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.event.pull_request.head.ref == 'ops/p6-apex-canonical'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ops/p6-apex-canonical
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Execute hardening patch from head branch
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('.github/workflows/_tmp-p6-apex-review-fix.yml')
+          text = path.read_text()
+          start_marker = "          python3 <<'PY'\n"
+          end_marker = "\n          PY\n\n      - name: Install dependencies"
+          start = text.index(start_marker) + len(start_marker)
+          end = text.index(end_marker, start)
+          raw = text[start:end]
+          code = '\n'.join(line[10:] if line.startswith('          ') else line for line in raw.splitlines())
+          exec(compile(code, str(path), 'exec'), {})
+          PY
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate hardened apex topology
+        run: |
+          npm run check
+          node scripts/materialize-production-machine-files.mjs --self-test
+          node scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
+          node scripts/run-ops-p6-014-production-candidate-bootstrap.mjs --self-test
+          node scripts/check-ops-p6-016-production-go-live-executor.mjs
+          node scripts/run-ops-p6-016-production-go-live-executor.mjs --self-test
+          node scripts/check-ops-p6-017-production-launch-close.mjs
+          node scripts/run-ops-p6-017-production-launch-close.mjs --self-test
+          git diff --check
+
+      - name: Reject old WWW-canonical markers
+        run: |
+          set -euo pipefail
+          if git grep -n -F "canonicalHost = 'www.cryptopaymap.com'" -- . ':!node_modules'; then exit 1; fi
+          if git grep -n -F "canonicalOrigin = 'https://www.cryptopaymap.com'" -- . ':!node_modules'; then exit 1; fi
+          if git grep -n -F 'canonical `www.cryptopaymap.com`' -- . ':!node_modules'; then exit 1; fi
+          if git grep -n -F 'canonical WWW hostname' -- . ':!node_modules'; then exit 1; fi
+          if git grep -n -F 'https://www.cryptopaymap.com/sitemap.xml' -- . ':!node_modules'; then exit 1; fi
+
+      - name: Commit hardened patch and remove head temporary workflow
+        run: |
+          rm .github/workflows/_tmp-p6-apex-review-fix.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git commit -m 'P6: harden apex cutover verification'
+          git push origin HEAD:ops/p6-apex-canonical
