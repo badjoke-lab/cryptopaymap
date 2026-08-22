@@ -47,13 +47,15 @@ jobs:
           from pathlib import Path
           path = Path('scripts/run-ops-p6-014-production-candidate-bootstrap.mjs')
           text = path.read_text()
-          old = """      productionTurnstileHostname === 'www.cryptopaymap.com',
-              'production Turnstile hostname must equal the canonical WWW hostname',"""
-          new = """      productionTurnstileHostname === 'cryptopaymap.com',
-              'production Turnstile hostname must equal the canonical apex hostname',"""
-          if text.count(old) != 1:
-              raise SystemExit(f'unexpected P6-014 self-test marker count: {text.count(old)}')
-          path.write_text(text.replace(old, new))
+          replacements = {
+              "productionTurnstileHostname === 'www.cryptopaymap.com'": "productionTurnstileHostname === 'cryptopaymap.com'",
+              "production Turnstile hostname must equal the canonical WWW hostname": "production Turnstile hostname must equal the canonical apex hostname",
+          }
+          for old, new in replacements.items():
+              if text.count(old) != 1:
+                  raise SystemExit(f'unexpected P6-014 self-test marker count for {old!r}: {text.count(old)}')
+              text = text.replace(old, new)
+          path.write_text(text)
           PY
 
       - name: Install dependencies
