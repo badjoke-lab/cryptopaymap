@@ -13,7 +13,8 @@ const stagingProjectName = 'cryptopaymap-staging';
 const productionBranch = 'main';
 const platformDomain = `${projectName}.pages.dev`;
 const apexHost = 'cryptopaymap.com';
-const canonicalHost = 'www.cryptopaymap.com';
+const redirectHost = 'www.cryptopaymap.com';
+const canonicalHost = apexHost;
 const legacyA = '216.198.79.1';
 const legacyWwwCname = '02eeaa61ea1e3365.vercel-dns-017.com';
 const legacyVerificationTxt =
@@ -120,7 +121,11 @@ export function classifyProviderSnapshot(snapshot) {
     return 'conflict';
   if (!Array.isArray(snapshot.apexRecords) || !Array.isArray(snapshot.wwwRecords))
     return 'conflict';
-  if (!Array.isArray(snapshot.customDomains) || !Array.isArray(snapshot.wwwDomains))
+  if (
+    !Array.isArray(snapshot.customDomains) ||
+    !Array.isArray(snapshot.apexDomains) ||
+    !Array.isArray(snapshot.wwwDomains)
+  )
     return 'conflict';
 
   const legacyARecords = snapshot.apexRecords.filter((record) =>
@@ -132,17 +137,30 @@ export function classifyProviderSnapshot(snapshot) {
       ttl: 1,
     }),
   );
+  const candidateApexRecords = snapshot.apexRecords.filter((record) =>
+    exactDnsRecord(record, {
+      type: 'CNAME',
+      name: apexHost,
+      content: platformDomain,
+      proxied: true,
+      ttl: 1,
+    }),
+  );
   const verificationRecords = snapshot.apexRecords.filter(exactTxtRecord);
-  const apexExact =
+  const legacyApexExact =
     snapshot.apexRecords.length === 2 &&
     legacyARecords.length === 1 &&
+    verificationRecords.length === 1;
+  const candidateApexExact =
+    snapshot.apexRecords.length === 2 &&
+    candidateApexRecords.length === 1 &&
     verificationRecords.length === 1;
 
   const legacyWww =
     snapshot.wwwRecords.length === 1 &&
     exactDnsRecord(snapshot.wwwRecords[0], {
       type: 'CNAME',
-      name: canonicalHost,
+      name: redirectHost,
       content: legacyWwwCname,
       proxied: false,
       ttl: 1,
@@ -151,21 +169,28 @@ export function classifyProviderSnapshot(snapshot) {
     snapshot.wwwRecords.length === 1 &&
     exactDnsRecord(snapshot.wwwRecords[0], {
       type: 'CNAME',
-      name: canonicalHost,
+      name: redirectHost,
       content: platformDomain,
       proxied: true,
       ttl: 1,
     });
 
-  const noCustomDomains = snapshot.customDomains.length === 0 && snapshot.wwwDomains.length === 0;
-  const exactWwwDomain =
-    snapshot.customDomains.length === 1 &&
+  const noCustomDomains =
+    snapshot.customDomains.length === 0 &&
+    snapshot.apexDomains.length === 0 &&
+    snapshot.wwwDomains.length === 0;
+  const exactCandidateDomains =
+    snapshot.customDomains.length === 2 &&
+    snapshot.apexDomains.length === 1 &&
     snapshot.wwwDomains.length === 1 &&
-    normalizeHostname(snapshot.wwwDomains[0]?.name) === canonicalHost;
+    normalizeHostname(snapshot.apexDomains[0]?.name) === apexHost &&
+    normalizeHostname(snapshot.wwwDomains[0]?.name) === redirectHost;
 
-  if (apexExact && legacyWww && noCustomDomains) return 'legacy_v1';
-  if (apexExact && candidateWww && exactWwwDomain) {
-    return snapshot.wwwDomains[0]?.status === 'active' ? 'candidate_active' : 'candidate_pending';
+  if (legacyApexExact && legacyWww && noCustomDomains) return 'legacy_v1';
+  if (candidateApexExact && candidateWww && exactCandidateDomains) {
+    return snapshot.apexDomains[0]?.status === 'active' && snapshot.wwwDomains[0]?.status === 'active'
+      ? 'candidate_active'
+      : 'candidate_pending';
   }
   return 'conflict';
 }
@@ -181,7 +206,11 @@ function safeSnapshot(snapshot) {
     wwwRecordCount: snapshot.wwwRecords.length,
     wwwRecordDigest: stableRecordDigest(snapshot.wwwRecords),
     customDomainCount: snapshot.customDomains.length,
+    apexDomainCount: snapshot.apexDomains.length,
     wwwDomainCount: snapshot.wwwDomains.length,
+    apexDomainStatuses: snapshot.apexDomains
+      .map((item) => (typeof item?.status === 'string' ? item.status : 'unknown'))
+      .sort(),
     wwwDomainStatuses: snapshot.wwwDomains
       .map((item) => (typeof item?.status === 'string' ? item.status : 'unknown'))
       .sort(),
@@ -418,13 +447,16 @@ async function providerSnapshot() {
   const zone = exactZones.length === 1 ? exactZones[0] : null;
   const records = zone?.id ? await listDnsRecords(zone.id) : [];
   const apexRecords = records.filter((record) => normalizeHostname(record?.name) === apexHost);
-  const wwwRecords = records.filter((record) => normalizeHostname(record?.name) === canonicalHost);
+  const wwwRecords = records.filter((record) => normalizeHostname(record?.name) === redirectHost);
   const allDomains = Array.isArray(domains) ? domains : [];
   const customDomains = allDomains.filter(
     (domain) => normalizeHostname(domain?.name) !== platformDomain,
   );
+  const apexDomains = customDomains.filter(
+    (domain) => normalizeHostname(domain?.name) === apexHost,
+  );
   const wwwDomains = customDomains.filter(
-    (domain) => normalizeHostname(domain?.name) === canonicalHost,
+    (domain) => normalizeHostname(domain?.name) === redirectHost,
   );
   const projectDomains = Array.isArray(project?.domains)
     ? project.domains.map(normalizeHostname).filter(Boolean)
@@ -457,25 +489,26 @@ async function providerSnapshot() {
     apexRecords,
     wwwRecords,
     customDomains,
+    apexDomains,
     wwwDomains,
   };
 }
 
-async function deletePagesDomain() {
+async function deletePagesDomain(hostname) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   await cloudflareRequest(
-    `/accounts/${encodeURIComponent(accountId)}/pages/projects/${projectName}/domains/${encodeURIComponent(canonicalHost)}`,
+    `/accounts/${encodeURIComponent(accountId)}/pages/projects/${projectName}/domains/${encodeURIComponent(hostname)}`,
     'pages_domain_delete',
     { method: 'DELETE', allowNotFound: true },
   );
 }
 
-async function addPagesDomain() {
+async function addPagesDomain(hostname) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   await cloudflareRequest(
     `/accounts/${encodeURIComponent(accountId)}/pages/projects/${projectName}/domains`,
     'pages_domain_add',
-    { method: 'POST', body: { name: canonicalHost } },
+    { method: 'POST', body: { name: hostname } },
   );
 }
 
@@ -488,20 +521,13 @@ async function deleteExactRecord(zoneId, record, expected) {
   );
 }
 
-async function createWwwRecord(zoneId, content, proxied, comment) {
+async function createDnsRecord(zoneId, { type, name, content, proxied, ttl = 1, comment }) {
   const { result } = await cloudflareRequest(
     `/zones/${encodeURIComponent(zoneId)}/dns_records`,
     'dns_record_create',
     {
       method: 'POST',
-      body: {
-        type: 'CNAME',
-        name: canonicalHost,
-        content,
-        proxied,
-        ttl: 1,
-        comment,
-      },
+      body: { type, name, content, proxied, ttl, comment },
     },
   );
   if (typeof result?.id !== 'string') throw new Error('dns_record_create_missing_id');
@@ -527,16 +553,47 @@ async function establishCandidate() {
   if (classifyProviderSnapshot(before) !== 'legacy_v1')
     throw new Error(`candidate_establish_requires_legacy:${classifyProviderSnapshot(before)}`);
   const zoneId = before.zoneId;
-  const legacyRecord = before.wwwRecords[0];
-  await deleteExactRecord(zoneId, legacyRecord, {
+  const legacyARecord = before.apexRecords.find((record) =>
+    exactDnsRecord(record, {
+      type: 'A',
+      name: apexHost,
+      content: legacyA,
+      proxied: false,
+      ttl: 1,
+    }),
+  );
+  const legacyWwwRecord = before.wwwRecords[0];
+  if (!legacyARecord) throw new Error('legacy_apex_record_missing');
+  await deleteExactRecord(zoneId, legacyARecord, {
+    type: 'A',
+    name: apexHost,
+    content: legacyA,
+    proxied: false,
+    ttl: 1,
+  });
+  await deleteExactRecord(zoneId, legacyWwwRecord, {
     type: 'CNAME',
-    name: canonicalHost,
+    name: redirectHost,
     content: legacyWwwCname,
     proxied: false,
     ttl: 1,
   });
-  await createWwwRecord(zoneId, platformDomain, true, 'CryptoPayMap production P6-08 go-live');
-  await addPagesDomain();
+  await createDnsRecord(zoneId, {
+    type: 'CNAME',
+    name: apexHost,
+    content: platformDomain,
+    proxied: true,
+    comment: 'CryptoPayMap production canonical apex',
+  });
+  await createDnsRecord(zoneId, {
+    type: 'CNAME',
+    name: redirectHost,
+    content: platformDomain,
+    proxied: true,
+    comment: 'CryptoPayMap production WWW redirect host',
+  });
+  await addPagesDomain(apexHost);
+  await addPagesDomain(redirectHost);
   return waitForProvider('candidate_active');
 }
 
@@ -549,104 +606,175 @@ async function rollbackToLegacy() {
   }
 
   const zoneId = before.zoneId;
-  const candidateRecords = before.wwwRecords.filter((record) =>
+  const candidateApexRecords = before.apexRecords.filter((record) =>
     exactDnsRecord(record, {
       type: 'CNAME',
-      name: canonicalHost,
+      name: apexHost,
       content: platformDomain,
       proxied: true,
       ttl: 1,
     }),
   );
-  const legacyRecords = before.wwwRecords.filter((record) =>
+  const legacyApexRecords = before.apexRecords.filter((record) =>
+    exactDnsRecord(record, {
+      type: 'A',
+      name: apexHost,
+      content: legacyA,
+      proxied: false,
+      ttl: 1,
+    }),
+  );
+  const verificationRecords = before.apexRecords.filter(exactTxtRecord);
+  if (
+    before.apexRecords.length !==
+      candidateApexRecords.length + legacyApexRecords.length + verificationRecords.length ||
+    verificationRecords.length !== 1
+  )
+    throw new Error('rollback_apex_record_conflict');
+
+  const candidateWwwRecords = before.wwwRecords.filter((record) =>
     exactDnsRecord(record, {
       type: 'CNAME',
-      name: canonicalHost,
+      name: redirectHost,
+      content: platformDomain,
+      proxied: true,
+      ttl: 1,
+    }),
+  );
+  const legacyWwwRecords = before.wwwRecords.filter((record) =>
+    exactDnsRecord(record, {
+      type: 'CNAME',
+      name: redirectHost,
       content: legacyWwwCname,
       proxied: false,
       ttl: 1,
     }),
   );
-  if (before.wwwRecords.length !== candidateRecords.length + legacyRecords.length)
+  if (before.wwwRecords.length !== candidateWwwRecords.length + legacyWwwRecords.length)
     throw new Error('rollback_www_record_conflict');
-  if (before.customDomains.some((domain) => normalizeHostname(domain?.name) !== canonicalHost))
+  if (
+    before.customDomains.some((domain) => {
+      const name = normalizeHostname(domain?.name);
+      return name !== apexHost && name !== redirectHost;
+    })
+  )
     throw new Error('rollback_custom_domain_conflict');
 
-  if (before.wwwDomains.length > 0) {
-    if (before.wwwDomains.length !== 1) throw new Error('rollback_www_domain_conflict');
-    await deletePagesDomain();
-    await sleep(3_000);
-  }
-  for (const record of candidateRecords) {
+  if (before.apexDomains.length > 1 || before.wwwDomains.length > 1)
+    throw new Error('rollback_pages_domain_conflict');
+  if (before.apexDomains.length === 1) await deletePagesDomain(apexHost);
+  if (before.wwwDomains.length === 1) await deletePagesDomain(redirectHost);
+  if (before.apexDomains.length > 0 || before.wwwDomains.length > 0) await sleep(3_000);
+
+  for (const record of candidateApexRecords) {
     await deleteExactRecord(zoneId, record, {
       type: 'CNAME',
-      name: canonicalHost,
+      name: apexHost,
       content: platformDomain,
       proxied: true,
       ttl: 1,
     });
   }
-  if (legacyRecords.length === 0) {
-    await createWwwRecord(
-      zoneId,
-      legacyWwwCname,
-      false,
-      'Restored CryptoPayMap legacy Vercel CNAME',
-    );
-  } else if (legacyRecords.length !== 1) {
-    throw new Error('rollback_multiple_legacy_records');
+  for (const record of candidateWwwRecords) {
+    await deleteExactRecord(zoneId, record, {
+      type: 'CNAME',
+      name: redirectHost,
+      content: platformDomain,
+      proxied: true,
+      ttl: 1,
+    });
+  }
+  if (legacyApexRecords.length === 0) {
+    await createDnsRecord(zoneId, {
+      type: 'A',
+      name: apexHost,
+      content: legacyA,
+      proxied: false,
+      comment: 'Restored CryptoPayMap legacy Vercel apex',
+    });
+  } else if (legacyApexRecords.length !== 1) {
+    throw new Error('rollback_multiple_legacy_apex_records');
+  }
+  if (legacyWwwRecords.length === 0) {
+    await createDnsRecord(zoneId, {
+      type: 'CNAME',
+      name: redirectHost,
+      content: legacyWwwCname,
+      proxied: false,
+      comment: 'Restored CryptoPayMap legacy Vercel WWW CNAME',
+    });
+  } else if (legacyWwwRecords.length !== 1) {
+    throw new Error('rollback_multiple_legacy_www_records');
   }
   return waitForProvider('legacy_v1', 60, 5_000);
 }
 
 async function publicDnsObservation(mode) {
   const apexAddresses = await dns.resolve4(apexHost);
-  if (!apexAddresses.includes(legacyA)) throw new Error('apex_dns_changed');
   if (mode === 'legacy') {
-    const cnames = await dns.resolveCname(canonicalHost);
+    if (!apexAddresses.includes(legacyA)) throw new Error('legacy_apex_dns_not_converged');
+    const cnames = await dns.resolveCname(redirectHost);
     if (cnames.length !== 1 || normalizeHostname(cnames[0]) !== legacyWwwCname)
       throw new Error('legacy_www_dns_not_converged');
     return {
       mode,
       apexDigest: digest(apexAddresses.sort()),
-      canonicalDigest: digest(cnames.sort()),
+      redirectDigest: digest(cnames.sort()),
     };
   }
-  const addresses = await dns.resolve4(canonicalHost);
-  if (addresses.length === 0) throw new Error('candidate_www_dns_missing');
+  if (apexAddresses.length === 0 || apexAddresses.includes(legacyA))
+    throw new Error('candidate_apex_dns_not_converged');
+  const redirectAddresses = await dns.resolve4(redirectHost);
+  if (redirectAddresses.length === 0) throw new Error('candidate_www_dns_missing');
   let cnames = [];
   try {
-    cnames = await dns.resolveCname(canonicalHost);
+    cnames = await dns.resolveCname(redirectHost);
   } catch {}
   if (cnames.some((value) => normalizeHostname(value) === legacyWwwCname))
     throw new Error('candidate_www_dns_still_legacy');
   return {
     mode,
     apexDigest: digest(apexAddresses.sort()),
-    canonicalDigest: digest(addresses.sort()),
+    redirectDigest: digest(redirectAddresses.sort()),
   };
 }
 
-async function verifyApexRedirect(phase) {
+async function verifyLegacyApexRedirect() {
   const nonce = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const path = `/p6-016-probe/${nonce}`;
-  const query = `phase=${encodeURIComponent(phase)}&preserve=1`;
+  const query = 'phase=rollback&preserve=1';
   const response = await fetch(`https://${apexHost}${path}?${query}`, {
     redirect: 'manual',
     cache: 'no-store',
     signal: AbortSignal.timeout(20_000),
   });
-  const expectedLocation = `https://${canonicalHost}${path}?${query}`;
-  if (response.status !== 307) throw new Error(`apex_redirect_status:${response.status}`);
+  const expectedLocation = `https://${redirectHost}${path}?${query}`;
+  if (response.status !== 307) throw new Error(`legacy_apex_redirect_status:${response.status}`);
   if (response.headers.get('location') !== expectedLocation)
-    throw new Error('apex_redirect_location_mismatch');
+    throw new Error('legacy_apex_redirect_location_mismatch');
   if ((response.headers.get('server') ?? '').toLowerCase() !== 'vercel')
-    throw new Error('apex_redirect_provider_changed');
+    throw new Error('legacy_apex_redirect_provider_changed');
   return { status: response.status, locationDigest: digest(expectedLocation), server: 'vercel' };
 }
 
+async function verifyCandidateWwwRedirect() {
+  const nonce = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const path = `/p6-016-probe/${nonce}`;
+  const query = 'phase=candidate&preserve=1';
+  const response = await fetch(`https://${redirectHost}${path}?${query}`, {
+    redirect: 'manual',
+    cache: 'no-store',
+    signal: AbortSignal.timeout(20_000),
+  });
+  const expectedLocation = `https://${canonicalHost}${path}?${query}`;
+  if (response.status !== 308) throw new Error(`www_redirect_status:${response.status}`);
+  if (response.headers.get('location') !== expectedLocation)
+    throw new Error('www_redirect_location_mismatch');
+  return { status: response.status, locationDigest: digest(expectedLocation) };
+}
+
 async function verifyLegacyExternal() {
-  const apex = await verifyApexRedirect('rollback');
+  const apex = await verifyLegacyApexRedirect();
   const response = await fetch(`https://${canonicalHost}/?p6_016_legacy=${Date.now()}`, {
     redirect: 'manual',
     cache: 'no-store',
@@ -673,7 +801,7 @@ async function fetchJson(path) {
 }
 
 async function verifyCandidateExternal(candidate) {
-  const apex = await verifyApexRedirect('candidate');
+  const redirect = await verifyCandidateWwwRedirect();
   const routes = [
     ['/', 200, 'text/html'],
     ['/version.json', 200, 'application/json'],
@@ -739,7 +867,7 @@ async function verifyCandidateExternal(candidate) {
 
   const dnsObservation = await publicDnsObservation('candidate');
   return {
-    apex,
+    redirect,
     routesDigest: digest(routeObservations),
     routeCount: routeObservations.length,
     adminStatus: admin.status,
@@ -850,11 +978,8 @@ async function execute(statusRoot, outputPath) {
 
     mutationStarted = true;
     candidateFirst = await establishCandidate();
-    if (
-      safeSnapshot(candidateFirst).apexRecordDigest !==
-      safeSnapshot(legacySnapshot).apexRecordDigest
-    )
-      throw new Error('apex_records_changed_during_cutover');
+    if (classifyProviderSnapshot(candidateFirst) !== 'candidate_active')
+      throw new Error('candidate_topology_not_active');
     if (candidateFirst.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
       throw new Error('staging_project_changed_during_cutover');
     externalFirst = await waitForExternal('candidate', evidence.candidate);
@@ -862,21 +987,18 @@ async function execute(statusRoot, outputPath) {
     rollbackSnapshot = await rollbackToLegacy();
     rollbackSucceeded = true;
     if (
-      safeSnapshot(rollbackSnapshot).apexRecordDigest !==
-      safeSnapshot(legacySnapshot).apexRecordDigest
+      safeSnapshot(rollbackSnapshot).apexRecordDigest !== safeSnapshot(legacySnapshot).apexRecordDigest ||
+      safeSnapshot(rollbackSnapshot).wwwRecordDigest !== safeSnapshot(legacySnapshot).wwwRecordDigest
     )
-      throw new Error('apex_records_changed_during_rollback');
+      throw new Error('legacy_dns_not_restored_during_rollback');
     if (rollbackSnapshot.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
       throw new Error('staging_project_changed_during_rollback');
     externalRollback = await waitForExternal('legacy', evidence.candidate);
 
     candidateFinal = await establishCandidate();
     rollbackSucceeded = false;
-    if (
-      safeSnapshot(candidateFinal).apexRecordDigest !==
-      safeSnapshot(legacySnapshot).apexRecordDigest
-    )
-      throw new Error('apex_records_changed_during_final_restore');
+    if (classifyProviderSnapshot(candidateFinal) !== 'candidate_active')
+      throw new Error('final_candidate_topology_not_active');
     if (candidateFinal.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
       throw new Error('staging_project_changed_during_final_restore');
     externalFinal = await waitForExternal('candidate', evidence.candidate);
@@ -933,7 +1055,7 @@ async function execute(statusRoot, outputPath) {
       finalExternal: externalFinal
         ? { status: state === 'accepted' ? 'passed' : 'failed', digest: digest(externalFinal) }
         : { status: 'not_run', digest: null },
-      apexMutation: false,
+      apexMutation: mutationStarted,
       unrelatedDnsMutation: false,
       stagingMutation: false,
       productionMutation: mutationStarted,
@@ -948,7 +1070,16 @@ async function execute(statusRoot, outputPath) {
 
 function fixtureSnapshot(kind = 'legacy') {
   const apexRecords = [
-    { id: 'apex-a', type: 'A', name: apexHost, content: legacyA, proxied: false, ttl: 1 },
+    kind === 'legacy'
+      ? { id: 'apex-a', type: 'A', name: apexHost, content: legacyA, proxied: false, ttl: 1 }
+      : {
+id: 'apex-candidate',
+type: 'CNAME',
+name: apexHost,
+content: platformDomain,
+proxied: true,
+ttl: 1,
+        },
     {
       id: 'apex-txt',
       type: 'TXT',
@@ -961,24 +1092,31 @@ function fixtureSnapshot(kind = 'legacy') {
   const wwwRecords = [
     kind === 'legacy'
       ? {
-          id: 'www-legacy',
-          type: 'CNAME',
-          name: canonicalHost,
-          content: legacyWwwCname,
-          proxied: false,
-          ttl: 1,
+id: 'www-legacy',
+type: 'CNAME',
+name: redirectHost,
+content: legacyWwwCname,
+proxied: false,
+ttl: 1,
         }
       : {
-          id: 'www-candidate',
-          type: 'CNAME',
-          name: canonicalHost,
-          content: platformDomain,
-          proxied: true,
-          ttl: 1,
+id: 'www-candidate',
+type: 'CNAME',
+name: redirectHost,
+content: platformDomain,
+proxied: true,
+ttl: 1,
         },
   ];
-  const wwwDomains =
-    kind === 'legacy' ? [] : [{ id: 'domain', name: canonicalHost, status: 'active' }];
+  const customDomains =
+    kind === 'legacy'
+      ? []
+      : [
+{ id: 'apex-domain', name: apexHost, status: 'active' },
+{ id: 'www-domain', name: redirectHost, status: 'active' },
+        ];
+  const apexDomains = customDomains.filter((item) => item.name === apexHost);
+  const wwwDomains = customDomains.filter((item) => item.name === redirectHost);
   return {
     projectSafe: true,
     zoneSafe: true,
@@ -989,7 +1127,8 @@ function fixtureSnapshot(kind = 'legacy') {
     stagingProjectDigest: digest('staging-project'),
     apexRecords,
     wwwRecords,
-    customDomains: wwwDomains,
+    customDomains,
+    apexDomains,
     wwwDomains,
   };
 }
@@ -1015,7 +1154,7 @@ function selfTest() {
   extraRecord.wwwRecords.push({
     id: 'extra',
     type: 'TXT',
-    name: canonicalHost,
+    name: redirectHost,
     content: 'unexpected',
     proxied: false,
     ttl: 300,
@@ -1032,7 +1171,7 @@ function selfTest() {
   assert(
     exactDnsRecord(legacy.wwwRecords[0], {
       type: 'CNAME',
-      name: canonicalHost,
+      name: redirectHost,
       content: legacyWwwCname,
       proxied: false,
       ttl: 1,
@@ -1042,7 +1181,7 @@ function selfTest() {
   assert(
     !exactDnsRecord(legacy.wwwRecords[0], {
       type: 'CNAME',
-      name: canonicalHost,
+      name: redirectHost,
       content: platformDomain,
       proxied: true,
       ttl: 1,

@@ -13,7 +13,7 @@ Observation fails closed unless the retained `config/production-authorization/go
 - configured-production authorization passed;
 - the rollback drill passed and was externally observed;
 - the final candidate restore passed and was externally observed;
-- apex DNS was not mutated;
+- the apex was deliberately moved to the approved production Pages target;
 - unrelated DNS was not mutated;
 - staging was not mutated;
 - launch close is still false;
@@ -62,9 +62,10 @@ Each sample independently verifies the already-launched production service.
 
 ### DNS, redirect, and TLS
 
-- `cryptopaymap.com` preserves the approved 307 path/query redirect to `www.cryptopaymap.com`;
-- the apex remains on the approved legacy A target used by the cutover plan;
-- the canonical host resolves publicly and has not reverted to the legacy WWW CNAME;
+- `cryptopaymap.com` is the canonical production host and resolves publicly through the production Pages path;
+- the apex has not reverted to the approved legacy Vercel A target;
+- `www.cryptopaymap.com` returns the approved 308 path/query-preserving redirect to `cryptopaymap.com`;
+- the WWW redirect host has not reverted to the legacy Vercel CNAME;
 - TLS is trusted, current, and uses a TLS 1.x protocol;
 - only bounded DNS/TLS digests and certificate metadata are retained.
 
