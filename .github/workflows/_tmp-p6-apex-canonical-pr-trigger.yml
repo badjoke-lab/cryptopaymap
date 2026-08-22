@@ -58,6 +58,19 @@ jobs:
           path.write_text(text)
           PY
 
+      - name: Align P6-016 checker with apex topology
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('scripts/check-ops-p6-016-production-go-live-executor.mjs')
+          text = path.read_text()
+          old = '  "\'candidate_active\' : \'candidate_pending\'",'
+          new = '  "? \'candidate_active\'",\n  ": \'candidate_pending\'",'
+          if text.count(old) != 1:
+              raise SystemExit(f'unexpected P6-016 candidate marker count: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
       - name: Install dependencies
         run: npm ci
 
