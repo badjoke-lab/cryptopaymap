@@ -30,14 +30,14 @@ jobs:
         run: |
           python3 <<'PY'
           from pathlib import Path
-          import textwrap
           path = Path('.github/workflows/_tmp-p6-apex-canonical-patch.yml')
           text = path.read_text()
           start_marker = "          python3 <<'PY'\n"
           end_marker = "\n          PY\n\n      - name: Install dependencies"
           start = text.index(start_marker) + len(start_marker)
           end = text.index(end_marker, start)
-          code = textwrap.dedent(text[start:end])
+          raw = text[start:end]
+          code = '\n'.join(line[10:] if line.startswith('          ') else line for line in raw.splitlines())
           exec(compile(code, str(path), 'exec'), {})
           PY
 
