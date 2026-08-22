@@ -75,6 +75,19 @@ jobs:
           path.write_text(text)
           PY
 
+      - name: Align P6-017 apex self-test fixture
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('scripts/run-ops-p6-017-production-launch-close.mjs')
+          text = path.read_text()
+          old = '      apexMutation: false,'
+          new = '      apexMutation: true,'
+          if text.count(old) != 1:
+              raise SystemExit(f'unexpected P6-017 fixture apex marker count: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
       - name: Install dependencies
         run: npm ci
 
