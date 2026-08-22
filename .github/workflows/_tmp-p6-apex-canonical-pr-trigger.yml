@@ -41,6 +41,21 @@ jobs:
           exec(compile(code, str(path), 'exec'), {})
           PY
 
+      - name: Fix apex Turnstile self-test expectation
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          path = Path('scripts/run-ops-p6-014-production-candidate-bootstrap.mjs')
+          text = path.read_text()
+          old = """      productionTurnstileHostname === 'www.cryptopaymap.com',
+              'production Turnstile hostname must equal the canonical WWW hostname',"""
+          new = """      productionTurnstileHostname === 'cryptopaymap.com',
+              'production Turnstile hostname must equal the canonical apex hostname',"""
+          if text.count(old) != 1:
+              raise SystemExit(f'unexpected P6-014 self-test marker count: {text.count(old)}')
+          path.write_text(text.replace(old, new))
+          PY
+
       - name: Install dependencies
         run: npm ci
 
