@@ -561,8 +561,8 @@ async function selfTest() {
     assert(publicTreeDigest(dist) === digest, 'marker must not change public tree digest');
     assert(first.version.canonicalOnly === true, 'version must remain canonical-only');
     assert(
-      productionTurnstileHostname === 'www.cryptopaymap.com',
-      'production Turnstile hostname must equal the canonical WWW hostname',
+      productionTurnstileHostname === 'cryptopaymap.com',
+      'production Turnstile hostname must equal the canonical apex hostname',
     );
     assert(
       validDigest(credentialGenerationDigest('production-generation-v1')),

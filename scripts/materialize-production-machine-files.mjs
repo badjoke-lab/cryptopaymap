@@ -11,7 +11,7 @@ import { tmpdir } from 'node:os';
 import { join, relative, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
-export const canonicalOrigin = 'https://www.cryptopaymap.com';
+export const canonicalOrigin = 'https://cryptopaymap.com';
 
 function listFiles(root) {
   const files = [];
