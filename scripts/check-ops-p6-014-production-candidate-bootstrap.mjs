@@ -62,7 +62,7 @@ expectIncludes('workflow', files.workflow, [
   'p6_08_production_turnstile_site_key',
   'p6_08_production_cf_access_team_domain',
   'p6_08_production_cf_access_aud',
-  "cpm_turnstile_expected_hostname: 'www.cryptopaymap.com'",
+  "cpm_turnstile_expected_hostname: 'cryptopaymap.com'",
   'cpm_admin_auth_mode',
   'cloudflare_access',
   'cf_access_team_domain',
@@ -85,7 +85,7 @@ expectIncludes('documentation', files.doc, [
   'synthetic staging review data is not materialized',
   'cloudflare access',
   'unauthenticated',
-  'canonical `www.cryptopaymap.com`',
+  'canonical `cryptopaymap.com`',
   '`/admin/`',
   '403',
 ]);

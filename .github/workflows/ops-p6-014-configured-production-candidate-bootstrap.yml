@@ -340,7 +340,7 @@ jobs:
             CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: '600',
             CPM_TURNSTILE_SECRET_KEY: process.env.P6_08_PRODUCTION_TURNSTILE_SECRET_KEY,
             PUBLIC_TURNSTILE_SITE_KEY: process.env.P6_08_PRODUCTION_TURNSTILE_SITE_KEY,
-            CPM_TURNSTILE_EXPECTED_HOSTNAME: 'www.cryptopaymap.com',
+            CPM_TURNSTILE_EXPECTED_HOSTNAME: 'cryptopaymap.com',
             CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
             PUBLIC_TURNSTILE_ACTION: 'submission_intake',
             CPM_ADMIN_AUTH_MODE: 'cloudflare_access',

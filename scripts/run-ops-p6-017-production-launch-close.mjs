@@ -11,7 +11,8 @@ const exactIncidentClearance = 'NO_LAUNCH_BLOCKING_INCIDENT';
 const evidenceId = 'P6-08-LAUNCH-CLOSE';
 const environment = 'configured_production';
 const apexHost = 'cryptopaymap.com';
-const canonicalHost = 'www.cryptopaymap.com';
+const redirectHost = 'www.cryptopaymap.com';
+const canonicalHost = apexHost;
 const canonicalOrigin = `https://${canonicalHost}`;
 const legacyA = '216.198.79.1';
 const legacyWwwCname = '02eeaa61ea1e3365.vercel-dns-017.com';
@@ -141,7 +142,7 @@ function readEvidenceBundle(statusRoot, commit, observationEnd) {
     goLive?.checks?.rollbackExternal?.status === 'passed' &&
     goLive?.checks?.finalRestore?.status === 'passed' &&
     goLive?.checks?.finalExternal?.status === 'passed' &&
-    goLive?.checks?.apexMutation === false &&
+    goLive?.checks?.apexMutation === true &&
     goLive?.checks?.unrelatedDnsMutation === false &&
     goLive?.checks?.stagingMutation === false &&
     goLive?.checks?.launchClosed === false &&
@@ -279,28 +280,30 @@ async function collectExternalSample(expected, observedAt = new Date()) {
   const nonce = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const probePath = `/p6-017-probe/${nonce}`;
   const query = 'preserve=1';
-  const apex = await fetch(`https://${apexHost}${probePath}?${query}`, {
+  const redirect = await fetch(`https://${redirectHost}${probePath}?${query}`, {
     cache: 'no-store',
     redirect: 'manual',
     signal: AbortSignal.timeout(20_000),
   });
   const expectedLocation = `${canonicalOrigin}${probePath}?${query}`;
-  if (apex.status !== 307 || apex.headers.get('location') !== expectedLocation)
-    throw new Error('apex_redirect_mismatch');
+  if (redirect.status !== 308 || redirect.headers.get('location') !== expectedLocation)
+    throw new Error('www_redirect_mismatch');
 
   const apexAddresses = (await dns.resolve4(apexHost)).sort();
-  if (!apexAddresses.includes(legacyA)) throw new Error('apex_dns_changed');
-  const canonicalAddresses = (await dns.resolve4(canonicalHost)).sort();
-  if (canonicalAddresses.length === 0) throw new Error('canonical_dns_missing');
-  let canonicalCnames = [];
+  if (apexAddresses.length === 0 || apexAddresses.includes(legacyA))
+    throw new Error('canonical_apex_dns_not_converged');
+  const redirectAddresses = (await dns.resolve4(redirectHost)).sort();
+  if (redirectAddresses.length === 0) throw new Error('redirect_dns_missing');
+  let redirectCnames = [];
   try {
-    canonicalCnames = (await dns.resolveCname(canonicalHost)).map((value) =>
+    redirectCnames = (await dns.resolveCname(redirectHost)).map((value) =>
       value.toLowerCase().replace(/\.$/, ''),
     );
   } catch {}
-  if (canonicalCnames.includes(legacyWwwCname)) throw new Error('canonical_dns_returned_to_legacy');
+  if (redirectCnames.includes(legacyWwwCname)) throw new Error('redirect_dns_returned_to_legacy');
 
   const tlsObservation = await observeTls(canonicalHost);
+  const redirectTlsObservation = await observeTls(redirectHost);
   const routes = [
     ['/', 200, 'text/html'],
     ['/places/', 200, 'text/html'],
@@ -397,14 +400,15 @@ async function collectExternalSample(expected, observedAt = new Date()) {
   return {
     status: 'passed',
     observedAt: observedAt.toISOString(),
-    apexRedirect: { status: 307, locationDigest: digest(expectedLocation) },
+    wwwRedirect: { status: 308, locationDigest: digest(expectedLocation) },
     dns: {
+      apexAddressCount: apexAddresses.length,
       apexDigest: digest(apexAddresses),
-      canonicalAddressCount: canonicalAddresses.length,
-      canonicalDigest: digest(canonicalAddresses),
+      redirectAddressCount: redirectAddresses.length,
+      redirectDigest: digest(redirectAddresses),
       legacyCnamePresent: false,
     },
-    tls: tlsObservation,
+    tls: { canonical: tlsObservation, redirect: redirectTlsObservation },
     release: {
       markerDigest: digest(markerResult.bytes),
       candidateArtifactId: marker.candidateArtifactId,
@@ -683,7 +687,7 @@ function fixtureReceiptSet(root, commit, now, observationEnd, observer, incident
       rollbackExternal: { status: 'passed', digest: digest('rollback-external') },
       finalRestore: { status: 'passed', digest: digest('final') },
       finalExternal: { status: 'passed', digest: digest('final-external') },
-      apexMutation: false,
+      apexMutation: true,
       unrelatedDnsMutation: false,
       stagingMutation: false,
       launchClosed: false,
