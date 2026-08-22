@@ -64,11 +64,15 @@ jobs:
           from pathlib import Path
           path = Path('scripts/check-ops-p6-016-production-go-live-executor.mjs')
           text = path.read_text()
-          old = '  "\'candidate_active\' : \'candidate_pending\'",'
-          new = '  "? \'candidate_active\'",\n  ": \'candidate_pending\'",'
-          if text.count(old) != 1:
-              raise SystemExit(f'unexpected P6-016 candidate marker count: {text.count(old)}')
-          path.write_text(text.replace(old, new))
+          replacements = {
+              '  "\'candidate_active\' : \'candidate_pending\'",': '  "? \'candidate_active\'",\n  ": \'candidate_pending\'",',
+              "  'exact retained legacy vercel topology',": "  'exact retained vercel apex a and www cname',",
+          }
+          for old, new in replacements.items():
+              if text.count(old) != 1:
+                  raise SystemExit(f'unexpected P6-016 checker marker count for {old!r}: {text.count(old)}')
+              text = text.replace(old, new)
+          path.write_text(text)
           PY
 
       - name: Install dependencies
