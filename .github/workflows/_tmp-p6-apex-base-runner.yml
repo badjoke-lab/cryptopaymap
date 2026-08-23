@@ -72,11 +72,14 @@ jobs:
           if git grep -n -F 'canonical WWW hostname' "${paths[@]}"; then exit 1; fi
           if git grep -n -F 'https://www.cryptopaymap.com/sitemap.xml' "${paths[@]}"; then exit 1; fi
 
-      - name: Commit hardened patch and remove head temporary workflow
+      - name: Commit hardened non-workflow source patch
         run: |
-          rm -f .github/workflows/_tmp-p6-apex-review-fix.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add -A
+          git add \
+            scripts/check-ops-p6-016-production-go-live-executor.mjs \
+            scripts/check-ops-p6-017-production-launch-close.mjs \
+            scripts/run-ops-p6-016-production-go-live-executor.mjs \
+            scripts/run-ops-p6-017-production-launch-close.mjs
           git commit -m 'P6: harden apex cutover verification'
           git push origin HEAD:ops/p6-apex-canonical
