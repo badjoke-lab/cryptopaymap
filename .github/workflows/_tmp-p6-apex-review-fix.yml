@@ -1,4 +1,4 @@
-# trigger biome apex hardening rerun
+# temporary helper: non-workflow source hardening only
 name: temporary P6 apex review fix
 
 on:
@@ -108,17 +108,6 @@ jobs:
                   marker17 + "  'wwwredirect?.status !== 308',\n  'apexaddresscount',\n  'redirectaddresscount',\n",
               )
           )
-
-          workflow = Path('.github/workflows/ops-p6-016-configured-production-go-live.yml')
-          workflow_text = workflow.read_text()
-          autofix_marker = '\n# TEMP_APEX_AUTOFIX_START\n'
-          if workflow_text.count(autofix_marker) != 1:
-              raise SystemExit('P6-016 temporary autofix marker mismatch')
-          workflow_text = workflow_text.split(autofix_marker, 1)[0].rstrip() + '\n'
-          expected = "if(r.checks.apexMutation!==true||r.checks.unrelatedDnsMutation!==false||r.checks.stagingMutation!==false||r.checks.launchClosed!==false)"
-          if workflow_text.count(expected) != 1:
-              raise SystemExit('P6-016 apex mutation enforce marker mismatch')
-          workflow.write_text(workflow_text)
           PY
 
       - name: Install dependencies
