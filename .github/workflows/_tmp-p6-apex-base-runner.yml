@@ -41,8 +41,16 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Format hardened files
+        run: |
+          npx prettier --write \
+            scripts/run-ops-p6-016-production-go-live-executor.mjs \
+            scripts/run-ops-p6-017-production-launch-close.mjs \
+            .github/workflows/ops-p6-016-configured-production-go-live.yml
+
       - name: Validate hardened apex topology
         run: |
+          npm run format:check
           npm run check
           node scripts/materialize-production-machine-files.mjs --self-test
           node scripts/check-ops-p6-014-production-candidate-bootstrap.mjs
@@ -56,15 +64,16 @@ jobs:
       - name: Reject old WWW-canonical markers
         run: |
           set -euo pipefail
-          if git grep -n -F "canonicalHost = 'www.cryptopaymap.com'" -- . ':!node_modules'; then exit 1; fi
-          if git grep -n -F "canonicalOrigin = 'https://www.cryptopaymap.com'" -- . ':!node_modules'; then exit 1; fi
-          if git grep -n -F 'canonical `www.cryptopaymap.com`' -- . ':!node_modules'; then exit 1; fi
-          if git grep -n -F 'canonical WWW hostname' -- . ':!node_modules'; then exit 1; fi
-          if git grep -n -F 'https://www.cryptopaymap.com/sitemap.xml' -- . ':!node_modules'; then exit 1; fi
+          paths=(-- . ':!node_modules' ':!.github/workflows/_tmp-p6-apex-review-fix.yml')
+          if git grep -n -F "canonicalHost = 'www.cryptopaymap.com'" "${paths[@]}"; then exit 1; fi
+          if git grep -n -F "canonicalOrigin = 'https://www.cryptopaymap.com'" "${paths[@]}"; then exit 1; fi
+          if git grep -n -F 'canonical `www.cryptopaymap.com`' "${paths[@]}"; then exit 1; fi
+          if git grep -n -F 'canonical WWW hostname' "${paths[@]}"; then exit 1; fi
+          if git grep -n -F 'https://www.cryptopaymap.com/sitemap.xml' "${paths[@]}"; then exit 1; fi
 
       - name: Commit hardened patch and remove head temporary workflow
         run: |
-          rm .github/workflows/_tmp-p6-apex-review-fix.yml
+          rm -f .github/workflows/_tmp-p6-apex-review-fix.yml
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -A
