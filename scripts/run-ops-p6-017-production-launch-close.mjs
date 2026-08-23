@@ -441,7 +441,14 @@ function normalizeSamples(samples, expectedCount) {
       sample?.status !== 'passed' ||
       safeTimestamp(sample?.observedAt) === null ||
       sample?.admin?.status !== 403 ||
+      sample?.wwwRedirect?.status !== 308 ||
+      !Number.isInteger(sample?.dns?.apexAddressCount) ||
+      sample.dns.apexAddressCount < 1 ||
+      !Number.isInteger(sample?.dns?.redirectAddressCount) ||
+      sample.dns.redirectAddressCount < 1 ||
       sample?.dns?.legacyCnamePresent !== false ||
+      sample?.tls?.canonical?.hostnameCovered !== true ||
+      sample?.tls?.redirect?.hostnameCovered !== true ||
       sample?.release?.candidateArtifactId === undefined
     )
       return null;
@@ -732,18 +739,27 @@ function fixtureSample(expected, observedAt) {
   return {
     status: 'passed',
     observedAt: observedAt.toISOString(),
-    apexRedirect: { status: 307, locationDigest: digest('location') },
+    wwwRedirect: { status: 308, locationDigest: digest('location') },
     dns: {
+      apexAddressCount: 2,
       apexDigest: digest('apex'),
-      canonicalAddressCount: 2,
-      canonicalDigest: digest('www'),
+      redirectAddressCount: 2,
+      redirectDigest: digest('www'),
       legacyCnamePresent: false,
     },
     tls: {
-      protocol: 'TLSv1.3',
-      validTo: '2026-12-01T00:00:00.000Z',
-      certificateDigest: digest('cert'),
-      hostnameCovered: true,
+      canonical: {
+        protocol: 'TLSv1.3',
+        validTo: '2026-12-01T00:00:00.000Z',
+        certificateDigest: digest('canonical-cert'),
+        hostnameCovered: true,
+      },
+      redirect: {
+        protocol: 'TLSv1.3',
+        validTo: '2026-12-01T00:00:00.000Z',
+        certificateDigest: digest('redirect-cert'),
+        hostnameCovered: true,
+      },
     },
     release: {
       markerDigest: digest('marker'),

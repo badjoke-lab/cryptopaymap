@@ -188,7 +188,8 @@ export function classifyProviderSnapshot(snapshot) {
 
   if (legacyApexExact && legacyWww && noCustomDomains) return 'legacy_v1';
   if (candidateApexExact && candidateWww && exactCandidateDomains) {
-    return snapshot.apexDomains[0]?.status === 'active' && snapshot.wwwDomains[0]?.status === 'active'
+    return snapshot.apexDomains[0]?.status === 'active' &&
+      snapshot.wwwDomains[0]?.status === 'active'
       ? 'candidate_active'
       : 'candidate_pending';
   }
@@ -775,7 +776,7 @@ async function verifyCandidateWwwRedirect() {
 
 async function verifyLegacyExternal() {
   const apex = await verifyLegacyApexRedirect();
-  const response = await fetch(`https://${canonicalHost}/?p6_016_legacy=${Date.now()}`, {
+  const response = await fetch(`https://${redirectHost}/?p6_016_legacy=${Date.now()}`, {
     redirect: 'manual',
     cache: 'no-store',
     signal: AbortSignal.timeout(20_000),
@@ -987,8 +988,10 @@ async function execute(statusRoot, outputPath) {
     rollbackSnapshot = await rollbackToLegacy();
     rollbackSucceeded = true;
     if (
-      safeSnapshot(rollbackSnapshot).apexRecordDigest !== safeSnapshot(legacySnapshot).apexRecordDigest ||
-      safeSnapshot(rollbackSnapshot).wwwRecordDigest !== safeSnapshot(legacySnapshot).wwwRecordDigest
+      safeSnapshot(rollbackSnapshot).apexRecordDigest !==
+        safeSnapshot(legacySnapshot).apexRecordDigest ||
+      safeSnapshot(rollbackSnapshot).wwwRecordDigest !==
+        safeSnapshot(legacySnapshot).wwwRecordDigest
     )
       throw new Error('legacy_dns_not_restored_during_rollback');
     if (rollbackSnapshot.stagingProjectDigest !== legacySnapshot.stagingProjectDigest)
@@ -1073,12 +1076,12 @@ function fixtureSnapshot(kind = 'legacy') {
     kind === 'legacy'
       ? { id: 'apex-a', type: 'A', name: apexHost, content: legacyA, proxied: false, ttl: 1 }
       : {
-id: 'apex-candidate',
-type: 'CNAME',
-name: apexHost,
-content: platformDomain,
-proxied: true,
-ttl: 1,
+          id: 'apex-candidate',
+          type: 'CNAME',
+          name: apexHost,
+          content: platformDomain,
+          proxied: true,
+          ttl: 1,
         },
     {
       id: 'apex-txt',
@@ -1092,28 +1095,28 @@ ttl: 1,
   const wwwRecords = [
     kind === 'legacy'
       ? {
-id: 'www-legacy',
-type: 'CNAME',
-name: redirectHost,
-content: legacyWwwCname,
-proxied: false,
-ttl: 1,
+          id: 'www-legacy',
+          type: 'CNAME',
+          name: redirectHost,
+          content: legacyWwwCname,
+          proxied: false,
+          ttl: 1,
         }
       : {
-id: 'www-candidate',
-type: 'CNAME',
-name: redirectHost,
-content: platformDomain,
-proxied: true,
-ttl: 1,
+          id: 'www-candidate',
+          type: 'CNAME',
+          name: redirectHost,
+          content: platformDomain,
+          proxied: true,
+          ttl: 1,
         },
   ];
   const customDomains =
     kind === 'legacy'
       ? []
       : [
-{ id: 'apex-domain', name: apexHost, status: 'active' },
-{ id: 'www-domain', name: redirectHost, status: 'active' },
+          { id: 'apex-domain', name: apexHost, status: 'active' },
+          { id: 'www-domain', name: redirectHost, status: 'active' },
         ];
   const apexDomains = customDomains.filter((item) => item.name === apexHost);
   const wwwDomains = customDomains.filter((item) => item.name === redirectHost);
