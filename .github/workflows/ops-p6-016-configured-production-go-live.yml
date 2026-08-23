@@ -269,4 +269,4 @@ jobs:
         if: always()
         run: |
           node -e "const r=require('./production-go-live-receipt.json'); if(r.state!=='accepted') process.exit(1)"
-          node -e "const r=require('./production-go-live-receipt.json'); if(r.checks.apexMutation!==false||r.checks.unrelatedDnsMutation!==false||r.checks.stagingMutation!==false||r.checks.launchClosed!==false) process.exit(1)"
+          node -e "const r=require('./production-go-live-receipt.json'); if(r.checks.apexMutation!==true||r.checks.unrelatedDnsMutation!==false||r.checks.stagingMutation!==false||r.checks.launchClosed!==false) process.exit(1)"

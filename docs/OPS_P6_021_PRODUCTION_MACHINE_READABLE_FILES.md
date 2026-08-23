@@ -25,7 +25,7 @@ Production robots policy:
 
 - allows normal public crawling;
 - excludes `/admin/`;
-- advertises the canonical sitemap at `https://www.cryptopaymap.com/sitemap.xml`.
+- advertises the canonical sitemap at `https://cryptopaymap.com/sitemap.xml`; the apex is the canonical production origin and `www` is redirect-only.
 
 This does not weaken the protected Admin boundary. Cloudflare Access and the existing Admin response/header checks remain mandatory.
 
