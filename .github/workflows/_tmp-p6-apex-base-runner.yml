@@ -41,12 +41,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Format hardened files
+      - name: Format hardened files with repository formatter
         run: |
-          npx prettier --write \
+          npx biome format --write \
+            scripts/check-ops-p6-016-production-go-live-executor.mjs \
+            scripts/check-ops-p6-017-production-launch-close.mjs \
             scripts/run-ops-p6-016-production-go-live-executor.mjs \
-            scripts/run-ops-p6-017-production-launch-close.mjs \
-            .github/workflows/ops-p6-016-configured-production-go-live.yml
+            scripts/run-ops-p6-017-production-launch-close.mjs
 
       - name: Validate hardened apex topology
         run: |
