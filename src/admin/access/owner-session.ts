@@ -20,7 +20,8 @@ function base64UrlEncode(bytes: Uint8Array): string {
 
 function base64UrlDecode(value: string): Uint8Array {
   if (!/^[A-Za-z0-9_-]+$/.test(value)) throw new Error('Invalid Base64URL value.');
-  const padded = value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (value.length % 4)) % 4);
+  const padded =
+    value.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - (value.length % 4)) % 4);
   const binary = atob(padded);
   const bytes = new Uint8Array(binary.length);
   for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
@@ -64,15 +65,15 @@ export async function verifyOwnerLoginSecret(
     const submittedBytes = base64UrlDecode(submitted.trim());
     const expectedBytes = base64UrlDecode(expectedBase64Url);
     if (submittedBytes.length !== expectedBytes.length) return false;
-    const verificationKey = await crypto.subtle.importKey(
+
+    const challenge = textEncoder.encode('cryptopaymap-admin-owner-login-v1');
+    const expectedKey = await crypto.subtle.importKey(
       'raw',
       expectedBytes,
       { name: 'HMAC', hash: 'SHA-256' },
       false,
-      ['sign', 'verify'],
+      ['sign'],
     );
-    const challenge = textEncoder.encode('cryptopaymap-admin-owner-login-v1');
-    const expectedMac = await crypto.subtle.sign('HMAC', verificationKey, challenge);
     const submittedKey = await crypto.subtle.importKey(
       'raw',
       submittedBytes,
@@ -80,8 +81,13 @@ export async function verifyOwnerLoginSecret(
       false,
       ['sign'],
     );
-    const submittedMac = await crypto.subtle.sign('HMAC', submittedKey, challenge);
-    return crypto.subtle.verify('HMAC', verificationKey, expectedMac, submittedMac);
+    const expectedMac = new Uint8Array(await crypto.subtle.sign('HMAC', expectedKey, challenge));
+    const submittedMac = new Uint8Array(await crypto.subtle.sign('HMAC', submittedKey, challenge));
+    let difference = 0;
+    for (let index = 0; index < expectedMac.length; index += 1) {
+      difference |= expectedMac[index] ^ submittedMac[index];
+    }
+    return difference === 0;
   } catch {
     return false;
   }
@@ -117,7 +123,9 @@ export async function verifyOwnerSession(
   nowSeconds = Math.floor(Date.now() / 1000),
 ): Promise<OwnerSessionPayload> {
   const [payloadEncoded, signatureEncoded, extra] = token.split('.');
-  if (!payloadEncoded || !signatureEncoded || extra !== undefined) throw new Error('Invalid owner session.');
+  if (!payloadEncoded || !signatureEncoded || extra !== undefined) {
+    throw new Error('Invalid owner session.');
+  }
   const signingKey = await deriveSessionKey(ownerSecretBase64Url);
   const valid = await crypto.subtle.verify(
     'HMAC',
@@ -127,7 +135,9 @@ export async function verifyOwnerSession(
   );
   if (!valid) throw new Error('Invalid owner session signature.');
 
-  const parsed = JSON.parse(textDecoder.decode(base64UrlDecode(payloadEncoded))) as Partial<OwnerSessionPayload>;
+  const parsed = JSON.parse(
+    textDecoder.decode(base64UrlDecode(payloadEncoded)),
+  ) as Partial<OwnerSessionPayload>;
   if (
     parsed.v !== 1 ||
     parsed.sub !== expectedSubject ||
@@ -163,7 +173,9 @@ export function clearOwnerSessionCookie(): string {
 }
 
 export function isSameOriginAdminMutation(request: Request): boolean {
-  if (request.method === 'GET' || request.method === 'HEAD' || request.method === 'OPTIONS') return true;
+  if (request.method === 'GET' || request.method === 'HEAD' || request.method === 'OPTIONS') {
+    return true;
+  }
   const origin = request.headers.get('origin');
   return origin !== null && origin === new URL(request.url).origin;
 }
