@@ -130,8 +130,9 @@ export interface OwnerSessionConfiguration {
 
 export type AdminAccessConfiguration =
   | CloudflareAdminAccessConfiguration
-  | DerivedStagingServiceConfiguration
-  | OwnerSessionConfiguration;
+  | DerivedStagingServiceConfiguration;
+
+export type RuntimeAdminAccessConfiguration = AdminAccessConfiguration | OwnerSessionConfiguration;
 
 export class AdminAccessConfigurationError extends Error {
   readonly issues: readonly string[];
@@ -152,7 +153,7 @@ function configurationIssues(error: z.ZodError): string[] {
 
 export function readAdminAccessConfiguration(
   environment: AdminAccessEnvironment,
-): AdminAccessConfiguration {
+): RuntimeAdminAccessConfiguration {
   const mode = environment.CPM_ADMIN_AUTH_MODE?.trim() || 'cloudflare_access';
   if (mode === 'derived_staging_service') {
     const result = derivedStagingServiceEnvironmentSchema.safeParse(environment);
