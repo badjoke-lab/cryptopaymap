@@ -134,7 +134,7 @@ expectIncludes('documentation', files.doc, [
   'environment secrets',
   'p6-05 candidate release',
   'production-specific runtime inputs',
-  'owner session',
+  'owner-session',
   'turnstile',
   'unauthenticated',
   '`/admin/`',
