@@ -89,7 +89,9 @@ for (const forbidden of [
   'cf_access_aud: process.env.p6_08_production_cf_access_aud',
 ]) {
   if (files.workflow.includes(forbidden)) {
-    throw new Error(`production candidate workflow still depends on Cloudflare Access: ${forbidden}`);
+    throw new Error(
+      `production candidate workflow still depends on Cloudflare Access: ${forbidden}`,
+    );
   }
 }
 
