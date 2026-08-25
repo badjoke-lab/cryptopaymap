@@ -147,10 +147,11 @@ if (deniedResponse.status !== 403) {
 }
 
 const ownerMiddleware = createAdminAccessMiddleware();
+const liveOwnerSession = await issueOwnerSession(ownerSecret, ownerSubject, 1800);
 const ownerData: Record<string, unknown> = {};
 const ownerResponse = await ownerMiddleware({
   request: new Request('https://cryptopaymap.example/admin', {
-    headers: { Cookie: `${OWNER_SESSION_COOKIE_NAME}=${ownerSession}` },
+    headers: { Cookie: `${OWNER_SESSION_COOKIE_NAME}=${liveOwnerSession}` },
   }),
   env: {
     CPM_ADMIN_AUTH_MODE: 'owner_session',
@@ -196,7 +197,7 @@ const crossOriginMutation = await ownerMiddleware({
   request: new Request('https://cryptopaymap.example/admin/candidates/decision', {
     method: 'POST',
     headers: {
-      Cookie: `${OWNER_SESSION_COOKIE_NAME}=${ownerSession}`,
+      Cookie: `${OWNER_SESSION_COOKIE_NAME}=${liveOwnerSession}`,
       Origin: 'https://attacker.example',
     },
   }),
