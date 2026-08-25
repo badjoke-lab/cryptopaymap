@@ -16,7 +16,8 @@ The diagnostic may perform only observations:
 - inspect the GitHub `production` environment and its protection-rule count;
 - check whether required production-specific runtime inputs are configured, without retaining their values;
 - read the Cloudflare account, zone, Pages-project, custom-domain, and DNS state;
-- fetch the candidate Pages release marker over HTTPS.
+- fetch the candidate Pages release marker over HTTPS;
+- verify the unauthenticated Admin boundary and owner-session login entry point over HTTPS.
 
 It does not create the production Pages project or deploy an artifact. It does not attach the production domain. It does not change DNS. It does not synchronize Pages secrets, mutate Neon, mutate R2, alter canonical data, or execute cutover.
 
@@ -53,8 +54,8 @@ The protected diagnostic job checks whether the following production-specific ru
 - `P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL`;
 - `P6_08_PRODUCTION_TURNSTILE_SECRET_KEY`;
 - `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`;
-- `P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN`;
-- `P6_08_PRODUCTION_CF_ACCESS_AUD`;
+- `P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL`;
+- `P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT`;
 - `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID`.
 
 Their raw values are never written to the diagnostic receipt. Missing input names may be retained as bounded blockers. The production values belong in the protected GitHub `production` Environment rather than being duplicated into repository-scoped secrets merely to make the diagnostic see them.
@@ -63,7 +64,9 @@ The blocked-environment path does not inspect those protected values. Because th
 
 Staging/test Turnstile keys or staging-derived identities are not treated as production readiness.
 
-Production Admin must be configured in `cloudflare_access` mode with the protected Cloudflare Access team domain and audience. Readiness performs an unauthenticated request to `/admin/` and requires exactly 403 with private/no-store/noindex/nosniff security headers. A 503 configuration-unavailable response is not launch-ready.
+Production Admin must be configured in `owner_session` mode with the protected owner secret and stable owner subject. This path does not require Cloudflare Access, an Access team domain, an Access audience, Zero Trust enrollment, or an Access service token. Staging Cloudflare Access and derived staging-service paths remain unchanged.
+
+Readiness performs two unauthenticated Admin observations. `/admin/` must return exactly 403 with private/no-store/noindex/nosniff security headers. `/admin/login` must return exactly 200 with the same cache and indexing protections, proving that the application-native owner-session login path is present while the protected Admin workspace remains closed. A 503 configuration-unavailable response, a missing login route, or an unprotected Admin page is not launch-ready. Turnstile remains required at the owner-session login boundary.
 
 ## Release authority
 
@@ -107,7 +110,8 @@ Readiness fails closed on any of the following:
 - missing or ambiguous Cloudflare zone;
 - missing current production-host DNS observation;
 - candidate Pages release marker missing or not matching the P6-05 candidate release;
-- production Admin `/admin/` not enforcing unauthenticated 403 with the required security headers.
+- production Admin `/admin/` not enforcing unauthenticated 403 with the required security headers;
+- owner-session `/admin/login` not returning protected 200 with the required security headers.
 
 A blocked result is evidence of a failed readiness condition, not authorization to provision or mutate anything outside the separately authorized operational step.
 
@@ -121,4 +125,4 @@ Parent: #293. Original implementation: #415. Protected Environment secret-scope 
 
 The protected `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID` is an opaque generation marker for the complete configured-production credential and security-configuration set. Raw marker and credential values are never retained or logged; only a SHA-256 digest is retained as evidence.
 
-Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, Cloudflare Access configuration, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.
+Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, owner-session secret/subject, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.

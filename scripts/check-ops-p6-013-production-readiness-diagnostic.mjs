@@ -34,16 +34,28 @@ expectIncludes('runner', files.runner, [
   'p6_08_production_review_secret_seed_base64url',
   'p6_08_production_turnstile_secret_key',
   'p6_08_production_turnstile_site_key',
-  'p6_08_production_cf_access_team_domain',
-  'p6_08_production_cf_access_aud',
+  'p6_08_production_admin_owner_secret_base64url',
+  'p6_08_production_admin_owner_subject',
   'admin_access:not_enforced',
+  'admin_login:not_available',
   '/admin/',
+  '/admin/login',
+  'loginavailable',
   'pages_project:missing_or_inaccessible',
   'production_dns:missing',
   'intended_release:not_observed',
   'productionmutation: false',
   "method = 'get'",
 ]);
+
+for (const forbidden of [
+  'p6_08_production_cf_access_team_domain',
+  'p6_08_production_cf_access_aud',
+]) {
+  if (files.runner.includes(forbidden)) {
+    throw new Error(`production readiness runner still depends on Cloudflare Access: ${forbidden}`);
+  }
+}
 
 expectIncludes('workflow', files.workflow, [
   'workflow_dispatch',
@@ -89,8 +101,8 @@ for (const secretName of [
   'p6_08_production_review_secret_seed_base64url',
   'p6_08_production_turnstile_secret_key',
   'p6_08_production_turnstile_site_key',
-  'p6_08_production_cf_access_team_domain',
-  'p6_08_production_cf_access_aud',
+  'p6_08_production_admin_owner_secret_base64url',
+  'p6_08_production_admin_owner_subject',
   'p6_08_production_credential_generation_id',
 ]) {
   if (blockedSection.includes(`secrets.${secretName}`)) {
@@ -98,6 +110,14 @@ for (const secretName of [
   }
   if (!protectedSection.includes(`secrets.${secretName}`)) {
     throw new Error(`protected diagnostic missing Environment secret ${secretName}`);
+  }
+}
+for (const forbidden of [
+  'secrets.p6_08_production_cf_access_team_domain',
+  'secrets.p6_08_production_cf_access_aud',
+]) {
+  if (protectedSection.includes(forbidden)) {
+    throw new Error(`protected diagnostic still reads Cloudflare Access secret ${forbidden}`);
   }
 }
 
@@ -114,10 +134,13 @@ expectIncludes('documentation', files.doc, [
   'environment secrets',
   'p6-05 candidate release',
   'production-specific runtime inputs',
-  'cloudflare access',
+  'owner-session',
+  'turnstile',
   'unauthenticated',
   '`/admin/`',
+  '`/admin/login`',
   '403',
+  '200',
   'does not create the production pages project',
   'does not attach the production domain',
   'does not change dns',

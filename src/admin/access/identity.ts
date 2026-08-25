@@ -56,6 +56,17 @@ export function createDerivedStagingServiceIdentity(
   });
 }
 
+export function createOwnerSessionIdentity(subject: string): AdminAccessIdentity {
+  const parsed = accessSubjectSchema.safeParse(subject);
+  if (!parsed.success) throw identityError('sub: The owner-session subject is invalid.');
+  return Object.freeze({
+    actorId: `cryptopaymap-owner:${parsed.data}`,
+    actorType: 'human',
+    subject: parsed.data,
+    email: null,
+  });
+}
+
 export function parseVerifiedAdminAccessIdentity(payload: unknown): AdminAccessIdentity {
   const result = verifiedAccessPayloadSchema.safeParse(payload);
   if (!result.success) {

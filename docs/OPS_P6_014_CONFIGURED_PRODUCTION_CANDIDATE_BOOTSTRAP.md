@@ -67,14 +67,19 @@ The mutation job runs under the protected GitHub `production` environment and re
 - `P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL`;
 - `P6_08_PRODUCTION_TURNSTILE_SECRET_KEY`;
 - `P6_08_PRODUCTION_TURNSTILE_SITE_KEY`;
-- `P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN`;
-- `P6_08_PRODUCTION_CF_ACCESS_AUD`.
+- `P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL`;
+- `P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT`;
+- `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID`.
 
 Raw values are never written to the repository, retained receipt, summary, or artifact.
 
-Production Admin uses `CPM_ADMIN_AUTH_MODE=cloudflare_access` with the protected Cloudflare Access team domain and audience. Staging-derived Admin HMAC keys are deliberately not installed as production Admin credentials.
+Production Admin uses `CPM_ADMIN_AUTH_MODE=owner_session`. The owner secret is a dedicated 32-byte canonical Base64URL value, and the stable owner subject becomes both the authenticated owner-session subject and the source for the production Admin capability allowlists. The corresponding actor ID is `cryptopaymap-owner:<subject>`. Production no longer requires a Cloudflare Access team domain, Access audience, Zero Trust enrollment, or an Access service token. Staging Cloudflare Access and derived staging-service verification paths remain separate and unchanged.
+
+The production owner session is bounded to four hours by `CPM_ADMIN_OWNER_SESSION_TTL_SECONDS=14400`, uses a signed `Secure; HttpOnly; SameSite=Strict` cookie, and requires same-origin Admin mutations. `/admin/login` is protected by Turnstile and the owner secret. An unauthenticated request to `/admin/` remains fail-closed with 403.
 
 The production seed is used only to derive the existing bounded runtime secrets before a protected Pages secret bulk update. Production Turnstile values are mapped to the runtime names used by the application. The intended Turnstile hostname is the canonical `cryptopaymap.com`. The `www.cryptopaymap.com` hostname is the redirect host and must not be accepted as the server-side Turnstile hostname; the candidate pages.dev hostname is also not treated as the canonical live hostname.
+
+The bootstrap installs the owner as the sole configured subject/actor for Candidate queue access, duplicate resolution, Candidate promotion, Evidence review, Location correction, reconfirmation, audit-history read, export release/publish, and media review. This prevents a successful owner login from reaching an unconfigured authorization policy while retaining the existing capability checks inside each Admin operation.
 
 ## External verification
 
@@ -118,7 +123,7 @@ The receipt may retain:
 - dataset/schema versions;
 - safe topology counts and statuses.
 
-It must not retain credentials, raw database URLs, raw seed material, Turnstile keys, unrestricted provider responses, private data, or private submission material.
+It must not retain credentials, raw database URLs, raw seed material, owner secrets, Turnstile keys, unrestricted provider responses, private data, or private submission material.
 
 ## Next boundary
 
@@ -132,4 +137,4 @@ Parent: #293. Implementation: #417.
 
 The protected `P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID` is an opaque generation marker for the complete configured-production credential and security-configuration set. Raw marker and credential values are never retained or logged; only a SHA-256 digest is retained as evidence.
 
-Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, Cloudflare Access configuration, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.
+Any rotation or material change to production database credentials, review-secret seed, Turnstile credentials, owner-session secret/subject, or other bound production credentials requires a new generation marker. Candidate bootstrap, readiness, configured-production authorization, and go-live must all bind the same credential-generation digest. A changed generation fails closed and requires a new readiness and authorization chain before any production mutation.

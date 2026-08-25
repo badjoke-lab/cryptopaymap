@@ -16,8 +16,8 @@ const requiredRuntimeSecrets = [
   'P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL',
   'P6_08_PRODUCTION_TURNSTILE_SECRET_KEY',
   'P6_08_PRODUCTION_TURNSTILE_SITE_KEY',
-  'P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN',
-  'P6_08_PRODUCTION_CF_ACCESS_AUD',
+  'P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL',
+  'P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT',
   'P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID',
 ];
 
@@ -171,6 +171,11 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
     robots: null,
     contentOptions: null,
     enforced: false,
+    loginStatus: 0,
+    loginCacheControl: null,
+    loginRobots: null,
+    loginContentOptions: null,
+    loginAvailable: false,
   };
   try {
     const response = await fetchImpl(`https://${productionProject}.pages.dev/admin/`, {
@@ -182,6 +187,7 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
     const robots = response.headers.get('x-robots-tag');
     const contentOptions = response.headers.get('x-content-type-options');
     adminAccess = {
+      ...adminAccess,
       status: response.status,
       cacheControl,
       robots,
@@ -192,6 +198,26 @@ async function collectExternal(expectedReleaseId, fetchImpl = fetch) {
         robots === 'noindex, nofollow, noarchive' &&
         contentOptions === 'nosniff',
     };
+  } catch {}
+
+  try {
+    const response = await fetchImpl(`https://${productionProject}.pages.dev/admin/login`, {
+      cache: 'no-store',
+      redirect: 'manual',
+      signal: AbortSignal.timeout(20_000),
+    });
+    const cacheControl = response.headers.get('cache-control');
+    const robots = response.headers.get('x-robots-tag');
+    const contentOptions = response.headers.get('x-content-type-options');
+    adminAccess.loginStatus = response.status;
+    adminAccess.loginCacheControl = cacheControl;
+    adminAccess.loginRobots = robots;
+    adminAccess.loginContentOptions = contentOptions;
+    adminAccess.loginAvailable =
+      response.status === 200 &&
+      cacheControl === 'private, no-store' &&
+      robots === 'noindex, nofollow, noarchive' &&
+      contentOptions === 'nosniff';
   } catch {}
 
   return {
@@ -310,6 +336,7 @@ export async function executeProductionReadiness(options) {
   if (external?.intendedDeployment?.markerMatches !== true)
     blockers.push('intended_release:not_observed');
   if (external?.adminAccess?.enforced !== true) blockers.push('admin_access:not_enforced');
+  if (external?.adminAccess?.loginAvailable !== true) blockers.push('admin_login:not_available');
 
   const uniqueBlockers = [...new Set(blockers)];
   const decision = uniqueBlockers.length === 0 ? 'ready' : 'blocked';
@@ -408,6 +435,11 @@ function readyExternal(releaseId) {
       robots: 'noindex, nofollow, noarchive',
       contentOptions: 'nosniff',
       enforced: true,
+      loginStatus: 200,
+      loginCacheControl: 'private, no-store',
+      loginRobots: 'noindex, nofollow, noarchive',
+      loginContentOptions: 'nosniff',
+      loginAvailable: true,
     },
   };
 }
@@ -474,6 +506,18 @@ async function selfTest() {
       'missing runtime secret must block',
     );
 
+    const missingOwnerSecret = {
+      ...allSecrets,
+      P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL: false,
+    };
+    receipt = await executeProductionReadiness({ ...base, runtimeSecrets: missingOwnerSecret });
+    assert(
+      receipt.blockers.includes(
+        'runtime_secret:P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL:missing',
+      ),
+      'missing owner session secret must block',
+    );
+
     const missingProject = structuredClone(base.externalOverride);
     missingProject.cloudflare.project.accessible = false;
     receipt = await executeProductionReadiness({ ...base, externalOverride: missingProject });
@@ -489,11 +533,25 @@ async function selfTest() {
       robots: 'noindex, nofollow, noarchive',
       contentOptions: 'nosniff',
       enforced: false,
+      loginStatus: 200,
+      loginCacheControl: 'private, no-store',
+      loginRobots: 'noindex, nofollow, noarchive',
+      loginContentOptions: 'nosniff',
+      loginAvailable: true,
     };
     receipt = await executeProductionReadiness({ ...base, externalOverride: adminUnavailable });
     assert(
       receipt.blockers.includes('admin_access:not_enforced'),
       'Admin 503 must block production readiness',
+    );
+
+    const loginUnavailable = structuredClone(base.externalOverride);
+    loginUnavailable.adminAccess.loginStatus = 503;
+    loginUnavailable.adminAccess.loginAvailable = false;
+    receipt = await executeProductionReadiness({ ...base, externalOverride: loginUnavailable });
+    assert(
+      receipt.blockers.includes('admin_login:not_available'),
+      'missing owner-session login must block production readiness',
     );
 
     const wrongRelease = structuredClone(base.externalOverride);
