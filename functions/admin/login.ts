@@ -12,7 +12,7 @@ import {
 
 interface AdminLoginEnvironment extends AdminAccessEnvironment {
   PUBLIC_TURNSTILE_SITE_KEY?: string;
-  TURNSTILE_SECRET_KEY?: string;
+  CPM_TURNSTILE_SECRET_KEY?: string;
 }
 
 interface AdminLoginContext {
@@ -129,7 +129,7 @@ export async function onRequestPost(context: AdminLoginContext): Promise<Respons
   } catch {
     return unavailable();
   }
-  const turnstileSecret = context.env.TURNSTILE_SECRET_KEY?.trim();
+  const turnstileSecret = context.env.CPM_TURNSTILE_SECRET_KEY?.trim();
   if (configuration.mode !== 'owner_session' || !turnstileSecret) return unavailable();
 
   let form: FormData;
