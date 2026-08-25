@@ -60,17 +60,38 @@ expectIncludes('workflow', files.workflow, [
   'p6_08_production_review_secret_seed_base64url',
   'p6_08_production_turnstile_secret_key',
   'p6_08_production_turnstile_site_key',
-  'p6_08_production_cf_access_team_domain',
-  'p6_08_production_cf_access_aud',
+  'p6_08_production_admin_owner_secret_base64url',
+  'p6_08_production_admin_owner_subject',
   "cpm_turnstile_expected_hostname: 'cryptopaymap.com'",
-  'cpm_admin_auth_mode',
-  'cloudflare_access',
-  'cf_access_team_domain',
-  'cf_access_aud',
+  "cpm_admin_auth_mode: 'owner_session'",
+  'cpm_admin_owner_secret_base64url',
+  'cpm_admin_owner_subject',
+  'cpm_admin_candidate_subjects',
+  'cpm_admin_candidate_resolve_subjects',
+  'cpm_admin_candidate_promote_subjects',
+  'cpm_admin_evidence_review_subjects',
+  'cpm_admin_location_correct_subjects',
+  'cpm_admin_reconfirmation_subjects',
+  'cpm_admin_audit_read_actor_ids',
+  'cpm_admin_export_release_actor_ids',
+  'cpm_admin_export_publish_actor_ids',
+  'cpm_admin_media_review_actor_ids',
   'config/production-authorization/production-candidate-bootstrap-receipt.json',
   'cryptopaymap.com',
   'do not attach live domain',
 ]);
+
+for (const forbidden of [
+  'p6_08_production_cf_access_team_domain',
+  'p6_08_production_cf_access_aud',
+  "cpm_admin_auth_mode: 'cloudflare_access'",
+  'cf_access_team_domain: process.env.p6_08_production_cf_access_team_domain',
+  'cf_access_aud: process.env.p6_08_production_cf_access_aud',
+]) {
+  if (files.workflow.includes(forbidden)) {
+    throw new Error(`production candidate workflow still depends on Cloudflare Access: ${forbidden}`);
+  }
+}
 
 expectIncludes('documentation', files.doc, [
   'production candidate',
@@ -83,7 +104,8 @@ expectIncludes('documentation', files.doc, [
   'does not change dns',
   'does not execute cutover',
   'synthetic staging review data is not materialized',
-  'cloudflare access',
+  'owner session',
+  'turnstile',
   'unauthenticated',
   'canonical `cryptopaymap.com`',
   '`/admin/`',
