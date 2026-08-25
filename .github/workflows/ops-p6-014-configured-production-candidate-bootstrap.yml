@@ -188,8 +188,8 @@ jobs:
       P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL: ${{ secrets.P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL }}
       P6_08_PRODUCTION_TURNSTILE_SECRET_KEY: ${{ secrets.P6_08_PRODUCTION_TURNSTILE_SECRET_KEY }}
       P6_08_PRODUCTION_TURNSTILE_SITE_KEY: ${{ secrets.P6_08_PRODUCTION_TURNSTILE_SITE_KEY }}
-      P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN: ${{ secrets.P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN }}
-      P6_08_PRODUCTION_CF_ACCESS_AUD: ${{ secrets.P6_08_PRODUCTION_CF_ACCESS_AUD }}
+      P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL: ${{ secrets.P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL }}
+      P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT: ${{ secrets.P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT }}
       P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID: ${{ secrets.P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID }}
     steps:
       - name: Check out exact evaluated source
@@ -240,8 +240,8 @@ jobs:
             P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL
             P6_08_PRODUCTION_TURNSTILE_SECRET_KEY
             P6_08_PRODUCTION_TURNSTILE_SITE_KEY
-            P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN
-            P6_08_PRODUCTION_CF_ACCESS_AUD
+            P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL
+            P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT
             P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID
           )
           for key in "${required[@]}"; do
@@ -330,6 +330,13 @@ jobs:
             CPM_STAGING_ADMIN_PUBLISHER_HMAC_KEY_BASE64URL: _publisherKey,
             ...productionDerived
           } = derived;
+          const ownerSubject = process.env.P6_08_PRODUCTION_ADMIN_OWNER_SUBJECT;
+          if (typeof ownerSubject !== 'string' || !/^[A-Za-z0-9._:-]{3,100}$/.test(ownerSubject)) {
+            throw new Error('invalid_production_owner_subject');
+          }
+          const ownerActorId = `cryptopaymap-owner:${ownerSubject}`;
+          const ownerSubjects = JSON.stringify([ownerSubject]);
+          const ownerActorIds = JSON.stringify([ownerActorId]);
           const values = {
             DATABASE_URL: process.env.P6_08_PRODUCTION_DATABASE_URL,
             CPM_REVIEW_SECRET_SEED_BASE64URL: process.env.P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL,
@@ -343,9 +350,20 @@ jobs:
             CPM_TURNSTILE_EXPECTED_HOSTNAME: 'cryptopaymap.com',
             CPM_TURNSTILE_EXPECTED_ACTION: 'submission_intake',
             PUBLIC_TURNSTILE_ACTION: 'submission_intake',
-            CPM_ADMIN_AUTH_MODE: 'cloudflare_access',
-            CF_ACCESS_TEAM_DOMAIN: process.env.P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN,
-            CF_ACCESS_AUD: process.env.P6_08_PRODUCTION_CF_ACCESS_AUD,
+            CPM_ADMIN_AUTH_MODE: 'owner_session',
+            CPM_ADMIN_OWNER_SECRET_BASE64URL: process.env.P6_08_PRODUCTION_ADMIN_OWNER_SECRET_BASE64URL,
+            CPM_ADMIN_OWNER_SUBJECT: ownerSubject,
+            CPM_ADMIN_OWNER_SESSION_TTL_SECONDS: '14400',
+            CPM_ADMIN_CANDIDATE_SUBJECTS: ownerSubjects,
+            CPM_ADMIN_CANDIDATE_RESOLVE_SUBJECTS: ownerSubjects,
+            CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ownerSubjects,
+            CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ownerSubjects,
+            CPM_ADMIN_LOCATION_CORRECT_SUBJECTS: ownerSubjects,
+            CPM_ADMIN_RECONFIRMATION_SUBJECTS: ownerSubjects,
+            CPM_ADMIN_AUDIT_READ_ACTOR_IDS: ownerActorIds,
+            CPM_ADMIN_EXPORT_RELEASE_ACTOR_IDS: ownerActorIds,
+            CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ownerActorIds,
+            CPM_ADMIN_MEDIA_REVIEW_ACTOR_IDS: ownerActorIds,
           };
           for (const [key, value] of Object.entries(values)) {
             if (typeof value !== 'string' || value.length === 0) throw new Error(`missing_runtime_value:${key}`);
