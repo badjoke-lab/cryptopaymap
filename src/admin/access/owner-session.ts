@@ -28,11 +28,17 @@ function base64UrlDecode(value: string): Uint8Array {
   return bytes;
 }
 
+function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
+  const copy = new Uint8Array(bytes.byteLength);
+  copy.set(bytes);
+  return copy.buffer;
+}
+
 async function deriveSessionKey(ownerSecretBase64Url: string): Promise<CryptoKey> {
   const ownerSecret = base64UrlDecode(ownerSecretBase64Url);
   const sourceKey = await crypto.subtle.importKey(
     'raw',
-    ownerSecret,
+    toArrayBuffer(ownerSecret),
     { name: 'HMAC', hash: 'SHA-256' },
     false,
     ['sign'],
@@ -42,13 +48,10 @@ async function deriveSessionKey(ownerSecretBase64Url: string): Promise<CryptoKey
     sourceKey,
     textEncoder.encode('cryptopaymap-admin-owner-session-key-v1'),
   );
-  return crypto.subtle.importKey(
-    'raw',
-    derived,
-    { name: 'HMAC', hash: 'SHA-256' },
-    false,
-    ['sign', 'verify'],
-  );
+  return crypto.subtle.importKey('raw', derived, { name: 'HMAC', hash: 'SHA-256' }, false, [
+    'sign',
+    'verify',
+  ]);
 }
 
 function randomNonce(): string {
@@ -69,14 +72,14 @@ export async function verifyOwnerLoginSecret(
     const challenge = textEncoder.encode('cryptopaymap-admin-owner-login-v1');
     const expectedKey = await crypto.subtle.importKey(
       'raw',
-      expectedBytes,
+      toArrayBuffer(expectedBytes),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['sign'],
     );
     const submittedKey = await crypto.subtle.importKey(
       'raw',
-      submittedBytes,
+      toArrayBuffer(submittedBytes),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['sign'],
@@ -85,7 +88,10 @@ export async function verifyOwnerLoginSecret(
     const submittedMac = new Uint8Array(await crypto.subtle.sign('HMAC', submittedKey, challenge));
     let difference = 0;
     for (let index = 0; index < expectedMac.length; index += 1) {
-      difference |= expectedMac[index] ^ submittedMac[index];
+      const expectedByte = expectedMac[index];
+      const submittedByte = submittedMac[index];
+      if (expectedByte === undefined || submittedByte === undefined) return false;
+      difference |= expectedByte ^ submittedByte;
     }
     return difference === 0;
   } catch {
@@ -130,7 +136,7 @@ export async function verifyOwnerSession(
   const valid = await crypto.subtle.verify(
     'HMAC',
     signingKey,
-    base64UrlDecode(signatureEncoded),
+    toArrayBuffer(base64UrlDecode(signatureEncoded)),
     textEncoder.encode(`v1.${payloadEncoded}`),
   );
   if (!valid) throw new Error('Invalid owner session signature.');
