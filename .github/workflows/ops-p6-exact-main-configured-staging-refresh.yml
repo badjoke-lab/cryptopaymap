@@ -1,3 +1,4 @@
+# Installed on main before relying on push-triggered refreshes.
 name: OPS-P6 exact-main configured staging refresh
 
 on:
