@@ -4,108 +4,42 @@
   "state": "diagnosed",
   "decision": "blocked",
   "environment": "configured_production",
-  "commit": "f921d39d6eebb7d91bc5a24d4c39e716d2efbe52",
-  "generatedAt": "2026-08-14T21:24:58.983Z",
-  "expiresAt": "2026-08-14T21:54:58.983Z",
-  "workflowRunId": "31842173624",
+  "commit": "5fc57fcc8be6e8ab9951b402f786254165c04070",
+  "generatedAt": "2026-08-26T15:16:42.854Z",
+  "expiresAt": "2026-08-26T15:46:42.854Z",
+  "workflowRunId": "32982493364",
   "ownerDigest": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
-  "credentialGenerationDigest": null,
+  "credentialGenerationDigest": "sha256:f98eab8c40ddee0c79ae38af865bb20d212437c522942224c2bb0acd3582a470",
   "checks": {
     "exactRepositoryContract": "passed",
     "p605": {
-      "state": "current",
+      "state": "stale_or_failed",
       "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
-      "generatedAt": "2026-08-14T15:50:46.339Z",
-      "expiresAt": "2026-08-17T15:50:46.339Z",
-      "releaseIdDigest": "sha256:53e85e2f614e393a76bf27ecaa570342998010204c756a9be8141e9275e49984"
+      "generatedAt": "2026-08-23T16:15:27.887Z",
+      "expiresAt": "2026-08-26T16:15:27.887Z",
+      "releaseIdDigest": null
     },
     "githubEnvironment": {
       "name": "production",
-      "state": "missing",
-      "protectionRuleCount": 0
+      "state": "present",
+      "protectionRuleCount": 1
     },
     "runtimeSecrets": {
       "requiredCount": 7,
-      "configuredCount": 0,
-      "missingNames": [
-        "P6_08_PRODUCTION_DATABASE_URL",
-        "P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL",
-        "P6_08_PRODUCTION_TURNSTILE_SECRET_KEY",
-        "P6_08_PRODUCTION_TURNSTILE_SITE_KEY",
-        "P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN",
-        "P6_08_PRODUCTION_CF_ACCESS_AUD",
-        "P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID"
-      ]
+      "configuredCount": 7,
+      "missingNames": []
     },
-    "external": {
-      "cloudflare": {
-        "accountConfigured": true,
-        "project": {
-          "name": "cryptopaymap-production",
-          "distinctFromStaging": true,
-          "accessible": false,
-          "projectIdDigest": null,
-          "productionBranchDigest": null
-        },
-        "zone": {
-          "name": "cryptopaymap.com",
-          "exactActiveZoneCount": 1,
-          "zoneIdDigest": "sha256:188b4733607607cb0457ae22d65089c4d1d7ba5bd0a90ec253aa515c6e8dfecb"
-        },
-        "dns": {
-          "hostname": "cryptopaymap.com",
-          "recordCount": 2,
-          "records": [
-            {
-              "type": "A",
-              "proxied": false,
-              "idDigest": "sha256:67b992e3df3f849cb9c6c276aea10d26b512c12c25163be8449b0763faad34fc",
-              "targetDigest": "sha256:997cc95d30917a2e7ae20bd1d284f64800d9c881d73e5be51a2a94f3f692ab77"
-            },
-            {
-              "type": "TXT",
-              "proxied": false,
-              "idDigest": "sha256:c7e7515da3d719565e642a4d17b9a38c401676cad86dfbbc1819acfc9bab8021",
-              "targetDigest": "sha256:639587a552be891b4e263406bd7a318e2ecd950b3a7a498365db528906ccf474"
-            }
-          ]
-        },
-        "customDomain": {
-          "hostname": "cryptopaymap.com",
-          "attachedToCandidateProject": false,
-          "domainCount": 0
-        }
-      },
-      "intendedDeployment": {
-        "baseUrl": "https://cryptopaymap-production.pages.dev",
-        "markerStatus": 0,
-        "markerMatches": false,
-        "expectedReleaseDigest": "sha256:53e85e2f614e393a76bf27ecaa570342998010204c756a9be8141e9275e49984",
-        "observedReleaseDigest": null
-      },
-      "adminAccess": {
-        "status": 0,
-        "cacheControl": null,
-        "robots": null,
-        "contentOptions": null,
-        "enforced": false
-      }
-    },
+    "external": null,
     "productionMutation": false
   },
   "blockers": [
-    "credential_generation:invalid",
-    "github_environment:production_missing",
-    "github_environment:protection_missing",
-    "runtime_secret:P6_08_PRODUCTION_DATABASE_URL:missing",
-    "runtime_secret:P6_08_PRODUCTION_REVIEW_SECRET_SEED_BASE64URL:missing",
-    "runtime_secret:P6_08_PRODUCTION_TURNSTILE_SECRET_KEY:missing",
-    "runtime_secret:P6_08_PRODUCTION_TURNSTILE_SITE_KEY:missing",
-    "runtime_secret:P6_08_PRODUCTION_CF_ACCESS_TEAM_DOMAIN:missing",
-    "runtime_secret:P6_08_PRODUCTION_CF_ACCESS_AUD:missing",
-    "runtime_secret:P6_08_PRODUCTION_CREDENTIAL_GENERATION_ID:missing",
+    "p6_05_release:not_current",
+    "pages_project:not_distinct",
     "pages_project:missing_or_inaccessible",
+    "cloudflare_zone:ambiguous_or_missing",
+    "production_dns:missing",
     "intended_release:not_observed",
-    "admin_access:not_enforced"
+    "admin_access:not_enforced",
+    "admin_login:not_available"
   ]
 }
