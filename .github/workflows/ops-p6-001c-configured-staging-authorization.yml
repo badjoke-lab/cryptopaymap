@@ -5,6 +5,7 @@ on:
     paths:
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
       - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
+      - 'docs/.ops-exact-main-refresh-trigger.md'
       - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
   push:
     branches:
@@ -13,6 +14,8 @@ on:
       - '.github/workflows/ops-p6-001c-configured-staging-authorization.yml'
       - 'docs/OPS_P6_001C_CONFIGURED_STAGING_AUTHORIZATION.md'
       - 'scripts/evaluate-ops-p6-001c-staging-authorization.mjs'
+  schedule:
+    - cron: '7,22,37,52 * * * *'
   workflow_run:
     workflows:
       - P5-02R fixed review live audit
@@ -46,6 +49,7 @@ on:
         type: string
 
 permissions:
+  actions: write
   contents: write
 
 concurrency:
@@ -53,6 +57,180 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  refresh_exact_main:
+    if: >-
+      github.event_name == 'schedule' ||
+      (github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      startsWith(github.head_ref, 'ops/trigger-exact-main-refresh'))
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      OPERATIONS_OWNER: ${{ github.repository_owner }}
+    steps:
+      - name: Check out current main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          path: source
+
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Resolve exact current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C source fetch origin main --depth=1
+          current_main="$(git -C source rev-parse origin/main)"
+          echo "TARGET_COMMIT=$current_main" >> "$GITHUB_ENV"
+
+      - name: Determine whether exact-main evidence needs refresh
+        id: freshness
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { appendFileSync, readFileSync } = require('node:fs');
+          const { resolve } = require('node:path');
+
+          const target = process.env.TARGET_COMMIT;
+          const now = Date.now();
+          const paths = [
+            'config/staging-authorization/p6-01-data-qa-receipt.json',
+            'config/staging-authorization/p6-02-identity-admin-receipt.json',
+            'config/staging-authorization/p6-03-neon-transaction-receipt.json',
+            'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json',
+            'config/staging-authorization/p6-05-public-export-release-receipt.json',
+          ];
+
+          let current = true;
+          for (const path of paths) {
+            try {
+              const receipt = JSON.parse(readFileSync(resolve('status', path), 'utf8'));
+              const expiresAt = Date.parse(receipt.expiresAt ?? '');
+              if (
+                receipt.state !== 'accepted' ||
+                receipt.commit !== target ||
+                !Number.isFinite(expiresAt) ||
+                expiresAt <= now
+              ) {
+                current = false;
+                break;
+              }
+            } catch {
+              current = false;
+              break;
+            }
+          }
+
+          appendFileSync(process.env.GITHUB_OUTPUT, `needs_refresh=${current ? 'false' : 'true'}\n`);
+          NODE
+
+      - name: Refresh P6-01 through P6-05 for exact main
+        if: steps.freshness.outputs.needs_refresh == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dispatch_and_wait() {
+            local workflow="$1"
+            local confirmation="$2"
+            local owner_field="$3"
+            local label="$4"
+            local previous_run=""
+            local run_id=""
+
+            previous_run="$(
+              gh run list \
+                --workflow "$workflow" \
+                --event workflow_dispatch \
+                --branch main \
+                --limit 30 \
+                --json databaseId,headSha,createdAt \
+                --jq "map(select(.headSha == \"$TARGET_COMMIT\")) | sort_by(.createdAt) | reverse | .[0].databaseId // empty"
+            )"
+
+            echo "Dispatching $label for $TARGET_COMMIT"
+            gh workflow run "$workflow" \
+              --ref main \
+              -f "confirmation=$confirmation" \
+              -f "approved_commit=$TARGET_COMMIT" \
+              -f "$owner_field=$OPERATIONS_OWNER"
+
+            for _ in $(seq 1 60); do
+              run_id="$(
+                gh run list \
+                  --workflow "$workflow" \
+                  --event workflow_dispatch \
+                  --branch main \
+                  --limit 30 \
+                  --json databaseId,headSha,createdAt \
+                  --jq "map(select(.headSha == \"$TARGET_COMMIT\")) | sort_by(.createdAt) | reverse | .[0].databaseId // empty"
+              )"
+              if [ -n "$run_id" ] && [ "$run_id" != "$previous_run" ]; then
+                break
+              fi
+              sleep 2
+            done
+
+            if [ -z "$run_id" ] || [ "$run_id" = "$previous_run" ]; then
+              echo "Unable to locate newly dispatched $label run" >&2
+              exit 1
+            fi
+
+            echo "$label run: $run_id"
+            gh run watch "$run_id" --exit-status
+          }
+
+          dispatch_and_wait \
+            ops-p6-001d-configured-staging-p6-01-data-qa.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_01 \
+            data_owner \
+            P6-01
+
+          dispatch_and_wait \
+            ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_02 \
+            identity_owner \
+            P6-02
+
+          dispatch_and_wait \
+            ops-p6-001g-configured-staging-p6-03-neon-transaction.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_03 \
+            transaction_owner \
+            P6-03
+
+          dispatch_and_wait \
+            ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_04 \
+            media_owner \
+            P6-04
+
+          dispatch_and_wait \
+            ops-p6-001i-configured-staging-p6-05-public-export-release.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_05 \
+            release_owner \
+            P6-05
+
+      - name: Write exact-main refresh summary
+        if: always()
+        shell: bash
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
+          ## Exact-main configured-staging refresh
+
+          - Exact main: \`$TARGET_COMMIT\`
+          - Refresh required at start: \`${{ steps.freshness.outputs.needs_refresh }}\`
+          - Trigger: \`${{ github.event_name }}\`
+
+          This bounded refresh can only dispatch the existing configured-staging P6-01 through P6-05 workflows. It does not approve the GitHub production Environment, deploy production Pages, mutate production DNS, write the production database, mutate production R2, or perform cutover.
+          EOF
+
   contract:
     runs-on: ubuntu-24.04
     steps:
