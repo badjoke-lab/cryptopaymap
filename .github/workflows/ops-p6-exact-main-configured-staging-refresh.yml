@@ -1,10 +1,16 @@
-# Installed on main before relying on push-triggered refreshes.
 name: OPS-P6 exact-main configured staging refresh
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+  schedule:
+    - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
 permissions:
@@ -17,27 +23,77 @@ concurrency:
 
 jobs:
   refresh:
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     timeout-minutes: 180
     env:
       GH_TOKEN: ${{ github.token }}
-      TARGET_COMMIT: ${{ github.sha }}
       OPERATIONS_OWNER: ${{ github.repository_owner }}
     steps:
-      - name: Check out exact main
+      - name: Check out current main
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: main
+          path: source
 
-      - name: Verify exact current main
+      - name: Check out retained status branch
+        uses: actions/checkout@v4
+        with:
+          ref: staging-review
+          path: status
+
+      - name: Resolve exact current main
         shell: bash
         run: |
           set -euo pipefail
-          git fetch origin main --depth=1
-          current_main="$(git rev-parse origin/main)"
-          test "$current_main" = "$TARGET_COMMIT"
+          git -C source fetch origin main --depth=1
+          current_main="$(git -C source rev-parse origin/main)"
+          echo "TARGET_COMMIT=$current_main" >> "$GITHUB_ENV"
+
+      - name: Determine whether exact-main evidence needs refresh
+        id: freshness
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { appendFileSync, readFileSync } = require('node:fs');
+          const { resolve } = require('node:path');
+
+          const target = process.env.TARGET_COMMIT;
+          const now = Date.now();
+          const paths = [
+            'config/staging-authorization/p6-01-data-qa-receipt.json',
+            'config/staging-authorization/p6-02-identity-admin-receipt.json',
+            'config/staging-authorization/p6-03-neon-transaction-receipt.json',
+            'config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json',
+            'config/staging-authorization/p6-05-public-export-release-receipt.json',
+          ];
+
+          let current = true;
+          for (const path of paths) {
+            try {
+              const receipt = JSON.parse(readFileSync(resolve('status', path), 'utf8'));
+              const expiresAt = Date.parse(receipt.expiresAt ?? '');
+              if (
+                receipt.state !== 'accepted' ||
+                receipt.commit !== target ||
+                !Number.isFinite(expiresAt) ||
+                expiresAt <= now
+              ) {
+                current = false;
+                break;
+              }
+            } catch {
+              current = false;
+              break;
+            }
+          }
+
+          appendFileSync(process.env.GITHUB_OUTPUT, `needs_refresh=${current ? 'false' : 'true'}\n`);
+          NODE
 
       - name: Refresh P6-01 through P6-05 for exact main
+        if: steps.freshness.outputs.needs_refresh == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -126,10 +182,14 @@ jobs:
         if: always()
         shell: bash
         run: |
-          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          cat >> "$GITHUB_STEP_SUMMARY" <<EOF
           ## Exact-main configured staging refresh
 
-          P6-01 through P6-05 are refreshed automatically and sequentially for the exact main commit.
+          - Exact main: \`$TARGET_COMMIT\`
+          - Refresh required at start: \`${{ steps.freshness.outputs.needs_refresh }}\`
+          - Trigger: \`${{ github.event_name }}\`
+
+          P6-01 through P6-05 are refreshed automatically and sequentially when the exact-main evidence is missing, stale, or bound to another commit.
 
           This workflow does not approve a GitHub production Environment, deploy the production Pages project, change production DNS, write the production database, or perform production cutover.
           EOF
