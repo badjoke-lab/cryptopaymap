@@ -1,0 +1,134 @@
+name: OPS-P6 exact-main configured staging refresh
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: ops-p6-exact-main-configured-staging-refresh
+  cancel-in-progress: true
+
+jobs:
+  refresh:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 180
+    env:
+      GH_TOKEN: ${{ github.token }}
+      TARGET_COMMIT: ${{ github.sha }}
+      OPERATIONS_OWNER: ${{ github.repository_owner }}
+    steps:
+      - name: Check out exact main
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+
+      - name: Verify exact current main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          current_main="$(git rev-parse origin/main)"
+          test "$current_main" = "$TARGET_COMMIT"
+
+      - name: Refresh P6-01 through P6-05 for exact main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          dispatch_and_wait() {
+            local workflow="$1"
+            local confirmation="$2"
+            local owner_field="$3"
+            local label="$4"
+            local previous_run=""
+            local run_id=""
+
+            previous_run="$(
+              gh run list \
+                --workflow "$workflow" \
+                --event workflow_dispatch \
+                --branch main \
+                --limit 30 \
+                --json databaseId,headSha,createdAt \
+                --jq "map(select(.headSha == \"$TARGET_COMMIT\")) | sort_by(.createdAt) | reverse | .[0].databaseId // empty"
+            )"
+
+            echo "Dispatching $label for $TARGET_COMMIT"
+            gh workflow run "$workflow" \
+              --ref main \
+              -f "confirmation=$confirmation" \
+              -f "approved_commit=$TARGET_COMMIT" \
+              -f "$owner_field=$OPERATIONS_OWNER"
+
+            for _ in $(seq 1 60); do
+              run_id="$(
+                gh run list \
+                  --workflow "$workflow" \
+                  --event workflow_dispatch \
+                  --branch main \
+                  --limit 30 \
+                  --json databaseId,headSha,createdAt \
+                  --jq "map(select(.headSha == \"$TARGET_COMMIT\")) | sort_by(.createdAt) | reverse | .[0].databaseId // empty"
+              )"
+              if [ -n "$run_id" ] && [ "$run_id" != "$previous_run" ]; then
+                break
+              fi
+              sleep 2
+            done
+
+            if [ -z "$run_id" ] || [ "$run_id" = "$previous_run" ]; then
+              echo "Unable to locate newly dispatched $label run" >&2
+              exit 1
+            fi
+
+            echo "$label run: $run_id"
+            gh run watch "$run_id" --exit-status
+          }
+
+          dispatch_and_wait \
+            ops-p6-001d-configured-staging-p6-01-data-qa.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_01 \
+            data_owner \
+            P6-01
+
+          dispatch_and_wait \
+            ops-p6-001e-configured-staging-p6-02-identity-admin.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_02 \
+            identity_owner \
+            P6-02
+
+          dispatch_and_wait \
+            ops-p6-001g-configured-staging-p6-03-neon-transaction.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_03 \
+            transaction_owner \
+            P6-03
+
+          dispatch_and_wait \
+            ops-p6-001h-configured-staging-p6-04-media-lifecycle.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_04 \
+            media_owner \
+            P6-04
+
+          dispatch_and_wait \
+            ops-p6-001i-configured-staging-p6-05-public-export-release.yml \
+            EXECUTE_CONFIGURED_STAGING_P6_05 \
+            release_owner \
+            P6-05
+
+      - name: Summarize manual boundary
+        if: always()
+        shell: bash
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          ## Exact-main configured staging refresh
+
+          P6-01 through P6-05 are refreshed automatically and sequentially for the exact main commit.
+
+          This workflow does not approve a GitHub production Environment, deploy the production Pages project, change production DNS, write the production database, or perform production cutover.
+          EOF
