@@ -67,6 +67,7 @@ jobs:
     timeout-minutes: 180
     env:
       GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
       OPERATIONS_OWNER: ${{ github.repository_owner }}
     steps:
       - name: Check out current main
@@ -89,8 +90,36 @@ jobs:
           current_main="$(git -C source rev-parse origin/main)"
           echo "TARGET_COMMIT=$current_main" >> "$GITHUB_ENV"
 
-      - name: Determine whether exact-main evidence needs refresh
+      - name: Check exact-main staging deployment prerequisite
+        id: staging
+        shell: bash
+        run: |
+          set -euo pipefail
+          node <<'NODE'
+          const { appendFileSync, readFileSync } = require('node:fs');
+          const path = 'status/config/staging-review/deployment-receipt.json';
+          let ready = false;
+          try {
+            const receipt = JSON.parse(readFileSync(path, 'utf8'));
+            const checks = receipt?.checks ?? {};
+            ready =
+              receipt?.status === 'deployed' &&
+              receipt?.commit === process.env.TARGET_COMMIT &&
+              checks.credentials === 'success' &&
+              checks.configuredInputs === 'success' &&
+              checks.durableObjectWorker === 'success' &&
+              checks.pagesSecrets === 'success' &&
+              checks.pagesDeployment === 'success' &&
+              checks.configuredVerification === 'success';
+          } catch {
+            ready = false;
+          }
+          appendFileSync(process.env.GITHUB_OUTPUT, `ready=${ready ? 'true' : 'false'}\n`);
+          NODE
+
+      - name: Determine exact-main refresh requirements
         id: freshness
+        if: steps.staging.outputs.ready == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -100,6 +129,29 @@ jobs:
 
           const target = process.env.TARGET_COMMIT;
           const now = Date.now();
+
+          let liveAuditCurrent = false;
+          try {
+            const receipt = JSON.parse(
+              readFileSync('status/config/staging-review/p5-02r-live-audit-receipt.json', 'utf8'),
+            );
+            const checks = receipt?.checks ?? {};
+            const result = receipt?.result ?? {};
+            liveAuditCurrent =
+              receipt?.status === 'complete' &&
+              receipt?.commit === target &&
+              checks.databaseSchema === 'success' &&
+              checks.liveJourney === 'success' &&
+              result?.status === 'complete' &&
+              result?.firstPost?.httpStatus === 202 &&
+              result?.exactReplay?.httpStatus === 202 &&
+              result?.exactReplay?.publicReferenceMatches === true &&
+              result?.exactReplay?.statusSecretMatches === true &&
+              result?.changedContent?.httpStatus === 409;
+          } catch {
+            liveAuditCurrent = false;
+          }
+
           const paths = [
             'config/staging-authorization/p6-01-data-qa-receipt.json',
             'config/staging-authorization/p6-02-identity-admin-receipt.json',
@@ -108,7 +160,7 @@ jobs:
             'config/staging-authorization/p6-05-public-export-release-receipt.json',
           ];
 
-          let current = true;
+          let p6Current = true;
           for (const path of paths) {
             try {
               const receipt = JSON.parse(readFileSync(resolve('status', path), 'utf8'));
@@ -119,20 +171,69 @@ jobs:
                 !Number.isFinite(expiresAt) ||
                 expiresAt <= now
               ) {
-                current = false;
+                p6Current = false;
                 break;
               }
             } catch {
-              current = false;
+              p6Current = false;
               break;
             }
           }
 
-          appendFileSync(process.env.GITHUB_OUTPUT, `needs_refresh=${current ? 'false' : 'true'}\n`);
+          appendFileSync(process.env.GITHUB_OUTPUT, `needs_live_audit=${liveAuditCurrent ? 'false' : 'true'}\n`);
+          appendFileSync(process.env.GITHUB_OUTPUT, `needs_p6=${p6Current ? 'false' : 'true'}\n`);
           NODE
 
+      - name: Refresh P5-02R fixed-review live audit for exact main
+        if: steps.staging.outputs.ready == 'true' && steps.freshness.outputs.needs_live_audit == 'true'
+        shell: bash
+        working-directory: source
+        run: |
+          set -euo pipefail
+          workflow=p5-02r-fixed-review-live-audit.yml
+          previous_run="$(
+            gh run list \
+              --workflow "$workflow" \
+              --event workflow_dispatch \
+              --branch main \
+              --limit 30 \
+              --json databaseId,headSha,createdAt \
+              --jq "map(select(.headSha == \"$TARGET_COMMIT\")) | sort_by(.createdAt) | reverse | .[0].databaseId // empty"
+          )"
+
+          echo "Dispatching P5-02R for $TARGET_COMMIT"
+          gh workflow run "$workflow" --ref main
+
+          run_id=""
+          for _ in $(seq 1 60); do
+            run_id="$(
+              gh run list \
+                --workflow "$workflow" \
+                --event workflow_dispatch \
+                --branch main \
+                --limit 30 \
+                --json databaseId,headSha,createdAt \
+                --jq "map(select(.headSha == \"$TARGET_COMMIT\")) | sort_by(.createdAt) | reverse | .[0].databaseId // empty"
+            )"
+            if [ -n "$run_id" ] && [ "$run_id" != "$previous_run" ]; then
+              break
+            fi
+            sleep 2
+          done
+
+          if [ -z "$run_id" ] || [ "$run_id" = "$previous_run" ]; then
+            echo 'Unable to locate newly dispatched P5-02R run' >&2
+            exit 1
+          fi
+
+          echo "P5-02R run: $run_id"
+          gh run watch "$run_id" --exit-status
+
       - name: Refresh P6-01 through P6-05 for exact main
-        if: steps.freshness.outputs.needs_refresh == 'true'
+        if: >-
+          steps.staging.outputs.ready == 'true' &&
+          (steps.freshness.outputs.needs_live_audit == 'true' ||
+          steps.freshness.outputs.needs_p6 == 'true')
         shell: bash
         working-directory: source
         run: |
@@ -226,10 +327,12 @@ jobs:
           ## Exact-main configured-staging refresh
 
           - Exact main: \`$TARGET_COMMIT\`
-          - Refresh required at start: \`${{ steps.freshness.outputs.needs_refresh }}\`
+          - Staging deployment current: \`${{ steps.staging.outputs.ready }}\`
+          - P5-02R refresh required at start: \`${{ steps.freshness.outputs.needs_live_audit }}\`
+          - P6-01..05 refresh required at start: \`${{ steps.freshness.outputs.needs_p6 }}\`
           - Trigger: \`${{ github.event_name }}\`
 
-          This bounded refresh can only dispatch the existing configured-staging P6-01 through P6-05 workflows. It does not approve the GitHub production Environment, deploy production Pages, mutate production DNS, write the production database, mutate production R2, or perform cutover.
+          This bounded refresh may dispatch P5-02R and the existing configured-staging P6-01 through P6-05 workflows only after the exact-main staging deployment is current. It does not approve the GitHub production Environment, deploy production Pages, mutate production DNS, write the production database, mutate production R2, or perform cutover.
           EOF
 
   contract:
