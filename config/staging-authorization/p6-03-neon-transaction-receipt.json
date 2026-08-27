@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "e7ebe419da5d07e304ba0a5c4d18732938ac140b",
-  "generatedAt": "2026-08-27T01:32:19.326Z",
-  "expiresAt": "2026-08-30T01:32:19.326Z",
-  "workflowRunId": "33030363119",
+  "generatedAt": "2026-08-27T11:12:42.724Z",
+  "expiresAt": "2026-08-30T11:12:42.724Z",
+  "workflowRunId": "33066295464",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001G configured staging Neon transaction evidence",
   "checks": {
@@ -18,15 +18,15 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-27T01:29:54.546Z",
-        "expiresAt": "2026-08-30T01:29:54.546Z"
+        "generatedAt": "2026-08-27T11:10:10.357Z",
+        "expiresAt": "2026-08-30T11:10:10.357Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-27T01:31:09.857Z",
-        "expiresAt": "2026-08-30T01:31:09.857Z"
+        "generatedAt": "2026-08-27T11:11:17.774Z",
+        "expiresAt": "2026-08-30T11:11:17.774Z"
       }
     ],
     "database": {
@@ -57,10 +57,10 @@
     },
     "positive": {
       "status": "passed",
-      "preStateDigest": "sha256:3f191992a74ba264ff9a2619eefdbbf44b5b8e6b58b95fc34f5b8d06148bac81",
-      "postStateDigest": "sha256:30810a0893c0f95b6ad0c944ee54c4f799ad7d6c37a3571a6dcece7963b5f6c2",
-      "applicationReceiptDigest": "sha256:62937503ba388fb33c72fa467f5295a998693bfd21c2288271e0814580af421d",
-      "auditEventDigest": "sha256:8712a21f2c08953a3b690312daab41b72a64024f4480d6067521e7a4c6af7e58",
+      "preStateDigest": "sha256:7e1f3d356cd346c1c5d1c5806c4551b226f85b05e77ca079f0394788b4048ba1",
+      "postStateDigest": "sha256:e20bff75e6b9c22fdfa50271883671f7db908f4eaea081300ec908b3f7ca4439",
+      "applicationReceiptDigest": "sha256:afa6a3e9a9b83115d6da081092025381c465b97b1e1a5917dbd27d0241fabfc8",
+      "auditEventDigest": "sha256:bda60e97439005df9cacb75121ea7db992ff63c9878c400c807200724f31f479",
       "applicationStatus": "committed",
       "publicationStatus": "pending"
     },
