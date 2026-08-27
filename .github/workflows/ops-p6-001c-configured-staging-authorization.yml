@@ -134,6 +134,7 @@ jobs:
       - name: Refresh P6-01 through P6-05 for exact main
         if: steps.freshness.outputs.needs_refresh == 'true'
         shell: bash
+        working-directory: source
         run: |
           set -euo pipefail
 
