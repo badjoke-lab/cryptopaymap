@@ -4,10 +4,10 @@
   "launchDomain": "public_export_release",
   "environment": "configured_staging",
   "state": "failed",
-  "commit": "5fc57fcc8be6e8ab9951b402f786254165c04070",
-  "generatedAt": "2026-08-26T16:03:18.333Z",
-  "expiresAt": "2026-08-29T16:03:18.333Z",
-  "workflowRunId": "32986588904",
+  "commit": "e7ebe419da5d07e304ba0a5c4d18732938ac140b",
+  "generatedAt": "2026-08-27T01:37:30.237Z",
+  "expiresAt": "2026-08-30T01:37:30.237Z",
+  "workflowRunId": "33030560691",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
@@ -19,49 +19,55 @@
       {
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-23T16:04:33.451Z",
-        "expiresAt": "2026-08-26T16:04:33.451Z"
+        "state": "current",
+        "generatedAt": "2026-08-27T01:29:54.546Z",
+        "expiresAt": "2026-08-30T01:29:54.546Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-23T16:05:40.416Z",
-        "expiresAt": "2026-08-26T16:05:40.416Z"
+        "state": "current",
+        "generatedAt": "2026-08-27T01:31:09.857Z",
+        "expiresAt": "2026-08-30T01:31:09.857Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-23T16:06:57.768Z",
-        "expiresAt": "2026-08-26T16:06:57.768Z"
+        "state": "current",
+        "generatedAt": "2026-08-27T01:32:19.326Z",
+        "expiresAt": "2026-08-30T01:32:19.326Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
-        "state": "failed",
-        "generatedAt": "2026-08-23T16:09:15.589Z",
-        "expiresAt": "2026-08-26T16:09:15.589Z"
+        "state": "current",
+        "generatedAt": "2026-08-27T01:34:43.320Z",
+        "expiresAt": "2026-08-30T01:34:43.320Z"
       }
     ],
-    "predecessorBinding": "failed",
+    "predecessorBinding": "matched",
     "deterministicGeneration": {
-      "status": "not_run",
-      "firstDigest": null,
-      "secondDigest": null
+      "status": "passed",
+      "firstDigest": "sha256:01c8eeb86f4aaab94c4f963bf8262c378220144d3c472ef053323513fa50490c",
+      "secondDigest": "sha256:01c8eeb86f4aaab94c4f963bf8262c378220144d3c472ef053323513fa50490c"
     },
     "artifactValidation": {
-      "status": "not_run",
-      "datasetVersion": null,
-      "schemaVersion": null
+      "status": "passed",
+      "datasetVersion": "staging-review-2026-07-05",
+      "schemaVersion": "1.0.0"
     },
     "topology": {
-      "status": "not_run",
-      "productionBranch": null,
-      "platformDomainPresent": false,
-      "platformDomainMatches": false,
-      "customDomainCount": null
+      "status": "failed",
+      "productionBranch": "staging-review",
+      "platformDomainPresent": true,
+      "platformDomainMatches": true,
+      "customDomainCount": 1,
+      "approvedCustomDomainPresent": true,
+      "approvedCustomDomainDigest": "sha256:4e290730490e5fcdda9f5eb16ab0fb35aa04873d2ebf35c02143fac544fd143d",
+      "priorP606State": "expired_prior_proof",
+      "priorP606ReceiptDigest": "sha256:3d99237332ddc1479b2da4a2310c94e9274ed18668622b253fcba3b4a4654620",
+      "recoveryDiagnosticState": "failed",
+      "recoveryDiagnosticDigest": null
     },
     "releases": {
       "status": "not_run",
@@ -88,8 +94,14 @@
       "activeKind": null
     }
   },
-  "binding": null,
+  "binding": {
+    "releaseId": "sha256:7fa933a85806af11b648f584278ee674fd8de300fd2302b0e96e1cddf3276442",
+    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+    "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
+    "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
+  },
   "exceptions": [
-    "preconditions:failed"
+    "execution:unsafe_pages_topology",
+    "topology:failed"
   ]
 }
