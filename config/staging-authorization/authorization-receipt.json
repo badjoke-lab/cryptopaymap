@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:4b2c7ba115c63e58eeff4392b3b55c385923a7462812633d0c19ec0c0d385e85",
+  "authorizationId": "sha256:811713c0c9be7731e621a307eafb2835da89b177e92457610b4bfe191b22de3e",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
-  "approvedCommit": "157f48f41b5ba8fae71e3114c7b16444052a1b66",
-  "generatedAt": "2026-08-26T17:21:36.978Z",
-  "workflowRunId": "32993615856",
+  "approvedCommit": "66a93517452c1b426025d4f8a92b6b12409b2e13",
+  "generatedAt": "2026-08-27T01:13:52.858Z",
+  "workflowRunId": "33029409801",
   "operators": {
     "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -15,7 +15,7 @@
   "checks": {
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
-      "state": "current",
+      "state": "failed",
       "generatedAt": "2026-08-26T17:03:51.005Z"
     },
     "liveAudit": {
@@ -84,6 +84,7 @@
     "P6-05:failed",
     "P6-06:stale",
     "P6-07:failed",
+    "deployment_receipt:failed",
     "explicit_dispatch:required",
     "live_audit_receipt:failed"
   ]
