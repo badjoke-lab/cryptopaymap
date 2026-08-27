@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "authorizationId": "sha256:407a58ab1f907e229baa61f5a38e6de80f3c4f48b5cea8f2daa67f914a19e3e4",
+  "authorizationId": "sha256:c4274e715d6d78577a25891d3680df92de879e2310b83d6bdd745b232dbd8a8f",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "e7ebe419da5d07e304ba0a5c4d18732938ac140b",
-  "generatedAt": "2026-08-27T01:37:32.681Z",
-  "workflowRunId": "33030560691",
+  "generatedAt": "2026-08-27T01:38:00.704Z",
+  "workflowRunId": "33030233807",
   "operators": {
-    "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
+    "launchOwner": "sha256:41460273f3d88c687c22da7cab8a8b884145d7f8104dd41783d5ef5ef66ccd1d",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
     "rollbackOwner": "sha256:d0cd171be8090d5e3b850f17a2cf6be2d8f587c99e9e4621cd350e1e6ba51506"
   },
