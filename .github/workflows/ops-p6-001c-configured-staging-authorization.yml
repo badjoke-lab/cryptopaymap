@@ -60,6 +60,10 @@ jobs:
   refresh_exact_main:
     if: >-
       github.event_name == 'schedule' ||
+      (github.event_name == 'workflow_run' &&
+      github.event.workflow_run.name == 'P5-02R fixed review live audit' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main') ||
       (github.event_name == 'pull_request' &&
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.head_ref, 'ops/trigger-exact-main-refresh'))
