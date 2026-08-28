@@ -1,27 +1,28 @@
 import { describe, expect, it } from 'vitest';
-import { reconcileCandidateAcquisition } from '../src/importers/candidate-acquisition-reconciliation';
+import {
+  reconcileCandidateAcquisition,
+  type ExistingCandidateSnapshot,
+} from '../src/importers/candidate-acquisition-reconciliation';
 
-const existing = [
-  {
-    candidateId: '00000000-0000-4000-8000-000000000301',
-    sourceId: '00000000-0000-4000-8000-000000000311',
-    externalId: 'node:100',
-    contentHash: 'hash-old',
-    normalizedName: 'example cafe',
-    latitude: 35.6812,
-    longitude: 139.7671,
-    officialDomain: 'example.test',
-    candidateStatus: 'new',
-  },
-];
+const existingCandidate: ExistingCandidateSnapshot = {
+  candidateId: '00000000-0000-4000-8000-000000000301',
+  sourceId: '00000000-0000-4000-8000-000000000311',
+  externalId: 'node:100',
+  contentHash: 'hash-old',
+  normalizedName: 'example cafe',
+  latitude: 35.6812,
+  longitude: 139.7671,
+  officialDomain: 'example.test',
+  candidateStatus: 'new',
+};
+const existing: ExistingCandidateSnapshot[] = [existingCandidate];
 
 describe('Candidate acquisition reconciliation', () => {
   it('classifies exact repeated source data as unchanged instead of a new Candidate', () => {
     const result = reconcileCandidateAcquisition(
       [
         {
-          ...existing[0],
-          candidateId: existing[0].candidateId,
+          ...existingCandidate,
           contentHash: 'hash-old',
         },
       ],
@@ -38,8 +39,7 @@ describe('Candidate acquisition reconciliation', () => {
     const result = reconcileCandidateAcquisition(
       [
         {
-          ...existing[0],
-          candidateId: existing[0].candidateId,
+          ...existingCandidate,
           contentHash: 'hash-new',
         },
       ],
