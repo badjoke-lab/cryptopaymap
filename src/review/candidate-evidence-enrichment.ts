@@ -51,9 +51,13 @@ function normalizedHttpUrl(value: string): string {
   return url.toString();
 }
 
-function freshness(observedAt: Date | null, referenceTime: Date): CandidateEvidenceEnrichmentResult['freshness'] {
+function freshness(
+  observedAt: Date | null,
+  referenceTime: Date,
+): CandidateEvidenceEnrichmentResult['freshness'] {
   if (observedAt === null) return 'unknown';
-  if (!Number.isFinite(observedAt.getTime())) throw new Error('Evidence observedAt must be a valid date.');
+  if (!Number.isFinite(observedAt.getTime()))
+    throw new Error('Evidence observedAt must be a valid date.');
   const ageMs = referenceTime.getTime() - observedAt.getTime();
   return ageMs > STALE_AFTER_DAYS * DAY_MS ? 'stale' : 'current';
 }
