@@ -50,7 +50,9 @@ function normalizeName(value: string): string {
     .replace(/\s+/g, ' ');
 }
 
-function elementCoordinates(element: OsmOverpassElement): { latitude: number; longitude: number } | null {
+function elementCoordinates(
+  element: OsmOverpassElement,
+): { latitude: number; longitude: number } | null {
   if (typeof element.lat === 'number' && typeof element.lon === 'number') {
     return { latitude: element.lat, longitude: element.lon };
   }
