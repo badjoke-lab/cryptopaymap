@@ -162,7 +162,9 @@ function reviewSeed(rawPayload: unknown): {
   };
 }
 
-function acquisitionSeedSnapshots(plan: CandidateIngestionPersistencePlan): AcquisitionSeedSnapshot[] {
+function acquisitionSeedSnapshots(
+  plan: CandidateIngestionPersistencePlan,
+): AcquisitionSeedSnapshot[] {
   const candidatesById = new Map(plan.candidates.map((candidate) => [candidate.id, candidate]));
   const sourceRecordsById = new Map(plan.sourceRecords.map((record) => [record.id, record]));
 
@@ -349,7 +351,10 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
     duplicateGroups: [],
     duplicateSignals: [],
   };
-  const reconciliation = reconcileCandidateAcquisition(acquisitionSeedSnapshots(unsafePlan), existing);
+  const reconciliation = reconcileCandidateAcquisition(
+    acquisitionSeedSnapshots(unsafePlan),
+    existing,
+  );
 
   return {
     plan: retainNewCandidates(unsafePlan, reconciliation),
@@ -378,7 +383,10 @@ async function loadExistingOsmCandidates(
     .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, sourceRecords.id))
     .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
     .where(
-      and(eq(sourceRecords.sourceId, sourceId), inArray(sourceRecords.externalId, [...externalIds])),
+      and(
+        eq(sourceRecords.sourceId, sourceId),
+        inArray(sourceRecords.externalId, [...externalIds]),
+      ),
     );
 
   return rows.flatMap((row) => {
