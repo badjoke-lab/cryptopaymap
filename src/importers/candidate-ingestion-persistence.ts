@@ -262,9 +262,7 @@ async function findReplay(database: CryptoPayMapDatabase, batch: NewImportBatch)
   return readExistingByChecksum(database, batch);
 }
 
-export function createDrizzleCandidateIngestionPersistenceBackend(
-  database: CryptoPayMapDatabase,
-) {
+export function createDrizzleCandidateIngestionPersistenceBackend(database: CryptoPayMapDatabase) {
   return {
     async commit(
       unsafePlan: CandidateIngestionPersistencePlan,
@@ -284,7 +282,9 @@ export function createDrizzleCandidateIngestionPersistenceBackend(
         statements.push(database.insert(sourceCandidates).values(plan.candidates));
       }
       if (plan.candidateSourceRecords.length > 0) {
-        statements.push(database.insert(candidateSourceRecords).values(plan.candidateSourceRecords));
+        statements.push(
+          database.insert(candidateSourceRecords).values(plan.candidateSourceRecords),
+        );
       }
       if (plan.duplicateSignals && plan.duplicateSignals.length > 0) {
         statements.push(database.insert(candidateDuplicateSignals).values(plan.duplicateSignals));
