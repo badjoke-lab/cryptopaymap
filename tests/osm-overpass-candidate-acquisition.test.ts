@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { ExistingCandidateSnapshot } from '../src/importers/candidate-acquisition-reconciliation';
 import { createOsmOverpassCandidateAcquisitionPlan } from '../src/importers/osm-overpass-candidate-acquisition';
 
 const IDS = {
@@ -9,6 +10,46 @@ const IDS = {
 };
 
 const fetchedAt = new Date('2026-08-28T01:00:00.000Z');
+const exampleElement = {
+  type: 'node' as const,
+  id: 123,
+  lat: 35.6812,
+  lon: 139.7671,
+  tags: {
+    name: 'Example Cafe',
+    website: 'https://example.test/',
+    'payment:bitcoin': 'yes',
+  },
+};
+
+async function existingSnapshot(): Promise<ExistingCandidateSnapshot> {
+  const result = await createOsmOverpassCandidateAcquisitionPlan({
+    ...IDS,
+    fetchedAt,
+    importerVersion: '1.0.0',
+    elements: [exampleElement],
+  });
+  const candidate = result.plan.candidates[0];
+  const sourceRecord = result.plan.sourceRecords[0];
+  if (
+    candidate?.id == null ||
+    sourceRecord?.externalId == null ||
+    sourceRecord.contentHash == null
+  ) {
+    throw new Error('Expected complete fixture Candidate/source identity.');
+  }
+  return {
+    candidateId: candidate.id,
+    sourceId: sourceRecord.sourceId,
+    externalId: sourceRecord.externalId,
+    contentHash: sourceRecord.contentHash,
+    normalizedName: candidate.normalizedName,
+    latitude: exampleElement.lat,
+    longitude: exampleElement.lon,
+    officialDomain: 'example.test',
+    candidateStatus: 'new',
+  };
+}
 
 describe('OSM Overpass Candidate acquisition', () => {
   it('creates Candidate-only persistence rows with provenance and no automatic confirmation', async () => {
@@ -16,19 +57,7 @@ describe('OSM Overpass Candidate acquisition', () => {
       ...IDS,
       fetchedAt,
       importerVersion: '1.0.0',
-      elements: [
-        {
-          type: 'node',
-          id: 123,
-          lat: 35.6812,
-          lon: 139.7671,
-          tags: {
-            name: 'Example Cafe',
-            website: 'https://example.test/',
-            'payment:bitcoin': 'yes',
-          },
-        },
-      ],
+      elements: [exampleElement],
     });
 
     expect(result.rejected).toEqual([]);
@@ -40,6 +69,61 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.sourceRecords[0]?.sourceUrl).toBe('https://www.openstreetmap.org/node/123');
     expect(result.plan.sourceRecords[0]?.licenseId).toBe(IDS.licenseId);
     expect(result.plan.candidateSourceRecords).toHaveLength(1);
+    expect(result.reconciliation.newSeeds).toHaveLength(1);
+  });
+
+  it('reconciles an unchanged repeat source identity without creating another Candidate row', async () => {
+    const existing = await existingSnapshot();
+    const result = await createOsmOverpassCandidateAcquisitionPlan(
+      {
+        ...IDS,
+        requestId: '00000000-0000-4000-8000-000000000105',
+        importBatchId: '00000000-0000-4000-8000-000000000106',
+        fetchedAt: new Date('2026-08-29T01:00:00.000Z'),
+        importerVersion: '1.0.0',
+        elements: [exampleElement],
+      },
+      [existing],
+    );
+
+    expect(result.reconciliation.unchangedSeeds).toHaveLength(1);
+    expect(result.reconciliation.changedSeeds).toHaveLength(0);
+    expect(result.plan.candidates).toHaveLength(0);
+    expect(result.plan.sourceRecords).toHaveLength(0);
+    expect(result.plan.candidateSourceRecords).toHaveLength(0);
+    expect(result.plan.batch.acceptedCount).toBe(0);
+    expect(result.plan.batch.replayedCount).toBe(1);
+    expect(result.plan.batch.automaticConfirmedCount).toBe(0);
+  });
+
+  it('classifies changed repeat-source content as refresh work instead of a new Candidate row', async () => {
+    const existing = await existingSnapshot();
+    const result = await createOsmOverpassCandidateAcquisitionPlan(
+      {
+        ...IDS,
+        requestId: '00000000-0000-4000-8000-000000000107',
+        importBatchId: '00000000-0000-4000-8000-000000000108',
+        fetchedAt: new Date('2026-08-29T01:00:00.000Z'),
+        importerVersion: '1.0.0',
+        elements: [
+          {
+            ...exampleElement,
+            tags: {
+              ...exampleElement.tags,
+              phone: '+81-00-0000-0000',
+            },
+          },
+        ],
+      },
+      [existing],
+    );
+
+    expect(result.reconciliation.changedSeeds).toHaveLength(1);
+    expect(result.reconciliation.newSeeds).toHaveLength(0);
+    expect(result.plan.candidates).toHaveLength(0);
+    expect(result.plan.sourceRecords).toHaveLength(0);
+    expect(result.plan.batch.acceptedCount).toBe(0);
+    expect(result.plan.batch.automaticConfirmedCount).toBe(0);
   });
 
   it('rejects thin or invalid rows instead of inventing publishable data', async () => {
