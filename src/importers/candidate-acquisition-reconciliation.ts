@@ -44,10 +44,7 @@ function orderedPair(left: string, right: string): [string, string] {
   return left < right ? [left, right] : [right, left];
 }
 
-function sameCoordinates(
-  left: AcquisitionSeedSnapshot,
-  right: AcquisitionSeedSnapshot,
-): boolean {
+function sameCoordinates(left: AcquisitionSeedSnapshot, right: AcquisitionSeedSnapshot): boolean {
   return (
     left.latitude !== null &&
     left.longitude !== null &&
