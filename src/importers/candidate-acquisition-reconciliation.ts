@@ -104,9 +104,7 @@ export function reconcileCandidateAcquisition(
   incoming: readonly AcquisitionSeedSnapshot[],
   existing: readonly ExistingCandidateSnapshot[],
 ): AcquisitionReconciliationPlan {
-  const existingBySourceIdentity = new Map(
-    existing.map((item) => [sourceIdentity(item), item]),
-  );
+  const existingBySourceIdentity = new Map(existing.map((item) => [sourceIdentity(item), item]));
   const newSeeds: AcquisitionSeedSnapshot[] = [];
   const unchangedSeeds: AcquisitionReconciliationPlan['unchangedSeeds'] = [];
   const changedSeeds: AcquisitionReconciliationPlan['changedSeeds'] = [];
