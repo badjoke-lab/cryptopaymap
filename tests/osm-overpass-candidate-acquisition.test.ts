@@ -37,9 +37,7 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.candidates[0]?.candidateStatus).toBe('new');
     expect(result.plan.candidates[0]?.canonicalEntityId).toBeNull();
     expect(result.plan.candidates[0]?.canonicalLocationId).toBeNull();
-    expect(result.plan.sourceRecords[0]?.sourceUrl).toBe(
-      'https://www.openstreetmap.org/node/123',
-    );
+    expect(result.plan.sourceRecords[0]?.sourceUrl).toBe('https://www.openstreetmap.org/node/123');
     expect(result.plan.sourceRecords[0]?.licenseId).toBe(IDS.licenseId);
     expect(result.plan.candidateSourceRecords).toHaveLength(1);
   });
