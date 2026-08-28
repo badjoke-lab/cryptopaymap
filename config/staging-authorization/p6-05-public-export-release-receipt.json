@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "failed",
   "commit": "8846846c113882a30b4ab66b1436763debfa7ce0",
-  "generatedAt": "2026-08-28T01:54:35.994Z",
-  "expiresAt": "2026-08-31T01:54:35.994Z",
-  "workflowRunId": "33134176669",
+  "generatedAt": "2026-08-28T05:32:58.856Z",
+  "expiresAt": "2026-08-31T05:32:58.856Z",
+  "workflowRunId": "33144991188",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001I configured staging public export and release evidence",
   "checks": {
@@ -20,29 +20,29 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-28T01:46:57.194Z",
-        "expiresAt": "2026-08-31T01:46:57.194Z"
+        "generatedAt": "2026-08-28T05:25:11.544Z",
+        "expiresAt": "2026-08-31T05:25:11.544Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-28T01:48:13.123Z",
-        "expiresAt": "2026-08-31T01:48:13.123Z"
+        "generatedAt": "2026-08-28T05:26:33.557Z",
+        "expiresAt": "2026-08-31T05:26:33.557Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-28T01:49:39.704Z",
-        "expiresAt": "2026-08-31T01:49:39.704Z"
+        "generatedAt": "2026-08-28T05:27:58.591Z",
+        "expiresAt": "2026-08-31T05:27:58.591Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-28T01:52:00.756Z",
-        "expiresAt": "2026-08-31T01:52:00.756Z"
+        "generatedAt": "2026-08-28T05:30:26.230Z",
+        "expiresAt": "2026-08-31T05:30:26.230Z"
       }
     ],
     "predecessorBinding": "matched",
