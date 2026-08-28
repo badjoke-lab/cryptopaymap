@@ -1,15 +1,26 @@
-import type {
-  NewCandidateSourceRecord,
-  NewImportBatch,
-  NewSourceCandidate,
-  NewSourceRecord,
-} from '../db/schema';
+import { and, eq, inArray } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
+  candidateSourceRecords,
+  sourceCandidates,
+  sourceRecords,
+  type NewCandidateSourceRecord,
+  type NewImportBatch,
+  type NewSourceCandidate,
+  type NewSourceRecord,
+} from '../db/schema';
+import {
+  CandidateIngestionPersistenceError,
   createDrizzleCandidateIngestionPersistenceBackend,
   type CandidateIngestionPersistencePlan,
   type CandidateIngestionReceipt,
 } from './candidate-ingestion-persistence';
+import {
+  reconcileCandidateAcquisition,
+  type AcquisitionReconciliationPlan,
+  type AcquisitionSeedSnapshot,
+  type ExistingCandidateSnapshot,
+} from './candidate-acquisition-reconciliation';
 
 export interface OsmOverpassElement {
   type: 'node' | 'way' | 'relation';
@@ -32,6 +43,7 @@ export interface OsmOverpassCandidateAcquisitionInput {
 
 export interface OsmOverpassCandidateAcquisitionResult {
   plan: CandidateIngestionPersistencePlan;
+  reconciliation: AcquisitionReconciliationPlan;
   rejected: Array<{
     externalId: string;
     reason: 'missing_name' | 'missing_coordinates' | 'invalid_coordinates';
@@ -121,16 +133,110 @@ function rejectionSummary(
   }, {});
 }
 
+function officialDomain(value: unknown): string | null {
+  if (typeof value !== 'string' || value.trim().length === 0) return null;
+  try {
+    return new URL(value).hostname.toLocaleLowerCase('en-US').replace(/^www\./, '');
+  } catch {
+    return null;
+  }
+}
+
+function reviewSeed(rawPayload: unknown): {
+  latitude: number | null;
+  longitude: number | null;
+  officialDomain: string | null;
+} {
+  if (rawPayload === null || typeof rawPayload !== 'object' || Array.isArray(rawPayload)) {
+    return { latitude: null, longitude: null, officialDomain: null };
+  }
+  const seed = (rawPayload as Record<string, unknown>).reviewSeed;
+  if (seed === null || typeof seed !== 'object' || Array.isArray(seed)) {
+    return { latitude: null, longitude: null, officialDomain: null };
+  }
+  const values = seed as Record<string, unknown>;
+  return {
+    latitude: typeof values.latitude === 'number' ? values.latitude : null,
+    longitude: typeof values.longitude === 'number' ? values.longitude : null,
+    officialDomain: officialDomain(values.websiteUrl),
+  };
+}
+
+function acquisitionSeedSnapshots(
+  plan: CandidateIngestionPersistencePlan,
+): AcquisitionSeedSnapshot[] {
+  const candidatesById = new Map(plan.candidates.map((candidate) => [candidate.id, candidate]));
+  const sourceRecordsById = new Map(plan.sourceRecords.map((record) => [record.id, record]));
+
+  return plan.candidateSourceRecords.map((relation) => {
+    const candidate = candidatesById.get(relation.candidateId);
+    const sourceRecord = sourceRecordsById.get(relation.sourceRecordId);
+    if (
+      candidate === undefined ||
+      candidate.id == null ||
+      sourceRecord === undefined ||
+      sourceRecord.externalId == null ||
+      sourceRecord.contentHash == null
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'OSM acquisition reconciliation requires complete Candidate/source identity.',
+      );
+    }
+    const seed = reviewSeed(sourceRecord.rawPayload);
+    return {
+      candidateId: candidate.id,
+      sourceId: sourceRecord.sourceId,
+      externalId: sourceRecord.externalId,
+      contentHash: sourceRecord.contentHash,
+      normalizedName: candidate.normalizedName,
+      latitude: seed.latitude,
+      longitude: seed.longitude,
+      officialDomain: seed.officialDomain,
+    };
+  });
+}
+
+function retainNewCandidates(
+  plan: CandidateIngestionPersistencePlan,
+  reconciliation: AcquisitionReconciliationPlan,
+): CandidateIngestionPersistencePlan {
+  const newCandidateIds = new Set(reconciliation.newSeeds.map((seed) => seed.candidateId));
+  const relations = plan.candidateSourceRecords.filter((relation) =>
+    newCandidateIds.has(relation.candidateId),
+  );
+  const newSourceRecordIds = new Set(relations.map((relation) => relation.sourceRecordId));
+  const candidates = plan.candidates.filter(
+    (candidate) => candidate.id != null && newCandidateIds.has(candidate.id),
+  );
+  const sourceRecordsToPersist = plan.sourceRecords.filter(
+    (record) => record.id != null && newSourceRecordIds.has(record.id),
+  );
+
+  return {
+    ...plan,
+    batch: {
+      ...plan.batch,
+      acceptedCount: candidates.length,
+      replayedCount: reconciliation.unchangedSeeds.length,
+    },
+    candidates,
+    sourceRecords: sourceRecordsToPersist,
+    candidateSourceRecords: relations,
+  };
+}
+
 export async function createOsmOverpassCandidateAcquisitionPlan(
   input: OsmOverpassCandidateAcquisitionInput,
+  existing: readonly ExistingCandidateSnapshot[] = [],
 ): Promise<OsmOverpassCandidateAcquisitionResult> {
   if (input.elements.length === 0 || input.elements.length > MAX_ELEMENTS) {
     throw new Error(`OSM Overpass acquisition requires 1-${MAX_ELEMENTS} elements per batch.`);
   }
 
-  const sourceRecords: NewSourceRecord[] = [];
+  const sourceRecordsToPlan: NewSourceRecord[] = [];
   const candidates: NewSourceCandidate[] = [];
-  const candidateSourceRecords: NewCandidateSourceRecord[] = [];
+  const candidateSourceRecordsToPlan: NewCandidateSourceRecord[] = [];
   const rejected: OsmOverpassCandidateAcquisitionResult['rejected'] = [];
 
   for (const element of input.elements) {
@@ -159,7 +265,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
     const candidateId = await deterministicUuid(`candidate:osm:${externalId}`);
     const sourceUrl = `https://www.openstreetmap.org/${element.type}/${element.id}`;
 
-    sourceRecords.push({
+    sourceRecordsToPlan.push({
       id: sourceRecordId,
       sourceId: input.sourceId,
       externalId,
@@ -202,7 +308,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
       canonicalLocationId: null,
     });
 
-    candidateSourceRecords.push({
+    candidateSourceRecordsToPlan.push({
       candidateId,
       sourceRecordId,
       relationship: 'origin',
@@ -237,23 +343,85 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
     completedAt: input.fetchedAt,
   };
 
+  const unsafePlan: CandidateIngestionPersistencePlan = {
+    batch,
+    sourceRecords: sourceRecordsToPlan,
+    candidates,
+    candidateSourceRecords: candidateSourceRecordsToPlan,
+    duplicateGroups: [],
+    duplicateSignals: [],
+  };
+  const reconciliation = reconcileCandidateAcquisition(
+    acquisitionSeedSnapshots(unsafePlan),
+    existing,
+  );
+
   return {
-    plan: {
-      batch,
-      sourceRecords,
-      candidates,
-      candidateSourceRecords,
-      duplicateGroups: [],
-      duplicateSignals: [],
-    },
+    plan: retainNewCandidates(unsafePlan, reconciliation),
+    reconciliation,
     rejected,
   };
+}
+
+async function loadExistingOsmCandidates(
+  database: CryptoPayMapDatabase,
+  sourceId: string,
+  externalIds: readonly string[],
+): Promise<ExistingCandidateSnapshot[]> {
+  if (externalIds.length === 0) return [];
+  const rows = await database
+    .select({
+      candidateId: sourceCandidates.id,
+      candidateStatus: sourceCandidates.candidateStatus,
+      normalizedName: sourceCandidates.normalizedName,
+      sourceId: sourceRecords.sourceId,
+      externalId: sourceRecords.externalId,
+      contentHash: sourceRecords.contentHash,
+      rawPayload: sourceRecords.rawPayload,
+    })
+    .from(sourceRecords)
+    .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, sourceRecords.id))
+    .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
+    .where(
+      and(
+        eq(sourceRecords.sourceId, sourceId),
+        inArray(sourceRecords.externalId, [...externalIds]),
+      ),
+    );
+
+  return rows.flatMap((row) => {
+    if (row.externalId === null || row.contentHash === null) return [];
+    const seed = reviewSeed(row.rawPayload);
+    return [
+      {
+        candidateId: row.candidateId,
+        candidateStatus: row.candidateStatus,
+        sourceId: row.sourceId,
+        externalId: row.externalId,
+        contentHash: row.contentHash,
+        normalizedName: row.normalizedName,
+        latitude: seed.latitude,
+        longitude: seed.longitude,
+        officialDomain: seed.officialDomain,
+      },
+    ];
+  });
 }
 
 export async function persistOsmOverpassCandidateAcquisition(
   database: CryptoPayMapDatabase,
   input: OsmOverpassCandidateAcquisitionInput,
 ): Promise<CandidateIngestionReceipt> {
-  const { plan } = await createOsmOverpassCandidateAcquisitionPlan(input);
-  return createDrizzleCandidateIngestionPersistenceBackend(database).commit(plan);
+  const externalIds = input.elements.map((element) => `${element.type}:${element.id}`);
+  const existing = await loadExistingOsmCandidates(database, input.sourceId, externalIds);
+  const result = await createOsmOverpassCandidateAcquisitionPlan(input, existing);
+
+  if (result.reconciliation.changedSeeds.length > 0) {
+    throw new CandidateIngestionPersistenceError(
+      'conflict',
+      'Changed repeat-source Candidates require the bounded refresh-persistence follow-up and were not written.',
+    );
+  }
+
+  return createDrizzleCandidateIngestionPersistenceBackend(database).commit(result.plan);
 }
