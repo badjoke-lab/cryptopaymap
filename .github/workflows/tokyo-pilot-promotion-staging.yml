@@ -1,0 +1,59 @@
+name: Tokyo pilot promotion staging
+
+on:
+  push:
+    branches:
+      - ops/tokyo-candidate-review-triage
+    paths:
+      - src/admin/promotion/drizzle-candidate-promotion-backend.ts
+      - scripts/audit-tokyo-promotion-db-guards.ts
+      - scripts/ensure-tokyo-pilot-staging-registry.ts
+      - scripts/promote-tokyo-hidden-pilot.ts
+      - scripts/confirm-tokyo-hidden-pilot.ts
+      - .github/workflows/tokyo-pilot-promotion-staging.yml
+
+permissions:
+  contents: read
+
+jobs:
+  pilot:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Ensure bounded staging payment registry
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/ensure-tokyo-pilot-staging-registry.ts
+
+      - name: Audit Candidate timestamp guard precision
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/audit-tokyo-promotion-db-guards.ts
+
+      - name: Promote one hidden Tokyo pilot
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+        run: npx tsx scripts/promote-tokyo-hidden-pilot.ts
+
+      - name: Confirm one hidden Tokyo pilot
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: npx tsx scripts/confirm-tokyo-hidden-pilot.ts
