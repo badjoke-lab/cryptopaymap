@@ -69,6 +69,7 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.sourceRecords[0]?.sourceUrl).toBe('https://www.openstreetmap.org/node/123');
     expect(result.plan.sourceRecords[0]?.licenseId).toBe(IDS.licenseId);
     expect(result.plan.candidateSourceRecords).toHaveLength(1);
+    expect(result.plan.sourceRefreshes).toHaveLength(0);
     expect(result.reconciliation.newSeeds).toHaveLength(1);
   });
 
@@ -91,12 +92,13 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.candidates).toHaveLength(0);
     expect(result.plan.sourceRecords).toHaveLength(0);
     expect(result.plan.candidateSourceRecords).toHaveLength(0);
+    expect(result.plan.sourceRefreshes).toHaveLength(0);
     expect(result.plan.batch.acceptedCount).toBe(0);
     expect(result.plan.batch.replayedCount).toBe(1);
     expect(result.plan.batch.automaticConfirmedCount).toBe(0);
   });
 
-  it('classifies changed repeat-source content as refresh work instead of a new Candidate row', async () => {
+  it('persists changed repeat-source content as bounded refresh work instead of a new Candidate row', async () => {
     const existing = await existingSnapshot();
     const result = await createOsmOverpassCandidateAcquisitionPlan(
       {
@@ -122,7 +124,13 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.reconciliation.newSeeds).toHaveLength(0);
     expect(result.plan.candidates).toHaveLength(0);
     expect(result.plan.sourceRecords).toHaveLength(0);
-    expect(result.plan.batch.acceptedCount).toBe(0);
+    expect(result.plan.candidateSourceRecords).toHaveLength(0);
+    expect(result.plan.sourceRefreshes).toHaveLength(1);
+    expect(result.plan.sourceRefreshes?.[0]?.candidateId).toBe(existing.candidateId);
+    expect(result.plan.sourceRefreshes?.[0]?.expectedContentHash).toBe(existing.contentHash);
+    expect(result.plan.sourceRefreshes?.[0]?.contentHash).not.toBe(existing.contentHash);
+    expect(result.plan.batch.acceptedCount).toBe(1);
+    expect(result.plan.batch.replayedCount).toBe(0);
     expect(result.plan.batch.automaticConfirmedCount).toBe(0);
   });
 

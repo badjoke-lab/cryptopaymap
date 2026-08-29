@@ -7,6 +7,7 @@ import type {
 } from '../src/db/schema';
 import {
   CandidateIngestionPersistenceError,
+  type CandidateSourceRefresh,
   validateCandidateIngestionPersistencePlan,
 } from '../src/importers/candidate-ingestion-persistence';
 
@@ -83,6 +84,25 @@ function relation(): NewCandidateSourceRecord {
   };
 }
 
+function refresh(overrides: Partial<CandidateSourceRefresh> = {}): CandidateSourceRefresh {
+  return {
+    candidateId: CANDIDATE_ID,
+    sourceId: SOURCE_ID,
+    externalId: 'node:1',
+    expectedContentHash: 'b'.repeat(64),
+    sourceUrl: 'https://www.openstreetmap.org/node/1',
+    rawPayload: { type: 'node', id: 1, tags: { phone: '+81-00-0000-0000' } },
+    observedAt: new Date('2026-08-29T00:00:00.000Z'),
+    publishedAt: null,
+    fetchedAt: new Date('2026-08-29T00:00:00.000Z'),
+    contentHash: 'c'.repeat(64),
+    archiveUrl: null,
+    licenseId: null,
+    lastSeenAt: new Date('2026-08-29T00:00:00.000Z'),
+    ...overrides,
+  };
+}
+
 describe('Candidate ingestion persistence safety', () => {
   it('accepts a Candidate-only plan with zero automatic confirmations', () => {
     const plan = {
@@ -97,6 +117,35 @@ describe('Candidate ingestion persistence safety', () => {
     expect(validateCandidateIngestionPersistencePlan(plan)).toBe(plan);
     expect(plan.batch.automaticConfirmedCount).toBe(0);
     expect(plan.candidates[0]?.candidateStatus).toBe('new');
+  });
+
+  it('accepts a changed-source refresh without creating another Candidate or canonical target', () => {
+    const plan = {
+      batch: batch(),
+      sourceRecords: [],
+      candidates: [],
+      candidateSourceRecords: [],
+      sourceRefreshes: [refresh()],
+      duplicateGroups: [],
+      duplicateSignals: [],
+    };
+
+    expect(validateCandidateIngestionPersistencePlan(plan)).toBe(plan);
+    expect(plan.batch.acceptedCount).toBe(1);
+    expect(plan.sourceRefreshes).toHaveLength(1);
+    expect(plan.candidates).toHaveLength(0);
+  });
+
+  it('rejects a refresh that does not actually change source content', () => {
+    expect(() =>
+      validateCandidateIngestionPersistencePlan({
+        batch: batch(),
+        sourceRecords: [],
+        candidates: [],
+        candidateSourceRecords: [],
+        sourceRefreshes: [refresh({ contentHash: 'b'.repeat(64) })],
+      }),
+    ).toThrow('different source content hash');
   });
 
   it('rejects any attempt to persist a promoted Candidate', () => {
