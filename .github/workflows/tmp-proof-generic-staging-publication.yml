@@ -1,0 +1,81 @@
+name: Temporary generic staging publication proof
+
+on:
+  push:
+    branches:
+      - fix/generic-staging-publication
+    paths:
+      - '.github/workflows/tmp-proof-generic-staging-publication.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tmp-generic-staging-publication-proof
+  cancel-in-progress: false
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PREVIEW_URL: https://real-data-review.cryptopaymap-staging.pages.dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Exercise generic reviewed physical publisher
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+      - name: Materialize generic public data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          rm -rf public/staging-review
+          npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - name: Verify and build
+        run: |
+          npm run check
+          npm run build
+      - name: Deploy isolated staging preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch real-data-review
+      - name: Verify deployed generic export
+        run: |
+          node --input-type=module <<'NODE'
+          const base = process.env.PREVIEW_URL;
+          let places = null;
+          for (let attempt = 0; attempt < 20; attempt += 1) {
+            const response = await fetch(`${base}/data/places.json?verify=${Date.now()}-${attempt}`, { cache: 'no-store' }).catch(() => null);
+            if (response?.ok) {
+              const value = await response.json().catch(() => null);
+              if (value && Array.isArray(value.records)) {
+                places = value;
+                break;
+              }
+            }
+            await new Promise((resolve) => setTimeout(resolve, 3000));
+          }
+          if (!places || places.records.length < 1) throw new Error('No real public physical places reached preview.');
+          if (places.records.some((record) => /\bstaging\b/i.test(String(record?.name ?? '')))) {
+            throw new Error('Synthetic fixture leaked into generic preview.');
+          }
+          const pinsResponse = await fetch(`${base}/data/place-pins.json?verify=${Date.now()}`, { cache: 'no-store' });
+          const pins = await pinsResponse.json();
+          if (!Array.isArray(pins.records) || pins.records.length !== places.records.length) {
+            throw new Error('Place and map pin counts diverged.');
+          }
+          console.log(JSON.stringify({ genericPublicationProof: true, physicalPlaces: places.records.length, mapPins: pins.records.length, syntheticFixtureNames: 0, candidatePayloadExposed: false }));
+          NODE
