@@ -142,13 +142,18 @@ async function main() {
     return;
   }
 
+  const [target0, target1, target2, target3] = targets;
+  if (!target0 || !target1 || !target2 || !target3) {
+    throw new Error('Expected four publication targets after bounded count validation.');
+  }
+
   const candidateIds = targets.map((row) => row.candidateId);
   const entityIds = targets.map((row) => row.entityId);
   const locationIds = targets.map((row) => row.locationId as string);
   const claimIds = targets.map((row) => row.claimId);
   const evidenceIds = targets.map((row) => row.evidenceId);
 
-  const statements: unknown[] = [
+  await db.batch([
     db.execute(sql`
       select 1 / case when (
         select count(*)::int
@@ -166,17 +171,22 @@ async function main() {
           and ${sourceCandidates.duplicateGroupId} is null
       ) = ${EXPECTED_COUNT} then 1 else 0 end as tokyo_publication_guard
     `),
-  ];
-
-  for (const row of targets) {
-    statements.push(
-      db
-        .update(entities)
-        .set({ slug: entitySlug(row.locationSlug), visibility: 'public' })
-        .where(and(eq(entities.id, row.entityId), inArray(entities.visibility, ['hidden', 'public']))),
-    );
-  }
-  statements.push(
+    db
+      .update(entities)
+      .set({ slug: entitySlug(target0.locationSlug), visibility: 'public' })
+      .where(and(eq(entities.id, target0.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+    db
+      .update(entities)
+      .set({ slug: entitySlug(target1.locationSlug), visibility: 'public' })
+      .where(and(eq(entities.id, target1.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+    db
+      .update(entities)
+      .set({ slug: entitySlug(target2.locationSlug), visibility: 'public' })
+      .where(and(eq(entities.id, target2.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+    db
+      .update(entities)
+      .set({ slug: entitySlug(target3.locationSlug), visibility: 'public' })
+      .where(and(eq(entities.id, target3.entityId), inArray(entities.visibility, ['hidden', 'public']))),
     db.update(locations).set({ visibility: 'public' }).where(inArray(locations.id, locationIds)),
     db
       .update(acceptanceClaims)
@@ -186,9 +196,7 @@ async function main() {
       .update(evidence)
       .set({ visibility: 'public' })
       .where(and(inArray(evidence.id, evidenceIds), eq(evidence.reviewStatus, 'accepted'))),
-  );
-
-  await db.batch(statements as Parameters<typeof db.batch>[0]);
+  ]);
 
   const [count] = await db
     .select({ count: sql<number>`count(*)::int` })
