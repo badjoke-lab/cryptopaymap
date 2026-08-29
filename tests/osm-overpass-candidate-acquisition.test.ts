@@ -28,6 +28,7 @@ const exampleElement = {
 
 type DuplicateAwareExistingCandidateSnapshot = ExistingCandidateSnapshot & {
   duplicateGroupId?: string | null;
+  duplicateGroupStatus?: 'open' | 'resolved' | 'dismissed' | null;
 };
 
 async function existingSnapshot(): Promise<DuplicateAwareExistingCandidateSnapshot> {
@@ -62,6 +63,9 @@ async function existingSnapshot(): Promise<DuplicateAwareExistingCandidateSnapsh
 
 function crossBatchDuplicate(
   duplicateGroupId: string | null = null,
+  duplicateGroupStatus: 'open' | 'resolved' | 'dismissed' | null = duplicateGroupId === null
+    ? null
+    : 'open',
 ): DuplicateAwareExistingCandidateSnapshot {
   return {
     candidateId: '00000000-0000-4000-8000-000000000201',
@@ -74,6 +78,7 @@ function crossBatchDuplicate(
     officialDomain: 'other-source.example',
     candidateStatus: 'new',
     duplicateGroupId,
+    duplicateGroupStatus,
   };
 }
 
@@ -230,16 +235,59 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.batch.automaticConfirmedCount).toBe(0);
   });
 
-  it('fails closed instead of automatically merging a pre-grouped cross-batch Candidate', async () => {
-    const existing = crossBatchDuplicate('00000000-0000-4000-8000-000000000203');
+  it('reuses one existing open duplicate group without recreating or reassigning it', async () => {
+    const duplicateGroupId = '00000000-0000-4000-8000-000000000203';
+    const existing = crossBatchDuplicate(duplicateGroupId, 'open');
+    const result = await createOsmOverpassCandidateAcquisitionPlan(
+      {
+        ...IDS,
+        requestId: '00000000-0000-4000-8000-000000000111',
+        importBatchId: '00000000-0000-4000-8000-000000000112',
+        fetchedAt: new Date('2026-08-29T03:00:00.000Z'),
+        importerVersion: '1.0.0',
+        elements: [exampleElement],
+      },
+      [existing],
+    );
+    expect(result.plan.duplicateGroups).toHaveLength(0);
+    expect(result.plan.existingCandidateDuplicateAssignments).toHaveLength(0);
+    expect(result.plan.candidates[0]?.duplicateGroupId).toBe(duplicateGroupId);
+    expect(result.plan.duplicateSignals?.[0]?.duplicateGroupId).toBe(duplicateGroupId);
+    expect(result.plan.batch.automaticConfirmedCount).toBe(0);
+  });
 
+  it('fails closed when a cross-batch component spans multiple existing duplicate groups', async () => {
+    const left = crossBatchDuplicate('00000000-0000-4000-8000-000000000203', 'open');
+    const right = {
+      ...crossBatchDuplicate('00000000-0000-4000-8000-000000000204', 'open'),
+      candidateId: '00000000-0000-4000-8000-000000000205',
+      sourceId: '00000000-0000-4000-8000-000000000206',
+      externalId: 'node:998',
+    };
     await expect(
       createOsmOverpassCandidateAcquisitionPlan(
         {
           ...IDS,
-          requestId: '00000000-0000-4000-8000-000000000111',
-          importBatchId: '00000000-0000-4000-8000-000000000112',
-          fetchedAt: new Date('2026-08-29T03:00:00.000Z'),
+          requestId: '00000000-0000-4000-8000-000000000115',
+          importBatchId: '00000000-0000-4000-8000-000000000116',
+          fetchedAt: new Date('2026-08-29T03:15:00.000Z'),
+          importerVersion: '1.0.0',
+          elements: [exampleElement],
+        },
+        [left, right],
+      ),
+    ).rejects.toThrowError(CandidateIngestionPersistenceError);
+  });
+
+  it('fails closed instead of extending a resolved duplicate group', async () => {
+    const existing = crossBatchDuplicate('00000000-0000-4000-8000-000000000203', 'resolved');
+    await expect(
+      createOsmOverpassCandidateAcquisitionPlan(
+        {
+          ...IDS,
+          requestId: '00000000-0000-4000-8000-000000000117',
+          importBatchId: '00000000-0000-4000-8000-000000000118',
+          fetchedAt: new Date('2026-08-29T03:30:00.000Z'),
           importerVersion: '1.0.0',
           elements: [exampleElement],
         },

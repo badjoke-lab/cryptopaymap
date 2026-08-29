@@ -1,6 +1,7 @@
 import { and, eq, inArray } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
+  candidateDuplicateGroups,
   candidateSourceRecords,
   sourceCandidates,
   sourceRecords,
@@ -56,6 +57,7 @@ export interface OsmOverpassCandidateAcquisitionResult {
 
 type DuplicateAwareExistingCandidateSnapshot = ExistingCandidateSnapshot & {
   duplicateGroupId?: string | null;
+  duplicateGroupStatus?: 'open' | 'resolved' | 'dismissed' | null;
 };
 
 const MAX_ELEMENTS = 10_000;
@@ -304,28 +306,50 @@ async function duplicatePersistenceWork(
     }
     members.sort();
 
-    for (const memberId of members) {
-      const existingCandidate = existingById.get(memberId);
-      if (existingCandidate?.duplicateGroupId != null) {
-        throw new CandidateIngestionPersistenceError(
-          'conflict',
-          'A cross-batch duplicate Candidate already belongs to a duplicate group; automatic group merging is not allowed.',
-        );
-      }
+    const existingGroupMembers = members
+      .map((memberId) => existingById.get(memberId))
+      .filter(
+        (
+          candidate,
+        ): candidate is DuplicateAwareExistingCandidateSnapshot & {
+          duplicateGroupId: string;
+        } => candidate?.duplicateGroupId != null,
+      );
+    if (existingGroupMembers.some((candidate) => candidate.duplicateGroupStatus !== 'open')) {
+      throw new CandidateIngestionPersistenceError(
+        'conflict',
+        'A cross-batch duplicate Candidate belongs to a resolved or dismissed duplicate group; automatic extension is not allowed.',
+      );
+    }
+    const existingGroupIds = [
+      ...new Set(existingGroupMembers.map((candidate) => candidate.duplicateGroupId)),
+    ].sort();
+    if (existingGroupIds.length > 1) {
+      throw new CandidateIngestionPersistenceError(
+        'conflict',
+        'A cross-batch duplicate component spans multiple existing duplicate groups; automatic group merging is not allowed.',
+      );
     }
 
-    const groupId = await deterministicUuid(`candidate-duplicate-group:${members.join(':')}`);
-    duplicateGroups.push({
-      id: groupId,
-      status: 'open',
-      resolutionNote: null,
-      resolvedAt: null,
-    });
+    const existingGroupId = existingGroupIds[0] ?? null;
+    const groupId =
+      existingGroupId ??
+      (await deterministicUuid(`candidate-duplicate-group:${members.join(':')}`));
+    if (existingGroupId === null) {
+      duplicateGroups.push({
+        id: groupId,
+        status: 'open',
+        resolutionNote: null,
+        resolvedAt: null,
+      });
+    }
 
     for (const memberId of members) {
       if (newCandidateIds.has(memberId)) {
         newCandidateGroupIds.set(memberId, groupId);
       } else {
+        const existingCandidate = existingById.get(memberId);
+        if (existingCandidate?.duplicateGroupId === groupId) continue;
         existingAssignments.push({
           candidateId: memberId,
           duplicateGroupId: groupId,
@@ -699,7 +723,32 @@ async function loadExistingOsmCandidates(
     const snapshot = snapshotFromRow(row);
     if (snapshot !== null) snapshots.set(snapshot.candidateId, snapshot);
   }
-  return [...snapshots.values()];
+
+  const duplicateGroupIds = [
+    ...new Set(
+      [...snapshots.values()]
+        .map((snapshot) => snapshot.duplicateGroupId)
+        .filter((groupId): groupId is string => groupId != null),
+    ),
+  ];
+  const duplicateGroupRows =
+    duplicateGroupIds.length === 0
+      ? []
+      : await database
+          .select({ id: candidateDuplicateGroups.id, status: candidateDuplicateGroups.status })
+          .from(candidateDuplicateGroups)
+          .where(inArray(candidateDuplicateGroups.id, duplicateGroupIds));
+  const duplicateGroupStatusById = new Map(
+    duplicateGroupRows.map((group) => [group.id, group.status]),
+  );
+
+  return [...snapshots.values()].map((snapshot) => ({
+    ...snapshot,
+    duplicateGroupStatus:
+      snapshot.duplicateGroupId == null
+        ? null
+        : (duplicateGroupStatusById.get(snapshot.duplicateGroupId) ?? null),
+  }));
 }
 
 export async function persistOsmOverpassCandidateAcquisition(
