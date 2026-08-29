@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "authorizationId": "sha256:8111e58bb614b9054413136e57a4ccb03716566d84d710ee091990cce2b1edd5",
+  "authorizationId": "sha256:435fc41bec2dec91cb38386c65cd3a4e822a9796e91246873cc85b7022f10d41",
   "state": "not_authorized",
   "environment": "configured_staging",
   "mode": "inventory",
   "approvedCommit": "5742b9e82c91f5cfa73a8e4330413ae6325a47d8",
-  "generatedAt": "2026-08-29T12:14:14.388Z",
-  "workflowRunId": "33251911217",
+  "generatedAt": "2026-08-29T13:56:46.316Z",
+  "workflowRunId": "33256207719",
   "operators": {
     "launchOwner": "sha256:3a4f417a7d36adc0c8f1835f542e5ff53bf8205e98c0b32fb1ead066e4453391",
     "observer": "sha256:5fe5d5a847dd1b4f54548e6bf63c2caf0a4dd8e45d99f7fe2c71b39bd12f2c9d",
@@ -28,36 +28,36 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T12:06:45.548Z",
-        "expiresAt": "2026-09-01T12:06:45.548Z"
+        "generatedAt": "2026-08-29T13:49:24.473Z",
+        "expiresAt": "2026-09-01T13:49:24.473Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T12:07:58.635Z",
-        "expiresAt": "2026-09-01T12:07:58.635Z"
+        "generatedAt": "2026-08-29T13:50:38.018Z",
+        "expiresAt": "2026-09-01T13:50:38.018Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T12:09:08.452Z",
-        "expiresAt": "2026-09-01T12:09:08.452Z"
+        "generatedAt": "2026-08-29T13:51:42.888Z",
+        "expiresAt": "2026-09-01T13:51:42.888Z"
       },
       {
         "evidenceId": "P6-04",
         "path": "config/staging-authorization/p6-04-r2-media-lifecycle-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T12:11:36.458Z",
-        "expiresAt": "2026-09-01T12:11:36.458Z"
+        "generatedAt": "2026-08-29T13:54:04.308Z",
+        "expiresAt": "2026-09-01T13:54:04.308Z"
       },
       {
         "evidenceId": "P6-05",
         "path": "config/staging-authorization/p6-05-public-export-release-receipt.json",
         "state": "failed",
-        "generatedAt": "2026-08-29T12:14:11.854Z",
-        "expiresAt": "2026-09-01T12:14:11.854Z"
+        "generatedAt": "2026-08-29T13:56:44.285Z",
+        "expiresAt": "2026-09-01T13:56:44.285Z"
       },
       {
         "evidenceId": "P6-06",
