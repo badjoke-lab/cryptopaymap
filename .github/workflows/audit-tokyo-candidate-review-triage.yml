@@ -10,6 +10,7 @@ on:
       - scripts/persist-tokyo-pending-official-evidence.ts
       - scripts/verify-tokyo-pending-official-evidence.ts
       - scripts/audit-tokyo-pilot-promotion-preflight.ts
+      - scripts/enrich-tokyo-pilot-country-source.ts
       - .github/workflows/audit-tokyo-candidate-review-triage.yml
 
 permissions:
@@ -61,6 +62,12 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/audit-tokyo-pilot-promotion-preflight.ts
+
+      - name: Enrich private Tokyo country provenance
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/enrich-tokyo-pilot-country-source.ts
 
       - name: Audit review authorization configuration
         env:
