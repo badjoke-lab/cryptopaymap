@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { ExistingCandidateSnapshot } from '../src/importers/candidate-acquisition-reconciliation';
+import {
+  CandidateIngestionPersistenceError,
+  type CandidateIngestionPersistencePlan,
+} from '../src/importers/candidate-ingestion-persistence';
 import { createOsmOverpassCandidateAcquisitionPlan } from '../src/importers/osm-overpass-candidate-acquisition';
 
 const IDS = {
@@ -22,7 +26,11 @@ const exampleElement = {
   },
 };
 
-async function existingSnapshot(): Promise<ExistingCandidateSnapshot> {
+type DuplicateAwareExistingCandidateSnapshot = ExistingCandidateSnapshot & {
+  duplicateGroupId?: string | null;
+};
+
+async function existingSnapshot(): Promise<DuplicateAwareExistingCandidateSnapshot> {
   const result = await createOsmOverpassCandidateAcquisitionPlan({
     ...IDS,
     fetchedAt,
@@ -48,7 +56,35 @@ async function existingSnapshot(): Promise<ExistingCandidateSnapshot> {
     longitude: exampleElement.lon,
     officialDomain: 'example.test',
     candidateStatus: 'new',
+    duplicateGroupId: null,
   };
+}
+
+function crossBatchDuplicate(
+  duplicateGroupId: string | null = null,
+): DuplicateAwareExistingCandidateSnapshot {
+  return {
+    candidateId: '00000000-0000-4000-8000-000000000201',
+    sourceId: '00000000-0000-4000-8000-000000000202',
+    externalId: 'node:999',
+    contentHash: 'd'.repeat(64),
+    normalizedName: 'example cafe',
+    latitude: exampleElement.lat,
+    longitude: exampleElement.lon,
+    officialDomain: 'other-source.example',
+    candidateStatus: 'new',
+    duplicateGroupId,
+  };
+}
+
+function duplicatePlan(result: { plan: CandidateIngestionPersistencePlan }) {
+  const group = result.plan.duplicateGroups?.[0];
+  const signal = result.plan.duplicateSignals?.[0];
+  const assignment = result.plan.existingCandidateDuplicateAssignments?.[0];
+  if (group?.id == null || signal?.id == null || assignment === undefined) {
+    throw new Error('Expected complete duplicate persistence work.');
+  }
+  return { group, signal, assignment };
 }
 
 describe('OSM Overpass Candidate acquisition', () => {
@@ -70,6 +106,7 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.sourceRecords[0]?.licenseId).toBe(IDS.licenseId);
     expect(result.plan.candidateSourceRecords).toHaveLength(1);
     expect(result.plan.sourceRefreshes).toHaveLength(0);
+    expect(result.plan.existingCandidateDuplicateAssignments).toHaveLength(0);
     expect(result.reconciliation.newSeeds).toHaveLength(1);
   });
 
@@ -132,6 +169,51 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.batch.acceptedCount).toBe(1);
     expect(result.plan.batch.replayedCount).toBe(0);
     expect(result.plan.batch.automaticConfirmedCount).toBe(0);
+  });
+
+  it('creates a reviewable duplicate group for a cross-batch same-name same-coordinate Candidate', async () => {
+    const existing = crossBatchDuplicate();
+    const result = await createOsmOverpassCandidateAcquisitionPlan(
+      {
+        ...IDS,
+        requestId: '00000000-0000-4000-8000-000000000109',
+        importBatchId: '00000000-0000-4000-8000-000000000110',
+        fetchedAt: new Date('2026-08-29T02:00:00.000Z'),
+        importerVersion: '1.0.0',
+        elements: [exampleElement],
+      },
+      [existing],
+    );
+    const { group, signal, assignment } = duplicatePlan(result);
+
+    expect(result.reconciliation.duplicateSignals).toHaveLength(1);
+    expect(signal.reason).toBe('same_name_and_coordinates');
+    expect(signal.strength).toBe('strong');
+    expect(signal.duplicateGroupId).toBe(group.id);
+    expect(signal.importBatchId).toBe(result.plan.batch.id);
+    expect(assignment.candidateId).toBe(existing.candidateId);
+    expect(assignment.duplicateGroupId).toBe(group.id);
+    expect(result.plan.candidates[0]?.duplicateGroupId).toBe(group.id);
+    expect(result.plan.batch.duplicateSignalCount).toBe(1);
+    expect(result.plan.batch.automaticConfirmedCount).toBe(0);
+  });
+
+  it('fails closed instead of automatically merging a pre-grouped cross-batch Candidate', async () => {
+    const existing = crossBatchDuplicate('00000000-0000-4000-8000-000000000203');
+
+    await expect(
+      createOsmOverpassCandidateAcquisitionPlan(
+        {
+          ...IDS,
+          requestId: '00000000-0000-4000-8000-000000000111',
+          importBatchId: '00000000-0000-4000-8000-000000000112',
+          fetchedAt: new Date('2026-08-29T03:00:00.000Z'),
+          importerVersion: '1.0.0',
+          elements: [exampleElement],
+        },
+        [existing],
+      ),
+    ).rejects.toThrowError(CandidateIngestionPersistenceError);
   });
 
   it('rejects thin or invalid rows instead of inventing publishable data', async () => {
