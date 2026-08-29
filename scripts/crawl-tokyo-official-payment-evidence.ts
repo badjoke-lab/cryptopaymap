@@ -32,12 +32,19 @@ function websiteUrl(rawPayload: unknown): string | null {
 }
 
 function normalizeHost(value: string): string {
-  return value.trim().toLowerCase().replace(/^www\./, '').replace(/\.$/, '');
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, '')
+    .replace(/\.$/, '');
 }
 
 function privateIpv4(hostname: string): boolean {
   const parts = hostname.split('.').map(Number);
-  if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) {
+  if (
+    parts.length !== 4 ||
+    parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)
+  ) {
     return false;
   }
   const [a = 0, b = 0] = parts;
@@ -77,7 +84,10 @@ function safeOfficialUrl(rawUrl: string, officialDomain: string): URL | null {
     if (unsafeHostname(url.hostname)) return null;
     const host = normalizeHost(url.hostname);
     const domain = normalizeHost(officialDomain);
-    if (!domain || (host !== domain && !host.endsWith(`.${domain}`) && !domain.endsWith(`.${host}`))) {
+    if (
+      !domain ||
+      (host !== domain && !host.endsWith(`.${domain}`) && !domain.endsWith(`.${host}`))
+    ) {
       return null;
     }
     url.hash = '';
@@ -100,7 +110,8 @@ function normalizeHtml(value: string): string {
 }
 
 function hasExplicitPaymentEvidence(text: string): boolean {
-  const cryptoTerm = '(?:bitcoin|btc|lightning|sats?|cryptocurrency|crypto|ビットコイン|ライトニング)';
+  const cryptoTerm =
+    '(?:bitcoin|btc|lightning|sats?|cryptocurrency|crypto|ビットコイン|ライトニング)';
   const paymentTerm = '(?:pay(?:ment|ing)?|accept(?:ed|s|ing)?|checkout|決済|支払|支払い)';
   return new RegExp(
     `${cryptoTerm}.{0,120}${paymentTerm}|${paymentTerm}.{0,120}${cryptoTerm}`,
@@ -139,7 +150,8 @@ function likelyPaymentLinks(html: string, baseUrl: URL, officialDomain: string):
     const anchor = normalizeHtml(match[2] ?? '');
     const haystack = `${safe.pathname.toLowerCase()} ${anchor}`;
     let score = 0;
-    if (/(?:bitcoin|lightning|crypto|btc|sats?|ビットコイン|ライトニング)/i.test(haystack)) score += 4;
+    if (/(?:bitcoin|lightning|crypto|btc|sats?|ビットコイン|ライトニング)/i.test(haystack))
+      score += 4;
     if (/(?:payment|payments|pay|checkout|決済|支払|支払い)/i.test(haystack)) score += 3;
     if (/(?:faq|help|support|guide|how-to|howto|利用|案内)/i.test(haystack)) score += 1;
     if (score === 0) continue;
@@ -147,7 +159,10 @@ function likelyPaymentLinks(html: string, baseUrl: URL, officialDomain: string):
     links.push({ url: safe, score });
   }
   return links
-    .sort((left, right) => right.score - left.score || left.url.toString().localeCompare(right.url.toString()))
+    .sort(
+      (left, right) =>
+        right.score - left.score || left.url.toString().localeCompare(right.url.toString()),
+    )
     .slice(0, MAX_INTERNAL_PAGES)
     .map((entry) => entry.url);
 }
@@ -260,6 +275,7 @@ async function main() {
         .returning({ id: sources.id })
     )[0]?.id;
   if (!sourceId) throw new Error('Failed to resolve bounded official-site crawl source.');
+  const resolvedSourceId: string = sourceId;
 
   const counters = {
     targets: targets.length,
@@ -309,7 +325,12 @@ async function main() {
       const existingRecord = await db
         .select({ id: sourceRecords.id })
         .from(sourceRecords)
-        .where(and(eq(sourceRecords.sourceId, sourceId), eq(sourceRecords.externalId, externalId)))
+        .where(
+          and(
+            eq(sourceRecords.sourceId, resolvedSourceId),
+            eq(sourceRecords.externalId, externalId),
+          ),
+        )
         .limit(1);
 
       let sourceRecordId = existingRecord[0]?.id;
@@ -318,7 +339,7 @@ async function main() {
           await db
             .insert(sourceRecords)
             .values({
-              sourceId,
+              sourceId: resolvedSourceId,
               externalId,
               sourceUrl: found.resolvedUrl.toString(),
               rawPayload: {
