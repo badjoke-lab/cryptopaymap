@@ -8,6 +8,7 @@ declare const process: {
 
 const EXPECTED_TARGET = 'fixed-review-staging';
 const TOKYO_BATCH_ID = '9a7aa03b-ebce-4ee0-ad44-731149450d85';
+const AUDIT_VERSION = 'tokyo-review-triage-v1';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -87,6 +88,7 @@ async function main() {
 
   console.log(
     JSON.stringify({
+      auditVersion: AUDIT_VERSION,
       target: EXPECTED_TARGET,
       batchId: TOKYO_BATCH_ID,
       candidateCount: rows.length,
