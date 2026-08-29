@@ -1,0 +1,32 @@
+name: Temporary Japan OSM Candidate acquisition r2
+
+on:
+  push:
+    branches:
+      - ops/japan-osm-acquisition-r2
+    paths:
+      - '.github/workflows/tmp-acquire-japan-osm-r2.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: fixed-review-osm-candidate-acquisition
+  cancel-in-progress: false
+
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Acquire private Japan OSM Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/acquire-osm-candidates.ts japan
