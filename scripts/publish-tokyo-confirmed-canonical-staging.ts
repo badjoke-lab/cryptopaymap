@@ -86,7 +86,9 @@ async function main() {
   const unique = new Map(rows.map((row) => [row.candidateId, row]));
   const targets = [...unique.values()];
   if (targets.length !== EXPECTED_COUNT) {
-    throw new Error(`Expected exactly ${EXPECTED_COUNT} reviewed Tokyo publication targets; got ${targets.length}.`);
+    throw new Error(
+      `Expected exactly ${EXPECTED_COUNT} reviewed Tokyo publication targets; got ${targets.length}.`,
+    );
   }
   if (targets.some((row) => row.locationId === null)) {
     throw new Error('A physical publication target is missing its canonical Location.');
@@ -162,7 +164,10 @@ async function main() {
           on ${candidatePromotionDecisions.candidateId} = ${sourceCandidates.id}
         inner join ${acceptanceClaims}
           on ${acceptanceClaims.id} = ${candidatePromotionDecisions.claimId}
-        where ${sourceCandidates.id} in (${sql.join(candidateIds.map((id) => sql`${id}`), sql`, `)})
+        where ${sourceCandidates.id} in (${sql.join(
+          candidateIds.map((id) => sql`${id}`),
+          sql`, `,
+        )})
           and ${sourceCandidates.importBatchId} = ${TOKYO_BATCH_ID}
           and ${sourceCandidates.candidateStatus} = 'promoted'
           and ${acceptanceClaims.claimStatus} = 'confirmed'
@@ -174,24 +179,34 @@ async function main() {
     db
       .update(entities)
       .set({ slug: entitySlug(target0.locationSlug), visibility: 'public' })
-      .where(and(eq(entities.id, target0.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+      .where(
+        and(eq(entities.id, target0.entityId), inArray(entities.visibility, ['hidden', 'public'])),
+      ),
     db
       .update(entities)
       .set({ slug: entitySlug(target1.locationSlug), visibility: 'public' })
-      .where(and(eq(entities.id, target1.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+      .where(
+        and(eq(entities.id, target1.entityId), inArray(entities.visibility, ['hidden', 'public'])),
+      ),
     db
       .update(entities)
       .set({ slug: entitySlug(target2.locationSlug), visibility: 'public' })
-      .where(and(eq(entities.id, target2.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+      .where(
+        and(eq(entities.id, target2.entityId), inArray(entities.visibility, ['hidden', 'public'])),
+      ),
     db
       .update(entities)
       .set({ slug: entitySlug(target3.locationSlug), visibility: 'public' })
-      .where(and(eq(entities.id, target3.entityId), inArray(entities.visibility, ['hidden', 'public']))),
+      .where(
+        and(eq(entities.id, target3.entityId), inArray(entities.visibility, ['hidden', 'public'])),
+      ),
     db.update(locations).set({ visibility: 'public' }).where(inArray(locations.id, locationIds)),
     db
       .update(acceptanceClaims)
       .set({ visibility: 'public' })
-      .where(and(inArray(acceptanceClaims.id, claimIds), eq(acceptanceClaims.claimStatus, 'confirmed'))),
+      .where(
+        and(inArray(acceptanceClaims.id, claimIds), eq(acceptanceClaims.claimStatus, 'confirmed')),
+      ),
     db
       .update(evidence)
       .set({ visibility: 'public' })

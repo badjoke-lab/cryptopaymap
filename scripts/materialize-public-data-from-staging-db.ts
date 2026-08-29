@@ -43,7 +43,9 @@ function stringMap(value: unknown): Record<string, string> {
   const record = object(value);
   if (!record) return {};
   return Object.fromEntries(
-    Object.entries(record).filter((entry): entry is [string, string] => typeof entry[1] === 'string'),
+    Object.entries(record).filter(
+      (entry): entry is [string, string] => typeof entry[1] === 'string',
+    ),
   );
 }
 
@@ -152,7 +154,9 @@ async function main() {
     .orderBy(asc(locations.slug));
 
   if (placeRows.length !== EXPECTED_COUNT) {
-    throw new Error(`Expected exactly ${EXPECTED_COUNT} public confirmed Tokyo places; got ${placeRows.length}.`);
+    throw new Error(
+      `Expected exactly ${EXPECTED_COUNT} public confirmed Tokyo places; got ${placeRows.length}.`,
+    );
   }
 
   const claimIds = placeRows.map((row) => row.claimId);
@@ -249,7 +253,14 @@ async function main() {
     if (payments.length < 1 || acceptedEvidence.length < 1) {
       throw new Error('A public Tokyo claim is missing payment or accepted public Evidence.');
     }
-    if (payments.some((payment) => payment.assetStatus !== 'active' || payment.networkStatus !== 'active' || payment.paymentMethodStatus !== 'active')) {
+    if (
+      payments.some(
+        (payment) =>
+          payment.assetStatus !== 'active' ||
+          payment.networkStatus !== 'active' ||
+          payment.paymentMethodStatus !== 'active',
+      )
+    ) {
       throw new Error('A public Tokyo claim references a deprecated payment registry value.');
     }
     const origin = origins.get(row.candidateId);
@@ -360,8 +371,16 @@ async function main() {
     latitude: place.latitude,
     longitude: place.longitude,
     status: 'confirmed' as const,
-    assetSlugs: [...new Set(place.claims.flatMap((claim) => claim.paymentAssets.map((payment) => payment.assetSlug)))],
-    networkSlugs: [...new Set(place.claims.flatMap((claim) => claim.paymentAssets.map((payment) => payment.networkSlug)))],
+    assetSlugs: [
+      ...new Set(
+        place.claims.flatMap((claim) => claim.paymentAssets.map((payment) => payment.assetSlug)),
+      ),
+    ],
+    networkSlugs: [
+      ...new Set(
+        place.claims.flatMap((claim) => claim.paymentAssets.map((payment) => payment.networkSlug)),
+      ),
+    ],
     routeTypes: [...new Set(place.claims.map((claim) => claim.routeType))],
     lastConfirmedAt: place.claims[0]?.lastConfirmedAt,
     thumbnail: null,
@@ -386,7 +405,10 @@ async function main() {
   const publicPlaces = places.map(({ osm: _osm, ...place }) => place);
   const geojson = places.map((place) => ({
     type: 'Feature' as const,
-    geometry: { type: 'Point' as const, coordinates: [place.longitude, place.latitude] as [number, number] },
+    geometry: {
+      type: 'Point' as const,
+      coordinates: [place.longitude, place.latitude] as [number, number],
+    },
     properties: {
       placeSlug: place.placeSlug,
       name: place.name,
@@ -442,8 +464,12 @@ async function main() {
     cities: cityCount,
     staleRecords: 0,
     endedRecords: 0,
-    directWalletClaims: acceptanceClaimsRecords.filter((claim) => claim.routeType === 'direct_wallet').length,
-    processorCheckoutClaims: acceptanceClaimsRecords.filter((claim) => claim.routeType === 'processor_checkout').length,
+    directWalletClaims: acceptanceClaimsRecords.filter(
+      (claim) => claim.routeType === 'direct_wallet',
+    ).length,
+    processorCheckoutClaims: acceptanceClaimsRecords.filter(
+      (claim) => claim.routeType === 'processor_checkout',
+    ).length,
     howToPayCoverage: totalClaims === 0 ? 0 : 1,
     networkSpecifiedRate: totalClaims === 0 ? 0 : 1,
     evidenceBackedRate: totalClaims === 0 ? 0 : 1,
@@ -459,7 +485,8 @@ async function main() {
     subjectType: 'place' as const,
     subjectSlug: place.placeSlug,
     title: `${place.name} confirmed`,
-    summary: 'Reviewed merchant evidence confirms cryptocurrency acceptance at this physical place.',
+    summary:
+      'Reviewed merchant evidence confirms cryptocurrency acceptance at this physical place.',
     effectiveAt: place.claims[0]?.firstConfirmedAt,
   }));
 
@@ -490,20 +517,25 @@ async function main() {
   for (const path of publicExportPaths.filter((path) => path !== '/data/manifest.json')) {
     const value = artifacts[path];
     if (value === undefined) throw new Error(`Missing generated public artifact: ${path}`);
-    const count = path === '/version.json' || path === '/data/stats.json'
-      ? 1
-      : path === '/data/places.geojson'
-        ? (value as { features: unknown[] }).features.length
-        : (value as { records: unknown[] }).records.length;
+    const count =
+      path === '/version.json' || path === '/data/stats.json'
+        ? 1
+        : path === '/data/places.geojson'
+          ? (value as { features: unknown[] }).features.length
+          : (value as { records: unknown[] }).records.length;
     manifestFiles.push({
       path,
       mediaType: path === '/data/places.geojson' ? 'application/geo+json' : 'application/json',
       schemaVersion: SCHEMA_VERSION,
       recordCount: count,
       sha256: await hashPublicArtifact(value),
-      licenses: path === '/data/locations-osm.json' || path === '/data/places.json' || path === '/data/place-pins.json' || path === '/data/places.geojson'
-        ? ['odbl-1-0', 'cpm-public-data']
-        : ['cpm-public-data'],
+      licenses:
+        path === '/data/locations-osm.json' ||
+        path === '/data/places.json' ||
+        path === '/data/place-pins.json' ||
+        path === '/data/places.geojson'
+          ? ['odbl-1-0', 'cpm-public-data']
+          : ['cpm-public-data'],
     });
   }
   artifacts['/data/manifest.json'] = {
@@ -517,9 +549,8 @@ async function main() {
   await mkdir(outputDirectory, { recursive: true });
   for (const path of publicExportPaths) {
     const value = artifacts[path];
-    const url = path === '/version.json'
-      ? versionPath
-      : new URL(path.replace('/data/', ''), outputDirectory);
+    const url =
+      path === '/version.json' ? versionPath : new URL(path.replace('/data/', ''), outputDirectory);
     await writeFile(url, canonicalPublicJson(value), 'utf8');
   }
 
@@ -536,7 +567,9 @@ async function main() {
       networkRecords: networkRecords.length,
       datasetVersion,
       artifactCount: Object.keys(artifacts).length,
-      snapshotInputDigest: sha256(`${datasetVersion}:${places.length}:${acceptanceClaimsRecords.length}`),
+      snapshotInputDigest: sha256(
+        `${datasetVersion}:${places.length}:${acceptanceClaimsRecords.length}`,
+      ),
       syntheticFixturesUsed: false,
       candidatePayloadExposed: false,
     }),
