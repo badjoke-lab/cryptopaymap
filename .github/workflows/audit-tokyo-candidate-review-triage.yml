@@ -9,6 +9,7 @@ on:
       - scripts/probe-tokyo-official-payment-evidence.ts
       - scripts/persist-tokyo-pending-official-evidence.ts
       - scripts/verify-tokyo-pending-official-evidence.ts
+      - scripts/audit-tokyo-pilot-promotion-preflight.ts
       - .github/workflows/audit-tokyo-candidate-review-triage.yml
 
 permissions:
@@ -54,6 +55,12 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/verify-tokyo-pending-official-evidence.ts
+
+      - name: Audit one-pilot promotion preflight
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/audit-tokyo-pilot-promotion-preflight.ts
 
       - name: Audit review authorization configuration
         env:
