@@ -1,0 +1,82 @@
+name: Temporary generalize staging publication
+
+on:
+  push:
+    branches:
+      - fix/generic-staging-publication
+    paths:
+      - '.github/workflows/tmp-generalize-staging-publication.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  generalize:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Remove Tokyo four-record coupling
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          materializer = Path('scripts/materialize-public-data-from-staging-db.ts')
+          text = materializer.read_text()
+          text = text.replace("const TOKYO_BATCH_ID = '9a7aa03b-ebce-4ee0-ad44-731149450d85';\n", '')
+          text = text.replace('const EXPECTED_COUNT = 4;\n', '')
+          text = text.replace('        eq(sourceCandidates.importBatchId, TOKYO_BATCH_ID),\n', '')
+          text = text.replace(
+              "  if (placeRows.length !== EXPECTED_COUNT) {\n    throw new Error(\n      `Expected exactly ${EXPECTED_COUNT} public confirmed Tokyo places; got ${placeRows.length}.`,\n    );\n  }\n",
+              "  if (placeRows.length < 1) {\n    throw new Error('Expected at least one public confirmed physical place.');\n  }\n",
+          )
+          text = text.replace('A public Tokyo place', 'A public physical place')
+          text = text.replace('A public Tokyo claim', 'A public physical claim')
+          if 'TOKYO_BATCH_ID' in text or 'EXPECTED_COUNT' in text or 'public confirmed Tokyo places' in text:
+              raise SystemExit('Tokyo fixed-count coupling remains in materializer')
+          materializer.write_text(text)
+
+          workflow = Path('.github/workflows/real-data-staging-publication.yml')
+          text = workflow.read_text()
+          text = text.replace(
+              '      - name: Publish exactly four reviewed canonical records in staging\n',
+              '      - name: Publish bounded reviewed physical canonical records in staging\n',
+          )
+          text = text.replace(
+              '        run: npx tsx scripts/publish-tokyo-confirmed-canonical-staging.ts\n',
+              '        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts\n',
+          )
+          text = text.replace(
+              "          if (places.records.length !== 4) {\n            throw new Error(`Expected 4 real places; got ${places.records.length}.`);\n          }\n",
+              "          if (places.records.length < 1) {\n            throw new Error('Expected at least one real public place.');\n          }\n",
+          )
+          text = text.replace(
+              "          if (!Array.isArray(pins.records) || pins.records.length !== 4) {\n            throw new Error('Expected 4 real map pins.');\n          }\n",
+              "          if (!Array.isArray(pins.records) || pins.records.length !== places.records.length) {\n            throw new Error(`Map pin count ${pins.records?.length ?? 'invalid'} does not match place count ${places.records.length}.`);\n          }\n",
+          )
+          if 'publish-tokyo-confirmed-canonical-staging.ts' in text or 'Expected 4 real' in text or 'exactly four' in text:
+              raise SystemExit('Tokyo fixed-count coupling remains in workflow')
+          workflow.write_text(text)
+          PY
+      - name: Format changed TypeScript
+        run: npx biome format --write scripts/materialize-public-data-from-staging-db.ts scripts/publish-reviewed-physical-canonical-staging.ts
+      - name: Validate changed sources
+        run: |
+          npm run format:check
+          npm run lint
+          npm run check
+      - name: Commit generalized publication path
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add scripts/materialize-public-data-from-staging-db.ts scripts/publish-reviewed-physical-canonical-staging.ts .github/workflows/real-data-staging-publication.yml
+          if git diff --cached --quiet; then
+            echo 'No changes to commit.'
+            exit 0
+          fi
+          git commit -m 'fix: generalize staging real-data publication'
+          git push origin HEAD:fix/generic-staging-publication
