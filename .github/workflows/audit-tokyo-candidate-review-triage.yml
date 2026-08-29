@@ -40,3 +40,12 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/probe-tokyo-official-payment-evidence.ts
+
+      - name: Audit review authorization configuration
+        env:
+          EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+          CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+        run: |
+          if [ -n "$EVIDENCE_REVIEW_SUBJECTS" ]; then evidence=true; else evidence=false; fi
+          if [ -n "$CANDIDATE_PROMOTE_SUBJECTS" ]; then promotion=true; else promotion=false; fi
+          printf '{"evidenceReviewConfigured":%s,"candidatePromotionConfigured":%s}\n' "$evidence" "$promotion"
