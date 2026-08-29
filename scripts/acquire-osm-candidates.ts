@@ -1,5 +1,5 @@
-import { appendFileSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
+import { appendFileSync } from 'node:fs';
 import { and, eq, sql } from 'drizzle-orm';
 import { createDatabase, type CryptoPayMapDatabase } from '../src/db/client';
 import { licenses, sourceCandidates, sources } from '../src/db/schema';
@@ -206,9 +206,10 @@ async function main() {
 
   console.log(JSON.stringify(summary));
 
-  if (process.env.GITHUB_OUTPUT) {
+  const githubOutput = process.env.GITHUB_OUTPUT;
+  if (githubOutput) {
     appendFileSync(
-      process.env.GITHUB_OUTPUT,
+      githubOutput,
       [
         `scope=${scopeName}`,
         `fetched_elements=${elements.length}`,
