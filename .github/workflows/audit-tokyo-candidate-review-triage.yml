@@ -6,6 +6,7 @@ on:
       - ops/tokyo-candidate-review-triage
     paths:
       - scripts/audit-tokyo-candidate-review-readiness.ts
+      - scripts/probe-tokyo-official-payment-evidence.ts
       - .github/workflows/audit-tokyo-candidate-review-triage.yml
 
 permissions:
@@ -33,3 +34,9 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/audit-tokyo-candidate-review-readiness.ts
+
+      - name: Probe official payment evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/probe-tokyo-official-payment-evidence.ts
