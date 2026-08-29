@@ -1,5 +1,3 @@
-import { randomUUID } from 'node:crypto';
-import { appendFileSync } from 'node:fs';
 import { and, eq, sql } from 'drizzle-orm';
 import { createDatabase, type CryptoPayMapDatabase } from '../src/db/client';
 import { licenses, sourceCandidates, sources } from '../src/db/schema';
@@ -8,6 +6,12 @@ import {
   type OsmOverpassElement,
 } from '../src/importers/osm-overpass-candidate-acquisition';
 
+declare const process: {
+  argv: string[];
+  env: Record<string, string | undefined>;
+};
+
+const randomUUID = () => crypto.randomUUID();
 const REQUIRED_TARGET = 'fixed-review-staging';
 const OSM_SOURCE_NAME = 'OpenStreetMap via Overpass API';
 const OSM_LICENSE_SLUG = 'odbl-1-0';
@@ -62,9 +66,7 @@ function buildOverpassQuery(bbox: string): string {
     'payment:ethereum',
     'payment:cryptocurrencies',
   ];
-  const selectors = paymentKeys
-    .map((key) => `nwr["${key}"~"^(yes|only)$"](${bbox});`)
-    .join('\n  ');
+  const selectors = paymentKeys.map((key) => `nwr["${key}"~"^(yes|only)$"](${bbox});`).join('\n  ');
   return `[out:json][timeout:180];\n(\n  ${selectors}\n);\nout center tags qt;`;
 }
 
@@ -169,9 +171,7 @@ async function ensureOsmProvenance(database: CryptoPayMapDatabase) {
 }
 
 async function candidateCount(database: CryptoPayMapDatabase): Promise<number> {
-  const [row] = await database
-    .select({ count: sql<number>`count(*)::int` })
-    .from(sourceCandidates);
+  const [row] = await database.select({ count: sql<number>`count(*)::int` }).from(sourceCandidates);
   return Number(row?.count ?? 0);
 }
 
@@ -205,26 +205,6 @@ async function main() {
   };
 
   console.log(JSON.stringify(summary));
-
-  const githubOutput = process.env.GITHUB_OUTPUT;
-  if (githubOutput) {
-    appendFileSync(
-      githubOutput,
-      [
-        `scope=${scopeName}`,
-        `fetched_elements=${elements.length}`,
-        `candidate_total_before=${before}`,
-        `candidate_total_after=${after}`,
-        `candidate_delta=${after - before}`,
-        `accepted_count=${receipt.acceptedCount}`,
-        `rejected_count=${receipt.rejectedCount}`,
-        `replayed_count=${receipt.replayedCount}`,
-        `duplicate_signal_count=${receipt.duplicateSignalCount}`,
-        `automatic_confirmed_count=${receipt.automaticConfirmedCount}`,
-        `receipt_state=${receipt.state}`,
-      ].join('\n') + '\n',
-    );
-  }
 }
 
 await main();
