@@ -380,7 +380,9 @@ async function retainPersistenceWork(
     .map((candidate) => ({
       ...candidate,
       duplicateGroupId:
-        candidate.id == null ? null : (duplicateWork.newCandidateGroupIds.get(candidate.id) ?? null),
+        candidate.id == null
+          ? null
+          : (duplicateWork.newCandidateGroupIds.get(candidate.id) ?? null),
     }));
   const sourceRecordsToPersist = plan.sourceRecords.filter(
     (record) => record.id != null && newSourceRecordIds.has(record.id),
@@ -555,7 +557,9 @@ interface ExistingCandidateRow {
   rawPayload: unknown;
 }
 
-function snapshotFromRow(row: ExistingCandidateRow): DuplicateAwareExistingCandidateSnapshot | null {
+function snapshotFromRow(
+  row: ExistingCandidateRow,
+): DuplicateAwareExistingCandidateSnapshot | null {
   if (row.externalId === null || row.contentHash === null) return null;
   const seed = reviewSeed(row.rawPayload);
   return {
