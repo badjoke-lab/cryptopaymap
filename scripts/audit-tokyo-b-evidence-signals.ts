@@ -18,7 +18,9 @@ function stringMap(value: unknown): Record<string, string> {
   const record = object(value);
   if (!record) return {};
   return Object.fromEntries(
-    Object.entries(record).filter((entry): entry is [string, string] => typeof entry[1] === 'string'),
+    Object.entries(record).filter(
+      (entry): entry is [string, string] => typeof entry[1] === 'string',
+    ),
   );
 }
 
@@ -49,7 +51,9 @@ function dateSignals(tags: Record<string, string>): Date[] {
       key.startsWith('check_date:payment') ||
       key.startsWith('payment:check_date'),
   );
-  return keys.map((key) => parseOsmDate(tags[key])).filter((value): value is Date => value !== null);
+  return keys
+    .map((key) => parseOsmDate(tags[key]))
+    .filter((value): value is Date => value !== null);
 }
 
 async function main() {
