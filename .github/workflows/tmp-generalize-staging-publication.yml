@@ -39,28 +39,6 @@ jobs:
           if 'TOKYO_BATCH_ID' in text or 'EXPECTED_COUNT' in text or 'public confirmed Tokyo places' in text:
               raise SystemExit('Tokyo fixed-count coupling remains in materializer')
           materializer.write_text(text)
-
-          workflow = Path('.github/workflows/real-data-staging-publication.yml')
-          text = workflow.read_text()
-          text = text.replace(
-              '      - name: Publish exactly four reviewed canonical records in staging\n',
-              '      - name: Publish bounded reviewed physical canonical records in staging\n',
-          )
-          text = text.replace(
-              '        run: npx tsx scripts/publish-tokyo-confirmed-canonical-staging.ts\n',
-              '        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts\n',
-          )
-          text = text.replace(
-              "          if (places.records.length !== 4) {\n            throw new Error(`Expected 4 real places; got ${places.records.length}.`);\n          }\n",
-              "          if (places.records.length < 1) {\n            throw new Error('Expected at least one real public place.');\n          }\n",
-          )
-          text = text.replace(
-              "          if (!Array.isArray(pins.records) || pins.records.length !== 4) {\n            throw new Error('Expected 4 real map pins.');\n          }\n",
-              "          if (!Array.isArray(pins.records) || pins.records.length !== places.records.length) {\n            throw new Error(`Map pin count ${pins.records?.length ?? 'invalid'} does not match place count ${places.records.length}.`);\n          }\n",
-          )
-          if 'publish-tokyo-confirmed-canonical-staging.ts' in text or 'Expected 4 real' in text or 'exactly four' in text:
-              raise SystemExit('Tokyo fixed-count coupling remains in workflow')
-          workflow.write_text(text)
           PY
       - name: Format changed TypeScript
         run: npx biome format --write scripts/materialize-public-data-from-staging-db.ts scripts/publish-reviewed-physical-canonical-staging.ts
@@ -69,14 +47,14 @@ jobs:
           npm run format:check
           npm run lint
           npm run check
-      - name: Commit generalized publication path
+      - name: Commit generalized source path
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add scripts/materialize-public-data-from-staging-db.ts scripts/publish-reviewed-physical-canonical-staging.ts .github/workflows/real-data-staging-publication.yml
+          git add scripts/materialize-public-data-from-staging-db.ts scripts/publish-reviewed-physical-canonical-staging.ts
           if git diff --cached --quiet; then
             echo 'No changes to commit.'
             exit 0
           fi
-          git commit -m 'fix: generalize staging real-data publication'
+          git commit -m 'fix: generalize staging real-data publication sources'
           git push origin HEAD:fix/generic-staging-publication
