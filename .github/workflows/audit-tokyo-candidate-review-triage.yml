@@ -11,6 +11,7 @@ on:
       - scripts/verify-tokyo-pending-official-evidence.ts
       - scripts/audit-tokyo-pilot-promotion-preflight.ts
       - scripts/enrich-tokyo-pilot-country-source.ts
+      - scripts/promote-tokyo-hidden-pilot.ts
       - .github/workflows/audit-tokyo-candidate-review-triage.yml
 
 permissions:
@@ -68,6 +69,13 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/enrich-tokyo-pilot-country-source.ts
+
+      - name: Promote one hidden Tokyo pilot when authorized
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+        run: npx tsx scripts/promote-tokyo-hidden-pilot.ts
 
       - name: Audit review authorization configuration
         env:
