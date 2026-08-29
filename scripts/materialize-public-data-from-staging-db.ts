@@ -25,8 +25,6 @@ import { publicExportPaths } from '../src/schemas/public-exports';
 declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
-const TOKYO_BATCH_ID = '9a7aa03b-ebce-4ee0-ad44-731149450d85';
-const EXPECTED_COUNT = 4;
 const SCHEMA_VERSION = '1.0.0';
 const outputDirectory = new URL('../public/data/', import.meta.url);
 const versionPath = new URL('../public/version.json', import.meta.url);
@@ -143,7 +141,6 @@ async function main() {
     .innerJoin(acceptanceClaims, eq(acceptanceClaims.locationId, locations.id))
     .where(
       and(
-        eq(sourceCandidates.importBatchId, TOKYO_BATCH_ID),
         eq(sourceCandidates.candidateStatus, 'promoted'),
         eq(entities.visibility, 'public'),
         eq(locations.visibility, 'public'),
@@ -153,10 +150,8 @@ async function main() {
     )
     .orderBy(asc(locations.slug));
 
-  if (placeRows.length !== EXPECTED_COUNT) {
-    throw new Error(
-      `Expected exactly ${EXPECTED_COUNT} public confirmed Tokyo places; got ${placeRows.length}.`,
-    );
+  if (placeRows.length < 1) {
+    throw new Error('Expected at least one public confirmed physical place.');
   }
 
   const claimIds = placeRows.map((row) => row.claimId);
@@ -246,12 +241,12 @@ async function main() {
 
   const places = placeRows.map((row) => {
     if (!row.entitySlug || !row.howToPay || !row.osmType || row.osmId === null) {
-      throw new Error('A public Tokyo place is missing a required canonical publication field.');
+      throw new Error('A public physical place is missing a required canonical publication field.');
     }
     const payments = paymentsByClaim.get(row.claimId) ?? [];
     const acceptedEvidence = evidenceByClaim.get(row.claimId) ?? [];
     if (payments.length < 1 || acceptedEvidence.length < 1) {
-      throw new Error('A public Tokyo claim is missing payment or accepted public Evidence.');
+      throw new Error('A public physical claim is missing payment or accepted public Evidence.');
     }
     if (
       payments.some(
@@ -261,7 +256,7 @@ async function main() {
           payment.paymentMethodStatus !== 'active',
       )
     ) {
-      throw new Error('A public Tokyo claim references a deprecated payment registry value.');
+      throw new Error('A public physical claim references a deprecated payment registry value.');
     }
     const origin = origins.get(row.candidateId);
     const element = object(origin?.element);

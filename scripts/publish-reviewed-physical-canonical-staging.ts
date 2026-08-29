@@ -163,10 +163,22 @@ async function main() {
   const locationIds = targets.map((row) => row.locationId as string);
   const claimIds = targets.map((row) => row.claimId);
   const evidenceIds = targets.map((row) => row.evidenceId);
-  const candidateList = sql.join(candidateIds.map((id) => sql`${id}`), sql`, `);
-  const claimList = sql.join(claimIds.map((id) => sql`${id}`), sql`, `);
-  const entityList = sql.join(entityIds.map((id) => sql`${id}`), sql`, `);
-  const locationList = sql.join(locationIds.map((id) => sql`${id}`), sql`, `);
+  const candidateList = sql.join(
+    candidateIds.map((id) => sql`${id}`),
+    sql`, `,
+  );
+  const claimList = sql.join(
+    claimIds.map((id) => sql`${id}`),
+    sql`, `,
+  );
+  const entityList = sql.join(
+    entityIds.map((id) => sql`${id}`),
+    sql`, `,
+  );
+  const locationList = sql.join(
+    locationIds.map((id) => sql`${id}`),
+    sql`, `,
+  );
 
   await db.batch([
     db.execute(sql`
@@ -208,7 +220,9 @@ async function main() {
     db
       .update(acceptanceClaims)
       .set({ visibility: 'public' })
-      .where(and(inArray(acceptanceClaims.id, claimIds), eq(acceptanceClaims.claimStatus, 'confirmed'))),
+      .where(
+        and(inArray(acceptanceClaims.id, claimIds), eq(acceptanceClaims.claimStatus, 'confirmed')),
+      ),
     db
       .update(evidence)
       .set({ visibility: 'public' })
