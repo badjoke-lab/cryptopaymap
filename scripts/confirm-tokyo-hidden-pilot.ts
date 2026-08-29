@@ -78,15 +78,16 @@ async function main() {
     .orderBy(asc(sourceCandidates.id), asc(evidence.id));
   const uniqueCandidates = new Map<string, (typeof rows)[number]>();
   for (const row of rows) if (!uniqueCandidates.has(row.candidateId)) uniqueCandidates.set(row.candidateId, row);
-  const pilot = [...uniqueCandidates.values()][0];
-  if (!pilot) throw new Error('No bounded Tokyo pilot Evidence is available.');
-
-  if (pilot.candidateStatus !== 'promoted') {
+  const candidates = [...uniqueCandidates.values()];
+  const pilot = candidates.find(
+    (row) => row.candidateStatus === 'promoted' && row.evidenceReviewStatus === 'pending',
+  );
+  if (!pilot) {
     console.log(JSON.stringify({
       target: EXPECTED_TARGET,
       evidenceReviewConfigured: true,
       reviewerAuthorized: true,
-      candidatePromoted: false,
+      pendingPromotedPilotAvailable: false,
       evidenceBound: false,
       confirmationPerformed: false,
       publicDataChanged: false,
@@ -114,22 +115,6 @@ async function main() {
     .limit(1);
   if (!claim) throw new Error('Promoted pilot Claim is missing.');
 
-  if (claim.claimStatus === 'confirmed' && pilot.evidenceReviewStatus === 'accepted') {
-    console.log(JSON.stringify({
-      target: EXPECTED_TARGET,
-      evidenceReviewConfigured: true,
-      reviewerAuthorized: true,
-      candidatePromoted: true,
-      evidenceBound: pilot.evidenceClaimId === claim.id,
-      confirmationPerformed: false,
-      alreadyConfirmed: true,
-      claimStatus: 'confirmed',
-      claimVisibility: claim.visibility,
-      publicDataChanged: false,
-      payloadExposed: false,
-    }));
-    return;
-  }
   if (claim.claimStatus !== 'candidate' || claim.visibility !== 'hidden') {
     throw new Error('Pilot Claim is not a hidden candidate Claim before confirmation.');
   }
