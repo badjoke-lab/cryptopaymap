@@ -170,7 +170,7 @@ async function main() {
   const reviewer = createDerivedStagingServiceIdentity('reviewer');
   const subjectAuthorized = policy.configured && policy.allowedSubjects.has(reviewer.subject);
 
-  if (!registryReady || !sourceReady || !subjectAuthorized) {
+  if (!bitcoin || !lightning || !lightningInvoice || !sourceReady || !subjectAuthorized) {
     console.log(JSON.stringify({
       target: EXPECTED_TARGET,
       batchId: TOKYO_BATCH_ID,
