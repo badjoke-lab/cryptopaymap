@@ -1,0 +1,88 @@
+name: Acquire OSM Candidates — fixed review staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: Bounded OSM acquisition scope
+        required: true
+        default: japan
+        type: choice
+        options:
+          - japan
+          - tokyo
+
+concurrency:
+  group: fixed-review-osm-candidate-acquisition
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Acquire private OSM Candidates
+        id: acquisition
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          summary="$(npx tsx scripts/acquire-osm-candidates.ts "${{ inputs.scope }}")"
+          printf '%s\n' "$summary"
+          {
+            echo "scope=$(jq -r '.scope' <<<"$summary")"
+            echo "fetched_elements=$(jq -r '.fetchedElements' <<<"$summary")"
+            echo "candidate_total_before=$(jq -r '.candidateTotalBefore' <<<"$summary")"
+            echo "candidate_total_after=$(jq -r '.candidateTotalAfter' <<<"$summary")"
+            echo "candidate_delta=$(jq -r '.candidateDelta' <<<"$summary")"
+            echo "accepted_count=$(jq -r '.ingestion.acceptedCount' <<<"$summary")"
+            echo "rejected_count=$(jq -r '.ingestion.rejectedCount' <<<"$summary")"
+            echo "replayed_count=$(jq -r '.ingestion.replayedCount' <<<"$summary")"
+            echo "duplicate_signal_count=$(jq -r '.ingestion.duplicateSignalCount' <<<"$summary")"
+            echo "automatic_confirmed_count=$(jq -r '.ingestion.automaticConfirmedCount' <<<"$summary")"
+            echo "receipt_state=$(jq -r '.ingestion.state' <<<"$summary")"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Record count-only acquisition receipt
+        env:
+          SCOPE: ${{ steps.acquisition.outputs.scope }}
+          FETCHED: ${{ steps.acquisition.outputs.fetched_elements }}
+          BEFORE: ${{ steps.acquisition.outputs.candidate_total_before }}
+          AFTER: ${{ steps.acquisition.outputs.candidate_total_after }}
+          DELTA: ${{ steps.acquisition.outputs.candidate_delta }}
+          ACCEPTED: ${{ steps.acquisition.outputs.accepted_count }}
+          REJECTED: ${{ steps.acquisition.outputs.rejected_count }}
+          REPLAYED: ${{ steps.acquisition.outputs.replayed_count }}
+          DUPLICATES: ${{ steps.acquisition.outputs.duplicate_signal_count }}
+          AUTO_CONFIRMED: ${{ steps.acquisition.outputs.automatic_confirmed_count }}
+          RECEIPT_STATE: ${{ steps.acquisition.outputs.receipt_state }}
+        run: |
+          {
+            echo '## FIX-P2-007 OSM Candidate acquisition'
+            echo
+            echo "- target: fixed-review-staging"
+            echo "- scope: $SCOPE"
+            echo "- fetched OSM elements: $FETCHED"
+            echo "- Candidate total: $BEFORE → $AFTER (delta $DELTA)"
+            echo "- accepted: $ACCEPTED"
+            echo "- rejected: $REJECTED"
+            echo "- replayed: $REPLAYED"
+            echo "- duplicate signals: $DUPLICATES"
+            echo "- automatic Confirmed: $AUTO_CONFIRMED"
+            echo "- persistence state: $RECEIPT_STATE"
+          } >> "$GITHUB_STEP_SUMMARY"
