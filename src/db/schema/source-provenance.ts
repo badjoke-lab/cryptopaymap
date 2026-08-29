@@ -153,6 +153,7 @@ export const sourceRecords = pgTable(
     externalId: varchar('external_id', { length: 256 }),
     sourceUrl: text('source_url'),
     rawPayload: jsonb('raw_payload').notNull(),
+    officialDomain: varchar('official_domain', { length: 253 }),
     observedAt: timestamp('observed_at', { withTimezone: true }),
     publishedAt: timestamp('published_at', { withTimezone: true }),
     fetchedAt: timestamp('fetched_at', { withTimezone: true }).notNull(),
@@ -166,6 +167,7 @@ export const sourceRecords = pgTable(
       .on(table.sourceId, table.externalId)
       .where(sql`${table.externalId} is not null`),
     index('source_records_source_fetched_idx').on(table.sourceId, table.fetchedAt),
+    index('source_records_official_domain_idx').on(table.officialDomain),
     index('source_records_content_hash_idx').on(table.contentHash),
     index('source_records_license_idx').on(table.licenseId),
     check(
@@ -179,6 +181,10 @@ export const sourceRecords = pgTable(
     check(
       'source_records_source_url_nonempty',
       sql`${table.sourceUrl} is null or length(trim(${table.sourceUrl})) > 0`,
+    ),
+    check(
+      'source_records_official_domain_nonempty',
+      sql`${table.officialDomain} is null or length(trim(${table.officialDomain})) > 0`,
     ),
     check(
       'source_records_archive_url_nonempty',

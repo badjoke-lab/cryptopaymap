@@ -95,6 +95,7 @@ function refresh(overrides: Partial<CandidateSourceRefresh> = {}): CandidateSour
     expectedContentHash: 'b'.repeat(64),
     sourceUrl: 'https://www.openstreetmap.org/node/1',
     rawPayload: { type: 'node', id: 1, tags: { phone: '+81-00-0000-0000' } },
+    officialDomain: 'example.test',
     observedAt: new Date('2026-08-29T00:00:00.000Z'),
     publishedAt: null,
     fetchedAt: new Date('2026-08-29T00:00:00.000Z'),

@@ -1,0 +1,3 @@
+ALTER TABLE "source_records" ADD COLUMN "official_domain" varchar(253);--> statement-breakpoint
+CREATE INDEX "source_records_official_domain_idx" ON "source_records" USING btree ("official_domain");--> statement-breakpoint
+ALTER TABLE "source_records" ADD CONSTRAINT "source_records_official_domain_nonempty" CHECK ("source_records"."official_domain" is null or length(trim("source_records"."official_domain")) > 0);

@@ -104,6 +104,7 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.candidates[0]?.canonicalLocationId).toBeNull();
     expect(result.plan.sourceRecords[0]?.sourceUrl).toBe('https://www.openstreetmap.org/node/123');
     expect(result.plan.sourceRecords[0]?.licenseId).toBe(IDS.licenseId);
+    expect(result.plan.sourceRecords[0]?.officialDomain).toBe('example.test');
     expect(result.plan.candidateSourceRecords).toHaveLength(1);
     expect(result.plan.sourceRefreshes).toHaveLength(0);
     expect(result.plan.existingCandidateDuplicateAssignments).toHaveLength(0);
@@ -149,6 +150,7 @@ describe('OSM Overpass Candidate acquisition', () => {
             ...exampleElement,
             tags: {
               ...exampleElement.tags,
+              website: 'https://changed.example.test/path',
               phone: '+81-00-0000-0000',
             },
           },
@@ -166,6 +168,7 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(result.plan.sourceRefreshes?.[0]?.candidateId).toBe(existing.candidateId);
     expect(result.plan.sourceRefreshes?.[0]?.expectedContentHash).toBe(existing.contentHash);
     expect(result.plan.sourceRefreshes?.[0]?.contentHash).not.toBe(existing.contentHash);
+    expect(result.plan.sourceRefreshes?.[0]?.officialDomain).toBe('changed.example.test');
     expect(result.plan.batch.acceptedCount).toBe(1);
     expect(result.plan.batch.replayedCount).toBe(0);
     expect(result.plan.batch.automaticConfirmedCount).toBe(0);
@@ -194,6 +197,35 @@ describe('OSM Overpass Candidate acquisition', () => {
     expect(assignment.candidateId).toBe(existing.candidateId);
     expect(assignment.duplicateGroupId).toBe(group.id);
     expect(result.plan.candidates[0]?.duplicateGroupId).toBe(group.id);
+    expect(result.plan.batch.duplicateSignalCount).toBe(1);
+    expect(result.plan.batch.automaticConfirmedCount).toBe(0);
+  });
+
+  it('creates a cross-batch duplicate signal from a shared indexed official domain even when names differ', async () => {
+    const existing = {
+      ...crossBatchDuplicate(),
+      normalizedName: 'different merchant name',
+      latitude: 34.5,
+      longitude: 135.5,
+      officialDomain: 'example.test',
+    };
+    const result = await createOsmOverpassCandidateAcquisitionPlan(
+      {
+        ...IDS,
+        requestId: '00000000-0000-4000-8000-000000000113',
+        importBatchId: '00000000-0000-4000-8000-000000000114',
+        fetchedAt: new Date('2026-08-29T02:30:00.000Z'),
+        importerVersion: '1.0.0',
+        elements: [exampleElement],
+      },
+      [existing],
+    );
+    const { signal, assignment } = duplicatePlan(result);
+
+    expect(result.reconciliation.duplicateSignals).toHaveLength(1);
+    expect(signal.reason).toBe('shared_official_domain');
+    expect(signal.strength).toBe('review');
+    expect(assignment.candidateId).toBe(existing.candidateId);
     expect(result.plan.batch.duplicateSignalCount).toBe(1);
     expect(result.plan.batch.automaticConfirmedCount).toBe(0);
   });
