@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, lte } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
   candidateDuplicateGroups,
@@ -17,11 +17,28 @@ import {
 
 type DatabaseBatchInput = Parameters<CryptoPayMapDatabase['batch']>[0];
 
+export interface CandidateSourceRefresh {
+  candidateId: string;
+  sourceId: string;
+  externalId: string;
+  expectedContentHash: string;
+  sourceUrl: string | null;
+  rawPayload: NewSourceRecord['rawPayload'];
+  observedAt: Date | null;
+  publishedAt: Date | null;
+  fetchedAt: Date;
+  contentHash: string;
+  archiveUrl: string | null;
+  licenseId: string | null;
+  lastSeenAt: Date;
+}
+
 export interface CandidateIngestionPersistencePlan {
   batch: NewImportBatch;
   sourceRecords: NewSourceRecord[];
   candidates: NewSourceCandidate[];
   candidateSourceRecords: NewCandidateSourceRecord[];
+  sourceRefreshes?: CandidateSourceRefresh[];
   duplicateGroups?: NewCandidateDuplicateGroup[];
   duplicateSignals?: NewCandidateDuplicateSignal[];
 }
@@ -73,6 +90,7 @@ function assertNonPromotedCandidate(candidate: NewSourceCandidate): void {
 export function validateCandidateIngestionPersistencePlan(
   plan: CandidateIngestionPersistencePlan,
 ): CandidateIngestionPersistencePlan {
+  const sourceRefreshes = plan.sourceRefreshes ?? [];
   const duplicateGroups = plan.duplicateGroups ?? [];
   const duplicateSignals = plan.duplicateSignals ?? [];
 
@@ -82,22 +100,22 @@ export function validateCandidateIngestionPersistencePlan(
       'Candidate ingestion must keep automaticConfirmedCount at zero.',
     );
   }
-  if (plan.batch.acceptedCount !== plan.candidates.length) {
+  if (plan.batch.acceptedCount !== plan.candidates.length + sourceRefreshes.length) {
     throw new CandidateIngestionPersistenceError(
       'invalid_plan',
-      'The import batch acceptedCount must equal the Candidate row count.',
+      'The import batch acceptedCount must equal new Candidate rows plus changed-source refreshes.',
     );
   }
   if (plan.sourceRecords.length !== plan.candidates.length) {
     throw new CandidateIngestionPersistenceError(
       'invalid_plan',
-      'Each accepted Candidate must persist one source record in this ingestion slice.',
+      'Each new Candidate must persist one new source record in this ingestion slice.',
     );
   }
   if (plan.candidateSourceRecords.length !== plan.candidates.length) {
     throw new CandidateIngestionPersistenceError(
       'invalid_plan',
-      'Each accepted Candidate must persist one Candidate/source relationship.',
+      'Each new Candidate must persist one Candidate/source relationship.',
     );
   }
   if (plan.batch.duplicateSignalCount !== duplicateSignals.length) {
@@ -150,6 +168,49 @@ export function validateCandidateIngestionPersistencePlan(
         'Candidate/source relationships must stay inside the ingestion plan.',
       );
     }
+  }
+
+  const refreshedCandidateIds = new Set<string>();
+  const refreshedSourceIdentities = new Set<string>();
+  for (const refresh of sourceRefreshes) {
+    if (refresh.sourceId !== plan.batch.sourceId) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Every changed-source refresh must belong to the import batch source.',
+      );
+    }
+    if (
+      refresh.candidateId.trim().length === 0 ||
+      refresh.externalId.trim().length === 0 ||
+      refresh.expectedContentHash.trim().length === 0 ||
+      refresh.contentHash.trim().length === 0
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Changed-source refreshes require complete Candidate/source identity and hashes.',
+      );
+    }
+    if (refresh.expectedContentHash === refresh.contentHash) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Changed-source refreshes must replace a different source content hash.',
+      );
+    }
+    if (candidateIds.has(refresh.candidateId) || refreshedCandidateIds.has(refresh.candidateId)) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'A Candidate may be created or refreshed at most once per ingestion batch.',
+      );
+    }
+    const sourceIdentity = `${refresh.sourceId}\u0000${refresh.externalId}`;
+    if (refreshedSourceIdentities.has(sourceIdentity)) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'A source identity may be refreshed at most once per ingestion batch.',
+      );
+    }
+    refreshedCandidateIds.add(refresh.candidateId);
+    refreshedSourceIdentities.add(sourceIdentity);
   }
 
   const duplicateGroupIds = new Set(
@@ -272,6 +333,44 @@ export function createDrizzleCandidateIngestionPersistenceBackend(database: Cryp
       if (replay !== null) return receipt(replay, 'replayed');
 
       const statements: unknown[] = [database.insert(importBatches).values(plan.batch)];
+      for (const refresh of plan.sourceRefreshes ?? []) {
+        statements.push(
+          database
+            .update(sourceRecords)
+            .set({
+              sourceUrl: refresh.sourceUrl,
+              rawPayload: refresh.rawPayload,
+              observedAt: refresh.observedAt,
+              publishedAt: refresh.publishedAt,
+              fetchedAt: refresh.fetchedAt,
+              contentHash: refresh.contentHash,
+              archiveUrl: refresh.archiveUrl,
+              licenseId: refresh.licenseId,
+            })
+            .where(
+              and(
+                eq(sourceRecords.sourceId, refresh.sourceId),
+                eq(sourceRecords.externalId, refresh.externalId),
+                eq(sourceRecords.contentHash, refresh.expectedContentHash),
+                lte(sourceRecords.fetchedAt, refresh.fetchedAt),
+              ),
+            ),
+        );
+        statements.push(
+          database
+            .update(sourceCandidates)
+            .set({
+              lastSeenAt: refresh.lastSeenAt,
+              updatedAt: refresh.lastSeenAt,
+            })
+            .where(
+              and(
+                eq(sourceCandidates.id, refresh.candidateId),
+                lte(sourceCandidates.lastSeenAt, refresh.lastSeenAt),
+              ),
+            ),
+        );
+      }
       if (plan.sourceRecords.length > 0) {
         statements.push(database.insert(sourceRecords).values(plan.sourceRecords));
       }
