@@ -26,6 +26,7 @@ const defaultMapCenter: [number, number] = [0, 20];
 const defaultMapZoom = 2;
 const selectedPlaceInitialZoom = 13;
 const mapLoadTimeoutMs = 12_000;
+const mapStyleRetryDelayMs = 900;
 
 const confirmedPinColor = [5, 150, 105] as const;
 const stalePinColor = [217, 119, 6] as const;
@@ -250,10 +251,17 @@ export function PlacesMap({
     let map: MapLibreMap | null = null;
     let observer: ResizeObserver | null = null;
     let loadTimeout: number | null = null;
+    let styleRetryTimer: number | null = null;
+    let styleRetryAttempted = false;
 
     const clearLoadTimeout = () => {
       if (loadTimeout !== null) window.clearTimeout(loadTimeout);
       loadTimeout = null;
+    };
+
+    const clearStyleRetry = () => {
+      if (styleRetryTimer !== null) window.clearTimeout(styleRetryTimer);
+      styleRetryTimer = null;
     };
 
     const reportMovedViewport = () => {
@@ -309,6 +317,7 @@ export function PlacesMap({
           if (!map) return;
           loaded = true;
           clearLoadTimeout();
+          clearStyleRetry();
           addPinImages(map);
           addPlaceLayers(map, featureCollectionRef.current);
 
@@ -360,10 +369,13 @@ export function PlacesMap({
           setRuntimeState('ready');
         });
         map.on('error', () => {
-          if (!loaded && active) {
-            clearLoadTimeout();
-            setRuntimeState('error');
-          }
+          if (loaded || !active || styleRetryAttempted || styleRetryTimer !== null) return;
+          styleRetryTimer = window.setTimeout(() => {
+            styleRetryTimer = null;
+            if (!active || loaded || !map || styleRetryAttempted) return;
+            styleRetryAttempted = true;
+            map.setStyle(styleUrl);
+          }, mapStyleRetryDelayMs);
         });
         observer = new ResizeObserver(() => map?.resize());
         observer.observe(containerRef.current);
@@ -377,6 +389,7 @@ export function PlacesMap({
     return () => {
       active = false;
       clearLoadTimeout();
+      clearStyleRetry();
       observer?.disconnect();
       map?.remove();
       mapRef.current = null;

@@ -126,8 +126,20 @@ async function settle(page, delayMs = 1_000) {
 }
 
 async function waitForPlacesMap(page) {
-  const loading = page.getByText('Loading map...', { exact: true });
-  await loading.waitFor({ state: 'hidden', timeout: 20_000 }).catch(() => {});
+  const loading = page.getByText('Loading map…', { exact: true });
+  await loading.waitFor({ state: 'hidden', timeout: 20_000 });
+
+  const loadError = page.getByText('Map could not be loaded', { exact: true });
+  if (await loadError.isVisible().catch(() => false)) {
+    throw new Error('Places map entered the load-error state.');
+  }
+
+  const unsupported = page.getByText('Interactive map unavailable', { exact: true });
+  if (await unsupported.isVisible().catch(() => false)) {
+    throw new Error('Places map entered the unsupported state.');
+  }
+
+  await page.locator('.maplibregl-canvas').first().waitFor({ state: 'visible', timeout: 5_000 });
   await page.waitForTimeout(1_500);
 }
 
