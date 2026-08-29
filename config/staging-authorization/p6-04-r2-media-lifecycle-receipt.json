@@ -4,10 +4,10 @@
   "launchDomain": "media_lifecycle",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "e87a1dd0535e92ba494ae4c61bb95866a9fb315c",
-  "generatedAt": "2026-08-29T08:01:36.087Z",
-  "expiresAt": "2026-09-01T08:01:36.087Z",
-  "workflowRunId": "33242082444",
+  "commit": "5742b9e82c91f5cfa73a8e4330413ae6325a47d8",
+  "generatedAt": "2026-08-29T12:11:36.458Z",
+  "expiresAt": "2026-09-01T12:11:36.458Z",
+  "workflowRunId": "33251802016",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001H configured staging Media lifecycle evidence",
   "checks": {
@@ -18,22 +18,22 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T07:56:18.924Z",
-        "expiresAt": "2026-09-01T07:56:18.924Z"
+        "generatedAt": "2026-08-29T12:06:45.548Z",
+        "expiresAt": "2026-09-01T12:06:45.548Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T07:57:43.157Z",
-        "expiresAt": "2026-09-01T07:57:43.157Z"
+        "generatedAt": "2026-08-29T12:07:58.635Z",
+        "expiresAt": "2026-09-01T12:07:58.635Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-29T07:59:06.894Z",
-        "expiresAt": "2026-09-01T07:59:06.894Z"
+        "generatedAt": "2026-08-29T12:09:08.452Z",
+        "expiresAt": "2026-09-01T12:09:08.452Z"
       }
     ],
     "mode": "durable_object_staging_media",
@@ -119,12 +119,12 @@
     "retainedDigests": {
       "fixtureIdentity": "sha256:80e6a42333a04026ea204ccf5aef5e5989f745de8572b67dac834bd03e3e5287",
       "objectKeys": "sha256:1c57a0c0494d8bd0c19312cfa66d63bb2a0384650d2914fd0919984d32cd5590",
-      "approvalReceipt": "sha256:29d818178b9e110205dd03a34389ed5d78ce458d7ed1f3f28cb95387f06ce748",
-      "restrictionReceipt": "sha256:670cfbed5cba34e0c522043eabf352d554c7a8331c508ef73d5e2624a28a09ec"
+      "approvalReceipt": "sha256:3e0bd22cf73ee171fddf9276c2022047afab0a4dcdbe13bee80b374f3ad99d5e",
+      "restrictionReceipt": "sha256:43f239df4cb0c1e9f88c9ed9d83a4daef6e30fbdc340a4261585da3127cce8f2"
     }
   },
   "binding": {
-    "releaseId": "sha256:fb955b338b544cf630af83a6939294c41ff3e0cdabd02dcaa772732363667720",
+    "releaseId": "sha256:e52e9b7c54117d88d2dcfdf16734002d800a12acca9def2dbfd1faa24ff05282",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
