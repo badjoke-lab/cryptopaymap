@@ -240,6 +240,7 @@ function changedSourceRefreshes(
       expectedContentHash: existing.contentHash,
       sourceUrl: sourceRecord.sourceUrl ?? null,
       rawPayload: sourceRecord.rawPayload,
+      officialDomain: sourceRecord.officialDomain ?? null,
       observedAt: sourceRecord.observedAt ?? null,
       publishedAt: sourceRecord.publishedAt ?? null,
       fetchedAt: sourceRecord.fetchedAt,
@@ -467,6 +468,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
           ),
         },
       },
+      officialDomain: officialDomain(tags.website ?? tags['contact:website'] ?? null),
       observedAt: input.fetchedAt,
       publishedAt: null,
       fetchedAt: input.fetchedAt,
@@ -554,6 +556,7 @@ interface ExistingCandidateRow {
   sourceId: string;
   externalId: string | null;
   contentHash: string | null;
+  officialDomain: string | null;
   rawPayload: unknown;
 }
 
@@ -572,7 +575,7 @@ function snapshotFromRow(
     normalizedName: row.normalizedName,
     latitude: seed.latitude,
     longitude: seed.longitude,
-    officialDomain: seed.officialDomain,
+    officialDomain: row.officialDomain ?? seed.officialDomain,
   };
 }
 
@@ -581,6 +584,7 @@ async function loadExistingOsmCandidates(
   sourceId: string,
   externalIds: readonly string[],
   normalizedNames: readonly string[],
+  officialDomains: readonly string[],
 ): Promise<DuplicateAwareExistingCandidateSnapshot[]> {
   const sameSourceRows =
     externalIds.length === 0
@@ -594,6 +598,7 @@ async function loadExistingOsmCandidates(
             sourceId: sourceRecords.sourceId,
             externalId: sourceRecords.externalId,
             contentHash: sourceRecords.contentHash,
+            officialDomain: sourceRecords.officialDomain,
             rawPayload: sourceRecords.rawPayload,
           })
           .from(sourceRecords)
@@ -621,6 +626,7 @@ async function loadExistingOsmCandidates(
             sourceId: sourceRecords.sourceId,
             externalId: sourceRecords.externalId,
             contentHash: sourceRecords.contentHash,
+            officialDomain: sourceRecords.officialDomain,
             rawPayload: sourceRecords.rawPayload,
           })
           .from(sourceCandidates)
@@ -637,7 +643,39 @@ async function loadExistingOsmCandidates(
           )
           .limit(MAX_EXISTING_COMPARISONS + 1);
 
-  if (sameNameRows.length > MAX_EXISTING_COMPARISONS) {
+  const sameDomainRows =
+    officialDomains.length === 0
+      ? []
+      : await database
+          .select({
+            candidateId: sourceCandidates.id,
+            candidateStatus: sourceCandidates.candidateStatus,
+            duplicateGroupId: sourceCandidates.duplicateGroupId,
+            normalizedName: sourceCandidates.normalizedName,
+            sourceId: sourceRecords.sourceId,
+            externalId: sourceRecords.externalId,
+            contentHash: sourceRecords.contentHash,
+            officialDomain: sourceRecords.officialDomain,
+            rawPayload: sourceRecords.rawPayload,
+          })
+          .from(sourceRecords)
+          .innerJoin(
+            candidateSourceRecords,
+            eq(candidateSourceRecords.sourceRecordId, sourceRecords.id),
+          )
+          .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
+          .where(
+            and(
+              inArray(sourceRecords.officialDomain, [...officialDomains]),
+              inArray(sourceCandidates.candidateStatus, ['new', 'triaged']),
+            ),
+          )
+          .limit(MAX_EXISTING_COMPARISONS + 1);
+
+  if (
+    sameNameRows.length > MAX_EXISTING_COMPARISONS ||
+    sameDomainRows.length > MAX_EXISTING_COMPARISONS
+  ) {
     throw new CandidateIngestionPersistenceError(
       'conflict',
       `OSM duplicate comparison exceeded the bounded ${MAX_EXISTING_COMPARISONS}-row limit.`,
@@ -645,10 +683,16 @@ async function loadExistingOsmCandidates(
   }
 
   const snapshots = new Map<string, DuplicateAwareExistingCandidateSnapshot>();
-  for (const row of sameNameRows as ExistingCandidateRow[]) {
+  for (const row of [...sameNameRows, ...sameDomainRows] as ExistingCandidateRow[]) {
     const snapshot = snapshotFromRow(row);
     if (snapshot !== null && !snapshots.has(snapshot.candidateId)) {
       snapshots.set(snapshot.candidateId, snapshot);
+      if (snapshots.size > MAX_EXISTING_COMPARISONS) {
+        throw new CandidateIngestionPersistenceError(
+          'conflict',
+          `OSM duplicate comparison exceeded the bounded ${MAX_EXISTING_COMPARISONS}-Candidate limit.`,
+        );
+      }
     }
   }
   for (const row of sameSourceRows as ExistingCandidateRow[]) {
@@ -671,11 +715,21 @@ export async function persistOsmOverpassCandidateAcquisition(
         .map(normalizeName),
     ),
   ];
+  const officialDomains = [
+    ...new Set(
+      input.elements
+        .map((element) =>
+          officialDomain(element.tags?.website ?? element.tags?.['contact:website'] ?? null),
+        )
+        .filter((domain): domain is string => domain !== null),
+    ),
+  ];
   const existing = await loadExistingOsmCandidates(
     database,
     input.sourceId,
     externalIds,
     normalizedNames,
+    officialDomains,
   );
   const result = await createOsmOverpassCandidateAcquisitionPlan(input, existing);
   return createDrizzleCandidateIngestionPersistenceBackend(database).commit(result.plan);

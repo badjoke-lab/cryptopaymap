@@ -24,6 +24,7 @@ export interface CandidateSourceRefresh {
   expectedContentHash: string;
   sourceUrl: string | null;
   rawPayload: NewSourceRecord['rawPayload'];
+  officialDomain: string | null;
   observedAt: Date | null;
   publishedAt: Date | null;
   fetchedAt: Date;
@@ -433,6 +434,7 @@ export function createDrizzleCandidateIngestionPersistenceBackend(database: Cryp
             .set({
               sourceUrl: refresh.sourceUrl,
               rawPayload: refresh.rawPayload,
+              officialDomain: refresh.officialDomain,
               observedAt: refresh.observedAt,
               publishedAt: refresh.publishedAt,
               fetchedAt: refresh.fetchedAt,
