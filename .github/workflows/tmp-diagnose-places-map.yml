@@ -28,7 +28,7 @@ jobs:
         env:
           TARGET_URL: https://real-data-review.cryptopaymap-staging.pages.dev/places
         run: |
-          cat > /tmp/diagnose-map.mjs <<'NODE'
+          cat > .tmp-diagnose-map.mjs <<'NODE'
           import { chromium } from 'playwright';
 
           const browser = await chromium.launch({
@@ -77,4 +77,4 @@ jobs:
           }, null, 2));
           await browser.close();
           NODE
-          node /tmp/diagnose-map.mjs
+          node .tmp-diagnose-map.mjs
