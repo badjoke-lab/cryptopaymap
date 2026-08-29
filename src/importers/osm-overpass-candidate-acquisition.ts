@@ -4,6 +4,8 @@ import {
   candidateSourceRecords,
   sourceCandidates,
   sourceRecords,
+  type NewCandidateDuplicateGroup,
+  type NewCandidateDuplicateSignal,
   type NewCandidateSourceRecord,
   type NewImportBatch,
   type NewSourceCandidate,
@@ -15,6 +17,7 @@ import {
   type CandidateIngestionPersistencePlan,
   type CandidateIngestionReceipt,
   type CandidateSourceRefresh,
+  type ExistingCandidateDuplicateAssignment,
 } from './candidate-ingestion-persistence';
 import {
   reconcileCandidateAcquisition,
@@ -51,7 +54,12 @@ export interface OsmOverpassCandidateAcquisitionResult {
   }>;
 }
 
+type DuplicateAwareExistingCandidateSnapshot = ExistingCandidateSnapshot & {
+  duplicateGroupId?: string | null;
+};
+
 const MAX_ELEMENTS = 10_000;
+const MAX_EXISTING_COMPARISONS = 20_000;
 
 function normalizeName(value: string): string {
   return value
@@ -243,18 +251,137 @@ function changedSourceRefreshes(
   });
 }
 
-function retainPersistenceWork(
+async function duplicatePersistenceWork(
+  reconciliation: AcquisitionReconciliationPlan,
+  existing: readonly DuplicateAwareExistingCandidateSnapshot[],
+  batchId: string,
+  assignedAt: Date,
+): Promise<{
+  duplicateGroups: NewCandidateDuplicateGroup[];
+  duplicateSignals: NewCandidateDuplicateSignal[];
+  existingAssignments: ExistingCandidateDuplicateAssignment[];
+  newCandidateGroupIds: Map<string, string>;
+}> {
+  const newCandidateIds = new Set(reconciliation.newSeeds.map((seed) => seed.candidateId));
+  const existingById = new Map(existing.map((candidate) => [candidate.candidateId, candidate]));
+  const signals = reconciliation.duplicateSignals.filter((signal) =>
+    [signal.leftCandidateId, signal.rightCandidateId].every((candidateId) => {
+      if (newCandidateIds.has(candidateId)) return true;
+      const candidate = existingById.get(candidateId);
+      return candidate !== undefined && ['new', 'triaged'].includes(candidate.candidateStatus);
+    }),
+  );
+
+  const neighbors = new Map<string, Set<string>>();
+  for (const signal of signals) {
+    const left = neighbors.get(signal.leftCandidateId) ?? new Set<string>();
+    const right = neighbors.get(signal.rightCandidateId) ?? new Set<string>();
+    left.add(signal.rightCandidateId);
+    right.add(signal.leftCandidateId);
+    neighbors.set(signal.leftCandidateId, left);
+    neighbors.set(signal.rightCandidateId, right);
+  }
+
+  const duplicateGroups: NewCandidateDuplicateGroup[] = [];
+  const duplicateSignals: NewCandidateDuplicateSignal[] = [];
+  const existingAssignments: ExistingCandidateDuplicateAssignment[] = [];
+  const newCandidateGroupIds = new Map<string, string>();
+  const visited = new Set<string>();
+
+  for (const start of [...neighbors.keys()].sort()) {
+    if (visited.has(start)) continue;
+    const stack = [start];
+    const members: string[] = [];
+    while (stack.length > 0) {
+      const candidateId = stack.pop();
+      if (candidateId === undefined || visited.has(candidateId)) continue;
+      visited.add(candidateId);
+      members.push(candidateId);
+      for (const neighbor of neighbors.get(candidateId) ?? []) {
+        if (!visited.has(neighbor)) stack.push(neighbor);
+      }
+    }
+    members.sort();
+
+    for (const memberId of members) {
+      const existingCandidate = existingById.get(memberId);
+      if (existingCandidate?.duplicateGroupId != null) {
+        throw new CandidateIngestionPersistenceError(
+          'conflict',
+          'A cross-batch duplicate Candidate already belongs to a duplicate group; automatic group merging is not allowed.',
+        );
+      }
+    }
+
+    const groupId = await deterministicUuid(`candidate-duplicate-group:${members.join(':')}`);
+    duplicateGroups.push({
+      id: groupId,
+      status: 'open',
+      resolutionNote: null,
+      resolvedAt: null,
+    });
+
+    for (const memberId of members) {
+      if (newCandidateIds.has(memberId)) {
+        newCandidateGroupIds.set(memberId, groupId);
+      } else {
+        existingAssignments.push({
+          candidateId: memberId,
+          duplicateGroupId: groupId,
+          assignedAt,
+        });
+      }
+    }
+
+    for (const signal of signals) {
+      if (!members.includes(signal.leftCandidateId) || !members.includes(signal.rightCandidateId)) {
+        continue;
+      }
+      duplicateSignals.push({
+        id: await deterministicUuid(
+          `candidate-duplicate-signal:${groupId}:${signal.leftCandidateId}:${signal.rightCandidateId}:${signal.reason}`,
+        ),
+        duplicateGroupId: groupId,
+        leftCandidateId: signal.leftCandidateId,
+        rightCandidateId: signal.rightCandidateId,
+        reason: signal.reason,
+        strength: signal.strength,
+        importBatchId: batchId,
+      });
+    }
+  }
+
+  return {
+    duplicateGroups,
+    duplicateSignals,
+    existingAssignments,
+    newCandidateGroupIds,
+  };
+}
+
+async function retainPersistenceWork(
   plan: CandidateIngestionPersistencePlan,
   reconciliation: AcquisitionReconciliationPlan,
-): CandidateIngestionPersistencePlan {
+  existing: readonly DuplicateAwareExistingCandidateSnapshot[],
+): Promise<CandidateIngestionPersistencePlan> {
   const newCandidateIds = new Set(reconciliation.newSeeds.map((seed) => seed.candidateId));
   const relations = plan.candidateSourceRecords.filter((relation) =>
     newCandidateIds.has(relation.candidateId),
   );
   const newSourceRecordIds = new Set(relations.map((relation) => relation.sourceRecordId));
-  const candidates = plan.candidates.filter(
-    (candidate) => candidate.id != null && newCandidateIds.has(candidate.id),
+  const duplicateWork = await duplicatePersistenceWork(
+    reconciliation,
+    existing,
+    plan.batch.id,
+    plan.batch.completedAt,
   );
+  const candidates = plan.candidates
+    .filter((candidate) => candidate.id != null && newCandidateIds.has(candidate.id))
+    .map((candidate) => ({
+      ...candidate,
+      duplicateGroupId:
+        candidate.id == null ? null : (duplicateWork.newCandidateGroupIds.get(candidate.id) ?? null),
+    }));
   const sourceRecordsToPersist = plan.sourceRecords.filter(
     (record) => record.id != null && newSourceRecordIds.has(record.id),
   );
@@ -266,17 +393,21 @@ function retainPersistenceWork(
       ...plan.batch,
       acceptedCount: candidates.length + sourceRefreshes.length,
       replayedCount: reconciliation.unchangedSeeds.length,
+      duplicateSignalCount: duplicateWork.duplicateSignals.length,
     },
     candidates,
     sourceRecords: sourceRecordsToPersist,
     candidateSourceRecords: relations,
     sourceRefreshes,
+    existingCandidateDuplicateAssignments: duplicateWork.existingAssignments,
+    duplicateGroups: duplicateWork.duplicateGroups,
+    duplicateSignals: duplicateWork.duplicateSignals,
   };
 }
 
 export async function createOsmOverpassCandidateAcquisitionPlan(
   input: OsmOverpassCandidateAcquisitionInput,
-  existing: readonly ExistingCandidateSnapshot[] = [],
+  existing: readonly DuplicateAwareExistingCandidateSnapshot[] = [],
 ): Promise<OsmOverpassCandidateAcquisitionResult> {
   if (input.elements.length === 0 || input.elements.length > MAX_ELEMENTS) {
     throw new Error(`OSM Overpass acquisition requires 1-${MAX_ELEMENTS} elements per batch.`);
@@ -397,6 +528,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
     candidates,
     candidateSourceRecords: candidateSourceRecordsToPlan,
     sourceRefreshes: [],
+    existingCandidateDuplicateAssignments: [],
     duplicateGroups: [],
     duplicateSignals: [],
   };
@@ -406,9 +538,37 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
   );
 
   return {
-    plan: retainPersistenceWork(unsafePlan, reconciliation),
+    plan: await retainPersistenceWork(unsafePlan, reconciliation, existing),
     reconciliation,
     rejected,
+  };
+}
+
+interface ExistingCandidateRow {
+  candidateId: string;
+  candidateStatus: string;
+  duplicateGroupId: string | null;
+  normalizedName: string;
+  sourceId: string;
+  externalId: string | null;
+  contentHash: string | null;
+  rawPayload: unknown;
+}
+
+function snapshotFromRow(row: ExistingCandidateRow): DuplicateAwareExistingCandidateSnapshot | null {
+  if (row.externalId === null || row.contentHash === null) return null;
+  const seed = reviewSeed(row.rawPayload);
+  return {
+    candidateId: row.candidateId,
+    candidateStatus: row.candidateStatus,
+    duplicateGroupId: row.duplicateGroupId,
+    sourceId: row.sourceId,
+    externalId: row.externalId,
+    contentHash: row.contentHash,
+    normalizedName: row.normalizedName,
+    latitude: seed.latitude,
+    longitude: seed.longitude,
+    officialDomain: seed.officialDomain,
   };
 }
 
@@ -416,45 +576,82 @@ async function loadExistingOsmCandidates(
   database: CryptoPayMapDatabase,
   sourceId: string,
   externalIds: readonly string[],
-): Promise<ExistingCandidateSnapshot[]> {
-  if (externalIds.length === 0) return [];
-  const rows = await database
-    .select({
-      candidateId: sourceCandidates.id,
-      candidateStatus: sourceCandidates.candidateStatus,
-      normalizedName: sourceCandidates.normalizedName,
-      sourceId: sourceRecords.sourceId,
-      externalId: sourceRecords.externalId,
-      contentHash: sourceRecords.contentHash,
-      rawPayload: sourceRecords.rawPayload,
-    })
-    .from(sourceRecords)
-    .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, sourceRecords.id))
-    .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
-    .where(
-      and(
-        eq(sourceRecords.sourceId, sourceId),
-        inArray(sourceRecords.externalId, [...externalIds]),
-      ),
-    );
+  normalizedNames: readonly string[],
+): Promise<DuplicateAwareExistingCandidateSnapshot[]> {
+  const sameSourceRows =
+    externalIds.length === 0
+      ? []
+      : await database
+          .select({
+            candidateId: sourceCandidates.id,
+            candidateStatus: sourceCandidates.candidateStatus,
+            duplicateGroupId: sourceCandidates.duplicateGroupId,
+            normalizedName: sourceCandidates.normalizedName,
+            sourceId: sourceRecords.sourceId,
+            externalId: sourceRecords.externalId,
+            contentHash: sourceRecords.contentHash,
+            rawPayload: sourceRecords.rawPayload,
+          })
+          .from(sourceRecords)
+          .innerJoin(
+            candidateSourceRecords,
+            eq(candidateSourceRecords.sourceRecordId, sourceRecords.id),
+          )
+          .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
+          .where(
+            and(
+              eq(sourceRecords.sourceId, sourceId),
+              inArray(sourceRecords.externalId, [...externalIds]),
+            ),
+          );
 
-  return rows.flatMap((row) => {
-    if (row.externalId === null || row.contentHash === null) return [];
-    const seed = reviewSeed(row.rawPayload);
-    return [
-      {
-        candidateId: row.candidateId,
-        candidateStatus: row.candidateStatus,
-        sourceId: row.sourceId,
-        externalId: row.externalId,
-        contentHash: row.contentHash,
-        normalizedName: row.normalizedName,
-        latitude: seed.latitude,
-        longitude: seed.longitude,
-        officialDomain: seed.officialDomain,
-      },
-    ];
-  });
+  const sameNameRows =
+    normalizedNames.length === 0
+      ? []
+      : await database
+          .select({
+            candidateId: sourceCandidates.id,
+            candidateStatus: sourceCandidates.candidateStatus,
+            duplicateGroupId: sourceCandidates.duplicateGroupId,
+            normalizedName: sourceCandidates.normalizedName,
+            sourceId: sourceRecords.sourceId,
+            externalId: sourceRecords.externalId,
+            contentHash: sourceRecords.contentHash,
+            rawPayload: sourceRecords.rawPayload,
+          })
+          .from(sourceCandidates)
+          .innerJoin(
+            candidateSourceRecords,
+            eq(candidateSourceRecords.candidateId, sourceCandidates.id),
+          )
+          .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
+          .where(
+            and(
+              inArray(sourceCandidates.normalizedName, [...normalizedNames]),
+              inArray(sourceCandidates.candidateStatus, ['new', 'triaged']),
+            ),
+          )
+          .limit(MAX_EXISTING_COMPARISONS + 1);
+
+  if (sameNameRows.length > MAX_EXISTING_COMPARISONS) {
+    throw new CandidateIngestionPersistenceError(
+      'conflict',
+      `OSM duplicate comparison exceeded the bounded ${MAX_EXISTING_COMPARISONS}-row limit.`,
+    );
+  }
+
+  const snapshots = new Map<string, DuplicateAwareExistingCandidateSnapshot>();
+  for (const row of sameNameRows as ExistingCandidateRow[]) {
+    const snapshot = snapshotFromRow(row);
+    if (snapshot !== null && !snapshots.has(snapshot.candidateId)) {
+      snapshots.set(snapshot.candidateId, snapshot);
+    }
+  }
+  for (const row of sameSourceRows as ExistingCandidateRow[]) {
+    const snapshot = snapshotFromRow(row);
+    if (snapshot !== null) snapshots.set(snapshot.candidateId, snapshot);
+  }
+  return [...snapshots.values()];
 }
 
 export async function persistOsmOverpassCandidateAcquisition(
@@ -462,7 +659,20 @@ export async function persistOsmOverpassCandidateAcquisition(
   input: OsmOverpassCandidateAcquisitionInput,
 ): Promise<CandidateIngestionReceipt> {
   const externalIds = input.elements.map((element) => `${element.type}:${element.id}`);
-  const existing = await loadExistingOsmCandidates(database, input.sourceId, externalIds);
+  const normalizedNames = [
+    ...new Set(
+      input.elements
+        .map((element) => element.tags?.name?.trim() ?? '')
+        .filter((name) => name.length > 0)
+        .map(normalizeName),
+    ),
+  ];
+  const existing = await loadExistingOsmCandidates(
+    database,
+    input.sourceId,
+    externalIds,
+    normalizedNames,
+  );
   const result = await createOsmOverpassCandidateAcquisitionPlan(input, existing);
   return createDrizzleCandidateIngestionPersistenceBackend(database).commit(result.plan);
 }
