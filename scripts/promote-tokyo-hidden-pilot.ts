@@ -1,4 +1,4 @@
-import { and, asc, eq } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import { createDerivedStagingServiceIdentity } from '../src/admin/access/identity';
 import {
   authorizeCandidatePromotion,
@@ -91,7 +91,7 @@ async function main() {
     (row) =>
       row.candidateType === 'physical_place' &&
       row.duplicateGroupId === null &&
-      (['new', 'triaged', 'promoted'].includes(row.candidateStatus)),
+      ['new', 'triaged', 'promoted'].includes(row.candidateStatus),
   );
   const pilot = candidates[0];
   if (!pilot) throw new Error('No bounded Tokyo pilot Candidate is available.');
@@ -125,23 +125,24 @@ async function main() {
     return payload?.sourceSystem === 'openstreetmap_nominatim' && payload?.countryCode === 'JP';
   });
 
-  const [bitcoin] = await db
-    .select({ id: assets.id })
-    .from(assets)
-    .where(and(eq(assets.symbol, 'BTC'), eq(assets.status, 'active')))
-    .limit(1);
-  const [lightning] = await db
-    .select({ id: networks.id })
-    .from(networks)
-    .where(and(eq(networks.slug, 'lightning'), eq(networks.status, 'active')))
-    .limit(1);
-  const [lightningInvoice] = await db
-    .select({ id: paymentMethods.id })
-    .from(paymentMethods)
-    .where(and(eq(paymentMethods.slug, 'lightning_invoice'), eq(paymentMethods.status, 'active')))
-    .limit(1);
+  const [[bitcoin], [lightning], [lightningInvoice], [assetCount], [networkCount], [methodCount]] = await Promise.all([
+    db.select({ id: assets.id }).from(assets).where(and(eq(assets.symbol, 'BTC'), eq(assets.status, 'active'))).limit(1),
+    db.select({ id: networks.id }).from(networks).where(and(eq(networks.slug, 'lightning'), eq(networks.status, 'active'))).limit(1),
+    db.select({ id: paymentMethods.id }).from(paymentMethods).where(and(eq(paymentMethods.slug, 'lightning_invoice'), eq(paymentMethods.status, 'active'))).limit(1),
+    db.select({ count: sql<number>`count(*)::int` }).from(assets),
+    db.select({ count: sql<number>`count(*)::int` }).from(networks),
+    db.select({ count: sql<number>`count(*)::int` }).from(paymentMethods),
+  ]);
 
-  const registryReady = Boolean(bitcoin && lightning && lightningInvoice);
+  const registry = {
+    bitcoinAssetReady: Boolean(bitcoin),
+    lightningNetworkReady: Boolean(lightning),
+    lightningInvoiceReady: Boolean(lightningInvoice),
+    assetCount: Number(assetCount?.count ?? 0),
+    networkCount: Number(networkCount?.count ?? 0),
+    paymentMethodCount: Number(methodCount?.count ?? 0),
+  };
+  const registryReady = registry.bitcoinAssetReady && registry.lightningNetworkReady && registry.lightningInvoiceReady;
   const sourceReady = Boolean(
     name &&
       latitude !== null &&
@@ -160,41 +161,39 @@ async function main() {
   const subjectAuthorized = policy.configured && policy.allowedSubjects.has(reviewer.subject);
 
   if (!registryReady || !sourceReady || !subjectAuthorized) {
-    console.log(
-      JSON.stringify({
-        target: EXPECTED_TARGET,
-        batchId: TOKYO_BATCH_ID,
-        boundedPilotSelected: true,
-        candidateState: pilot.candidateStatus,
-        sourceReady,
-        registryReady,
-        authorizationConfigured: policy.configured,
-        reviewerAuthorized: subjectAuthorized,
-        mutationPerformed: false,
-        publicDataChanged: false,
-        payloadExposed: false,
-      }),
-    );
+    console.log(JSON.stringify({
+      target: EXPECTED_TARGET,
+      batchId: TOKYO_BATCH_ID,
+      boundedPilotSelected: true,
+      candidateState: pilot.candidateStatus,
+      sourceReady,
+      registry,
+      registryReady,
+      authorizationConfigured: policy.configured,
+      reviewerAuthorized: subjectAuthorized,
+      mutationPerformed: false,
+      publicDataChanged: false,
+      payloadExposed: false,
+    }));
     return;
   }
 
   if (pilot.candidateStatus === 'promoted') {
-    console.log(
-      JSON.stringify({
-        target: EXPECTED_TARGET,
-        batchId: TOKYO_BATCH_ID,
-        boundedPilotSelected: true,
-        candidateState: 'promoted',
-        sourceReady,
-        registryReady,
-        authorizationConfigured: true,
-        reviewerAuthorized: true,
-        mutationPerformed: false,
-        alreadyPromoted: true,
-        publicDataChanged: false,
-        payloadExposed: false,
-      }),
-    );
+    console.log(JSON.stringify({
+      target: EXPECTED_TARGET,
+      batchId: TOKYO_BATCH_ID,
+      boundedPilotSelected: true,
+      candidateState: 'promoted',
+      sourceReady,
+      registry,
+      registryReady,
+      authorizationConfigured: true,
+      reviewerAuthorized: true,
+      mutationPerformed: false,
+      alreadyPromoted: true,
+      publicDataChanged: false,
+      payloadExposed: false,
+    }));
     return;
   }
 
@@ -213,110 +212,106 @@ async function main() {
   const phone = typeof seed?.phone === 'string' && seed.phone.trim().length > 0 ? seed.phone.trim() : null;
 
   const context = authorizeCandidatePromotion(reviewer, policy, requestId);
-  const receipt = await createCandidatePromotionService(createDrizzleCandidatePromotionBackend(db)).promote(
-    context,
-    {
-      candidateId: pilot.candidateId,
-      expectedCandidateType: 'physical_place',
-      expectedCandidateUpdatedAt: pilot.updatedAt.toISOString(),
-      promotedAt: promotedAt.toISOString(),
-      entity: {
-        id: entityId,
-        value: {
-          entityType: 'merchant',
-          name,
-          slug: null,
-          legalName: null,
-          websiteUrl,
-          countryCode: 'JP',
-          entityStatus: 'active',
-          visibility: 'hidden',
-        },
+  const receipt = await createCandidatePromotionService(createDrizzleCandidatePromotionBackend(db)).promote(context, {
+    candidateId: pilot.candidateId,
+    expectedCandidateType: 'physical_place',
+    expectedCandidateUpdatedAt: pilot.updatedAt.toISOString(),
+    promotedAt: promotedAt.toISOString(),
+    entity: {
+      id: entityId,
+      value: {
+        entityType: 'merchant',
+        name,
+        slug: null,
+        legalName: null,
+        websiteUrl,
+        countryCode: 'JP',
+        entityStatus: 'active',
+        visibility: 'hidden',
       },
-      location: {
-        id: locationId,
-        value: {
-          name,
-          slug: locationSlug,
-          addressLine: null,
-          locality: null,
-          region: null,
-          postalCode: null,
-          countryCode: 'JP',
-          latitude: latitude as number,
-          longitude: longitude as number,
-          locationStatus: 'active',
-          visibility: 'hidden',
-          websiteUrl,
-          phone,
-          description: null,
-          openingHours: typeof tags.opening_hours === 'string' && tags.opening_hours.trim().length > 0 ? tags.opening_hours.trim() : null,
-          amenities: [],
-          socialLinks: [],
-          osmType: osmType as 'node' | 'way' | 'relation',
-          osmId: osmId as number,
-        },
-      },
-      claim: {
-        id: claimId,
-        value: {
-          entityId,
-          locationId,
-          claimScope: 'location_specific',
-          routeType: 'direct_wallet',
-          acceptanceScope: 'all_checkout',
-          claimStatus: 'candidate',
-          visibility: 'hidden',
-          customerPaysCrypto: true,
-          merchantExplicitlyAcceptsCrypto: true,
-          processorId: null,
-          howToPay: "Pay with Bitcoin over the Lightning Network using the merchant's Lightning payment option.",
-          instructionsLanguage: 'en',
-          merchantReceives: 'not_publicly_confirmed',
-          restrictions: null,
-          firstConfirmedAt: null,
-          lastConfirmedAt: null,
-          nextReviewAt: null,
-          endedAt: null,
-          endedReason: null,
-        },
-      },
-      claimAssets: [
-        {
-          id: claimAssetId,
-          value: {
-            claimId,
-            assetId: bitcoin.id,
-            networkId: lightning.id,
-            paymentMethodId: lightningInvoice.id,
-            contractAddress: null,
-            isPrimary: true,
-            notes: null,
-          },
-        },
-      ],
-      sourceRecordIds,
     },
-  );
+    location: {
+      id: locationId,
+      value: {
+        name,
+        slug: locationSlug,
+        addressLine: null,
+        locality: null,
+        region: null,
+        postalCode: null,
+        countryCode: 'JP',
+        latitude: latitude as number,
+        longitude: longitude as number,
+        locationStatus: 'active',
+        visibility: 'hidden',
+        websiteUrl,
+        phone,
+        description: null,
+        openingHours: typeof tags.opening_hours === 'string' && tags.opening_hours.trim().length > 0 ? tags.opening_hours.trim() : null,
+        amenities: [],
+        socialLinks: [],
+        osmType: osmType as 'node' | 'way' | 'relation',
+        osmId: osmId as number,
+      },
+    },
+    claim: {
+      id: claimId,
+      value: {
+        entityId,
+        locationId,
+        claimScope: 'location_specific',
+        routeType: 'direct_wallet',
+        acceptanceScope: 'all_checkout',
+        claimStatus: 'candidate',
+        visibility: 'hidden',
+        customerPaysCrypto: true,
+        merchantExplicitlyAcceptsCrypto: true,
+        processorId: null,
+        howToPay: "Pay with Bitcoin over the Lightning Network using the merchant's Lightning payment option.",
+        instructionsLanguage: 'en',
+        merchantReceives: 'not_publicly_confirmed',
+        restrictions: null,
+        firstConfirmedAt: null,
+        lastConfirmedAt: null,
+        nextReviewAt: null,
+        endedAt: null,
+        endedReason: null,
+      },
+    },
+    claimAssets: [
+      {
+        id: claimAssetId,
+        value: {
+          claimId,
+          assetId: bitcoin.id,
+          networkId: lightning.id,
+          paymentMethodId: lightningInvoice.id,
+          contractAddress: null,
+          isPrimary: true,
+          notes: null,
+        },
+      },
+    ],
+    sourceRecordIds,
+  });
 
-  console.log(
-    JSON.stringify({
-      target: EXPECTED_TARGET,
-      batchId: TOKYO_BATCH_ID,
-      boundedPilotSelected: true,
-      sourceReady: true,
-      registryReady: true,
-      authorizationConfigured: true,
-      reviewerAuthorized: true,
-      mutationPerformed: receipt.state === 'committed',
-      replayed: receipt.state === 'replayed',
-      candidateStateAfter: 'promoted',
-      claimStatus: receipt.claimStatus,
-      visibility: receipt.visibility,
-      publicDataChanged: false,
-      payloadExposed: false,
-    }),
-  );
+  console.log(JSON.stringify({
+    target: EXPECTED_TARGET,
+    batchId: TOKYO_BATCH_ID,
+    boundedPilotSelected: true,
+    sourceReady: true,
+    registry,
+    registryReady: true,
+    authorizationConfigured: true,
+    reviewerAuthorized: true,
+    mutationPerformed: receipt.state === 'committed',
+    replayed: receipt.state === 'replayed',
+    candidateStateAfter: 'promoted',
+    claimStatus: receipt.claimStatus,
+    visibility: receipt.visibility,
+    publicDataChanged: false,
+    payloadExposed: false,
+  }));
 }
 
 await main();
