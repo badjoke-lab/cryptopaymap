@@ -6,6 +6,7 @@ on:
       - audit/tokyo-b-evidence-signals
     paths:
       - '.github/workflows/tmp-audit-tokyo-b-evidence-signals.yml'
+      - 'scripts/audit-tokyo-b-evidence-signals.ts'
 
 permissions:
   contents: read
