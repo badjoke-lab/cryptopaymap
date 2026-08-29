@@ -39,6 +39,11 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Apply pending staging schema migrations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:migrate
+
       - name: Acquire private OSM Candidates
         id: acquisition
         env:
