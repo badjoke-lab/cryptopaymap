@@ -58,8 +58,10 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/materialize-public-data-from-staging-db.ts
 
-      - name: Build isolated real-data preview
-        run: npm run build
+      - name: Verify source and build
+        run: |
+          npm run check
+          npm run build
 
       - name: Deploy isolated real-data staging preview
         env:
