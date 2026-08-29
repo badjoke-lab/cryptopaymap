@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "5742b9e82c91f5cfa73a8e4330413ae6325a47d8",
-  "generatedAt": "2026-08-29T12:06:45.548Z",
-  "expiresAt": "2026-09-01T12:06:45.548Z",
-  "workflowRunId": "33251654751",
+  "generatedAt": "2026-08-29T13:49:24.473Z",
+  "expiresAt": "2026-09-01T13:49:24.473Z",
+  "workflowRunId": "33255951816",
   "owner": "sha256:4a5701af8e3ea2fb4bca65bd906ff5ca207275391449d555160c85744a3dd3b5",
   "procedure": "OPS-P6-001D configured staging data QA",
   "checks": {
@@ -17,7 +17,7 @@
     "liveSchema": {
       "outcome": "success",
       "ready": true,
-      "migrationCount": 28
+      "migrationCount": 29
     },
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
