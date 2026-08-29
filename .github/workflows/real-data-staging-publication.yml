@@ -35,12 +35,12 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Publish exactly four reviewed canonical records in staging
+      - name: Publish bounded reviewed physical canonical records in staging
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
-        run: npx tsx scripts/publish-tokyo-confirmed-canonical-staging.ts
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
 
       - name: Remove synthetic staging review payload before build
         run: rm -rf public/staging-review
@@ -86,8 +86,8 @@ jobs:
             await new Promise((resolve) => setTimeout(resolve, 3000));
           }
           if (!places) throw new Error('Preview places export did not become reachable.');
-          if (places.records.length !== 4) {
-            throw new Error(`Expected 4 real places; got ${places.records.length}.`);
+          if (places.records.length < 1) {
+            throw new Error('Expected at least one real public place.');
           }
           if (places.records.some((record) => /\bstaging\b/i.test(String(record?.name ?? '')))) {
             throw new Error('Synthetic staging fixture name found in real-data preview.');
@@ -96,8 +96,10 @@ jobs:
             cache: 'no-store',
           });
           const pins = await pinsResponse.json();
-          if (!Array.isArray(pins.records) || pins.records.length !== 4) {
-            throw new Error('Expected 4 real map pins.');
+          if (!Array.isArray(pins.records) || pins.records.length !== places.records.length) {
+            throw new Error(
+              `Map pin count ${pins.records?.length ?? 'invalid'} does not match place count ${places.records.length}.`,
+            );
           }
           console.log(
             JSON.stringify({
