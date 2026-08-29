@@ -40,25 +40,10 @@ jobs:
               1,
           )
 
-          old_group = """    for (const memberId of members) {
-              const existingCandidate = existingById.get(memberId);
-              if (existingCandidate?.duplicateGroupId != null) {
-                throw new CandidateIngestionPersistenceError(
-                  'conflict',
-                  'A cross-batch duplicate Candidate already belongs to a duplicate group; automatic group merging is not allowed.',
-                );
-              }
-            }
-
-            const groupId = await deterministicUuid(`candidate-duplicate-group:${members.join(':')}`);
-            duplicateGroups.push({
-              id: groupId,
-              status: 'open',
-              resolutionNote: null,
-              resolvedAt: null,
-            });
-          """
-          new_group = """    const existingGroupMembers = members
+          members_sorted = text.index('    members.sort();')
+          first_member_loop = text.index('    for (const memberId of members) {', members_sorted)
+          second_member_loop = text.index('    for (const memberId of members) {', first_member_loop + 1)
+          new_group_logic = """    const existingGroupMembers = members
               .map((memberId) => existingById.get(memberId))
               .filter(
                 (
@@ -95,10 +80,9 @@ jobs:
                 resolvedAt: null,
               });
             }
+
           """
-          if old_group not in text:
-              raise SystemExit('duplicate group block not found')
-          text = text.replace(old_group, new_group, 1)
+          text = text[:first_member_loop] + new_group_logic + text[second_member_loop:]
 
           old_assign = """      } else {
                 existingAssignments.push({
@@ -122,25 +106,48 @@ jobs:
               raise SystemExit('existing assignment block not found')
           text = text.replace(old_assign, new_assign, 1)
 
-          text = text.replace(
-              "  duplicateGroupId: string | null;\n  normalizedName: string;",
-              "  duplicateGroupId: string | null;\n  duplicateGroupStatus: 'open' | 'resolved' | 'dismissed' | null;\n  normalizedName: string;",
-              1,
-          )
-          text = text.replace(
-              "    duplicateGroupId: row.duplicateGroupId,\n    sourceId: row.sourceId,",
-              "    duplicateGroupId: row.duplicateGroupId,\n    duplicateGroupStatus: row.duplicateGroupStatus,\n    sourceId: row.sourceId,",
-              1,
-          )
-          text = text.replace(
-              "            duplicateGroupId: sourceCandidates.duplicateGroupId,\n            normalizedName:",
-              "            duplicateGroupId: sourceCandidates.duplicateGroupId,\n            duplicateGroupStatus: candidateDuplicateGroups.status,\n            normalizedName:",
-          )
-          join = ".innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))"
-          replacement = join + "\n          .leftJoin(\n            candidateDuplicateGroups,\n            eq(candidateDuplicateGroups.id, sourceCandidates.duplicateGroupId),\n          )"
-          if text.count(join) < 3:
-              raise SystemExit('expected source candidate joins not found')
-          text = text.replace(join, replacement)
+          old_return = """  for (const row of sameSourceRows as ExistingCandidateRow[]) {
+              const snapshot = snapshotFromRow(row);
+              if (snapshot !== null) snapshots.set(snapshot.candidateId, snapshot);
+            }
+            return [...snapshots.values()];
+          }
+          """
+          new_return = """  for (const row of sameSourceRows as ExistingCandidateRow[]) {
+              const snapshot = snapshotFromRow(row);
+              if (snapshot !== null) snapshots.set(snapshot.candidateId, snapshot);
+            }
+
+            const duplicateGroupIds = [
+              ...new Set(
+                [...snapshots.values()]
+                  .map((snapshot) => snapshot.duplicateGroupId)
+                  .filter((groupId): groupId is string => groupId != null),
+              ),
+            ];
+            const duplicateGroupRows =
+              duplicateGroupIds.length === 0
+                ? []
+                : await database
+                    .select({ id: candidateDuplicateGroups.id, status: candidateDuplicateGroups.status })
+                    .from(candidateDuplicateGroups)
+                    .where(inArray(candidateDuplicateGroups.id, duplicateGroupIds));
+            const duplicateGroupStatusById = new Map(
+              duplicateGroupRows.map((group) => [group.id, group.status]),
+            );
+
+            return [...snapshots.values()].map((snapshot) => ({
+              ...snapshot,
+              duplicateGroupStatus:
+                snapshot.duplicateGroupId == null
+                  ? null
+                  : (duplicateGroupStatusById.get(snapshot.duplicateGroupId) ?? null),
+            }));
+          }
+          """
+          if old_return not in text:
+              raise SystemExit('snapshot return block not found')
+          text = text.replace(old_return, new_return, 1)
           importer.write_text(text)
 
           test = Path('tests/osm-overpass-candidate-acquisition.test.ts')
@@ -161,25 +168,9 @@ jobs:
               1,
           )
 
-          old_test = """  it('fails closed instead of automatically merging a pre-grouped cross-batch Candidate', async () => {
-              const existing = crossBatchDuplicate('00000000-0000-4000-8000-000000000203');
-
-              await expect(
-                createOsmOverpassCandidateAcquisitionPlan(
-                  {
-                    ...IDS,
-                    requestId: '00000000-0000-4000-8000-000000000111',
-                    importBatchId: '00000000-0000-4000-8000-000000000112',
-                    fetchedAt: new Date('2026-08-29T03:00:00.000Z'),
-                    importerVersion: '1.0.0',
-                    elements: [exampleElement],
-                  },
-                  [existing],
-                ),
-              ).rejects.toThrowError(CandidateIngestionPersistenceError);
-            });
-          """
-          new_test = """  it('reuses one existing open duplicate group without recreating or reassigning it', async () => {
+          start = text.index("  it('fails closed instead of automatically merging a pre-grouped cross-batch Candidate'")
+          end = text.index("  it('rejects thin or invalid rows", start)
+          replacement = """  it('reuses one existing open duplicate group without recreating or reassigning it', async () => {
               const duplicateGroupId = '00000000-0000-4000-8000-000000000203';
               const existing = crossBatchDuplicate(duplicateGroupId, 'open');
               const result = await createOsmOverpassCandidateAcquisitionPlan(
@@ -246,10 +237,9 @@ jobs:
                 ),
               ).rejects.toThrowError(CandidateIngestionPersistenceError);
             });
+
           """
-          if old_test not in text:
-              raise SystemExit('pre-grouped test block not found')
-          text = text.replace(old_test, new_test, 1)
+          text = text[:start] + replacement + text[end:]
           test.write_text(text)
           PY
       - name: Format changed files
