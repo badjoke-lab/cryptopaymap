@@ -1,0 +1,510 @@
+name: Temporary validate reused duplicate group persistence
+
+on:
+  push:
+    branches:
+      - fix/reused-duplicate-group-persistence
+    paths:
+      - '.github/workflows/tmp-reused-duplicate-persistence.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-and-validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Patch persistence contract, OSM planner, and tests
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          persistence = Path('src/importers/candidate-ingestion-persistence.ts')
+          text = persistence.read_text()
+
+          assignment_interface = """export interface ExistingCandidateDuplicateAssignment {
+            candidateId: string;
+            duplicateGroupId: string;
+            assignedAt: Date;
+          }
+          """
+          reused_interface = assignment_interface + """
+          export interface ExistingDuplicateGroupReference {
+            duplicateGroupId: string;
+            expectedStatus: 'open';
+            existingMemberCandidateIds: string[];
+          }
+          """
+          if 'export interface ExistingDuplicateGroupReference' not in text:
+              if assignment_interface not in text:
+                  raise SystemExit('assignment interface anchor not found')
+              text = text.replace(assignment_interface, reused_interface, 1)
+
+          plan_anchor = "  existingCandidateDuplicateAssignments?: ExistingCandidateDuplicateAssignment[];\n  duplicateGroups?: NewCandidateDuplicateGroup[];"
+          if 'reusedDuplicateGroups?: ExistingDuplicateGroupReference[];' not in text:
+              if plan_anchor not in text:
+                  raise SystemExit('plan anchor not found')
+              text = text.replace(
+                  plan_anchor,
+                  "  existingCandidateDuplicateAssignments?: ExistingCandidateDuplicateAssignment[];\n  reusedDuplicateGroups?: ExistingDuplicateGroupReference[];\n  duplicateGroups?: NewCandidateDuplicateGroup[];",
+                  1,
+              )
+
+          locals_anchor = "  const existingCandidateDuplicateAssignments = plan.existingCandidateDuplicateAssignments ?? [];\n  const duplicateGroups = plan.duplicateGroups ?? [];"
+          if 'const reusedDuplicateGroups = plan.reusedDuplicateGroups ?? [];' not in text:
+              if locals_anchor not in text:
+                  raise SystemExit('validator locals anchor not found')
+              text = text.replace(
+                  locals_anchor,
+                  "  const existingCandidateDuplicateAssignments = plan.existingCandidateDuplicateAssignments ?? [];\n  const reusedDuplicateGroups = plan.reusedDuplicateGroups ?? [];\n  const duplicateGroups = plan.duplicateGroups ?? [];",
+                  1,
+              )
+
+          group_start = text.index('  const duplicateGroupIds = new Set(\n')
+          group_end_marker = '  const groupMembers = new Map<string, Set<string>>();'
+          group_end = text.index(group_end_marker, group_start)
+          group_block = """  const newDuplicateGroupIds = new Set(
+            duplicateGroups.map((group) => {
+              if (group.id == null) {
+                throw new CandidateIngestionPersistenceError(
+                  'invalid_plan',
+                  'Duplicate groups require explicit deterministic IDs.',
+                );
+              }
+              return group.id;
+            }),
+          );
+          if (newDuplicateGroupIds.size !== duplicateGroups.length) {
+            throw new CandidateIngestionPersistenceError(
+              'invalid_plan',
+              'Duplicate group IDs must be unique inside one ingestion plan.',
+            );
+          }
+
+          const duplicateGroupIds = new Set(newDuplicateGroupIds);
+          const reusedMemberGroupByCandidate = new Map<string, string>();
+          const reusedDuplicateGroupIds = new Set<string>();
+          for (const reference of reusedDuplicateGroups) {
+            if (
+              reference.duplicateGroupId.trim().length === 0 ||
+              reference.expectedStatus !== 'open' ||
+              reference.existingMemberCandidateIds.length === 0
+            ) {
+              throw new CandidateIngestionPersistenceError(
+                'invalid_plan',
+                'Reused duplicate groups require an open group ID and at least one existing member.',
+              );
+            }
+            if (
+              newDuplicateGroupIds.has(reference.duplicateGroupId) ||
+              reusedDuplicateGroupIds.has(reference.duplicateGroupId)
+            ) {
+              throw new CandidateIngestionPersistenceError(
+                'invalid_plan',
+                'A duplicate group may be created or reused at most once per ingestion plan.',
+              );
+            }
+            reusedDuplicateGroupIds.add(reference.duplicateGroupId);
+            duplicateGroupIds.add(reference.duplicateGroupId);
+
+            const memberIds = new Set(reference.existingMemberCandidateIds);
+            if (memberIds.size !== reference.existingMemberCandidateIds.length) {
+              throw new CandidateIngestionPersistenceError(
+                'invalid_plan',
+                'Reused duplicate-group member IDs must be unique.',
+              );
+            }
+            for (const candidateId of memberIds) {
+              if (
+                candidateId.trim().length === 0 ||
+                candidateIds.has(candidateId) ||
+                refreshedCandidateIds.has(candidateId) ||
+                reusedMemberGroupByCandidate.has(candidateId)
+              ) {
+                throw new CandidateIngestionPersistenceError(
+                  'invalid_plan',
+                  'Reused duplicate-group members must be distinct existing Candidates.',
+                );
+              }
+              reusedMemberGroupByCandidate.set(candidateId, reference.duplicateGroupId);
+            }
+          }
+          """ + group_end_marker
+          text = text[:group_start] + group_block + text[group_end + len(group_end_marker):]
+
+          assignment_condition = """      candidateIds.has(assignment.candidateId) ||
+                refreshedCandidateIds.has(assignment.candidateId) ||
+                existingAssignmentCandidateIds.has(assignment.candidateId)
+          """
+          if 'reusedMemberGroupByCandidate.has(assignment.candidateId)' not in text:
+              if assignment_condition not in text:
+                  raise SystemExit('assignment uniqueness anchor not found')
+              text = text.replace(
+                  assignment_condition,
+                  """      candidateIds.has(assignment.candidateId) ||
+                refreshedCandidateIds.has(assignment.candidateId) ||
+                reusedMemberGroupByCandidate.has(assignment.candidateId) ||
+                existingAssignmentCandidateIds.has(assignment.candidateId)
+          """,
+                  1,
+              )
+
+          signal_set_anchor = '  const signalCandidateIds = new Set([...candidateIds, ...existingAssignmentCandidateIds]);'
+          if signal_set_anchor in text:
+              text = text.replace(
+                  signal_set_anchor,
+                  """  const signalCandidateIds = new Set([
+            ...candidateIds,
+            ...existingAssignmentCandidateIds,
+            ...reusedMemberGroupByCandidate.keys(),
+          ]);""",
+                  1,
+              )
+
+          signal_membership_anchor = """    if (signal.importBatchId !== plan.batch.id) {
+              throw new CandidateIngestionPersistenceError(
+                'invalid_plan',
+                'Duplicate signals must reference the persisted import batch.',
+              );
+            }
+          """
+          group_specific = signal_membership_anchor + """    for (const candidateId of [signal.leftCandidateId, signal.rightCandidateId]) {
+              const reusedGroupId = reusedMemberGroupByCandidate.get(candidateId);
+              if (reusedGroupId !== undefined && reusedGroupId !== signal.duplicateGroupId) {
+                throw new CandidateIngestionPersistenceError(
+                  'invalid_plan',
+                  'A reused duplicate-group member may be signaled only inside its existing group.',
+                );
+              }
+            }
+          """
+          if 'A reused duplicate-group member may be signaled only inside its existing group.' not in text:
+              if signal_membership_anchor not in text:
+                  raise SystemExit('signal membership anchor not found')
+              text = text.replace(signal_membership_anchor, group_specific, 1)
+
+          reused_validation_anchor = """  for (const candidate of plan.candidates) {
+            if (
+              candidate.duplicateGroupId != null &&
+          """
+          if 'Every reused duplicate group must include a declared existing member in its signals.' not in text:
+              if reused_validation_anchor not in text:
+                  raise SystemExit('candidate duplicate validation anchor not found')
+              reused_validation = """  for (const reference of reusedDuplicateGroups) {
+            const members = groupMembers.get(reference.duplicateGroupId);
+            if (
+              members === undefined ||
+              !reference.existingMemberCandidateIds.some((candidateId) => members.has(candidateId))
+            ) {
+              throw new CandidateIngestionPersistenceError(
+                'invalid_plan',
+                'Every reused duplicate group must include a declared existing member in its signals.',
+              );
+            }
+          }
+          """
+              text = text.replace(reused_validation_anchor, reused_validation + reused_validation_anchor, 1)
+
+          guard_anchor = """function existingDuplicateAssignmentGuard(
+            database: CryptoPayMapDatabase,
+            assignment: ExistingCandidateDuplicateAssignment,
+          ) {
+          """
+          if 'function existingDuplicateGroupGuard(' not in text:
+              guard_pos = text.index(guard_anchor)
+              guards = """function existingDuplicateGroupGuard(
+            database: CryptoPayMapDatabase,
+            reference: ExistingDuplicateGroupReference,
+          ) {
+            return database.execute(sql`
+              select 1 / case when exists (
+                select 1
+                from ${candidateDuplicateGroups}
+                where ${candidateDuplicateGroups.id} = ${reference.duplicateGroupId}
+                  and ${candidateDuplicateGroups.status} = ${reference.expectedStatus}
+                for update
+              ) then 1 else 0 end as existing_duplicate_group_guard
+            `);
+          }
+
+          function existingDuplicateGroupMemberGuard(
+            database: CryptoPayMapDatabase,
+            reference: ExistingDuplicateGroupReference,
+            candidateId: string,
+          ) {
+            return database.execute(sql`
+              select 1 / case when exists (
+                select 1
+                from ${sourceCandidates}
+                where ${sourceCandidates.id} = ${candidateId}
+                  and ${sourceCandidates.duplicateGroupId} = ${reference.duplicateGroupId}
+                  and ${sourceCandidates.candidateStatus} in ('new', 'triaged')
+                for update
+              ) then 1 else 0 end as existing_duplicate_group_member_guard
+            `);
+          }
+
+          """
+              text = text[:guard_pos] + guards + text[guard_pos:]
+
+          statements_anchor = '      const statements: unknown[] = [database.insert(importBatches).values(plan.batch)];'
+          if statements_anchor in text:
+              text = text.replace(
+                  statements_anchor,
+                  """      const statements: unknown[] = [];
+                for (const reference of plan.reusedDuplicateGroups ?? []) {
+                  statements.push(existingDuplicateGroupGuard(database, reference));
+                  for (const candidateId of reference.existingMemberCandidateIds) {
+                    statements.push(existingDuplicateGroupMemberGuard(database, reference, candidateId));
+                  }
+                }
+                statements.push(database.insert(importBatches).values(plan.batch));""",
+                  1,
+              )
+
+          persistence.write_text(text)
+
+          osm = Path('src/importers/osm-overpass-candidate-acquisition.ts')
+          text = osm.read_text()
+          import_anchor = '  type ExistingCandidateDuplicateAssignment,\n} from \'./candidate-ingestion-persistence\';'
+          if 'type ExistingDuplicateGroupReference,' not in text:
+              if import_anchor not in text:
+                  raise SystemExit('OSM persistence import anchor not found')
+              text = text.replace(
+                  import_anchor,
+                  "  type ExistingCandidateDuplicateAssignment,\n  type ExistingDuplicateGroupReference,\n} from './candidate-ingestion-persistence';",
+                  1,
+              )
+
+          return_shape_anchor = """  duplicateSignals: NewCandidateDuplicateSignal[];
+            existingAssignments: ExistingCandidateDuplicateAssignment[];
+            newCandidateGroupIds: Map<string, string>;
+          }> {
+          """
+          if 'reusedDuplicateGroups: ExistingDuplicateGroupReference[];' not in text:
+              if return_shape_anchor not in text:
+                  raise SystemExit('duplicate work return shape anchor not found')
+              text = text.replace(
+                  return_shape_anchor,
+                  """  duplicateSignals: NewCandidateDuplicateSignal[];
+            existingAssignments: ExistingCandidateDuplicateAssignment[];
+            reusedDuplicateGroups: ExistingDuplicateGroupReference[];
+            newCandidateGroupIds: Map<string, string>;
+          }> {
+          """,
+                  1,
+              )
+
+          collections_anchor = """  const existingAssignments: ExistingCandidateDuplicateAssignment[] = [];
+            const newCandidateGroupIds = new Map<string, string>();
+          """
+          if 'const reusedDuplicateGroupMembers = new Map<string, Set<string>>();' not in text:
+              if collections_anchor not in text:
+                  raise SystemExit('duplicate work collections anchor not found')
+              text = text.replace(
+                  collections_anchor,
+                  """  const existingAssignments: ExistingCandidateDuplicateAssignment[] = [];
+            const reusedDuplicateGroupMembers = new Map<string, Set<string>>();
+            const newCandidateGroupIds = new Map<string, string>();
+          """,
+                  1,
+              )
+
+          group_reuse_anchor = """    if (existingGroupId === null) {
+              duplicateGroups.push({
+                id: groupId,
+                status: 'open',
+                resolutionNote: null,
+                resolvedAt: null,
+              });
+            }
+
+            for (const memberId of members) {
+          """
+          if 'reusedDuplicateGroupMembers.get(existingGroupId)' not in text:
+              if group_reuse_anchor not in text:
+                  raise SystemExit('OSM group reuse anchor not found')
+              text = text.replace(
+                  group_reuse_anchor,
+                  """    if (existingGroupId === null) {
+              duplicateGroups.push({
+                id: groupId,
+                status: 'open',
+                resolutionNote: null,
+                resolvedAt: null,
+              });
+            } else {
+              const reusedMembers = reusedDuplicateGroupMembers.get(existingGroupId) ?? new Set<string>();
+              for (const candidate of existingGroupMembers) reusedMembers.add(candidate.candidateId);
+              reusedDuplicateGroupMembers.set(existingGroupId, reusedMembers);
+            }
+
+            for (const memberId of members) {
+          """,
+                  1,
+              )
+
+          return_anchor = """  return {
+            duplicateGroups,
+            duplicateSignals,
+            existingAssignments,
+            newCandidateGroupIds,
+          };
+          """
+          if 'reusedDuplicateGroups:' not in text[text.index('async function duplicatePersistenceWork'):text.index('async function retainPersistenceWork')]:
+              if return_anchor not in text:
+                  raise SystemExit('duplicate work return anchor not found')
+              text = text.replace(
+                  return_anchor,
+                  """  return {
+            duplicateGroups,
+            duplicateSignals,
+            existingAssignments,
+            reusedDuplicateGroups: [...reusedDuplicateGroupMembers.entries()]
+              .sort(([left], [right]) => left.localeCompare(right))
+              .map(([duplicateGroupId, memberIds]) => ({
+                duplicateGroupId,
+                expectedStatus: 'open' as const,
+                existingMemberCandidateIds: [...memberIds].sort(),
+              })),
+            newCandidateGroupIds,
+          };
+          """,
+                  1,
+              )
+
+          retain_anchor = '    existingCandidateDuplicateAssignments: duplicateWork.existingAssignments,\n    duplicateGroups: duplicateWork.duplicateGroups,'
+          if 'reusedDuplicateGroups: duplicateWork.reusedDuplicateGroups' not in text:
+              if retain_anchor not in text:
+                  raise SystemExit('retain plan anchor not found')
+              text = text.replace(
+                  retain_anchor,
+                  '    existingCandidateDuplicateAssignments: duplicateWork.existingAssignments,\n    reusedDuplicateGroups: duplicateWork.reusedDuplicateGroups,\n    duplicateGroups: duplicateWork.duplicateGroups,',
+                  1,
+              )
+
+          unsafe_anchor = '    existingCandidateDuplicateAssignments: [],\n    duplicateGroups: [],'
+          if 'reusedDuplicateGroups: []' not in text:
+              if unsafe_anchor not in text:
+                  raise SystemExit('unsafe plan anchor not found')
+              text = text.replace(
+                  unsafe_anchor,
+                  '    existingCandidateDuplicateAssignments: [],\n    reusedDuplicateGroups: [],\n    duplicateGroups: [],',
+                  1,
+              )
+          osm.write_text(text)
+
+          test = Path('tests/candidate-ingestion-persistence.test.ts')
+          text = test.read_text()
+          insertion_anchor = """  it('rejects a duplicate signal that references an unassigned cross-batch Candidate', () => {
+          """
+          if "accepts a duplicate signal into an explicitly referenced existing open group" not in text:
+              if insertion_anchor not in text:
+                  raise SystemExit('persistence test insertion anchor not found')
+              new_tests = """  it('accepts a duplicate signal into an explicitly referenced existing open group', () => {
+              const plan = {
+                batch: batch({ duplicateSignalCount: 1 }),
+                sourceRecords: [sourceRecord()],
+                candidates: [candidate({ duplicateGroupId: DUPLICATE_GROUP_ID })],
+                candidateSourceRecords: [relation()],
+                reusedDuplicateGroups: [
+                  {
+                    duplicateGroupId: DUPLICATE_GROUP_ID,
+                    expectedStatus: 'open' as const,
+                    existingMemberCandidateIds: [EXISTING_CANDIDATE_ID],
+                  },
+                ],
+                duplicateGroups: [],
+                duplicateSignals: [
+                  {
+                    id: DUPLICATE_SIGNAL_ID,
+                    duplicateGroupId: DUPLICATE_GROUP_ID,
+                    leftCandidateId: CANDIDATE_ID,
+                    rightCandidateId: EXISTING_CANDIDATE_ID,
+                    reason: 'same_name_and_coordinates' as const,
+                    strength: 'strong' as const,
+                    importBatchId: BATCH_ID,
+                  },
+                ],
+              };
+
+              expect(validateCandidateIngestionPersistencePlan(plan)).toBe(plan);
+            });
+
+            it('rejects a reused-group signal whose existing member belongs to another declared group', () => {
+              expect(() =>
+                validateCandidateIngestionPersistencePlan({
+                  batch: batch({ duplicateSignalCount: 1 }),
+                  sourceRecords: [sourceRecord()],
+                  candidates: [candidate({ duplicateGroupId: DUPLICATE_GROUP_ID })],
+                  candidateSourceRecords: [relation()],
+                  reusedDuplicateGroups: [
+                    {
+                      duplicateGroupId: DUPLICATE_GROUP_ID,
+                      expectedStatus: 'open',
+                      existingMemberCandidateIds: [EXISTING_CANDIDATE_ID],
+                    },
+                  ],
+                  duplicateGroups: [],
+                  duplicateSignals: [
+                    {
+                      id: DUPLICATE_SIGNAL_ID,
+                      duplicateGroupId: '00000000-0000-4000-8000-000000000099',
+                      leftCandidateId: CANDIDATE_ID,
+                      rightCandidateId: EXISTING_CANDIDATE_ID,
+                      reason: 'same_name_and_coordinates',
+                      strength: 'strong',
+                      importBatchId: BATCH_ID,
+                    },
+                  ],
+                }),
+              ).toThrowError(CandidateIngestionPersistenceError);
+            });
+
+          """
+              text = text.replace(insertion_anchor, new_tests + insertion_anchor, 1)
+          test.write_text(text)
+
+          osm_test = Path('tests/osm-overpass-candidate-acquisition.test.ts')
+          text = osm_test.read_text()
+          open_reuse_expect = "      expect(result.plan.duplicateGroups).toHaveLength(0);\n      expect(result.plan.existingCandidateDuplicateAssignments).toHaveLength(0);"
+          if 'expect(result.plan.reusedDuplicateGroups)' not in text:
+              if open_reuse_expect not in text:
+                  raise SystemExit('OSM reuse test anchor not found')
+              text = text.replace(
+                  open_reuse_expect,
+                  """      expect(result.plan.duplicateGroups).toHaveLength(0);
+                expect(result.plan.reusedDuplicateGroups).toEqual([
+                  {
+                    duplicateGroupId,
+                    expectedStatus: 'open',
+                    existingMemberCandidateIds: [existing.candidateId],
+                  },
+                ]);
+                expect(result.plan.existingCandidateDuplicateAssignments).toHaveLength(0);""",
+                  1,
+              )
+          osm_test.write_text(text)
+          PY
+      - name: Format changed files
+        run: npx biome format --write src/importers/candidate-ingestion-persistence.ts src/importers/osm-overpass-candidate-acquisition.ts tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+      - name: Lint changed files
+        run: npx biome lint src/importers/candidate-ingestion-persistence.ts src/importers/osm-overpass-candidate-acquisition.ts tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+      - name: Run focused tests
+        run: npx vitest run tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+      - name: Typecheck project
+        run: npm run check
+      - name: Commit validated source changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/importers/candidate-ingestion-persistence.ts src/importers/osm-overpass-candidate-acquisition.ts tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+          git commit -m 'fix: persist reused open duplicate groups safely'
+          git push origin HEAD:fix/reused-duplicate-group-persistence
