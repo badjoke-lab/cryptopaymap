@@ -91,10 +91,20 @@ async function main() {
     (row) =>
       row.candidateType === 'physical_place' &&
       row.duplicateGroupId === null &&
-      ['new', 'triaged', 'promoted'].includes(row.candidateStatus),
+      ['new', 'triaged'].includes(row.candidateStatus),
   );
   const pilot = candidates[0];
-  if (!pilot) throw new Error('No bounded Tokyo pilot Candidate is available.');
+  if (!pilot) {
+    console.log(JSON.stringify({
+      target: EXPECTED_TARGET,
+      batchId: TOKYO_BATCH_ID,
+      eligibleUnpromotedPilotAvailable: false,
+      mutationPerformed: false,
+      publicDataChanged: false,
+      payloadExposed: false,
+    }));
+    return;
+  }
 
   const relations = await db
     .select({
@@ -172,25 +182,6 @@ async function main() {
       authorizationConfigured: policy.configured,
       reviewerAuthorized: subjectAuthorized,
       mutationPerformed: false,
-      publicDataChanged: false,
-      payloadExposed: false,
-    }));
-    return;
-  }
-
-  if (pilot.candidateStatus === 'promoted') {
-    console.log(JSON.stringify({
-      target: EXPECTED_TARGET,
-      batchId: TOKYO_BATCH_ID,
-      boundedPilotSelected: true,
-      candidateState: 'promoted',
-      sourceReady,
-      registry,
-      registryReady,
-      authorizationConfigured: true,
-      reviewerAuthorized: true,
-      mutationPerformed: false,
-      alreadyPromoted: true,
       publicDataChanged: false,
       payloadExposed: false,
     }));
