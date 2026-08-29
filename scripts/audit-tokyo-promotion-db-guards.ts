@@ -1,4 +1,4 @@
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, sql, type SQL } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
 import {
   candidateSourceRecords,
@@ -10,6 +10,12 @@ declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
 const TOKYO_BATCH_ID = '9a7aa03b-ebce-4ee0-ad44-731149450d85';
+
+function postgresCode(error: unknown): string | null {
+  if (error === null || typeof error !== 'object' || !('code' in error)) return null;
+  const code = (error as { code?: unknown }).code;
+  return typeof code === 'string' ? code : null;
+}
 
 async function main() {
   if (process.env.CPM_CANDIDATE_ACQUISITION_TARGET !== EXPECTED_TARGET) {
@@ -51,8 +57,18 @@ async function main() {
     .orderBy(candidateSourceRecords.sourceRecordId);
   const sourceRecordIds = sourceRows.map((row) => row.sourceRecordId);
 
-  const candidateCheck = await db.execute(sql`
-    select exists (
+  async function exactGuardPass(query: SQL): Promise<boolean> {
+    try {
+      await db.execute(query);
+      return true;
+    } catch (error) {
+      if (postgresCode(error) === '22012') return false;
+      throw error;
+    }
+  }
+
+  const candidateGuardPass = await exactGuardPass(sql`
+    select 1 / case when exists (
       select 1
       from ${sourceCandidates}
       where ${sourceCandidates.id} = ${pilot.candidateId}
@@ -61,21 +77,22 @@ async function main() {
         and ${sourceCandidates.updatedAt} = ${pilot.updatedAt}
         and ${sourceCandidates.canonicalEntityId} is null
         and ${sourceCandidates.canonicalLocationId} is null
-    ) as pass
+      for update
+    ) then 1 else 0 end as candidate_promotion_guard
   `);
-  const sourceCheck = await db.execute(sql`
-    select (
+
+  const sourceRecordGuardPass = await exactGuardPass(sql`
+    select 1 / case when (
       select coalesce(jsonb_agg(locked.source_record_id order by locked.source_record_id), '[]'::jsonb)
       from (
         select ${candidateSourceRecords.sourceRecordId} as source_record_id
         from ${candidateSourceRecords}
         where ${candidateSourceRecords.candidateId} = ${pilot.candidateId}
+        for update
       ) as locked
-    ) = ${JSON.stringify(sourceRecordIds)}::jsonb as pass
+    ) = ${JSON.stringify(sourceRecordIds)}::jsonb then 1 else 0 end
+      as candidate_promotion_source_guard
   `);
-
-  const candidateGuardPass = Boolean((candidateCheck as unknown as Array<{ pass: boolean }>)[0]?.pass);
-  const sourceRecordGuardPass = Boolean((sourceCheck as unknown as Array<{ pass: boolean }>)[0]?.pass);
 
   console.log(
     JSON.stringify({
