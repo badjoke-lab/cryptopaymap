@@ -1,4 +1,4 @@
-import { and, eq, lte } from 'drizzle-orm';
+import { and, eq, inArray, isNull, lte, sql } from 'drizzle-orm';
 import type { CryptoPayMapDatabase } from '../db/client';
 import {
   candidateDuplicateGroups,
@@ -33,12 +33,19 @@ export interface CandidateSourceRefresh {
   lastSeenAt: Date;
 }
 
+export interface ExistingCandidateDuplicateAssignment {
+  candidateId: string;
+  duplicateGroupId: string;
+  assignedAt: Date;
+}
+
 export interface CandidateIngestionPersistencePlan {
   batch: NewImportBatch;
   sourceRecords: NewSourceRecord[];
   candidates: NewSourceCandidate[];
   candidateSourceRecords: NewCandidateSourceRecord[];
   sourceRefreshes?: CandidateSourceRefresh[];
+  existingCandidateDuplicateAssignments?: ExistingCandidateDuplicateAssignment[];
   duplicateGroups?: NewCandidateDuplicateGroup[];
   duplicateSignals?: NewCandidateDuplicateSignal[];
 }
@@ -91,6 +98,7 @@ export function validateCandidateIngestionPersistencePlan(
   plan: CandidateIngestionPersistencePlan,
 ): CandidateIngestionPersistencePlan {
   const sourceRefreshes = plan.sourceRefreshes ?? [];
+  const existingCandidateDuplicateAssignments = plan.existingCandidateDuplicateAssignments ?? [];
   const duplicateGroups = plan.duplicateGroups ?? [];
   const duplicateSignals = plan.duplicateSignals ?? [];
 
@@ -224,6 +232,39 @@ export function validateCandidateIngestionPersistencePlan(
       return group.id;
     }),
   );
+  const groupMembers = new Map<string, Set<string>>();
+  const existingAssignmentCandidateIds = new Set<string>();
+
+  for (const assignment of existingCandidateDuplicateAssignments) {
+    if (
+      assignment.candidateId.trim().length === 0 ||
+      assignment.duplicateGroupId.trim().length === 0
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Existing Candidate duplicate assignments require complete identity.',
+      );
+    }
+    if (!duplicateGroupIds.has(assignment.duplicateGroupId)) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Existing Candidate duplicate assignments must reference a group from the same plan.',
+      );
+    }
+    if (
+      candidateIds.has(assignment.candidateId) ||
+      refreshedCandidateIds.has(assignment.candidateId) ||
+      existingAssignmentCandidateIds.has(assignment.candidateId)
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'A Candidate may receive at most one ingestion-time duplicate assignment.',
+      );
+    }
+    existingAssignmentCandidateIds.add(assignment.candidateId);
+  }
+
+  const signalCandidateIds = new Set([...candidateIds, ...existingAssignmentCandidateIds]);
   for (const signal of duplicateSignals) {
     if (signal.id == null || !duplicateGroupIds.has(signal.duplicateGroupId)) {
       throw new CandidateIngestionPersistenceError(
@@ -231,16 +272,52 @@ export function validateCandidateIngestionPersistencePlan(
         'Duplicate signals must reference a duplicate group from the same plan.',
       );
     }
-    if (!candidateIds.has(signal.leftCandidateId) || !candidateIds.has(signal.rightCandidateId)) {
+    if (
+      !signalCandidateIds.has(signal.leftCandidateId) ||
+      !signalCandidateIds.has(signal.rightCandidateId)
+    ) {
       throw new CandidateIngestionPersistenceError(
         'invalid_plan',
-        'Duplicate signals may reference only Candidates from the same plan.',
+        'Duplicate signals may reference only new Candidates or explicitly assigned existing Candidates.',
       );
     }
     if (signal.importBatchId !== plan.batch.id) {
       throw new CandidateIngestionPersistenceError(
         'invalid_plan',
         'Duplicate signals must reference the persisted import batch.',
+      );
+    }
+    const members = groupMembers.get(signal.duplicateGroupId) ?? new Set<string>();
+    members.add(signal.leftCandidateId);
+    members.add(signal.rightCandidateId);
+    groupMembers.set(signal.duplicateGroupId, members);
+  }
+
+  for (const groupId of duplicateGroupIds) {
+    if ((groupMembers.get(groupId)?.size ?? 0) < 2) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Every ingestion-time duplicate group must contain at least two signaled Candidates.',
+      );
+    }
+  }
+  for (const candidate of plan.candidates) {
+    if (
+      candidate.duplicateGroupId != null &&
+      (!duplicateGroupIds.has(candidate.duplicateGroupId) ||
+        !groupMembers.get(candidate.duplicateGroupId)?.has(candidate.id ?? ''))
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'New Candidate duplicate assignments must match a signaled group from the same plan.',
+      );
+    }
+  }
+  for (const assignment of existingCandidateDuplicateAssignments) {
+    if (!groupMembers.get(assignment.duplicateGroupId)?.has(assignment.candidateId)) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Existing Candidate duplicate assignments must match a signaled group member.',
       );
     }
   }
@@ -323,6 +400,22 @@ async function findReplay(database: CryptoPayMapDatabase, batch: NewImportBatch)
   return readExistingByChecksum(database, batch);
 }
 
+function existingDuplicateAssignmentGuard(
+  database: CryptoPayMapDatabase,
+  assignment: ExistingCandidateDuplicateAssignment,
+) {
+  return database.execute(sql`
+    select 1 / case when exists (
+      select 1
+      from ${sourceCandidates}
+      where ${sourceCandidates.id} = ${assignment.candidateId}
+        and ${sourceCandidates.duplicateGroupId} is null
+        and ${sourceCandidates.candidateStatus} in ('new', 'triaged')
+      for update
+    ) then 1 else 0 end as candidate_duplicate_assignment_guard
+  `);
+}
+
 export function createDrizzleCandidateIngestionPersistenceBackend(database: CryptoPayMapDatabase) {
   return {
     async commit(
@@ -383,6 +476,24 @@ export function createDrizzleCandidateIngestionPersistenceBackend(database: Cryp
       if (plan.candidateSourceRecords.length > 0) {
         statements.push(
           database.insert(candidateSourceRecords).values(plan.candidateSourceRecords),
+        );
+      }
+      for (const assignment of plan.existingCandidateDuplicateAssignments ?? []) {
+        statements.push(
+          existingDuplicateAssignmentGuard(database, assignment),
+          database
+            .update(sourceCandidates)
+            .set({
+              duplicateGroupId: assignment.duplicateGroupId,
+              updatedAt: assignment.assignedAt,
+            })
+            .where(
+              and(
+                eq(sourceCandidates.id, assignment.candidateId),
+                isNull(sourceCandidates.duplicateGroupId),
+                inArray(sourceCandidates.candidateStatus, ['new', 'triaged']),
+              ),
+            ),
         );
       }
       if (plan.duplicateSignals && plan.duplicateSignals.length > 0) {

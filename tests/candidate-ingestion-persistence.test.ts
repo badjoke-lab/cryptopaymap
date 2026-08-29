@@ -16,6 +16,9 @@ const REQUEST_ID = '00000000-0000-4000-8000-000000000002';
 const SOURCE_ID = '00000000-0000-4000-8000-000000000003';
 const SOURCE_RECORD_ID = '00000000-0000-4000-8000-000000000004';
 const CANDIDATE_ID = '00000000-0000-4000-8000-000000000005';
+const EXISTING_CANDIDATE_ID = '00000000-0000-4000-8000-000000000006';
+const DUPLICATE_GROUP_ID = '00000000-0000-4000-8000-000000000007';
+const DUPLICATE_SIGNAL_ID = '00000000-0000-4000-8000-000000000008';
 const NOW = new Date('2026-08-28T00:00:00.000Z');
 
 function batch(overrides: Partial<NewImportBatch> = {}): NewImportBatch {
@@ -136,6 +139,75 @@ describe('Candidate ingestion persistence safety', () => {
     expect(plan.candidates).toHaveLength(0);
   });
 
+  it('accepts a cross-batch duplicate signal with an explicit existing-Candidate assignment', () => {
+    const plan = {
+      batch: batch({ duplicateSignalCount: 1 }),
+      sourceRecords: [sourceRecord()],
+      candidates: [candidate({ duplicateGroupId: DUPLICATE_GROUP_ID })],
+      candidateSourceRecords: [relation()],
+      existingCandidateDuplicateAssignments: [
+        {
+          candidateId: EXISTING_CANDIDATE_ID,
+          duplicateGroupId: DUPLICATE_GROUP_ID,
+          assignedAt: NOW,
+        },
+      ],
+      duplicateGroups: [
+        {
+          id: DUPLICATE_GROUP_ID,
+          status: 'open' as const,
+          resolutionNote: null,
+          resolvedAt: null,
+        },
+      ],
+      duplicateSignals: [
+        {
+          id: DUPLICATE_SIGNAL_ID,
+          duplicateGroupId: DUPLICATE_GROUP_ID,
+          leftCandidateId: CANDIDATE_ID,
+          rightCandidateId: EXISTING_CANDIDATE_ID,
+          reason: 'same_name_and_coordinates' as const,
+          strength: 'strong' as const,
+          importBatchId: BATCH_ID,
+        },
+      ],
+    };
+
+    expect(validateCandidateIngestionPersistencePlan(plan)).toBe(plan);
+    expect(plan.batch.duplicateSignalCount).toBe(1);
+    expect(plan.existingCandidateDuplicateAssignments).toHaveLength(1);
+  });
+
+  it('rejects a duplicate signal that references an unassigned cross-batch Candidate', () => {
+    expect(() =>
+      validateCandidateIngestionPersistencePlan({
+        batch: batch({ duplicateSignalCount: 1 }),
+        sourceRecords: [sourceRecord()],
+        candidates: [candidate({ duplicateGroupId: DUPLICATE_GROUP_ID })],
+        candidateSourceRecords: [relation()],
+        duplicateGroups: [
+          {
+            id: DUPLICATE_GROUP_ID,
+            status: 'open',
+            resolutionNote: null,
+            resolvedAt: null,
+          },
+        ],
+        duplicateSignals: [
+          {
+            id: DUPLICATE_SIGNAL_ID,
+            duplicateGroupId: DUPLICATE_GROUP_ID,
+            leftCandidateId: CANDIDATE_ID,
+            rightCandidateId: EXISTING_CANDIDATE_ID,
+            reason: 'same_name_and_coordinates',
+            strength: 'strong',
+            importBatchId: BATCH_ID,
+          },
+        ],
+      }),
+    ).toThrow('explicitly assigned existing Candidates');
+  });
+
   it('rejects a refresh that does not actually change source content', () => {
     expect(() =>
       validateCandidateIngestionPersistencePlan({
@@ -156,7 +228,7 @@ describe('Candidate ingestion persistence safety', () => {
         candidates: [
           candidate({
             candidateStatus: 'promoted',
-            canonicalLocationId: '00000000-0000-4000-8000-000000000006',
+            canonicalLocationId: '00000000-0000-4000-8000-000000000009',
           }),
         ],
         candidateSourceRecords: [relation()],
