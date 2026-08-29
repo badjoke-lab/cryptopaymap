@@ -72,7 +72,7 @@ function candidateGuard(database: CryptoPayMapDatabase, command: CandidatePromot
       where ${sourceCandidates.id} = ${command.candidateId}
         and ${sourceCandidates.candidateType} = ${command.expectedCandidateType}
         and ${sourceCandidates.candidateStatus} in ('new', 'triaged')
-        and ${sourceCandidates.updatedAt} = ${command.expectedCandidateUpdatedAt}
+        and date_trunc('milliseconds', ${sourceCandidates.updatedAt}) = ${command.expectedCandidateUpdatedAt}
         and ${sourceCandidates.canonicalEntityId} is null
         and ${sourceCandidates.canonicalLocationId} is null
       for update
