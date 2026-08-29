@@ -14,6 +14,7 @@ import {
   createDrizzleCandidateIngestionPersistenceBackend,
   type CandidateIngestionPersistencePlan,
   type CandidateIngestionReceipt,
+  type CandidateSourceRefresh,
 } from './candidate-ingestion-persistence';
 import {
   reconcileCandidateAcquisition,
@@ -197,7 +198,52 @@ function acquisitionSeedSnapshots(
   });
 }
 
-function retainNewCandidates(
+function changedSourceRefreshes(
+  plan: CandidateIngestionPersistencePlan,
+  reconciliation: AcquisitionReconciliationPlan,
+): CandidateSourceRefresh[] {
+  const candidatesById = new Map(plan.candidates.map((candidate) => [candidate.id, candidate]));
+  const sourceRecordsById = new Map(plan.sourceRecords.map((record) => [record.id, record]));
+  const relationsByCandidateId = new Map(
+    plan.candidateSourceRecords.map((relation) => [relation.candidateId, relation]),
+  );
+
+  return reconciliation.changedSeeds.map(({ incoming, existing }) => {
+    const candidate = candidatesById.get(incoming.candidateId);
+    const relation = relationsByCandidateId.get(incoming.candidateId);
+    const sourceRecord =
+      relation === undefined ? undefined : sourceRecordsById.get(relation.sourceRecordId);
+    if (
+      candidate === undefined ||
+      sourceRecord === undefined ||
+      sourceRecord.externalId == null ||
+      sourceRecord.contentHash == null
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Changed OSM source refresh requires complete incoming Candidate/source data.',
+      );
+    }
+
+    return {
+      candidateId: existing.candidateId,
+      sourceId: sourceRecord.sourceId,
+      externalId: sourceRecord.externalId,
+      expectedContentHash: existing.contentHash,
+      sourceUrl: sourceRecord.sourceUrl ?? null,
+      rawPayload: sourceRecord.rawPayload,
+      observedAt: sourceRecord.observedAt ?? null,
+      publishedAt: sourceRecord.publishedAt ?? null,
+      fetchedAt: sourceRecord.fetchedAt,
+      contentHash: sourceRecord.contentHash,
+      archiveUrl: sourceRecord.archiveUrl ?? null,
+      licenseId: sourceRecord.licenseId ?? null,
+      lastSeenAt: candidate.lastSeenAt,
+    };
+  });
+}
+
+function retainPersistenceWork(
   plan: CandidateIngestionPersistencePlan,
   reconciliation: AcquisitionReconciliationPlan,
 ): CandidateIngestionPersistencePlan {
@@ -212,17 +258,19 @@ function retainNewCandidates(
   const sourceRecordsToPersist = plan.sourceRecords.filter(
     (record) => record.id != null && newSourceRecordIds.has(record.id),
   );
+  const sourceRefreshes = changedSourceRefreshes(plan, reconciliation);
 
   return {
     ...plan,
     batch: {
       ...plan.batch,
-      acceptedCount: candidates.length,
+      acceptedCount: candidates.length + sourceRefreshes.length,
       replayedCount: reconciliation.unchangedSeeds.length,
     },
     candidates,
     sourceRecords: sourceRecordsToPersist,
     candidateSourceRecords: relations,
+    sourceRefreshes,
   };
 }
 
@@ -348,6 +396,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
     sourceRecords: sourceRecordsToPlan,
     candidates,
     candidateSourceRecords: candidateSourceRecordsToPlan,
+    sourceRefreshes: [],
     duplicateGroups: [],
     duplicateSignals: [],
   };
@@ -357,7 +406,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
   );
 
   return {
-    plan: retainNewCandidates(unsafePlan, reconciliation),
+    plan: retainPersistenceWork(unsafePlan, reconciliation),
     reconciliation,
     rejected,
   };
@@ -415,13 +464,5 @@ export async function persistOsmOverpassCandidateAcquisition(
   const externalIds = input.elements.map((element) => `${element.type}:${element.id}`);
   const existing = await loadExistingOsmCandidates(database, input.sourceId, externalIds);
   const result = await createOsmOverpassCandidateAcquisitionPlan(input, existing);
-
-  if (result.reconciliation.changedSeeds.length > 0) {
-    throw new CandidateIngestionPersistenceError(
-      'conflict',
-      'Changed repeat-source Candidates require the bounded refresh-persistence follow-up and were not written.',
-    );
-  }
-
   return createDrizzleCandidateIngestionPersistenceBackend(database).commit(result.plan);
 }
