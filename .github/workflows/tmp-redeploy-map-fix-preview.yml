@@ -1,0 +1,122 @@
+name: Temporary map-fix real-data staging redeploy
+
+on:
+  push:
+    branches:
+      - ops/redeploy-map-fix-preview
+    paths:
+      - '.github/workflows/tmp-redeploy-map-fix-preview.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: real-data-staging-publication
+  cancel-in-progress: false
+
+jobs:
+  redeploy:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PREVIEW_URL: https://real-data-review.cryptopaymap-staging.pages.dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Keep the four reviewed staging records public
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-tokyo-confirmed-canonical-staging.ts
+
+      - name: Materialize real public data and build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          rm -rf public/staging-review
+          npx tsx scripts/materialize-public-data-from-staging-db.ts
+          npm run check
+          npm run build
+
+      - name: Deploy real-data staging preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler pages deploy dist \
+            --project-name cryptopaymap-staging \
+            --branch real-data-review
+
+      - name: Install browser verifier
+        run: |
+          npm install --no-save --package-lock=false playwright@1.57.0
+          npx playwright install --with-deps chromium
+
+      - name: Verify real map and forced one-shot recovery
+        run: |
+          cat > .tmp-verify-map-recovery.mjs <<'NODE'
+          import { chromium } from 'playwright';
+
+          const browser = await chromium.launch({
+            headless: true,
+            args: ['--use-gl=swiftshader', '--enable-webgl'],
+          });
+          const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+          let styleRequests = 0;
+          let abortedFirstStyle = false;
+
+          await page.route('https://tiles.openfreemap.org/styles/bright**', async (route) => {
+            styleRequests += 1;
+            if (!abortedFirstStyle) {
+              abortedFirstStyle = true;
+              await route.abort('failed');
+              return;
+            }
+            await route.continue();
+          });
+
+          const response = await page.goto(`${process.env.PREVIEW_URL}/places?verify=${Date.now()}`, {
+            waitUntil: 'domcontentloaded',
+            timeout: 60_000,
+          });
+          if (response?.status() !== 200) throw new Error(`Places returned ${response?.status()}.`);
+
+          await page.getByText('Loading map…', { exact: true }).waitFor({ state: 'hidden', timeout: 20_000 });
+          await page.locator('.maplibregl-canvas').first().waitFor({ state: 'visible', timeout: 5_000 });
+          await page.waitForTimeout(2_000);
+
+          const state = await page.evaluate(() => ({
+            errorVisible: document.body.innerText.includes('Map could not be loaded'),
+            unsupportedVisible: document.body.innerText.includes('Interactive map unavailable'),
+            loadingVisible: document.body.innerText.includes('Loading map…'),
+            canvases: document.querySelectorAll('.maplibregl-canvas').length,
+            resultCountVisible: document.body.innerText.includes('4 results'),
+          }));
+
+          if (!abortedFirstStyle || styleRequests < 2) {
+            throw new Error(`Expected one aborted style request followed by a retry; got ${styleRequests}.`);
+          }
+          if (state.errorVisible || state.unsupportedVisible || state.loadingVisible || state.canvases < 1) {
+            throw new Error(`Map did not recover: ${JSON.stringify(state)}`);
+          }
+          if (!state.resultCountVisible) throw new Error('Expected four real results on the deployed preview.');
+
+          console.log(JSON.stringify({
+            previewReachable: true,
+            forcedInitialStyleFailure: true,
+            styleRequests,
+            recovered: true,
+            ...state,
+          }));
+          await browser.close();
+          NODE
+          node .tmp-verify-map-recovery.mjs
