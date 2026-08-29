@@ -8,6 +8,7 @@ on:
       - scripts/audit-tokyo-candidate-review-readiness.ts
       - scripts/probe-tokyo-official-payment-evidence.ts
       - scripts/persist-tokyo-pending-official-evidence.ts
+      - scripts/verify-tokyo-pending-official-evidence.ts
       - .github/workflows/audit-tokyo-candidate-review-triage.yml
 
 permissions:
@@ -47,6 +48,12 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/persist-tokyo-pending-official-evidence.ts
+
+      - name: Verify private pending official Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/verify-tokyo-pending-official-evidence.ts
 
       - name: Audit review authorization configuration
         env:
