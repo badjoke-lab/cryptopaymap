@@ -6,7 +6,7 @@ on:
       - ops/tokyo-candidate-review-triage
     paths:
       - src/admin/promotion/drizzle-candidate-promotion-backend.ts
-      - scripts/audit-tokyo-promotion-db-guards.ts
+      - scripts/audit-tokyo-official-evidence-state.ts
       - scripts/ensure-tokyo-pilot-staging-registry.ts
       - scripts/promote-tokyo-hidden-pilot.ts
       - scripts/confirm-tokyo-hidden-pilot.ts
@@ -38,22 +38,28 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/ensure-tokyo-pilot-staging-registry.ts
 
-      - name: Audit Candidate timestamp guard precision
+      - name: Audit Tokyo official Evidence state before mutation
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: npx tsx scripts/audit-tokyo-promotion-db-guards.ts
+        run: npx tsx scripts/audit-tokyo-official-evidence-state.ts
 
-      - name: Promote one hidden Tokyo pilot
+      - name: Promote next hidden Tokyo pilot if available
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
         run: npx tsx scripts/promote-tokyo-hidden-pilot.ts
 
-      - name: Confirm one hidden Tokyo pilot
+      - name: Confirm next hidden Tokyo pilot if available
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
         run: npx tsx scripts/confirm-tokyo-hidden-pilot.ts
+
+      - name: Audit Tokyo official Evidence state after mutation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/audit-tokyo-official-evidence-state.ts
