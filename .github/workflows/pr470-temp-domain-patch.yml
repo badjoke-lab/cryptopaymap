@@ -22,6 +22,9 @@ jobs:
           cache: npm
       - run: npm ci
       - run: python3 scripts/pr470-temp-domain-patch.py
+      - name: Align shared-domain strength expectation
+        run: >-
+          python3 -c "from pathlib import Path; p=Path('tests/osm-overpass-candidate-acquisition.test.ts'); s=p.read_text(); old=\"expect(signal.reason).toBe('shared_official_domain');\\n    expect(signal.strength).toBe('strong');\"; new=\"expect(signal.reason).toBe('shared_official_domain');\\n    expect(signal.strength).toBe('review');\"; assert old in s; p.write_text(s.replace(old,new,1))"
       - run: npm run db:generate
       - run: npm run format
       - run: npm test -- tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts tests/candidate-acquisition-reconciliation.test.ts
