@@ -25,21 +25,37 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - name: Preserve resolved source id across worker closure
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/crawl-tokyo-official-payment-evidence.ts')
+          text = path.read_text()
+          needle = "  if (!sourceId) throw new Error('Failed to resolve bounded official-site crawl source.');\n"
+          replacement = needle + "  const resolvedSourceId: string = sourceId;\n"
+          if 'const resolvedSourceId: string = sourceId;' not in text:
+              if needle not in text:
+                  raise SystemExit('source id guard not found')
+              text = text.replace(needle, replacement, 1)
+          text = text.replace('eq(sourceRecords.sourceId, sourceId)', 'eq(sourceRecords.sourceId, resolvedSourceId)')
+          text = text.replace('              sourceId,\n              externalId,', '              sourceId: resolvedSourceId,\n              externalId,')
+          path.write_text(text)
+          PY
       - name: Format crawler
         run: npx biome format --write scripts/crawl-tokyo-official-payment-evidence.ts
       - name: Validate crawler
         run: |
           npx biome lint scripts/crawl-tokyo-official-payment-evidence.ts
           npm run check
-      - name: Commit formatter output when needed
+      - name: Commit validated crawler update when needed
         run: |
           if git diff --quiet -- scripts/crawl-tokyo-official-payment-evidence.ts; then
-            echo 'No formatting changes required.'
+            echo 'No source changes required.'
           else
             git config user.name github-actions[bot]
             git config user.email 41898282+github-actions[bot]@users.noreply.github.com
             git add scripts/crawl-tokyo-official-payment-evidence.ts
-            git commit -m 'chore: format Tokyo official evidence crawler'
+            git commit -m 'fix: preserve resolved crawl source id'
             git push origin HEAD:data/tokyo-official-evidence-crawl
           fi
       - name: Crawl official same-domain payment evidence
