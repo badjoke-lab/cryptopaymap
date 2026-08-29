@@ -149,6 +149,7 @@ async function main() {
         .returning({ id: sources.id })
     )[0]?.id;
   if (!sourceId) throw new Error('Failed to resolve official-site source.');
+  const resolvedSourceId: string = sourceId;
 
   const counters = {
     probed: targets.length,
@@ -174,7 +175,12 @@ async function main() {
       const existingRecord = await db
         .select({ id: sourceRecords.id })
         .from(sourceRecords)
-        .where(and(eq(sourceRecords.sourceId, sourceId), eq(sourceRecords.externalId, externalId)))
+        .where(
+          and(
+            eq(sourceRecords.sourceId, resolvedSourceId),
+            eq(sourceRecords.externalId, externalId),
+          ),
+        )
         .limit(1);
 
       let sourceRecordId = existingRecord[0]?.id;
@@ -183,7 +189,7 @@ async function main() {
           await db
             .insert(sourceRecords)
             .values({
-              sourceId,
+              sourceId: resolvedSourceId,
               externalId,
               sourceUrl: fetched.resolvedUrl,
               rawPayload: {
