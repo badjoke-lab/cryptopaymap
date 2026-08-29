@@ -1,5 +1,6 @@
 name: Temporary generalize staging publication
 
+# Temporary source-only helper; delete before PR.
 on:
   push:
     branches:
