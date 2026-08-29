@@ -41,7 +41,22 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: npx tsx scripts/acquire-osm-candidates.ts "${{ inputs.scope }}"
+        run: |
+          summary="$(npx tsx scripts/acquire-osm-candidates.ts "${{ inputs.scope }}")"
+          printf '%s\n' "$summary"
+          {
+            echo "scope=$(jq -r '.scope' <<<"$summary")"
+            echo "fetched_elements=$(jq -r '.fetchedElements' <<<"$summary")"
+            echo "candidate_total_before=$(jq -r '.candidateTotalBefore' <<<"$summary")"
+            echo "candidate_total_after=$(jq -r '.candidateTotalAfter' <<<"$summary")"
+            echo "candidate_delta=$(jq -r '.candidateDelta' <<<"$summary")"
+            echo "accepted_count=$(jq -r '.ingestion.acceptedCount' <<<"$summary")"
+            echo "rejected_count=$(jq -r '.ingestion.rejectedCount' <<<"$summary")"
+            echo "replayed_count=$(jq -r '.ingestion.replayedCount' <<<"$summary")"
+            echo "duplicate_signal_count=$(jq -r '.ingestion.duplicateSignalCount' <<<"$summary")"
+            echo "automatic_confirmed_count=$(jq -r '.ingestion.automaticConfirmedCount' <<<"$summary")"
+            echo "receipt_state=$(jq -r '.ingestion.state' <<<"$summary")"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Record count-only acquisition receipt
         env:
