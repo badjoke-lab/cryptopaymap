@@ -1,0 +1,35 @@
+name: Audit Tokyo Candidate review triage
+
+on:
+  push:
+    branches:
+      - ops/tokyo-candidate-review-triage
+    paths:
+      - scripts/audit-tokyo-candidate-review-readiness.ts
+      - .github/workflows/audit-tokyo-candidate-review-triage.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit Tokyo Candidate review readiness
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/audit-tokyo-candidate-review-readiness.ts
