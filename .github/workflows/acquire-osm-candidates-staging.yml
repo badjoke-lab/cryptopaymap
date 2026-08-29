@@ -11,6 +11,9 @@ on:
         options:
           - japan
           - tokyo
+  push:
+    branches:
+      - fix-p2-007-staging-osm-data-acquisition
 
 concurrency:
   group: fixed-review-osm-candidate-acquisition
@@ -41,8 +44,9 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          ACQUISITION_SCOPE: ${{ github.event_name == 'push' && 'tokyo' || inputs.scope }}
         run: |
-          summary="$(npx tsx scripts/acquire-osm-candidates.ts "${{ inputs.scope }}")"
+          summary="$(npx tsx scripts/acquire-osm-candidates.ts "$ACQUISITION_SCOPE")"
           printf '%s\n' "$summary"
           {
             echo "scope=$(jq -r '.scope' <<<"$summary")"
