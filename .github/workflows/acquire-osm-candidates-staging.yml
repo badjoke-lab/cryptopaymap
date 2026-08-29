@@ -11,9 +11,6 @@ on:
         options:
           - japan
           - tokyo
-  push:
-    branches:
-      - fix-p2-007-staging-osm-data-acquisition
 
 concurrency:
   group: fixed-review-osm-candidate-acquisition
@@ -39,19 +36,13 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Apply pending staging schema migrations
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        run: npm run db:migrate
-
       - name: Acquire private OSM Candidates
         id: acquisition
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-          ACQUISITION_SCOPE: ${{ github.event_name == 'push' && 'tokyo' || inputs.scope }}
         run: |
-          summary="$(npx tsx scripts/acquire-osm-candidates.ts "$ACQUISITION_SCOPE")"
+          summary="$(npx tsx scripts/acquire-osm-candidates.ts "${{ inputs.scope }}")"
           printf '%s\n' "$summary"
           {
             echo "scope=$(jq -r '.scope' <<<"$summary")"
