@@ -1,0 +1,33 @@
+name: Temporary Tokyo B-evidence signal audit
+
+on:
+  push:
+    branches:
+      - audit/tokyo-b-evidence-signals
+    paths:
+      - '.github/workflows/tmp-audit-tokyo-b-evidence-signals.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Validate audit
+        run: |
+          npx biome format scripts/audit-tokyo-b-evidence-signals.ts
+          npx biome lint scripts/audit-tokyo-b-evidence-signals.ts
+          npm run check
+      - name: Audit date-backed OSM evidence signals
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/audit-tokyo-b-evidence-signals.ts
