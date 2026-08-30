@@ -1,0 +1,55 @@
+name: Europe-west pending OSM freshness audit
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-review
+    paths:
+      - scripts/audit-europe-west-pending-osm-freshness.ts
+      - .github/workflows/europe-west-pending-osm-freshness-audit.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit pending OSM freshness
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          npx tsx scripts/audit-europe-west-pending-osm-freshness.ts > "$RUNNER_TEMP/europe-west-pending-osm-freshness.json"
+          jq -e '.target == "fixed-review-staging" and .pendingCandidateCount == 4 and .mutationPerformed == false and .publicDataChanged == false and .candidatePayloadExposedInLogs == false' "$RUNNER_TEMP/europe-west-pending-osm-freshness.json" >/dev/null
+          {
+            echo '## Europe-west pending OSM freshness'
+            echo "- pending Candidates audited: $(jq -r '.pendingCandidateCount' "$RUNNER_TEMP/europe-west-pending-osm-freshness.json")"
+            echo "- explicit payment check dates: $(jq -r '.candidatesWithExplicitPaymentCheckDate' "$RUNNER_TEMP/europe-west-pending-osm-freshness.json")"
+            echo "- OSM element timestamps present: $(jq -r '.candidatesWithElementTimestamp' "$RUNNER_TEMP/europe-west-pending-osm-freshness.json")"
+            echo '- mutation performed: false'
+            echo '- public data changed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload private freshness receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: europe-west-pending-osm-freshness-private
+          path: ${{ runner.temp }}/europe-west-pending-osm-freshness.json
+          retention-days: 1
+          if-no-files-found: error
