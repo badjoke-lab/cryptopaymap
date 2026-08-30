@@ -250,6 +250,13 @@ describe('OSM Overpass Candidate acquisition', () => {
       [existing],
     );
     expect(result.plan.duplicateGroups).toHaveLength(0);
+    expect(result.plan.reusedDuplicateGroups).toEqual([
+      {
+        duplicateGroupId,
+        expectedStatus: 'open',
+        existingMemberCandidateIds: [existing.candidateId],
+      },
+    ]);
     expect(result.plan.existingCandidateDuplicateAssignments).toHaveLength(0);
     expect(result.plan.candidates[0]?.duplicateGroupId).toBe(duplicateGroupId);
     expect(result.plan.duplicateSignals?.[0]?.duplicateGroupId).toBe(duplicateGroupId);

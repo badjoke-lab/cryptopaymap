@@ -179,6 +179,37 @@ describe('Candidate ingestion persistence safety', () => {
     expect(plan.existingCandidateDuplicateAssignments).toHaveLength(1);
   });
 
+  it('accepts a duplicate signal into an explicitly referenced existing open group', () => {
+    const plan = {
+      batch: batch({ duplicateSignalCount: 1 }),
+      sourceRecords: [sourceRecord()],
+      candidates: [candidate({ duplicateGroupId: DUPLICATE_GROUP_ID })],
+      candidateSourceRecords: [relation()],
+      reusedDuplicateGroups: [
+        {
+          duplicateGroupId: DUPLICATE_GROUP_ID,
+          expectedStatus: 'open' as const,
+          existingMemberCandidateIds: [EXISTING_CANDIDATE_ID],
+        },
+      ],
+      duplicateGroups: [],
+      duplicateSignals: [
+        {
+          id: DUPLICATE_SIGNAL_ID,
+          duplicateGroupId: DUPLICATE_GROUP_ID,
+          leftCandidateId: CANDIDATE_ID,
+          rightCandidateId: EXISTING_CANDIDATE_ID,
+          reason: 'same_name_and_coordinates' as const,
+          strength: 'strong' as const,
+          importBatchId: BATCH_ID,
+        },
+      ],
+    };
+
+    expect(validateCandidateIngestionPersistencePlan(plan)).toBe(plan);
+    expect(plan.reusedDuplicateGroups).toHaveLength(1);
+  });
+
   it('rejects a duplicate signal that references an unassigned cross-batch Candidate', () => {
     expect(() =>
       validateCandidateIngestionPersistencePlan({

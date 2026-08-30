@@ -40,6 +40,12 @@ export interface ExistingCandidateDuplicateAssignment {
   assignedAt: Date;
 }
 
+export interface ExistingDuplicateGroupReference {
+  duplicateGroupId: string;
+  expectedStatus: 'open';
+  existingMemberCandidateIds: string[];
+}
+
 export interface CandidateIngestionPersistencePlan {
   batch: NewImportBatch;
   sourceRecords: NewSourceRecord[];
@@ -47,6 +53,7 @@ export interface CandidateIngestionPersistencePlan {
   candidateSourceRecords: NewCandidateSourceRecord[];
   sourceRefreshes?: CandidateSourceRefresh[];
   existingCandidateDuplicateAssignments?: ExistingCandidateDuplicateAssignment[];
+  reusedDuplicateGroups?: ExistingDuplicateGroupReference[];
   duplicateGroups?: NewCandidateDuplicateGroup[];
   duplicateSignals?: NewCandidateDuplicateSignal[];
 }
@@ -100,6 +107,7 @@ export function validateCandidateIngestionPersistencePlan(
 ): CandidateIngestionPersistencePlan {
   const sourceRefreshes = plan.sourceRefreshes ?? [];
   const existingCandidateDuplicateAssignments = plan.existingCandidateDuplicateAssignments ?? [];
+  const reusedDuplicateGroups = plan.reusedDuplicateGroups ?? [];
   const duplicateGroups = plan.duplicateGroups ?? [];
   const duplicateSignals = plan.duplicateSignals ?? [];
 
@@ -233,6 +241,49 @@ export function validateCandidateIngestionPersistencePlan(
       return group.id;
     }),
   );
+  const reusedMemberGroupByCandidate = new Map<string, string>();
+  for (const reference of reusedDuplicateGroups) {
+    if (
+      reference.duplicateGroupId.trim().length === 0 ||
+      reference.expectedStatus !== 'open' ||
+      reference.existingMemberCandidateIds.length === 0
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Reused duplicate groups require an open group ID and at least one existing member.',
+      );
+    }
+    if (duplicateGroupIds.has(reference.duplicateGroupId)) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'A duplicate group may be created or reused at most once per ingestion plan.',
+      );
+    }
+    duplicateGroupIds.add(reference.duplicateGroupId);
+
+    const memberIds = new Set(reference.existingMemberCandidateIds);
+    if (memberIds.size !== reference.existingMemberCandidateIds.length) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Reused duplicate-group member IDs must be unique.',
+      );
+    }
+    for (const candidateId of memberIds) {
+      if (
+        candidateId.trim().length === 0 ||
+        candidateIds.has(candidateId) ||
+        refreshedCandidateIds.has(candidateId) ||
+        reusedMemberGroupByCandidate.has(candidateId)
+      ) {
+        throw new CandidateIngestionPersistenceError(
+          'invalid_plan',
+          'Reused duplicate-group members must be distinct existing Candidates.',
+        );
+      }
+      reusedMemberGroupByCandidate.set(candidateId, reference.duplicateGroupId);
+    }
+  }
+
   const groupMembers = new Map<string, Set<string>>();
   const existingAssignmentCandidateIds = new Set<string>();
 
@@ -255,6 +306,7 @@ export function validateCandidateIngestionPersistencePlan(
     if (
       candidateIds.has(assignment.candidateId) ||
       refreshedCandidateIds.has(assignment.candidateId) ||
+      reusedMemberGroupByCandidate.has(assignment.candidateId) ||
       existingAssignmentCandidateIds.has(assignment.candidateId)
     ) {
       throw new CandidateIngestionPersistenceError(
@@ -265,7 +317,11 @@ export function validateCandidateIngestionPersistencePlan(
     existingAssignmentCandidateIds.add(assignment.candidateId);
   }
 
-  const signalCandidateIds = new Set([...candidateIds, ...existingAssignmentCandidateIds]);
+  const signalCandidateIds = new Set([
+    ...candidateIds,
+    ...existingAssignmentCandidateIds,
+    ...reusedMemberGroupByCandidate.keys(),
+  ]);
   for (const signal of duplicateSignals) {
     if (signal.id == null || !duplicateGroupIds.has(signal.duplicateGroupId)) {
       throw new CandidateIngestionPersistenceError(
@@ -288,6 +344,15 @@ export function validateCandidateIngestionPersistencePlan(
         'Duplicate signals must reference the persisted import batch.',
       );
     }
+    for (const candidateId of [signal.leftCandidateId, signal.rightCandidateId]) {
+      const reusedGroupId = reusedMemberGroupByCandidate.get(candidateId);
+      if (reusedGroupId !== undefined && reusedGroupId !== signal.duplicateGroupId) {
+        throw new CandidateIngestionPersistenceError(
+          'invalid_plan',
+          'A reused duplicate-group member may be signaled only inside its existing group.',
+        );
+      }
+    }
     const members = groupMembers.get(signal.duplicateGroupId) ?? new Set<string>();
     members.add(signal.leftCandidateId);
     members.add(signal.rightCandidateId);
@@ -299,6 +364,18 @@ export function validateCandidateIngestionPersistencePlan(
       throw new CandidateIngestionPersistenceError(
         'invalid_plan',
         'Every ingestion-time duplicate group must contain at least two signaled Candidates.',
+      );
+    }
+  }
+  for (const reference of reusedDuplicateGroups) {
+    const members = groupMembers.get(reference.duplicateGroupId);
+    if (
+      members === undefined ||
+      !reference.existingMemberCandidateIds.some((candidateId) => members.has(candidateId))
+    ) {
+      throw new CandidateIngestionPersistenceError(
+        'invalid_plan',
+        'Every reused duplicate group must include a declared existing member in its signals.',
       );
     }
   }
@@ -401,6 +478,38 @@ async function findReplay(database: CryptoPayMapDatabase, batch: NewImportBatch)
   return readExistingByChecksum(database, batch);
 }
 
+function existingDuplicateGroupGuard(
+  database: CryptoPayMapDatabase,
+  reference: ExistingDuplicateGroupReference,
+) {
+  return database.execute(sql`
+    select 1 / case when exists (
+      select 1
+      from ${candidateDuplicateGroups}
+      where ${candidateDuplicateGroups.id} = ${reference.duplicateGroupId}
+        and ${candidateDuplicateGroups.status} = ${reference.expectedStatus}
+      for update
+    ) then 1 else 0 end as existing_duplicate_group_guard
+  `);
+}
+
+function existingDuplicateGroupMemberGuard(
+  database: CryptoPayMapDatabase,
+  reference: ExistingDuplicateGroupReference,
+  candidateId: string,
+) {
+  return database.execute(sql`
+    select 1 / case when exists (
+      select 1
+      from ${sourceCandidates}
+      where ${sourceCandidates.id} = ${candidateId}
+        and ${sourceCandidates.duplicateGroupId} = ${reference.duplicateGroupId}
+        and ${sourceCandidates.candidateStatus} in ('new', 'triaged')
+      for update
+    ) then 1 else 0 end as existing_duplicate_group_member_guard
+  `);
+}
+
 function existingDuplicateAssignmentGuard(
   database: CryptoPayMapDatabase,
   assignment: ExistingCandidateDuplicateAssignment,
@@ -426,7 +535,14 @@ export function createDrizzleCandidateIngestionPersistenceBackend(database: Cryp
       const replay = await findReplay(database, plan.batch);
       if (replay !== null) return receipt(replay, 'replayed');
 
-      const statements: unknown[] = [database.insert(importBatches).values(plan.batch)];
+      const statements: unknown[] = [];
+      for (const reference of plan.reusedDuplicateGroups ?? []) {
+        statements.push(existingDuplicateGroupGuard(database, reference));
+        for (const candidateId of reference.existingMemberCandidateIds) {
+          statements.push(existingDuplicateGroupMemberGuard(database, reference, candidateId));
+        }
+      }
+      statements.push(database.insert(importBatches).values(plan.batch));
       for (const refresh of plan.sourceRefreshes ?? []) {
         statements.push(
           database

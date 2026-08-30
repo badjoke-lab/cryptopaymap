@@ -19,6 +19,7 @@ import {
   type CandidateIngestionReceipt,
   type CandidateSourceRefresh,
   type ExistingCandidateDuplicateAssignment,
+  type ExistingDuplicateGroupReference,
 } from './candidate-ingestion-persistence';
 import {
   reconcileCandidateAcquisition,
@@ -263,6 +264,7 @@ async function duplicatePersistenceWork(
   duplicateGroups: NewCandidateDuplicateGroup[];
   duplicateSignals: NewCandidateDuplicateSignal[];
   existingAssignments: ExistingCandidateDuplicateAssignment[];
+  reusedDuplicateGroups: ExistingDuplicateGroupReference[];
   newCandidateGroupIds: Map<string, string>;
 }> {
   const newCandidateIds = new Set(reconciliation.newSeeds.map((seed) => seed.candidateId));
@@ -288,6 +290,7 @@ async function duplicatePersistenceWork(
   const duplicateGroups: NewCandidateDuplicateGroup[] = [];
   const duplicateSignals: NewCandidateDuplicateSignal[] = [];
   const existingAssignments: ExistingCandidateDuplicateAssignment[] = [];
+  const reusedDuplicateGroupMembers = new Map<string, Set<string>>();
   const newCandidateGroupIds = new Map<string, string>();
   const visited = new Set<string>();
 
@@ -342,6 +345,10 @@ async function duplicatePersistenceWork(
         resolutionNote: null,
         resolvedAt: null,
       });
+    } else {
+      const reusedMembers = reusedDuplicateGroupMembers.get(existingGroupId) ?? new Set<string>();
+      for (const candidate of existingGroupMembers) reusedMembers.add(candidate.candidateId);
+      reusedDuplicateGroupMembers.set(existingGroupId, reusedMembers);
     }
 
     for (const memberId of members) {
@@ -380,6 +387,13 @@ async function duplicatePersistenceWork(
     duplicateGroups,
     duplicateSignals,
     existingAssignments,
+    reusedDuplicateGroups: [...reusedDuplicateGroupMembers.entries()]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([duplicateGroupId, memberIds]) => ({
+        duplicateGroupId,
+        expectedStatus: 'open' as const,
+        existingMemberCandidateIds: [...memberIds].sort(),
+      })),
     newCandidateGroupIds,
   };
 }
@@ -427,6 +441,7 @@ async function retainPersistenceWork(
     candidateSourceRecords: relations,
     sourceRefreshes,
     existingCandidateDuplicateAssignments: duplicateWork.existingAssignments,
+    reusedDuplicateGroups: duplicateWork.reusedDuplicateGroups,
     duplicateGroups: duplicateWork.duplicateGroups,
     duplicateSignals: duplicateWork.duplicateSignals,
   };
@@ -557,6 +572,7 @@ export async function createOsmOverpassCandidateAcquisitionPlan(
     candidateSourceRecords: candidateSourceRecordsToPlan,
     sourceRefreshes: [],
     existingCandidateDuplicateAssignments: [],
+    reusedDuplicateGroups: [],
     duplicateGroups: [],
     duplicateSignals: [],
   };
