@@ -1,4 +1,4 @@
-name: Europe-west official Evidence batches 3-5
+name: Europe-west official Evidence batch 3 retry
 
 on:
   push:
@@ -34,51 +34,15 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Crawl batch 3
+      - name: Crawl corrected batch 3
         env:
-          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 8d9d6627-48f6-43e7-b7f0-290327870426
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 8d9d6627-48f6-43e7-b7f0-7a90e1ed4689
           CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
         run: |
           summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
           jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
           {
-            echo '## Europe-west batch 3'
-            echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
-            echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
-            echo "- landing pages fetched: $(jq -r '.landingPagesFetched' <<<"$summary")"
-            echo "- internal pages fetched: $(jq -r '.internalPagesFetched' <<<"$summary")"
-            echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
-            echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
-            echo "- automatic Confirmed: $(jq -r '.automaticConfirmedCount' <<<"$summary")"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Crawl batch 4
-        env:
-          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 8e2c7c6a-e300-4747-90f7-290327870426
-          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
-        run: |
-          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
-          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
-          {
-            echo '## Europe-west batch 4'
-            echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
-            echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
-            echo "- landing pages fetched: $(jq -r '.landingPagesFetched' <<<"$summary")"
-            echo "- internal pages fetched: $(jq -r '.internalPagesFetched' <<<"$summary")"
-            echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
-            echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
-            echo "- automatic Confirmed: $(jq -r '.automaticConfirmedCount' <<<"$summary")"
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: Crawl batch 5
-        env:
-          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 3808ea78-195f-4558-8088-37c172be6b63
-          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
-        run: |
-          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
-          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
-          {
-            echo '## Europe-west batch 5'
+            echo '## Europe-west corrected batch 3'
             echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
             echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
             echo "- landing pages fetched: $(jq -r '.landingPagesFetched' <<<"$summary")"
