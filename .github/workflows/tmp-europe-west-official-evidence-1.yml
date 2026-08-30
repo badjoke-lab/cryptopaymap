@@ -1,0 +1,43 @@
+name: Temporary Europe-west official Evidence crawl 1
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-1
+    paths:
+      - '.github/workflows/tmp-europe-west-official-evidence-1.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Crawl first Europe-west batch for private official payment Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: d0e17010-611c-48b2-a75d-8b389c1bee60
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '200'
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-west official payment Evidence crawl 1'
+            echo
+            echo "- eligible targets: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
+            echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
+            echo "- landing pages fetched: $(jq -r '.landingPagesFetched' <<<"$summary")"
+            echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
+            echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
+            echo "- automatic Confirmed: $(jq -r '.automaticConfirmedCount' <<<"$summary")"
+          } >> "$GITHUB_STEP_SUMMARY"
