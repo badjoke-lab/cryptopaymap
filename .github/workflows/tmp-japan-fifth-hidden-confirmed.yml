@@ -1,0 +1,195 @@
+name: Temporary Japan fifth hidden Confirmed
+
+on:
+  push:
+    branches:
+      - ops/japan-official-evidence-crawl
+    paths:
+      - '.github/workflows/tmp-japan-fifth-hidden-confirmed.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  fifth:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Attach bounded JP country proof from Nominatim
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          cat > scripts/.tmp-attach-jp-country-proof.ts <<'TS'
+          import { and, eq } from 'drizzle-orm';
+          import { createDatabase } from '../src/db/client';
+          import { candidateSourceRecords, evidence, sourceCandidates, sourceRecords } from '../src/db/schema';
+          declare const process: { env: Record<string, string | undefined> };
+          const BATCH = '11c5544d-ed40-4cef-a5ff-0a87d7bfe155';
+          if (process.env.CPM_CANDIDATE_ACQUISITION_TARGET !== 'fixed-review-staging') throw new Error('staging only');
+          const db = createDatabase(process.env.DATABASE_URL ?? '');
+          const pending = await db.select({ candidateId: sourceCandidates.id })
+            .from(evidence)
+            .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, evidence.sourceRecordId))
+            .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
+            .where(and(
+              eq(sourceCandidates.importBatchId, BATCH),
+              eq(evidence.evidenceKind, 'official_payment_page'),
+              eq(evidence.evidenceClass, 'a'),
+              eq(evidence.reviewStatus, 'pending'),
+              eq(evidence.visibility, 'private'),
+            ));
+          const ids = [...new Set(pending.map(r => r.candidateId))];
+          if (ids.length !== 1) throw new Error(`Expected exactly one pending A candidate, got ${ids.length}.`);
+          const candidateId = ids[0]!;
+          const [origin] = await db.select({
+            sourceId: sourceRecords.sourceId,
+            licenseId: sourceRecords.licenseId,
+            rawPayload: sourceRecords.rawPayload,
+          }).from(candidateSourceRecords)
+            .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
+            .where(and(eq(candidateSourceRecords.candidateId, candidateId), eq(candidateSourceRecords.relationship, 'origin')))
+            .limit(1);
+          if (!origin) throw new Error('Missing origin source record.');
+          const root = origin.rawPayload && typeof origin.rawPayload === 'object' && !Array.isArray(origin.rawPayload) ? origin.rawPayload as Record<string, unknown> : {};
+          const seed = root.reviewSeed && typeof root.reviewSeed === 'object' && !Array.isArray(root.reviewSeed) ? root.reviewSeed as Record<string, unknown> : {};
+          const lat = seed.latitude;
+          const lon = seed.longitude;
+          if (typeof lat !== 'number' || typeof lon !== 'number') throw new Error('Missing coordinates.');
+
+          const externalId = `candidate:${candidateId}:country-jp:nominatim-v1`;
+          const [already] = await db.select({ id: sourceRecords.id, rawPayload: sourceRecords.rawPayload })
+            .from(sourceRecords)
+            .where(and(eq(sourceRecords.sourceId, origin.sourceId), eq(sourceRecords.externalId, externalId)))
+            .limit(1);
+          let countryVerified = false;
+          let supportingRecordCreated = false;
+          let sourceRecordId = already?.id ?? null;
+          if (already) {
+            const p = already.rawPayload && typeof already.rawPayload === 'object' && !Array.isArray(already.rawPayload) ? already.rawPayload as Record<string, unknown> : {};
+            countryVerified = p.sourceSystem === 'openstreetmap_nominatim' && p.countryCode === 'JP';
+            if (!countryVerified) throw new Error('Existing country proof has unexpected payload.');
+          } else {
+            const url = new URL('https://nominatim.openstreetmap.org/reverse');
+            url.searchParams.set('format', 'jsonv2');
+            url.searchParams.set('lat', String(lat));
+            url.searchParams.set('lon', String(lon));
+            url.searchParams.set('zoom', '18');
+            url.searchParams.set('addressdetails', '1');
+            const response = await fetch(url, {
+              headers: { 'User-Agent': 'CryptoPayMap/3 staging-review (+https://cryptopaymap.com/)' },
+            });
+            if (!response.ok) throw new Error(`Nominatim reverse lookup failed with ${response.status}.`);
+            const body = await response.json() as { address?: { country_code?: string } };
+            countryVerified = body.address?.country_code?.toLowerCase() === 'jp';
+            if (!countryVerified) throw new Error('Nominatim did not verify JP country code.');
+            const minimalPayload = { sourceSystem: 'openstreetmap_nominatim', countryCode: 'JP', lookupVersion: 'reverse-v1' };
+            const bytes = new TextEncoder().encode(JSON.stringify(minimalPayload));
+            const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', bytes));
+            const contentHash = [...digest].map(b => b.toString(16).padStart(2, '0')).join('');
+            const [created] = await db.insert(sourceRecords).values({
+              sourceId: origin.sourceId,
+              externalId,
+              sourceUrl: 'https://nominatim.openstreetmap.org/reverse',
+              rawPayload: minimalPayload,
+              officialDomain: null,
+              observedAt: new Date(),
+              publishedAt: null,
+              fetchedAt: new Date(),
+              contentHash,
+              archiveUrl: null,
+              licenseId: origin.licenseId,
+            }).returning({ id: sourceRecords.id });
+            if (!created) throw new Error('Failed to create country proof source record.');
+            sourceRecordId = created.id;
+            supportingRecordCreated = true;
+          }
+          if (!sourceRecordId) throw new Error('Country proof source record ID unavailable.');
+          const [link] = await db.select({ candidateId: candidateSourceRecords.candidateId })
+            .from(candidateSourceRecords)
+            .where(and(eq(candidateSourceRecords.candidateId, candidateId), eq(candidateSourceRecords.sourceRecordId, sourceRecordId)))
+            .limit(1);
+          let supportingLinkCreated = false;
+          if (!link) {
+            await db.insert(candidateSourceRecords).values({ candidateId, sourceRecordId, relationship: 'supporting' });
+            supportingLinkCreated = true;
+          }
+          console.log(JSON.stringify({
+            target:'fixed-review-staging', batchId:BATCH, countryVerified,
+            supportingRecordCreated, supportingLinkCreated,
+            candidatePayloadExposed:false, automaticConfirmedCount:0
+          }));
+          TS
+          npx tsx scripts/.tmp-attach-jp-country-proof.ts
+          rm scripts/.tmp-attach-jp-country-proof.ts
+
+      - name: Bind proven scripts to exact Japan batch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          old = '9a7aa03b-ebce-4ee0-ad44-731149450d85'
+          new = '11c5544d-ed40-4cef-a5ff-0a87d7bfe155'
+          for name in ['scripts/promote-japan-hidden-pilot.ts', 'scripts/confirm-japan-hidden-pilot.ts']:
+              p = Path(name)
+              text = p.read_text()
+              if old not in text:
+                  raise SystemExit(f'exact batch anchor missing in {name}')
+              text = text.replace(old, new)
+              text = text.replace('tokyo-hidden-pilot', 'japan-hidden-pilot')
+              text = text.replace('Tokyo pilot', 'Japan pilot')
+              p.write_text(text)
+          PY
+
+      - name: Promote one proven Japan candidate hidden
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+        run: npx tsx scripts/promote-japan-hidden-pilot.ts
+
+      - name: Accept Evidence and confirm hidden Claim
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: npx tsx scripts/confirm-japan-hidden-pilot.ts
+
+      - name: Count-only postcheck
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          cat > scripts/.tmp-fifth-postcheck.ts <<'TS'
+          import { and, eq, sql } from 'drizzle-orm';
+          import { createDatabase } from '../src/db/client';
+          import { acceptanceClaims, candidatePromotionDecisions, candidateSourceRecords, evidence, sourceCandidates } from '../src/db/schema';
+          declare const process: { env: Record<string, string | undefined> };
+          const BATCH='11c5544d-ed40-4cef-a5ff-0a87d7bfe155';
+          const db=createDatabase(process.env.DATABASE_URL ?? '');
+          const [batchCandidate] = await db.select({ count: sql<number>`count(distinct ${sourceCandidates.id})::int` })
+            .from(sourceCandidates)
+            .innerJoin(candidatePromotionDecisions, eq(candidatePromotionDecisions.candidateId, sourceCandidates.id))
+            .innerJoin(acceptanceClaims, eq(acceptanceClaims.id, candidatePromotionDecisions.claimId))
+            .where(and(eq(sourceCandidates.importBatchId,BATCH),eq(sourceCandidates.candidateStatus,'promoted'),eq(acceptanceClaims.claimStatus,'confirmed'),eq(acceptanceClaims.visibility,'hidden')));
+          const [totalHidden] = await db.select({ count: sql<number>`count(*)::int` }).from(acceptanceClaims)
+            .where(and(eq(acceptanceClaims.claimStatus,'confirmed'),eq(acceptanceClaims.visibility,'hidden')));
+          const [acceptedPrivate] = await db.select({ count: sql<number>`count(*)::int` }).from(evidence)
+            .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId,evidence.sourceRecordId))
+            .innerJoin(sourceCandidates, eq(sourceCandidates.id,candidateSourceRecords.candidateId))
+            .where(and(eq(sourceCandidates.importBatchId,BATCH),eq(evidence.reviewStatus,'accepted'),eq(evidence.visibility,'private')));
+          console.log(JSON.stringify({
+            target:'fixed-review-staging', batchId:BATCH,
+            batchConfirmedHidden:Number(batchCandidate?.count ?? 0),
+            totalConfirmedHidden:Number(totalHidden?.count ?? 0),
+            batchAcceptedPrivateEvidence:Number(acceptedPrivate?.count ?? 0),
+            payloadExposed:false
+          }));
+          TS
+          npx tsx scripts/.tmp-fifth-postcheck.ts
+          rm scripts/.tmp-fifth-postcheck.ts
