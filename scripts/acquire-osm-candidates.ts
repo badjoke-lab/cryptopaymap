@@ -28,6 +28,42 @@ const scopes = {
     label: 'Tokyo metro',
     bbox: '35.45,139.35,35.95,140.05',
   },
+  'europe-west': {
+    label: 'Western and Central Europe',
+    bbox: '35,-12,60,30',
+  },
+  'europe-east': {
+    label: 'Eastern and Northern Europe',
+    bbox: '35,30,72,60',
+  },
+  'north-america-west': {
+    label: 'North America west',
+    bbox: '15,-170,72,-100',
+  },
+  'north-america-east': {
+    label: 'North America east',
+    bbox: '15,-100,72,-50',
+  },
+  'south-america': {
+    label: 'South America',
+    bbox: '-56,-82,15,-34',
+  },
+  africa: {
+    label: 'Africa',
+    bbox: '-35,-20,38,55',
+  },
+  'asia-west': {
+    label: 'West and Central Asia',
+    bbox: '0,25,55,90',
+  },
+  'asia-east': {
+    label: 'East and Southeast Asia',
+    bbox: '0,90,55,180',
+  },
+  oceania: {
+    label: 'Oceania',
+    bbox: '-50,110,0,180',
+  },
 } as const;
 
 type ScopeName = keyof typeof scopes;
