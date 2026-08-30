@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "871ff1fa89ab24efff3922dc23a06c6a345937d1",
-  "generatedAt": "2026-08-30T12:23:53.127Z",
-  "expiresAt": "2026-09-02T12:23:53.127Z",
-  "workflowRunId": "33311269616",
+  "generatedAt": "2026-08-30T15:36:06.792Z",
+  "expiresAt": "2026-09-02T15:36:06.792Z",
+  "workflowRunId": "33320002606",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001H configured staging Media lifecycle evidence",
   "checks": {
@@ -18,22 +18,22 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-30T12:18:52.692Z",
-        "expiresAt": "2026-09-02T12:18:52.692Z"
+        "generatedAt": "2026-08-30T15:31:08.285Z",
+        "expiresAt": "2026-09-02T15:31:08.285Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-30T12:20:03.627Z",
-        "expiresAt": "2026-09-02T12:20:03.627Z"
+        "generatedAt": "2026-08-30T15:32:27.297Z",
+        "expiresAt": "2026-09-02T15:32:27.297Z"
       },
       {
         "evidenceId": "P6-03",
         "path": "config/staging-authorization/p6-03-neon-transaction-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-30T12:21:21.363Z",
-        "expiresAt": "2026-09-02T12:21:21.363Z"
+        "generatedAt": "2026-08-30T15:33:49.968Z",
+        "expiresAt": "2026-09-02T15:33:49.968Z"
       }
     ],
     "mode": "durable_object_staging_media",
@@ -119,8 +119,8 @@
     "retainedDigests": {
       "fixtureIdentity": "sha256:80e6a42333a04026ea204ccf5aef5e5989f745de8572b67dac834bd03e3e5287",
       "objectKeys": "sha256:1c57a0c0494d8bd0c19312cfa66d63bb2a0384650d2914fd0919984d32cd5590",
-      "approvalReceipt": "sha256:5059ebd33d126b7d0408844566a8aa25461dc20973e8e0cd7af8bc128a5fa30b",
-      "restrictionReceipt": "sha256:8dfa181adc0d6547c5b04a945f878ce03178c1b2625e59b28268393bf694d9a8"
+      "approvalReceipt": "sha256:55461b688d411433fee3c0b9dba5848d0a2df839ab97a2606e834b4bf7036cd7",
+      "restrictionReceipt": "sha256:210d55cdbee98d0cb0657e3e171b6b35286e6bedce911a1a07eb3e585ac4dd49"
     }
   },
   "binding": {
