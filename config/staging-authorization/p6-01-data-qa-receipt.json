@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "7ceb6bc31030ecc5604a5613158a19ee1fca1f31",
-  "generatedAt": "2026-08-30T02:29:26.094Z",
-  "expiresAt": "2026-09-02T02:29:26.094Z",
-  "workflowRunId": "33288050492",
+  "generatedAt": "2026-08-30T05:57:30.607Z",
+  "expiresAt": "2026-09-02T05:57:30.607Z",
+  "workflowRunId": "33295775387",
   "owner": "sha256:4a5701af8e3ea2fb4bca65bd906ff5ca207275391449d555160c85744a3dd3b5",
   "procedure": "OPS-P6-001D configured staging data QA",
   "checks": {
