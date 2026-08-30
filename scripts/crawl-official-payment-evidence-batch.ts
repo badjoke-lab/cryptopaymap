@@ -36,7 +36,14 @@ function websiteUrl(rawPayload: unknown): string | null {
 
 function batchIdsFromEnvironment(): string[] {
   const raw = process.env.CPM_OFFICIAL_EVIDENCE_BATCH_IDS?.trim() ?? '';
-  const ids = [...new Set(raw.split(',').map((value) => value.trim()).filter(Boolean))];
+  const ids = [
+    ...new Set(
+      raw
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  ];
   if (ids.length === 0) throw new Error('CPM_OFFICIAL_EVIDENCE_BATCH_IDS is required.');
   if (ids.length > MAX_BATCH_IDS) {
     throw new Error(`At most ${MAX_BATCH_IDS} import batch IDs may be crawled per run.`);
@@ -57,7 +64,11 @@ function maxTargetsFromEnvironment(): number {
 }
 
 function normalizeHost(value: string): string {
-  return value.trim().toLowerCase().replace(/^www\./, '').replace(/\.$/, '');
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, '')
+    .replace(/\.$/, '');
 }
 
 function privateIpv4(hostname: string): boolean {
