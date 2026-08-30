@@ -1,0 +1,44 @@
+name: Temporary Japan official payment Evidence crawl
+
+on:
+  push:
+    branches:
+      - ops/japan-official-evidence-crawl
+    paths:
+      - '.github/workflows/tmp-japan-official-evidence-crawl.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Bind crawler to exact Japan acquisition batch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/crawl-official-payment-evidence-batch.ts')
+          text = p.read_text()
+          old = "const TOKYO_BATCH_ID = '9a7aa03b-ebce-4ee0-ad44-731149450d85';"
+          new = "const TOKYO_BATCH_ID = '11c5544d-ed40-4cef-a5ff-0a87d7bfe155';"
+          if old not in text:
+              raise SystemExit('expected exact source batch anchor not found')
+          p.write_text(text.replace(old, new, 1))
+          PY
+      - name: Crawl same-domain official payment evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.batchId == "11c5544d-ed40-4cef-a5ff-0a87d7bfe155"' <<<"$summary" >/dev/null
+          jq -e '.automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending"' <<<"$summary" >/dev/null
