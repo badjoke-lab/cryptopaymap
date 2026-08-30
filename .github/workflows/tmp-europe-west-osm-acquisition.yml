@@ -1,0 +1,43 @@
+name: Temporary Europe-west OSM Candidate acquisition
+
+on:
+  push:
+    branches:
+      - ops/europe-west-osm-acquisition
+    paths:
+      - '.github/workflows/tmp-europe-west-osm-acquisition.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Acquire Europe-west private OSM Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          summary="$(npx tsx scripts/acquire-osm-candidates.ts europe-west)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .scope == "europe-west" and .ingestion.automaticConfirmedCount == 0' <<<"$summary" >/dev/null
+          {
+            echo '## Bounded Europe-west OSM acquisition'
+            echo
+            echo "- fetched OSM elements: $(jq -r '.fetchedElements' <<<"$summary")"
+            echo "- Candidate total: $(jq -r '.candidateTotalBefore' <<<"$summary") → $(jq -r '.candidateTotalAfter' <<<"$summary")"
+            echo "- Candidate delta: $(jq -r '.candidateDelta' <<<"$summary")"
+            echo "- accepted: $(jq -r '.ingestion.acceptedCount' <<<"$summary")"
+            echo "- rejected: $(jq -r '.ingestion.rejectedCount' <<<"$summary")"
+            echo "- replayed: $(jq -r '.ingestion.replayedCount' <<<"$summary")"
+            echo "- duplicate signals: $(jq -r '.ingestion.duplicateSignalCount' <<<"$summary")"
+            echo "- automatic Confirmed: $(jq -r '.ingestion.automaticConfirmedCount' <<<"$summary")"
+          } >> "$GITHUB_STEP_SUMMARY"
