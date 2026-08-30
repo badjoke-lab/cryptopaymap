@@ -5,9 +5,9 @@
   "environment": "configured_staging",
   "state": "accepted",
   "commit": "4c785128ccd09ea35870ce76b40fbb069076b2e9",
-  "generatedAt": "2026-08-29T22:39:58.395Z",
-  "expiresAt": "2026-09-01T22:39:58.395Z",
-  "workflowRunId": "33279111205",
+  "generatedAt": "2026-08-30T00:49:37.170Z",
+  "expiresAt": "2026-09-02T00:49:37.170Z",
+  "workflowRunId": "33284192737",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001E configured staging identity and protected Admin evidence",
   "checks": {
@@ -16,8 +16,8 @@
     "predecessor": {
       "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-29T22:38:46.803Z",
-      "expiresAt": "2026-09-01T22:38:46.803Z"
+      "generatedAt": "2026-08-30T00:48:25.197Z",
+      "expiresAt": "2026-09-02T00:48:25.197Z"
     },
     "routeInventory": {
       "status": "passed",
@@ -1498,7 +1498,7 @@
         "contentType": "application/json",
         "cacheControlSafe": true,
         "noPrivateLeakage": true,
-        "responseDigest": "b6a06fddbe5ab04cf387b925fed47a436eecfae3421b41eb69dac7fe4349f3f0"
+        "responseDigest": "1e3f5323b2ce99199b205c89e5e9126e138d420fe34e398713bdfdf35d397eca"
       },
       "reviewerPublication": {
         "status": 403,
