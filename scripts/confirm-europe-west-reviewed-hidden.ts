@@ -1,4 +1,4 @@
-import { and, asc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, eq, gte, inArray, isNull, lt } from 'drizzle-orm';
 import { createDerivedStagingServiceIdentity } from '../src/admin/access/identity';
 import {
   authorizeEvidenceReview,
@@ -136,6 +136,8 @@ async function main() {
     const bindAt = new Date(
       Math.max(Date.now(), claim.updatedAt.getTime() + 1_000, selected.evidenceUpdatedAt.getTime() + 1_000),
     );
+    const evidenceUpdatedAtFloor = new Date(selected.evidenceUpdatedAt.getTime());
+    const evidenceUpdatedAtCeiling = new Date(selected.evidenceUpdatedAt.getTime() + 1);
     const [bound] = await db
       .update(evidence)
       .set({ claimId: claim.id, updatedAt: bindAt })
@@ -144,7 +146,8 @@ async function main() {
           eq(evidence.id, selected.evidenceId),
           eq(evidence.reviewStatus, 'pending'),
           isNull(evidence.claimId),
-          eq(evidence.updatedAt, selected.evidenceUpdatedAt),
+          gte(evidence.updatedAt, evidenceUpdatedAtFloor),
+          lt(evidence.updatedAt, evidenceUpdatedAtCeiling),
         ),
       )
       .returning({ claimId: evidence.claimId, updatedAt: evidence.updatedAt });
