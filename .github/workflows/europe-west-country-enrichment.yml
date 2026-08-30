@@ -1,0 +1,53 @@
+name: Europe-west country enrichment
+
+on:
+  push:
+    branches:
+      - ops/europe-west-country-enrichment
+    paths:
+      - scripts/enrich-europe-west-country-staging.ts
+      - .github/workflows/europe-west-country-enrichment.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+  CPM_REVIEW_BATCH_IDS: d0e17010-611c-48b2-a75d-8b389c1bee60,5c85e86a-bc05-4f9d-a1f3-9d5e6135ef81,8d9d6627-48f6-43e7-b7f0-290327870426,8e2c7c6a-e300-4747-90f7-290327870426,3808ea78-195f-4558-8088-37c172be6b63
+
+jobs:
+  enrich:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Enrich country codes in staging
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          summary="$(npx tsx scripts/enrich-europe-west-country-staging.ts)"
+          jq -e '.target == "fixed-review-staging" and .evidenceCreated == 0 and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .publicDataChanged == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-west country enrichment'
+            echo
+            echo "- official Evidence Candidates: $(jq -r '.officialEvidenceCandidates' <<<"$summary")"
+            echo "- Lightning enrichment eligible: $(jq -r '.eligible' <<<"$summary")"
+            echo "- already enriched: $(jq -r '.alreadyEnriched' <<<"$summary")"
+            echo "- reverse lookups requested: $(jq -r '.requested' <<<"$summary")"
+            echo "- country records attached: $(jq -r '.enriched' <<<"$summary")"
+            echo "- skipped non-Lightning: $(jq -r '.skippedNonLightning' <<<"$summary")"
+            echo '- automatic Confirmed: 0'
+            echo '- Candidate state changed: false'
+            echo '- public data changed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
