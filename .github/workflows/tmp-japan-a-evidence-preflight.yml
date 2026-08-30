@@ -1,0 +1,96 @@
+name: Temporary Japan A-Evidence promotion preflight
+
+on:
+  push:
+    branches:
+      - ops/japan-official-evidence-crawl
+    paths:
+      - '.github/workflows/tmp-japan-a-evidence-preflight.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Audit exact pending A-evidence candidate without exposing payload
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          cat > scripts/.tmp-japan-a-preflight.ts <<'TS'
+          import { and, eq } from 'drizzle-orm';
+          import { createDatabase } from '../src/db/client';
+          import { candidateSourceRecords, evidence, sourceCandidates, sourceRecords } from '../src/db/schema';
+          declare const process: { env: Record<string, string | undefined> };
+          const BATCH = '11c5544d-ed40-4cef-a5ff-0a87d7bfe155';
+          const db = createDatabase(process.env.DATABASE_URL ?? '');
+          const rows = await db.select({
+            candidateId: sourceCandidates.id,
+            candidateStatus: sourceCandidates.candidateStatus,
+            duplicateGroupId: sourceCandidates.duplicateGroupId,
+            relationship: candidateSourceRecords.relationship,
+            rawPayload: sourceRecords.rawPayload,
+            evidenceClass: evidence.evidenceClass,
+            evidenceKind: evidence.evidenceKind,
+            evidenceReviewStatus: evidence.reviewStatus,
+            evidenceVisibility: evidence.visibility,
+          }).from(evidence)
+            .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, evidence.sourceRecordId))
+            .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
+            .where(and(
+              eq(sourceCandidates.importBatchId, BATCH),
+              eq(evidence.evidenceKind, 'official_payment_page'),
+              eq(evidence.evidenceClass, 'a'),
+              eq(evidence.reviewStatus, 'pending'),
+              eq(evidence.visibility, 'private'),
+            ));
+          const ids = [...new Set(rows.map(r => r.candidateId))];
+          let lightningTagged = false;
+          let bitcoinTagged = false;
+          let cryptoTagged = false;
+          let coordinatesReady = false;
+          let originFound = false;
+          let duplicateFree = false;
+          let statusReady = false;
+          if (ids.length === 1) {
+            const candidateId = ids[0]!;
+            const origins = await db.select({
+              candidateStatus: sourceCandidates.candidateStatus,
+              duplicateGroupId: sourceCandidates.duplicateGroupId,
+              rawPayload: sourceRecords.rawPayload,
+            }).from(sourceCandidates)
+              .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.candidateId, sourceCandidates.id))
+              .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
+              .where(and(eq(sourceCandidates.id, candidateId), eq(candidateSourceRecords.relationship, 'origin')));
+            const origin = origins[0];
+            if (origin) {
+              originFound = true;
+              duplicateFree = origin.duplicateGroupId === null;
+              statusReady = ['new','triaged'].includes(origin.candidateStatus);
+              const root = origin.rawPayload && typeof origin.rawPayload === 'object' && !Array.isArray(origin.rawPayload) ? origin.rawPayload as Record<string, unknown> : {};
+              const seed = root.reviewSeed && typeof root.reviewSeed === 'object' && !Array.isArray(root.reviewSeed) ? root.reviewSeed as Record<string, unknown> : {};
+              const pt = seed.paymentTags && typeof seed.paymentTags === 'object' && !Array.isArray(seed.paymentTags) ? seed.paymentTags as Record<string, unknown> : {};
+              lightningTagged = ['yes','only'].includes(String(pt['payment:lightning'] ?? '').toLowerCase());
+              bitcoinTagged = ['yes','only'].includes(String(pt['payment:bitcoin'] ?? '').toLowerCase());
+              cryptoTagged = ['yes','only'].includes(String(pt['payment:cryptocurrencies'] ?? '').toLowerCase());
+              coordinatesReady = typeof seed.latitude === 'number' && typeof seed.longitude === 'number';
+            }
+          }
+          console.log(JSON.stringify({
+            target:'fixed-review-staging', batchId:BATCH, pendingAOfficialCandidates:ids.length,
+            originFound, duplicateFree, statusReady, coordinatesReady,
+            lightningTagged, bitcoinTagged, cryptoTagged,
+            candidatePayloadExposed:false, automaticConfirmedCount:0
+          }));
+          TS
+          npx tsx scripts/.tmp-japan-a-preflight.ts
+          rm scripts/.tmp-japan-a-preflight.ts
