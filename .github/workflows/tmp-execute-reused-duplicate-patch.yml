@@ -1,0 +1,68 @@
+name: Temporary execute reused duplicate persistence patch
+
+on:
+  push:
+    branches:
+      - fix/reused-duplicate-group-persistence
+    paths:
+      - '.github/workflows/tmp-execute-reused-duplicate-patch.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch-validate-commit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Execute corrected source patcher
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          workflow = Path('.github/workflows/tmp-reused-duplicate-persistence.yml').read_text()
+          start_marker = "          python - <<'PY'\n"
+          end_marker = "\n          PY\n"
+          start = workflow.index(start_marker) + len(start_marker)
+          end = workflow.index(end_marker, start)
+          lines = workflow[start:end].splitlines()
+          code = '\n'.join(line[10:] if line.startswith('          ') else line for line in lines) + '\n'
+
+          anchor = (
+              "    if (signal.importBatchId !== plan.batch.id) {\n"
+              "      throw new CandidateIngestionPersistenceError(\n"
+              "        'invalid_plan',\n"
+              "        'Duplicate signals must reference the persisted import batch.',\n"
+              "      );\n"
+              "    }\n"
+          )
+          pattern = re.compile(r'signal_membership_anchor = """.*?"""\n', re.S)
+          replacement = 'signal_membership_anchor = ' + repr(anchor) + '\n'
+          code, count = pattern.subn(lambda _: replacement, code, count=1)
+          if count != 1:
+              raise SystemExit(f'expected one signal membership assignment, replaced {count}')
+
+          exec(compile(code, '<corrected-reused-duplicate-patcher>', 'exec'), {})
+          PY
+      - name: Format changed files
+        run: npx biome format --write src/importers/candidate-ingestion-persistence.ts src/importers/osm-overpass-candidate-acquisition.ts tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+      - name: Lint changed files
+        run: npx biome lint src/importers/candidate-ingestion-persistence.ts src/importers/osm-overpass-candidate-acquisition.ts tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+      - name: Run focused tests
+        run: npx vitest run tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+      - name: Typecheck project
+        run: npm run check
+      - name: Commit validated source changes
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add src/importers/candidate-ingestion-persistence.ts src/importers/osm-overpass-candidate-acquisition.ts tests/candidate-ingestion-persistence.test.ts tests/osm-overpass-candidate-acquisition.test.ts
+          git commit -m 'fix: persist reused open duplicate groups safely'
+          git push origin HEAD:fix/reused-duplicate-group-persistence
