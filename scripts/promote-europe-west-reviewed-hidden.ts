@@ -115,19 +115,25 @@ async function main() {
   const selected = matches[0];
   if (!selected) throw new Error('Exact reviewed Candidate was not selected.');
 
+  const alreadyPromoted = selected.candidateStatus === 'promoted';
+  const expectedCurrentCandidateUpdatedAt = new Date(
+    Date.parse(EXPECTED_CANDIDATE_UPDATED_AT) + (alreadyPromoted ? 1_000 : 0),
+  ).toISOString();
+
   if (
     selected.candidateType !== 'physical_place' ||
     selected.duplicateGroupId !== null ||
-    !['new', 'triaged'].includes(selected.candidateStatus) ||
-    selected.canonicalEntityId !== null ||
-    selected.canonicalLocationId !== null ||
+    (!alreadyPromoted && !['new', 'triaged'].includes(selected.candidateStatus)) ||
+    (alreadyPromoted
+      ? selected.canonicalEntityId === null || selected.canonicalLocationId === null
+      : selected.canonicalEntityId !== null || selected.canonicalLocationId !== null) ||
     selected.evidenceClass !== 'a' ||
     selected.evidenceSourceType !== 'official_page' ||
     selected.evidenceOriginRole !== 'merchant_side' ||
     selected.evidencePolarity !== 'supporting' ||
     selected.evidenceReviewStatus !== 'pending' ||
     selected.evidenceVisibility !== 'private' ||
-    selected.candidateUpdatedAt.toISOString() !== EXPECTED_CANDIDATE_UPDATED_AT ||
+    selected.candidateUpdatedAt.toISOString() !== expectedCurrentCandidateUpdatedAt ||
     selected.evidenceUpdatedAt.toISOString() !== EXPECTED_EVIDENCE_UPDATED_AT
   ) {
     throw new Error('Exact reviewed Candidate/Evidence state changed after review; refusing promotion.');
@@ -222,7 +228,7 @@ async function main() {
   const locationId = await deterministicUuid(`europe-west-reviewed:location:${selected.candidateId}`);
   const claimId = await deterministicUuid(`europe-west-reviewed:claim:${selected.candidateId}`);
   const claimAssetId = await deterministicUuid(`europe-west-reviewed:claim-asset:${selected.candidateId}`);
-  const promotedAt = new Date(selected.candidateUpdatedAt.getTime() + 1_000);
+  const promotedAt = new Date(Date.parse(EXPECTED_CANDIDATE_UPDATED_AT) + 1_000);
   const locationSlug = `osm-${String(osmType)}-${String(osmId)}`.slice(0, 64);
   const websiteUrl = safeHttps(seed?.websiteUrl);
   const phone =
