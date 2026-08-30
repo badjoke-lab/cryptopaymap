@@ -1,0 +1,66 @@
+name: Europe-west official Evidence batches 11-15
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-11-15
+    paths:
+      - .github/workflows/europe-west-official-evidence-11-15.yml
+
+concurrency:
+  group: fixed-review-official-evidence-crawl
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Crawl batches 11-15 sequentially
+        shell: bash
+        run: |
+          set -euo pipefail
+          batches=(
+            7d43f605-5f3e-4a79-a6a9-a222775821be
+            500467c1-075d-4f01-b2ef-15f141f30c82
+            cb7bdcb7-e39d-46cb-90fe-0c3c05d45f8e
+            d079f027-9ea4-4a9a-9e52-a7753d917986
+            aa493ab1-c32b-4b0f-9df7-944f61f90e4c
+          )
+          index=11
+          for batch in "${batches[@]}"; do
+            export CPM_OFFICIAL_EVIDENCE_BATCH_IDS="$batch"
+            export CPM_OFFICIAL_EVIDENCE_MAX_TARGETS='250'
+            summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+            jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+            {
+              echo "## Europe-west batch $index"
+              echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
+              echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
+              echo "- landing pages fetched: $(jq -r '.landingPagesFetched' <<<"$summary")"
+              echo "- internal pages fetched: $(jq -r '.internalPagesFetched' <<<"$summary")"
+              echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
+              echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
+              echo "- automatic Confirmed: $(jq -r '.automaticConfirmedCount' <<<"$summary")"
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+            index=$((index + 1))
+          done
