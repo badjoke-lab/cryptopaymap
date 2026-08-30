@@ -1,0 +1,71 @@
+name: Europe-west exact reviewed hidden confirmation
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-review
+    paths:
+      - scripts/promote-europe-west-reviewed-hidden.ts
+      - scripts/confirm-europe-west-reviewed-hidden.ts
+      - .github/workflows/europe-west-reviewed-hidden-confirmation.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  confirm-reviewed:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Promote exact reviewed Candidate as hidden
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+        run: |
+          summary="$(npx tsx scripts/promote-europe-west-reviewed-hidden.ts)"
+          jq -e '.target == "fixed-review-staging" and .exactReviewedCandidates == 1 and (.mutationPerformed == true or .replayed == true) and .candidateStateAfter == "promoted" and .claimStatus == "candidate" and .visibility == "hidden" and .publicDataChanged == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Exact reviewed Europe-west promotion'
+            echo
+            echo '- reviewed Candidates selected: 1'
+            echo "- promotion committed: $(jq -r '.mutationPerformed' <<<"$summary")"
+            echo "- promotion replayed: $(jq -r '.replayed' <<<"$summary")"
+            echo "- Claim status after promotion: $(jq -r '.claimStatus' <<<"$summary")"
+            echo "- Claim visibility: $(jq -r '.visibility' <<<"$summary")"
+            echo '- public data changed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Accept exact A Evidence and confirm hidden Claim
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: |
+          summary="$(npx tsx scripts/confirm-europe-west-reviewed-hidden.ts)"
+          jq -e '.target == "fixed-review-staging" and .exactReviewedCandidates == 1 and (.confirmationPerformed == true or .replayed == true) and .evidenceReviewStatus == "accepted" and .claimStatus == "confirmed" and .claimVisibility == "hidden" and .publicDataChanged == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Exact reviewed Europe-west confirmation'
+            echo
+            echo '- reviewed Candidates confirmed: 1'
+            echo "- Evidence bound: $(jq -r '.evidenceBound' <<<"$summary")"
+            echo "- confirmation committed: $(jq -r '.confirmationPerformed' <<<"$summary")"
+            echo "- confirmation replayed: $(jq -r '.replayed' <<<"$summary")"
+            echo "- Evidence review status: $(jq -r '.evidenceReviewStatus' <<<"$summary")"
+            echo "- Claim status: $(jq -r '.claimStatus' <<<"$summary")"
+            echo "- Claim visibility: $(jq -r '.claimVisibility' <<<"$summary")"
+            echo '- public data changed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
