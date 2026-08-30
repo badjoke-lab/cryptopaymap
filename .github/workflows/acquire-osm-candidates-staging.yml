@@ -11,6 +11,15 @@ on:
         options:
           - japan
           - tokyo
+          - europe-west
+          - europe-east
+          - north-america-west
+          - north-america-east
+          - south-america
+          - africa
+          - asia-west
+          - asia-east
+          - oceania
 
 concurrency:
   group: fixed-review-osm-candidate-acquisition
