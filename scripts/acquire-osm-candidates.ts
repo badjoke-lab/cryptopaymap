@@ -16,6 +16,7 @@ const REQUIRED_TARGET = 'fixed-review-staging';
 const OSM_SOURCE_NAME = 'OpenStreetMap via Overpass API';
 const OSM_LICENSE_SLUG = 'odbl-1-0';
 const IMPORTER_VERSION = 'osm-overpass-v1';
+const PERSISTENCE_CHUNK_SIZE = 200;
 const OVERPASS_ENDPOINT =
   process.env.CPM_OVERPASS_ENDPOINT?.trim() || 'https://overpass-api.de/api/interpreter';
 
@@ -211,6 +212,14 @@ async function candidateCount(database: CryptoPayMapDatabase): Promise<number> {
   return Number(row?.count ?? 0);
 }
 
+function chunks<T>(values: readonly T[], size: number): T[][] {
+  const result: T[][] = [];
+  for (let index = 0; index < values.length; index += size) {
+    result.push(values.slice(index, index + size));
+  }
+  return result;
+}
+
 async function main() {
   const { databaseUrl, scopeName } = requireEnvironment();
   const elements = await fetchOsmElements(scopeName);
@@ -218,26 +227,50 @@ async function main() {
   const before = await candidateCount(database);
   const { source, license } = await ensureOsmProvenance(database);
   const fetchedAt = new Date();
+  const acquisitionRunId = randomUUID();
+  const elementChunks = chunks(elements, PERSISTENCE_CHUNK_SIZE);
+  const receipts = [];
 
-  const receipt = await persistOsmOverpassCandidateAcquisition(database, {
-    requestId: randomUUID(),
-    importBatchId: randomUUID(),
-    sourceId: source.id,
-    licenseId: license.id,
-    fetchedAt,
-    importerVersion: IMPORTER_VERSION,
-    elements,
-  });
+  for (let index = 0; index < elementChunks.length; index += 1) {
+    const chunk = elementChunks[index];
+    if (!chunk || chunk.length === 0) continue;
+    const receipt = await persistOsmOverpassCandidateAcquisition(database, {
+      requestId: randomUUID(),
+      importBatchId: randomUUID(),
+      sourceId: source.id,
+      licenseId: license.id,
+      fetchedAt,
+      importerVersion: IMPORTER_VERSION,
+      elements: chunk,
+    });
+    receipts.push(receipt);
+    console.error(
+      `Persisted OSM acquisition chunk ${index + 1}/${elementChunks.length}: ${chunk.length} elements, ${receipt.acceptedCount} accepted, ${receipt.replayedCount} replayed.`,
+    );
+  }
 
   const after = await candidateCount(database);
+  const ingestion = {
+    state: receipts.every((receipt) => receipt.state === 'replayed') ? 'replayed' : 'committed',
+    batchId: receipts.length === 1 ? (receipts[0]?.batchId ?? null) : null,
+    batchIds: receipts.map((receipt) => receipt.batchId),
+    acquisitionRunId,
+    acceptedCount: receipts.reduce((sum, receipt) => sum + receipt.acceptedCount, 0),
+    rejectedCount: receipts.reduce((sum, receipt) => sum + receipt.rejectedCount, 0),
+    replayedCount: receipts.reduce((sum, receipt) => sum + receipt.replayedCount, 0),
+    duplicateSignalCount: receipts.reduce((sum, receipt) => sum + receipt.duplicateSignalCount, 0),
+    automaticConfirmedCount: 0,
+  };
   const summary = {
     target: REQUIRED_TARGET,
     scope: scopeName,
     fetchedElements: elements.length,
+    persistenceChunkSize: PERSISTENCE_CHUNK_SIZE,
+    persistenceBatchCount: receipts.length,
     candidateTotalBefore: before,
     candidateTotalAfter: after,
     candidateDelta: after - before,
-    ingestion: receipt,
+    ingestion,
   };
 
   console.log(JSON.stringify(summary));
