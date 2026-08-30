@@ -1,0 +1,60 @@
+name: Europe-west pending official Evidence review
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-review
+    paths:
+      - scripts/review-europe-west-pending-official-evidence.ts
+      - .github/workflows/europe-west-pending-official-evidence-review.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  review:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run pending Evidence preflight
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          npx tsx scripts/review-europe-west-pending-official-evidence.ts > "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json"
+          jq -e '.target == "fixed-review-staging" and .pendingCandidateCount == 4 and .mutationPerformed == false and .publicDataChanged == false and .candidatePayloadExposedInLogs == false' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json" >/dev/null
+          {
+            echo '## Europe-west pending official Evidence review'
+            echo
+            echo "- pending Candidates reviewed: $(jq -r '.pendingCandidateCount' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
+            echo "- structurally valid: $(jq '[.details[] | select(.structurallyValid == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
+            echo "- live fetch succeeded: $(jq '[.details[] | select(.liveFetchSucceeded == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
+            echo "- live explicit payment match: $(jq '[.details[] | select(.liveExplicitPaymentMatch == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
+            echo "- live Lightning mention: $(jq '[.details[] | select(.liveLightningMention == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
+            echo "- live Bitcoin mention: $(jq '[.details[] | select(.liveBitcoinMention == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
+            echo '- mutation performed: false'
+            echo '- public data changed: false'
+            echo '- Candidate payload exposed in logs: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload private residual preflight receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: europe-west-pending-official-evidence-review-private
+          path: ${{ runner.temp }}/europe-west-pending-official-evidence-review.json
+          retention-days: 1
+          if-no-files-found: error
