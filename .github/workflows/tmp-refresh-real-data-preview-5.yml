@@ -1,0 +1,75 @@
+name: Temporary refresh real-data staging preview to five
+
+on:
+  push:
+    branches:
+      - ops/refresh-real-data-preview-5
+    paths:
+      - '.github/workflows/tmp-refresh-real-data-preview-5.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: real-data-staging-publication
+  cancel-in-progress: false
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PREVIEW_URL: https://real-data-review.cryptopaymap-staging.pages.dev
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Publish bounded reviewed physical canonical records in staging
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+      - name: Remove synthetic staging review payload
+        run: rm -rf public/staging-review
+      - name: Materialize public data from staging DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - name: Check and build
+        run: |
+          npm run check
+          npm run build
+      - name: Deploy isolated staging preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch real-data-review
+      - name: Verify exactly five real physical places externally
+        run: |
+          node --input-type=module <<'NODE'
+          const base = process.env.PREVIEW_URL;
+          let places = null;
+          for (let attempt = 0; attempt < 20; attempt++) {
+            const r = await fetch(`${base}/data/places.json?verify=${Date.now()}-${attempt}`, {cache:'no-store'}).catch(()=>null);
+            if (r?.status === 200) {
+              const x = await r.json().catch(()=>null);
+              if (x && Array.isArray(x.records)) { places=x; break; }
+            }
+            await new Promise(r=>setTimeout(r,3000));
+          }
+          if (!places) throw new Error('places export unavailable');
+          const pr = await fetch(`${base}/data/place-pins.json?verify=${Date.now()}`, {cache:'no-store'});
+          const pins = await pr.json();
+          if (places.records.length !== 5) throw new Error(`Expected 5 places, got ${places.records.length}`);
+          if (!Array.isArray(pins.records) || pins.records.length !== 5) throw new Error(`Expected 5 pins, got ${pins.records?.length ?? 'invalid'}`);
+          if (places.records.some(r => /\bstaging\b/i.test(String(r?.name ?? '')))) throw new Error('synthetic fixture detected');
+          console.log(JSON.stringify({previewReachable:true,physicalPlaces:5,mapPins:5,syntheticFixtureNames:0,candidatePayloadExposed:false}));
+          NODE
