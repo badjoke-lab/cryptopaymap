@@ -1,0 +1,66 @@
+name: Europe-west promotion preflight
+
+on:
+  push:
+    branches:
+      - ops/europe-west-promotion-preflight
+    paths:
+      - scripts/preflight-europe-west-official-evidence-promotion.ts
+      - .github/workflows/europe-west-promotion-preflight.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+  CPM_REVIEW_BATCH_IDS: d0e17010-611c-48b2-a75d-8b389c1bee60,5c85e86a-bc05-4f9d-a1f3-9d5e6135ef81,8d9d6627-48f6-43e7-b7f0-290327870426,8e2c7c6a-e300-4747-90f7-290327870426,3808ea78-195f-4558-8088-37c172be6b63
+
+jobs:
+  preflight:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Run read-only exact promotion preflight
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: |
+          npx tsx scripts/preflight-europe-west-official-evidence-promotion.ts > "$RUNNER_TEMP/europe-west-promotion-preflight.json"
+          jq -e '.target == "fixed-review-staging" and .mutationPerformed == false and .publicDataChanged == false and .payloadExposed == false' "$RUNNER_TEMP/europe-west-promotion-preflight.json" >/dev/null
+          {
+            echo '## Europe-west promotion preflight'
+            echo
+            echo "- import batches: $(jq -r '.importBatchCount' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- official Evidence Candidates: $(jq -r '.officialEvidenceCandidates' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- structural eligible: $(jq -r '.structuralEligible' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- Lightning source ready: $(jq -r '.lightningSourceReady' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- exact promotion ready: $(jq -r '.exactPromotionReady' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- promotion authorization configured: $(jq -r '.promotionAuthorizationConfigured' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- reviewer promotion authorized: $(jq -r '.reviewerPromotionAuthorized' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- evidence review authorization configured: $(jq -r '.evidenceReviewAuthorizationConfigured' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo "- reviewer evidence review authorized: $(jq -r '.reviewerEvidenceReviewAuthorized' "$RUNNER_TEMP/europe-west-promotion-preflight.json")"
+            echo '- mutation performed: false'
+            echo '- public data changed: false'
+            echo '- payload exposed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload private preflight receipt
+        uses: actions/upload-artifact@v4
+        with:
+          name: europe-west-promotion-preflight-private
+          path: ${{ runner.temp }}/europe-west-promotion-preflight.json
+          retention-days: 1
+          if-no-files-found: error
