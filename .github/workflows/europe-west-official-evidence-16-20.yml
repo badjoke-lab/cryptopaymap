@@ -1,0 +1,61 @@
+name: Europe-west official Evidence batches 16-20
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-16-20
+    paths:
+      - .github/workflows/europe-west-official-evidence-16-20.yml
+
+concurrency:
+  group: fixed-review-official-evidence-crawl
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Crawl batches 16-20 sequentially
+        shell: bash
+        run: |
+          set -euo pipefail
+          batches=(
+            61483919-bbf7-4290-80c5-7c51ac8b5445
+            234599d9-be62-4139-8f30-2d11700dce80
+            431eb7d9-eb7e-4202-aadd-84b5f7e4a3f1
+            c5c63726-d420-42ac-adb4-a88962580936
+            9151fb61-886c-4bed-b122-e35eebaa8f92
+          )
+          index=16
+          for batch in "${batches[@]}"; do
+            export CPM_OFFICIAL_EVIDENCE_BATCH_IDS="$batch"
+            export CPM_OFFICIAL_EVIDENCE_MAX_TARGETS='250'
+            summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+            jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+            {
+              echo "## Europe-west batch $index"
+              echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
+              echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
+              echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
+              echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
+              echo "- automatic Confirmed: $(jq -r '.automaticConfirmedCount' <<<"$summary")"
+              echo
+            } >> "$GITHUB_STEP_SUMMARY"
+            index=$((index + 1))
+          done
