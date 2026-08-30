@@ -1,0 +1,49 @@
+name: Europe-west official Evidence count audit
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-3-5
+    paths:
+      - scripts/audit-europe-west-official-evidence-counts.ts
+      - .github/workflows/europe-west-official-evidence-count-audit.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit Europe-west official Evidence counts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          summary="$(npx tsx scripts/audit-europe-west-official-evidence-counts.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .candidatePayloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-west official Evidence counts'
+            echo
+            jq -r '.batches[] | "- batch \(.batch): official Evidence \(.officialEvidence), Candidates \(.candidatesWithOfficialEvidence), pending private A \(.pendingPrivateA), accepted \(.acceptedEvidence)"' <<<"$summary"
+            echo "- total official Evidence: $(jq -r '.totals.officialEvidence' <<<"$summary")"
+            echo "- total pending private A: $(jq -r '.totals.pendingPrivateA' <<<"$summary")"
+            echo "- total accepted Evidence: $(jq -r '.totals.acceptedEvidence' <<<"$summary")"
+            echo '- Candidate payload exposed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
