@@ -31,6 +31,11 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Reduce persistence chunk for Europe-east staging retry
+        run: |
+          sed -i 's/const PERSISTENCE_CHUNK_SIZE = 200;/const PERSISTENCE_CHUNK_SIZE = 100;/' scripts/acquire-osm-candidates.ts
+          grep -q 'const PERSISTENCE_CHUNK_SIZE = 100;' scripts/acquire-osm-candidates.ts
+
       - name: Acquire Europe-east private OSM Candidates
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -50,11 +55,12 @@ jobs:
             sleep $((attempt * 5))
           done
           printf '%s\n' "$summary"
-          jq -e '.target == "fixed-review-staging" and .scope == "europe-east" and .ingestion.automaticConfirmedCount == 0' <<<"$summary" >/dev/null
+          jq -e '.target == "fixed-review-staging" and .scope == "europe-east" and .persistenceChunkSize == 100 and .ingestion.automaticConfirmedCount == 0' <<<"$summary" >/dev/null
           {
             echo '## Europe-east OSM Candidate acquisition'
             echo
             echo "- fetched OSM elements: $(jq -r '.fetchedElements' <<<"$summary")"
+            echo "- persistence chunk size: $(jq -r '.persistenceChunkSize' <<<"$summary")"
             echo "- Candidate total before: $(jq -r '.candidateTotalBefore' <<<"$summary")"
             echo "- Candidate total after: $(jq -r '.candidateTotalAfter' <<<"$summary")"
             echo "- Candidate delta: $(jq -r '.candidateDelta' <<<"$summary")"
