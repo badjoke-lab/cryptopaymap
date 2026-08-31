@@ -41,7 +41,7 @@ jobs:
           CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
         run: |
           summary="$(npx tsx scripts/publish-reviewed-physical-canonical-staging.ts)"
-          jq -e '.target == "fixed-review-staging" and .reviewedTargets >= 6 and .publicationConfigured == true and .publisherAuthorized == true and (.mutationPerformed == true or .alreadyPublic == true) and .payloadExposed == false' <<<"$summary" >/dev/null
+          jq -e '.target == "fixed-review-staging" and .reviewedTargets >= 7 and .publicationConfigured == true and .publisherAuthorized == true and (.mutationPerformed == true or .alreadyPublic == true) and .payloadExposed == false' <<<"$summary" >/dev/null
           {
             echo '## Reviewed real-data staging publication'
             echo
@@ -89,13 +89,13 @@ jobs:
               const value = await response.json().catch(() => null);
               if (value && Array.isArray(value.records)) {
                 places = value;
-                if (places.records.length >= 6) break;
+                if (places.records.length >= 7) break;
               }
             }
             await new Promise((resolve) => setTimeout(resolve, 3000));
           }
-          if (!places || places.records.length < 6) {
-            throw new Error(`Expected at least 6 reviewed real public places, got ${places?.records?.length ?? 'unreachable'}.`);
+          if (!places || places.records.length < 7) {
+            throw new Error(`Expected at least 7 reviewed real public places, got ${places?.records?.length ?? 'unreachable'}.`);
           }
           if (places.records.some((record) => /\bstaging\b/i.test(String(record?.name ?? '')))) {
             throw new Error('Synthetic staging fixture name found in real-data preview.');
