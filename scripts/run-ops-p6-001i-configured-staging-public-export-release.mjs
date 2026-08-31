@@ -476,13 +476,13 @@ async function verifyExternal(baseUrl, expectedMarker, localDist) {
   const required = [
     ['/', 200, 'text/html'],
     ['/places/', 200, 'text/html'],
-    ['/place/staging-coffee-tokyo/', 200, 'text/html'],
+    ['/data/places.json', 200, 'application/json'],
     ['/online/', 200, 'text/html'],
-    ['/service/staging-vpn/', 200, 'text/html'],
+    ['/data/online-services.json', 200, 'application/json'],
     ['/version.json', 200, 'application/json'],
     ['/data/manifest.json', 200, 'application/json'],
     ['/robots.txt', 200, 'text/plain'],
-    ['/staging-review/media/place-cover.webp', 200, 'image/webp'],
+    ['/data/place-pins.json', 200, 'application/json'],
     ['/__p6_05_missing__', 404, 'text/html'],
   ];
   const results = [];
