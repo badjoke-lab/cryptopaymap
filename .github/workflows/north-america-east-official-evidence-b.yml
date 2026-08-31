@@ -1,0 +1,50 @@
+name: North America east official Evidence B
+
+on:
+  push:
+    branches:
+      - ops/north-america-east-official-evidence-b
+    paths:
+      - .github/workflows/north-america-east-official-evidence-b.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+  CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 5392f6f9-6391-4f9b-8878-5edfa332eb04,370b47e9-35ac-452e-a3f7-1d54d2c24aa3
+  CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Crawl official payment Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## North America east Evidence B'
+            echo
+            echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
+            echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
+            echo "- landing pages fetched: $(jq -r '.landingPagesFetched' <<<"$summary")"
+            echo "- internal pages fetched: $(jq -r '.internalPagesFetched' <<<"$summary")"
+            echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
+            echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
+            echo "- already persisted: $(jq -r '.alreadyPersisted' <<<"$summary")"
+            echo '- automatic Confirmed: 0'
+          } >> "$GITHUB_STEP_SUMMARY"
