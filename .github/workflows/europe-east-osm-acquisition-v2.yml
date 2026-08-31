@@ -1,0 +1,51 @@
+name: Europe-east OSM Candidate acquisition v2
+
+on:
+  push:
+    branches:
+      - ops/europe-east-osm-acquisition-v2
+    paths:
+      - scripts/acquire-osm-candidates.ts
+      - .github/workflows/europe-east-osm-acquisition-v2.yml
+
+concurrency:
+  group: fixed-review-osm-candidate-acquisition
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Acquire Europe-east private OSM Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          summary="$(npx tsx scripts/acquire-osm-candidates.ts europe-east)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .scope == "europe-east" and .persistenceChunkSize == 50 and .ingestion.automaticConfirmedCount == 0' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-east OSM Candidate acquisition v2'
+            echo
+            echo "- fetched OSM elements: $(jq -r '.fetchedElements' <<<"$summary")"
+            echo "- Candidate total before: $(jq -r '.candidateTotalBefore' <<<"$summary")"
+            echo "- Candidate total after: $(jq -r '.candidateTotalAfter' <<<"$summary")"
+            echo "- Candidate delta: $(jq -r '.candidateDelta' <<<"$summary")"
+            echo "- persistence batches: $(jq -r '.persistenceBatchCount' <<<"$summary")"
+            echo "- accepted/refresh: $(jq -r '.ingestion.acceptedCount' <<<"$summary")"
+            echo "- replayed: $(jq -r '.ingestion.replayedCount' <<<"$summary")"
+            echo "- automatic Confirmed: $(jq -r '.ingestion.automaticConfirmedCount' <<<"$summary")"
+          } >> "$GITHUB_STEP_SUMMARY"
