@@ -64,7 +64,9 @@ function stringMap(value: unknown): Record<string, string> {
   const source = record(value);
   if (!source) return {};
   return Object.fromEntries(
-    Object.entries(source).filter((entry): entry is [string, string] => typeof entry[1] === 'string'),
+    Object.entries(source).filter(
+      (entry): entry is [string, string] => typeof entry[1] === 'string',
+    ),
   );
 }
 
@@ -78,7 +80,8 @@ function batchIdsFromEnvironment(): string[] {
     ),
   ];
   if (values.length === 0) throw new Error('CPM_OFFICIAL_EVIDENCE_BATCH_IDS is required.');
-  if (values.length > MAX_BATCH_IDS) throw new Error(`At most ${MAX_BATCH_IDS} batch IDs may be reviewed per run.`);
+  if (values.length > MAX_BATCH_IDS)
+    throw new Error(`At most ${MAX_BATCH_IDS} batch IDs may be reviewed per run.`);
   if (values.some((value) => !UUID_PATTERN.test(value))) {
     throw new Error('Every batch ID must be a UUID.');
   }
@@ -114,14 +117,20 @@ function safeHttps(value: unknown): string | null {
 }
 
 function normalizeHost(value: string): string {
-  return value.trim().toLowerCase().replace(/^www\./, '').replace(/\.$/, '');
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/^www\./, '')
+    .replace(/\.$/, '');
 }
 
 function sameOfficialDomain(urlValue: string, domainValue: string): boolean {
   try {
     const host = normalizeHost(new URL(urlValue).hostname);
     const domain = normalizeHost(domainValue);
-    return Boolean(domain && (host === domain || host.endsWith(`.${domain}`) || domain.endsWith(`.${host}`)));
+    return Boolean(
+      domain && (host === domain || host.endsWith(`.${domain}`) || domain.endsWith(`.${host}`)),
+    );
   } catch {
     return false;
   }
@@ -194,13 +203,17 @@ function countryCodeFromRelations(
   for (const relation of relations) {
     const payload = record(relation.rawPayload);
     if (payload?.sourceSystem !== 'openstreetmap_nominatim') continue;
-    const value = typeof payload.countryCode === 'string' ? payload.countryCode.trim().toUpperCase() : '';
+    const value =
+      typeof payload.countryCode === 'string' ? payload.countryCode.trim().toUpperCase() : '';
     if (COUNTRY_CODE_PATTERN.test(value)) return value;
   }
   return null;
 }
 
-async function loadCandidates(db: ReturnType<typeof createDatabase>, batchIds: string[]): Promise<CandidateRow[]> {
+async function loadCandidates(
+  db: ReturnType<typeof createDatabase>,
+  batchIds: string[],
+): Promise<CandidateRow[]> {
   const rows = await db
     .select({
       candidateId: sourceCandidates.id,
@@ -219,7 +232,10 @@ async function loadCandidates(db: ReturnType<typeof createDatabase>, batchIds: s
       evidenceUpdatedAt: evidence.updatedAt,
     })
     .from(evidence)
-    .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, evidence.sourceRecordId))
+    .innerJoin(
+      candidateSourceRecords,
+      eq(candidateSourceRecords.sourceRecordId, evidence.sourceRecordId),
+    )
     .innerJoin(sourceCandidates, eq(sourceCandidates.id, candidateSourceRecords.candidateId))
     .where(
       and(
@@ -238,7 +254,8 @@ async function loadCandidates(db: ReturnType<typeof createDatabase>, batchIds: s
     )
     .orderBy(asc(sourceCandidates.id), asc(evidence.id));
   const unique = new Map<string, CandidateRow>();
-  for (const row of rows) if (!unique.has(row.candidateId)) unique.set(row.candidateId, row as CandidateRow);
+  for (const row of rows)
+    if (!unique.has(row.candidateId)) unique.set(row.candidateId, row as CandidateRow);
   return [...unique.values()];
 }
 
@@ -259,16 +276,32 @@ async function main() {
     CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: process.env.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS,
   });
   const reviewer = createDerivedStagingServiceIdentity('reviewer');
-  const promotionAuthorized = promotionPolicy.configured && promotionPolicy.allowedSubjects.has(reviewer.subject);
-  const evidenceReviewAuthorized = evidencePolicy.configured && evidencePolicy.allowedSubjects.has(reviewer.subject);
+  const promotionAuthorized =
+    promotionPolicy.configured && promotionPolicy.allowedSubjects.has(reviewer.subject);
+  const evidenceReviewAuthorized =
+    evidencePolicy.configured && evidencePolicy.allowedSubjects.has(reviewer.subject);
   if (!promotionAuthorized || !evidenceReviewAuthorized) {
-    throw new Error('The staging reviewer is not authorized for both Candidate promotion and Evidence review.');
+    throw new Error(
+      'The staging reviewer is not authorized for both Candidate promotion and Evidence review.',
+    );
   }
 
   const [[bitcoin], [lightning], [lightningInvoice]] = await Promise.all([
-    db.select({ id: assets.id }).from(assets).where(and(eq(assets.slug, 'bitcoin'), eq(assets.status, 'active'))).limit(1),
-    db.select({ id: networks.id }).from(networks).where(and(eq(networks.slug, 'lightning'), eq(networks.status, 'active'))).limit(1),
-    db.select({ id: paymentMethods.id }).from(paymentMethods).where(and(eq(paymentMethods.slug, 'lightning_invoice'), eq(paymentMethods.status, 'active'))).limit(1),
+    db
+      .select({ id: assets.id })
+      .from(assets)
+      .where(and(eq(assets.slug, 'bitcoin'), eq(assets.status, 'active')))
+      .limit(1),
+    db
+      .select({ id: networks.id })
+      .from(networks)
+      .where(and(eq(networks.slug, 'lightning'), eq(networks.status, 'active')))
+      .limit(1),
+    db
+      .select({ id: paymentMethods.id })
+      .from(paymentMethods)
+      .where(and(eq(paymentMethods.slug, 'lightning_invoice'), eq(paymentMethods.status, 'active')))
+      .limit(1),
   ]);
   if (!bitcoin || !lightning || !lightningInvoice) {
     throw new Error('BTC / Lightning / lightning_invoice staging registry is not ready.');
@@ -314,7 +347,9 @@ async function main() {
     const osmId = element?.id;
     const originDomain = origin?.officialDomain?.trim() ?? '';
     const evidenceUrl = safeHttps(candidate.evidenceSourceUrl);
-    const lightningTagged = ['yes', 'only'].includes((paymentTags['payment:lightning'] ?? '').toLowerCase());
+    const lightningTagged = ['yes', 'only'].includes(
+      (paymentTags['payment:lightning'] ?? '').toLowerCase(),
+    );
     if (
       !name ||
       latitude === null ||
@@ -349,24 +384,36 @@ async function main() {
         .from(candidatePromotionDecisions)
         .where(eq(candidatePromotionDecisions.candidateId, candidate.candidateId))
         .limit(1);
-      if (!existingPromotion) throw new Error('Promoted Candidate is missing its promotion decision.');
+      if (!existingPromotion)
+        throw new Error('Promoted Candidate is missing its promotion decision.');
       claimId = existingPromotion.claimId;
       counters.alreadyPromoted += 1;
     } else {
       if (candidate.canonicalEntityId !== null || candidate.canonicalLocationId !== null) {
         throw new Error('Unpromoted Candidate has unexpected canonical links.');
       }
-      const requestId = await deterministicUuid(`official-evidence-batch:promotion:${candidate.candidateId}`);
-      const entityId = await deterministicUuid(`official-evidence-batch:entity:${candidate.candidateId}`);
-      const locationId = await deterministicUuid(`official-evidence-batch:location:${candidate.candidateId}`);
+      const requestId = await deterministicUuid(
+        `official-evidence-batch:promotion:${candidate.candidateId}`,
+      );
+      const entityId = await deterministicUuid(
+        `official-evidence-batch:entity:${candidate.candidateId}`,
+      );
+      const locationId = await deterministicUuid(
+        `official-evidence-batch:location:${candidate.candidateId}`,
+      );
       claimId = await deterministicUuid(`official-evidence-batch:claim:${candidate.candidateId}`);
-      const claimAssetId = await deterministicUuid(`official-evidence-batch:claim-asset:${candidate.candidateId}`);
+      const claimAssetId = await deterministicUuid(
+        `official-evidence-batch:claim-asset:${candidate.candidateId}`,
+      );
       const promotedAt = new Date(Math.max(Date.now(), candidate.updatedAt.getTime() + 1_000));
       const websiteUrl = safeHttps(seed?.websiteUrl);
-      const phone = typeof seed?.phone === 'string' && seed.phone.trim().length > 0 ? seed.phone.trim() : null;
+      const phone =
+        typeof seed?.phone === 'string' && seed.phone.trim().length > 0 ? seed.phone.trim() : null;
       const sourceRecordIds = relations.map((row) => row.sourceRecordId);
       const context = authorizeCandidatePromotion(reviewer, promotionPolicy, requestId);
-      const receipt = await createCandidatePromotionService(createDrizzleCandidatePromotionBackend(db)).promote(context, {
+      const receipt = await createCandidatePromotionService(
+        createDrizzleCandidatePromotionBackend(db),
+      ).promote(context, {
         candidateId: candidate.candidateId,
         expectedCandidateType: 'physical_place',
         expectedCandidateUpdatedAt: candidate.updatedAt.toISOString(),
@@ -421,7 +468,8 @@ async function main() {
             customerPaysCrypto: true,
             merchantExplicitlyAcceptsCrypto: true,
             processorId: null,
-            howToPay: "Pay with Bitcoin over the Lightning Network using the merchant's Lightning payment option.",
+            howToPay:
+              "Pay with Bitcoin over the Lightning Network using the merchant's Lightning payment option.",
             instructionsLanguage: 'en',
             merchantReceives: 'not_publicly_confirmed',
             restrictions: null,
@@ -486,13 +534,26 @@ async function main() {
 
     let evidenceUpdatedAt = freshEvidence.updatedAt;
     if (freshEvidence.claimId === null) {
-      const bindAt = new Date(Math.max(Date.now(), claim.updatedAt.getTime() + 1_000, freshEvidence.updatedAt.getTime() + 1_000));
+      const bindAt = new Date(
+        Math.max(
+          Date.now(),
+          claim.updatedAt.getTime() + 1_000,
+          freshEvidence.updatedAt.getTime() + 1_000,
+        ),
+      );
       const [bound] = await db
         .update(evidence)
         .set({ claimId: claim.id, updatedAt: bindAt })
-        .where(and(eq(evidence.id, candidate.evidenceId), eq(evidence.reviewStatus, 'pending'), isNull(evidence.claimId)))
+        .where(
+          and(
+            eq(evidence.id, candidate.evidenceId),
+            eq(evidence.reviewStatus, 'pending'),
+            isNull(evidence.claimId),
+          ),
+        )
         .returning({ claimId: evidence.claimId, updatedAt: evidence.updatedAt });
-      if (!bound || bound.claimId !== claim.id) throw new Error('Failed to bind official Evidence to promoted Claim.');
+      if (!bound || bound.claimId !== claim.id)
+        throw new Error('Failed to bind official Evidence to promoted Claim.');
       evidenceUpdatedAt = bound.updatedAt;
     } else if (freshEvidence.claimId !== claim.id) {
       throw new Error('Official Evidence is bound to a different Claim.');
@@ -508,12 +569,19 @@ async function main() {
       .from(claimAssets)
       .where(eq(claimAssets.claimId, claim.id))
       .orderBy(asc(claimAssets.id));
-    if (assetRows.length !== 1) throw new Error('Batch Claim must have exactly one payment combination.');
-    const decidedAt = new Date(Math.max(Date.now(), claim.updatedAt.getTime() + 1_000, evidenceUpdatedAt.getTime() + 1_000));
+    if (assetRows.length !== 1)
+      throw new Error('Batch Claim must have exactly one payment combination.');
+    const decidedAt = new Date(
+      Math.max(Date.now(), claim.updatedAt.getTime() + 1_000, evidenceUpdatedAt.getTime() + 1_000),
+    );
     const nextReviewAt = new Date(decidedAt.getTime() + 30 * 24 * 60 * 60 * 1_000);
-    const requestId = await deterministicUuid(`official-evidence-batch:review:${candidate.candidateId}`);
+    const requestId = await deterministicUuid(
+      `official-evidence-batch:review:${candidate.candidateId}`,
+    );
     const context = authorizeEvidenceReview(reviewer, evidencePolicy, requestId);
-    const receipt = await createEvidenceReviewDecisionService(createDrizzleEvidenceReviewBackend(db)).decide(context, {
+    const receipt = await createEvidenceReviewDecisionService(
+      createDrizzleEvidenceReviewBackend(db),
+    ).decide(context, {
       evidenceId: candidate.evidenceId,
       claimId: claim.id,
       expectedEvidenceUpdatedAt: evidenceUpdatedAt.toISOString(),
@@ -529,11 +597,13 @@ async function main() {
       claimAction: 'confirm',
       reasonCode: 'official_payment_page_verified',
       publicSummary: null,
-      internalNote: 'Fixed-review staging batch confirmation from reverified official merchant Lightning payment Evidence.',
+      internalNote:
+        'Fixed-review staging batch confirmation from reverified official merchant Lightning payment Evidence.',
       nextReviewAt: nextReviewAt.toISOString(),
       endedReason: null,
     });
-    if (receipt.state === 'committed' && receipt.claimStatus === 'confirmed') counters.confirmed += 1;
+    if (receipt.state === 'committed' && receipt.claimStatus === 'confirmed')
+      counters.confirmed += 1;
   }
 
   console.log(
