@@ -36,10 +36,11 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
           npx tsx scripts/review-europe-west-pending-official-evidence.ts > "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json"
-          jq -e '.target == "fixed-review-staging" and .pendingCandidateCount == 4 and .mutationPerformed == false and .publicDataChanged == false and .candidatePayloadExposedInLogs == false' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json" >/dev/null
+          jq -e '.target == "fixed-review-staging" and .batchCount == 23 and (.pendingCandidateCount > 0 and .pendingCandidateCount <= 50) and .mutationPerformed == false and .publicDataChanged == false and .candidatePayloadExposedInLogs == false' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json" >/dev/null
           {
             echo '## Europe-west pending official Evidence review'
             echo
+            echo "- import batches covered: $(jq -r '.batchCount' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
             echo "- pending Candidates reviewed: $(jq -r '.pendingCandidateCount' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
             echo "- structurally valid: $(jq '[.details[] | select(.structurallyValid == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
             echo "- live fetch succeeded: $(jq '[.details[] | select(.liveFetchSucceeded == true)] | length' "$RUNNER_TEMP/europe-west-pending-official-evidence-review.json")"
