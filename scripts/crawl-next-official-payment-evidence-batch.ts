@@ -14,6 +14,7 @@ const MAX_BATCH_IDS = 250;
 const MAX_TARGETS = 250;
 const MAX_PARTITIONS = 16;
 const SCAN_LIMIT = 20_000;
+const FAILURE_RETRY_COOLDOWN_MS = 6 * 60 * 60 * 1_000;
 
 type JsonRecord = Record<string, unknown>;
 
@@ -67,7 +68,7 @@ async function main() {
   const partition = partitionConfig();
   const db = createDatabase(databaseUrl);
 
-  const [originRows, existingEvidenceRows, attemptedRows] = await Promise.all([
+  const [originRows, existingEvidenceRows, attemptedRows, failureRows] = await Promise.all([
     db
       .select({
         candidateId: sourceCandidates.id,
@@ -104,12 +105,29 @@ async function main() {
       .from(candidateSourceRecords)
       .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
       .where(like(sourceRecords.externalId, 'candidate:%:official-payment-crawl-attempt:v2')),
+    db
+      .select({
+        candidateId: candidateSourceRecords.candidateId,
+        fetchedAt: sourceRecords.fetchedAt,
+      })
+      .from(candidateSourceRecords)
+      .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
+      .where(like(sourceRecords.externalId, 'candidate:%:official-payment-crawl-failure:v3:%')),
   ]);
 
   const candidatesWithOfficialEvidence = new Set(
     existingEvidenceRows.map((row) => row.candidateId),
   );
   const attemptedCandidates = new Set(attemptedRows.map((row) => row.candidateId));
+  const now = Date.now();
+  const recentFailureCandidates = new Set(
+    failureRows
+      .filter(
+        (row) =>
+          row.fetchedAt !== null && now - row.fetchedAt.getTime() < FAILURE_RETRY_COOLDOWN_MS,
+      )
+      .map((row) => row.candidateId),
+  );
   const eligible = originRows.filter(
     (row) =>
       row.importBatchId !== null &&
@@ -117,6 +135,7 @@ async function main() {
       websiteUrl(row.rawPayload) !== null &&
       !candidatesWithOfficialEvidence.has(row.candidateId) &&
       !attemptedCandidates.has(row.candidateId) &&
+      !recentFailureCandidates.has(row.candidateId) &&
       candidatePartition(row.candidateId, partition.count) === partition.index,
   );
   const selected = eligible.slice(0, limit);
@@ -131,6 +150,7 @@ async function main() {
         originCandidatesScanned: originRows.length,
         candidatesWithOfficialEvidence: candidatesWithOfficialEvidence.size,
         attemptedCandidates: attemptedCandidates.size,
+        recentFailureCooldownCandidates: recentFailureCandidates.size,
         eligibleWithoutOfficialEvidence: eligible.length,
         partition,
         selectedBatchIds: 0,
@@ -158,6 +178,7 @@ async function main() {
       originCandidatesScanned: originRows.length,
       candidatesWithOfficialEvidence: candidatesWithOfficialEvidence.size,
       attemptedCandidates: attemptedCandidates.size,
+      recentFailureCooldownCandidates: recentFailureCandidates.size,
       eligibleWithoutOfficialEvidence: eligible.length,
       partition,
       selectedBatchIds: batchIds.length,

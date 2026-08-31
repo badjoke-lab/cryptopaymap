@@ -356,6 +356,7 @@ async function main() {
     alreadyPersisted: 0,
     automaticConfirmedCount: 0,
     attemptMarkersPersisted: 0,
+    failureMarkersPersisted: 0,
   };
 
   let cursor = 0;
@@ -536,6 +537,65 @@ async function main() {
       await db.insert(candidateSourceRecords).values(attemptLinks).onConflictDoNothing();
     }
     counters.attemptMarkersPersisted = attemptLinks.length;
+  }
+
+  const failedTargets = targets.filter(
+    (target) => !completedCrawlCandidateIds.has(target.candidateId),
+  );
+  if (failedTargets.length > 0) {
+    const retryAfter = new Date(attemptFetchedAt.getTime() + 6 * 60 * 60 * 1_000);
+    const failureBucket = attemptFetchedAt.toISOString().slice(0, 13).replace(/[-T:]/g, '');
+    const failureExternalIds = failedTargets.map(
+      (target) =>
+        `candidate:${target.candidateId}:official-payment-crawl-failure:v3:${failureBucket}`,
+    );
+    await db
+      .insert(sourceRecords)
+      .values(
+        failedTargets.map((target) => ({
+          sourceId: resolvedSourceId,
+          externalId: `candidate:${target.candidateId}:official-payment-crawl-failure:v3:${failureBucket}`,
+          sourceUrl: target.url.toString(),
+          rawPayload: {
+            discovery: 'official_payment_crawl_failure',
+            discoveryVersion: 'official-payment-crawl-failure-v3',
+            candidateId: target.candidateId,
+            retryAfter: retryAfter.toISOString(),
+          },
+          officialDomain: target.officialDomain,
+          observedAt: attemptFetchedAt,
+          fetchedAt: attemptFetchedAt,
+        })),
+      )
+      .onConflictDoNothing();
+
+    const failureRows = await db
+      .select({ id: sourceRecords.id, externalId: sourceRecords.externalId })
+      .from(sourceRecords)
+      .where(
+        and(
+          eq(sourceRecords.sourceId, resolvedSourceId),
+          inArray(sourceRecords.externalId, failureExternalIds),
+        ),
+      );
+    const candidateIdByFailureExternalId = new Map(
+      failedTargets.map((target) => [
+        `candidate:${target.candidateId}:official-payment-crawl-failure:v3:${failureBucket}`,
+        target.candidateId,
+      ]),
+    );
+    const failureLinks = failureRows.flatMap((row) => {
+      const candidateId = row.externalId
+        ? candidateIdByFailureExternalId.get(row.externalId)
+        : undefined;
+      return candidateId
+        ? [{ candidateId, sourceRecordId: row.id, relationship: 'supporting' as const }]
+        : [];
+    });
+    if (failureLinks.length > 0) {
+      await db.insert(candidateSourceRecords).values(failureLinks).onConflictDoNothing();
+    }
+    counters.failureMarkersPersisted = failureLinks.length;
   }
 
   console.log(
