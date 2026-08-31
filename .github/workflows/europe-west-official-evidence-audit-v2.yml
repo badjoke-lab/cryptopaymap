@@ -6,6 +6,7 @@ on:
       - ops/europe-west-official-evidence-audit-v2
     paths:
       - scripts/audit-europe-west-official-evidence-review-v2.ts
+      - scripts/audit-europe-west-targeted-payment-details.ts
       - .github/workflows/europe-west-official-evidence-audit-v2.yml
 
 permissions:
@@ -43,6 +44,22 @@ jobs:
             echo "- exact state ready: $(jq -r '.exactStateReady' <<<"$summary")"
             echo "- Bitcoin review ready: $(jq -r '.bitcoinReviewReady' <<<"$summary")"
             echo "- Lightning/BTC review ready: $(jq -r '.lightningBtcReviewReady' <<<"$summary")"
+            echo '- mutation performed: false'
+            echo '- Candidate payload exposed: false'
+            echo '- source URL exposed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deepen payment-detail audit for pending A Evidence
+        run: |
+          summary="$(npx tsx scripts/audit-europe-west-targeted-payment-details.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .mutationPerformed == false and .publicDataChanged == false and .payloadExposed == false and .sourceUrlExposed == false' <<<"$summary" >/dev/null
+          {
+            echo
+            echo '## Targeted payment-detail audit'
+            echo
+            echo "- pending A Evidence rows: $(jq -r '.pendingAEvidenceRows' <<<"$summary")"
+            echo "- Lightning route Evidence ready: $(jq -r '.lightningRouteEvidenceReady' <<<"$summary")"
             echo '- mutation performed: false'
             echo '- Candidate payload exposed: false'
             echo '- source URL exposed: false'
