@@ -4,10 +4,10 @@
   "launchDomain": "data_qa",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "ac45b2ce476772517cad42e4a9a3090e02dd7f7b",
-  "generatedAt": "2026-08-31T05:25:17.643Z",
-  "expiresAt": "2026-09-03T05:25:17.643Z",
-  "workflowRunId": "33360415960",
+  "commit": "f3c1acf522e8e30c4d5e9e806b7f063ad503041e",
+  "generatedAt": "2026-08-31T08:05:48.207Z",
+  "expiresAt": "2026-09-03T08:05:48.207Z",
+  "workflowRunId": "33371196724",
   "owner": "sha256:4a5701af8e3ea2fb4bca65bd906ff5ca207275391449d555160c85744a3dd3b5",
   "procedure": "OPS-P6-001D configured staging data QA",
   "checks": {
@@ -22,12 +22,12 @@
     "deployment": {
       "path": "config/staging-review/deployment-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-31T04:03:47.893Z"
+      "generatedAt": "2026-08-31T08:03:47.501Z"
     },
     "liveAudit": {
       "path": "config/staging-review/p5-02r-live-audit-receipt.json",
       "state": "current",
-      "generatedAt": "2026-08-31T04:04:26.046Z"
+      "generatedAt": "2026-08-31T08:04:24.925Z"
     },
     "publicProjection": {
       "status": "passed",
@@ -36,19 +36,19 @@
       "forbiddenKeys": [],
       "version": {
         "projectId": "cryptopaymap",
-        "datasetVersion": "staging-review-2026-07-05",
+        "datasetVersion": "staging-review-no-fixtures-2026-08-31",
         "schemaVersion": "1.0.0",
-        "generatedAt": "2026-07-05T00:00:00Z",
+        "generatedAt": "2026-08-31T00:00:00Z",
         "canonicalOnly": true,
         "verificationMarker": "reviewed_public_records_only",
-        "sha256": "c018fa88dbb51736500dee4ab0cc1607885af113f235a643ec12d8948ba37569"
+        "sha256": "dfc4944772e5d500ede785b6010ee65e9fdeb8858aebb8a2429f0f3d79cee5e0"
       },
       "manifest": {
-        "datasetVersion": "staging-review-2026-07-05",
+        "datasetVersion": "staging-review-no-fixtures-2026-08-31",
         "schemaVersion": "1.0.0",
-        "generatedAt": "2026-07-05T00:00:00Z",
+        "generatedAt": "2026-08-31T00:00:00Z",
         "canonicalOnly": true,
-        "sha256": "304c35366752cca14d5e45bb9ee7c9d13de689d0684f981ad873b66c7c885916",
+        "sha256": "cd77732e304d74dd5efa5b00f96e377e809b862ce41335e7c707b0c22f061b9f",
         "fileCount": 5
       },
       "files": [
@@ -86,8 +86,8 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:d354a29f624f4fd0dc76707f170ca0649db0d85c29f167bfc664b18d23aea802",
-    "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
+    "releaseId": "sha256:995f2312f218badd225485d467deeb5613bbe19744875cb745f3787fc76e99aa",
+    "dataSnapshotId": "sha256:4897d8e3f971ca53a0e59fe597ee3bb7468461a9c0e192635dc786a19cb609d4",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
   },
