@@ -17,7 +17,7 @@ permissions:
 jobs:
   acquire:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -36,7 +36,19 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: |
-          summary="$(npx tsx scripts/acquire-osm-candidates.ts europe-east)"
+          set -euo pipefail
+          summary=''
+          for attempt in 1 2 3; do
+            if summary="$(npx tsx scripts/acquire-osm-candidates.ts europe-east)"; then
+              break
+            fi
+            if [[ "$attempt" -eq 3 ]]; then
+              echo 'Europe-east acquisition failed after 3 bounded attempts.' >&2
+              exit 1
+            fi
+            echo "Europe-east acquisition attempt $attempt failed; retrying after bounded backoff." >&2
+            sleep $((attempt * 5))
+          done
           printf '%s\n' "$summary"
           jq -e '.target == "fixed-review-staging" and .scope == "europe-east" and .ingestion.automaticConfirmedCount == 0' <<<"$summary" >/dev/null
           {
