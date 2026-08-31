@@ -1,0 +1,59 @@
+name: Europe-west official Evidence batches 9-11
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-9-11
+    paths:
+      - .github/workflows/europe-west-official-evidence-9-11.yml
+
+permissions:
+  contents: read
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Crawl batch 9
+        env:
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 312d3526-3438-47c5-8351-5c2fc242d3c6
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+
+      - name: Crawl batch 10
+        env:
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 20983068-031d-492b-ac0c-b9a0d93a5e70
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+
+      - name: Crawl batch 11
+        env:
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 7d43f605-5f3e-4a79-a6a9-a222775821be
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
