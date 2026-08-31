@@ -16,7 +16,9 @@ const REQUIRED_TARGET = 'fixed-review-staging';
 const OSM_SOURCE_NAME = 'OpenStreetMap via Overpass API';
 const OSM_LICENSE_SLUG = 'odbl-1-0';
 const IMPORTER_VERSION = 'osm-overpass-v1';
-const PERSISTENCE_CHUNK_SIZE = 200;
+const PERSISTENCE_CHUNK_SIZE = 50;
+const RETRY_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 5_000;
 const OVERPASS_ENDPOINT =
   process.env.CPM_OVERPASS_ENDPOINT?.trim() || 'https://overpass-api.de/api/interpreter';
 
@@ -117,7 +119,11 @@ function isOsmElement(value: unknown): value is OsmOverpassElement {
   );
 }
 
-async function fetchOsmElements(scopeName: ScopeName): Promise<OsmOverpassElement[]> {
+function sleep(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
+}
+
+async function fetchOsmElementsOnce(scopeName: ScopeName): Promise<OsmOverpassElement[]> {
   const query = buildOverpassQuery(scopes[scopeName].bbox);
   const response = await fetch(OVERPASS_ENDPOINT, {
     method: 'POST',
@@ -159,6 +165,23 @@ async function fetchOsmElements(scopeName: ScopeName): Promise<OsmOverpassElemen
   }
 
   return elements;
+}
+
+async function fetchOsmElements(scopeName: ScopeName): Promise<OsmOverpassElement[]> {
+  let lastError: unknown = null;
+  for (let attempt = 1; attempt <= RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      return await fetchOsmElementsOnce(scopeName);
+    } catch (error) {
+      lastError = error;
+      if (attempt === RETRY_ATTEMPTS) break;
+      console.error(
+        `Overpass fetch attempt ${attempt}/${RETRY_ATTEMPTS} failed; retrying after bounded backoff.`,
+      );
+      await sleep(RETRY_BASE_DELAY_MS * attempt);
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error('Overpass fetch failed.');
 }
 
 async function ensureOsmProvenance(database: CryptoPayMapDatabase) {
@@ -234,15 +257,40 @@ async function main() {
   for (let index = 0; index < elementChunks.length; index += 1) {
     const chunk = elementChunks[index];
     if (!chunk || chunk.length === 0) continue;
-    const receipt = await persistOsmOverpassCandidateAcquisition(database, {
-      requestId: randomUUID(),
-      importBatchId: randomUUID(),
-      sourceId: source.id,
-      licenseId: license.id,
-      fetchedAt,
-      importerVersion: IMPORTER_VERSION,
-      elements: chunk,
-    });
+
+    const requestId = randomUUID();
+    const importBatchId = randomUUID();
+    let receipt: Awaited<ReturnType<typeof persistOsmOverpassCandidateAcquisition>> | null = null;
+    let lastError: unknown = null;
+
+    for (let attempt = 1; attempt <= RETRY_ATTEMPTS; attempt += 1) {
+      try {
+        receipt = await persistOsmOverpassCandidateAcquisition(database, {
+          requestId,
+          importBatchId,
+          sourceId: source.id,
+          licenseId: license.id,
+          fetchedAt,
+          importerVersion: IMPORTER_VERSION,
+          elements: chunk,
+        });
+        break;
+      } catch (error) {
+        lastError = error;
+        if (attempt === RETRY_ATTEMPTS) break;
+        console.error(
+          `Persistence retry for chunk ${index + 1}/${elementChunks.length}, attempt ${attempt}/${RETRY_ATTEMPTS}; reusing the same request and batch identity.`,
+        );
+        await sleep(RETRY_BASE_DELAY_MS * attempt);
+      }
+    }
+
+    if (!receipt) {
+      throw lastError instanceof Error
+        ? lastError
+        : new Error(`Failed to persist OSM acquisition chunk ${index + 1}.`);
+    }
+
     receipts.push(receipt);
     console.error(
       `Persisted OSM acquisition chunk ${index + 1}/${elementChunks.length}: ${chunk.length} elements, ${receipt.acceptedCount} accepted, ${receipt.replayedCount} replayed.`,
