@@ -1,0 +1,86 @@
+name: Promote confirmed official Evidence staging
+
+on:
+  workflow_dispatch:
+    inputs:
+      batch_ids:
+        description: Comma-separated OSM import batch UUIDs
+        required: true
+        type: string
+      max_targets:
+        description: Maximum eligible Candidates to review in this run
+        required: true
+        default: '50'
+        type: string
+      confirm:
+        description: Type PROMOTE_CONFIRMED_OFFICIAL_EVIDENCE to execute staging mutations
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: promote-confirm-official-evidence-staging
+  cancel-in-progress: false
+
+jobs:
+  review:
+    if: ${{ inputs.confirm == 'PROMOTE_CONFIRMED_OFFICIAL_EVIDENCE' }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Promote and confirm bounded official Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: ${{ inputs.batch_ids }}
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: ${{ inputs.max_targets }}
+        run: npx tsx scripts/promote-confirm-official-evidence-batch.ts
+
+      - name: Publish reviewed canonical staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+
+      - name: Materialize real public data from staging DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+
+      - name: Verify generated real record counts
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          const places = JSON.parse(fs.readFileSync('public/data/places.json', 'utf8'));
+          const pins = JSON.parse(fs.readFileSync('public/data/place-pins.json', 'utf8'));
+          const claims = JSON.parse(fs.readFileSync('public/data/acceptance-claims.json', 'utf8'));
+          if (!Array.isArray(places.records) || !Array.isArray(pins.records) || !Array.isArray(claims.records)) {
+            throw new Error('Generated public data is malformed.');
+          }
+          if (places.records.length !== pins.records.length) {
+            throw new Error(`Place/pin mismatch: ${places.records.length}/${pins.records.length}`);
+          }
+          console.log(JSON.stringify({
+            places: places.records.length,
+            pins: pins.records.length,
+            claims: claims.records.length,
+          }));
+          NODE
