@@ -85,7 +85,7 @@ async function main() {
     candidatesScanned: candidateIds.length,
     considered: 0,
     alreadyHasCountry: 0,
-    notLightningTagged: 0,
+    missingBitcoinPaymentTag: 0,
     missingOrigin: 0,
     reverseLookupFailed: 0,
     enriched: 0,
@@ -126,8 +126,15 @@ async function main() {
       counters.alreadyHasCountry += 1;
       continue;
     }
-    if (!['yes', 'only'].includes((paymentTags['payment:lightning'] ?? '').toLowerCase())) {
-      counters.notLightningTagged += 1;
+
+    const lightningTagged = ['yes', 'only'].includes(
+      (paymentTags['payment:lightning'] ?? '').toLowerCase(),
+    );
+    const bitcoinTagged = ['yes', 'only'].includes(
+      (paymentTags['payment:bitcoin'] ?? '').toLowerCase(),
+    );
+    if (!lightningTagged && !bitcoinTagged) {
+      counters.missingBitcoinPaymentTag += 1;
       continue;
     }
 
@@ -232,6 +239,7 @@ async function main() {
       singleThreaded: true,
       minimumRequestIntervalMs: REQUEST_INTERVAL_MS,
       cachedInSourceRecords: true,
+      eligiblePaymentTags: ['payment:bitcoin', 'payment:lightning'],
       ...counters,
     }),
   );
