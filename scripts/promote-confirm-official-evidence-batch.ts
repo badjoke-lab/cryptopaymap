@@ -148,7 +148,7 @@ function normalizedPageText(html: string): string {
     .toLowerCase();
 }
 
-function hasNegatedLightningAcceptance(text: string): boolean {
+function hasNegatedBitcoinAcceptance(text: string): boolean {
   return [
     /(?:do not|don't|does not|doesn't|no longer|not|cannot|can't)\s+(?:currently\s+)?(?:accept|support|take|offer)[^.!?]{0,100}(?:bitcoin|btc|lightning|crypto)/i,
     /(?:bitcoin|btc|lightning|crypto)[^.!?]{0,100}(?:not accepted|not supported|unavailable|no longer accepted)/i,
@@ -157,7 +157,7 @@ function hasNegatedLightningAcceptance(text: string): boolean {
 }
 
 function hasPositiveLightningAcceptance(text: string): boolean {
-  if (hasNegatedLightningAcceptance(text)) return false;
+  if (hasNegatedBitcoinAcceptance(text)) return false;
   return [
     /(?:accept|accepts|accepted|support|supports|take|takes|offer|offers)[^.!?]{0,100}(?:bitcoin|btc)[^.!?]{0,80}lightning/i,
     /(?:bitcoin|btc)[^.!?]{0,80}lightning[^.!?]{0,100}(?:accept|accepted|payment|pay|checkout)/i,
@@ -168,8 +168,23 @@ function hasPositiveLightningAcceptance(text: string): boolean {
   ].some((pattern) => pattern.test(text));
 }
 
-async function reverifyOfficialEvidence(url: string, officialDomain: string): Promise<boolean> {
-  if (!sameOfficialDomain(url, officialDomain)) return false;
+function hasPositiveBitcoinAcceptance(text: string): boolean {
+  if (hasNegatedBitcoinAcceptance(text)) return false;
+  return [
+    /(?:accept|accepts|accepted|support|supports|take|takes|offer|offers)[^.!?]{0,120}(?:bitcoin|btc)/i,
+    /(?:bitcoin|btc)[^.!?]{0,120}(?:accept|accepted|payment|pay|checkout)/i,
+    /(?:pay|payment|checkout)[^.!?]{0,120}(?:bitcoin|btc)/i,
+    /(?:ビットコイン|btc)[^。！？]{0,100}(?:決済|支払|支払い|利用|対応)/i,
+  ].some((pattern) => pattern.test(text));
+}
+
+type PaymentRail = 'lightning' | 'onchain';
+
+async function reverifyOfficialEvidence(
+  url: string,
+  officialDomain: string,
+): Promise<PaymentRail | null> {
+  if (!sameOfficialDomain(url, officialDomain)) return null;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
   try {
@@ -181,14 +196,17 @@ async function reverifyOfficialEvidence(url: string, officialDomain: string): Pr
         accept: 'text/html,text/plain;q=0.9,*/*;q=0.1',
       },
     });
-    if (!response.ok) return false;
+    if (!response.ok) return null;
     const contentType = response.headers.get('content-type') ?? '';
-    if (!contentType.includes('text/html') && !contentType.includes('text/plain')) return false;
-    if (!sameOfficialDomain(response.url, officialDomain)) return false;
+    if (!contentType.includes('text/html') && !contentType.includes('text/plain')) return null;
+    if (!sameOfficialDomain(response.url, officialDomain)) return null;
     const body = (await response.text()).slice(0, MAX_BODY_CHARS);
-    return hasPositiveLightningAcceptance(normalizedPageText(body));
+    const text = normalizedPageText(body);
+    if (hasPositiveLightningAcceptance(text)) return 'lightning';
+    if (hasPositiveBitcoinAcceptance(text)) return 'onchain';
+    return null;
   } catch {
-    return false;
+    return null;
   } finally {
     clearTimeout(timeout);
   }
@@ -286,25 +304,38 @@ async function main() {
     );
   }
 
-  const [[bitcoin], [lightning], [lightningInvoice]] = await Promise.all([
-    db
-      .select({ id: assets.id })
-      .from(assets)
-      .where(and(eq(assets.slug, 'bitcoin'), eq(assets.status, 'active')))
-      .limit(1),
-    db
-      .select({ id: networks.id })
-      .from(networks)
-      .where(and(eq(networks.slug, 'lightning'), eq(networks.status, 'active')))
-      .limit(1),
-    db
-      .select({ id: paymentMethods.id })
-      .from(paymentMethods)
-      .where(and(eq(paymentMethods.slug, 'lightning_invoice'), eq(paymentMethods.status, 'active')))
-      .limit(1),
-  ]);
-  if (!bitcoin || !lightning || !lightningInvoice) {
-    throw new Error('BTC / Lightning / lightning_invoice staging registry is not ready.');
+  const [[bitcoin], [lightning], [lightningInvoice], [bitcoinNetwork], [onchain]] =
+    await Promise.all([
+      db
+        .select({ id: assets.id })
+        .from(assets)
+        .where(and(eq(assets.slug, 'bitcoin'), eq(assets.status, 'active')))
+        .limit(1),
+      db
+        .select({ id: networks.id })
+        .from(networks)
+        .where(and(eq(networks.slug, 'lightning'), eq(networks.status, 'active')))
+        .limit(1),
+      db
+        .select({ id: paymentMethods.id })
+        .from(paymentMethods)
+        .where(
+          and(eq(paymentMethods.slug, 'lightning_invoice'), eq(paymentMethods.status, 'active')),
+        )
+        .limit(1),
+      db
+        .select({ id: networks.id })
+        .from(networks)
+        .where(and(eq(networks.slug, 'bitcoin'), eq(networks.status, 'active')))
+        .limit(1),
+      db
+        .select({ id: paymentMethods.id })
+        .from(paymentMethods)
+        .where(and(eq(paymentMethods.slug, 'onchain'), eq(paymentMethods.status, 'active')))
+        .limit(1),
+    ]);
+  if (!bitcoin || !lightning || !lightningInvoice || !bitcoinNetwork || !onchain) {
+    throw new Error('BTC / Lightning / on-chain staging registries are not ready.');
   }
 
   const candidates = await loadCandidates(db, batchIds);
@@ -312,7 +343,8 @@ async function main() {
     candidatesBeforeLimit: candidates.length,
     considered: 0,
     skippedMissingOrigin: 0,
-    skippedNotLightningTagged: 0,
+    skippedMissingPaymentTag: 0,
+    skippedRailTagMismatch: 0,
     skippedMissingCountry: 0,
     skippedOfficialReverification: 0,
     promoted: 0,
@@ -350,6 +382,9 @@ async function main() {
     const lightningTagged = ['yes', 'only'].includes(
       (paymentTags['payment:lightning'] ?? '').toLowerCase(),
     );
+    const bitcoinTagged = ['yes', 'only'].includes(
+      (paymentTags['payment:bitcoin'] ?? '').toLowerCase(),
+    );
     if (
       !name ||
       latitude === null ||
@@ -363,8 +398,8 @@ async function main() {
       counters.skippedMissingOrigin += 1;
       continue;
     }
-    if (!lightningTagged) {
-      counters.skippedNotLightningTagged += 1;
+    if (!lightningTagged && !bitcoinTagged) {
+      counters.skippedMissingPaymentTag += 1;
       continue;
     }
     const countryCode = countryCodeFromRelations(relations, tags);
@@ -372,8 +407,16 @@ async function main() {
       counters.skippedMissingCountry += 1;
       continue;
     }
-    if (!(await reverifyOfficialEvidence(evidenceUrl, originDomain))) {
+    const paymentRail = await reverifyOfficialEvidence(evidenceUrl, originDomain);
+    if (!paymentRail) {
       counters.skippedOfficialReverification += 1;
+      continue;
+    }
+    if (
+      (paymentRail === 'lightning' && !lightningTagged) ||
+      (paymentRail === 'onchain' && !bitcoinTagged)
+    ) {
+      counters.skippedRailTagMismatch += 1;
       continue;
     }
 
@@ -403,7 +446,7 @@ async function main() {
       );
       claimId = await deterministicUuid(`official-evidence-batch:claim:${candidate.candidateId}`);
       const claimAssetId = await deterministicUuid(
-        `official-evidence-batch:claim-asset:${candidate.candidateId}`,
+        `official-evidence-batch:claim-asset:${candidate.candidateId}:${paymentRail}`,
       );
       const promotedAt = new Date(Math.max(Date.now(), candidate.updatedAt.getTime() + 1_000));
       const websiteUrl = safeHttps(seed?.websiteUrl);
@@ -469,7 +512,9 @@ async function main() {
             merchantExplicitlyAcceptsCrypto: true,
             processorId: null,
             howToPay:
-              "Pay with Bitcoin over the Lightning Network using the merchant's Lightning payment option.",
+              paymentRail === 'lightning'
+                ? "Pay with Bitcoin over the Lightning Network using the merchant's Lightning payment option."
+                : "Pay with Bitcoin on-chain using the merchant's advertised Bitcoin payment option.",
             instructionsLanguage: 'en',
             merchantReceives: 'not_publicly_confirmed',
             restrictions: null,
@@ -486,8 +531,8 @@ async function main() {
             value: {
               claimId,
               assetId: bitcoin.id,
-              networkId: lightning.id,
-              paymentMethodId: lightningInvoice.id,
+              networkId: paymentRail === 'lightning' ? lightning.id : bitcoinNetwork.id,
+              paymentMethodId: paymentRail === 'lightning' ? lightningInvoice.id : onchain.id,
               contractAddress: null,
               isPrimary: true,
               notes: null,
@@ -597,8 +642,7 @@ async function main() {
       claimAction: 'confirm',
       reasonCode: 'official_payment_page_verified',
       publicSummary: null,
-      internalNote:
-        'Fixed-review staging batch confirmation from reverified official merchant Lightning payment Evidence.',
+      internalNote: `Fixed-review staging batch confirmation from reverified official merchant ${paymentRail === 'lightning' ? 'Lightning' : 'Bitcoin on-chain'} payment Evidence.`,
       nextReviewAt: nextReviewAt.toISOString(),
       endedReason: null,
     });
@@ -612,7 +656,7 @@ async function main() {
       batchIds,
       maxTargets,
       evidenceKind: 'official_payment_page',
-      paymentRail: 'BTC/Lightning',
+      paymentRails: ['BTC/Lightning', 'BTC/on-chain'],
       strictOfficialReverification: true,
       ...counters,
       automaticPublicVisibility: false,

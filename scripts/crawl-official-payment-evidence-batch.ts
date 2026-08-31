@@ -17,7 +17,8 @@ const MAX_BODY_CHARS = 750_000;
 const MAX_INTERNAL_PAGES = 5;
 const MAX_REDIRECTS = 3;
 const CONCURRENCY = 4;
-const MAX_BATCH_IDS = 20;
+const MAX_BATCH_IDS = 250;
+const MAX_CANDIDATE_IDS = 250;
 const DEFAULT_MAX_TARGETS = 200;
 const HARD_MAX_TARGETS = 250;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -50,6 +51,28 @@ function batchIdsFromEnvironment(): string[] {
   }
   if (ids.some((id) => !UUID_PATTERN.test(id))) {
     throw new Error('Every official Evidence import batch ID must be a UUID.');
+  }
+  return ids;
+}
+
+function candidateIdsFromEnvironment(): string[] | null {
+  const raw = process.env.CPM_OFFICIAL_EVIDENCE_CANDIDATE_IDS?.trim() ?? '';
+  if (!raw) return null;
+  const ids = [
+    ...new Set(
+      raw
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  ];
+  if (ids.length === 0 || ids.length > MAX_CANDIDATE_IDS) {
+    throw new Error(
+      `CPM_OFFICIAL_EVIDENCE_CANDIDATE_IDS must contain 1-${MAX_CANDIDATE_IDS} UUIDs.`,
+    );
+  }
+  if (ids.some((id) => !UUID_PATTERN.test(id))) {
+    throw new Error('Every official Evidence Candidate ID must be a UUID.');
   }
   return ids;
 }
@@ -253,6 +276,7 @@ async function main() {
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
   const batchIds = batchIdsFromEnvironment();
+  const candidateIds = candidateIdsFromEnvironment();
   const maxTargets = maxTargetsFromEnvironment();
   const db = createDatabase(databaseUrl);
 
@@ -274,8 +298,14 @@ async function main() {
       ),
     );
 
+  const candidateIdSet = candidateIds === null ? null : new Set(candidateIds);
   const eligibleTargets = candidateRows
-    .filter((row) => row.duplicateGroupId === null && row.officialDomain !== null)
+    .filter(
+      (row) =>
+        (candidateIdSet === null || candidateIdSet.has(row.candidateId)) &&
+        row.duplicateGroupId === null &&
+        row.officialDomain !== null,
+    )
     .map((row) => {
       const rawUrl = websiteUrl(row.rawPayload);
       const url = rawUrl ? safeOfficialUrl(rawUrl, row.officialDomain as string) : null;
@@ -290,6 +320,7 @@ async function main() {
     )
     .sort((left, right) => left.candidateId.localeCompare(right.candidateId));
   const targets = eligibleTargets.slice(0, maxTargets);
+  const completedCrawlCandidateIds = new Set<string>();
 
   const existingSource = await db
     .select({ id: sources.id })
@@ -324,6 +355,7 @@ async function main() {
     pendingEvidenceCreated: 0,
     alreadyPersisted: 0,
     automaticConfirmedCount: 0,
+    attemptMarkersPersisted: 0,
   };
 
   let cursor = 0;
@@ -335,6 +367,7 @@ async function main() {
 
       const landing = await fetchOfficialPage(target.url, target.officialDomain);
       if (!landing) continue;
+      completedCrawlCandidateIds.add(target.candidateId);
       counters.landingPagesFetched += 1;
 
       let found = hasExplicitPaymentEvidence(landing.normalized) ? landing : null;
@@ -448,13 +481,72 @@ async function main() {
   }
 
   await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
+
+  const attemptFetchedAt = new Date();
+  const completedTargets = targets.filter((target) =>
+    completedCrawlCandidateIds.has(target.candidateId),
+  );
+  const attemptExternalIds = completedTargets.map(
+    (target) => `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
+  );
+  if (attemptExternalIds.length > 0) {
+    await db
+      .insert(sourceRecords)
+      .values(
+        completedTargets.map((target) => ({
+          sourceId: resolvedSourceId,
+          externalId: `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
+          sourceUrl: target.url.toString(),
+          rawPayload: {
+            discovery: 'official_payment_crawl_attempt',
+            discoveryVersion: 'official-payment-crawl-v2',
+            candidateId: target.candidateId,
+          },
+          officialDomain: target.officialDomain,
+          observedAt: attemptFetchedAt,
+          fetchedAt: attemptFetchedAt,
+        })),
+      )
+      .onConflictDoNothing();
+
+    const attemptRows = await db
+      .select({ id: sourceRecords.id, externalId: sourceRecords.externalId })
+      .from(sourceRecords)
+      .where(
+        and(
+          eq(sourceRecords.sourceId, resolvedSourceId),
+          inArray(sourceRecords.externalId, attemptExternalIds),
+        ),
+      );
+    const candidateIdByAttemptExternalId = new Map(
+      completedTargets.map((target) => [
+        `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
+        target.candidateId,
+      ]),
+    );
+    const attemptLinks = attemptRows.flatMap((row) => {
+      const candidateId = row.externalId
+        ? candidateIdByAttemptExternalId.get(row.externalId)
+        : undefined;
+      return candidateId
+        ? [{ candidateId, sourceRecordId: row.id, relationship: 'supporting' as const }]
+        : [];
+    });
+    if (attemptLinks.length > 0) {
+      await db.insert(candidateSourceRecords).values(attemptLinks).onConflictDoNothing();
+    }
+    counters.attemptMarkersPersisted = attemptLinks.length;
+  }
+
   console.log(
     JSON.stringify({
       target: EXPECTED_TARGET,
       batchIds,
       maxTargets,
+      exactCandidateSelection: candidateIds !== null,
       maxInternalPagesPerCandidate: MAX_INTERNAL_PAGES,
       ...counters,
+      retryableLandingFailures: targets.length - completedTargets.length,
       evidenceVisibility: 'private',
       evidenceReviewStatus: 'pending',
       candidateStateChanged: false,

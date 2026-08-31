@@ -1,0 +1,120 @@
+name: Bulk real-data growth staging
+
+# PR runs validate code only; staging mutation requires explicit workflow dispatch.
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/bulk-real-data-growth-staging.yml
+      - scripts/crawl-next-official-payment-evidence-batch.ts
+      - scripts/crawl-official-payment-evidence-batch.ts
+      - scripts/enrich-next-official-evidence-country-staging.ts
+      - scripts/promote-confirm-next-official-evidence-batch.ts
+      - scripts/promote-confirm-official-evidence-batch.ts
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bulk-real-data-growth-staging-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Type-check
+        run: npx tsc --noEmit --pretty false
+      - name: Build fixture-free site
+        run: npm run build
+
+  crawl:
+    if: github.event_name == 'workflow_dispatch'
+    strategy:
+      fail-fast: false
+      matrix:
+        partition: [0, 1, 2, 3]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Crawl exact partition of up to 250 Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
+          CPM_OFFICIAL_EVIDENCE_PARTITION_COUNT: '4'
+          CPM_OFFICIAL_EVIDENCE_PARTITION_INDEX: ${{ matrix.partition }}
+        run: npx tsx scripts/crawl-next-official-payment-evidence-batch.ts
+
+  finalize:
+    if: github.event_name == 'workflow_dispatch'
+    needs: crawl
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Type-check before staging mutation
+        run: npx tsc --noEmit --pretty false
+      - name: Enrich missing countries in bounded passes
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_COUNTRY_ENRICH_MAX_TARGETS: '30'
+        run: |
+          npx tsx scripts/enrich-next-official-evidence-country-staging.ts
+          npx tsx scripts/enrich-next-official-evidence-country-staging.ts
+          npx tsx scripts/enrich-next-official-evidence-country-staging.ts
+          npx tsx scripts/enrich-next-official-evidence-country-staging.ts
+      - name: Promote and confirm up to 100 strict official-Evidence Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '100'
+        run: npx tsx scripts/promote-confirm-next-official-evidence-batch.ts
+      - name: Publish reviewed canonical staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+      - name: Materialize public data from staging DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - name: Build staging site
+        run: npm run build
+      - name: Prepare review artifact
+        run: node scripts/prepare-staging-review-artifact.mjs
+      - name: Deploy staging review to Cloudflare Pages
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name cryptopaymap-staging
+          --branch review
