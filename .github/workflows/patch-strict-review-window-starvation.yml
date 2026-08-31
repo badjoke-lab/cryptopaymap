@@ -61,20 +61,12 @@ jobs:
           if old not in text:
               raise SystemExit('wrapper batch limit marker missing')
           wrapper.write_text(text.replace(old, new, 1))
-
-          workflow = Path('.github/workflows/bulk-real-data-growth-staging.yml')
-          text = workflow.read_text()
-          old = """          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}\n          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '100'"""
-          new = """          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}\n          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '100'\n          CPM_OFFICIAL_EVIDENCE_MAX_WINDOWS: '3'"""
-          if old not in text:
-              raise SystemExit('durable workflow review env marker missing')
-          workflow.write_text(text.replace(old, new, 1))
           PY
       - name: Commit durable fix and remove patch helper
         run: |
           git config user.name badjoke-lab
           git config user.email badjoke.lab@gmail.com
           git rm .github/workflows/patch-strict-review-window-starvation.yml
-          git add scripts/promote-confirm-official-evidence-batch.ts scripts/promote-confirm-next-official-evidence-batch.ts .github/workflows/bulk-real-data-growth-staging.yml
+          git add scripts/promote-confirm-official-evidence-batch.ts scripts/promote-confirm-next-official-evidence-batch.ts
           git commit -m "FIX: advance strict review beyond the first hundred candidates"
           git push origin HEAD:fix/strict-review-window-starvation
