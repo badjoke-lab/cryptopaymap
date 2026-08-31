@@ -1,0 +1,67 @@
+name: North America east OSM Candidate acquisition
+
+on:
+  push:
+    branches:
+      - ops/north-america-east-osm-acquisition
+    paths:
+      - .github/workflows/north-america-east-osm-acquisition.yml
+
+concurrency:
+  group: fixed-review-osm-candidate-acquisition
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  acquire:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Acquire North America east private OSM Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -euo pipefail
+          summary=''
+          for attempt in 1 2 3; do
+            if summary="$(npx tsx scripts/acquire-osm-candidates.ts north-america-east)"; then
+              break
+            fi
+            if [[ "$attempt" -eq 3 ]]; then
+              echo 'North America east acquisition failed after 3 bounded attempts.' >&2
+              exit 1
+            fi
+            echo "North America east acquisition attempt $attempt failed; retrying after bounded backoff." >&2
+            sleep $((attempt * 5))
+          done
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .scope == "north-america-east" and .ingestion.automaticConfirmedCount == 0' <<<"$summary" >/dev/null
+          {
+            echo '## North America east OSM Candidate acquisition'
+            echo
+            echo "- fetched OSM elements: $(jq -r '.fetchedElements' <<<"$summary")"
+            echo "- Candidate total before: $(jq -r '.candidateTotalBefore' <<<"$summary")"
+            echo "- Candidate total after: $(jq -r '.candidateTotalAfter' <<<"$summary")"
+            echo "- Candidate delta: $(jq -r '.candidateDelta' <<<"$summary")"
+            echo "- accepted: $(jq -r '.ingestion.acceptedCount' <<<"$summary")"
+            echo "- rejected: $(jq -r '.ingestion.rejectedCount' <<<"$summary")"
+            echo "- replayed: $(jq -r '.ingestion.replayedCount' <<<"$summary")"
+            echo "- duplicate signals: $(jq -r '.ingestion.duplicateSignalCount' <<<"$summary")"
+            echo "- automatic Confirmed: $(jq -r '.ingestion.automaticConfirmedCount' <<<"$summary")"
+            echo "- persistence state: $(jq -r '.ingestion.state' <<<"$summary")"
+          } >> "$GITHUB_STEP_SUMMARY"
