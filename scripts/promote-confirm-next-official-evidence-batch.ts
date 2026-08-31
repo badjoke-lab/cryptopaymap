@@ -5,7 +5,7 @@ import { candidateSourceRecords, evidence, sourceCandidates } from '../src/db/sc
 declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
-const MAX_BATCH_IDS = 50;
+const MAX_BATCH_IDS = 200;
 const SCAN_LIMIT = 5_000;
 
 async function main() {

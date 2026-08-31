@@ -31,7 +31,9 @@ declare const process: { env: Record<string, string | undefined> };
 const EXPECTED_TARGET = 'fixed-review-staging';
 const DEFAULT_MAX_TARGETS = 50;
 const HARD_MAX_TARGETS = 100;
-const MAX_BATCH_IDS = 50;
+const DEFAULT_MAX_WINDOWS = 1;
+const HARD_MAX_WINDOWS = 5;
+const MAX_BATCH_IDS = 200;
 const FETCH_TIMEOUT_MS = 8_000;
 const MAX_BODY_CHARS = 750_000;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -93,6 +95,15 @@ function maxTargetsFromEnvironment(): number {
   const value = raw ? Number(raw) : DEFAULT_MAX_TARGETS;
   if (!Number.isInteger(value) || value < 1 || value > HARD_MAX_TARGETS) {
     throw new Error(`CPM_OFFICIAL_EVIDENCE_MAX_TARGETS must be 1-${HARD_MAX_TARGETS}.`);
+  }
+  return value;
+}
+
+function maxWindowsFromEnvironment(): number {
+  const raw = process.env.CPM_OFFICIAL_EVIDENCE_MAX_WINDOWS?.trim();
+  const value = raw ? Number(raw) : DEFAULT_MAX_WINDOWS;
+  if (!Number.isInteger(value) || value < 1 || value > HARD_MAX_WINDOWS) {
+    throw new Error(`CPM_OFFICIAL_EVIDENCE_MAX_WINDOWS must be 1-${HARD_MAX_WINDOWS}.`);
   }
   return value;
 }
@@ -285,6 +296,8 @@ async function main() {
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
   const batchIds = batchIdsFromEnvironment();
   const maxTargets = maxTargetsFromEnvironment();
+  const maxWindows = maxWindowsFromEnvironment();
+  const maxReviewTargets = maxTargets * maxWindows;
   const db = createDatabase(databaseUrl);
 
   const promotionPolicy = readCandidatePromotionAuthorizationPolicy({
@@ -353,7 +366,7 @@ async function main() {
     alreadyConfirmed: 0,
   };
 
-  for (const candidate of candidates.slice(0, maxTargets)) {
+  for (const candidate of candidates.slice(0, maxReviewTargets)) {
     counters.considered += 1;
     const relations = await db
       .select({
@@ -655,6 +668,8 @@ async function main() {
       target: EXPECTED_TARGET,
       batchIds,
       maxTargets,
+      maxWindows,
+      maxReviewTargets,
       evidenceKind: 'official_payment_page',
       paymentRails: ['BTC/Lightning', 'BTC/on-chain'],
       strictOfficialReverification: true,
