@@ -1,0 +1,53 @@
+name: North America east exact review 1
+
+on:
+  push:
+    branches:
+      - ops/north-america-east-exact-review-1
+    paths:
+      - scripts/inspect-north-america-east-exact-review-1.ts
+      - .github/workflows/north-america-east-exact-review-1.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Inspect exact reviewed Candidate privately
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          out="${RUNNER_TEMP}/north-america-east-exact-review-1.json"
+          npx tsx scripts/inspect-north-america-east-exact-review-1.ts > "$out"
+          jq -e '.target == "fixed-review-staging" and .mutationPerformed == false and .publicDataChanged == false and .payloadExposedInLogs == false' "$out" >/dev/null
+          {
+            echo '## North America east exact private review 1'
+            echo
+            echo '- exact Candidate matches: 1'
+            echo "- source relations: $(jq -r '.relations | length' "$out")"
+            echo "- Evidence rows: $(jq -r '.evidenceRows | length' "$out")"
+            echo '- Candidate identity/address/URL/raw payload in public logs: 0'
+            echo '- mutation performed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload short-lived private exact-review artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: north-america-east-exact-review-1-private
+          path: ${{ runner.temp }}/north-america-east-exact-review-1.json
+          retention-days: 1
+          if-no-files-found: error
