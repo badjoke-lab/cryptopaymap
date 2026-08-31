@@ -19,6 +19,16 @@ const COUNTRY_CODE_PATTERN = /^[A-Z]{2}$/;
 
 type JsonRecord = Record<string, unknown>;
 
+type CandidateRelationRow = {
+  candidateId: string;
+  sourceRecordId: string;
+  relationship: string;
+  sourceId: string;
+  externalId: string | null;
+  rawPayload: unknown;
+  licenseId: string | null;
+};
+
 function object(value: unknown): JsonRecord | null {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
     ? (value as JsonRecord)
@@ -90,23 +100,37 @@ async function main() {
     reverseLookupFailed: 0,
     enriched: 0,
   };
+
+  const relationRows: CandidateRelationRow[] =
+    candidateIds.length === 0
+      ? []
+      : await db
+          .select({
+            candidateId: candidateSourceRecords.candidateId,
+            sourceRecordId: candidateSourceRecords.sourceRecordId,
+            relationship: candidateSourceRecords.relationship,
+            sourceId: sourceRecords.sourceId,
+            externalId: sourceRecords.externalId,
+            rawPayload: sourceRecords.rawPayload,
+            licenseId: sourceRecords.licenseId,
+          })
+          .from(candidateSourceRecords)
+          .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
+          .where(inArray(candidateSourceRecords.candidateId, candidateIds))
+          .orderBy(asc(candidateSourceRecords.candidateId), asc(candidateSourceRecords.sourceRecordId));
+
+  const relationsByCandidate = new Map<string, CandidateRelationRow[]>();
+  for (const relation of relationRows) {
+    const existing = relationsByCandidate.get(relation.candidateId);
+    if (existing) existing.push(relation);
+    else relationsByCandidate.set(relation.candidateId, [relation]);
+  }
+
   let lastRequestAt = 0;
 
   for (const candidateId of candidateIds) {
     if (counters.considered >= limit) break;
-    const relations = await db
-      .select({
-        sourceRecordId: candidateSourceRecords.sourceRecordId,
-        relationship: candidateSourceRecords.relationship,
-        sourceId: sourceRecords.sourceId,
-        externalId: sourceRecords.externalId,
-        rawPayload: sourceRecords.rawPayload,
-        licenseId: sourceRecords.licenseId,
-      })
-      .from(candidateSourceRecords)
-      .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
-      .where(eq(candidateSourceRecords.candidateId, candidateId))
-      .orderBy(asc(candidateSourceRecords.sourceRecordId));
+    const relations = relationsByCandidate.get(candidateId) ?? [];
 
     const origin = relations.find((row) => row.relationship === 'origin');
     const originPayload = object(origin?.rawPayload);
@@ -240,6 +264,8 @@ async function main() {
       minimumRequestIntervalMs: REQUEST_INTERVAL_MS,
       cachedInSourceRecords: true,
       eligiblePaymentTags: ['payment:bitcoin', 'payment:lightning'],
+      relationRowsLoaded: relationRows.length,
+      relationQueries: candidateIds.length === 0 ? 0 : 1,
       ...counters,
     }),
   );
