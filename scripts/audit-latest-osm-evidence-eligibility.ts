@@ -12,7 +12,15 @@ declare const process: { env: Record<string, string | undefined> };
 const EXPECTED_TARGET = 'fixed-review-staging';
 const EXPECTED_ACTOR = 'osm-overpass-adapter';
 const EXPECTED_IMPORTER = 'osm-overpass-v1';
-const MAX_BATCH_IDS = 20;
+const SEARCH_BATCH_LIMIT = 500;
+const RECEIPT = {
+  batchCount: 9,
+  inputCount: 407,
+  acceptedCount: 206,
+  rejectedCount: 2,
+  replayedCount: 199,
+  duplicateSignalCount: 8188,
+} as const;
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -26,6 +34,27 @@ function websiteUrl(rawPayload: unknown): string | null {
   return typeof value === 'string' && value.trim().length > 0 ? value.trim() : null;
 }
 
+type BatchRow = {
+  id: string;
+  completedAt: Date;
+  inputCount: number;
+  acceptedCount: number;
+  rejectedCount: number;
+  replayedCount: number;
+  duplicateSignalCount: number;
+};
+
+function sum(rows: BatchRow[], key: keyof typeof RECEIPT): number {
+  if (key === 'batchCount') return rows.length;
+  return rows.reduce((total, row) => total + Number(row[key] ?? 0), 0);
+}
+
+function matchesReceipt(rows: BatchRow[]): boolean {
+  return (Object.keys(RECEIPT) as Array<keyof typeof RECEIPT>).every(
+    (key) => sum(rows, key) === RECEIPT[key],
+  );
+}
+
 async function main() {
   if (process.env.CPM_CANDIDATE_ACQUISITION_TARGET !== EXPECTED_TARGET) {
     throw new Error('Refusing OSM eligibility audit outside fixed-review staging.');
@@ -34,23 +63,10 @@ async function main() {
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
 
   const db = createDatabase(databaseUrl);
-  const [latest] = await db
-    .select({ completedAt: importBatches.completedAt })
-    .from(importBatches)
-    .where(
-      and(
-        eq(importBatches.actorId, EXPECTED_ACTOR),
-        eq(importBatches.importKind, 'physical_place'),
-        eq(importBatches.importerVersion, EXPECTED_IMPORTER),
-      ),
-    )
-    .orderBy(desc(importBatches.completedAt))
-    .limit(1);
-  if (!latest) throw new Error('No bounded OSM import batch exists in fixed-review staging.');
-
-  const batches = await db
+  const recent = (await db
     .select({
       id: importBatches.id,
+      completedAt: importBatches.completedAt,
       inputCount: importBatches.inputCount,
       acceptedCount: importBatches.acceptedCount,
       rejectedCount: importBatches.rejectedCount,
@@ -63,12 +79,23 @@ async function main() {
         eq(importBatches.actorId, EXPECTED_ACTOR),
         eq(importBatches.importKind, 'physical_place'),
         eq(importBatches.importerVersion, EXPECTED_IMPORTER),
-        eq(importBatches.completedAt, latest.completedAt),
       ),
-    );
-  if (batches.length === 0 || batches.length > MAX_BATCH_IDS) {
-    throw new Error(`Expected 1-${MAX_BATCH_IDS} batches in latest acquisition set.`);
+    )
+    .orderBy(desc(importBatches.completedAt))
+    .limit(SEARCH_BATCH_LIMIT)) as BatchRow[];
+
+  const grouped = new Map<string, BatchRow[]>();
+  for (const batch of recent) {
+    const key = batch.completedAt.toISOString();
+    const group = grouped.get(key) ?? [];
+    group.push(batch);
+    grouped.set(key, group);
   }
+  const matches = [...grouped.values()].filter(matchesReceipt);
+  if (matches.length !== 1) {
+    throw new Error(`Expected exactly one Europe-east acquisition matching the bounded receipt; found ${matches.length}.`);
+  }
+  const batches = matches[0] as BatchRow[];
   const batchIds = batches.map((batch) => batch.id);
 
   const rows = await db
@@ -98,20 +125,11 @@ async function main() {
     (row) => row.officialDomain !== null && websiteUrl(row.rawPayload) !== null,
   );
 
-  const sum = (key: 'inputCount' | 'acceptedCount' | 'rejectedCount' | 'replayedCount' | 'duplicateSignalCount') =>
-    batches.reduce((total, batch) => total + (batch[key] ?? 0), 0);
-
   console.log(
     JSON.stringify({
       target: EXPECTED_TARGET,
-      latestAcquisition: {
-        batchCount: batches.length,
-        inputCount: sum('inputCount'),
-        acceptedCount: sum('acceptedCount'),
-        rejectedCount: sum('rejectedCount'),
-        replayedCount: sum('replayedCount'),
-        duplicateSignalCount: sum('duplicateSignalCount'),
-      },
+      acquisitionReceiptMatched: true,
+      acquisition: RECEIPT,
       candidateRows: rows.length,
       distinctCandidates: candidateIds.size,
       activeNewOrTriaged: active.length,
