@@ -87,13 +87,14 @@ jobs:
           npx tsx scripts/enrich-next-official-evidence-country-staging.ts
           npx tsx scripts/enrich-next-official-evidence-country-staging.ts
           npx tsx scripts/enrich-next-official-evidence-country-staging.ts
-      - name: Promote and confirm up to 100 strict official-Evidence Candidates
+      - name: Promote and confirm up to 300 strict official-Evidence Candidates
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
           CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '100'
+          CPM_OFFICIAL_EVIDENCE_MAX_WINDOWS: '3'
         run: npx tsx scripts/promote-confirm-next-official-evidence-batch.ts
       - name: Publish reviewed canonical staging records
         env:
