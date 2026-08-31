@@ -1,0 +1,49 @@
+name: Europe-east official Evidence batch set 1
+
+on:
+  push:
+    branches:
+      - ops/europe-east-official-evidence-1
+    paths:
+      - .github/workflows/europe-east-official-evidence-1.yml
+
+permissions:
+  contents: read
+
+jobs:
+  crawl:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Crawl Europe-east acquisition batches
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: 3d85c82c-c444-4e1c-93a1-ccccb177f527,4199ecee-c5a3-465f-8444-f10d0a74ce9e,8a6c3d95-463e-4b96-890e-fb4d9c8857f3,7d2f82af-b06b-4917-81a3-1cb2181e05fe,6b80094e-82de-4373-9705-3db969162a9e
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
+        run: |
+          summary="$(npx tsx scripts/crawl-official-payment-evidence-batch.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .automaticConfirmedCount == 0 and .candidateStateChanged == false and .evidenceVisibility == "private" and .evidenceReviewStatus == "pending" and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-east official payment Evidence crawl'
+            echo
+            echo "- import batches: $(jq -r '.batchIds | length' <<<"$summary")"
+            echo "- eligible targets before limit: $(jq -r '.eligibleTargetsBeforeLimit' <<<"$summary")"
+            echo "- crawled targets: $(jq -r '.targets' <<<"$summary")"
+            echo "- explicit official Evidence discovered: $(jq -r '.explicitDiscovered' <<<"$summary")"
+            echo "- pending private Evidence created: $(jq -r '.pendingEvidenceCreated' <<<"$summary")"
+            echo "- automatic Confirmed: $(jq -r '.automaticConfirmedCount' <<<"$summary")"
+          } >> "$GITHUB_STEP_SUMMARY"
