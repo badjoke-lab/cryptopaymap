@@ -6,7 +6,7 @@ on:
       - fix/connect-reviewed-real-data-export
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   validate:
@@ -19,5 +19,15 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx biome check scripts/promote-confirm-official-evidence-batch.ts .github/workflows/promote-confirm-official-evidence-staging.yml
+      - name: Apply Biome formatting
+        run: npx biome check --write scripts/promote-confirm-official-evidence-batch.ts .github/workflows/promote-confirm-official-evidence-staging.yml
+      - name: Commit formatter output when needed
+        run: |
+          if ! git diff --quiet; then
+            git config user.name github-actions[bot]
+            git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+            git add scripts/promote-confirm-official-evidence-batch.ts .github/workflows/promote-confirm-official-evidence-staging.yml
+            git commit -m "STYLE: format batch real-data promotion"
+            git push
+          fi
       - run: npx tsc --noEmit --pretty false
