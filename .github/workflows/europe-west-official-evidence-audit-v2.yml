@@ -1,0 +1,49 @@
+name: Europe-west official Evidence review audit v2
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-audit-v2
+    paths:
+      - scripts/audit-europe-west-official-evidence-review-v2.ts
+      - .github/workflows/europe-west-official-evidence-audit-v2.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit pending A Evidence without mutation
+        run: |
+          summary="$(npx tsx scripts/audit-europe-west-official-evidence-review-v2.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .mutationPerformed == false and .publicDataChanged == false and .payloadExposed == false and .sourceUrlExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-west pending A Evidence audit'
+            echo
+            echo "- pending A Evidence rows: $(jq -r '.pendingAEvidenceRows' <<<"$summary")"
+            echo "- exact state ready: $(jq -r '.exactStateReady' <<<"$summary")"
+            echo "- Bitcoin review ready: $(jq -r '.bitcoinReviewReady' <<<"$summary")"
+            echo "- Lightning/BTC review ready: $(jq -r '.lightningBtcReviewReady' <<<"$summary")"
+            echo '- mutation performed: false'
+            echo '- Candidate payload exposed: false'
+            echo '- source URL exposed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
