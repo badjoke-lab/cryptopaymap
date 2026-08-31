@@ -16,8 +16,26 @@ const BATCH_IDS = [
   '8d9d6627-48f6-43e7-b7f0-7a90e1ed4689',
   '8e2c7c6a-e300-4747-90f7-290327870426',
   '3808ea78-195f-4558-8088-37c172be6b63',
+  'eaf3d4d7-76e8-435e-bc9a-d2cb2988552c',
+  '5d664655-8225-414e-b9ba-4c525993d944',
+  '99216a90-069f-47d0-804f-dca1116f89dd',
+  '312d3526-3438-47c5-8351-5c2fc242d3c6',
+  '20983068-031d-492b-ac0c-b9a0d93a5e70',
+  '7d43f605-5f3e-4a79-a6a9-a222775821be',
+  '500467c1-075d-4f01-b2ef-15f141f30c82',
+  'cb7bdcb7-e39d-46cb-90fe-0c3c05d45f8e',
+  'd079f027-9ea4-4a9a-9e52-a7753d917986',
+  'aa493ab1-c32b-4b0f-9df7-944f61f90e4c',
+  '61483919-bbf7-4290-80c5-7c51ac8b5445',
+  '234599d9-be62-4139-8f30-2d11700dce80',
+  '431eb7d9-eb7e-4202-aadd-84b5f7e4a3f1',
+  'c5c63726-d420-42ac-adb4-a88962580936',
+  '9151fb61-886c-4bed-b122-e35eebaa8f92',
+  '363bdf08-e6b6-48c1-9d5d-38a0f772eb9d',
+  '5a9cc8b9-0926-4f43-b186-bead18af7e31',
+  '7c4bc14b-60ac-4925-869f-d45624b19eab',
 ] as const;
-const EXPECTED_PENDING_COUNT = 4;
+const MAX_REVIEW_COUNT = 50;
 const FETCH_TIMEOUT_MS = 8_000;
 const MAX_BODY_CHARS = 750_000;
 const MAX_REDIRECTS = 3;
@@ -196,8 +214,8 @@ async function main() {
 
   const unique = new Map(rows.map((row) => [row.evidenceId, row]));
   const pending = [...unique.values()];
-  if (pending.length !== EXPECTED_PENDING_COUNT) {
-    throw new Error(`Pending Evidence set changed: expected ${EXPECTED_PENDING_COUNT}, found ${pending.length}.`);
+  if (pending.length === 0 || pending.length > MAX_REVIEW_COUNT) {
+    throw new Error(`Pending Evidence review must contain 1-${MAX_REVIEW_COUNT} rows; found ${pending.length}.`);
   }
 
   const details: Array<Record<string, unknown>> = [];
@@ -254,6 +272,7 @@ async function main() {
   process.stdout.write(
     JSON.stringify({
       target: EXPECTED_TARGET,
+      batchCount: BATCH_IDS.length,
       pendingCandidateCount: pending.length,
       mutationPerformed: false,
       publicDataChanged: false,
