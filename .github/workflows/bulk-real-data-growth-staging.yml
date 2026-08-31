@@ -1,6 +1,6 @@
 name: Bulk real-data growth staging
 
-# batch 2: continue with next unattempted exact Candidates
+# batch 3: exhaust remaining unattempted exact Candidates after batch 2
 on:
   push:
     branches:
