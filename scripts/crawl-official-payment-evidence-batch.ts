@@ -320,6 +320,7 @@ async function main() {
     )
     .sort((left, right) => left.candidateId.localeCompare(right.candidateId));
   const targets = eligibleTargets.slice(0, maxTargets);
+  const completedCrawlCandidateIds = new Set<string>();
 
   const existingSource = await db
     .select({ id: sources.id })
@@ -366,6 +367,7 @@ async function main() {
 
       const landing = await fetchOfficialPage(target.url, target.officialDomain);
       if (!landing) continue;
+      completedCrawlCandidateIds.add(target.candidateId);
       counters.landingPagesFetched += 1;
 
       let found = hasExplicitPaymentEvidence(landing.normalized) ? landing : null;
@@ -481,14 +483,17 @@ async function main() {
   await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
 
   const attemptFetchedAt = new Date();
-  const attemptExternalIds = targets.map(
+  const completedTargets = targets.filter((target) =>
+    completedCrawlCandidateIds.has(target.candidateId),
+  );
+  const attemptExternalIds = completedTargets.map(
     (target) => `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
   );
   if (attemptExternalIds.length > 0) {
     await db
       .insert(sourceRecords)
       .values(
-        targets.map((target) => ({
+        completedTargets.map((target) => ({
           sourceId: resolvedSourceId,
           externalId: `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
           sourceUrl: target.url.toString(),
@@ -514,7 +519,7 @@ async function main() {
         ),
       );
     const candidateIdByAttemptExternalId = new Map(
-      targets.map((target) => [
+      completedTargets.map((target) => [
         `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
         target.candidateId,
       ]),
@@ -541,6 +546,7 @@ async function main() {
       exactCandidateSelection: candidateIds !== null,
       maxInternalPagesPerCandidate: MAX_INTERNAL_PAGES,
       ...counters,
+      retryableLandingFailures: targets.length - completedTargets.length,
       evidenceVisibility: 'private',
       evidenceReviewStatus: 'pending',
       candidateStateChanged: false,
