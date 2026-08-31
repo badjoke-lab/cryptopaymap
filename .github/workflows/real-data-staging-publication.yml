@@ -2,6 +2,30 @@ name: Real-data staging publication
 
 on:
   workflow_dispatch:
+    inputs:
+      acquisition_batch_ids:
+        description: Comma-separated staging acquisition batch UUIDs to review
+        required: true
+        type: string
+      country_code:
+        description: ISO alpha-2 country code for the selected acquisition batches
+        required: true
+        type: string
+      crawl_limit:
+        description: Official-site candidates to crawl in this run (1-250)
+        required: true
+        default: '250'
+        type: string
+      review_limit:
+        description: Eligible candidates to promote and confirm in this run (1-500)
+        required: true
+        default: '500'
+        type: string
+      publication_limit:
+        description: Reviewed confirmed places to make public in this run (1-500)
+        required: true
+        default: '500'
+        type: string
 
 permissions:
   contents: read
@@ -13,7 +37,7 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    timeout-minutes: 30
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -27,17 +51,35 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Publish reviewed physical canonical records in staging
+      - name: Crawl bounded official merchant payment evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: ${{ inputs.acquisition_batch_ids }}
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: ${{ inputs.crawl_limit }}
+        run: npx tsx scripts/crawl-official-payment-evidence-batch.ts
+
+      - name: Bulk promote and confirm reviewed OSM Bitcoin places
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_BULK_REVIEW_BATCH_IDS: ${{ inputs.acquisition_batch_ids }}
+          CPM_BULK_REVIEW_COUNTRY_CODE: ${{ inputs.country_code }}
+          CPM_BULK_REVIEW_LIMIT: ${{ inputs.review_limit }}
+        run: npx tsx scripts/promote-reviewed-osm-bitcoin-staging-bulk.ts
+
+      - name: Bulk publish reviewed confirmed canonical records in staging
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
-        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+          CPM_BULK_PUBLICATION_LIMIT: ${{ inputs.publication_limit }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging-bulk.ts
 
       - name: Remove synthetic staging review payload before build
         run: rm -rf public/staging-review
 
-      - name: Materialize public data from staging database
+      - name: Materialize all public confirmed data from staging database
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
