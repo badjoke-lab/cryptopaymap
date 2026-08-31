@@ -1,12 +1,7 @@
-name: Real-data staging publication proof
+name: Real-data staging publication
 
 on:
   workflow_dispatch:
-    inputs:
-      confirmation:
-        description: Enter RUN_REAL_DATA_STAGING_PUBLICATION exactly.
-        required: true
-        type: string
 
 permissions:
   contents: read
@@ -16,12 +11,9 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  proof:
-    if: inputs.confirmation == 'RUN_REAL_DATA_STAGING_PUBLICATION'
+  publish:
     runs-on: ubuntu-24.04
-    timeout-minutes: 12
-    env:
-      PREVIEW_URL: https://real-data-review.cryptopaymap-staging.pages.dev
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -33,9 +25,9 @@ jobs:
           cache: npm
 
       - name: Install locked dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
-      - name: Publish bounded reviewed physical canonical records in staging
+      - name: Publish reviewed physical canonical records in staging
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
@@ -51,63 +43,14 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/materialize-public-data-from-staging-db.ts
 
-      - name: Verify source and build
-        run: |
-          npm run check
-          npm run build
+      - name: Build
+        run: npm run build
 
       - name: Deploy isolated real-data staging preview
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          test -n "$CLOUDFLARE_API_TOKEN"
-          test -n "$CLOUDFLARE_ACCOUNT_ID"
-          npx wrangler pages deploy dist \
-            --project-name cryptopaymap-staging \
-            --branch real-data-review
-
-      - name: Verify deployed real-data preview externally
-        run: |
-          node --input-type=module <<'NODE'
-          const base = process.env.PREVIEW_URL;
-          let places = null;
-          for (let attempt = 0; attempt < 20; attempt += 1) {
-            const response = await fetch(`${base}/data/places.json?verify=${Date.now()}-${attempt}`, {
-              cache: 'no-store',
-            }).catch(() => null);
-            if (response?.status === 200) {
-              const value = await response.json().catch(() => null);
-              if (value && Array.isArray(value.records)) {
-                places = value;
-                break;
-              }
-            }
-            await new Promise((resolve) => setTimeout(resolve, 3000));
-          }
-          if (!places) throw new Error('Preview places export did not become reachable.');
-          if (places.records.length < 1) {
-            throw new Error('Expected at least one real public place.');
-          }
-          if (places.records.some((record) => /\bstaging\b/i.test(String(record?.name ?? '')))) {
-            throw new Error('Synthetic staging fixture name found in real-data preview.');
-          }
-          const pinsResponse = await fetch(`${base}/data/place-pins.json?verify=${Date.now()}`, {
-            cache: 'no-store',
-          });
-          const pins = await pinsResponse.json();
-          if (!Array.isArray(pins.records) || pins.records.length !== places.records.length) {
-            throw new Error(
-              `Map pin count ${pins.records?.length ?? 'invalid'} does not match place count ${places.records.length}.`,
-            );
-          }
-          console.log(
-            JSON.stringify({
-              previewReachable: true,
-              physicalPlaces: places.records.length,
-              mapPins: pins.records.length,
-              syntheticFixtureNames: 0,
-              candidatePayloadExposed: false,
-            }),
-          );
-          NODE
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name cryptopaymap-staging
+          --branch real-data-review

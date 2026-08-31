@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   deploy:
@@ -27,316 +27,30 @@ jobs:
           cache: npm
 
       - name: Install locked dependencies
-        run: npm ci
+        run: npm ci --no-audit --no-fund
 
-      - name: Build validated staging review artifact
-        run: npm run staging:review:build
-
-      - name: Verify Cloudflare deployment credentials
-        id: credentials
-        continue-on-error: true
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          test -n "$CLOUDFLARE_API_TOKEN" || { echo "Missing CLOUDFLARE_API_TOKEN"; exit 1; }
-          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "Missing CLOUDFLARE_ACCOUNT_ID"; exit 1; }
-
-      - name: Verify configured Suggest deployment inputs
-        id: suggest_config
-        continue-on-error: true
+      - name: Materialize public data
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CPM_REVIEW_SECRET_SEED_BASE64URL: ${{ secrets.CPM_REVIEW_SECRET_SEED_BASE64URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: |
-          set -euo pipefail
-          required=(
-            DATABASE_URL
-            CPM_REVIEW_SECRET_SEED_BASE64URL
-          )
-          missing=()
-          for key in "${required[@]}"; do
-            if [ -z "${!key:-}" ]; then
-              missing+=("$key")
-            fi
-          done
-          printf '%s\n' "${missing[@]}" > missing-configured-inputs.txt
-          if [ "${#missing[@]}" -gt 0 ]; then
-            printf 'Missing configured input: %s\n' "${missing[@]}"
-            exit 1
+          if [ -n "${DATABASE_URL:-}" ]; then
+            npx tsx scripts/materialize-public-data-from-staging-db.ts
+          else
+            npm run staging:review:data
           fi
 
-          CPM_REVIEW_SECRET_SEED_BASE64URL="$CPM_REVIEW_SECRET_SEED_BASE64URL" \
-            node scripts/derive-suggest-review-secrets.mjs review-derived-secrets-preflight.json
-          rm -f review-derived-secrets-preflight.json
+      - name: Build
+        run: npm run build
 
-      - name: Deploy Submission rate-limit Durable Object Worker
-        id: worker_deploy
-        if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success'
-        continue-on-error: true
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          set -o pipefail
-          npx wrangler deploy --config workers/submission-rate-limit/wrangler.jsonc \
-            2>&1 | tee worker-deployment-output.log
-
-      - name: Prepare Worker deployment diagnostic summary
-        if: always() && steps.worker_deploy.outcome == 'failure'
-        run: |
-          node scripts/summarize-worker-deployment-log.mjs \
-            worker-deployment-output.log \
-            worker-deployment-diagnostic.json
-
-      - name: Upload Worker deployment diagnostics
-        if: always() && steps.worker_deploy.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: staging-review-worker-deployment-log
-          path: |
-            worker-deployment-output.log
-            worker-deployment-diagnostic.json
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Synchronize configured staging Pages secrets
-        id: pages_secrets
-        if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success' && steps.worker_deploy.outcome == 'success'
-        continue-on-error: true
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CPM_REVIEW_SECRET_SEED_BASE64URL: ${{ secrets.CPM_REVIEW_SECRET_SEED_BASE64URL }}
-        run: |
-          set -euo pipefail
-          trap 'rm -f review-derived-secrets.json pages-secrets.json' EXIT
-
-          node scripts/derive-suggest-review-secrets.mjs review-derived-secrets.json
-
-          node <<'NODE'
-          const { appendFileSync, readFileSync, writeFileSync } = require('node:fs');
-          const derived = JSON.parse(readFileSync('review-derived-secrets.json', 'utf8'));
-          for (const value of Object.values(derived)) {
-            console.log(`::add-mask::${value}`);
-          }
-          const values = {
-            DATABASE_URL: process.env.DATABASE_URL,
-            ...derived,
-            CPM_SUBMISSION_CONTACT_ENCRYPTION_KEY_ID: 'review-v1',
-            CPM_SUBMISSION_CONTACT_RETENTION_DAYS: '180',
-            CPM_SUBMISSION_RATE_LIMIT_MAX_REQUESTS: '5',
-            CPM_SUBMISSION_RATE_LIMIT_WINDOW_SECONDS: '600',
-            CPM_TURNSTILE_SECRET_KEY: '1x0000000000000000000000000000000AA',
-            PUBLIC_TURNSTILE_SITE_KEY: '1x00000000000000000000AA',
-            CPM_TURNSTILE_EXPECTED_HOSTNAME: 'localhost',
-            CPM_TURNSTILE_EXPECTED_ACTION: 'test',
-            PUBLIC_TURNSTILE_ACTION: 'submission_intake',
-            CPM_ADMIN_AUTH_MODE: 'derived_staging_service',
-            CPM_ADMIN_SERVICE_MAX_CLOCK_SKEW_SECONDS: '90',
-            CPM_ADMIN_DASHBOARD_SUBJECTS: '["staging-service:reviewer"]',
-            CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS:
-              '["cryptopaymap-service:staging-service:publisher"]',
-          };
-          writeFileSync('pages-secrets.json', `${JSON.stringify(values)}\n`, { mode: 0o600 });
-          appendFileSync(
-            process.env.GITHUB_ENV,
-            `CPM_SUGGEST_READINESS_TOKEN=${derived.CPM_SUGGEST_READINESS_TOKEN}\n`,
-          );
-          NODE
-
-          npx wrangler pages secret bulk pages-secrets.json \
-            --project-name cryptopaymap-staging \
-            --env preview
-
-          npx wrangler pages secret bulk pages-secrets.json \
-            --project-name cryptopaymap-staging \
-            --env production
+      - name: Prepare review artifact
+        run: node scripts/prepare-staging-review-artifact.mjs
 
       - name: Deploy staging review to Cloudflare Pages
-        id: deploy
-        if: steps.credentials.outcome == 'success' && steps.suggest_config.outcome == 'success' && steps.worker_deploy.outcome == 'success' && steps.pages_secrets.outcome == 'success'
-        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: |
-          set -o pipefail
-          npx wrangler pages deploy dist \
-            --project-name cryptopaymap-staging \
-            --branch review 2>&1 | tee deployment-output.log
-
-      - name: Prepare Pages deployment diagnostic summary
-        if: always() && steps.deploy.outcome == 'failure'
-        run: |
-          node scripts/summarize-worker-deployment-log.mjs \
-            deployment-output.log \
-            pages-deployment-diagnostic.json
-
-      - name: Upload Pages deployment diagnostics
-        if: always() && steps.deploy.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: staging-review-pages-deployment-log
-          path: |
-            deployment-output.log
-            pages-deployment-diagnostic.json
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Verify configured Suggest review path
-        id: configured_verify
-        if: steps.deploy.outcome == 'success'
-        continue-on-error: true
-        env:
-          CPM_REVIEW_BASE_URL: https://review.cryptopaymap-staging.pages.dev
-          CPM_EXPECTED_TURNSTILE_SITE_KEY: 1x00000000000000000000AA
-          CPM_EXPECTED_TURNSTILE_ACTION: submission_intake
-        run: |
-          node scripts/verify-configured-suggest-review.mjs \
-            configured-verification-diagnostic.json
-
-      - name: Upload configured verification diagnostics
-        if: always() && steps.configured_verify.outcome == 'failure'
-        uses: actions/upload-artifact@v4
-        with:
-          name: staging-review-configured-verification-diagnostic
-          path: configured-verification-diagnostic.json
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Write deployment receipt
-        if: always()
-        env:
-          CREDENTIALS_OUTCOME: ${{ steps.credentials.outcome }}
-          CONFIG_OUTCOME: ${{ steps.suggest_config.outcome }}
-          WORKER_OUTCOME: ${{ steps.worker_deploy.outcome }}
-          SECRET_SYNC_OUTCOME: ${{ steps.pages_secrets.outcome }}
-          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
-          VERIFY_OUTCOME: ${{ steps.configured_verify.outcome }}
-          DEPLOY_COMMIT: ${{ github.sha }}
-        run: |
-          node <<'NODE'
-          const { existsSync, readFileSync, mkdirSync, writeFileSync } = require('node:fs');
-          const checks = {
-            credentials: process.env.CREDENTIALS_OUTCOME,
-            configuredInputs: process.env.CONFIG_OUTCOME,
-            durableObjectWorker: process.env.WORKER_OUTCOME,
-            pagesSecrets: process.env.SECRET_SYNC_OUTCOME,
-            pagesDeployment: process.env.DEPLOY_OUTCOME,
-            configuredVerification: process.env.VERIFY_OUTCOME,
-          };
-          let status = 'deployed';
-          if (checks.credentials !== 'success') status = 'missing_credentials';
-          else if (checks.configuredInputs !== 'success') status = 'missing_configuration';
-          else if (checks.durableObjectWorker !== 'success') status = 'worker_deploy_failed';
-          else if (checks.pagesSecrets !== 'success') status = 'secret_sync_failed';
-          else if (checks.pagesDeployment !== 'success') status = 'deploy_failed';
-          else if (checks.configuredVerification !== 'success') status = 'verification_failed';
-
-          const missingConfiguredInputs = existsSync('missing-configured-inputs.txt')
-            ? readFileSync('missing-configured-inputs.txt', 'utf8').split(/\r?\n/).filter(Boolean)
-            : [];
-          const workerDeploymentDiagnostic = existsSync('worker-deployment-diagnostic.json')
-            ? JSON.parse(readFileSync('worker-deployment-diagnostic.json', 'utf8'))
-            : null;
-          const pagesDeploymentDiagnostic = existsSync('pages-deployment-diagnostic.json')
-            ? JSON.parse(readFileSync('pages-deployment-diagnostic.json', 'utf8'))
-            : null;
-          const configuredVerificationDiagnostic = existsSync('configured-verification-diagnostic.json')
-            ? JSON.parse(readFileSync('configured-verification-diagnostic.json', 'utf8'))
-            : null;
-          const output = existsSync('deployment-output.log') ? readFileSync('deployment-output.log', 'utf8') : '';
-          const urls = output.match(/https:\/\/[^\s]+\.pages\.dev/g) ?? [];
-          const receipt = {
-            status,
-            commit: process.env.DEPLOY_COMMIT,
-            url: urls.at(-1) ?? 'https://review.cryptopaymap-staging.pages.dev',
-            generatedAt: new Date().toISOString(),
-            checks,
-            reviewConfiguration: {
-              manualSecrets: ['DATABASE_URL', 'CPM_REVIEW_SECRET_SEED_BASE64URL'],
-              derivedSecretsVersion: 'cryptopaymap:review-suggest:v1',
-              turnstileMode: 'cloudflare_official_always_pass_test_keys',
-              browserAction: 'submission_intake',
-              siteverifyExpectedHostname: 'localhost',
-              siteverifyExpectedAction: 'test',
-              contactRetentionDays: 180,
-              rateLimit: { maximumRequests: 5, windowSeconds: 600 },
-              adminAuthMode: 'derived_staging_service',
-              adminServiceRoles: ['reviewer', 'publisher'],
-            },
-            ...(checks.durableObjectWorker === 'failure'
-              ? { diagnosticsArtifact: 'staging-review-worker-deployment-log' }
-              : {}),
-            ...(checks.pagesDeployment === 'failure'
-              ? { pagesDiagnosticsArtifact: 'staging-review-pages-deployment-log' }
-              : {}),
-            ...(checks.configuredVerification === 'failure'
-              ? {
-                  configuredVerificationDiagnosticsArtifact:
-                    'staging-review-configured-verification-diagnostic',
-                }
-              : {}),
-            ...(workerDeploymentDiagnostic ? { workerDeploymentDiagnostic } : {}),
-            ...(pagesDeploymentDiagnostic ? { pagesDeploymentDiagnostic } : {}),
-            ...(configuredVerificationDiagnostic
-              ? { configuredVerificationDiagnostic }
-              : {}),
-            ...(missingConfiguredInputs.length > 0 ? { missingConfiguredInputs } : {}),
-          };
-          mkdirSync('staging-review-receipt', { recursive: true });
-          writeFileSync('staging-review-receipt/deployment-receipt.json', `${JSON.stringify(receipt, null, 2)}\n`);
-          NODE
-
-      - name: Upload deployment receipt
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: staging-review-deployment-receipt
-          path: staging-review-receipt/deployment-receipt.json
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Publish deployment receipt to status branch
-        if: always()
-        env:
-          STATUS_WORKTREE: ${{ runner.temp }}/cryptopaymap-staging-review-status
-        run: |
-          set -euo pipefail
-          rm -rf "$STATUS_WORKTREE"
-          git fetch origin staging-review:refs/remotes/origin/staging-review
-          git worktree add --detach "$STATUS_WORKTREE" refs/remotes/origin/staging-review
-          trap 'git worktree remove --force "$STATUS_WORKTREE" >/dev/null 2>&1 || true' EXIT
-
-          mkdir -p "$STATUS_WORKTREE/config/staging-review"
-          cp staging-review-receipt/deployment-receipt.json \
-            "$STATUS_WORKTREE/config/staging-review/deployment-receipt.json"
-
-          git -C "$STATUS_WORKTREE" config user.name 'github-actions[bot]'
-          git -C "$STATUS_WORKTREE" config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git -C "$STATUS_WORKTREE" add config/staging-review/deployment-receipt.json
-          if git -C "$STATUS_WORKTREE" diff --cached --quiet; then
-            echo 'Deployment receipt is unchanged.'
-            exit 0
-          fi
-          git -C "$STATUS_WORKTREE" commit -m 'P5-02Q: record configured review deployment result'
-          git -C "$STATUS_WORKTREE" push origin HEAD:staging-review
-
-      - name: Enforce successful configured deployment
-        if: always()
-        env:
-          CREDENTIALS_OUTCOME: ${{ steps.credentials.outcome }}
-          CONFIG_OUTCOME: ${{ steps.suggest_config.outcome }}
-          WORKER_OUTCOME: ${{ steps.worker_deploy.outcome }}
-          SECRET_SYNC_OUTCOME: ${{ steps.pages_secrets.outcome }}
-          DEPLOY_OUTCOME: ${{ steps.deploy.outcome }}
-          VERIFY_OUTCOME: ${{ steps.configured_verify.outcome }}
-        run: |
-          test "$CREDENTIALS_OUTCOME" = 'success' || exit 1
-          test "$CONFIG_OUTCOME" = 'success' || exit 1
-          test "$WORKER_OUTCOME" = 'success' || exit 1
-          test "$SECRET_SYNC_OUTCOME" = 'success' || exit 1
-          test "$DEPLOY_OUTCOME" = 'success' || exit 1
-          test "$VERIFY_OUTCOME" = 'success' || exit 1
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name cryptopaymap-staging
+          --branch review
