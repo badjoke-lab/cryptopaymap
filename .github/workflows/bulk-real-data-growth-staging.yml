@@ -2,16 +2,42 @@ name: Bulk real-data growth staging
 
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - .github/workflows/bulk-real-data-growth-staging.yml
+      - scripts/crawl-next-official-payment-evidence-batch.ts
+      - scripts/crawl-official-payment-evidence-batch.ts
+      - scripts/enrich-next-official-evidence-country-staging.ts
+      - scripts/promote-confirm-next-official-evidence-batch.ts
+      - scripts/promote-confirm-official-evidence-batch.ts
 
 permissions:
   contents: read
 
 concurrency:
-  group: bulk-real-data-growth-staging
+  group: bulk-real-data-growth-staging-${{ github.event_name }}-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
+  validate:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Type-check
+        run: npx tsc --noEmit --pretty false
+      - name: Build fixture-free site
+        run: npm run build
+
   crawl:
+    if: github.event_name == 'workflow_dispatch'
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +62,7 @@ jobs:
         run: npx tsx scripts/crawl-next-official-payment-evidence-batch.ts
 
   finalize:
+    if: github.event_name == 'workflow_dispatch'
     needs: crawl
     runs-on: ubuntu-24.04
     timeout-minutes: 30
