@@ -1,6 +1,6 @@
 name: Bulk real-data growth staging
 
-# rerun after exact Candidate batch-envelope fix
+# batch 2: continue with next unattempted exact Candidates
 on:
   push:
     branches:
