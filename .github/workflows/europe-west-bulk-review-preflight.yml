@@ -1,0 +1,50 @@
+name: Europe-west bulk review preflight
+
+on:
+  push:
+    branches:
+      - ops/europe-west-bulk-review-preflight
+    paths:
+      - scripts/audit-europe-west-bulk-review-preflight.ts
+      - .github/workflows/europe-west-bulk-review-preflight.yml
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit all Europe-west pending A Evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          summary="$(npx tsx scripts/audit-europe-west-bulk-review-preflight.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .batchesAudited == 23 and .mutationPerformed == false and .publicDataChanged == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Europe-west bounded review preflight'
+            echo
+            echo "- batches audited: $(jq -r '.batchesAudited' <<<"$summary")"
+            echo "- pending A Evidence pairs: $(jq -r '.pendingAEvidencePairs' <<<"$summary")"
+            echo "- strict current official-payment matches: $(jq -r '.strictOfficialPayment' <<<"$summary")"
+            echo "- preflight-ready exact review rows: $(jq -r '.preflightReady' <<<"$summary")"
+            echo '- mutation performed: false'
+            echo '- Candidate payload exposed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
