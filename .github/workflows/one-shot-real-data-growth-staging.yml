@@ -32,18 +32,11 @@ jobs:
       - name: Type-check before staging mutation
         run: npx tsc --noEmit --pretty false
 
-      - name: Crawl up to 250 next official-site Candidates
+      - name: Enrich country for up to 30 strict official-Evidence Candidates
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '250'
-        run: npx tsx scripts/crawl-next-official-payment-evidence-batch.ts
-
-      - name: Enrich country for up to 100 strict official-Evidence Candidates
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-          CPM_COUNTRY_ENRICH_MAX_TARGETS: '100'
+          CPM_COUNTRY_ENRICH_MAX_TARGETS: '30'
         run: npx tsx scripts/enrich-next-official-evidence-country-staging.ts
 
       - name: Auto-select and promote up to 100 strict official-Evidence Candidates across verified BTC rails
