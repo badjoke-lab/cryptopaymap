@@ -1,0 +1,23 @@
+name: PR483 data growth validation
+
+on:
+  push:
+    branches:
+      - fix/connect-reviewed-real-data-export
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx biome check scripts/promote-confirm-official-evidence-batch.ts .github/workflows/promote-confirm-official-evidence-staging.yml
+      - run: npx tsc --noEmit --pretty false
