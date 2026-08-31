@@ -1,0 +1,39 @@
+name: Audit Europe-west exact reviewed on-chain state
+
+on:
+  push:
+    branches:
+      - ops/europe-west-official-evidence-review
+    paths:
+      - scripts/audit-europe-west-reviewed-onchain-state.ts
+      - .github/workflows/audit-europe-west-reviewed-onchain-state.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Audit exact reviewed state without mutation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          summary="$(npx tsx scripts/audit-europe-west-reviewed-onchain-state.ts)"
+          printf '%s\n' "$summary"
+          jq -e '.target == "fixed-review-staging" and .exactMatches == 1 and .mutationPerformed == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          {
+            echo '## Exact reviewed on-chain state audit'
+            echo
+            jq -r 'to_entries[] | select(.key != "target") | "- \(.key): \(.value)"' <<<"$summary"
+          } >> "$GITHUB_STEP_SUMMARY"
