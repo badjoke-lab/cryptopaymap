@@ -1,13 +1,21 @@
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
-import { candidateSourceRecords, evidence, sourceCandidates } from '../src/db/schema';
+import {
+  acceptanceClaims,
+  assets,
+  candidatePromotionDecisions,
+  candidateSourceRecords,
+  claimAssets,
+  evidence,
+  networks,
+  paymentMethods,
+  sourceCandidates,
+} from '../src/db/schema';
 
 declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
 const EXPECTED_CANDIDATE_HASH = '61af688c243438b352a6db8a31034a56b97b4abb83efbbbc59d0b3a7fe6df2e7';
-const EXPECTED_CANDIDATE_UPDATED_AT = '2026-08-30T03:12:30.602Z';
-const EXPECTED_EVIDENCE_UPDATED_AT = '2026-08-30T03:15:21.538Z';
 const REVIEW_BATCH_IDS = [
   'd0e17010-611c-48b2-a75d-8b389c1bee60',
   '5c85e86a-bc05-4f9d-a1f3-9d5e6135ef81',
@@ -32,19 +40,12 @@ async function main() {
   const rows = await db
     .select({
       candidateId: sourceCandidates.id,
-      candidateType: sourceCandidates.candidateType,
       candidateStatus: sourceCandidates.candidateStatus,
       duplicateGroupId: sourceCandidates.duplicateGroupId,
-      canonicalEntityId: sourceCandidates.canonicalEntityId,
-      canonicalLocationId: sourceCandidates.canonicalLocationId,
-      candidateUpdatedAt: sourceCandidates.updatedAt,
-      evidenceClass: evidence.evidenceClass,
-      evidenceSourceType: evidence.sourceType,
-      evidenceOriginRole: evidence.originRole,
-      evidencePolarity: evidence.polarity,
+      evidenceId: evidence.id,
+      evidenceClaimId: evidence.claimId,
       evidenceReviewStatus: evidence.reviewStatus,
       evidenceVisibility: evidence.visibility,
-      evidenceUpdatedAt: evidence.updatedAt,
     })
     .from(evidence)
     .innerJoin(candidateSourceRecords, eq(candidateSourceRecords.sourceRecordId, evidence.sourceRecordId))
@@ -58,29 +59,73 @@ async function main() {
     .orderBy(asc(sourceCandidates.id), asc(evidence.id));
 
   const matches: (typeof rows)[number][] = [];
-  for (const row of rows) if ((await sha256(row.candidateId)) === EXPECTED_CANDIDATE_HASH) matches.push(row);
-  const selected = matches.length === 1 ? matches[0] : null;
+  for (const row of rows) {
+    if ((await sha256(row.candidateId)) === EXPECTED_CANDIDATE_HASH) matches.push(row);
+  }
+  if (matches.length !== 1) {
+    throw new Error('Exact reviewed on-chain Candidate/Evidence pair is missing or ambiguous.');
+  }
+  const selected = matches[0];
+  if (!selected) throw new Error('Exact reviewed on-chain Candidate was not selected.');
+
+  const [promotion] = await db
+    .select({ claimId: candidatePromotionDecisions.claimId })
+    .from(candidatePromotionDecisions)
+    .where(eq(candidatePromotionDecisions.candidateId, selected.candidateId))
+    .limit(1);
+
+  const [claim] = promotion
+    ? await db
+        .select({
+          claimStatus: acceptanceClaims.claimStatus,
+          visibility: acceptanceClaims.visibility,
+        })
+        .from(acceptanceClaims)
+        .where(eq(acceptanceClaims.id, promotion.claimId))
+        .limit(1)
+    : [];
+
+  const acceptedEvidenceRows = promotion
+    ? await db
+        .select({ id: evidence.id })
+        .from(evidence)
+        .where(and(eq(evidence.claimId, promotion.claimId), eq(evidence.reviewStatus, 'accepted')))
+    : [];
+
+  const assetRows = promotion
+    ? await db
+        .select({
+          assetSymbol: assets.symbol,
+          networkSlug: networks.slug,
+          paymentMethodSlug: paymentMethods.slug,
+        })
+        .from(claimAssets)
+        .innerJoin(assets, eq(assets.id, claimAssets.assetId))
+        .leftJoin(networks, eq(networks.id, claimAssets.networkId))
+        .leftJoin(paymentMethods, eq(paymentMethods.id, claimAssets.paymentMethodId))
+        .where(eq(claimAssets.claimId, promotion.claimId))
+    : [];
+  const onlyAsset = assetRows.length === 1 ? assetRows[0] : null;
 
   process.stdout.write(
     JSON.stringify({
       target: EXPECTED_TARGET,
       exactMatches: matches.length,
-      candidateTypePhysical: selected?.candidateType === 'physical_place',
-      candidateStatusReviewable: selected ? ['new', 'triaged'].includes(selected.candidateStatus) : false,
-      candidateStatusPromoted: selected?.candidateStatus === 'promoted',
-      duplicateClear: selected?.duplicateGroupId === null,
-      canonicalEntityAbsent: selected?.canonicalEntityId === null,
-      canonicalLocationAbsent: selected?.canonicalLocationId === null,
-      candidateTimestampMatchesReviewedVersion:
-        selected?.candidateUpdatedAt.toISOString() === EXPECTED_CANDIDATE_UPDATED_AT,
-      evidenceClassA: selected?.evidenceClass === 'a',
-      evidenceSourceOfficialPage: selected?.evidenceSourceType === 'official_page',
-      evidenceMerchantSide: selected?.evidenceOriginRole === 'merchant_side',
-      evidenceSupporting: selected?.evidencePolarity === 'supporting',
-      evidencePending: selected?.evidenceReviewStatus === 'pending',
-      evidencePrivate: selected?.evidenceVisibility === 'private',
-      evidenceTimestampMatchesReviewedVersion:
-        selected?.evidenceUpdatedAt.toISOString() === EXPECTED_EVIDENCE_UPDATED_AT,
+      candidatePromoted: selected.candidateStatus === 'promoted',
+      duplicateClear: selected.duplicateGroupId === null,
+      promotionExists: Boolean(promotion),
+      claimExists: Boolean(claim),
+      claimStatus: claim?.claimStatus ?? null,
+      claimVisibility: claim?.visibility ?? null,
+      evidenceReviewStatus: selected.evidenceReviewStatus,
+      evidenceVisibility: selected.evidenceVisibility,
+      evidenceBoundToPromotionClaim:
+        Boolean(promotion) && selected.evidenceClaimId === promotion?.claimId,
+      acceptedEvidenceCount: acceptedEvidenceRows.length,
+      claimAssetCount: assetRows.length,
+      assetIsBTC: onlyAsset?.assetSymbol === 'BTC',
+      networkIsBitcoin: onlyAsset?.networkSlug === 'bitcoin',
+      paymentMethodIsOnchain: onlyAsset?.paymentMethodSlug === 'onchain',
       mutationPerformed: false,
       payloadExposed: false,
     }),
