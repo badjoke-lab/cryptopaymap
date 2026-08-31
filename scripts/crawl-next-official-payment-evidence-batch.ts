@@ -45,7 +45,9 @@ function partitionConfig(): { count: number; index: number } {
     throw new Error(`CPM_OFFICIAL_EVIDENCE_PARTITION_COUNT must be 1-${MAX_PARTITIONS}.`);
   }
   if (!Number.isInteger(index) || index < 0 || index >= count) {
-    throw new Error('CPM_OFFICIAL_EVIDENCE_PARTITION_INDEX must be within the configured partition count.');
+    throw new Error(
+      'CPM_OFFICIAL_EVIDENCE_PARTITION_INDEX must be within the configured partition count.',
+    );
   }
   return { count, index };
 }
@@ -104,7 +106,9 @@ async function main() {
       .where(like(sourceRecords.externalId, 'candidate:%:official-payment-crawl-attempt:v2')),
   ]);
 
-  const candidatesWithOfficialEvidence = new Set(existingEvidenceRows.map((row) => row.candidateId));
+  const candidatesWithOfficialEvidence = new Set(
+    existingEvidenceRows.map((row) => row.candidateId),
+  );
   const attemptedCandidates = new Set(attemptedRows.map((row) => row.candidateId));
   const eligible = originRows.filter(
     (row) =>
@@ -137,11 +141,15 @@ async function main() {
     return;
   }
   if (batchIds.length > MAX_BATCH_IDS) {
-    throw new Error(`Selected Candidates span ${batchIds.length} batches; maximum is ${MAX_BATCH_IDS}.`);
+    throw new Error(
+      `Selected Candidates span ${batchIds.length} batches; maximum is ${MAX_BATCH_IDS}.`,
+    );
   }
 
   process.env.CPM_OFFICIAL_EVIDENCE_BATCH_IDS = batchIds.join(',');
-  process.env.CPM_OFFICIAL_EVIDENCE_CANDIDATE_IDS = selected.map((row) => row.candidateId).join(',');
+  process.env.CPM_OFFICIAL_EVIDENCE_CANDIDATE_IDS = selected
+    .map((row) => row.candidateId)
+    .join(',');
   process.env.CPM_OFFICIAL_EVIDENCE_MAX_TARGETS = String(selected.length);
 
   console.log(

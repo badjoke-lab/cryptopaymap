@@ -354,6 +354,7 @@ async function main() {
     pendingEvidenceCreated: 0,
     alreadyPersisted: 0,
     automaticConfirmedCount: 0,
+    attemptMarkersPersisted: 0,
   };
 
   let cursor = 0;
@@ -478,6 +479,60 @@ async function main() {
   }
 
   await Promise.all(Array.from({ length: CONCURRENCY }, () => worker()));
+
+  const attemptFetchedAt = new Date();
+  const attemptExternalIds = targets.map(
+    (target) => `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
+  );
+  if (attemptExternalIds.length > 0) {
+    await db
+      .insert(sourceRecords)
+      .values(
+        targets.map((target) => ({
+          sourceId: resolvedSourceId,
+          externalId: `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
+          sourceUrl: target.url.toString(),
+          rawPayload: {
+            discovery: 'official_payment_crawl_attempt',
+            discoveryVersion: 'official-payment-crawl-v2',
+            candidateId: target.candidateId,
+          },
+          officialDomain: target.officialDomain,
+          observedAt: attemptFetchedAt,
+          fetchedAt: attemptFetchedAt,
+        })),
+      )
+      .onConflictDoNothing();
+
+    const attemptRows = await db
+      .select({ id: sourceRecords.id, externalId: sourceRecords.externalId })
+      .from(sourceRecords)
+      .where(
+        and(
+          eq(sourceRecords.sourceId, resolvedSourceId),
+          inArray(sourceRecords.externalId, attemptExternalIds),
+        ),
+      );
+    const candidateIdByAttemptExternalId = new Map(
+      targets.map((target) => [
+        `candidate:${target.candidateId}:official-payment-crawl-attempt:v2`,
+        target.candidateId,
+      ]),
+    );
+    const attemptLinks = attemptRows.flatMap((row) => {
+      const candidateId = row.externalId
+        ? candidateIdByAttemptExternalId.get(row.externalId)
+        : undefined;
+      return candidateId
+        ? [{ candidateId, sourceRecordId: row.id, relationship: 'supporting' as const }]
+        : [];
+    });
+    if (attemptLinks.length > 0) {
+      await db.insert(candidateSourceRecords).values(attemptLinks).onConflictDoNothing();
+    }
+    counters.attemptMarkersPersisted = attemptLinks.length;
+  }
+
   console.log(
     JSON.stringify({
       target: EXPECTED_TARGET,
