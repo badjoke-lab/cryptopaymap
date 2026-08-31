@@ -12,7 +12,7 @@ await writeFile(
   `${JSON.stringify(
     {
       environment: 'staging-review',
-      syntheticData: true,
+      syntheticData: false,
       indexingAllowed: false,
     },
     null,
@@ -20,4 +20,6 @@ await writeFile(
   )}\n`,
 );
 
-console.log('Prepared staging review artifact with global noindex headers and robots exclusion.');
+console.log(
+  'Prepared fixture-free staging review artifact with global noindex headers and robots exclusion.',
+);

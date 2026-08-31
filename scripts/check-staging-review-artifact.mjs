@@ -31,8 +31,8 @@ function countRecords(path, value) {
 }
 
 const marker = JSON.parse(await readText('staging-review.json'));
-if (marker.environment !== 'staging-review' || marker.syntheticData !== true) {
-  throw new Error('Staging review marker is missing or invalid.');
+if (marker.environment !== 'staging-review' || marker.syntheticData !== false) {
+  throw new Error('Staging review marker must declare a fixture-free data surface.');
 }
 if (marker.indexingAllowed !== false) {
   throw new Error('Staging review artifact must explicitly disable indexing.');
@@ -106,7 +106,10 @@ for (const entry of manifest.files) {
   if (countRecords(entry.path, value) !== entry.recordCount) {
     throw new Error(`Staging public manifest record-count mismatch: ${entry.path}`);
   }
-  if (value.schemaVersion !== version.schemaVersion || value.generatedAt !== version.generatedAt) {
+  if (
+    value.schemaVersion !== version.schemaVersion ||
+    value.generatedAt !== version.generatedAt
+  ) {
     throw new Error(`Staging public file identity mismatch: ${entry.path}`);
   }
 }
@@ -117,58 +120,49 @@ if (
   throw new Error('Staging public manifest does not enumerate the complete generated file set.');
 }
 
-const places = parseJsonArtifact('/data/places.json', await readText('data/places.json'));
-const pins = parseJsonArtifact('/data/place-pins.json', await readText('data/place-pins.json'));
-const services = parseJsonArtifact(
-  '/data/online-services.json',
-  await readText('data/online-services.json'),
+const placesText = await readText('data/places.json');
+const pinsText = await readText('data/place-pins.json');
+const servicesText = await readText('data/online-services.json');
+const updatesText = await readText('data/updates.json');
+const places = parseJsonArtifact('/data/places.json', placesText);
+const pins = parseJsonArtifact('/data/place-pins.json', pinsText);
+const services = parseJsonArtifact('/data/online-services.json', servicesText);
+const updates = parseJsonArtifact('/data/updates.json', updatesText);
+const statsFile = parseJsonArtifact(
+  '/data/stats.json',
+  await readText('data/stats.json'),
 );
-const statsFile = parseJsonArtifact('/data/stats.json', await readText('data/stats.json'));
 const stats = statsFile.stats;
 
-if (places.records.length < 15) throw new Error('Staging review needs at least 15 Place records.');
-if (pins.records.length < 12) throw new Error('Staging review needs at least 12 visible map pins.');
-if (services.records.length < 8) {
-  throw new Error('Staging review needs at least 8 Online Service records.');
-}
-if (stats.confirmedPhysicalPlaces < 10 || stats.confirmedOnlineServices < 5) {
-  throw new Error('Staging Stats do not contain enough synthetic review coverage.');
-}
-
-for (const record of [...places.records, ...services.records]) {
-  if (!record.name.startsWith('Staging ')) {
-    throw new Error(`Unexpected staging record name: ${record.name}`);
-  }
-}
-
-const placeWithMedia = places.records.find((record) => record.media.length >= 2);
-const serviceWithMedia = services.records.find((record) => record.media.length >= 2);
-const pinWithThumbnail = pins.records.find((record) => record.thumbnail !== null);
-
-if (!placeWithMedia || !serviceWithMedia || !pinWithThumbnail) {
-  throw new Error(
-    'Staging review must exercise Place, Online Service, and pin Media presentation.',
-  );
-}
-
-for (const path of [
-  'staging-review/media/place-cover.webp',
-  'staging-review/media/place-gallery.webp',
-  'staging-review/media/service-cover.webp',
-  'staging-review/media/service-gallery.webp',
+const publicPayload = [placesText, pinsText, servicesText, updatesText].join('\n');
+for (const forbiddenFixtureMarker of [
+  'example.com/staging/',
+  'staging-coffee-tokyo',
+  'staging-vpn',
+  'Synthetic staging',
+  'Staging Coffee Tokyo',
 ]) {
-  const file = await readBinary(path);
-  if (file.length < 100 || file.subarray(0, 4).toString('ascii') !== 'RIFF') {
-    throw new Error(`Invalid staging Media fixture: ${path}`);
+  if (publicPayload.includes(forbiddenFixtureMarker)) {
+    throw new Error(
+      `Dummy staging fixture leaked into public review data: ${forbiddenFixtureMarker}`,
+    );
   }
+}
+
+if (stats.confirmedPhysicalPlaces > places.records.length) {
+  throw new Error('Staging physical-place stats exceed exported Place records.');
+}
+if (stats.confirmedOnlineServices > services.records.length) {
+  throw new Error('Staging online-service stats exceed exported Online Service records.');
+}
+if (pins.records.length > places.records.length) {
+  throw new Error('Staging map-pin export exceeds exported Place records.');
 }
 
 const representativeRoutes = [
   'index.html',
   'places/index.html',
-  'place/staging-coffee-tokyo/index.html',
   'online/index.html',
-  'service/staging-vpn/index.html',
   'stats/index.html',
   'updates/index.html',
   'roadmap/index.html',
@@ -191,42 +185,6 @@ for (const route of representativeRoutes) {
   }
 }
 
-const placeDetailHtml = await readText('place/staging-coffee-tokyo/index.html');
-if (
-  !placeDetailHtml.includes('/staging-review/media/place-cover.webp') ||
-  !placeDetailHtml.includes('/staging-review/media/place-gallery.webp')
-) {
-  throw new Error('Staging Place detail does not expose both cover and gallery Media fixtures.');
-}
-if (
-  !placeDetailHtml.includes('Before you visit') ||
-  !placeDetailHtml.includes(
-    'Synthetic staging café profile used to review practical Place information',
-  ) ||
-  !placeDetailHtml.includes('Mon–Fri 08:00–18:00') ||
-  !placeDetailHtml.includes('Outdoor Seating') ||
-  !placeDetailHtml.includes('@stagingcoffee') ||
-  !placeDetailHtml.includes('+81 3 0000 0000')
-) {
-  throw new Error('Staging Place detail does not expose the complete practical profile fixture.');
-}
-
-const onlineIndexHtml = await readText('online/index.html');
-if (
-  !onlineIndexHtml.includes('/staging-review/media/service-cover.webp') ||
-  !onlineIndexHtml.includes('No approved public image')
-) {
-  throw new Error('Staging Online index must exercise Media and no-Media card states.');
-}
-
-const serviceDetailHtml = await readText('service/staging-vpn/index.html');
-if (
-  !serviceDetailHtml.includes('/staging-review/media/service-cover.webp') ||
-  !serviceDetailHtml.includes('/staging-review/media/service-gallery.webp')
-) {
-  throw new Error('Staging Online detail does not expose both cover and gallery Media fixtures.');
-}
-
 console.log(
-  `Staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${manifest.files.length} machine-readable files, ${representativeRoutes.length} representative routes, with public Media and practical Place profile coverage.`,
+  `Fixture-free staging review artifact checks passed: ${places.records.length} places, ${pins.records.length} pins, ${services.records.length} services, ${updates.records.length} updates, ${manifest.files.length} machine-readable files, ${representativeRoutes.length} representative routes.`,
 );

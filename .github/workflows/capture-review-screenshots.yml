@@ -83,4 +83,4 @@ jobs:
               echo "- $DEVICE: $CAPTURED captured / $FAILED failed" >> "$GITHUB_STEP_SUMMARY"
             fi
           done
-          echo '- Interactive states include menu open, filters open, list mode, Place sheet peek, Place sheet expanded, selected desktop panel, and Gallery lightbox.' >> "$GITHUB_STEP_SUMMARY"
+          echo '- Screenshot coverage is fixture-free and limited to generic routes and empty-state-safe interactions.' >> "$GITHUB_STEP_SUMMARY"
