@@ -1,4 +1,4 @@
-name: Patch exact Candidate crawl selection
+name: Patch bounded official crawl attempts
 
 on:
   push:
@@ -23,22 +23,22 @@ jobs:
           node-version: 24
           cache: npm
 
-      - name: Patch exact Candidate crawl selection
-        run: python3 .github/scripts/patch-official-crawl-selection.py
+      - name: Persist bounded crawl attempts
+        run: python3 .github/scripts/patch-official-crawl-attempts.py
 
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
       - name: Format patched file
-        run: npx biome format --write scripts/crawl-official-payment-evidence-batch.ts
+        run: npx biome format --write scripts/crawl-official-payment-evidence-batch.ts scripts/crawl-next-official-payment-evidence-batch.ts
 
-      - name: Type-check exact Candidate crawl
+      - name: Type-check crawl progression
         run: npx tsc --noEmit --pretty false
 
-      - name: Commit exact Candidate selection
+      - name: Commit crawl attempt persistence
         run: |
           git config user.name badjoke-lab
           git config user.email badjoke.lab@gmail.com
-          git add scripts/crawl-official-payment-evidence-batch.ts
-          git commit -m "DATA: support exact Candidate official crawl"
+          git add scripts/crawl-official-payment-evidence-batch.ts scripts/crawl-next-official-payment-evidence-batch.ts
+          git commit -m "DATA: persist bounded official crawl attempts"
           git push origin HEAD:fix/auto-select-official-evidence-batch
