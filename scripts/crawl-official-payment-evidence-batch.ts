@@ -17,7 +17,8 @@ const MAX_BODY_CHARS = 750_000;
 const MAX_INTERNAL_PAGES = 5;
 const MAX_REDIRECTS = 3;
 const CONCURRENCY = 4;
-const MAX_BATCH_IDS = 20;
+const MAX_BATCH_IDS = 50;
+const MAX_CANDIDATE_IDS = 250;
 const DEFAULT_MAX_TARGETS = 200;
 const HARD_MAX_TARGETS = 250;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -50,6 +51,28 @@ function batchIdsFromEnvironment(): string[] {
   }
   if (ids.some((id) => !UUID_PATTERN.test(id))) {
     throw new Error('Every official Evidence import batch ID must be a UUID.');
+  }
+  return ids;
+}
+
+function candidateIdsFromEnvironment(): string[] | null {
+  const raw = process.env.CPM_OFFICIAL_EVIDENCE_CANDIDATE_IDS?.trim() ?? '';
+  if (!raw) return null;
+  const ids = [
+    ...new Set(
+      raw
+        .split(',')
+        .map((value) => value.trim())
+        .filter(Boolean),
+    ),
+  ];
+  if (ids.length === 0 || ids.length > MAX_CANDIDATE_IDS) {
+    throw new Error(
+      `CPM_OFFICIAL_EVIDENCE_CANDIDATE_IDS must contain 1-${MAX_CANDIDATE_IDS} UUIDs.`,
+    );
+  }
+  if (ids.some((id) => !UUID_PATTERN.test(id))) {
+    throw new Error('Every official Evidence Candidate ID must be a UUID.');
   }
   return ids;
 }
@@ -253,6 +276,7 @@ async function main() {
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
   const batchIds = batchIdsFromEnvironment();
+  const candidateIds = candidateIdsFromEnvironment();
   const maxTargets = maxTargetsFromEnvironment();
   const db = createDatabase(databaseUrl);
 
@@ -274,8 +298,14 @@ async function main() {
       ),
     );
 
+  const candidateIdSet = candidateIds === null ? null : new Set(candidateIds);
   const eligibleTargets = candidateRows
-    .filter((row) => row.duplicateGroupId === null && row.officialDomain !== null)
+    .filter(
+      (row) =>
+        (candidateIdSet === null || candidateIdSet.has(row.candidateId)) &&
+        row.duplicateGroupId === null &&
+        row.officialDomain !== null,
+    )
     .map((row) => {
       const rawUrl = websiteUrl(row.rawPayload);
       const url = rawUrl ? safeOfficialUrl(rawUrl, row.officialDomain as string) : null;
@@ -453,6 +483,7 @@ async function main() {
       target: EXPECTED_TARGET,
       batchIds,
       maxTargets,
+      exactCandidateSelection: candidateIds !== null,
       maxInternalPagesPerCandidate: MAX_INTERNAL_PAGES,
       ...counters,
       evidenceVisibility: 'private',
