@@ -106,7 +106,10 @@ for (const entry of manifest.files) {
   if (countRecords(entry.path, value) !== entry.recordCount) {
     throw new Error(`Staging public manifest record-count mismatch: ${entry.path}`);
   }
-  if (value.schemaVersion !== version.schemaVersion || value.generatedAt !== version.generatedAt) {
+  if (
+    value.schemaVersion !== version.schemaVersion ||
+    value.generatedAt !== version.generatedAt
+  ) {
     throw new Error(`Staging public file identity mismatch: ${entry.path}`);
   }
 }
@@ -125,7 +128,10 @@ const places = parseJsonArtifact('/data/places.json', placesText);
 const pins = parseJsonArtifact('/data/place-pins.json', pinsText);
 const services = parseJsonArtifact('/data/online-services.json', servicesText);
 const updates = parseJsonArtifact('/data/updates.json', updatesText);
-const statsFile = parseJsonArtifact('/data/stats.json', await readText('data/stats.json'));
+const statsFile = parseJsonArtifact(
+  '/data/stats.json',
+  await readText('data/stats.json'),
+);
 const stats = statsFile.stats;
 
 const publicPayload = [placesText, pinsText, servicesText, updatesText].join('\n');
@@ -137,7 +143,9 @@ for (const forbiddenFixtureMarker of [
   'Staging Coffee Tokyo',
 ]) {
   if (publicPayload.includes(forbiddenFixtureMarker)) {
-    throw new Error(`Dummy staging fixture leaked into public review data: ${forbiddenFixtureMarker}`);
+    throw new Error(
+      `Dummy staging fixture leaked into public review data: ${forbiddenFixtureMarker}`,
+    );
   }
 }
 
