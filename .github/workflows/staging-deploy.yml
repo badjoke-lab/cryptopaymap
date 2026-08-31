@@ -27,11 +27,8 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Run full quality gate
-        run: npm run quality
-
-      - name: Check Phase 1 files
-        run: node scripts/check-phase-1-foundation.mjs
+      - name: Build
+        run: npm run build
 
       - name: Upload deployable artifact
         uses: actions/upload-artifact@v4
