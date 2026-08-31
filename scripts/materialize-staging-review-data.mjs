@@ -8,23 +8,9 @@ const outputDirectory = new URL('../public/data/', import.meta.url);
 const versionPath = new URL('../public/version.json', import.meta.url);
 const data = buildStagingReviewData();
 const updates = buildStagingReviewUpdates();
-const reviewOrigin = 'https://review.cryptopaymap-staging.pages.dev';
 const schemaVersion = '1.0.0';
-const datasetVersion = 'staging-review-2026-07-05';
+const datasetVersion = 'staging-review-no-fixtures-2026-08-31';
 const generatedAt = data.places.generatedAt;
-
-function publicMedia(role, filename, altText) {
-  return {
-    role,
-    url: `${reviewOrigin}/staging-review/media/${filename}`,
-    mimeType: 'image/webp',
-    width: 320,
-    height: 180,
-    altText,
-    attribution: 'Synthetic staging review artwork by CryptoPayMap',
-    licenseSlug: null,
-  };
-}
 
 function sha256(bytes) {
   return createHash('sha256').update(bytes).digest('hex');
@@ -35,68 +21,6 @@ function countRecords(path, value) {
   if (Array.isArray(value.records)) return value.records.length;
   throw new Error(`Unsupported staging public export record shape: ${path}`);
 }
-
-const mediaPlace = data.places.records.find(
-  (record) => record.placeSlug === 'staging-coffee-tokyo',
-);
-const mediaPin = data.placePins.records.find(
-  (record) => record.placeSlug === 'staging-coffee-tokyo',
-);
-const mediaService = data.onlineServices.records.find(
-  (record) => record.serviceSlug === 'staging-vpn',
-);
-
-if (!mediaPlace || !mediaPin || !mediaService) {
-  throw new Error('Expected staging Media review records are missing.');
-}
-
-const placeCover = publicMedia(
-  'cover',
-  'place-cover.webp',
-  'Abstract synthetic cover artwork for the staging Place review record',
-);
-const placeGallery = publicMedia(
-  'gallery',
-  'place-gallery.webp',
-  'Abstract synthetic gallery artwork for the staging Place review record',
-);
-const serviceCover = publicMedia(
-  'cover',
-  'service-cover.webp',
-  'Abstract synthetic cover artwork for the staging Online Service review record',
-);
-const serviceGallery = publicMedia(
-  'gallery',
-  'service-gallery.webp',
-  'Abstract synthetic gallery artwork for the staging Online Service review record',
-);
-
-mediaPlace.addressLine = '1-1 Marunouchi, Chiyoda City';
-mediaPlace.postalCode = '100-0005';
-mediaPlace.phone = '+81 3 0000 0000';
-mediaPlace.description =
-  'Synthetic staging café profile used to review practical Place information in selected surfaces.';
-mediaPlace.openingHours = 'Mon–Fri 08:00–18:00\nSat–Sun 09:00–17:00';
-mediaPlace.amenities = ['wifi', 'outdoor-seating'];
-mediaPlace.socialLinks = [
-  {
-    platform: 'instagram',
-    url: 'https://example.com/staging/social/staging-coffee-tokyo',
-    handle: '@stagingcoffee',
-  },
-];
-mediaPlace.provenance[0]?.fields.push(
-  'addressLine',
-  'postalCode',
-  'phone',
-  'description',
-  'openingHours',
-  'amenities',
-  'socialLinks',
-);
-mediaPlace.media = [placeCover, placeGallery];
-mediaPin.thumbnail = placeCover;
-mediaService.media = [serviceCover, serviceGallery];
 
 const publicFiles = [
   {
@@ -195,5 +119,5 @@ await Promise.all([
 ]);
 
 console.log(
-  `Materialized staging review data: ${data.places.records.length} places, ${data.placePins.records.length} map pins, ${data.onlineServices.records.length} online services, ${updates.records.length} updates, ${manifest.files.length} manifest entries, with public Media and practical Place profile review fixtures.`,
+  `Materialized fixture-free staging review data: ${data.places.records.length} places, ${data.placePins.records.length} map pins, ${data.onlineServices.records.length} online services, ${updates.records.length} updates, ${manifest.files.length} manifest entries.`,
 );
