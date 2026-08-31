@@ -10,7 +10,7 @@ import {
 declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
-const MAX_BATCH_IDS = 50;
+const MAX_BATCH_IDS = 250;
 const MAX_TARGETS = 250;
 const MAX_PARTITIONS = 16;
 const SCAN_LIMIT = 20_000;
