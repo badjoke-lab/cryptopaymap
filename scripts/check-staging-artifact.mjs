@@ -17,7 +17,6 @@ const requiredFiles = [
   'admin/media/index.html',
   'admin/exports/index.html',
   'admin/audit/index.html',
-  'data/foundation-place.json',
   'manifest.webmanifest',
   'icons/cryptopaymap.svg',
   'icons/cryptopaymap-maskable.svg',
