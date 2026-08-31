@@ -1,0 +1,56 @@
+name: North America private Candidate batch audit
+
+on:
+  push:
+    branches:
+      - ops/north-america-private-batch-audit
+    paths:
+      - scripts/audit-north-america-candidate-batches.ts
+      - .github/workflows/north-america-private-batch-audit.yml
+
+permissions:
+  contents: read
+
+env:
+  CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Audit Candidate batches privately
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          audit_file="${RUNNER_TEMP}/north-america-private-batch-audit.json"
+          npx tsx scripts/audit-north-america-candidate-batches.ts > "$audit_file"
+          jq -e '.target == "fixed-review-staging" and .mutationPerformed == false and .publicDataChanged == false and .payloadExposedInLogs == false' "$audit_file" >/dev/null
+          {
+            echo '## North America private Candidate batch audit'
+            echo
+            echo "- east batches: $(jq -r '.regions[] | select(.region == "north-america-east") | .batchCount' "$audit_file")"
+            echo "- east reviewable Candidates: $(jq -r '.regions[] | select(.region == "north-america-east") | .candidateCount' "$audit_file")"
+            echo "- east official-domain Candidates: $(jq -r '.regions[] | select(.region == "north-america-east") | .officialDomainCount' "$audit_file")"
+            echo "- west batches: $(jq -r '.regions[] | select(.region == "north-america-west") | .batchCount' "$audit_file")"
+            echo "- west reviewable Candidates: $(jq -r '.regions[] | select(.region == "north-america-west") | .candidateCount' "$audit_file")"
+            echo "- west official-domain Candidates: $(jq -r '.regions[] | select(.region == "north-america-west") | .officialDomainCount' "$audit_file")"
+            echo '- Candidate names/addresses/URLs/raw payload in public logs: 0'
+            echo '- mutation performed: false'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload short-lived private batch artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: north-america-private-candidate-batches
+          path: ${{ runner.temp }}/north-america-private-batch-audit.json
+          retention-days: 1
+          if-no-files-found: error
