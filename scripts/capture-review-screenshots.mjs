@@ -7,8 +7,6 @@ import { chromium } from 'playwright';
 const ROOT = process.cwd();
 const OUTPUT_ROOT = path.join(ROOT, 'artifacts', 'review-screenshots');
 const DEFAULT_BASE_URL = 'http://127.0.0.1:4173';
-const STAGING_PLACE_NAME = 'Staging Coffee Tokyo';
-const REPORT_TARGET_ID = '10000000-0000-4000-8000-000000000001';
 
 const DEVICES = {
   desktop: {
@@ -25,8 +23,6 @@ const COMMON_SCENARIOS = [
   ['home', '/'],
   ['places-default', '/places'],
   ['online-index', '/online'],
-  ['place-detail', '/place/staging-coffee-tokyo'],
-  ['service-detail', '/service/staging-vpn'],
   ['stats', '/stats'],
   ['updates', '/updates'],
   ['about', '/about'],
@@ -43,29 +39,7 @@ const COMMON_SCENARIOS = [
   ['partners', '/partners'],
 ].map(([id, route]) => ({ id, route, action: 'none', fullPage: true }));
 
-COMMON_SCENARIOS.push(
-  {
-    id: 'report-payment',
-    route: `/payment-report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
-    action: 'prepare-payment-report',
-    fullPage: true,
-  },
-  {
-    id: 'report-problem',
-    route: `/report?targetType=entity&targetId=${REPORT_TARGET_ID}`,
-    action: 'prepare-problem-report',
-    fullPage: true,
-  },
-);
-
-const DESKTOP_SCENARIOS = [
-  {
-    id: 'places-selected',
-    route: '/places',
-    action: 'select-place-desktop',
-    fullPage: true,
-  },
-];
+const DESKTOP_SCENARIOS = [];
 
 const MOBILE_SCENARIOS = [
   {
@@ -85,24 +59,6 @@ const MOBILE_SCENARIOS = [
     route: '/places',
     action: 'show-list',
     fullPage: true,
-  },
-  {
-    id: 'places-sheet-peek',
-    route: '/places',
-    action: 'select-place-mobile',
-    fullPage: false,
-  },
-  {
-    id: 'places-sheet-expanded',
-    route: '/places',
-    action: 'expand-place-sheet',
-    fullPage: false,
-  },
-  {
-    id: 'places-gallery-lightbox',
-    route: '/places',
-    action: 'open-place-gallery',
-    fullPage: false,
   },
 ];
 
@@ -161,44 +117,10 @@ async function showPlacesList(page) {
   await settle(page);
 }
 
-async function selectPlaceFromList(page) {
-  await showPlacesList(page);
-  await page
-    .getByRole('button', { name: `Select ${STAGING_PLACE_NAME} on map`, exact: true })
-    .click();
-}
-
-async function expandPlaceSheet(page) {
-  await selectPlaceFromList(page);
-  const peekSheet = page.locator('[data-sheet-state="peek"][data-sheet-entered="true"]');
-  await peekSheet.waitFor({ state: 'visible' });
-  const expandButton = page.getByRole('button', { name: 'Expand place details', exact: true });
-  await expandButton.evaluate((button) => button.click());
-  await page.locator('[data-sheet-state="expanded"]').waitFor({ state: 'visible' });
-}
-
-async function waitForReportForm(page, sectionHeading) {
-  await page
-    .getByRole('heading', { name: 'What record are you reporting?', exact: true })
-    .waitFor({ state: 'visible' });
-  await page
-    .getByRole('heading', { name: sectionHeading, exact: true })
-    .waitFor({ state: 'visible' });
-  await page
-    .getByText('Verification ready for screenshot review', { exact: true })
-    .waitFor({ state: 'visible' });
-}
-
 async function runAction(page, action) {
   switch (action) {
     case 'none':
       return;
-    case 'prepare-payment-report':
-      await waitForReportForm(page, 'Describe the payment result');
-      break;
-    case 'prepare-problem-report':
-      await waitForReportForm(page, 'Describe the incorrect or problematic information');
-      break;
     case 'open-mobile-menu':
       await page.getByRole('button', { name: 'Menu', exact: true }).click();
       await page
@@ -212,30 +134,6 @@ async function runAction(page, action) {
     case 'show-list':
       await showPlacesList(page);
       break;
-    case 'select-place-mobile':
-      await selectPlaceFromList(page);
-      await page
-        .locator('[data-sheet-state="peek"][data-sheet-entered="true"]')
-        .waitFor({ state: 'visible' });
-      break;
-    case 'expand-place-sheet':
-      await expandPlaceSheet(page);
-      break;
-    case 'open-place-gallery': {
-      await expandPlaceSheet(page);
-      const imageButton = page.getByRole('button', { name: /Enlarge image 1 of/ }).first();
-      await imageButton.evaluate((button) => button.click());
-      await page.getByRole('dialog', { name: /Image viewer:/ }).waitFor({ state: 'visible' });
-      break;
-    }
-    case 'select-place-desktop':
-      await page
-        .getByRole('button', { name: `Select ${STAGING_PLACE_NAME} on map`, exact: true })
-        .click();
-      await page
-        .getByRole('complementary', { name: `Selected place details: ${STAGING_PLACE_NAME}` })
-        .waitFor({ state: 'visible' });
-      break;
     default:
       throw new Error(`Unknown screenshot action: ${action}`);
   }
@@ -245,9 +143,7 @@ async function runAction(page, action) {
 async function measurePage(page) {
   return page.evaluate(() => {
     const root = document.documentElement;
-    const sheet = document.querySelector('[data-sheet-state]');
     const map = document.querySelector('.maplibregl-canvas');
-    const sheetRect = sheet?.getBoundingClientRect();
     const mapRect = map?.getBoundingClientRect();
     return {
       title: document.title,
@@ -260,15 +156,6 @@ async function measurePage(page) {
       menuOpen:
         document.querySelector('#mobile-primary-menu')?.getAttribute('aria-hidden') === 'false',
       filterPanelOpen: Boolean(document.querySelector('[aria-label="Place filters"]')),
-      placeSheetState: sheet?.getAttribute('data-sheet-state') ?? null,
-      placeSheetRect: sheetRect
-        ? {
-            top: Math.round(sheetRect.top),
-            bottom: Math.round(sheetRect.bottom),
-            height: Math.round(sheetRect.height),
-          }
-        : null,
-      placeSheetZIndex: sheet ? getComputedStyle(sheet).zIndex : null,
       mapRect: mapRect
         ? {
             top: Math.round(mapRect.top),
@@ -277,39 +164,7 @@ async function measurePage(page) {
           }
         : null,
       mapZIndex: map ? getComputedStyle(map).zIndex : null,
-      dialogOpen: Boolean(document.querySelector('[role="dialog"][aria-modal="true"]')),
     };
-  });
-}
-
-async function installReportScreenshotFixtures(page) {
-  await page.route('**/api/reports/config', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        siteKey: '1x00000000000000000000AA',
-        action: 'cpm_submission',
-      }),
-    });
-  });
-
-  await page.route('https://challenges.cloudflare.com/turnstile/v0/api.js**', async (route) => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `
-        window.turnstile = {
-          render(container, options) {
-            container.innerHTML = '<div style="min-height:64px;border:1px solid #cbd5e1;border-radius:10px;padding:16px;display:flex;align-items:center;background:#f8fafc;color:#334155;font:600 14px system-ui">Verification ready for screenshot review</div>';
-            queueMicrotask(() => options.callback('screenshot-preview-token'));
-            return 'cpm-screenshot-widget';
-          },
-          reset() {},
-          remove() {},
-        };
-      `,
-    });
   });
 }
 
@@ -328,7 +183,6 @@ async function captureDevice(browser, deviceName, baseUrl) {
     colorScheme: 'light',
   });
   const page = await context.newPage();
-  await installReportScreenshotFixtures(page);
   const records = [];
   const failures = [];
 
