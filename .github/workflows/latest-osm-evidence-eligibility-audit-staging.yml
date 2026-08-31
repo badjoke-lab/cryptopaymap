@@ -1,0 +1,54 @@
+name: Audit latest OSM Evidence eligibility — fixed review staging
+
+on:
+  push:
+    branches:
+      - ops/latest-osm-eligibility-audit
+
+concurrency:
+  group: fixed-review-latest-osm-evidence-eligibility-audit
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Audit latest bounded OSM acquisition
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          summary="$(npx tsx scripts/audit-latest-osm-evidence-eligibility.ts)"
+          jq -e '.target == "fixed-review-staging" and .identifiersExposed == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          jq . <<<"$summary"
+          {
+            echo '## Latest OSM Evidence eligibility audit'
+            echo
+            echo "- acquisition batches: $(jq -r '.latestAcquisition.batchCount' <<<"$summary")"
+            echo "- acquisition input: $(jq -r '.latestAcquisition.inputCount' <<<"$summary")"
+            echo "- acquisition accepted/refresh: $(jq -r '.latestAcquisition.acceptedCount' <<<"$summary")"
+            echo "- acquisition replayed: $(jq -r '.latestAcquisition.replayedCount' <<<"$summary")"
+            echo "- distinct latest-batch Candidates: $(jq -r '.distinctCandidates' <<<"$summary")"
+            echo "- new/triaged: $(jq -r '.activeNewOrTriaged' <<<"$summary")"
+            echo "- duplicate-free: $(jq -r '.duplicateFree' <<<"$summary")"
+            echo "- duplicate-grouped: $(jq -r '.duplicateGrouped' <<<"$summary")"
+            echo "- duplicate-free with official domain: $(jq -r '.duplicateFreeWithOfficialDomain' <<<"$summary")"
+            echo "- duplicate-free with website seed: $(jq -r '.duplicateFreeWithWebsiteSeed' <<<"$summary")"
+            echo "- crawler eligible shape: $(jq -r '.crawlerEligibleShape' <<<"$summary")"
+          } >> "$GITHUB_STEP_SUMMARY"
