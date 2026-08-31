@@ -1,12 +1,7 @@
 name: Bulk real-data growth staging
 
-# batch 4: exhaust final unattempted exact Candidates
 on:
-  push:
-    branches:
-      - fix/auto-select-official-evidence-batch
-    paths:
-      - .github/workflows/bulk-real-data-growth-staging.yml
+  workflow_dispatch:
 
 permissions:
   contents: read
