@@ -1,0 +1,66 @@
+name: Patch retryable official crawl failures
+
+on:
+  push:
+    branches:
+      - fix/auto-select-official-evidence-batch
+    paths:
+      - .github/workflows/patch-retryable-official-crawl.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - name: Keep landing-page failures retryable
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path('scripts/crawl-official-payment-evidence-batch.ts')
+          text = path.read_text()
+
+          old = """  const targets = eligibleTargets.slice(0, maxTargets);\n\n  const existingSource = await db"""
+          new = """  const targets = eligibleTargets.slice(0, maxTargets);\n  const completedCrawlCandidateIds = new Set<string>();\n\n  const existingSource = await db"""
+          if old not in text:
+              raise SystemExit('targets marker missing')
+          text = text.replace(old, new, 1)
+
+          old = """      const landing = await fetchOfficialPage(target.url, target.officialDomain);\n      if (!landing) continue;\n      counters.landingPagesFetched += 1;\n"""
+          new = """      const landing = await fetchOfficialPage(target.url, target.officialDomain);\n      if (!landing) continue;\n      completedCrawlCandidateIds.add(target.candidateId);\n      counters.landingPagesFetched += 1;\n"""
+          if old not in text:
+              raise SystemExit('landing marker missing')
+          text = text.replace(old, new, 1)
+
+          marker = "  const attemptFetchedAt = new Date();"
+          start = text.find(marker)
+          if start < 0:
+              raise SystemExit('attempt block missing')
+          prefix = text[:start]
+          suffix = text[start:]
+          suffix = suffix.replace(
+              """  const attemptFetchedAt = new Date();\n  const attemptExternalIds = targets.map(""",
+              """  const attemptFetchedAt = new Date();\n  const completedTargets = targets.filter((target) =>\n    completedCrawlCandidateIds.has(target.candidateId),\n  );\n  const attemptExternalIds = completedTargets.map(""",
+              1,
+          )
+          suffix = suffix.replace("        targets.map((target) => ({", "        completedTargets.map((target) => ({", 1)
+          suffix = suffix.replace("      targets.map((target) => [", "      completedTargets.map((target) => [", 1)
+          suffix = suffix.replace(
+              """      ...counters,\n      evidenceVisibility: 'private',""",
+              """      ...counters,\n      retryableLandingFailures: targets.length - completedTargets.length,\n      evidenceVisibility: 'private',""",
+              1,
+          )
+          text = prefix + suffix
+          path.write_text(text)
+          PY
+      - name: Commit durable patch and remove helper workflow
+        run: |
+          git config user.name badjoke-lab
+          git config user.email badjoke.lab@gmail.com
+          git rm .github/workflows/patch-retryable-official-crawl.yml
+          git add scripts/crawl-official-payment-evidence-batch.ts
+          git commit -m "FIX: retry official crawls after landing fetch failures"
+          git push origin HEAD:fix/auto-select-official-evidence-batch
