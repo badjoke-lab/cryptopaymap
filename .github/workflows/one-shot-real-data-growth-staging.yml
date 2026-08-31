@@ -32,6 +32,13 @@ jobs:
       - name: Type-check before staging mutation
         run: npx tsc --noEmit --pretty false
 
+      - name: Enrich country for up to 30 strict official-Evidence Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_COUNTRY_ENRICH_MAX_TARGETS: '30'
+        run: npx tsx scripts/enrich-next-official-evidence-country-staging.ts
+
       - name: Auto-select and promote up to 50 strict official-Evidence Candidates
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
