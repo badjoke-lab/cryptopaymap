@@ -4,10 +4,10 @@
   "launchDomain": "neon_transaction",
   "environment": "configured_staging",
   "state": "accepted",
-  "commit": "871ff1fa89ab24efff3922dc23a06c6a345937d1",
-  "generatedAt": "2026-08-31T00:00:07.144Z",
-  "expiresAt": "2026-09-03T00:00:07.144Z",
-  "workflowRunId": "33343222699",
+  "commit": "ac45b2ce476772517cad42e4a9a3090e02dd7f7b",
+  "generatedAt": "2026-08-31T04:08:04.068Z",
+  "expiresAt": "2026-09-03T04:08:04.068Z",
+  "workflowRunId": "33355978563",
   "owner": "sha256:426da33a147a4f74560a09289c448ed1caf5d0ef6a85b3a36cd3779759d4ce07",
   "procedure": "OPS-P6-001G configured staging Neon transaction evidence",
   "checks": {
@@ -18,15 +18,15 @@
         "evidenceId": "P6-01",
         "path": "config/staging-authorization/p6-01-data-qa-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-30T23:57:38.181Z",
-        "expiresAt": "2026-09-02T23:57:38.181Z"
+        "generatedAt": "2026-08-31T04:05:44.105Z",
+        "expiresAt": "2026-09-03T04:05:44.105Z"
       },
       {
         "evidenceId": "P6-02",
         "path": "config/staging-authorization/p6-02-identity-admin-receipt.json",
         "state": "current",
-        "generatedAt": "2026-08-30T23:58:47.414Z",
-        "expiresAt": "2026-09-02T23:58:47.414Z"
+        "generatedAt": "2026-08-31T04:06:45.474Z",
+        "expiresAt": "2026-09-03T04:06:45.474Z"
       }
     ],
     "database": {
@@ -57,10 +57,10 @@
     },
     "positive": {
       "status": "passed",
-      "preStateDigest": "sha256:fd8042ff32f4016b552519ad7cb8cb06ebe7a4aafa28bac186b9702555f7a860",
-      "postStateDigest": "sha256:b0ec80e0ae5d813693a674980c18e96a2797a0c8bf51bcb5ee982a47173f0e0d",
-      "applicationReceiptDigest": "sha256:d680d5692089a42fa9273c77e53ca1f9d5be6df855233c6d019f1f6b70566ad8",
-      "auditEventDigest": "sha256:71d41def2be4bba021791539b658579fef7f66e7f97a8570217f97bfeb83c577",
+      "preStateDigest": "sha256:b61bddb06a5dfe3db0836ce72f130f5b007c7192949ec63bfbd1d7c3e2d354c8",
+      "postStateDigest": "sha256:3030d86999b7388d20e1ba0f6621d655a99fdaebda5f136d99946d1f72cc54f5",
+      "applicationReceiptDigest": "sha256:59e8dc453d51d62e006e07f859277a3a2c513d8cd053aca31a9e465238be965e",
+      "auditEventDigest": "sha256:d7a420f7aad0624440979df253b19e35af5c6e3225f5300a9c857fce720972c8",
       "applicationStatus": "committed",
       "publicationStatus": "pending"
     },
@@ -95,7 +95,7 @@
     }
   },
   "binding": {
-    "releaseId": "sha256:9d12516d917ccc235dfff1d0e98b337391ed9086d71905b6f725b16e729c653d",
+    "releaseId": "sha256:d354a29f624f4fd0dc76707f170ca0649db0d85c29f167bfc664b18d23aea802",
     "dataSnapshotId": "sha256:a0bba2025153d33dc6db7c3e268f9d4f374508e135ac1b1a930dd8b596266237",
     "configurationId": "sha256:e43dbc7a8fa235a3ddfa181e94a819e4b23ab9a16e1be8288c5b1588a6f662a5",
     "environmentId": "sha256:d3625d4608a71bf6105707405d6ca113d1b62a9f38317ba55e8f5bd82ea9d3a5"
