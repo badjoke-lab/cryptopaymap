@@ -7,10 +7,25 @@ on:
         description: Comma-separated OSM import batch UUIDs
         required: true
         type: string
-      max_targets:
-        description: Maximum eligible Candidates to review in this run
+      crawl_targets:
+        description: Maximum official-site Candidates to crawl first (1-250)
         required: true
-        default: '50'
+        default: '250'
+        type: string
+      max_targets:
+        description: Maximum eligible Candidates per promotion pass (1-100)
+        required: true
+        default: '100'
+        type: string
+      promotion_passes:
+        description: Promotion passes in this run (1-5)
+        required: true
+        default: '5'
+        type: string
+      publication_limit:
+        description: Maximum newly reviewed Claims to publish (1-500)
+        required: true
+        default: '500'
         type: string
       confirm:
         description: Type PROMOTE_CONFIRMED_OFFICIAL_EVIDENCE to execute staging mutations
@@ -28,7 +43,7 @@ jobs:
   review:
     if: ${{ inputs.confirm == 'PROMOTE_CONFIRMED_OFFICIAL_EVIDENCE' }}
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -42,7 +57,15 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Promote and confirm bounded official Evidence
+      - name: Crawl bounded official merchant payment Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OFFICIAL_EVIDENCE_BATCH_IDS: ${{ inputs.batch_ids }}
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: ${{ inputs.crawl_targets }}
+        run: npx tsx scripts/crawl-official-payment-evidence-batch.ts
+
+      - name: Promote and confirm reviewed official Evidence in bounded passes
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
@@ -50,14 +73,24 @@ jobs:
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
           CPM_OFFICIAL_EVIDENCE_BATCH_IDS: ${{ inputs.batch_ids }}
           CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: ${{ inputs.max_targets }}
-        run: npx tsx scripts/promote-confirm-official-evidence-batch.ts
+          PROMOTION_PASSES: ${{ inputs.promotion_passes }}
+        run: |
+          case "$PROMOTION_PASSES" in
+            1|2|3|4|5) ;;
+            *) echo "promotion_passes must be 1-5" >&2; exit 1 ;;
+          esac
+          for pass in $(seq 1 "$PROMOTION_PASSES"); do
+            echo "promotion pass ${pass}/${PROMOTION_PASSES}"
+            npx tsx scripts/promote-confirm-official-evidence-batch.ts
+          done
 
-      - name: Publish reviewed canonical staging records
+      - name: Publish all newly reviewed canonical staging records in one bounded page
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
-        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+          CPM_BULK_PUBLICATION_LIMIT: ${{ inputs.publication_limit }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging-bulk.ts
 
       - name: Materialize real public data from staging DB
         env:
