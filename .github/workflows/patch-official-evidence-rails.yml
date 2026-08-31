@@ -1,4 +1,4 @@
-name: Patch bounded official crawl attempts
+name: Patch exact crawl batch envelope
 
 on:
   push:
@@ -17,28 +17,35 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: fix/auto-select-official-evidence-batch
-
       - uses: actions/setup-node@v4
         with:
           node-version: 24
           cache: npm
-
-      - name: Persist bounded crawl attempts
-        run: python3 .github/scripts/patch-official-crawl-attempts.py
-
+      - name: Lift batch envelope without lifting Candidate cap
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          for name in [
+              'scripts/crawl-official-payment-evidence-batch.ts',
+              'scripts/crawl-next-official-payment-evidence-batch.ts',
+          ]:
+              path = Path(name)
+              text = path.read_text()
+              old = 'const MAX_BATCH_IDS = 50;'
+              if old not in text:
+                  raise SystemExit(f'{name}: expected batch cap missing')
+              path.write_text(text.replace(old, 'const MAX_BATCH_IDS = 250;', 1))
+          PY
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
-
-      - name: Format patched file
+      - name: Format
         run: npx biome format --write scripts/crawl-official-payment-evidence-batch.ts scripts/crawl-next-official-payment-evidence-batch.ts
-
-      - name: Type-check crawl progression
+      - name: Type-check
         run: npx tsc --noEmit --pretty false
-
-      - name: Commit crawl attempt persistence
+      - name: Commit bounded envelope fix
         run: |
           git config user.name badjoke-lab
           git config user.email badjoke.lab@gmail.com
           git add scripts/crawl-official-payment-evidence-batch.ts scripts/crawl-next-official-payment-evidence-batch.ts
-          git commit -m "DATA: persist bounded official crawl attempts"
+          git commit -m "FIX: allow exact crawl across bounded batch IDs"
           git push origin HEAD:fix/auto-select-official-evidence-batch
