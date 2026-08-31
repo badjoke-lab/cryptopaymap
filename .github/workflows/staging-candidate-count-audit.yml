@@ -32,6 +32,7 @@ jobs:
         run: |
           summary="$(npx tsx scripts/audit-staging-candidate-count.ts)"
           jq -e '.target == "fixed-review-staging" and .mutationPerformed == false and .payloadExposed == false' <<<"$summary" >/dev/null
+          printf '%s\n' "$summary"
           {
             echo '## Staging Candidate count audit'
             echo
