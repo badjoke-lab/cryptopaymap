@@ -1,5 +1,6 @@
 name: Bulk real-data growth staging
 
+# PR runs validate code only; staging mutation requires explicit workflow dispatch.
 on:
   workflow_dispatch:
   pull_request:
