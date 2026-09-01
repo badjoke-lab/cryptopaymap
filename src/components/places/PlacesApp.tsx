@@ -42,15 +42,10 @@ function serializedState(state: DiscoveryUrlState): string {
 }
 
 function geolocationErrorMessage(error: GeolocationPositionError): string {
-  if (error.code === 1) {
-    return 'Location permission was denied. Allow location access and try again.';
-  }
-  if (error.code === 2) {
+  if (error.code === 1) return 'Location permission was denied. Allow location access and try again.';
+  if (error.code === 2)
     return 'Current location is unavailable. Check device location services and try again.';
-  }
-  if (error.code === 3) {
-    return 'Location request timed out. Try again.';
-  }
+  if (error.code === 3) return 'Location request timed out. Try again.';
   return 'Location could not be read. Try again.';
 }
 
@@ -86,7 +81,6 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
     const current = store.getState().urlState;
     const next = mergeDiscoveryUrlState(current, patch);
     if (serializedState(current) === serializedState(next)) return;
-
     historyModeRef.current = mode;
     setUrlState(next);
   }
@@ -138,14 +132,12 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
 
   useEffect(() => {
     if (!filterPanelOpen || !window.matchMedia('(max-width: 1023px)').matches) return;
-
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') setFilterPanelOpen(false);
     };
     window.addEventListener('keydown', onKeyDown);
-
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', onKeyDown);
@@ -209,7 +201,6 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
 
   function searchPendingArea() {
     if (!pendingViewport || !pendingBounds) return;
-
     setActiveBounds(pendingBounds);
     patchDiscoveryUrlState({ viewport: pendingViewport, selectedPlace: null });
     setPendingViewport(null);
@@ -223,7 +214,6 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
       setLocationMessage('Current location is unavailable in this browser.');
       return;
     }
-
     setIsLocating(true);
     setLocationMessage(null);
     navigator.geolocation.getCurrentPosition(
@@ -248,85 +238,65 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
   }
 
   return (
-    <section className="min-h-[calc(100svh-3.5rem)] bg-canvas" aria-label="Places discovery">
-      <div className="safe-area-inline page-container py-3 lg:py-7">
-        <div className="flex items-center justify-between gap-3 lg:hidden">
-          <div>
-            <p className="m-0 text-xs font-semibold uppercase tracking-[0.08em] text-brand-700">
-              Verified places
-            </p>
-            <h1 className="mt-0.5 text-2xl font-semibold tracking-[-0.035em] text-ink">Places</h1>
-          </div>
-          <span className="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
-            {results.length} {results.length === 1 ? 'place' : 'places'}
-          </span>
-        </div>
+    <section
+      className="bg-canvas lg:h-[calc(100svh-3.5rem)] lg:min-h-[42rem] lg:overflow-hidden"
+      aria-label="Places discovery"
+    >
+      <div className="flex h-full min-h-0 flex-col">
+        <div className="safe-area-inline border-b border-border bg-surface/95 px-3 py-2 shadow-sm backdrop-blur lg:px-5 lg:py-3">
+          <div className="mx-auto flex w-full max-w-[1920px] items-center gap-2 lg:gap-3">
+            <label className="relative min-w-0 flex-1 lg:max-w-[44rem]">
+              <span className="sr-only">Search places</span>
+              <Search
+                className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted"
+                aria-hidden="true"
+              />
+              <input
+                className="min-h-12 w-full rounded-control border border-border bg-canvas pl-11 pr-4 text-ink outline-none shadow-sm transition focus:border-brand-500 focus:bg-surface focus:ring-4 focus:ring-brand-100"
+                type="search"
+                value={urlState.search}
+                onChange={(event) =>
+                  patchDiscoveryUrlState(
+                    { search: event.target.value, selectedPlace: null },
+                    'replace',
+                  )
+                }
+                placeholder="Search by place, city, or address"
+              />
+            </label>
 
-        <div className="hidden items-end justify-between gap-4 lg:flex">
-          <div>
-            <p className="m-0 text-sm font-semibold text-brand-700">Verified physical places</p>
-            <h1 className="mt-1 text-4xl font-semibold tracking-[-0.035em] text-ink">Places</h1>
-            <p className="mt-2 max-w-2xl text-base leading-6 text-muted">
-              Search reviewed public records by payment details. Candidate records are never shown
-              here.
-            </p>
-          </div>
-          <span className="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
-            {results.length} {results.length === 1 ? 'place' : 'places'}
-          </span>
-        </div>
-
-        <div className="mt-3 grid gap-2 lg:mt-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-3">
-          <label className="relative block">
-            <span className="sr-only">Search places</span>
-            <Search
-              className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-muted"
-              aria-hidden="true"
-            />
-            <input
-              className="min-h-12 w-full rounded-control border border-border bg-surface pl-11 pr-4 text-ink shadow-sm"
-              type="search"
-              value={urlState.search}
-              onChange={(event) =>
-                patchDiscoveryUrlState(
-                  { search: event.target.value, selectedPlace: null },
-                  'replace',
-                )
-              }
-              placeholder="Search place, category, city, or country"
-            />
-          </label>
-
-          <div className="flex items-center justify-between gap-2 lg:justify-start">
             <button
-              className="motion-feedback hidden min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink hover:bg-brand-50 lg:inline-flex"
+              className="motion-feedback inline-flex min-h-12 shrink-0 items-center gap-2 rounded-control border border-border bg-surface px-3 font-semibold text-ink shadow-sm hover:bg-brand-50 lg:px-4"
               type="button"
               disabled={isLocating}
               onClick={locateCurrentUser}
             >
-              <Crosshair className="size-4" aria-hidden="true" />
-              {isLocating ? 'Locating…' : 'Current location'}
+              <Crosshair className="size-5 text-brand-700" aria-hidden="true" />
+              <span className="hidden sm:inline">{isLocating ? 'Locating…' : 'Near me'}</span>
             </button>
+
             <button
-              className="motion-feedback hidden min-h-11 items-center gap-2 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-ink hover:bg-brand-50 lg:inline-flex"
+              className="motion-feedback inline-flex min-h-12 shrink-0 items-center gap-2 rounded-control border border-border bg-surface px-3 font-semibold text-ink shadow-sm hover:bg-brand-50 lg:px-4"
               type="button"
               aria-expanded={filterPanelOpen}
               onClick={() => setFilterPanelOpen(!filterPanelOpen)}
             >
-              <SlidersHorizontal className="size-4" aria-hidden="true" /> Filters
+              <SlidersHorizontal className="size-5" aria-hidden="true" />
+              <span className="hidden sm:inline">Filters</span>
               {activeFilterCount > 0 ? (
-                <span className="rounded-pill bg-brand-50 px-2 py-0.5 text-xs text-brand-800">
+                <span className="rounded-pill bg-brand-600 px-2 py-0.5 text-xs text-white">
                   {activeFilterCount}
                 </span>
               ) : null}
             </button>
+
             <fieldset
-              className="inline-flex rounded-control border border-border bg-surface p-1 lg:hidden"
+              className="hidden rounded-control border border-border bg-canvas p-1 sm:inline-flex lg:hidden"
               aria-label="View mode"
             >
               <button
-                className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
-                  urlState.view === 'map' ? 'bg-brand-600 text-white' : 'text-muted'
+                className={`motion-feedback inline-flex min-h-9 items-center gap-1.5 rounded-md px-3 text-sm font-semibold ${
+                  urlState.view === 'map' ? 'bg-surface text-brand-700 shadow-sm' : 'text-muted'
                 }`}
                 type="button"
                 aria-pressed={urlState.view === 'map'}
@@ -335,8 +305,8 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
                 <MapIcon className="size-4" aria-hidden="true" /> Map
               </button>
               <button
-                className={`motion-feedback inline-flex min-h-9 items-center gap-2 rounded-md px-3 text-sm font-semibold ${
-                  urlState.view === 'list' ? 'bg-brand-600 text-white' : 'text-muted'
+                className={`motion-feedback inline-flex min-h-9 items-center gap-1.5 rounded-md px-3 text-sm font-semibold ${
+                  urlState.view === 'list' ? 'bg-surface text-brand-700 shadow-sm' : 'text-muted'
                 }`}
                 type="button"
                 aria-pressed={urlState.view === 'list'}
@@ -345,30 +315,40 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
                 <List className="size-4" aria-hidden="true" /> List
               </button>
             </fieldset>
+
+            <div className="hidden shrink-0 items-center gap-2 xl:flex">
+              <span className="rounded-pill bg-success-50 px-3 py-1.5 text-xs font-semibold text-success-800">
+                Confirmed only
+              </span>
+              <span className="text-sm font-semibold tabular-nums text-muted">
+                {results.length} {results.length === 1 ? 'place' : 'places'}
+              </span>
+            </div>
           </div>
+          {locationMessage ? (
+            <p className="mx-auto mt-2 w-full max-w-[1920px] text-sm text-error" role="status">
+              {locationMessage}
+            </p>
+          ) : null}
         </div>
 
-        {locationMessage ? (
-          <p className="mt-2 text-sm text-error" role="status">
-            {locationMessage}
-          </p>
-        ) : null}
-
         {filterPanelOpen ? (
-          <PlaceFilterPanel
-            facets={facets}
-            state={urlState}
-            resultCount={results.length}
-            onPatch={(patch) => patchDiscoveryUrlState(patch)}
-            onClear={clearFilters}
-            onWidenArea={widenArea}
-            onClose={() => setFilterPanelOpen(false)}
-          />
+          <div className="relative z-40">
+            <PlaceFilterPanel
+              facets={facets}
+              state={urlState}
+              resultCount={results.length}
+              onPatch={(patch) => patchDiscoveryUrlState(patch)}
+              onClear={clearFilters}
+              onWidenArea={widenArea}
+              onClose={() => setFilterPanelOpen(false)}
+            />
+          </div>
         ) : null}
 
-        <div className="mt-3 grid gap-4 lg:mt-5 lg:min-h-[38rem] lg:grid-cols-[minmax(0,3fr)_minmax(20rem,2fr)]">
+        <div className="relative min-h-0 flex-1 lg:flex">
           <section
-            className={`${urlState.view === 'list' ? 'hidden' : 'block'} relative overflow-hidden rounded-card border border-border bg-brand-50 lg:block`}
+            className={`${urlState.view === 'list' ? 'hidden' : 'block'} relative min-h-0 flex-1 overflow-hidden bg-brand-50 lg:block`}
             aria-label="Map results"
           >
             <PlacesMap
@@ -382,32 +362,15 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
               onBoundsChange={setPendingBounds}
             />
 
-            <div className="pointer-events-none absolute left-2 top-2 z-20 flex max-w-[calc(100%-4rem)] items-center gap-1.5 lg:hidden">
-              <button
-                className="pointer-events-auto motion-feedback inline-flex min-h-11 items-center gap-1.5 rounded-control border border-border bg-surface/95 px-3 text-sm font-semibold text-ink shadow-sm backdrop-blur"
-                type="button"
-                disabled={isLocating}
-                onClick={locateCurrentUser}
-              >
-                <Crosshair className="size-4" aria-hidden="true" />{' '}
-                {isLocating ? 'Locating…' : 'Locate'}
-              </button>
-              <button
-                className="pointer-events-auto motion-feedback inline-flex min-h-11 items-center gap-1.5 rounded-control border border-border bg-surface/95 px-3 text-sm font-semibold text-ink shadow-sm backdrop-blur"
-                type="button"
-                aria-expanded={filterPanelOpen}
-                onClick={() => setFilterPanelOpen(true)}
-              >
-                <SlidersHorizontal className="size-4" aria-hidden="true" /> Filters
-              </button>
-              <span className="rounded-pill border border-border bg-surface/95 px-2.5 py-2 text-xs font-semibold text-muted shadow-sm backdrop-blur">
+            <div className="pointer-events-none absolute left-3 top-3 z-20 flex max-w-[calc(100%-6rem)] items-center gap-2 lg:hidden">
+              <span className="rounded-pill border border-border bg-surface/95 px-3 py-2 text-xs font-semibold text-ink shadow-panel backdrop-blur">
                 {results.length} places
               </span>
             </div>
 
             {pendingViewport && pendingBounds ? (
               <button
-                className="motion-feedback absolute left-1/2 top-16 z-10 min-h-10 -translate-x-1/2 rounded-control bg-brand-600 px-3 py-2 text-sm font-semibold text-white shadow-panel hover:bg-brand-700 lg:top-3 lg:min-h-11 lg:px-4 lg:text-base"
+                className="motion-feedback absolute left-1/2 top-3 z-20 min-h-11 -translate-x-1/2 rounded-pill border border-brand-200 bg-surface/95 px-5 py-2 text-sm font-semibold text-brand-800 shadow-panel backdrop-blur hover:bg-brand-50"
                 type="button"
                 onClick={searchPendingArea}
               >
@@ -416,27 +379,72 @@ export function PlacesApp({ pins, places }: PlacesAppProps) {
             ) : null}
           </section>
 
-          <div
-            className={`${urlState.view === 'map' ? 'hidden lg:block' : 'block'} relative min-h-0`}
+          <aside
+            className={`${urlState.view === 'map' ? 'hidden lg:flex' : 'flex'} min-h-0 w-full flex-col border-l border-border bg-surface lg:w-[25rem] xl:w-[27rem]`}
+            aria-label="Place results"
           >
-            <PlaceResultList
-              pins={results}
-              selectedPlace={urlState.selectedPlace}
-              scrollOffset={listScrollOffset}
-              onScrollOffsetChange={setListScrollOffset}
-              onSelectPlace={selectPlace}
-              onClearFilters={clearFilters}
-            />
-            {selected ? (
-              <div className="absolute inset-0 z-10 hidden bg-canvas lg:block">
-                <DesktopSelectedPlacePanel
-                  pin={selected}
-                  place={selectedDetail}
-                  onClear={clearSelection}
-                />
-              </div>
-            ) : null}
-          </div>
+            <div className="flex min-h-12 items-center justify-between border-b border-border px-4">
+              <strong className="text-sm text-ink">{results.length} places in this area</strong>
+              {activeBounds ? (
+                <button className="text-sm font-semibold text-brand-700" type="button" onClick={widenArea}>
+                  Show all
+                </button>
+              ) : null}
+            </div>
+            <div className="min-h-0 flex-1">
+              <PlaceResultList
+                pins={results}
+                selectedPlace={urlState.selectedPlace}
+                scrollOffset={listScrollOffset}
+                onScrollOffsetChange={setListScrollOffset}
+                onSelectPlace={selectPlace}
+                onClearFilters={clearFilters}
+              />
+            </div>
+          </aside>
+
+          {selected ? (
+            <aside className="hidden min-h-0 w-[25rem] shrink-0 border-l border-border bg-surface xl:block 2xl:w-[28rem]">
+              <DesktopSelectedPlacePanel
+                pin={selected}
+                place={selectedDetail}
+                onClear={clearSelection}
+              />
+            </aside>
+          ) : null}
+
+          {selected ? (
+            <div className="absolute inset-y-0 right-0 z-30 hidden w-[25rem] border-l border-border bg-surface shadow-panel lg:block xl:hidden">
+              <DesktopSelectedPlacePanel
+                pin={selected}
+                place={selectedDetail}
+                onClear={clearSelection}
+              />
+            </div>
+          ) : null}
+        </div>
+
+        <div className="safe-area-inline fixed bottom-3 left-1/2 z-30 flex -translate-x-1/2 rounded-pill border border-border bg-surface/95 p-1 shadow-panel backdrop-blur sm:hidden">
+          <button
+            className={`motion-feedback inline-flex min-h-10 items-center gap-1.5 rounded-pill px-4 text-sm font-semibold ${
+              urlState.view === 'map' ? 'bg-brand-600 text-white' : 'text-muted'
+            }`}
+            type="button"
+            aria-pressed={urlState.view === 'map'}
+            onClick={() => patchDiscoveryUrlState({ view: 'map' })}
+          >
+            <MapIcon className="size-4" aria-hidden="true" /> Map
+          </button>
+          <button
+            className={`motion-feedback inline-flex min-h-10 items-center gap-1.5 rounded-pill px-4 text-sm font-semibold ${
+              urlState.view === 'list' ? 'bg-brand-600 text-white' : 'text-muted'
+            }`}
+            type="button"
+            aria-pressed={urlState.view === 'list'}
+            onClick={() => patchDiscoveryUrlState({ view: 'list' })}
+          >
+            <List className="size-4" aria-hidden="true" /> List
+          </button>
         </div>
 
         <MobilePlaceSheet
