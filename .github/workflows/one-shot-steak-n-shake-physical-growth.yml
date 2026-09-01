@@ -5,7 +5,6 @@ on:
     branches:
       - feat/physical-source-first-growth
     paths:
-      - scripts/dismiss-steak-n-shake-name-only-duplicate-group-staging.ts
       - scripts/enrich-steak-n-shake-missing-country-staging.ts
       - scripts/normalize-steak-n-shake-us-origin-review-seed-staging.ts
       - scripts/promote-confirm-steak-n-shake-physical-staging.ts
@@ -28,11 +27,6 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check repository before staging mutation
         run: npm run check
-      - name: Recover bounded Steak n Shake duplicate state
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: npx tsx scripts/dismiss-steak-n-shake-name-only-duplicate-group-staging.ts
       - name: Enrich remaining Steak n Shake country provenance
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
