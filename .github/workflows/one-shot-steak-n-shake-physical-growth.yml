@@ -5,6 +5,7 @@ on:
     branches:
       - feat/physical-source-first-growth
     paths:
+      - scripts/normalize-steak-n-shake-us-origin-review-seed-staging.ts
       - scripts/promote-confirm-steak-n-shake-physical-staging.ts
       - .github/workflows/one-shot-steak-n-shake-physical-growth.yml
 
@@ -25,6 +26,11 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Check repository before staging mutation
         run: npm run check
+      - name: Normalize verified US Steak n Shake origin seeds
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/normalize-steak-n-shake-us-origin-review-seed-staging.ts
       - name: Reverify and confirm bounded Steak n Shake physical locations
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
