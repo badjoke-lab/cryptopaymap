@@ -13,8 +13,8 @@ declare const process: { env: Record<string, string | undefined> };
 const TARGET = 'fixed-review-staging';
 const DIRECTORY = 'https://www.bitpay.com/directory';
 const SOURCE_NAME = 'BitPay Merchant Directory';
-const IMPORTER_VERSION = 'bitpay-dir-v3';
-const SOURCE_SCHEMA_VERSION = 'bitpay-directory-detail-verified-v3';
+const IMPORTER_VERSION = 'bitpay-dir-v4';
+const SOURCE_SCHEMA_VERSION = 'bitpay-directory-detail-verified-v4';
 const MAX_CANDIDATES = 500;
 const MAX_DETAIL_FETCHES = 350;
 const CATEGORY_PATHS = [
@@ -37,8 +37,32 @@ const CATEGORY_PATHS = [
   '/online-stores',
 ] as const;
 const CATEGORY_SLUGS = new Set(CATEGORY_PATHS.filter(Boolean).map((path) => path.slice(1)));
+const NON_MERCHANT_HOSTS = new Set([
+  'bitpay.com',
+  'www.bitpay.com',
+  'facebook.com',
+  'www.facebook.com',
+  'instagram.com',
+  'www.instagram.com',
+  'linkedin.com',
+  'www.linkedin.com',
+  'twitter.com',
+  'www.twitter.com',
+  'x.com',
+  'www.x.com',
+  'youtube.com',
+  'www.youtube.com',
+  'tiktok.com',
+  'www.tiktok.com',
+]);
 
-type Merchant = { slug: string; name: string; detailUrl: string };
+type Merchant = {
+  slug: string;
+  name: string;
+  detailUrl: string;
+  officialUrl: string | null;
+  officialDomain: string | null;
+};
 
 function decode(text: string): string {
   return text
@@ -97,9 +121,7 @@ async function fetchPage(url: string): Promise<{ status: number; html: string }>
 
 function directorySlugsFromHtml(html: string): string[] {
   const slugs = new Set<string>();
-  const normalized = html
-    .replace(/\\u002F/gi, '/')
-    .replace(/\\\//g, '/');
+  const normalized = html.replace(/\\u002F/gi, '/').replace(/\\\//g, '/');
   const patterns = [
     /(?:https:\/\/www\.bitpay\.com)?\/directory\/([a-z0-9][a-z0-9-]{1,120})/gi,
     /(?:https:\/\/bitpay\.com)?\/directory\/([a-z0-9][a-z0-9-]{1,120})/gi,
@@ -114,6 +136,36 @@ function directorySlugsFromHtml(html: string): string[] {
   return [...slugs];
 }
 
+function normalizeExternalUrl(value: string): { url: string; domain: string } | null {
+  try {
+    const url = new URL(value.replace(/&amp;/gi, '&'));
+    if (url.protocol !== 'https:' || url.username || url.password) return null;
+    const host = url.hostname.toLocaleLowerCase('en-US').replace(/\.$/, '');
+    if (!host || NON_MERCHANT_HOSTS.has(host) || host.endsWith('.bitpay.com')) return null;
+    return { url: url.toString(), domain: host.replace(/^www\./, '') };
+  } catch {
+    return null;
+  }
+}
+
+function officialSiteFromDetail(html: string): { url: string; domain: string } | null {
+  const candidates: Array<{ url: string; domain: string; score: number }> = [];
+  const normalized = html.replace(/\\u002F/gi, '/').replace(/\\\//g, '/');
+  const anchor = /<a\b[^>]*href=["'](https:\/\/[^"']+)["'][^>]*>([\s\S]*?)<\/a>/gi;
+  for (const match of normalized.matchAll(anchor)) {
+    const parsed = normalizeExternalUrl(match[1] ?? '');
+    if (!parsed) continue;
+    const label = decode(match[2] ?? '').toLocaleLowerCase('en-US');
+    let score = 1;
+    if (/visit\s+(?:website|site)|official\s+(?:website|site)|merchant\s+(?:website|site)/i.test(label)) score += 20;
+    else if (/website|visit|shop|learn more|go to/i.test(label)) score += 10;
+    candidates.push({ ...parsed, score });
+  }
+  candidates.sort((a, b) => b.score - a.score || a.domain.localeCompare(b.domain));
+  const best = candidates[0];
+  return best ? { url: best.url, domain: best.domain } : null;
+}
+
 function merchantFromDetail(slug: string, html: string): Merchant | null {
   const text = decode(html);
   if (!/\bPay Direct\b/i.test(text)) return null;
@@ -123,10 +175,23 @@ function merchantFromDetail(slug: string, html: string): Merchant | null {
   const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
   const name = decode(h1?.[1] ?? '');
   if (!name || name.length > 200) return null;
-  return { slug, name, detailUrl: `${DIRECTORY}/${slug}` };
+  const official = officialSiteFromDetail(html);
+  return {
+    slug,
+    name,
+    detailUrl: `${DIRECTORY}/${slug}`,
+    officialUrl: official?.url ?? null,
+    officialDomain: official?.domain ?? null,
+  };
 }
 
-async function discover(): Promise<{ merchants: Merchant[]; listingPagesFetched: number; listingPagesSkipped: number; discoveredDetailSlugs: number; detailPagesFetched: number }> {
+async function discover(): Promise<{
+  merchants: Merchant[];
+  listingPagesFetched: number;
+  listingPagesSkipped: number;
+  discoveredDetailSlugs: number;
+  detailPagesFetched: number;
+}> {
   const slugs = new Set<string>();
   let listingPagesFetched = 0;
   let listingPagesSkipped = 0;
@@ -158,6 +223,22 @@ async function discover(): Promise<{ merchants: Merchant[]; listingPagesFetched:
     listingPagesSkipped,
     discoveredDetailSlugs: slugs.size,
     detailPagesFetched,
+  };
+}
+
+function rawPayloadFor(merchant: Merchant) {
+  return {
+    discovery: 'bitpay_merchant_directory',
+    discoveryVersion: SOURCE_SCHEMA_VERSION,
+    processorPaymentMode: 'pay_direct',
+    processorDetailVerified: true,
+    merchantOfficialSiteResolved: Boolean(merchant.officialUrl),
+    reviewSeed: {
+      name: merchant.name,
+      candidateType: 'online_service',
+      processorListingUrl: merchant.detailUrl,
+      merchantWebsiteUrl: merchant.officialUrl,
+    },
   };
 }
 
@@ -200,15 +281,21 @@ async function main() {
 
   const externalIds = merchants.map((merchant) => `bitpay:${merchant.slug}`);
   const existing = await db
-    .select({ externalId: sourceRecords.externalId })
+    .select({ id: sourceRecords.id, externalId: sourceRecords.externalId })
     .from(sourceRecords)
     .where(and(eq(sourceRecords.sourceId, source.id), inArray(sourceRecords.externalId, externalIds)));
-  const existingIds = new Set(existing.map((row) => row.externalId).filter(Boolean));
-  const fresh = merchants.filter((merchant) => !existingIds.has(`bitpay:${merchant.slug}`));
+  const existingByExternalId = new Map(
+    existing.flatMap((row) => (row.externalId ? [[row.externalId, row.id] as const] : [])),
+  );
+  const fresh = merchants.filter((merchant) => !existingByExternalId.has(`bitpay:${merchant.slug}`));
   const now = new Date();
   const batchId = crypto.randomUUID();
   const requestId = crypto.randomUUID();
-  const checksum = await sha256(JSON.stringify(merchants.map(({ slug, name }) => ({ slug, name }))));
+  const checksum = await sha256(
+    JSON.stringify(
+      merchants.map(({ slug, name, officialDomain }) => ({ slug, name, officialDomain })),
+    ),
+  );
 
   await db.insert(importBatches).values({
     id: batchId,
@@ -232,31 +319,41 @@ async function main() {
     completedAt: now,
   });
 
-  for (const merchant of fresh) {
+  let existingSourceRecordsEnriched = 0;
+  for (const merchant of merchants) {
     const externalId = `bitpay:${merchant.slug}`;
+    const rawPayload = rawPayloadFor(merchant);
+    const contentHash = await sha256(JSON.stringify(rawPayload));
+    const existingSourceRecordId = existingByExternalId.get(externalId);
+    if (existingSourceRecordId) {
+      if (merchant.officialUrl && merchant.officialDomain) {
+        await db
+          .update(sourceRecords)
+          .set({
+            rawPayload,
+            officialDomain: merchant.officialDomain,
+            observedAt: now,
+            fetchedAt: now,
+            contentHash,
+          })
+          .where(eq(sourceRecords.id, existingSourceRecordId));
+        existingSourceRecordsEnriched += 1;
+      }
+      continue;
+    }
+
     const sourceRecordId = await deterministicUuid(`source-record:${source.id}:${externalId}`);
     const candidateId = await deterministicUuid(`candidate:${source.id}:${externalId}`);
-    const rawPayload = {
-      discovery: 'bitpay_merchant_directory',
-      discoveryVersion: SOURCE_SCHEMA_VERSION,
-      processorPaymentMode: 'pay_direct',
-      processorDetailVerified: true,
-      reviewSeed: {
-        name: merchant.name,
-        candidateType: 'online_service',
-        processorListingUrl: merchant.detailUrl,
-      },
-    };
     await db.insert(sourceRecords).values({
       id: sourceRecordId,
       sourceId: source.id,
       externalId,
       sourceUrl: merchant.detailUrl,
       rawPayload,
-      officialDomain: null,
+      officialDomain: merchant.officialDomain,
       observedAt: now,
       fetchedAt: now,
-      contentHash: await sha256(JSON.stringify(rawPayload)),
+      contentHash,
     });
     await db.insert(sourceCandidates).values({
       id: candidateId,
@@ -287,6 +384,8 @@ async function main() {
       discoveredDetailSlugs: discovery.discoveredDetailSlugs,
       detailPagesFetched: discovery.detailPagesFetched,
       verifiedPayDirectMerchants: merchants.length,
+      merchantOfficialSitesResolved: merchants.filter((merchant) => merchant.officialUrl).length,
+      existingSourceRecordsEnriched,
       newOnlineCandidates: fresh.length,
       replayedOnlineCandidates: merchants.length - fresh.length,
       automaticConfirmedCount: 0,
