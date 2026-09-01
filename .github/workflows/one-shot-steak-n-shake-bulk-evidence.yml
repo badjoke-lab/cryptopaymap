@@ -33,7 +33,7 @@ jobs:
         run: npm ci --no-audit --no-fund
 
       - name: Type-check before staging mutation
-        run: npm run typecheck
+        run: npm run check
 
       - name: Seed current chain-scoped official Bitcoin Evidence
         env:
