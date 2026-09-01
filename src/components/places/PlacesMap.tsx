@@ -1,151 +1,304 @@
-import type { Feature, FeatureCollection, Point } from 'geojson';
-import type { GeoJSONSource, Map as MapLibreMap, MapMouseEvent } from 'maplibre-gl';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ExpressionSpecification, GeoJSONSource, Map as MapLibreMap } from 'maplibre-gl';
 import type { PublicPlacePin } from '../../public/places-discovery';
 import type { DiscoveryViewport } from '../../state/discovery-url';
 import {
-  addPinImages,
-  addPlaceLayers,
-  buildPlaceFeatureCollection,
-  clusterLayerId,
-  mapLoadTimeoutMs,
-  mapStyleRetryDelayMs,
+  buildPlaceMapFeatureCollection,
+  mapViewportChanged,
+  normalizeMapBounds,
   normalizeMapViewport,
-  pointHoverLayerId,
-  pointLayerId,
-  selectedPlaceInitialZoom,
-  sourceId,
+  type PlaceMapBounds,
 } from './map-data';
+
+const sourceId = 'public-places';
+const clusterLayerId = 'public-place-clusters';
+const clusterCountLayerId = 'public-place-cluster-count';
+const pointLayerId = 'public-place-points';
+const pointHoverLayerId = 'public-place-point-hover';
+const confirmedPinImageId = 'place-pin-confirmed';
+const stalePinImageId = 'place-pin-stale';
+const selectedConfirmedPinImageId = 'place-pin-selected-confirmed';
+const selectedStalePinImageId = 'place-pin-selected-stale';
+const configuredStyleUrl = import.meta.env.PUBLIC_MAP_STYLE_URL?.trim();
+const defaultStyleUrl = configuredStyleUrl || 'https://tiles.openfreemap.org/styles/bright';
+const defaultMapCenter: [number, number] = [0, 20];
+const defaultMapZoom = 2;
+const selectedPlaceInitialZoom = 13;
+const mapLoadTimeoutMs = 12_000;
+const mapStyleRetryDelayMs = 900;
+
+const confirmedPinColor = [5, 150, 105] as const;
+const stalePinColor = [217, 119, 6] as const;
+const selectedPinAccentColor = [15, 95, 89] as const;
+const white = [255, 255, 255] as const;
+
+type Rgb = readonly [number, number, number];
+type RuntimeState = 'loading' | 'ready' | 'unsupported' | 'error';
 
 interface PlacesMapProps {
   pins: PublicPlacePin[];
   selectedPlace: string | null;
   committedViewport: DiscoveryViewport | null;
-  focusViewport: DiscoveryViewport | null;
+  focusViewport?: DiscoveryViewport | null;
   onSelectPlace: (placeSlug: string) => void;
   onClearSelection?: () => void;
   onViewportChange: (viewport: DiscoveryViewport) => void;
-  onBoundsChange: (bounds: [number, number, number, number]) => void;
+  onBoundsChange?: (bounds: PlaceMapBounds) => void;
+  styleUrl?: string;
 }
 
-type RuntimeState = 'loading' | 'ready' | 'unsupported' | 'error';
+function initialCamera(
+  pins: readonly PublicPlacePin[],
+  viewport: DiscoveryViewport | null,
+  selectedPlace: string | null,
+): { center: [number, number]; zoom: number } {
+  if (viewport) {
+    const normalized = normalizeMapViewport(viewport);
+    return { center: [normalized.longitude, normalized.latitude], zoom: normalized.zoom };
+  }
 
-function mapViewportChanged(a: DiscoveryViewport, b: DiscoveryViewport): boolean {
-  return (
-    Math.abs(a.latitude - b.latitude) > 0.000001 ||
-    Math.abs(a.longitude - b.longitude) > 0.000001 ||
-    Math.abs(a.zoom - b.zoom) > 0.01
-  );
+  const selectedPin = selectedPlace
+    ? pins.find((pin) => pin.placeSlug === selectedPlace)
+    : undefined;
+  return selectedPin
+    ? {
+        center: [selectedPin.longitude, selectedPin.latitude],
+        zoom: selectedPlaceInitialZoom,
+      }
+    : { center: defaultMapCenter, zoom: defaultMapZoom };
 }
 
-function boundsFromMap(map: MapLibreMap): [number, number, number, number] {
-  const bounds = map.getBounds();
-  return [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
+function pinShapeContains(x: number, y: number, inset: number): boolean {
+  const centerX = 32;
+  const centerY = 28;
+  const radius = 23 - inset;
+  if (radius <= 0) return false;
+
+  const dx = x - centerX;
+  const dy = y - centerY;
+  const insideHead = dx * dx + dy * dy <= radius * radius;
+  const baseY = centerY + 13 + inset * 0.2;
+  const tipY = 75 - inset * 0.5;
+  if (y < baseY || y > tipY || tipY <= baseY) return insideHead;
+
+  const progress = (y - baseY) / (tipY - baseY);
+  const halfWidth = Math.max(1, 14 - inset * 0.4) * (1 - progress);
+  return insideHead || Math.abs(dx) <= halfWidth;
 }
 
-function updateSelectedFilter(map: MapLibreMap, selectedPlace: string | null) {
-  if (!map.getLayer(pointLayerId)) return;
-  map.setPaintProperty(pointLayerId, 'circle-stroke-width', [
+function setPixel(data: Uint8Array, offset: number, color: Rgb) {
+  data[offset] = color[0];
+  data[offset + 1] = color[1];
+  data[offset + 2] = color[2];
+  data[offset + 3] = 255;
+}
+
+function createPlacePinImage(fill: Rgb, selected: boolean) {
+  const width = 64;
+  const height = 80;
+  const data = new Uint8Array(width * height * 4);
+
+  for (let y = 0; y < height; y += 1) {
+    for (let x = 0; x < width; x += 1) {
+      const offset = (y * width + x) * 4;
+      if (!pinShapeContains(x, y, 0)) continue;
+
+      setPixel(data, offset, white);
+      if (pinShapeContains(x, y, 4)) setPixel(data, offset, fill);
+
+      const dx = x - 32;
+      const dy = y - 28;
+      if (dx * dx + dy * dy <= 7.5 * 7.5) setPixel(data, offset, white);
+      if (selected && dx * dx + dy * dy <= 3.25 * 3.25) {
+        setPixel(data, offset, selectedPinAccentColor);
+      }
+    }
+  }
+
+  return { width, height, data };
+}
+
+function pinImageExpression(): ExpressionSpecification {
+  return [
     'case',
-    ['==', ['get', 'placeSlug'], selectedPlace ?? ''],
-    5,
-    2,
-  ]);
-  map.setPaintProperty(pointLayerId, 'circle-radius', [
-    'case',
-    ['==', ['get', 'placeSlug'], selectedPlace ?? ''],
-    10,
-    7,
-  ]);
+    ['==', ['get', 'selected'], true],
+    [
+      'case',
+      ['==', ['get', 'status'], 'stale'],
+      selectedStalePinImageId,
+      selectedConfirmedPinImageId,
+    ],
+    ['case', ['==', ['get', 'status'], 'stale'], stalePinImageId, confirmedPinImageId],
+  ];
+}
+
+function addPinImages(map: MapLibreMap) {
+  const images = [
+    [confirmedPinImageId, createPlacePinImage(confirmedPinColor, false)],
+    [stalePinImageId, createPlacePinImage(stalePinColor, false)],
+    [selectedConfirmedPinImageId, createPlacePinImage(confirmedPinColor, true)],
+    [selectedStalePinImageId, createPlacePinImage(stalePinColor, true)],
+  ] as const;
+  for (const [id, image] of images) map.addImage(id, image, { pixelRatio: 2 });
+}
+
+function addPlaceLayers(map: MapLibreMap, data: ReturnType<typeof buildPlaceMapFeatureCollection>) {
+  map.addSource(sourceId, {
+    type: 'geojson',
+    data,
+    cluster: true,
+    clusterMaxZoom: 14,
+    clusterRadius: 48,
+  });
+  map.addLayer({
+    id: clusterLayerId,
+    type: 'circle',
+    source: sourceId,
+    filter: ['has', 'point_count'],
+    paint: {
+      'circle-color': '#0f766e',
+      'circle-radius': ['step', ['get', 'point_count'], 18, 20, 22, 100, 28],
+      'circle-stroke-color': '#ffffff',
+      'circle-stroke-width': 3,
+    },
+  });
+  map.addLayer({
+    id: clusterCountLayerId,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['has', 'point_count'],
+    layout: { 'text-field': ['get', 'point_count_abbreviated'], 'text-size': 12 },
+    paint: { 'text-color': '#ffffff' },
+  });
+  map.addLayer({
+    id: pointLayerId,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['!', ['has', 'point_count']],
+    layout: {
+      'icon-image': pinImageExpression(),
+      'icon-size': ['case', ['==', ['get', 'selected'], true], 1.18, 1],
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+  });
+  map.addLayer({
+    id: pointHoverLayerId,
+    type: 'symbol',
+    source: sourceId,
+    filter: ['==', ['get', 'placeSlug'], ''],
+    layout: {
+      'icon-image': pinImageExpression(),
+      'icon-size': 1.16,
+      'icon-anchor': 'bottom',
+      'icon-allow-overlap': true,
+      'icon-ignore-placement': true,
+    },
+  });
 }
 
 export function PlacesMap({
   pins,
   selectedPlace,
   committedViewport,
-  focusViewport,
+  focusViewport = null,
   onSelectPlace,
   onClearSelection,
   onViewportChange,
   onBoundsChange,
+  styleUrl = defaultStyleUrl,
 }: PlacesMapProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<MapLibreMap | null>(null);
   const selectRef = useRef(onSelectPlace);
   const clearSelectionRef = useRef(onClearSelection);
-  const viewportChangeRef = useRef(onViewportChange);
-  const boundsChangeRef = useRef(onBoundsChange);
-  const selectedPlaceRef = useRef(selectedPlace);
+  const viewportRef = useRef(onViewportChange);
+  const boundsRef = useRef(onBoundsChange);
   const committedViewportRef = useRef(committedViewport);
-  const featureCollectionRef = useRef<FeatureCollection<Point>>(buildPlaceFeatureCollection(pins));
+  const pinsRef = useRef(pins);
+  const selectedPlaceRef = useRef(selectedPlace);
   const initialSelectedPlaceRef = useRef(selectedPlace);
   const lastFocusedSelectedPlaceRef = useRef<string | null>(null);
   const focusMovePendingRef = useRef(false);
   const [runtimeState, setRuntimeState] = useState<RuntimeState>('loading');
+  const featureCollection = useMemo(
+    () => buildPlaceMapFeatureCollection(pins, selectedPlace),
+    [pins, selectedPlace],
+  );
+  const featureCollectionRef = useRef(featureCollection);
 
-  const featureCollection = useMemo(() => buildPlaceFeatureCollection(pins), [pins]);
-  featureCollectionRef.current = featureCollection;
   selectRef.current = onSelectPlace;
   clearSelectionRef.current = onClearSelection;
-  viewportChangeRef.current = onViewportChange;
-  boundsChangeRef.current = onBoundsChange;
-  selectedPlaceRef.current = selectedPlace;
+  viewportRef.current = onViewportChange;
+  boundsRef.current = onBoundsChange;
   committedViewportRef.current = committedViewport;
-
-  const styleUrl = import.meta.env.PUBLIC_MAP_STYLE_URL ?? 'https://demotiles.maplibre.org/style.json';
-
-  useEffect(() => {
-    const map = mapRef.current;
-    if (!map || runtimeState !== 'ready') return;
-    updateSelectedFilter(map, selectedPlace);
-  }, [runtimeState, selectedPlace]);
+  pinsRef.current = pins;
+  selectedPlaceRef.current = selectedPlace;
+  featureCollectionRef.current = featureCollection;
 
   useEffect(() => {
     if (!containerRef.current) return;
-    if (!('WebGLRenderingContext' in window)) {
+    if (typeof WebGLRenderingContext === 'undefined') {
       setRuntimeState('unsupported');
       return;
     }
 
     let active = true;
+    let loaded = false;
+    let userViewportChangePending = false;
     let map: MapLibreMap | null = null;
     let observer: ResizeObserver | null = null;
     let loadTimeout: number | null = null;
     let styleRetryTimer: number | null = null;
     let styleRetryAttempted = false;
-    let loaded = false;
-    let userViewportChangePending = false;
 
     const clearLoadTimeout = () => {
       if (loadTimeout !== null) window.clearTimeout(loadTimeout);
       loadTimeout = null;
     };
+
     const clearStyleRetry = () => {
       if (styleRetryTimer !== null) window.clearTimeout(styleRetryTimer);
       styleRetryTimer = null;
     };
+
     const reportMovedViewport = () => {
-      if (!map) return;
-      const center = map.getCenter();
-      if (focusMovePendingRef.current) {
-        focusMovePendingRef.current = false;
-        return;
-      }
-      if (!userViewportChangePending) return;
+      const pendingFocusMove = focusMovePendingRef.current;
+      if (!map || !loaded || (!userViewportChangePending && !pendingFocusMove)) return;
       userViewportChangePending = false;
-      viewportChangeRef.current({
+      focusMovePendingRef.current = false;
+      const center = map.getCenter();
+      const nextViewport = normalizeMapViewport({
         latitude: center.lat,
         longitude: center.lng,
         zoom: map.getZoom(),
       });
-      boundsChangeRef.current(boundsFromMap(map));
+      if (!mapViewportChanged(committedViewportRef.current, nextViewport)) return;
+
+      viewportRef.current(nextViewport);
+      if (!boundsRef.current) return;
+      const bounds = map.getBounds();
+      boundsRef.current(
+        normalizeMapBounds({
+          west: bounds.getWest(),
+          south: bounds.getSouth(),
+          east: bounds.getEast(),
+          north: bounds.getNorth(),
+        }),
+      );
     };
 
     const initialize = async () => {
       try {
         const maplibregl = await import('maplibre-gl');
         if (!active || !containerRef.current) return;
-        const camera = normalizeMapViewport(committedViewportRef.current);
+        const camera = initialCamera(
+          pinsRef.current,
+          committedViewportRef.current,
+          selectedPlaceRef.current,
+        );
         map = new maplibregl.Map({
           container: containerRef.current,
           style: styleUrl,
@@ -167,7 +320,6 @@ export function PlacesMap({
           clearStyleRetry();
           addPinImages(map);
           addPlaceLayers(map, featureCollectionRef.current);
-          updateSelectedFilter(map, selectedPlaceRef.current);
 
           map.on('click', pointLayerId, (event) => {
             const slug = event.features?.[0]?.properties?.placeSlug;
@@ -181,10 +333,11 @@ export function PlacesMap({
             if (typeof clusterId !== 'number') return;
             const source = map.getSource(sourceId) as GeoJSONSource;
             const zoom = await source.getClusterExpansionZoom(clusterId);
-            const coordinates = feature?.geometry.type === 'Point' ? feature.geometry.coordinates : null;
+            const coordinates =
+              feature?.geometry.type === 'Point' ? feature.geometry.coordinates : null;
             if (coordinates) map.easeTo({ center: [coordinates[0], coordinates[1]], zoom });
           });
-          map.on('click', (event: MapMouseEvent) => {
+          map.on('click', (event) => {
             if (!map || !selectedPlaceRef.current) return;
             const features = map.queryRenderedFeatures(event.point, {
               layers: [pointLayerId, pointHoverLayerId, clusterLayerId],
