@@ -18,6 +18,6 @@ jobs:
       - run: npm run check
       - name: Report origin shape
         env:
-          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/report-steak-n-shake-origin-shape-staging.ts
