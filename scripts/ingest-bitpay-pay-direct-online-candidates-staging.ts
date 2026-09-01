@@ -14,16 +14,29 @@ const TARGET = 'fixed-review-staging';
 const DIRECTORY = 'https://www.bitpay.com/directory';
 const SOURCE_NAME = 'BitPay Merchant Directory';
 const IMPORTER_VERSION = 'bitpay-dir-v2';
-const SOURCE_SCHEMA_VERSION = 'bitpay-directory-html-v2';
+const SOURCE_SCHEMA_VERSION = 'bitpay-directory-detail-verified-v2';
 const MAX_CANDIDATES = 500;
+const MAX_DETAIL_FETCHES = 350;
 const CATEGORY_PATHS = [
   '',
   '/professional-services',
   '/crypto-hardware-services',
   '/software-web',
+  '/real-estate',
+  '/sports-entertainment',
+  '/home-furniture',
+  '/clothes-fashion',
+  '/vehicles-boats',
+  '/restaurants-food',
+  '/charities-nonprofits',
+  '/electronics',
+  '/travel-leisure',
+  '/gaming',
   '/jewelry-watches',
   '/precious-metals',
+  '/online-stores',
 ] as const;
+const CATEGORY_SLUGS = new Set(CATEGORY_PATHS.filter(Boolean).map((path) => path.slice(1)));
 
 type Merchant = { slug: string; name: string; detailUrl: string };
 
@@ -63,54 +76,73 @@ async function deterministicUuid(label: string): Promise<string> {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-async function fetchPage(url: string): Promise<string | null> {
-  const response = await fetch(url, {
-    redirect: 'follow',
-    signal: AbortSignal.timeout(15_000),
-    headers: {
-      'user-agent': 'CryptoPayMap-BitPay-directory-discovery/1.0',
-      accept: 'text/html,application/xhtml+xml',
-    },
-  });
-  if (!response.ok) {
-    console.warn(`BitPay directory page skipped: HTTP ${response.status} ${url}`);
+async function fetchPage(url: string): Promise<{ status: number; html: string }> {
+  try {
+    const response = await fetch(url, {
+      redirect: 'follow',
+      signal: AbortSignal.timeout(15_000),
+      headers: {
+        'user-agent': 'Mozilla/5.0 (compatible; CryptoPayMap/1.0; +https://cryptopaymap.com)',
+        accept: 'text/html,application/xhtml+xml',
+        'accept-language': 'en-US,en;q=0.9',
+      },
+    });
+    return { status: response.status, html: response.ok ? await response.text() : '' };
+  } catch {
+    return { status: 0, html: '' };
+  }
+}
+
+function directorySlugsFromHtml(html: string): string[] {
+  const slugs = new Set<string>();
+  const link = /href=["'](?:https:\/\/www\.bitpay\.com)?\/directory\/([^"'?#/]+)["']/gi;
+  for (const match of html.matchAll(link)) {
+    const slug = match[1]?.trim().toLocaleLowerCase('en-US');
+    if (!slug || CATEGORY_SLUGS.has(slug)) continue;
+    slugs.add(slug);
+  }
+  return [...slugs];
+}
+
+function merchantFromDetail(slug: string, html: string): Merchant | null {
+  const text = decode(html);
+  if (!/\bPay Direct\b/i.test(text)) return null;
+  if (!/accepts? cryptocurrency via BitPay|pay directly from your crypto wallet|choose ['‘’]?BitPay['‘’]? as your payment method/i.test(text)) {
     return null;
   }
-  return response.text();
+  const h1 = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/i);
+  const name = decode(h1?.[1] ?? '');
+  if (!name || name.length > 200) return null;
+  return { slug, name, detailUrl: `${DIRECTORY}/${slug}` };
 }
 
-function merchantsFromHtml(html: string): Merchant[] {
-  const merchants = new Map<string, Merchant>();
-  const link = /<a\b[^>]*href=["'](\/directory\/([^"'?#/]+))["'][^>]*>([\s\S]*?)<\/a>/gi;
-  for (const match of html.matchAll(link)) {
-    const href = match[1];
-    const slug = match[2];
-    const body = decode(match[3] ?? '');
-    if (!href || !slug || !/\bPay Direct\b/i.test(body) || /\bGift Card\b/i.test(body)) continue;
-    const name = body.split(/\bPay Direct\b/i)[0]?.trim() ?? '';
-    if (!name || name.length > 200) continue;
-    merchants.set(slug, { slug, name, detailUrl: `${DIRECTORY}/${slug}` });
-  }
-  return [...merchants.values()];
-}
+async function discover(): Promise<{ merchants: Merchant[]; listingPagesFetched: number; listingPagesSkipped: number; detailPagesFetched: number }> {
+  const slugs = new Set<string>();
+  let listingPagesFetched = 0;
+  let listingPagesSkipped = 0;
 
-async function discover(): Promise<Merchant[]> {
-  const found = new Map<string, Merchant>();
-  let fetchedPages = 0;
   for (const path of CATEGORY_PATHS) {
-    const html = await fetchPage(`${DIRECTORY}${path}`);
-    if (!html) continue;
-    fetchedPages += 1;
-    if (!/accept cryptocurrency|accept bitcoin|Pay Direct/i.test(html)) {
-      console.warn(`BitPay page skipped because expected payment language is absent: ${path || '/'}`);
+    const page = await fetchPage(`${DIRECTORY}${path}`);
+    if (page.status !== 200 || !page.html) {
+      listingPagesSkipped += 1;
       continue;
     }
-    for (const merchant of merchantsFromHtml(html)) found.set(merchant.slug, merchant);
+    listingPagesFetched += 1;
+    for (const slug of directorySlugsFromHtml(page.html)) slugs.add(slug);
   }
-  if (fetchedPages === 0) throw new Error('BitPay discovery could not fetch any directory pages.');
-  return [...found.values()]
-    .sort((a, b) => a.slug.localeCompare(b.slug))
-    .slice(0, MAX_CANDIDATES);
+
+  const merchants: Merchant[] = [];
+  let detailPagesFetched = 0;
+  for (const slug of [...slugs].sort().slice(0, MAX_DETAIL_FETCHES)) {
+    const page = await fetchPage(`${DIRECTORY}/${slug}`);
+    if (page.status !== 200 || !page.html) continue;
+    detailPagesFetched += 1;
+    const merchant = merchantFromDetail(slug, page.html);
+    if (merchant) merchants.push(merchant);
+    if (merchants.length >= MAX_CANDIDATES) break;
+  }
+
+  return { merchants, listingPagesFetched, listingPagesSkipped, detailPagesFetched };
 }
 
 async function main() {
@@ -120,8 +152,13 @@ async function main() {
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
 
-  const merchants = await discover();
-  if (merchants.length === 0) throw new Error('BitPay discovery returned zero Pay Direct merchants.');
+  const discovery = await discover();
+  const merchants = discovery.merchants;
+  if (merchants.length === 0) {
+    throw new Error(
+      `BitPay discovery returned zero verified Pay Direct merchants (listingPagesFetched=${discovery.listingPagesFetched}, detailPagesFetched=${discovery.detailPagesFetched}).`,
+    );
+  }
 
   const db = createDatabase(databaseUrl);
   let source = (
@@ -187,6 +224,7 @@ async function main() {
       discovery: 'bitpay_merchant_directory',
       discoveryVersion: SOURCE_SCHEMA_VERSION,
       processorPaymentMode: 'pay_direct',
+      processorDetailVerified: true,
       reviewSeed: {
         name: merchant.name,
         candidateType: 'online_service',
@@ -228,7 +266,10 @@ async function main() {
     JSON.stringify({
       target: TARGET,
       source: SOURCE_NAME,
-      discoveredPayDirectMerchants: merchants.length,
+      listingPagesFetched: discovery.listingPagesFetched,
+      listingPagesSkipped: discovery.listingPagesSkipped,
+      detailPagesFetched: discovery.detailPagesFetched,
+      verifiedPayDirectMerchants: merchants.length,
       newOnlineCandidates: fresh.length,
       replayedOnlineCandidates: merchants.length - fresh.length,
       automaticConfirmedCount: 0,
