@@ -6,6 +6,7 @@ on:
       - feat/physical-source-first-growth
     paths:
       - scripts/ingest-chipotle-official-houston-physical-candidates-staging.ts
+      - scripts/run-chipotle-official-houston-ingest-staging.ts
       - .github/workflows/one-shot-chipotle-official-houston-ingest.yml
 
 permissions:
@@ -27,4 +28,4 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: npx tsx scripts/ingest-chipotle-official-houston-physical-candidates-staging.ts
+        run: npx tsx scripts/run-chipotle-official-houston-ingest-staging.ts
