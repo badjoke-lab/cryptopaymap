@@ -28,6 +28,6 @@ jobs:
         run: npm run check
       - name: Ingest current BitPay Pay Direct online Candidates
         env:
-          DATABASE_URL: ${{ secrets.CPM_FIXED_REVIEW_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/ingest-bitpay-pay-direct-online-candidates-staging.ts
