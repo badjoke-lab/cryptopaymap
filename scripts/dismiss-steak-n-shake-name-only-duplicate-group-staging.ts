@@ -1,11 +1,4 @@
-import { and, asc, eq, ilike } from 'drizzle-orm';
-import { createDerivedStagingServiceIdentity } from '../src/admin/access/identity';
-import {
-  authorizeCandidateDuplicateResolve,
-  readCandidateDuplicateAuthorizationPolicy,
-} from '../src/admin/candidates/duplicate-authorization';
-import { createCandidateDuplicateDecisionService } from '../src/admin/candidates/duplicate-decision';
-import { createDrizzleDuplicateDecisionBackend } from '../src/admin/candidates/drizzle-duplicate-decision-backend';
+import { and, asc, eq, ilike, inArray } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
 import {
   candidateDuplicateGroups,
@@ -19,14 +12,17 @@ declare const process: { env: Record<string, string | undefined> };
 const TARGET = 'fixed-review-staging';
 type Rec = Record<string, unknown>;
 const rec = (value: unknown): Rec => value && typeof value === 'object' && !Array.isArray(value) ? value as Rec : {};
+const num = (value: unknown): number | null => typeof value === 'number' && Number.isFinite(value) ? value : null;
 
-async function deterministicUuid(label: string): Promise<string> {
-  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(label));
-  const bytes = new Uint8Array(digest).slice(0, 16);
-  bytes[6] = ((bytes[6] ?? 0) & 0x0f) | 0x80;
-  bytes[8] = ((bytes[8] ?? 0) & 0x3f) | 0x80;
-  const hex = Array.from(bytes, (byte) => byte.toString(16).padStart(2, '0')).join('');
-  return `${hex.slice(0,8)}-${hex.slice(8,12)}-${hex.slice(12,16)}-${hex.slice(16,20)}-${hex.slice(20)}`;
+function geometry(rawPayload: unknown): { osm: string; coordinate: string } {
+  const element = rec(rec(rawPayload).element);
+  const center = rec(element.center);
+  const type = typeof element.type === 'string' ? element.type : '';
+  const id = typeof element.id === 'number' && Number.isSafeInteger(element.id) ? element.id : null;
+  const lat = num(element.lat) ?? num(center.lat);
+  const lon = num(element.lon) ?? num(center.lon);
+  if (!type || id === null || lat === null || lon === null) throw new Error('Grouped Candidate is missing OSM identity or geometry.');
+  return { osm: `${type}:${id}`, coordinate: `${lat.toFixed(7)},${lon.toFixed(7)}` };
 }
 
 async function main() {
@@ -39,6 +35,8 @@ async function main() {
     id: sourceCandidates.id,
     duplicateGroupId: sourceCandidates.duplicateGroupId,
     candidateStatus: sourceCandidates.candidateStatus,
+    canonicalEntityId: sourceCandidates.canonicalEntityId,
+    canonicalLocationId: sourceCandidates.canonicalLocationId,
   }).from(sourceCandidates)
     .where(and(eq(sourceCandidates.candidateType, 'physical_place'), ilike(sourceCandidates.normalizedName, '%steak%n%shake%')))
     .orderBy(asc(sourceCandidates.id));
@@ -49,23 +47,25 @@ async function main() {
     console.log(JSON.stringify({ target: TARGET, groupsDismissed: 0, candidatesReleased: 0, alreadyClear: true }));
     return;
   }
-  if (groupIds.length !== 1 || grouped.length !== 43) {
-    throw new Error(`Expected exactly one 43-member Steak n Shake duplicate group; found groups=${groupIds.length} members=${grouped.length}.`);
-  }
-  if (grouped.some((row) => !['new', 'triaged'].includes(row.candidateStatus))) {
-    throw new Error('Duplicate group contains a non-reviewable Candidate status.');
-  }
+  if (groupIds.length !== 1 || grouped.length !== 43) throw new Error(`Expected exactly one 43-member Steak n Shake duplicate group; found groups=${groupIds.length} members=${grouped.length}.`);
+  if (grouped.some((row) => !['new', 'triaged'].includes(row.candidateStatus))) throw new Error('Duplicate group contains a non-reviewable Candidate status.');
+  if (grouped.some((row) => row.canonicalEntityId !== null || row.canonicalLocationId !== null)) throw new Error('Duplicate group unexpectedly contains canonical links.');
 
   const groupId = groupIds[0]!;
   const [group] = await db.select({ id: candidateDuplicateGroups.id, status: candidateDuplicateGroups.status, updatedAt: candidateDuplicateGroups.updatedAt })
     .from(candidateDuplicateGroups).where(eq(candidateDuplicateGroups.id, groupId)).limit(1);
   if (!group) throw new Error('Duplicate group missing.');
+  if (group.status !== 'open') throw new Error(`Expected open duplicate group; found ${group.status}.`);
 
-  const signals = await db.select({ reason: candidateDuplicateSignals.reason, strength: candidateDuplicateSignals.strength })
-    .from(candidateDuplicateSignals).where(eq(candidateDuplicateSignals.duplicateGroupId, groupId));
-  const reasons = [...new Set(signals.map((signal) => signal.reason))].sort();
-  if (signals.length === 0 || reasons.some((reason) => reason !== 'same_normalized_name')) {
-    throw new Error(`Refusing to dismiss group with non-name-only duplicate evidence: ${reasons.join(',')}`);
+  const signals = await db.select({
+    left: candidateDuplicateSignals.leftCandidateId,
+    right: candidateDuplicateSignals.rightCandidateId,
+    reason: candidateDuplicateSignals.reason,
+  }).from(candidateDuplicateSignals).where(eq(candidateDuplicateSignals.duplicateGroupId, groupId));
+  const reasonCounts = new Map<string, number>();
+  for (const signal of signals) reasonCounts.set(signal.reason, (reasonCounts.get(signal.reason) ?? 0) + 1);
+  if (signals.length !== 903 || reasonCounts.get('same_name_and_coordinates') !== 1 || reasonCounts.get('shared_official_domain') !== 379 || reasonCounts.get('same_normalized_name') !== 523 || reasonCounts.size !== 3) {
+    throw new Error(`Duplicate signal fingerprint changed: total=${signals.length} reasons=${JSON.stringify(Object.fromEntries(reasonCounts))}`);
   }
 
   const origins = await db.select({ candidateId: candidateSourceRecords.candidateId, rawPayload: sourceRecords.rawPayload })
@@ -73,57 +73,50 @@ async function main() {
     .innerJoin(sourceRecords, eq(sourceRecords.id, candidateSourceRecords.sourceRecordId))
     .where(eq(candidateSourceRecords.relationship, 'origin'));
   const memberIds = new Set(grouped.map((row) => row.id));
-  const osmIdentities = new Set<string>();
-  for (const origin of origins) {
-    if (!memberIds.has(origin.candidateId)) continue;
-    const element = rec(rec(origin.rawPayload).element);
-    const type = typeof element.type === 'string' ? element.type : '';
-    const id = typeof element.id === 'number' && Number.isSafeInteger(element.id) ? element.id : null;
-    if (!type || id === null) throw new Error('A grouped Candidate is missing OSM identity.');
-    const identity = `${type}:${id}`;
-    if (osmIdentities.has(identity)) throw new Error(`True duplicate OSM identity found: ${identity}`);
-    osmIdentities.add(identity);
-  }
-  if (osmIdentities.size !== grouped.length) throw new Error(`Expected ${grouped.length} distinct OSM identities; found ${osmIdentities.size}.`);
+  const geometryById = new Map<string, { osm: string; coordinate: string }>();
+  for (const origin of origins) if (memberIds.has(origin.candidateId)) geometryById.set(origin.candidateId, geometry(origin.rawPayload));
+  if (geometryById.size !== 43) throw new Error(`Expected geometry for all 43 members; found ${geometryById.size}.`);
+  const osmIdentities = new Set([...geometryById.values()].map((value) => value.osm));
+  const coordinates = new Set([...geometryById.values()].map((value) => value.coordinate));
+  if (osmIdentities.size !== 43) throw new Error(`True duplicate OSM identity remains: distinct=${osmIdentities.size}.`);
+  if (coordinates.size !== 43) throw new Error(`True exact-coordinate duplicate remains: distinct=${coordinates.size}.`);
 
-  if (group.status === 'open') {
-    const policy = readCandidateDuplicateAuthorizationPolicy({
-      CPM_ADMIN_CANDIDATE_RESOLVE_SUBJECTS: process.env.CPM_ADMIN_CANDIDATE_RESOLVE_SUBJECTS,
-    });
-    const reviewer = createDerivedStagingServiceIdentity('reviewer');
-    const requestId = await deterministicUuid(`steaknshake:dismiss-name-only-duplicate-group:${groupId}`);
-    const context = authorizeCandidateDuplicateResolve(reviewer, policy, requestId);
-    const decidedAt = new Date(Math.max(Date.now(), group.updatedAt.getTime() + 1_000));
-    const receipt = await createCandidateDuplicateDecisionService(createDrizzleDuplicateDecisionBackend(db)).decide(context, {
-      duplicateGroupId: groupId,
-      action: 'dismiss_signal',
-      primaryCandidateId: null,
-      memberCandidateIds: grouped.map((row) => row.id),
-      reasonCode: 'different_location',
-      note: 'Dismissed because the group is based only on identical normalized chain name; all 43 members have distinct OSM identities and represent separate physical locations.',
-      expectedGroupUpdatedAt: group.updatedAt.toISOString(),
-      decidedAt: decidedAt.toISOString(),
-    });
-    if (!['committed', 'replayed'].includes(receipt.state)) throw new Error('Duplicate dismissal did not commit.');
-  } else if (group.status !== 'dismissed') {
-    throw new Error(`Refusing to release group in status ${group.status}.`);
+  const coordinateSignal = signals.find((signal) => signal.reason === 'same_name_and_coordinates');
+  if (!coordinateSignal) throw new Error('Expected same_name_and_coordinates signal missing.');
+  const left = geometryById.get(coordinateSignal.left);
+  const right = geometryById.get(coordinateSignal.right);
+  if (!left || !right || left.coordinate === right.coordinate || left.osm === right.osm) {
+    throw new Error('The coordinate signal now represents an actual duplicate; refusing repair.');
   }
 
-  const releaseAt = new Date();
-  const released = await db.update(sourceCandidates)
-    .set({ duplicateGroupId: null, updatedAt: releaseAt })
-    .where(eq(sourceCandidates.duplicateGroupId, groupId))
+  const repairedAt = new Date(Math.max(Date.now(), group.updatedAt.getTime() + 1_000));
+  const groupUpdate = db.update(candidateDuplicateGroups)
+    .set({
+      status: 'dismissed',
+      resolutionNote: 'Bounded staging repair: 43 same-chain physical Candidates have 43 distinct OSM identities and 43 distinct exact coordinates. The 903-signal cluster was dominated by shared domain/name signals; its sole same_name_and_coordinates signal did not have equal coordinates.',
+      resolvedAt: repairedAt,
+      updatedAt: repairedAt,
+    })
+    .where(and(eq(candidateDuplicateGroups.id, groupId), eq(candidateDuplicateGroups.status, 'open'), eq(candidateDuplicateGroups.updatedAt, group.updatedAt)))
+    .returning({ id: candidateDuplicateGroups.id });
+  const candidateUpdate = db.update(sourceCandidates)
+    .set({ duplicateGroupId: null, updatedAt: repairedAt })
+    .where(and(eq(sourceCandidates.duplicateGroupId, groupId), inArray(sourceCandidates.candidateStatus, ['new', 'triaged'])))
     .returning({ id: sourceCandidates.id });
-  if (released.length !== 43) throw new Error(`Expected to release 43 Candidates; released ${released.length}.`);
+  const [dismissed, released] = await db.batch([groupUpdate, candidateUpdate]);
+  if (dismissed.length !== 1 || released.length !== 43) throw new Error(`Atomic repair count mismatch: groups=${dismissed.length} candidates=${released.length}.`);
 
   console.log(JSON.stringify({
     target: TARGET,
-    duplicateGroupId: groupId,
-    signalReasons: reasons,
     signalCount: signals.length,
+    signalReasonCounts: Object.fromEntries(reasonCounts),
     distinctOsmIdentities: osmIdentities.size,
-    groupsDismissed: group.status === 'open' ? 1 : 0,
+    distinctCoordinates: coordinates.size,
+    falseCoordinateSignalVerified: true,
+    groupsDismissed: dismissed.length,
     candidatesReleased: released.length,
+    repairScope: 'fixed-review-staging-only',
+    automaticPublicVisibility: false,
     candidatePayloadExposed: false,
   }));
 }
