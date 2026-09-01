@@ -13,28 +13,16 @@ declare const process: { env: Record<string, string | undefined> };
 const TARGET = 'fixed-review-staging';
 const DIRECTORY = 'https://www.bitpay.com/directory';
 const SOURCE_NAME = 'BitPay Merchant Directory';
-const IMPORTER_VERSION = 'bitpay-dir-v1';
-const SOURCE_SCHEMA_VERSION = 'bitpay-directory-html-v1';
+const IMPORTER_VERSION = 'bitpay-dir-v2';
+const SOURCE_SCHEMA_VERSION = 'bitpay-directory-html-v2';
 const MAX_CANDIDATES = 500;
 const CATEGORY_PATHS = [
   '',
   '/professional-services',
-  '/health-and-beauty',
-  '/crypto-hardware-and-services',
-  '/software-and-web-services',
-  '/real-estate',
-  '/sports-and-entertainment',
-  '/home-and-furniture',
-  '/clothes-and-fashion',
-  '/vehicles-and-boats',
-  '/restaurants-and-food',
-  '/charities-and-nonprofits',
-  '/electronics',
-  '/travel-and-leisure',
-  '/gaming',
-  '/jewelry-and-watches',
-  '/gold-and-precious-metals',
-  '/online-stores',
+  '/crypto-hardware-services',
+  '/software-web',
+  '/jewelry-watches',
+  '/precious-metals',
 ] as const;
 
 type Merchant = { slug: string; name: string; detailUrl: string };
@@ -75,7 +63,7 @@ async function deterministicUuid(label: string): Promise<string> {
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`;
 }
 
-async function fetchPage(url: string): Promise<string> {
+async function fetchPage(url: string): Promise<string | null> {
   const response = await fetch(url, {
     redirect: 'follow',
     signal: AbortSignal.timeout(15_000),
@@ -84,7 +72,10 @@ async function fetchPage(url: string): Promise<string> {
       accept: 'text/html,application/xhtml+xml',
     },
   });
-  if (!response.ok) throw new Error(`BitPay directory fetch failed: HTTP ${response.status} ${url}`);
+  if (!response.ok) {
+    console.warn(`BitPay directory page skipped: HTTP ${response.status} ${url}`);
+    return null;
+  }
   return response.text();
 }
 
@@ -105,13 +96,18 @@ function merchantsFromHtml(html: string): Merchant[] {
 
 async function discover(): Promise<Merchant[]> {
   const found = new Map<string, Merchant>();
+  let fetchedPages = 0;
   for (const path of CATEGORY_PATHS) {
     const html = await fetchPage(`${DIRECTORY}${path}`);
+    if (!html) continue;
+    fetchedPages += 1;
     if (!/accept cryptocurrency|accept bitcoin|Pay Direct/i.test(html)) {
-      throw new Error(`BitPay page no longer exposes expected merchant-payment language: ${path || '/'}`);
+      console.warn(`BitPay page skipped because expected payment language is absent: ${path || '/'}`);
+      continue;
     }
     for (const merchant of merchantsFromHtml(html)) found.set(merchant.slug, merchant);
   }
+  if (fetchedPages === 0) throw new Error('BitPay discovery could not fetch any directory pages.');
   return [...found.values()]
     .sort((a, b) => a.slug.localeCompare(b.slug))
     .slice(0, MAX_CANDIDATES);
