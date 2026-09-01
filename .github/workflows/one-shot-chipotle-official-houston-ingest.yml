@@ -1,0 +1,30 @@
+name: One-shot Chipotle official Houston physical ingestion
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - scripts/ingest-chipotle-official-houston-physical-candidates-staging.ts
+      - .github/workflows/one-shot-chipotle-official-houston-ingest.yml
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Ingest bounded official Chipotle Houston physical Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/ingest-chipotle-official-houston-physical-candidates-staging.ts
