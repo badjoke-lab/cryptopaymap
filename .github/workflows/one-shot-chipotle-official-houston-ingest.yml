@@ -23,7 +23,7 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Patch Houston import batch accounting for this bounded run
-        run: >-
+        run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('scripts/ingest-chipotle-official-houston-physical-candidates-staging.ts')
