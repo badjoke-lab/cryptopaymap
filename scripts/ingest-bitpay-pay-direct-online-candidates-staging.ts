@@ -13,8 +13,8 @@ declare const process: { env: Record<string, string | undefined> };
 const TARGET = 'fixed-review-staging';
 const DIRECTORY = 'https://www.bitpay.com/directory';
 const SOURCE_NAME = 'BitPay Merchant Directory';
-const IMPORTER_VERSION = 'bitpay-dir-v2';
-const SOURCE_SCHEMA_VERSION = 'bitpay-directory-detail-verified-v2';
+const IMPORTER_VERSION = 'bitpay-dir-v3';
+const SOURCE_SCHEMA_VERSION = 'bitpay-directory-detail-verified-v3';
 const MAX_CANDIDATES = 500;
 const MAX_DETAIL_FETCHES = 350;
 const CATEGORY_PATHS = [
@@ -47,6 +47,8 @@ function decode(text: string): string {
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&quot;/gi, '"')
     .replace(/&nbsp;|&#160;/gi, ' ')
+    .replace(/\\u002F/gi, '/')
+    .replace(/\\\//g, '/')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -95,11 +97,19 @@ async function fetchPage(url: string): Promise<{ status: number; html: string }>
 
 function directorySlugsFromHtml(html: string): string[] {
   const slugs = new Set<string>();
-  const link = /href=["'](?:https:\/\/www\.bitpay\.com)?\/directory\/([^"'?#/]+)["']/gi;
-  for (const match of html.matchAll(link)) {
-    const slug = match[1]?.trim().toLocaleLowerCase('en-US');
-    if (!slug || CATEGORY_SLUGS.has(slug)) continue;
-    slugs.add(slug);
+  const normalized = html
+    .replace(/\\u002F/gi, '/')
+    .replace(/\\\//g, '/');
+  const patterns = [
+    /(?:https:\/\/www\.bitpay\.com)?\/directory\/([a-z0-9][a-z0-9-]{1,120})/gi,
+    /(?:https:\/\/bitpay\.com)?\/directory\/([a-z0-9][a-z0-9-]{1,120})/gi,
+  ];
+  for (const pattern of patterns) {
+    for (const match of normalized.matchAll(pattern)) {
+      const slug = match[1]?.trim().toLocaleLowerCase('en-US');
+      if (!slug || CATEGORY_SLUGS.has(slug)) continue;
+      slugs.add(slug);
+    }
   }
   return [...slugs];
 }
@@ -116,7 +126,7 @@ function merchantFromDetail(slug: string, html: string): Merchant | null {
   return { slug, name, detailUrl: `${DIRECTORY}/${slug}` };
 }
 
-async function discover(): Promise<{ merchants: Merchant[]; listingPagesFetched: number; listingPagesSkipped: number; detailPagesFetched: number }> {
+async function discover(): Promise<{ merchants: Merchant[]; listingPagesFetched: number; listingPagesSkipped: number; discoveredDetailSlugs: number; detailPagesFetched: number }> {
   const slugs = new Set<string>();
   let listingPagesFetched = 0;
   let listingPagesSkipped = 0;
@@ -142,7 +152,13 @@ async function discover(): Promise<{ merchants: Merchant[]; listingPagesFetched:
     if (merchants.length >= MAX_CANDIDATES) break;
   }
 
-  return { merchants, listingPagesFetched, listingPagesSkipped, detailPagesFetched };
+  return {
+    merchants,
+    listingPagesFetched,
+    listingPagesSkipped,
+    discoveredDetailSlugs: slugs.size,
+    detailPagesFetched,
+  };
 }
 
 async function main() {
@@ -156,7 +172,7 @@ async function main() {
   const merchants = discovery.merchants;
   if (merchants.length === 0) {
     throw new Error(
-      `BitPay discovery returned zero verified Pay Direct merchants (listingPagesFetched=${discovery.listingPagesFetched}, detailPagesFetched=${discovery.detailPagesFetched}).`,
+      `BitPay discovery returned zero verified Pay Direct merchants (listingPagesFetched=${discovery.listingPagesFetched}, discoveredDetailSlugs=${discovery.discoveredDetailSlugs}, detailPagesFetched=${discovery.detailPagesFetched}).`,
     );
   }
 
@@ -268,6 +284,7 @@ async function main() {
       source: SOURCE_NAME,
       listingPagesFetched: discovery.listingPagesFetched,
       listingPagesSkipped: discovery.listingPagesSkipped,
+      discoveredDetailSlugs: discovery.discoveredDetailSlugs,
       detailPagesFetched: discovery.detailPagesFetched,
       verifiedPayDirectMerchants: merchants.length,
       newOnlineCandidates: fresh.length,
