@@ -1,0 +1,102 @@
+name: Cut over cryptopaymap.com to v3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/cutover-cryptopaymap-domain.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cryptopaymap-domain-cutover
+  cancel-in-progress: false
+
+jobs:
+  cutover:
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      TARGET_PROJECT: cryptopaymap-staging
+      ROOT_DOMAIN: cryptopaymap.com
+      WWW_DOMAIN: www.cryptopaymap.com
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24.18.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build v3
+        run: npm run build
+
+      - name: Deploy v3 to Cloudflare Pages
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name "$TARGET_PROJECT"
+          --branch main
+          --commit-hash "$GITHUB_SHA"
+          --commit-message "cryptopaymap.com v3 cutover $GITHUB_SHA"
+
+      - name: Move custom domains to v3 Pages project
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json")
+
+          projects_json="$(curl --fail-with-body -sS "${auth[@]}" "${api}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects")"
+          mapfile -t projects < <(jq -r '.result[].name' <<<"$projects_json")
+
+          for domain in "$ROOT_DOMAIN" "$WWW_DOMAIN"; do
+            for project in "${projects[@]}"; do
+              [ "$project" = "$TARGET_PROJECT" ] && continue
+              domains_json="$(curl --fail-with-body -sS "${auth[@]}" "${api}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${project}/domains" || true)"
+              if jq -e --arg domain "$domain" '.result[]? | select(.name == $domain)' >/dev/null 2>&1 <<<"$domains_json"; then
+                curl --fail-with-body -sS -X DELETE "${auth[@]}" \
+                  "${api}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${project}/domains/${domain}" >/dev/null
+              fi
+            done
+
+            target_domains="$(curl --fail-with-body -sS "${auth[@]}" "${api}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${TARGET_PROJECT}/domains")"
+            if ! jq -e --arg domain "$domain" '.result[]? | select(.name == $domain)' >/dev/null 2>&1 <<<"$target_domains"; then
+              curl --fail-with-body -sS -X POST "${auth[@]}" \
+                "${api}/accounts/${CLOUDFLARE_ACCOUNT_ID}/pages/projects/${TARGET_PROJECT}/domains" \
+                --data "$(jq -cn --arg name "$domain" '{name:$name}')" >/dev/null
+            fi
+          done
+
+      - name: Point Cloudflare DNS at v3 Pages when DNS permission is available
+        shell: bash
+        run: |
+          set -euo pipefail
+          api="https://api.cloudflare.com/client/v4"
+          auth=(-H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" -H "Content-Type: application/json")
+          target="${TARGET_PROJECT}.pages.dev"
+
+          zones="$(curl -sS "${auth[@]}" "${api}/zones?name=${ROOT_DOMAIN}")"
+          zone_id="$(jq -r '.result[0].id // empty' <<<"$zones")"
+          [ -z "$zone_id" ] && exit 0
+
+          for name in "$ROOT_DOMAIN" "$WWW_DOMAIN"; do
+            records="$(curl --fail-with-body -sS "${auth[@]}" "${api}/zones/${zone_id}/dns_records?name=${name}")"
+            record_id="$(jq -r '.result[0].id // empty' <<<"$records")"
+            payload="$(jq -cn --arg name "$name" --arg content "$target" '{type:"CNAME",name:$name,content:$content,proxied:true,ttl:1}')"
+            if [ -n "$record_id" ]; then
+              curl --fail-with-body -sS -X PUT "${auth[@]}" \
+                "${api}/zones/${zone_id}/dns_records/${record_id}" --data "$payload" >/dev/null
+            else
+              curl --fail-with-body -sS -X POST "${auth[@]}" \
+                "${api}/zones/${zone_id}/dns_records" --data "$payload" >/dev/null
+            fi
+          done
