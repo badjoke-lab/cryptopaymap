@@ -24,6 +24,9 @@ jobs:
       TARGET_PROJECT: cryptopaymap-staging
       ROOT_DOMAIN: cryptopaymap.com
       WWW_DOMAIN: www.cryptopaymap.com
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+      CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -37,7 +40,16 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Build v3
+      - name: Publish reviewed physical canonical records
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+
+      - name: Remove synthetic staging review payload before build
+        run: rm -rf public/staging-review
+
+      - name: Materialize public data from staging database
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+
+      - name: Build v3 with reviewed place data
         run: npm run build
 
       - name: Deploy v3 to Cloudflare Pages
