@@ -49,6 +49,55 @@ function normalizeDomain(value: string | null): string {
   return (value ?? '').trim().toLowerCase().replace(/^www\./, '').replace(/\.$/, '');
 }
 
+function brandKey(name: string): string {
+  const words = name.split(' ').filter(Boolean);
+  if (words.length <= 3) return name;
+  return words.slice(0, 3).join(' ');
+}
+
+type Group = {
+  key: string;
+  displayNames: Map<string, number>;
+  count: number;
+  bitcoinCount: number;
+  lightningCount: number;
+  bothCount: number;
+};
+
+function bump(map: Map<string, Group>, key: string, display: string, bitcoin: boolean, lightning: boolean) {
+  const current = map.get(key) ?? {
+    key,
+    displayNames: new Map<string, number>(),
+    count: 0,
+    bitcoinCount: 0,
+    lightningCount: 0,
+    bothCount: 0,
+  };
+  current.count += 1;
+  if (bitcoin) current.bitcoinCount += 1;
+  if (lightning) current.lightningCount += 1;
+  if (bitcoin && lightning) current.bothCount += 1;
+  current.displayNames.set(display, (current.displayNames.get(display) ?? 0) + 1);
+  map.set(key, current);
+}
+
+function summarize(groups: Map<string, Group>) {
+  return [...groups.values()]
+    .filter((group) => group.count > 1)
+    .sort((a, b) => b.count - a.count || a.key.localeCompare(b.key))
+    .slice(0, TOP_N)
+    .map((group) => ({
+      key: group.key,
+      representativeMerchant:
+        [...group.displayNames.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]?.[0] ??
+        group.key,
+      candidates: group.count,
+      bitcoinTagged: group.bitcoinCount,
+      lightningTagged: group.lightningCount,
+      bothTagged: group.bothCount,
+    }));
+}
+
 async function main() {
   if (process.env.CPM_CANDIDATE_ACQUISITION_TARGET !== EXPECTED_TARGET) {
     throw new Error('Refusing candidate density report outside fixed-review staging.');
@@ -83,67 +132,34 @@ async function main() {
     return positive(tags['payment:bitcoin']) || positive(tags['payment:lightning']);
   });
 
-  type Group = {
-    key: string;
-    normalizedName: string;
-    displayNames: Map<string, number>;
-    domain: string;
-    count: number;
-    bitcoinCount: number;
-    lightningCount: number;
-    bothCount: number;
-  };
-  const groups = new Map<string, Group>();
+  const domainGroups = new Map<string, Group>();
+  const brandGroups = new Map<string, Group>();
 
   for (const row of eligible) {
     const name = normalizedName(row.rawPayload);
     if (!name) continue;
     const domain = normalizeDomain(row.officialDomain);
-    const key = `${name}\u0000${domain || '(no-domain)'}`;
     const tags = paymentTags(row.rawPayload);
     const bitcoin = positive(tags['payment:bitcoin']);
     const lightning = positive(tags['payment:lightning']);
     const display = merchantName(row.rawPayload) || name;
-    const current = groups.get(key) ?? {
-      key,
-      normalizedName: name,
-      displayNames: new Map<string, number>(),
-      domain,
-      count: 0,
-      bitcoinCount: 0,
-      lightningCount: 0,
-      bothCount: 0,
-    };
-    current.count += 1;
-    if (bitcoin) current.bitcoinCount += 1;
-    if (lightning) current.lightningCount += 1;
-    if (bitcoin && lightning) current.bothCount += 1;
-    current.displayNames.set(display, (current.displayNames.get(display) ?? 0) + 1);
-    groups.set(key, current);
+    if (domain) bump(domainGroups, domain, display, bitcoin, lightning);
+    bump(brandGroups, brandKey(name), display, bitcoin, lightning);
   }
 
-  const top = [...groups.values()]
-    .sort((a, b) => b.count - a.count || a.normalizedName.localeCompare(b.normalizedName))
-    .slice(0, TOP_N)
-    .map((group) => ({
-      merchant: [...group.displayNames.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? group.normalizedName,
-      normalizedName: group.normalizedName,
-      officialDomain: group.domain || null,
-      candidates: group.count,
-      bitcoinTagged: group.bitcoinCount,
-      lightningTagged: group.lightningCount,
-      bothTagged: group.bothCount,
-    }));
-
-  console.log(JSON.stringify({
-    target: EXPECTED_TARGET,
-    originRowsScanned: rows.length,
-    locationScopedBitcoinOrLightningCandidates: eligible.length,
-    uniqueMerchantDomainGroups: groups.size,
-    topGroups: top,
-    readOnly: true,
-    candidatePayloadExposed: false,
-  }));
+  console.log(
+    JSON.stringify({
+      target: EXPECTED_TARGET,
+      originRowsScanned: rows.length,
+      locationScopedBitcoinOrLightningCandidates: eligible.length,
+      multiCandidateDomainGroups: [...domainGroups.values()].filter((group) => group.count > 1).length,
+      multiCandidateBrandGroups: [...brandGroups.values()].filter((group) => group.count > 1).length,
+      topDomains: summarize(domainGroups),
+      topBrands: summarize(brandGroups),
+      readOnly: true,
+      candidatePayloadExposed: false,
+    }),
+  );
 }
 
 await main();
