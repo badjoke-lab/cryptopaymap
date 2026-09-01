@@ -1,0 +1,80 @@
+name: One-shot Steak n Shake bulk Evidence growth
+
+on:
+  push:
+    branches:
+      - feat/bulk-official-directory-evidence
+    paths:
+      - scripts/seed-steak-n-shake-official-bitcoin-evidence-staging.ts
+      - .github/workflows/one-shot-steak-n-shake-bulk-evidence.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: one-shot-steak-n-shake-bulk-evidence
+  cancel-in-progress: false
+
+jobs:
+  grow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Type-check before staging mutation
+        run: npm run typecheck
+
+      - name: Seed current chain-scoped official Bitcoin Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/seed-steak-n-shake-official-bitcoin-evidence-staging.ts
+
+      - name: Strict-review newly available official Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '100'
+          CPM_OFFICIAL_EVIDENCE_MAX_WINDOWS: '5'
+        run: npx tsx scripts/promote-confirm-next-official-evidence-batch.ts
+
+      - name: Publish reviewed canonical staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+
+      - name: Remove synthetic staging review payload before build
+        run: rm -rf public/staging-review
+
+      - name: Materialize public data from staging DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy isolated real-data staging preview
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name cryptopaymap-staging
+          --branch chain-scope-review
