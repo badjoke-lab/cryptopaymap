@@ -1,0 +1,32 @@
+name: One-shot OSM crypto physical brand density
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - scripts/report-osm-crypto-physical-brand-density-staging.ts
+      - .github/workflows/one-shot-osm-crypto-physical-brand-density.yml
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check repository
+        run: npm run check
+      - name: Report OSM physical crypto brand density
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/report-osm-crypto-physical-brand-density-staging.ts
