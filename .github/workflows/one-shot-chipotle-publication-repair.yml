@@ -6,6 +6,7 @@ on:
       - feat/physical-source-first-growth
     paths:
       - scripts/repair-chipotle-publication-fields-staging.ts
+      - scripts/publish-reviewed-physical-canonical-staging.ts
       - .github/workflows/one-shot-chipotle-publication-repair.yml
 
 permissions:
@@ -28,6 +29,12 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/repair-chipotle-publication-fields-staging.ts
+      - name: Publish remaining reviewed physical canonical records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
       - name: Materialize public data from staging DB
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
