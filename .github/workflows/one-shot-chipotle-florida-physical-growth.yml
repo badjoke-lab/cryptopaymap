@@ -1,0 +1,74 @@
+name: One-shot Chipotle Florida physical staging growth
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - ops/run-chipotle-florida-growth.trigger
+
+permissions:
+  contents: read
+
+jobs:
+  grow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Ingest bounded Florida Chipotle batch from official locator
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_CHIPOTLE_STATE: fl
+          CPM_CHIPOTLE_MAX_LOCATIONS: '150'
+        run: node scripts/run-chipotle-official-state-ingest-resilient-staging.mjs
+      - name: Select all new Chipotle Candidates from this bounded batch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/promote-confirm-chipotle-physical-staging.ts')
+          s = p.read_text()
+          if "const MAX_TARGETS = 40;" not in s:
+              raise SystemExit('Chipotle max target patch target changed unexpectedly')
+          s = s.replace("const MAX_TARGETS = 40;", "const MAX_TARGETS = 300;", 1)
+          old = "inArray(sourceCandidates.candidateStatus,['new','triaged','promoted'])"
+          new = "eq(sourceCandidates.candidateStatus,'new')"
+          if old not in s:
+              raise SystemExit('Chipotle candidate selection patch target changed unexpectedly')
+          p.write_text(s.replace(old, new, 1))
+          PY
+      - name: Reverify and confirm new Chipotle physical locations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: npx tsx scripts/promote-confirm-chipotle-physical-staging.ts
+      - name: Publish all currently reviewed physical canonical staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+          CPM_MAX_PUBLICATION_BATCH: '400'
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+      - name: Prepare source-first physical materializer
+        run: node scripts/prepare-source-first-materializer-staging.mjs
+      - name: Materialize public data from staging DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - run: npm run build
+      - run: node scripts/prepare-staging-review-artifact.mjs
+      - name: Deploy isolated staging review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch physical-growth-review
