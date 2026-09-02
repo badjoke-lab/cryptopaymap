@@ -5,7 +5,17 @@ import { fileURLToPath } from 'node:url';
 const sourceUrl = new URL('./ingest-chipotle-official-state-physical-candidates-staging.ts', import.meta.url);
 const temporaryUrl = new URL('./.tmp-ingest-chipotle-official-state-physical-candidates-staging.ts', import.meta.url);
 
-const source = await readFile(sourceUrl, 'utf8');
+let source = await readFile(sourceUrl, 'utf8');
+const state = (process.env.CPM_CHIPOTLE_STATE ?? '').trim().toLowerCase();
+if (state === 'fl') {
+  const oldMinimums = "const STATE_MINIMUMS: Record<string, number> = { tx: 300, ca: 450 };";
+  const newMinimums = "const STATE_MINIMUMS: Record<string, number> = { tx: 300, ca: 450, fl: 250 };";
+  if (!source.includes(oldMinimums)) {
+    throw new Error('Chipotle state minimum patch target changed unexpectedly.');
+  }
+  source = source.replace(oldMinimums, newMinimums);
+}
+
 const start = source.indexOf('async function geocode(seed: AddressSeed): Promise<LocationSeed | null> {');
 const end = source.indexOf('function coordinatesFromPayload', start);
 if (start < 0 || end < 0) {
