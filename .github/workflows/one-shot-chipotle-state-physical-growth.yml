@@ -28,7 +28,7 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_CHIPOTLE_STATE: ca
           CPM_CHIPOTLE_MAX_LOCATIONS: '250'
-        run: npx tsx scripts/ingest-chipotle-official-state-physical-candidates-staging.ts
+        run: npx tsx scripts/run-chipotle-official-state-ingest-resilient-staging.ts
       - name: Select all new Chipotle Candidates from this bounded batch
         run: |
           python - <<'PY'
