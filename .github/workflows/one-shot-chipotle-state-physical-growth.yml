@@ -13,7 +13,7 @@ permissions:
 jobs:
   grow:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -51,11 +51,12 @@ jobs:
           CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
         run: npx tsx scripts/promote-confirm-chipotle-physical-staging.ts
-      - name: Publish reviewed physical canonical staging records
+      - name: Publish all currently reviewed physical canonical staging records
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+          CPM_MAX_PUBLICATION_BATCH: '400'
         run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
       - name: Prepare source-first physical materializer
         run: node scripts/prepare-source-first-materializer-staging.mjs
