@@ -17,7 +17,20 @@ import {
 declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
-const MAX_PUBLICATION_BATCH = 50;
+const DEFAULT_MAX_PUBLICATION_BATCH = 50;
+const MAX_ALLOWED_PUBLICATION_BATCH = 500;
+
+function readMaxPublicationBatch(): number {
+  const raw = process.env.CPM_MAX_PUBLICATION_BATCH?.trim();
+  if (!raw) return DEFAULT_MAX_PUBLICATION_BATCH;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 1 || value > MAX_ALLOWED_PUBLICATION_BATCH) {
+    throw new Error(
+      `CPM_MAX_PUBLICATION_BATCH must be an integer between 1 and ${MAX_ALLOWED_PUBLICATION_BATCH}.`,
+    );
+  }
+  return value;
+}
 
 async function deterministicUuid(label: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(label));
@@ -55,6 +68,7 @@ async function main() {
   if (process.env.CPM_CANDIDATE_ACQUISITION_TARGET !== EXPECTED_TARGET) {
     throw new Error('Refusing canonical publication outside fixed-review staging.');
   }
+  const maxPublicationBatch = readMaxPublicationBatch();
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
   const db = createDatabase(databaseUrl);
@@ -104,7 +118,7 @@ async function main() {
   const unique = new Map(rows.map((row) => [row.claimId, row]));
   const eligible = [...unique.values()];
   const alreadyPublicCount = eligible.filter(isFullyPublic).length;
-  const targets = eligible.filter((row) => !isFullyPublic(row)).slice(0, MAX_PUBLICATION_BATCH);
+  const targets = eligible.filter((row) => !isFullyPublic(row)).slice(0, maxPublicationBatch);
 
   if (targets.length === 0) {
     console.log(
@@ -113,6 +127,7 @@ async function main() {
         reviewedTargets: 0,
         eligibleReviewedTargets: eligible.length,
         alreadyPublicCount,
+        maxPublicationBatch,
         publicationConfigured: policy.configured,
         publisherAuthorized,
         mutationPerformed: false,
@@ -140,6 +155,7 @@ async function main() {
         reviewedTargets: targets.length,
         eligibleReviewedTargets: eligible.length,
         alreadyPublicCount,
+        maxPublicationBatch,
         publicationConfigured: policy.configured,
         publisherAuthorized: false,
         mutationPerformed: false,
@@ -244,7 +260,7 @@ async function main() {
       reviewedTargets: targets.length,
       eligibleReviewedTargets: eligible.length,
       alreadyPublicCount,
-      maxPublicationBatch: MAX_PUBLICATION_BATCH,
+      maxPublicationBatch,
       publicationConfigured: true,
       publisherAuthorized: true,
       mutationPerformed: true,
