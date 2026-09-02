@@ -52,7 +52,7 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+        run: npx tsx scripts/run-source-first-materialization-staging.ts
       - run: npm run build
       - run: node scripts/prepare-staging-review-artifact.mjs
       - name: Deploy isolated staging review
