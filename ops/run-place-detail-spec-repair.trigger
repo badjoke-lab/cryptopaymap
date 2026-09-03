@@ -1,1 +1,1 @@
-2026-09-03T01:00:00Z repair source-first Place category and description regression
+2026-09-03T04:34:00Z rerun all-place detail contract validation after source-first repair
