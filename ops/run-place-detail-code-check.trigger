@@ -1,1 +1,1 @@
-2026-09-03T11:49:30Z validate latest Place detail profile and processor repair code
+2026-09-03T12:50:00Z validate Coming Soon quarantine, incomplete-profile wrapper, and future promotion guard
