@@ -57,6 +57,11 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_CHIPOTLE_PROFILE_MAX: '1000'
         run: npx tsx scripts/backfill-chipotle-official-place-profiles-staging.ts
+      - name: Align promoted Chipotle claims with Flexa processor route
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/repair-chipotle-flexa-route-staging.ts
       - name: Publish all currently reviewed physical canonical staging records
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
