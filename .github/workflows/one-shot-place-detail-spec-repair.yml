@@ -23,6 +23,7 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: node --check scripts/prepare-source-first-materializer-staging.mjs
+      - run: node --check scripts/validate-public-place-detail-contract.mjs
       - name: Prepare source-first materializer with required Place profile fields
         run: node scripts/prepare-source-first-materializer-staging.mjs
       - name: Materialize current reviewed staging records
@@ -30,7 +31,9 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/materialize-public-data-from-staging-db.ts
-      - name: Assert Chipotle category and description are present
+      - name: Validate every published Place detail contract
+        run: node scripts/validate-public-place-detail-contract.mjs public/data/places.json
+      - name: Assert Chipotle source repair remains intact
         run: |
           node --input-type=module <<'NODE'
           import { readFile } from 'node:fs/promises';
