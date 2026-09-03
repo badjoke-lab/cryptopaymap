@@ -163,26 +163,28 @@ async function main() {
     for (const field of row.missing) missingCounts.set(field, (missingCounts.get(field) ?? 0) + 1);
   }
 
-  console.log(
-    JSON.stringify(
-      {
-        target: TARGET,
-        publishedPlaces: summaries.length,
-        sourceSystems: Object.fromEntries([...sourceCounts.entries()].sort()),
-        thinPlaces: thin.length,
-        missingFields: Object.fromEntries([...missingCounts.entries()].sort()),
-        optionalProfileCoverage: {
-          phone: summaries.filter((row) => row.optionalProfile.phone).length,
-          openingHours: summaries.filter((row) => row.optionalProfile.openingHours).length,
-          amenities: summaries.filter((row) => row.optionalProfile.amenities).length,
-        },
-        placesWithoutVerificationHistory: summaries.filter((row) => row.verificationEvents < 1).length,
-        thinRecords: thin,
-      },
-      null,
-      2,
-    ),
-  );
+  const result = {
+    target: TARGET,
+    publishedPlaces: summaries.length,
+    sourceSystems: Object.fromEntries([...sourceCounts.entries()].sort()),
+    thinPlaces: thin.length,
+    missingFields: Object.fromEntries([...missingCounts.entries()].sort()),
+    optionalProfileCoverage: {
+      phone: summaries.filter((row) => row.optionalProfile.phone).length,
+      openingHours: summaries.filter((row) => row.optionalProfile.openingHours).length,
+      amenities: summaries.filter((row) => row.optionalProfile.amenities).length,
+    },
+    placesWithoutVerificationHistory: summaries.filter((row) => row.verificationEvents < 1).length,
+    thinRecords: thin,
+  };
+
+  console.log(JSON.stringify(result, null, 2));
+
+  if (thin.length > 0) {
+    throw new Error(
+      `Published Place depth audit found ${thin.length} thin record(s); publication must exclude them until source-backed required fields are available.`,
+    );
+  }
 }
 
 await main();
