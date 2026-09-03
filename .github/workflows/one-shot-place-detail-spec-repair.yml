@@ -32,6 +32,13 @@ jobs:
         run: |
           set -o pipefail
           npx tsx scripts/backfill-chipotle-official-place-profiles-staging.ts 2>&1 | tee chipotle-place-profile-backfill.log
+      - name: Audit full published Place record depth
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/audit-published-place-depth-staging.ts 2>&1 | tee published-place-depth-audit.log
       - name: Prepare source-first materializer with required Place profile fields
         run: node scripts/prepare-source-first-materializer-staging.mjs
       - name: Materialize current reviewed staging records
@@ -98,6 +105,7 @@ jobs:
           name: place-detail-contract-audit
           path: |
             chipotle-place-profile-backfill.log
+            published-place-depth-audit.log
             place-detail-contract.log
             chipotle-place-detail-contract.log
           if-no-files-found: error
