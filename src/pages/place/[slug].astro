@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import PlaceDetail from '../../components/public/PlaceDetail.astro';
 import PlacePracticalProfile from '../../components/public/PlacePracticalProfile.astro';
+import { PublicPlaceMiniMap } from '../../components/public/PublicPlaceMiniMap';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import { publicPlaceSchema } from '../../schemas/public-exports';
@@ -28,5 +29,27 @@ const description = `${place.name}: verified cryptocurrency payment information,
 
 <BaseLayout title={`${place.name} | CryptoPayMap`} description={description}>
   <PlaceDetail model={model} />
+  <section class="safe-area-inline page-container pb-8 sm:pb-10" aria-labelledby="place-map-title">
+    <div class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+      <p class="m-0 text-sm font-semibold text-brand-700">Location</p>
+      <h2 id="place-map-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+        Map
+      </h2>
+      <div class="mt-5">
+        <PublicPlaceMiniMap
+          client:visible
+          latitude={place.latitude}
+          longitude={place.longitude}
+          name={place.name}
+        />
+      </div>
+      <a
+        class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700"
+        href={`/places?selected=${encodeURIComponent(place.placeSlug)}`}
+      >
+        View nearby on the full map
+      </a>
+    </div>
+  </section>
   <PlacePracticalProfile place={place} />
 </BaseLayout>
