@@ -14,6 +14,8 @@ if (records.length < 1) {
 const failures = [];
 const nonEmpty = (value) => typeof value === 'string' && value.trim().length > 0;
 const finiteNumber = (value) => typeof value === 'number' && Number.isFinite(value);
+const generatedDescriptionMarker =
+  'This record tracks verified in-person cryptocurrency payment acceptance.';
 const add = (place, field, reason) => {
   failures.push(`${place.placeSlug ?? place.name ?? '<unknown>'}: ${field} ${reason}`);
 };
@@ -30,7 +32,11 @@ for (const place of records) {
   } else if (place.categorySlug === 'merchant') {
     add(place, 'categorySlug', 'must not use the generic merchant fallback');
   }
-  if (!nonEmpty(place.description)) add(place, 'description', 'must be non-empty');
+  if (!nonEmpty(place.description)) {
+    add(place, 'description', 'must be non-empty');
+  } else if (place.description.includes(generatedDescriptionMarker)) {
+    add(place, 'description', 'must not use the generated thin-profile fallback');
+  }
   if (!provenanceCovers(place, 'categorySlug')) {
     add(place, 'provenance', 'must identify the source of categorySlug');
   }
@@ -101,6 +107,7 @@ console.log(
     placeDetailContract: 'pass',
     publishedPlaces: records.length,
     requiredProfileFields: ['categorySlug', 'description', 'coordinates'],
+    forbiddenProfileFallbacks: [generatedDescriptionMarker],
     requiredProfileProvenance: ['categorySlug', 'description'],
     requiredPaymentFields: [
       'routeType',
