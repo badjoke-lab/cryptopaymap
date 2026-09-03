@@ -16,6 +16,31 @@ replaceOnce(
   'canonical required fields',
 );
 replaceOnce(
+  "      routeType: acceptanceClaims.routeType,\n      howToPay: acceptanceClaims.howToPay,",
+  "      routeType: acceptanceClaims.routeType,\n      processorId: acceptanceClaims.processorId,\n      howToPay: acceptanceClaims.howToPay,",
+  'claim processor selection',
+);
+replaceOnce(
+  "  const candidateIds = placeRows.map((row) => row.candidateId);\n\n  const paymentRows =",
+  `  const candidateIds = placeRows.map((row) => row.candidateId);
++  const processorIds = [
++    ...new Set(placeRows.map((row) => row.processorId).filter((value): value is string => value !== null)),
++  ];
++  const processorRows =
++    processorIds.length > 0
++      ? await db
++          .select({ id: entities.id, slug: entities.slug })
++          .from(entities)
++          .where(inArray(entities.id, processorIds))
++      : [];
++  const processorSlugs = new Map(
++    processorRows.map((row) => [row.id, row.slug]).filter((entry): entry is [string, string] => entry[1] !== null),
++  );
++
++  const paymentRows =`.replace(/^\+/gm, ''),
+  'processor registry lookup',
+);
+replaceOnce(
   "    const origin = origins.get(row.candidateId);\n    const element = object(origin?.element);",
   "    const origin = origins.get(row.candidateId);\n    const reviewSeed = object(origin?.reviewSeed);\n    const officialLocationUrl =\n      typeof reviewSeed?.websiteUrl === 'string' ? reviewSeed.websiteUrl : null;\n    const element = object(origin?.element);",
   'origin review seed',
@@ -47,6 +72,11 @@ replaceOnce(
   "    const osmUrl = `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`;",
   "    const osmUrl =\n      row.osmType && row.osmId !== null\n        ? `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`\n        : null;",
   'optional OSM URL',
+);
+replaceOnce(
+  "      processorSlug: null,",
+  "      processorSlug: row.processorId ? processorSlugs.get(row.processorId) ?? null : null,",
+  'public processor slug',
 );
 
 const provenancePattern = /    const provenance = \[[\s\S]*?\n    \];\n    return \{/;
@@ -167,4 +197,4 @@ source = source.replace(
 );
 
 await writeFile(path, source, 'utf8');
-console.log('Prepared source-aware physical materializer with normalized category and source-backed profile provenance for isolated staging review.');
+console.log('Prepared source-aware physical materializer with normalized category, canonical processor identity, and source-backed profile provenance for isolated staging review.');
