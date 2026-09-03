@@ -1,4 +1,4 @@
-import { and, asc, eq, ilike } from 'drizzle-orm';
+import { and, asc, eq, ilike, isNotNull } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
 import {
   candidateSourceRecords,
@@ -44,7 +44,7 @@ function decode(value: string): string {
     .replace(/<[^>]+>/g, ' ')
     .replace(/&amp;/gi, '&')
     .replace(/&nbsp;|&#160;/gi, ' ')
-    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&#39;|&apos;|&#x27;/gi, "'")
     .replace(/&quot;/gi, '"')
     .replace(/\s+/g, ' ')
     .trim();
@@ -115,7 +115,9 @@ function openingHoursFrom(item: JsonRecord): string | null {
   const raw = item.openingHours;
   if (typeof raw === 'string' && raw.trim()) return raw.trim();
   if (Array.isArray(raw)) {
-    const values = raw.filter((value): value is string => typeof value === 'string' && value.trim().length > 0);
+    const values = raw.filter(
+      (value): value is string => typeof value === 'string' && value.trim().length > 0,
+    );
     if (values.length > 0) return values.join('; ');
   }
 
@@ -137,6 +139,30 @@ function openingHoursFrom(item: JsonRecord): string | null {
   return parts.length > 0 ? parts.join('; ') : null;
 }
 
+function visiblePhone(html: string): string | null {
+  const telHref = html.match(/href=["']tel:([^"']+)["']/i)?.[1];
+  if (telHref) return decode(telHref);
+  const text = decode(html);
+  return text.match(/\(\d{3}\)\s*\d{3}-\d{4}/)?.[0] ?? null;
+}
+
+function visibleHours(html: string): string | null {
+  const text = decode(html);
+  const match = text.match(
+    /Restaurant Hours\s+(.{5,420}?)(?=\s+(?:Pickup Options|Order Online|Order Catering|About Chipotle Mexican Grill|Try our Featured Meals)\b)/i,
+  );
+  if (!match?.[1]) return null;
+  return match[1].trim();
+}
+
+function visibleDescription(html: string): string | null {
+  const text = decode(html);
+  const match = text.match(
+    /About Chipotle Mexican Grill\s+.{0,180}?\s+(Chipotle is a fast-casual restaurant chain[\s\S]{40,1400}?Chipotle Rewards\.)/i,
+  );
+  return match?.[1]?.trim() ?? null;
+}
+
 function amenitiesFrom(html: string): string[] {
   const text = decode(html).toLowerCase();
   const known: Array<[string, RegExp]> = [
@@ -156,13 +182,17 @@ function officialProfile(html: string): OfficialProfile {
   });
 
   const telephone = locationItem?.telephone;
-  const phone = typeof telephone === 'string' && telephone.trim() ? telephone.trim() : null;
+  const phone =
+    typeof telephone === 'string' && telephone.trim() ? telephone.trim() : visiblePhone(html);
   const rawDescription = locationItem?.description;
   const description =
     typeof rawDescription === 'string' && rawDescription.trim()
       ? decode(rawDescription)
-      : metaContent(html, 'description') ?? metaContent(html, 'og:description');
-  const openingHours = locationItem ? openingHoursFrom(locationItem) : null;
+      : metaContent(html, 'description') ??
+        metaContent(html, 'og:description') ??
+        visibleDescription(html);
+  const openingHours =
+    (locationItem ? openingHoursFrom(locationItem) : null) ?? visibleHours(html);
 
   return {
     phone,
@@ -209,6 +239,8 @@ async function main() {
     .where(
       and(
         eq(sourceCandidates.candidateType, 'physical_place'),
+        eq(sourceCandidates.candidateStatus, 'promoted'),
+        isNotNull(sourceCandidates.canonicalLocationId),
         ilike(sourceCandidates.normalizedName, '%chipotle%'),
       ),
     )
@@ -337,7 +369,7 @@ async function main() {
   }
 
   console.log(JSON.stringify({ target: TARGET, merchant: 'Chipotle', ...counters }));
-  if (targets.length < 1) throw new Error('No Chipotle official location records found for profile backfill.');
+  if (targets.length < 1) throw new Error('No promoted Chipotle official location records found for profile backfill.');
   if (counters.fetched < Math.floor(targets.length * 0.9)) {
     throw new Error(`Official profile fetch coverage too low: ${counters.fetched}/${targets.length}.`);
   }
