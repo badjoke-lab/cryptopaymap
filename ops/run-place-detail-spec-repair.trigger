@@ -1,1 +1,1 @@
-2026-09-03T04:52:00Z verify all-place profile fields and provenance contract
+2026-09-03T11:31:00Z backfill official Chipotle place profiles and reject thin records
