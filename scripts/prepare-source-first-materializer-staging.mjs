@@ -21,6 +21,24 @@ replaceOnce(
   'origin review seed',
 );
 replaceOnce(
+  "    const categorySlug = categoryFromTags(tags);",
+  `    const entityNameKey = row.entityName.toLowerCase();
+    const sourceFirstCategorySlug =
+      entityNameKey.includes('chipotle') ||
+      entityNameKey.includes('steak n shake') ||
+      entityNameKey.includes("steak 'n shake")
+        ? 'restaurant'
+        : null;
+    const categorySlug = sourceFirstCategorySlug ?? categoryFromTags(tags);
+    const placeArea = [row.locality, row.region].filter(Boolean).join(', ');
+    const publicDescription =
+      row.description ??
+      (sourceFirstCategorySlug === 'restaurant'
+        ? \`${'${row.locationName ?? row.entityName}'} is a restaurant location${'${placeArea ? ` in ${placeArea}` : \'\'}'}. This record tracks verified in-person cryptocurrency payment acceptance.\`
+        : null);`,
+  'source-first category and description',
+);
+replaceOnce(
   "    const osmUrl = `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`;",
   "    const osmUrl =\n      row.osmType && row.osmId !== null\n        ? `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`\n        : null;",
   'optional OSM URL',
@@ -48,6 +66,7 @@ source = source.replace(
               ...(row.locationWebsiteUrl || row.entityWebsiteUrl ? ['websiteUrl'] : []),
               ...(row.phone ? ['phone'] : []),
               ...(row.openingHours ? ['openingHours'] : []),
+              ...(row.description ? ['description'] : []),
             ],
           },
         ]
@@ -71,10 +90,25 @@ source = source.replace(
                 : []),
             ],
           },
+          {
+            sourceName: 'CryptoPayMap normalized place profile',
+            sourceUrl: null,
+            licenseSlug: null,
+            attribution: null,
+            fields: [
+              'categorySlug',
+              ...(publicDescription ? ['description'] : []),
+            ],
+          },
         ];
     return {`,
 );
 
+replaceOnce(
+  "      description: row.description,",
+  "      description: publicDescription,",
+  'public place description',
+);
 replaceOnce(
   "      osm: { osmUrl, osmType: row.osmType, osmId: String(row.osmId) },",
   "      osm:\n        osmUrl && row.osmType && row.osmId !== null\n          ? { osmUrl, osmType: row.osmType, osmId: String(row.osmId) }\n          : null,",
@@ -114,4 +148,4 @@ source = source.replace(
 );
 
 await writeFile(path, source, 'utf8');
-console.log('Prepared source-aware physical materializer for isolated staging review.');
+console.log('Prepared source-aware physical materializer with normalized category and description for isolated staging review.');
