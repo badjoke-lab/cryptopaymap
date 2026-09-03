@@ -32,10 +32,17 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/materialize-public-data-from-staging-db.ts
       - name: Validate every published Place detail contract
-        run: node scripts/validate-public-place-detail-contract.mjs public/data/places.json
-      - name: Assert Chipotle source repair remains intact
+        id: all_place_contract
+        continue-on-error: true
         run: |
-          node --input-type=module <<'NODE'
+          set -o pipefail
+          node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee place-detail-contract.log
+      - name: Assert Chipotle source repair remains intact
+        id: chipotle_contract
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node --input-type=module <<'NODE' 2>&1 | tee chipotle-place-detail-contract.log
           import { readFile } from 'node:fs/promises';
           const data = JSON.parse(await readFile('public/data/places.json', 'utf8'));
           const chipotle = data.records.filter((place) => /chipotle/i.test(place.name));
@@ -57,6 +64,19 @@ jobs:
             }),
           );
           NODE
+      - name: Upload Place detail contract audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: place-detail-contract-audit
+          path: |
+            place-detail-contract.log
+            chipotle-place-detail-contract.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Enforce Place detail contract result
+        if: steps.all_place_contract.outcome == 'failure' || steps.chipotle_contract.outcome == 'failure'
+        run: exit 1
       - run: npm run build
       - run: node scripts/prepare-staging-review-artifact.mjs
       - name: Deploy isolated staging review
