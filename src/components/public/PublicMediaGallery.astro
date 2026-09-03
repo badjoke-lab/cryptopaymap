@@ -23,8 +23,11 @@ const {
   title = 'Approved public media',
   desktopLimit,
 } = Astro.props;
-const desktopMedia = desktopLimit ? media.slice(0, desktopLimit) : media;
-const hasMoreOnDesktop = Boolean(desktopLimit && media.length > desktopMedia.length);
+const effectiveDesktopLimit = desktopLimit ?? (allMedia.length >= 4 ? 3 : undefined);
+const desktopMedia = effectiveDesktopLimit ? media.slice(0, effectiveDesktopLimit) : media;
+const hasMoreOnDesktop = Boolean(
+  effectiveDesktopLimit && allMedia.length > desktopMedia.length,
+);
 ---
 
 {
