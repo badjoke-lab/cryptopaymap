@@ -29,6 +29,11 @@ jobs:
           CPM_CHIPOTLE_STATE: ca
           CPM_CHIPOTLE_MAX_LOCATIONS: '250'
         run: node scripts/run-chipotle-official-state-ingest-resilient-staging.mjs
+      - name: Reject Chipotle Coming Soon candidates before promotion
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/reject-chipotle-coming-soon-candidates-staging.ts
       - name: Select all new Chipotle Candidates from this bounded batch
         run: |
           python - <<'PY'
@@ -51,12 +56,17 @@ jobs:
           CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
         run: npx tsx scripts/promote-confirm-chipotle-physical-staging.ts
-      - name: Backfill official profile fields for promoted Chipotle locations
+      - name: Quarantine any Chipotle Coming Soon locations that were previously promoted
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/quarantine-chipotle-coming-soon-staging.ts
+      - name: Backfill only incomplete public Chipotle profiles
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_CHIPOTLE_PROFILE_MAX: '1000'
-        run: npx tsx scripts/backfill-chipotle-official-place-profiles-staging.ts
+        run: node scripts/run-chipotle-incomplete-profile-backfill-staging.mjs
       - name: Align promoted Chipotle claims with Flexa processor route
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
