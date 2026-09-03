@@ -12,10 +12,19 @@ interface PublicMediaItem {
 
 interface Props {
   media: PublicMediaItem[];
+  allMedia?: PublicMediaItem[];
   title?: string;
+  desktopLimit?: number;
 }
 
-const { media, title = 'Approved public media' } = Astro.props;
+const {
+  media,
+  allMedia = media,
+  title = 'Approved public media',
+  desktopLimit,
+} = Astro.props;
+const desktopMedia = desktopLimit ? media.slice(0, desktopLimit) : media;
+const hasMoreOnDesktop = Boolean(desktopLimit && media.length > desktopMedia.length);
 ---
 
 {
@@ -29,13 +38,13 @@ const { media, title = 'Approved public media' } = Astro.props;
           </h2>
         </div>
         <span class="rounded-pill border border-border bg-surface px-3 py-1.5 text-xs font-semibold text-muted">
-          {media.length} {media.length === 1 ? 'image' : 'images'}
+          {allMedia.length} {allMedia.length === 1 ? 'image' : 'images'}
         </span>
       </div>
 
-      <div class="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:grid sm:snap-none sm:overflow-visible sm:pb-0 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 sm:hidden">
         {media.map((item) => (
-          <figure class="m-0 min-w-[82%] snap-center overflow-hidden rounded-card border border-border bg-surface shadow-sm sm:min-w-0">
+          <figure class="m-0 min-w-[82%] snap-center overflow-hidden rounded-card border border-border bg-surface shadow-sm">
             <a href={item.url} target="_blank" rel="noreferrer" class="block bg-canvas">
               <img
                 class="aspect-[4/3] w-full object-cover"
@@ -56,6 +65,91 @@ const { media, title = 'Approved public media' } = Astro.props;
           </figure>
         ))}
       </div>
+
+      <div class="mt-5 hidden gap-4 sm:grid sm:grid-cols-2 lg:grid-cols-3">
+        {desktopMedia.map((item) => (
+          <figure class="m-0 overflow-hidden rounded-card border border-border bg-surface shadow-sm">
+            <a href={item.url} target="_blank" rel="noreferrer" class="block bg-canvas">
+              <img
+                class="aspect-[4/3] w-full object-cover"
+                src={item.url}
+                alt={item.altText}
+                width={item.width}
+                height={item.height}
+                loading="lazy"
+                decoding="async"
+              />
+            </a>
+            {(item.attribution || item.licenseSlug) ? (
+              <figcaption class="grid gap-1 p-3 text-xs leading-5 text-muted">
+                {item.attribution ? <span>{item.attribution}</span> : null}
+                {item.licenseSlug ? <span>License: {item.licenseSlug}</span> : null}
+              </figcaption>
+            ) : null}
+          </figure>
+        ))}
+      </div>
+
+      {hasMoreOnDesktop ? (
+        <div class="mt-4 hidden sm:block">
+          <button
+            type="button"
+            data-place-gallery-open
+            class="motion-feedback min-h-11 rounded-control border border-border bg-surface px-4 py-2 font-semibold text-brand-700 hover:bg-brand-50"
+          >
+            View all {allMedia.length} photos
+          </button>
+        </div>
+      ) : null}
+
+      {hasMoreOnDesktop ? (
+        <dialog
+          data-place-gallery-dialog
+          class="m-auto max-h-[92vh] w-[min(72rem,94vw)] rounded-card border border-border bg-surface p-0 shadow-panel backdrop:bg-slate-950/60"
+        >
+          <div class="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-border bg-surface px-5 py-4">
+            <div>
+              <p class="m-0 text-sm font-semibold text-brand-700">Gallery</p>
+              <h2 class="m-0 text-xl font-semibold text-ink">{allMedia.length} approved photos</h2>
+            </div>
+            <form method="dialog">
+              <button
+                type="submit"
+                class="motion-feedback min-h-11 rounded-control border border-border px-4 py-2 font-semibold text-ink hover:bg-canvas"
+              >
+                Close
+              </button>
+            </form>
+          </div>
+          <div class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-3">
+            {allMedia.map((item) => (
+              <figure class="m-0 overflow-hidden rounded-card border border-border bg-canvas">
+                <img
+                  class="aspect-[4/3] w-full object-cover"
+                  src={item.url}
+                  alt={item.altText}
+                  width={item.width}
+                  height={item.height}
+                  loading="lazy"
+                  decoding="async"
+                />
+                {(item.attribution || item.licenseSlug) ? (
+                  <figcaption class="grid gap-1 p-3 text-xs leading-5 text-muted">
+                    {item.attribution ? <span>{item.attribution}</span> : null}
+                    {item.licenseSlug ? <span>License: {item.licenseSlug}</span> : null}
+                  </figcaption>
+                ) : null}
+              </figure>
+            ))}
+          </div>
+        </dialog>
+      ) : null}
     </section>
   ) : null
 }
+
+<script>
+  const openButton = document.querySelector<HTMLButtonElement>('[data-place-gallery-open]');
+  const dialog = document.querySelector<HTMLDialogElement>('[data-place-gallery-dialog]');
+  openButton?.addEventListener('click', () => dialog?.showModal());
+</script>
