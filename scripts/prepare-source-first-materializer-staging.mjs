@@ -29,14 +29,23 @@ replaceOnce(
       entityNameKey.includes("steak 'n shake")
         ? 'restaurant'
         : null;
-    const categorySlug = sourceFirstCategorySlug ?? categoryFromTags(tags);
+    const inferredOsmCategorySlug = categoryFromTags(tags);
+    const broadOsmCategory = ['amenity', 'tourism', 'shop', 'office', 'craft', 'leisure', 'healthcare']
+      .map((key) => tags[key]?.trim().toLowerCase())
+      .find((value) => Boolean(value));
+    const categorySlug =
+      sourceFirstCategorySlug ??
+      (inferredOsmCategorySlug !== 'merchant'
+        ? inferredOsmCategorySlug
+        : broadOsmCategory
+          ? publicSlug(broadOsmCategory)
+          : 'merchant');
     const placeArea = [row.locality, row.region].filter(Boolean).join(', ');
+    const categoryLabel = categorySlug.replace(/-/g, ' ');
     const publicDescription =
       row.description ??
-      (sourceFirstCategorySlug === 'restaurant'
-        ? \`${'${row.locationName ?? row.entityName}'} is a restaurant location${'${placeArea ? ` in ${placeArea}` : \'\'}'}. This record tracks verified in-person cryptocurrency payment acceptance.\`
-        : null);`,
-  'source-first category and description',
+      \`${'${row.locationName ?? row.entityName}'} is categorized as ${'${categoryLabel}'}${'${placeArea ? ` in ${placeArea}` : \'\'}'}. This record tracks verified in-person cryptocurrency payment acceptance.\`;`,
+  'physical place category and description',
 );
 replaceOnce(
   "    const osmUrl = `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`;",
