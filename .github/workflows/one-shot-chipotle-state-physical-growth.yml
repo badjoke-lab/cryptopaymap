@@ -51,6 +51,12 @@ jobs:
           CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
         run: npx tsx scripts/promote-confirm-chipotle-physical-staging.ts
+      - name: Backfill official profile fields for promoted Chipotle locations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_CHIPOTLE_PROFILE_MAX: '1000'
+        run: npx tsx scripts/backfill-chipotle-official-place-profiles-staging.ts
       - name: Publish all currently reviewed physical canonical staging records
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
