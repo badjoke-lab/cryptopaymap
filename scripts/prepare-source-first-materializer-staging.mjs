@@ -40,11 +40,7 @@ replaceOnce(
         : broadOsmCategory
           ? publicSlug(broadOsmCategory)
           : 'merchant');
-    const placeArea = [row.locality, row.region].filter(Boolean).join(', ');
-    const categoryLabel = categorySlug.replace(/-/g, ' ');
-    const publicDescription =
-      row.description ??
-      \`${'${row.locationName ?? row.entityName}'} is categorized as ${'${categoryLabel}'}${'${placeArea ? ` in ${placeArea}` : \'\'}'}. This record tracks verified in-person cryptocurrency payment acceptance.\`;`,
+    const publicDescription = row.description;`,
   'physical place category and description',
 );
 replaceOnce(
@@ -79,17 +75,14 @@ source = source.replace(
             ],
           },
           ...(
-            sourceFirstCategorySlug || (publicDescription && !row.description)
+            sourceFirstCategorySlug
               ? [
                   {
                     sourceName: 'CryptoPayMap normalized place profile',
                     sourceUrl: null,
                     licenseSlug: null,
                     attribution: null,
-                    fields: [
-                      ...(sourceFirstCategorySlug ? ['categorySlug'] : []),
-                      ...(publicDescription && !row.description ? ['description'] : []),
-                    ],
+                    fields: ['categorySlug'],
                   },
                 ]
               : []
@@ -113,6 +106,9 @@ source = source.replace(
               ...(row.locationWebsiteUrl || row.entityWebsiteUrl || officialLocationUrl
                 ? ['websiteUrl']
                 : []),
+              ...(row.phone ? ['phone'] : []),
+              ...(row.openingHours ? ['openingHours'] : []),
+              ...(row.amenities?.length ? ['amenities'] : []),
               ...(row.description ? ['description'] : []),
             ],
           },
@@ -121,10 +117,7 @@ source = source.replace(
             sourceUrl: null,
             licenseSlug: null,
             attribution: null,
-            fields: [
-              'categorySlug',
-              ...(publicDescription && !row.description ? ['description'] : []),
-            ],
+            fields: ['categorySlug'],
           },
         ];
     return {`,
@@ -174,4 +167,4 @@ source = source.replace(
 );
 
 await writeFile(path, source, 'utf8');
-console.log('Prepared source-aware physical materializer with normalized category, description, and field provenance for isolated staging review.');
+console.log('Prepared source-aware physical materializer with normalized category and source-backed profile provenance for isolated staging review.');
