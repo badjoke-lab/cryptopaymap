@@ -32,6 +32,13 @@ jobs:
         run: |
           set -o pipefail
           npx tsx scripts/backfill-chipotle-official-place-profiles-staging.ts 2>&1 | tee chipotle-place-profile-backfill.log
+      - name: Repair Chipotle Flexa processor route
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/repair-chipotle-flexa-route-staging.ts 2>&1 | tee chipotle-flexa-route-repair.log
       - name: Backfill OSM source-backed Place profiles
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -59,7 +66,7 @@ jobs:
         run: |
           set -o pipefail
           node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee place-detail-contract.log
-      - name: Assert Chipotle official profile backfill remains intact
+      - name: Assert Chipotle official profile and processor repair
         id: chipotle_contract
         continue-on-error: true
         run: |
@@ -83,15 +90,21 @@ jobs:
           const missingOpeningHours = chipotle.filter(
             (place) => typeof place.openingHours !== 'string' || place.openingHours.trim().length < 1,
           );
+          const wrongRoute = chipotle.filter((place) =>
+            place.claims.some(
+              (claim) => claim.routeType !== 'processor_checkout' || claim.processorSlug !== 'flexa',
+            ),
+          );
           if (
             wrongCategory.length ||
             missingDescription.length ||
             generatedFallbackDescription.length ||
             missingPhone.length ||
-            missingOpeningHours.length
+            missingOpeningHours.length ||
+            wrongRoute.length
           ) {
             throw new Error(
-              `Chipotle profile regression: total=${chipotle.length} wrongCategory=${wrongCategory.length} missingDescription=${missingDescription.length} generatedFallbackDescription=${generatedFallbackDescription.length} missingPhone=${missingPhone.length} missingOpeningHours=${missingOpeningHours.length}`,
+              `Chipotle profile regression: total=${chipotle.length} wrongCategory=${wrongCategory.length} missingDescription=${missingDescription.length} generatedFallbackDescription=${generatedFallbackDescription.length} missingPhone=${missingPhone.length} missingOpeningHours=${missingOpeningHours.length} wrongRoute=${wrongRoute.length}`,
             );
           }
           console.log(
@@ -101,6 +114,8 @@ jobs:
               meaningfulDescriptions: chipotle.length,
               phones: chipotle.length,
               openingHours: chipotle.length,
+              routeType: 'processor_checkout',
+              processorSlug: 'flexa',
               generatedFallbackDescriptions: 0,
             }),
           );
@@ -112,6 +127,7 @@ jobs:
           name: place-detail-contract-audit
           path: |
             chipotle-place-profile-backfill.log
+            chipotle-flexa-route-repair.log
             osm-place-profile-backfill.log
             published-place-depth-audit.log
             place-detail-contract.log
