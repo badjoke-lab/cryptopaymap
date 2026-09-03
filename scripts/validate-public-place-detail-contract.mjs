@@ -17,6 +17,11 @@ const finiteNumber = (value) => typeof value === 'number' && Number.isFinite(val
 const add = (place, field, reason) => {
   failures.push(`${place.placeSlug ?? place.name ?? '<unknown>'}: ${field} ${reason}`);
 };
+const provenanceCovers = (place, field) =>
+  Array.isArray(place.provenance) &&
+  place.provenance.some(
+    (entry) => Array.isArray(entry?.fields) && entry.fields.includes(field),
+  );
 
 for (const place of records) {
   if (!nonEmpty(place.name)) add(place, 'name', 'must be non-empty');
@@ -26,6 +31,12 @@ for (const place of records) {
     add(place, 'categorySlug', 'must not use the generic merchant fallback');
   }
   if (!nonEmpty(place.description)) add(place, 'description', 'must be non-empty');
+  if (!provenanceCovers(place, 'categorySlug')) {
+    add(place, 'provenance', 'must identify the source of categorySlug');
+  }
+  if (!provenanceCovers(place, 'description')) {
+    add(place, 'provenance', 'must identify the source of description');
+  }
   if (!finiteNumber(place.latitude) || !finiteNumber(place.longitude)) {
     add(place, 'coordinates', 'must contain finite latitude and longitude');
   }
@@ -90,6 +101,7 @@ console.log(
     placeDetailContract: 'pass',
     publishedPlaces: records.length,
     requiredProfileFields: ['categorySlug', 'description', 'coordinates'],
+    requiredProfileProvenance: ['categorySlug', 'description'],
     requiredPaymentFields: [
       'routeType',
       'howToPay',
