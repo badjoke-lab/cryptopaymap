@@ -24,6 +24,14 @@ jobs:
       - run: npm run check
       - run: node --check scripts/prepare-source-first-materializer-staging.mjs
       - run: node --check scripts/validate-public-place-detail-contract.mjs
+      - name: Backfill Chipotle official place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_CHIPOTLE_PROFILE_MAX: '1000'
+        run: |
+          set -o pipefail
+          npx tsx scripts/backfill-chipotle-official-place-profiles-staging.ts 2>&1 | tee chipotle-place-profile-backfill.log
       - name: Prepare source-first materializer with required Place profile fields
         run: node scripts/prepare-source-first-materializer-staging.mjs
       - name: Materialize current reviewed staging records
@@ -37,7 +45,7 @@ jobs:
         run: |
           set -o pipefail
           node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee place-detail-contract.log
-      - name: Assert Chipotle source repair remains intact
+      - name: Assert Chipotle official profile backfill remains intact
         id: chipotle_contract
         continue-on-error: true
         run: |
@@ -49,18 +57,37 @@ jobs:
           if (chipotle.length < 1) throw new Error('Expected at least one Chipotle public Place.');
           const wrongCategory = chipotle.filter((place) => place.categorySlug !== 'restaurant');
           const missingDescription = chipotle.filter(
-            (place) => typeof place.description !== 'string' || place.description.trim().length < 1,
+            (place) => typeof place.description !== 'string' || place.description.trim().length < 30,
           );
-          if (wrongCategory.length || missingDescription.length) {
+          const generatedFallbackDescription = chipotle.filter((place) =>
+            typeof place.description === 'string' &&
+            place.description.includes('This record tracks verified in-person cryptocurrency payment acceptance.'),
+          );
+          const missingPhone = chipotle.filter(
+            (place) => typeof place.phone !== 'string' || place.phone.trim().length < 1,
+          );
+          const missingOpeningHours = chipotle.filter(
+            (place) => typeof place.openingHours !== 'string' || place.openingHours.trim().length < 1,
+          );
+          if (
+            wrongCategory.length ||
+            missingDescription.length ||
+            generatedFallbackDescription.length ||
+            missingPhone.length ||
+            missingOpeningHours.length
+          ) {
             throw new Error(
-              `Place profile regression: chipotle=${chipotle.length} wrongCategory=${wrongCategory.length} missingDescription=${missingDescription.length}`,
+              `Chipotle profile regression: total=${chipotle.length} wrongCategory=${wrongCategory.length} missingDescription=${missingDescription.length} generatedFallbackDescription=${generatedFallbackDescription.length} missingPhone=${missingPhone.length} missingOpeningHours=${missingOpeningHours.length}`,
             );
           }
           console.log(
             JSON.stringify({
               chipotlePlaces: chipotle.length,
               category: 'restaurant',
-              descriptionsPresent: chipotle.length,
+              meaningfulDescriptions: chipotle.length,
+              phones: chipotle.length,
+              openingHours: chipotle.length,
+              generatedFallbackDescriptions: 0,
             }),
           );
           NODE
@@ -70,6 +97,7 @@ jobs:
         with:
           name: place-detail-contract-audit
           path: |
+            chipotle-place-profile-backfill.log
             place-detail-contract.log
             chipotle-place-detail-contract.log
           if-no-files-found: error
