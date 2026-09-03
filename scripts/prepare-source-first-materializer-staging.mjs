@@ -68,7 +68,7 @@ source = source.replace(
             attribution: '© OpenStreetMap contributors',
             fields: [
               'name',
-              'categorySlug',
+              ...(sourceFirstCategorySlug ? [] : ['categorySlug']),
               'countryCode',
               'latitude',
               'longitude',
@@ -78,6 +78,22 @@ source = source.replace(
               ...(row.description ? ['description'] : []),
             ],
           },
+          ...(
+            sourceFirstCategorySlug || (publicDescription && !row.description)
+              ? [
+                  {
+                    sourceName: 'CryptoPayMap normalized place profile',
+                    sourceUrl: null,
+                    licenseSlug: null,
+                    attribution: null,
+                    fields: [
+                      ...(sourceFirstCategorySlug ? ['categorySlug'] : []),
+                      ...(publicDescription && !row.description ? ['description'] : []),
+                    ],
+                  },
+                ]
+              : []
+          ),
         ]
       : [
           {
@@ -97,6 +113,7 @@ source = source.replace(
               ...(row.locationWebsiteUrl || row.entityWebsiteUrl || officialLocationUrl
                 ? ['websiteUrl']
                 : []),
+              ...(row.description ? ['description'] : []),
             ],
           },
           {
@@ -106,7 +123,7 @@ source = source.replace(
             attribution: null,
             fields: [
               'categorySlug',
-              ...(publicDescription ? ['description'] : []),
+              ...(publicDescription && !row.description ? ['description'] : []),
             ],
           },
         ];
@@ -157,4 +174,4 @@ source = source.replace(
 );
 
 await writeFile(path, source, 'utf8');
-console.log('Prepared source-aware physical materializer with normalized category and description for isolated staging review.');
+console.log('Prepared source-aware physical materializer with normalized category, description, and field provenance for isolated staging review.');
