@@ -54,6 +54,13 @@ jobs:
         run: |
           set -o pipefail
           npx tsx scripts/backfill-osm-published-place-profiles-staging.ts 2>&1 | tee osm-place-profile-backfill.log
+      - name: Quarantine thin public Place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/quarantine-thin-public-places-staging.ts 2>&1 | tee thin-place-quarantine.log
       - name: Audit full published Place record depth
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -141,6 +148,7 @@ jobs:
             chipotle-place-profile-backfill.log
             chipotle-flexa-route-repair.log
             osm-place-profile-backfill.log
+            thin-place-quarantine.log
             published-place-depth-audit.log
             place-detail-contract.log
             chipotle-place-detail-contract.log
