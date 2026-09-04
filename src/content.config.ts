@@ -2,6 +2,7 @@ import { defineCollection } from 'astro:content';
 import { file, glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 import { parsePublicOnlineServicesDocument } from './public/online-services';
+import { parsePublicPlaceHistoryDocument } from './public/place-history';
 import { parsePublicPlacePinsDocument } from './public/places-discovery';
 import { parsePublicPlacesDocument } from './public/place-detail';
 import { parsePublicStatsDocument } from './public/stats';
@@ -56,6 +57,16 @@ const publicPlaces = defineCollection({
   }),
 });
 
+const publicPlaceHistory = defineCollection({
+  loader: file('public/data/place-history.json', {
+    parser: (text) =>
+      parsePublicPlaceHistoryDocument(JSON.parse(text) as unknown).map((history) => ({
+        id: history.placeSlug,
+        history,
+      })),
+  }),
+});
+
 const publicPlacePins = defineCollection({
   loader: file('public/data/place-pins.json', {
     parser: (text) =>
@@ -101,6 +112,7 @@ export const collections = {
   roadmap,
   changelog,
   publicPlaces,
+  publicPlaceHistory,
   publicPlacePins,
   publicOnlineServices,
   publicStats,
