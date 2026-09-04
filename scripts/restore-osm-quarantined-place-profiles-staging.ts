@@ -217,17 +217,19 @@ async function main() {
     let finalRegion = row.region ?? tagAddress.region;
     let finalPostalCode = row.postalCode ?? tagAddress.postalCode;
     let finalCountryCode = row.countryCode ?? tagAddress.countryCode;
+    const latitude = Number(row.latitude);
+    const longitude = Number(row.longitude);
 
     if (
       (!nonEmpty(finalAddressLine) || !nonEmpty(finalLocality)) &&
       reverseLookups < REVERSE_MAX &&
-      Number.isFinite(row.latitude) &&
-      Number.isFinite(row.longitude)
+      Number.isFinite(latitude) &&
+      Number.isFinite(longitude)
     ) {
       if (reverseLookups > 0) await new Promise((resolve) => setTimeout(resolve, REVERSE_DELAY_MS));
       reverseLookups += 1;
       try {
-        const reverse = await reverseAddress(row.latitude, row.longitude);
+        const reverse = await reverseAddress(latitude, longitude);
         if (reverse) {
           finalAddressLine = finalAddressLine ?? reverse.addressLine;
           finalLocality = finalLocality ?? reverse.locality;
