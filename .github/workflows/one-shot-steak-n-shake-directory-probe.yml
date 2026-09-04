@@ -19,32 +19,43 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Resolve official locator API
+      - name: Resolve official locator data bootstrap
         run: |
           node --input-type=module <<'NODE' | tee steak-directory-probe.json
-          const url = 'https://www.steaknshake.com/wp-content/themes/steaknshake/js/loc.js';
-          const response = await fetch(url, {
-            redirect: 'follow',
-            headers: { 'user-agent': 'CryptoPayMap-official-directory-probe/1.0' },
-            signal: AbortSignal.timeout(15000),
-          });
-          if (!response.ok) throw new Error(`loc.js HTTP ${response.status}`);
-          const text = await response.text();
-          const needles = ['loadLocationData', 'zsapi', 'getJSON', '$.get', 'jQuery.get', 'locations.json', 'venues'];
-          const contexts = {};
-          for (const needle of needles) {
-            const found = [];
-            let from = 0;
-            while (found.length < 40) {
-              const index = text.toLowerCase().indexOf(needle.toLowerCase(), from);
-              if (index < 0) break;
-              found.push(text.slice(Math.max(0, index - 1200), Math.min(text.length, index + needle.length + 2200)));
-              from = index + needle.length;
+          const urls = [
+            'https://www.steaknshake.com/locations/',
+            'https://www.steaknshake.com/wp-content/themes/steaknshake/js/loc.js',
+          ];
+          const result = [];
+          for (const url of urls) {
+            const response = await fetch(url, {
+              redirect: 'follow',
+              headers: { 'user-agent': 'CryptoPayMap-official-directory-probe/1.0' },
+              signal: AbortSignal.timeout(15000),
+            });
+            if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
+            const text = await response.text();
+            const needles = ['loadLocationData', 'lochash', 'zsapi', 'venue/', 'locations =', 'var locations', 'window.locations', 'locationData', 'venues'];
+            const contexts = {};
+            for (const needle of needles) {
+              const found = [];
+              let from = 0;
+              while (found.length < 50) {
+                const index = text.toLowerCase().indexOf(needle.toLowerCase(), from);
+                if (index < 0) break;
+                found.push(text.slice(Math.max(0, index - 1800), Math.min(text.length, index + needle.length + 3200)));
+                from = index + needle.length;
+              }
+              contexts[needle] = found;
             }
-            contexts[needle] = found;
+            const inlineScripts = [...text.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
+              .map((m) => m[1])
+              .filter((s) => /loadLocationData|lochash|zsapi|venue|locations/i.test(s))
+              .slice(0, 40);
+            const quoted = [...new Set([...text.matchAll(/["']([^"']*(?:zsapi|venue|location)[^"']*)["']/gi)].map((m) => m[1]))].slice(0, 300);
+            result.push({ url, chars: text.length, quoted, inlineScripts, contexts });
           }
-          const quoted = [...new Set([...text.matchAll(/["']([^"']*(?:zsapi|venue|location)[^"']*)["']/gi)].map((m) => m[1]))].slice(0, 200);
-          console.log(JSON.stringify({ status: response.status, chars: text.length, quoted, contexts }, null, 2));
+          console.log(JSON.stringify(result, null, 2));
           NODE
       - uses: actions/upload-artifact@v4
         with:
