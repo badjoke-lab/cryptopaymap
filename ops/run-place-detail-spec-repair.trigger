@@ -1,1 +1,1 @@
-2026-09-04T15:13:00Z prove current latest head with 953 Place staging, zero thin records, >=950 guard, build and isolated deploy
+2026-09-05T00:00:00+09:00 prove main-synced head with 953 Place staging, zero thin records, history privacy, build and isolated deploy
