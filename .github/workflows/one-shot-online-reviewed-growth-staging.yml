@@ -1,0 +1,87 @@
+name: One-shot reviewed online staging growth
+
+on:
+  push:
+    branches:
+      - feat/bulk-official-directory-evidence
+    paths:
+      - scripts/promote-confirm-official-online-evidence-staging.ts
+      - scripts/publish-reviewed-online-canonical-staging.ts
+      - scripts/materialize-online-services-from-staging-db.ts
+      - .github/workflows/one-shot-online-reviewed-growth-staging.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: one-shot-online-reviewed-growth-staging
+  cancel-in-progress: false
+
+jobs:
+  grow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check repository before staging mutation
+        run: npm run check
+
+      - name: Reverify merchant first-party pages and seed private Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/seed-bitpay-first-party-online-evidence-staging.ts
+
+      - name: Promote and confirm strict online Evidence
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: npx tsx scripts/promote-confirm-official-online-evidence-staging.ts
+
+      - name: Publish reviewed online canonical staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-online-canonical-staging.ts
+
+      - name: Materialize existing reviewed physical data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+
+      - name: Add reviewed online services to public artifacts
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-online-services-from-staging-db.ts
+
+      - name: Build staging site
+        run: npm run build
+
+      - name: Prepare review artifact
+        run: node scripts/prepare-staging-review-artifact.mjs
+
+      - name: Deploy isolated staging review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name cryptopaymap-staging
+          --branch online-growth-review

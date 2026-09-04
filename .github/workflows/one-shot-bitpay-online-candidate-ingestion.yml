@@ -1,0 +1,33 @@
+name: One-shot BitPay Pay Direct Candidate ingestion
+
+on:
+  push:
+    branches:
+      - feat/bulk-official-directory-evidence
+    paths:
+      - scripts/ingest-bitpay-pay-direct-online-candidates-staging.ts
+      - .github/workflows/one-shot-bitpay-online-candidate-ingestion.yml
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Check repository before staging mutation
+        run: npm run check
+      - name: Ingest current BitPay Pay Direct online Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/ingest-bitpay-pay-direct-online-candidates-staging.ts
