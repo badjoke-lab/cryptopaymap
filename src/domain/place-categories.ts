@@ -17,11 +17,11 @@ export type PlaceCategory = (typeof placeCategoryValues)[number];
 
 export interface PlaceCategorySignals {
   name: string;
-  amenity?: string | null;
-  tourism?: string | null;
-  shop?: string | null;
-  office?: string | null;
-  healthcare?: string | null;
+  amenity?: string | null | undefined;
+  tourism?: string | null | undefined;
+  shop?: string | null | undefined;
+  office?: string | null | undefined;
+  healthcare?: string | null | undefined;
 }
 
 function normalized(value: string | null | undefined): string | null {
