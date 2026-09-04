@@ -1,1 +1,1 @@
-2026-09-04T15:06:00Z rerun OSM Place restore after Node fs typing fix with >=950 inventory guard
+2026-09-04T15:10:00Z latest-head 953 Place staging proof after history boundary and typing fixes with >=950 inventory guard
