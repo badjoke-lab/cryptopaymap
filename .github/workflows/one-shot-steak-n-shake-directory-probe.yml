@@ -19,48 +19,32 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Probe official locator implementation
+      - name: Resolve official locator API
         run: |
           node --input-type=module <<'NODE' | tee steak-directory-probe.json
-          const urls = [
-            'https://www.steaknshake.com/wp-content/themes/steaknshake/js/loc.js',
-            'https://www.steaknshake.com/geo.php',
-            'https://www.steaknshake.com/sitemap.xml',
-            'https://www.steaknshake.com/robots.txt',
-          ];
-          const out = [];
-          for (const url of urls) {
-            try {
-              const response = await fetch(url, {
-                redirect: 'follow',
-                headers: {
-                  'user-agent': 'CryptoPayMap-official-directory-probe/1.0',
-                  accept: 'application/javascript,text/javascript,text/html,application/xml,text/xml,text/plain;q=0.9,*/*;q=0.1',
-                },
-                signal: AbortSignal.timeout(15000),
-              });
-              const text = (await response.text()).slice(0, 2_000_000);
-              const urlsFound = [...new Set([...text.matchAll(/https?:\/\/[^\s"'<>]+/gi)].map((m) => m[0]))].slice(0, 100);
-              const relativeEndpoints = [...new Set([...text.matchAll(/["']([^"']+\.(?:php|json|xml)(?:\?[^"']*)?)["']/gi)].map((m) => m[1]))].slice(0, 100);
-              const ajaxContexts = [...text.matchAll(/.{0,220}(?:ajax|fetch\s*\(|geo\.php|locations?|wp-json).{0,420}/gi)].map((m) => m[0]).slice(0, 80);
-              const sitemapLocs = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((m) => m[1].trim()).slice(0, 500);
-              out.push({
-                url,
-                finalUrl: response.url,
-                status: response.status,
-                contentType: response.headers.get('content-type'),
-                bodyChars: text.length,
-                urlsFound,
-                relativeEndpoints,
-                ajaxContexts,
-                sitemapLocs,
-                bodyPrefix: text.slice(0, 30000),
-              });
-            } catch (error) {
-              out.push({ url, error: error instanceof Error ? error.message : String(error) });
+          const url = 'https://www.steaknshake.com/wp-content/themes/steaknshake/js/loc.js';
+          const response = await fetch(url, {
+            redirect: 'follow',
+            headers: { 'user-agent': 'CryptoPayMap-official-directory-probe/1.0' },
+            signal: AbortSignal.timeout(15000),
+          });
+          if (!response.ok) throw new Error(`loc.js HTTP ${response.status}`);
+          const text = await response.text();
+          const needles = ['loadLocationData', 'zsapi', 'getJSON', '$.get', 'jQuery.get', 'locations.json', 'venues'];
+          const contexts = {};
+          for (const needle of needles) {
+            const found = [];
+            let from = 0;
+            while (found.length < 40) {
+              const index = text.toLowerCase().indexOf(needle.toLowerCase(), from);
+              if (index < 0) break;
+              found.push(text.slice(Math.max(0, index - 1200), Math.min(text.length, index + needle.length + 2200)));
+              from = index + needle.length;
             }
+            contexts[needle] = found;
           }
-          console.log(JSON.stringify(out, null, 2));
+          const quoted = [...new Set([...text.matchAll(/["']([^"']*(?:zsapi|venue|location)[^"']*)["']/gi)].map((m) => m[1]))].slice(0, 200);
+          console.log(JSON.stringify({ status: response.status, chars: text.length, quoted, contexts }, null, 2));
           NODE
       - uses: actions/upload-artifact@v4
         with:
