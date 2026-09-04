@@ -1,0 +1,37 @@
+name: One-shot Place non-image richness audit
+
+on:
+  push:
+    branches:
+      - feat/place-record-enrichment
+    paths:
+      - ops/run-place-richness-audit.trigger
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Audit public Place non-image richness
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/audit-place-record-richness-staging.ts 2>&1 | tee place-richness-audit.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: place-richness-audit
+          path: place-richness-audit.json
+          if-no-files-found: error
+          retention-days: 7
