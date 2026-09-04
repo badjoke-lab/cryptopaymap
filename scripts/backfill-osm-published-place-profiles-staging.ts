@@ -17,6 +17,7 @@ const GENERATED_DESCRIPTION_MARKER =
   'This record tracks verified in-person cryptocurrency payment acceptance.';
 
 type JsonRecord = Record<string, unknown>;
+type SocialLink = { platform: string; url: string; handle: string | null };
 
 function record(value: unknown): JsonRecord {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -42,13 +43,39 @@ function isThinDescription(value: string | null): boolean {
 }
 
 function sourceAmenities(tags: Record<string, string>): string[] {
-  const values: string[] = [];
-  if (tags.wheelchair === 'yes') values.push('wheelchair_accessible');
-  if (tags.outdoor_seating === 'yes') values.push('outdoor_seating');
-  if (tags.takeaway === 'yes') values.push('takeaway');
-  if (tags.delivery === 'yes') values.push('delivery');
-  if (tags.internet_access && tags.internet_access !== 'no') values.push('internet_access');
-  return values;
+  const values = new Set<string>();
+  if (tags.wheelchair === 'yes') values.add('wheelchair_accessible');
+  if (tags.wheelchair === 'limited') values.add('wheelchair_limited');
+  if (tags.outdoor_seating === 'yes') values.add('outdoor_seating');
+  if (tags.takeaway === 'yes' || tags.takeaway === 'only') values.add('takeaway');
+  if (tags.delivery === 'yes') values.add('delivery');
+  if (tags.drive_through === 'yes') values.add('drive_through');
+  if (tags.internet_access && tags.internet_access !== 'no') values.add('internet_access');
+  if (tags.toilets === 'yes') values.add('toilets');
+  if (tags.air_conditioning === 'yes') values.add('air_conditioning');
+  if (tags.reservation === 'yes' || tags.reservation === 'required') values.add('reservations');
+  if (tags.smoking === 'no') values.add('smoke_free');
+  return [...values];
+}
+
+function sourceSocialLinks(tags: Record<string, string>): SocialLink[] {
+  const known: Array<[string, string | undefined]> = [
+    ['facebook', first(tags['contact:facebook'], tags.facebook) ?? undefined],
+    ['instagram', first(tags['contact:instagram'], tags.instagram) ?? undefined],
+    ['twitter', first(tags['contact:twitter'], tags.twitter) ?? undefined],
+    ['mastodon', first(tags['contact:mastodon'], tags.mastodon) ?? undefined],
+    ['telegram', first(tags['contact:telegram'], tags.telegram) ?? undefined],
+  ];
+  const links: SocialLink[] = [];
+  for (const [platform, raw] of known) {
+    if (!raw) continue;
+    try {
+      const parsed = new URL(raw);
+      if (!['http:', 'https:'].includes(parsed.protocol)) continue;
+      links.push({ platform, url: parsed.toString(), handle: null });
+    } catch {}
+  }
+  return links;
 }
 
 async function main() {
@@ -71,6 +98,7 @@ async function main() {
       description: locations.description,
       openingHours: locations.openingHours,
       amenities: locations.amenities,
+      socialLinks: locations.socialLinks,
       sourceRecordId: sourceRecords.id,
       rawPayload: sourceRecords.rawPayload,
     })
@@ -102,6 +130,7 @@ async function main() {
     openingHoursBackfilled: 0,
     websitesBackfilled: 0,
     amenitiesBackfilled: 0,
+    socialLinksBackfilled: 0,
   };
   const unresolvedDescriptions: Array<{ placeSlug: string; name: string }> = [];
 
@@ -115,12 +144,15 @@ async function main() {
     const description = isThinDescription(row.description)
       ? first(tags.description, tags['description:en'])
       : null;
-    const phone = !row.phone?.trim() ? first(tags.phone, tags['contact:phone']) : null;
+    const phone = !row.phone?.trim()
+      ? first(tags.phone, tags['contact:phone'], tags.mobile, tags['contact:mobile'])
+      : null;
     const openingHours = !row.openingHours?.trim() ? first(tags.opening_hours) : null;
     const website = !row.websiteUrl?.trim()
       ? first(tags.website, tags['contact:website'], tags.url)
       : null;
     const amenities = row.amenities?.length ? [] : sourceAmenities(tags);
+    const socialLinks = row.socialLinks?.length ? [] : sourceSocialLinks(tags);
 
     const updateFields: Record<string, unknown> = {};
     const provenanceFields: string[] = [];
@@ -148,6 +180,11 @@ async function main() {
       updateFields.amenities = amenities;
       provenanceFields.push('amenities');
       counters.amenitiesBackfilled += 1;
+    }
+    if (socialLinks.length > 0) {
+      updateFields.socialLinks = socialLinks;
+      provenanceFields.push('socialLinks');
+      counters.socialLinksBackfilled += 1;
     }
 
     if (provenanceFields.length > 0) {
