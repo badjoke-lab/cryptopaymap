@@ -1,0 +1,71 @@
+name: One-shot Steak n Shake official directory probe
+
+on:
+  push:
+    branches:
+      - feat/steak-n-shake-btc-growth
+    paths:
+      - .github/workflows/one-shot-steak-n-shake-directory-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Probe public official directory surfaces
+        run: |
+          node --input-type=module <<'NODE' | tee steak-directory-probe.json
+          const urls = [
+            'https://www.steaknshake.com/locations/',
+            'https://www.steaknshake.com/sitemap.xml',
+            'https://www.steaknshake.com/wp-sitemap.xml',
+            'https://www.steaknshake.com/robots.txt',
+            'https://www.steaknshake.com/locations/oh-findlay-broad-avenue/',
+          ];
+          const out = [];
+          for (const url of urls) {
+            try {
+              const response = await fetch(url, {
+                redirect: 'follow',
+                headers: {
+                  'user-agent': 'CryptoPayMap-official-directory-probe/1.0',
+                  accept: 'text/html,application/xml,text/xml,text/plain;q=0.9,*/*;q=0.1',
+                },
+                signal: AbortSignal.timeout(15000),
+              });
+              const text = (await response.text()).slice(0, 2_000_000);
+              const locationUrls = [...new Set([...text.matchAll(/(?:https?:\/\/www\.steaknshake\.com)?(\/locations\/[a-z0-9][a-z0-9\-/]*\/)/gi)].map((m) => new URL(m[1], response.url).toString()))].slice(0, 50);
+              const scriptSrcs = [...new Set([...text.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map((m) => new URL(m[1], response.url).toString()))].slice(0, 50);
+              const jsonLdTypes = [...text.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].map((m) => {
+                try {
+                  const parsed = JSON.parse(m[1]);
+                  return Array.isArray(parsed) ? parsed.map((v) => v?.['@type'] ?? null) : parsed?.['@type'] ?? null;
+                } catch {
+                  return 'unparseable';
+                }
+              });
+              const markers = {
+                wpJson: /wp-json/i.test(text),
+                storeLocator: /store.?locator|location.?finder|locations.?api/i.test(text),
+                googleMaps: /maps\.googleapis\.com|google\.maps/i.test(text),
+                jsonLd: jsonLdTypes.length > 0,
+              };
+              out.push({ url, finalUrl: response.url, status: response.status, contentType: response.headers.get('content-type'), bodyChars: text.length, locationUrls, scriptSrcs, jsonLdTypes, markers });
+            } catch (error) {
+              out.push({ url, error: error instanceof Error ? error.message : String(error) });
+            }
+          }
+          console.log(JSON.stringify(out, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        with:
+          name: steak-directory-probe
+          path: steak-directory-probe.json
+          retention-days: 3
