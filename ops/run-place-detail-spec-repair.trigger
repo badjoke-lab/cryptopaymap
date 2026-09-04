@@ -1,1 +1,1 @@
-2026-09-04T03:36:00Z restore source-backed OSM Places, enforce >=950 reviewed records, and rematerialize staging
+2026-09-04T03:45:00Z rerun source-backed OSM Place restore with valid unhidden events and >=950 inventory guard
