@@ -72,6 +72,10 @@ export const publicPlaceHistoryFileSchema = z
     }
   });
 
+export function parsePublicPlaceHistoryDocument(value: unknown) {
+  return publicPlaceHistoryFileSchema.parse(value).records;
+}
+
 export type PublicPlaceHistoryEvent = z.infer<typeof publicPlaceHistoryEventSchema>;
 export type PublicPlaceHistoryRecord = z.infer<typeof publicPlaceHistoryRecordSchema>;
 export type PublicPlaceHistoryFile = z.infer<typeof publicPlaceHistoryFileSchema>;
