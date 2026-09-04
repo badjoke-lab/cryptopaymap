@@ -1,4 +1,4 @@
-import { readFile, writeFile } from 'node:fs/promises';
+import { promises as fs } from 'node:fs';
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
 import { acceptanceClaims, locations, verificationEvents } from '../src/db/schema';
@@ -85,7 +85,7 @@ async function main() {
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
 
-  const rawPlaces = JSON.parse(await readFile(placesPath, 'utf8')) as PlacesDocument;
+  const rawPlaces = JSON.parse(await fs.readFile(placesPath, 'utf8')) as PlacesDocument;
   if (!Array.isArray(rawPlaces.records)) throw new Error('places.json records must be an array.');
   const placeSlugs = rawPlaces.records
     .map((record) => (record as PublicPlaceLike).placeSlug)
@@ -157,7 +157,7 @@ async function main() {
     generatedAt,
     records,
   });
-  await writeFile(historyPath, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
+  await fs.writeFile(historyPath, `${JSON.stringify(document, null, 2)}\n`, 'utf8');
 
   console.log(
     JSON.stringify(
