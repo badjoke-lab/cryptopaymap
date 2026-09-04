@@ -29,16 +29,31 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Prepare source-aware Place materializer
+        run: node scripts/prepare-source-first-materializer-staging.mjs
+
       - name: Materialize public data
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: |
-          if [ -n "${DATABASE_URL:-}" ]; then
-            npx tsx scripts/materialize-public-data-from-staging-db.ts
-          else
-            npm run staging:review:data
+          if [ -z "${DATABASE_URL:-}" ]; then
+            echo 'DATABASE_URL is required for source-backed staging review materialization.' >&2
+            exit 1
           fi
+          npx tsx scripts/materialize-public-data-from-staging-db.ts
+
+      - name: Materialize real Place verification and change history
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-place-history-staging.ts
+
+      - name: Validate published Place detail contract
+        run: node scripts/validate-public-place-detail-contract.mjs public/data/places.json
+
+      - name: Validate public Place history coverage and privacy
+        run: node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json
 
       - name: Build
         run: npm run build
