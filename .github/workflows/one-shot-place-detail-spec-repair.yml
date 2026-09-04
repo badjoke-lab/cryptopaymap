@@ -54,6 +54,14 @@ jobs:
         run: |
           set -o pipefail
           npx tsx scripts/backfill-osm-published-place-profiles-staging.ts 2>&1 | tee osm-place-profile-backfill.log
+      - name: Restore source-backed quarantined OSM Place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OSM_PROFILE_REVERSE_MAX: '100'
+        run: |
+          set -o pipefail
+          npx tsx scripts/restore-osm-quarantined-place-profiles-staging.ts 2>&1 | tee osm-place-profile-restore.log
       - name: Quarantine thin public Place profiles
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -68,6 +76,20 @@ jobs:
         run: |
           set -o pipefail
           npx tsx scripts/audit-published-place-depth-staging.ts 2>&1 | tee published-place-depth-audit.log
+      - name: Assert reviewed inventory did not collapse
+        run: |
+          set -o pipefail
+          node --input-type=module <<'NODE' 2>&1 | tee place-inventory-guard.log
+          import { readFile } from 'node:fs/promises';
+          const audit = JSON.parse(await readFile('published-place-depth-audit.log', 'utf8'));
+          if (audit.publishedPlaces < 950) {
+            throw new Error(`Reviewed Place inventory collapsed: published=${audit.publishedPlaces}, expected at least 950.`);
+          }
+          if (audit.thinPlaces !== 0) {
+            throw new Error(`Thin Place records remain public: ${audit.thinPlaces}.`);
+          }
+          console.log(JSON.stringify({ publishedPlaces: audit.publishedPlaces, thinPlaces: audit.thinPlaces, minimumExpected: 950 }));
+          NODE
       - name: Prepare source-first materializer with required Place profile fields
         run: node scripts/prepare-source-first-materializer-staging.mjs
       - name: Materialize current reviewed staging records
@@ -148,8 +170,10 @@ jobs:
             chipotle-place-profile-backfill.log
             chipotle-flexa-route-repair.log
             osm-place-profile-backfill.log
+            osm-place-profile-restore.log
             thin-place-quarantine.log
             published-place-depth-audit.log
+            place-inventory-guard.log
             place-detail-contract.log
             chipotle-place-detail-contract.log
           if-no-files-found: error
