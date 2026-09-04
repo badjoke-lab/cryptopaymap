@@ -198,6 +198,7 @@ async function main() {
   let locationsUpdated = 0;
   let descriptionsBackfilled = 0;
   let addressesBackfilled = 0;
+  let regionsBackfilled = 0;
   let provenanceLinksCreated = 0;
   let restoredPlaces = 0;
   let restoredClaims = 0;
@@ -221,7 +222,7 @@ async function main() {
     const longitude = Number(row.longitude);
 
     if (
-      (!nonEmpty(finalAddressLine) || !nonEmpty(finalLocality)) &&
+      (!nonEmpty(finalAddressLine) || !nonEmpty(finalLocality) || !nonEmpty(finalRegion)) &&
       reverseLookups < REVERSE_MAX &&
       Number.isFinite(latitude) &&
       Number.isFinite(longitude)
@@ -258,6 +259,7 @@ async function main() {
     if (!nonEmpty(row.region) && nonEmpty(finalRegion)) {
       updateFields.region = finalRegion;
       if (tagAddress.region) tagProvenanceFields.add('region');
+      regionsBackfilled += 1;
     }
     if (!nonEmpty(row.postalCode) && nonEmpty(finalPostalCode)) {
       updateFields.postalCode = finalPostalCode;
@@ -343,6 +345,7 @@ async function main() {
         locationsUpdated,
         descriptionsBackfilled,
         addressesBackfilled,
+        regionsBackfilled,
         provenanceLinksCreated,
         restoredPlaces,
         restoredClaims,
