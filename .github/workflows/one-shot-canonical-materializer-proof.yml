@@ -1,0 +1,87 @@
+name: One-shot canonical source-first materializer proof
+
+on:
+  push:
+    branches:
+      - fix/canonical-source-first-materializer
+    paths:
+      - .github/workflows/one-shot-canonical-materializer-proof.yml
+      - ops/run-canonical-materializer-proof.trigger
+
+permissions:
+  contents: read
+
+jobs:
+  proof:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Typecheck repository
+        run: npm run check
+      - name: Assert canonical source-first materializer without rewriting source
+        run: |
+          node --check scripts/prepare-source-first-materializer-staging.mjs
+          node scripts/prepare-source-first-materializer-staging.mjs
+          git diff --exit-code -- scripts/materialize-public-data-from-staging-db.ts scripts/prepare-source-first-materializer-staging.mjs
+      - name: Materialize reviewed staging public data
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/materialize-public-data-from-staging-db.ts 2>&1 | tee canonical-materializer.log
+      - name: Materialize real Place verification and change history
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/materialize-public-place-history-staging.ts 2>&1 | tee canonical-history.log
+      - name: Validate Place detail contract
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee canonical-place-contract.log
+      - name: Validate Place history coverage and privacy
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json 2>&1 | tee canonical-history-contract.log
+      - name: Assert proven inventory and history counts
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFile } from 'node:fs/promises';
+          const materializer = JSON.parse((await readFile('canonical-materializer.log', 'utf8')).trim());
+          const history = JSON.parse(await readFile('canonical-history.log', 'utf8'));
+          const historyContract = JSON.parse((await readFile('canonical-history-contract.log', 'utf8')).trim());
+          const expectedDigest = '2339173cafa2b6a95b35b9a774ef81cdf20b4424e323bd641c644261a4ec0729';
+          if (materializer.physicalPlaces !== 953 || materializer.mapPins !== 953 || materializer.acceptanceClaims !== 953) {
+            throw new Error(`Inventory regression: ${JSON.stringify(materializer)}`);
+          }
+          if (materializer.snapshotInputDigest !== expectedDigest || materializer.syntheticFixturesUsed !== false || materializer.candidatePayloadExposed !== false) {
+            throw new Error(`Materializer proof regression: ${JSON.stringify(materializer)}`);
+          }
+          if (history.publicPlaces !== 953 || history.historyRecords !== 953 || history.verificationEvents !== 953 || history.changeEvents !== 1031 || history.missingVerification !== 0) {
+            throw new Error(`History regression: ${JSON.stringify(history)}`);
+          }
+          if (historyContract.internalFieldsLeaked !== 0) {
+            throw new Error(`History privacy regression: ${JSON.stringify(historyContract)}`);
+          }
+          console.log(JSON.stringify({ inventory: 953, verificationEvents: 953, changeEvents: 1031, internalFieldsLeaked: 0, snapshotInputDigest: expectedDigest }));
+          NODE
+      - name: Build
+        run: npm run build
+      - name: Prepare isolated review artifact
+        run: node scripts/prepare-staging-review-artifact.mjs
+      - name: Deploy isolated canonical-materializer review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: >-
+          npx wrangler pages deploy dist
+          --project-name cryptopaymap-staging
+          --branch canonical-materializer-proof
