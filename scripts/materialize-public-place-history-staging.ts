@@ -1,4 +1,3 @@
-// @ts-expect-error Operational Node script; application tsconfig intentionally excludes Node ambient types.
 import { promises as fs } from 'node:fs';
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
