@@ -1,34 +1,55 @@
 ---
+import { readFile } from 'node:fs/promises';
 import { getCollection } from 'astro:content';
 import PlaceDetail from '../../components/public/PlaceDetail.astro';
+import PlaceHistory from '../../components/public/PlaceHistory.astro';
 import PlacePracticalProfile from '../../components/public/PlacePracticalProfile.astro';
 import { PublicPlaceMiniMap } from '../../components/public/PublicPlaceMiniMap';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
+import {
+  publicPlaceHistoryFileSchema,
+  type PublicPlaceHistoryRecord,
+} from '../../public/place-history';
 import { publicPlaceSchema } from '../../schemas/public-exports';
+
+const historyDataUrl = new URL('../../../public/data/place-history.json', import.meta.url);
 
 export async function getStaticPaths() {
   const entries = await getCollection('publicPlaces');
+  const historyDocument = publicPlaceHistoryFileSchema.parse(
+    JSON.parse(await readFile(historyDataUrl, 'utf8')),
+  );
+  const historyBySlug = new Map(
+    historyDocument.records.map((record) => [record.placeSlug, record] as const),
+  );
+
   return entries.map((entry) => {
     const place = publicPlaceSchema.parse((entry.data as { place: unknown }).place);
+    const history = historyBySlug.get(place.placeSlug);
+    if (!history) {
+      throw new Error(`Missing public Place history for ${place.placeSlug}.`);
+    }
     return {
       params: { slug: place.placeSlug },
-      props: { place },
+      props: { place, history },
     };
   });
 }
 
 interface Props {
   place: PublicPlace;
+  history: PublicPlaceHistoryRecord;
 }
 
-const { place } = Astro.props;
+const { place, history } = Astro.props;
 const model = buildPlaceDetailModel(place);
 const description = `${place.name}: verified cryptocurrency payment information, networks, payment instructions, evidence, and freshness.`;
 ---
 
 <BaseLayout title={`${place.name} | CryptoPayMap`} description={description}>
   <PlaceDetail model={model} />
+  <PlaceHistory history={history} />
   <section class="safe-area-inline page-container pb-8 sm:pb-10" aria-labelledby="place-map-title">
     <div class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
       <p class="m-0 text-sm font-semibold text-brand-700">Location</p>
