@@ -1,0 +1,176 @@
+name: One-shot Chipotle Houston physical staging growth
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - ops/run-chipotle-houston-growth.trigger
+
+permissions:
+  contents: read
+
+jobs:
+  grow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Select only new Chipotle Candidates for this Houston batch
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('scripts/promote-confirm-chipotle-physical-staging.ts')
+          s = p.read_text()
+          s = s.replace("const MAX_TARGETS = 40;", "const MAX_TARGETS = 50;")
+          old = "inArray(sourceCandidates.candidateStatus,['new','triaged','promoted'])"
+          new = "eq(sourceCandidates.candidateStatus,'new')"
+          if old not in s:
+              raise SystemExit('Chipotle candidate selection patch target changed unexpectedly')
+          p.write_text(s.replace(old, new))
+          PY
+      - name: Reverify and confirm new Houston Chipotle physical locations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: npx tsx scripts/promote-confirm-chipotle-physical-staging.ts
+      - name: Publish reviewed physical canonical staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+        run: npx tsx scripts/publish-reviewed-physical-canonical-staging.ts
+      - name: Prepare source-first physical materializer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('scripts/materialize-public-data-from-staging-db.ts')
+          s = p.read_text()
+
+          def replace_once(old, new, label):
+              global s
+              if old not in s:
+                  raise SystemExit(f'materializer patch target changed: {label}')
+              s = s.replace(old, new, 1)
+
+          replace_once(
+              "if (!row.entitySlug || !row.howToPay || !row.osmType || row.osmId === null) {",
+              "if (!row.entitySlug || !row.howToPay) {",
+              'canonical required fields',
+          )
+          replace_once(
+              "    const origin = origins.get(row.candidateId);\n    const element = object(origin?.element);",
+              "    const origin = origins.get(row.candidateId);\n    const reviewSeed = object(origin?.reviewSeed);\n    const officialLocationUrl =\n      typeof reviewSeed?.websiteUrl === 'string' ? reviewSeed.websiteUrl : null;\n    const element = object(origin?.element);",
+              'origin review seed',
+          )
+          replace_once(
+              "    const osmUrl = `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`;",
+              "    const osmUrl =\n      row.osmType && row.osmId !== null\n        ? `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`\n        : null;",
+              'optional OSM URL',
+          )
+
+          provenance_pattern = re.compile(r"    const provenance = \[[\s\S]*?\n    \];\n    return \{")
+          provenance_replacement = """    const provenance = osmUrl
+              ? [
+                  {
+                    sourceName: 'OpenStreetMap',
+                    sourceUrl: osmUrl,
+                    licenseSlug: 'odbl-1-0',
+                    attribution: '© OpenStreetMap contributors',
+                    fields: [
+                      'name',
+                      'categorySlug',
+                      'countryCode',
+                      'latitude',
+                      'longitude',
+                      ...(row.locationWebsiteUrl || row.entityWebsiteUrl ? ['websiteUrl'] : []),
+                      ...(row.phone ? ['phone'] : []),
+                      ...(row.openingHours ? ['openingHours'] : []),
+                    ],
+                  },
+                ]
+              : [
+                  {
+                    sourceName: 'Official merchant location directory',
+                    sourceUrl: officialLocationUrl ?? row.locationWebsiteUrl ?? row.entityWebsiteUrl,
+                    licenseSlug: null,
+                    attribution: null,
+                    fields: [
+                      'name',
+                      'addressLine',
+                      'locality',
+                      'region',
+                      'postalCode',
+                      'countryCode',
+                      'latitude',
+                      'longitude',
+                      ...(row.locationWebsiteUrl || row.entityWebsiteUrl || officialLocationUrl
+                        ? ['websiteUrl']
+                        : []),
+                    ],
+                  },
+                ];
+            return {"""
+          s, n = provenance_pattern.subn(provenance_replacement, s, count=1)
+          if n != 1:
+              raise SystemExit('materializer patch target changed: provenance')
+
+          replace_once(
+              "      osm: { osmUrl, osmType: row.osmType, osmId: String(row.osmId) },",
+              "      osm:\n        osmUrl && row.osmType && row.osmId !== null\n          ? { osmUrl, osmType: row.osmType, osmId: String(row.osmId) }\n          : null,",
+              'optional OSM metadata',
+          )
+
+          locations_pattern = re.compile(r"  const locationsOsm = places\.map\(\(place\) => \(\{[\s\S]*?\n  \}\)\);\n  const publicPlaces")
+          locations_replacement = """  const locationsOsm = places.flatMap((place) =>
+            place.osm
+              ? [
+                  {
+                    locationSlug: place.placeSlug,
+                    name: place.name,
+                    addressLine: place.addressLine,
+                    locality: place.locality,
+                    region: place.region,
+                    postalCode: place.postalCode,
+                    countryCode: place.countryCode,
+                    latitude: place.latitude,
+                    longitude: place.longitude,
+                    osmType: place.osm.osmType,
+                    osmId: place.osm.osmId,
+                    websiteUrl: place.websiteUrl,
+                    sourceUrl: place.osm.osmUrl,
+                    attribution: '© OpenStreetMap contributors',
+                    licenseSlug: 'odbl-1-0' as const,
+                  },
+                ]
+              : [],
+          );
+          const publicPlaces"""
+          s, n = locations_pattern.subn(locations_replacement, s, count=1)
+          if n != 1:
+              raise SystemExit('materializer patch target changed: OSM auxiliary export')
+
+          p.write_text(s)
+          PY
+      - name: Materialize public data from staging DB
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - run: npm run build
+      - run: node scripts/prepare-staging-review-artifact.mjs
+      - name: Deploy isolated staging review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch physical-growth-review

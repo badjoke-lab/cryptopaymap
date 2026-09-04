@@ -1,0 +1,105 @@
+---
+import type { PublicPlaceHistoryEvent, PublicPlaceHistoryRecord } from '../../public/place-history';
+
+interface Props {
+  history: PublicPlaceHistoryRecord;
+}
+
+const { history } = Astro.props;
+
+const formatLabel = (value: string) =>
+  value
+    .split('_')
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(' ');
+
+const formatDate = (value: string) =>
+  new Intl.DateTimeFormat('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'UTC',
+  }).format(new Date(value));
+
+const transitionLabel = (event: PublicPlaceHistoryEvent) => {
+  if (event.fromStatus || event.toStatus) {
+    const from = event.fromStatus ? formatLabel(event.fromStatus) : 'None';
+    const to = event.toStatus ? formatLabel(event.toStatus) : 'None';
+    return `${from} → ${to}`;
+  }
+  if (event.fromVisibility || event.toVisibility) {
+    const from = event.fromVisibility ? formatLabel(event.fromVisibility) : 'None';
+    const to = event.toVisibility ? formatLabel(event.toVisibility) : 'None';
+    return `${from} → ${to}`;
+  }
+  return null;
+};
+---
+
+<section class="safe-area-inline page-container pb-8 sm:pb-10" aria-labelledby="place-history-title">
+  <div class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+    <p class="m-0 text-sm font-semibold text-brand-700">Record history</p>
+    <h2 id="place-history-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+      Verification and changes
+    </h2>
+    <p class="mt-2 max-w-3xl text-sm leading-6 text-muted">
+      These entries come from recorded review events for this payment claim. Internal review notes and operator identifiers are not published.
+    </p>
+
+    <div class="mt-6 grid gap-7 lg:grid-cols-2">
+      <section aria-labelledby="verification-history-title">
+        <h3 id="verification-history-title" class="m-0 text-lg font-semibold text-ink">Verification history</h3>
+        <ol class="mt-4 grid gap-3">
+          {
+            history.verificationHistory.map((event) => (
+              <li class="list-none rounded-control border border-border bg-canvas p-4">
+                <div class="flex flex-wrap items-center justify-between gap-2">
+                  <span class="text-xs font-semibold uppercase tracking-[0.06em] text-brand-700">
+                    {formatLabel(event.eventType)}
+                  </span>
+                  <time class="text-xs font-medium text-muted" datetime={event.effectiveAt}>
+                    {formatDate(event.effectiveAt)}
+                  </time>
+                </div>
+                <p class="mt-2 text-sm leading-6 text-ink">{event.summary}</p>
+                {transitionLabel(event) ? (
+                  <p class="mt-2 text-xs font-medium text-muted">{transitionLabel(event)}</p>
+                ) : null}
+              </li>
+            ))
+          }
+        </ol>
+      </section>
+
+      <section aria-labelledby="change-history-title">
+        <h3 id="change-history-title" class="m-0 text-lg font-semibold text-ink">Change history</h3>
+        {
+          history.changeHistory.length > 0 ? (
+            <ol class="mt-4 grid gap-3">
+              {history.changeHistory.map((event) => (
+                <li class="list-none rounded-control border border-border bg-canvas p-4">
+                  <div class="flex flex-wrap items-center justify-between gap-2">
+                    <span class="text-xs font-semibold uppercase tracking-[0.06em] text-brand-700">
+                      {formatLabel(event.eventType)}
+                    </span>
+                    <time class="text-xs font-medium text-muted" datetime={event.effectiveAt}>
+                      {formatDate(event.effectiveAt)}
+                    </time>
+                  </div>
+                  <p class="mt-2 text-sm leading-6 text-ink">{event.summary}</p>
+                  {transitionLabel(event) ? (
+                    <p class="mt-2 text-xs font-medium text-muted">{transitionLabel(event)}</p>
+                  ) : null}
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div class="mt-4 rounded-control border border-border bg-canvas p-4 text-sm leading-6 text-muted">
+              No public correction or visibility-change event has been recorded for this claim.
+            </div>
+          )
+        }
+      </section>
+    </div>
+  </div>
+</section>

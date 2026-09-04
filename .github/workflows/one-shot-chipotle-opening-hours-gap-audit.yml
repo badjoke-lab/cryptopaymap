@@ -1,0 +1,36 @@
+name: One-shot Chipotle opening-hours gap audit
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - ops/run-chipotle-opening-hours-gap-audit.trigger
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Audit Chipotle opening-hours gaps
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/audit-chipotle-opening-hours-gaps-staging.ts 2>&1 | tee chipotle-opening-hours-gaps.log
+      - uses: actions/upload-artifact@v4
+        with:
+          name: chipotle-opening-hours-gaps
+          path: chipotle-opening-hours-gaps.log
+          if-no-files-found: error
+          retention-days: 7

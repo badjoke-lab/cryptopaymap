@@ -1,0 +1,23 @@
+name: One-shot Steak n Shake origin shape
+on:
+  push:
+    branches: [feat/physical-source-first-growth]
+    paths:
+      - scripts/report-steak-n-shake-origin-shape-staging.ts
+      - .github/workflows/one-shot-steak-n-shake-origin-shape.yml
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Report origin shape
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/report-steak-n-shake-origin-shape-staging.ts

@@ -1,32 +1,78 @@
 ---
 import { getCollection } from 'astro:content';
 import PlaceDetail from '../../components/public/PlaceDetail.astro';
+import PlaceHistory from '../../components/public/PlaceHistory.astro';
 import PlacePracticalProfile from '../../components/public/PlacePracticalProfile.astro';
+import { PublicPlaceMiniMap } from '../../components/public/PublicPlaceMiniMap';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
+import {
+  publicPlaceHistoryRecordSchema,
+  type PublicPlaceHistoryRecord,
+} from '../../public/place-history';
 import { publicPlaceSchema } from '../../schemas/public-exports';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('publicPlaces');
+  const [entries, historyEntries] = await Promise.all([
+    getCollection('publicPlaces'),
+    getCollection('publicPlaceHistory'),
+  ]);
+  const historyBySlug = new Map(
+    historyEntries.map((entry) => {
+      const history = publicPlaceHistoryRecordSchema.parse(
+        (entry.data as { history: unknown }).history,
+      );
+      return [history.placeSlug, history] as const;
+    }),
+  );
+
   return entries.map((entry) => {
     const place = publicPlaceSchema.parse((entry.data as { place: unknown }).place);
+    const history = historyBySlug.get(place.placeSlug);
+    if (!history) {
+      throw new Error(`Missing public Place history for ${place.placeSlug}.`);
+    }
     return {
       params: { slug: place.placeSlug },
-      props: { place },
+      props: { place, history },
     };
   });
 }
 
 interface Props {
   place: PublicPlace;
+  history: PublicPlaceHistoryRecord;
 }
 
-const { place } = Astro.props;
+const { place, history } = Astro.props;
 const model = buildPlaceDetailModel(place);
 const description = `${place.name}: verified cryptocurrency payment information, networks, payment instructions, evidence, and freshness.`;
 ---
 
 <BaseLayout title={`${place.name} | CryptoPayMap`} description={description}>
   <PlaceDetail model={model} />
+  <PlaceHistory history={history} />
+  <section class="safe-area-inline page-container pb-8 sm:pb-10" aria-labelledby="place-map-title">
+    <div class="rounded-card border border-border bg-surface p-5 shadow-sm sm:p-6">
+      <p class="m-0 text-sm font-semibold text-brand-700">Location</p>
+      <h2 id="place-map-title" class="mt-1 text-2xl font-semibold tracking-tight text-ink">
+        Map
+      </h2>
+      <div class="mt-5">
+        <PublicPlaceMiniMap
+          client:visible
+          latitude={place.latitude}
+          longitude={place.longitude}
+          name={place.name}
+        />
+      </div>
+      <a
+        class="mt-4 inline-flex min-h-11 items-center font-semibold text-brand-700"
+        href={`/places?selected=${encodeURIComponent(place.placeSlug)}`}
+      >
+        View nearby on the full map
+      </a>
+    </div>
+  </section>
   <PlacePracticalProfile place={place} />
 </BaseLayout>

@@ -1,0 +1,28 @@
+name: One-shot Steak n Shake duplicate signal detail
+
+on:
+  push:
+    branches: [feat/physical-source-first-growth]
+    paths:
+      - scripts/report-steak-n-shake-duplicate-signal-detail-staging.ts
+      - .github/workflows/one-shot-steak-n-shake-duplicate-signal-detail.yml
+
+permissions:
+  contents: read
+
+jobs:
+  report:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Report duplicate signal detail
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/report-steak-n-shake-duplicate-signal-detail-staging.ts

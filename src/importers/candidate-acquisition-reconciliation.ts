@@ -26,12 +26,8 @@ export interface AcquisitionReconciliationPlan {
   duplicateSignals: Array<{
     leftCandidateId: string;
     rightCandidateId: string;
-    reason:
-      | 'shared_osm_identity'
-      | 'same_name_and_coordinates'
-      | 'shared_official_domain'
-      | 'same_normalized_name';
-    strength: 'strong' | 'review';
+    reason: 'shared_osm_identity' | 'same_name_and_coordinates';
+    strength: 'strong';
   }>;
   automaticConfirmedCount: 0;
 }
@@ -75,26 +71,6 @@ function duplicateSignal(
       rightCandidateId,
       reason: 'same_name_and_coordinates',
       strength: 'strong',
-    };
-  }
-  if (
-    left.officialDomain !== null &&
-    right.officialDomain !== null &&
-    left.officialDomain === right.officialDomain
-  ) {
-    return {
-      leftCandidateId,
-      rightCandidateId,
-      reason: 'shared_official_domain',
-      strength: 'review',
-    };
-  }
-  if (left.normalizedName === right.normalizedName) {
-    return {
-      leftCandidateId,
-      rightCandidateId,
-      reason: 'same_normalized_name',
-      strength: 'review',
     };
   }
   return null;

@@ -17,7 +17,20 @@ import {
 declare const process: { env: Record<string, string | undefined> };
 
 const EXPECTED_TARGET = 'fixed-review-staging';
-const MAX_PUBLICATION_BATCH = 50;
+const DEFAULT_MAX_PUBLICATION_BATCH = 50;
+const MAX_ALLOWED_PUBLICATION_BATCH = 500;
+
+function readMaxPublicationBatch(): number {
+  const raw = process.env.CPM_MAX_PUBLICATION_BATCH?.trim();
+  if (!raw) return DEFAULT_MAX_PUBLICATION_BATCH;
+  const value = Number(raw);
+  if (!Number.isInteger(value) || value < 1 || value > MAX_ALLOWED_PUBLICATION_BATCH) {
+    throw new Error(
+      `CPM_MAX_PUBLICATION_BATCH must be an integer between 1 and ${MAX_ALLOWED_PUBLICATION_BATCH}.`,
+    );
+  }
+  return value;
+}
 
 async function deterministicUuid(label: string): Promise<string> {
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(label));
@@ -34,10 +47,28 @@ function entitySlug(locationSlug: string): string {
   return value;
 }
 
+function isFullyPublic(row: {
+  entitySlug: string | null;
+  entityVisibility: string;
+  locationSlug: string;
+  locationVisibility: string;
+  claimVisibility: string;
+  evidenceVisibility: string;
+}): boolean {
+  return (
+    row.entityVisibility === 'public' &&
+    row.locationVisibility === 'public' &&
+    row.claimVisibility === 'public' &&
+    row.evidenceVisibility === 'public' &&
+    row.entitySlug === entitySlug(row.locationSlug)
+  );
+}
+
 async function main() {
   if (process.env.CPM_CANDIDATE_ACQUISITION_TARGET !== EXPECTED_TARGET) {
     throw new Error('Refusing canonical publication outside fixed-review staging.');
   }
+  const maxPublicationBatch = readMaxPublicationBatch();
   const databaseUrl = process.env.DATABASE_URL?.trim();
   if (!databaseUrl) throw new Error('DATABASE_URL is required.');
   const db = createDatabase(databaseUrl);
@@ -85,17 +116,22 @@ async function main() {
     .orderBy(asc(sourceCandidates.id), asc(evidence.id));
 
   const unique = new Map(rows.map((row) => [row.claimId, row]));
-  const targets = [...unique.values()].slice(0, MAX_PUBLICATION_BATCH);
+  const eligible = [...unique.values()];
+  const alreadyPublicCount = eligible.filter(isFullyPublic).length;
+  const targets = eligible.filter((row) => !isFullyPublic(row)).slice(0, maxPublicationBatch);
 
   if (targets.length === 0) {
     console.log(
       JSON.stringify({
         target: EXPECTED_TARGET,
         reviewedTargets: 0,
+        eligibleReviewedTargets: eligible.length,
+        alreadyPublicCount,
+        maxPublicationBatch,
         publicationConfigured: policy.configured,
         publisherAuthorized,
         mutationPerformed: false,
-        reason: 'no_eligible_reviewed_targets',
+        reason: eligible.length > 0 ? 'all_eligible_targets_already_public' : 'no_eligible_reviewed_targets',
         payloadExposed: false,
       }),
     );
@@ -112,23 +148,16 @@ async function main() {
     }
   }
 
-  const alreadyPublic = targets.every(
-    (row) =>
-      row.entityVisibility === 'public' &&
-      row.locationVisibility === 'public' &&
-      row.claimVisibility === 'public' &&
-      row.evidenceVisibility === 'public' &&
-      row.entitySlug === entitySlug(row.locationSlug),
-  );
-
   if (!publisherAuthorized) {
     console.log(
       JSON.stringify({
         target: EXPECTED_TARGET,
         reviewedTargets: targets.length,
+        eligibleReviewedTargets: eligible.length,
+        alreadyPublicCount,
+        maxPublicationBatch,
         publicationConfigured: policy.configured,
         publisherAuthorized: false,
-        alreadyPublic,
         mutationPerformed: false,
         payloadExposed: false,
       }),
@@ -138,25 +167,9 @@ async function main() {
 
   const sortedClaimIds = targets.map((row) => row.claimId).sort();
   const requestId = await deterministicUuid(
-    `reviewed-physical-canonical-publication:v1:${sortedClaimIds.join(',')}`,
+    `reviewed-physical-canonical-publication:v2:${sortedClaimIds.join(',')}`,
   );
   authorizeExportPublication(publisher, policy, requestId);
-
-  if (alreadyPublic) {
-    console.log(
-      JSON.stringify({
-        target: EXPECTED_TARGET,
-        reviewedTargets: targets.length,
-        publicationConfigured: true,
-        publisherAuthorized: true,
-        alreadyPublic: true,
-        mutationPerformed: false,
-        publicClaimsAfter: targets.length,
-        payloadExposed: false,
-      }),
-    );
-    return;
-  }
 
   const candidateIds = targets.map((row) => row.candidateId);
   const entityIds = targets.map((row) => row.entityId);
@@ -245,10 +258,11 @@ async function main() {
     JSON.stringify({
       target: EXPECTED_TARGET,
       reviewedTargets: targets.length,
-      maxPublicationBatch: MAX_PUBLICATION_BATCH,
+      eligibleReviewedTargets: eligible.length,
+      alreadyPublicCount,
+      maxPublicationBatch,
       publicationConfigured: true,
       publisherAuthorized: true,
-      alreadyPublic: false,
       mutationPerformed: true,
       publicClaimsAfter,
       entityCount: entityIds.length,

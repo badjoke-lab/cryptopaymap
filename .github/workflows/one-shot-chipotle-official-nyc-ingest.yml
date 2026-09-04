@@ -1,0 +1,30 @@
+name: One-shot Chipotle official NYC physical ingestion
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - scripts/ingest-chipotle-official-nyc-physical-candidates-staging.ts
+      - .github/workflows/one-shot-chipotle-official-nyc-ingest.yml
+
+permissions:
+  contents: read
+
+jobs:
+  ingest:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - name: Ingest bounded official Chipotle NYC physical Candidates
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/ingest-chipotle-official-nyc-physical-candidates-staging.ts

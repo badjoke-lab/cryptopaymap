@@ -1,0 +1,206 @@
+name: One-shot Place detail spec repair staging review
+
+on:
+  push:
+    branches:
+      - feat/physical-source-first-growth
+    paths:
+      - ops/run-place-detail-spec-repair.trigger
+
+permissions:
+  contents: read
+
+jobs:
+  repair:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: node --check scripts/prepare-source-first-materializer-staging.mjs
+      - run: node --check scripts/validate-public-place-detail-contract.mjs
+      - run: node --check scripts/validate-public-place-history-contract.mjs
+      - run: node --check scripts/run-chipotle-incomplete-profile-backfill-staging.mjs
+      - name: Quarantine Chipotle Coming Soon locations
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/quarantine-chipotle-coming-soon-staging.ts 2>&1 | tee chipotle-coming-soon-quarantine.log
+      - name: Backfill only incomplete public Chipotle profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_CHIPOTLE_PROFILE_MAX: '1000'
+        run: |
+          set -o pipefail
+          node scripts/run-chipotle-incomplete-profile-backfill-staging.mjs 2>&1 | tee chipotle-place-profile-backfill.log
+      - name: Repair Chipotle Flexa processor route
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/repair-chipotle-flexa-route-staging.ts 2>&1 | tee chipotle-flexa-route-repair.log
+      - name: Backfill OSM source-backed Place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/backfill-osm-published-place-profiles-staging.ts 2>&1 | tee osm-place-profile-backfill.log
+      - name: Restore source-backed quarantined OSM Place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_OSM_PROFILE_REVERSE_MAX: '100'
+        run: |
+          set -o pipefail
+          npx tsx scripts/restore-osm-quarantined-place-profiles-staging.ts 2>&1 | tee osm-place-profile-restore.log
+      - name: Quarantine thin public Place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/quarantine-thin-public-places-staging.ts 2>&1 | tee thin-place-quarantine.log
+      - name: Audit full published Place record depth
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/audit-published-place-depth-staging.ts 2>&1 | tee published-place-depth-audit.log
+      - name: Assert reviewed inventory did not collapse
+        run: |
+          set -o pipefail
+          node --input-type=module <<'NODE' 2>&1 | tee place-inventory-guard.log
+          import { readFile } from 'node:fs/promises';
+          const audit = JSON.parse(await readFile('published-place-depth-audit.log', 'utf8'));
+          if (audit.publishedPlaces < 950) {
+            throw new Error(`Reviewed Place inventory collapsed: published=${audit.publishedPlaces}, expected at least 950.`);
+          }
+          if (audit.thinPlaces !== 0) {
+            throw new Error(`Thin Place records remain public: ${audit.thinPlaces}.`);
+          }
+          console.log(JSON.stringify({ publishedPlaces: audit.publishedPlaces, thinPlaces: audit.thinPlaces, minimumExpected: 950 }));
+          NODE
+      - name: Prepare source-first materializer with required Place profile fields
+        run: node scripts/prepare-source-first-materializer-staging.mjs
+      - name: Materialize current reviewed staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - name: Materialize real Place verification and change history
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/materialize-public-place-history-staging.ts 2>&1 | tee place-history-materialize.log
+      - name: Validate every published Place detail contract
+        id: all_place_contract
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee place-detail-contract.log
+      - name: Validate public Place history coverage and privacy
+        id: history_contract
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json 2>&1 | tee place-history-contract.log
+      - name: Assert Chipotle official profile and processor repair
+        id: chipotle_contract
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node --input-type=module <<'NODE' 2>&1 | tee chipotle-place-detail-contract.log
+          import { readFile } from 'node:fs/promises';
+          const data = JSON.parse(await readFile('public/data/places.json', 'utf8'));
+          const chipotle = data.records.filter((place) => /chipotle/i.test(place.name));
+          if (chipotle.length < 1) throw new Error('Expected at least one Chipotle public Place.');
+          const comingSoonPublic = chipotle.filter((place) => /\bcoming\s+soon\b/i.test(place.name));
+          const wrongCategory = chipotle.filter((place) => place.categorySlug !== 'restaurant');
+          const missingDescription = chipotle.filter(
+            (place) => typeof place.description !== 'string' || place.description.trim().length < 30,
+          );
+          const generatedFallbackDescription = chipotle.filter((place) =>
+            typeof place.description === 'string' &&
+            place.description.includes('This record tracks verified in-person cryptocurrency payment acceptance.'),
+          );
+          const missingPhone = chipotle.filter(
+            (place) => typeof place.phone !== 'string' || place.phone.trim().length < 1,
+          );
+          const missingOpeningHours = chipotle.filter(
+            (place) => typeof place.openingHours !== 'string' || place.openingHours.trim().length < 1,
+          );
+          const wrongRoute = chipotle.filter((place) =>
+            place.claims.some(
+              (claim) => claim.routeType !== 'processor_checkout' || claim.processorSlug !== 'flexa',
+            ),
+          );
+          if (
+            comingSoonPublic.length ||
+            wrongCategory.length ||
+            missingDescription.length ||
+            generatedFallbackDescription.length ||
+            missingPhone.length ||
+            missingOpeningHours.length ||
+            wrongRoute.length
+          ) {
+            throw new Error(
+              `Chipotle profile regression: total=${chipotle.length} comingSoonPublic=${comingSoonPublic.length} wrongCategory=${wrongCategory.length} missingDescription=${missingDescription.length} generatedFallbackDescription=${generatedFallbackDescription.length} missingPhone=${missingPhone.length} missingOpeningHours=${missingOpeningHours.length} wrongRoute=${wrongRoute.length}`,
+            );
+          }
+          console.log(
+            JSON.stringify({
+              chipotlePlaces: chipotle.length,
+              comingSoonPublic: 0,
+              category: 'restaurant',
+              meaningfulDescriptions: chipotle.length,
+              phones: chipotle.length,
+              openingHours: chipotle.length,
+              routeType: 'processor_checkout',
+              processorSlug: 'flexa',
+              generatedFallbackDescriptions: 0,
+            }),
+          );
+          NODE
+      - name: Upload Place detail contract audit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: place-detail-contract-audit
+          path: |
+            chipotle-coming-soon-quarantine.log
+            chipotle-place-profile-backfill.log
+            chipotle-flexa-route-repair.log
+            osm-place-profile-backfill.log
+            osm-place-profile-restore.log
+            thin-place-quarantine.log
+            published-place-depth-audit.log
+            place-inventory-guard.log
+            place-history-materialize.log
+            place-detail-contract.log
+            place-history-contract.log
+            chipotle-place-detail-contract.log
+          if-no-files-found: error
+          retention-days: 7
+      - name: Enforce Place detail contract result
+        if: steps.all_place_contract.outcome == 'failure' || steps.history_contract.outcome == 'failure' || steps.chipotle_contract.outcome == 'failure'
+        run: exit 1
+      - run: npm run build
+      - run: node scripts/prepare-staging-review-artifact.mjs
+      - name: Deploy isolated staging review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch physical-growth-review
