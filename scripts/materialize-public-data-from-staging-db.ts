@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { and, asc, eq, inArray } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client';
+import { classifyPlaceCategory } from '../src/domain/place-categories';
 import {
   acceptanceClaims,
   assets,
@@ -45,32 +46,6 @@ function stringMap(value: unknown): Record<string, string> {
       (entry): entry is [string, string] => typeof entry[1] === 'string',
     ),
   );
-}
-
-function publicSlug(value: string): string {
-  const normalized = value
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-    .slice(0, 64)
-    .replace(/-+$/g, '');
-  return normalized.length > 0 ? normalized : 'merchant';
-}
-
-function categoryFromTags(tags: Record<string, string>): string {
-  const amenity = tags.amenity?.toLowerCase();
-  if (amenity === 'cafe') return 'cafe';
-  if (['restaurant', 'fast_food', 'food_court'].includes(amenity ?? '')) return 'restaurant';
-  if (['bar', 'pub', 'biergarten'].includes(amenity ?? '')) return 'bar';
-  if (amenity === 'marketplace') return 'market';
-  const tourism = tags.tourism?.toLowerCase();
-  if (['hotel', 'hostel', 'guest_house', 'motel'].includes(tourism ?? '')) return 'hotel';
-  const shop = tags.shop?.toLowerCase();
-  if (shop) return publicSlug(shop);
-  const office = tags.office?.toLowerCase();
-  if (office === 'coworking') return 'coworking';
-  return 'merchant';
 }
 
 function iso(value: Date | null, field: string): string {
@@ -278,24 +253,26 @@ async function main() {
       typeof reviewSeed?.websiteUrl === 'string' ? reviewSeed.websiteUrl : null;
     const element = object(origin?.element);
     const tags = stringMap(element?.tags);
-    const entityNameKey = row.entityName.toLowerCase();
-    const sourceFirstCategorySlug =
-      entityNameKey.includes('chipotle') ||
-      entityNameKey.includes('steak n shake') ||
-      entityNameKey.includes("steak 'n shake")
-        ? 'restaurant'
-        : null;
-    const inferredOsmCategorySlug = categoryFromTags(tags);
-    const broadOsmCategory = ['amenity', 'tourism', 'shop', 'office', 'craft', 'leisure', 'healthcare']
-      .map((key) => tags[key]?.trim().toLowerCase())
-      .find((value) => Boolean(value));
-    const categorySlug =
-      sourceFirstCategorySlug ??
-      (inferredOsmCategorySlug !== 'merchant'
-        ? inferredOsmCategorySlug
-        : broadOsmCategory
-          ? publicSlug(broadOsmCategory)
-          : 'merchant');
+    const categorySlug = classifyPlaceCategory({
+      name: row.locationName ?? row.entityName,
+      amenity: tags.amenity,
+      tourism: tags.tourism,
+      shop: tags.shop,
+      office: tags.office,
+      healthcare: tags.healthcare,
+    });
+    if (!categorySlug) {
+      throw new Error(
+        `No canonical Place category mapping for ${row.locationSlug}: ` +
+          JSON.stringify({
+            amenity: tags.amenity ?? null,
+            tourism: tags.tourism ?? null,
+            shop: tags.shop ?? null,
+            office: tags.office ?? null,
+            healthcare: tags.healthcare ?? null,
+          }),
+      );
+    }
     const publicDescription = row.description;
     const osmUrl =
       row.osmType && row.osmId !== null
@@ -352,7 +329,7 @@ async function main() {
             attribution: '© OpenStreetMap contributors',
             fields: [
               'name',
-              ...(sourceFirstCategorySlug ? [] : ['categorySlug']),
+              'categorySlug',
               'countryCode',
               'latitude',
               'longitude',
@@ -362,19 +339,6 @@ async function main() {
               ...(row.description ? ['description'] : []),
             ],
           },
-          ...(
-            sourceFirstCategorySlug
-              ? [
-                  {
-                    sourceName: 'CryptoPayMap normalized place profile',
-                    sourceUrl: null,
-                    licenseSlug: null,
-                    attribution: null,
-                    fields: ['categorySlug'],
-                  },
-                ]
-              : []
-          ),
         ]
       : [
           {
