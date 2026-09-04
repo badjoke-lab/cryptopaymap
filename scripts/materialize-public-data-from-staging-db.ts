@@ -125,6 +125,7 @@ async function main() {
       claimStatus: acceptanceClaims.claimStatus,
       claimVisibility: acceptanceClaims.visibility,
       routeType: acceptanceClaims.routeType,
+      processorId: acceptanceClaims.processorId,
       howToPay: acceptanceClaims.howToPay,
       instructionsLanguage: acceptanceClaims.instructionsLanguage,
       merchantReceives: acceptanceClaims.merchantReceives,
@@ -156,6 +157,19 @@ async function main() {
 
   const claimIds = placeRows.map((row) => row.claimId);
   const candidateIds = placeRows.map((row) => row.candidateId);
+  const processorIds = [
+    ...new Set(placeRows.map((row) => row.processorId).filter((value): value is string => value !== null)),
+  ];
+  const processorRows =
+    processorIds.length > 0
+      ? await db
+          .select({ id: entities.id, slug: entities.slug })
+          .from(entities)
+          .where(inArray(entities.id, processorIds))
+      : [];
+  const processorSlugs = new Map(
+    processorRows.map((row) => [row.id, row.slug]).filter((entry): entry is [string, string] => entry[1] !== null),
+  );
 
   const paymentRows = await db
     .select({
@@ -240,7 +254,7 @@ async function main() {
   }
 
   const places = placeRows.map((row) => {
-    if (!row.entitySlug || !row.howToPay || !row.osmType || row.osmId === null) {
+    if (!row.entitySlug || !row.howToPay) {
       throw new Error('A public physical place is missing a required canonical publication field.');
     }
     const payments = paymentsByClaim.get(row.claimId) ?? [];
@@ -259,10 +273,34 @@ async function main() {
       throw new Error('A public physical claim references a deprecated payment registry value.');
     }
     const origin = origins.get(row.candidateId);
+    const reviewSeed = object(origin?.reviewSeed);
+    const officialLocationUrl =
+      typeof reviewSeed?.websiteUrl === 'string' ? reviewSeed.websiteUrl : null;
     const element = object(origin?.element);
     const tags = stringMap(element?.tags);
-    const categorySlug = categoryFromTags(tags);
-    const osmUrl = `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`;
+    const entityNameKey = row.entityName.toLowerCase();
+    const sourceFirstCategorySlug =
+      entityNameKey.includes('chipotle') ||
+      entityNameKey.includes('steak n shake') ||
+      entityNameKey.includes("steak 'n shake")
+        ? 'restaurant'
+        : null;
+    const inferredOsmCategorySlug = categoryFromTags(tags);
+    const broadOsmCategory = ['amenity', 'tourism', 'shop', 'office', 'craft', 'leisure', 'healthcare']
+      .map((key) => tags[key]?.trim().toLowerCase())
+      .find((value) => Boolean(value));
+    const categorySlug =
+      sourceFirstCategorySlug ??
+      (inferredOsmCategorySlug !== 'merchant'
+        ? inferredOsmCategorySlug
+        : broadOsmCategory
+          ? publicSlug(broadOsmCategory)
+          : 'merchant');
+    const publicDescription = row.description;
+    const osmUrl =
+      row.osmType && row.osmId !== null
+        ? `https://www.openstreetmap.org/${row.osmType}/${row.osmId}`
+        : null;
     const firstConfirmedAt = iso(row.firstConfirmedAt, 'firstConfirmedAt');
     const lastConfirmedAt = iso(row.lastConfirmedAt, 'lastConfirmedAt');
     const claim = {
@@ -273,7 +311,7 @@ async function main() {
       acceptanceScope: row.acceptanceScope,
       status: row.claimStatus,
       routeType: row.routeType,
-      processorSlug: null,
+      processorSlug: row.processorId ? processorSlugs.get(row.processorId) ?? null : null,
       howToPay: row.howToPay,
       instructionsLanguage: row.instructionsLanguage,
       merchantReceives: row.merchantReceives,
@@ -305,24 +343,71 @@ async function main() {
         summary: item.summary,
       })),
     };
-    const provenance = [
-      {
-        sourceName: 'OpenStreetMap',
-        sourceUrl: osmUrl,
-        licenseSlug: 'odbl-1-0',
-        attribution: '© OpenStreetMap contributors',
-        fields: [
-          'name',
-          'categorySlug',
-          'countryCode',
-          'latitude',
-          'longitude',
-          ...(row.locationWebsiteUrl || row.entityWebsiteUrl ? ['websiteUrl'] : []),
-          ...(row.phone ? ['phone'] : []),
-          ...(row.openingHours ? ['openingHours'] : []),
-        ],
-      },
-    ];
+    const provenance = osmUrl
+      ? [
+          {
+            sourceName: 'OpenStreetMap',
+            sourceUrl: osmUrl,
+            licenseSlug: 'odbl-1-0',
+            attribution: '© OpenStreetMap contributors',
+            fields: [
+              'name',
+              ...(sourceFirstCategorySlug ? [] : ['categorySlug']),
+              'countryCode',
+              'latitude',
+              'longitude',
+              ...(row.locationWebsiteUrl || row.entityWebsiteUrl ? ['websiteUrl'] : []),
+              ...(row.phone ? ['phone'] : []),
+              ...(row.openingHours ? ['openingHours'] : []),
+              ...(row.description ? ['description'] : []),
+            ],
+          },
+          ...(
+            sourceFirstCategorySlug
+              ? [
+                  {
+                    sourceName: 'CryptoPayMap normalized place profile',
+                    sourceUrl: null,
+                    licenseSlug: null,
+                    attribution: null,
+                    fields: ['categorySlug'],
+                  },
+                ]
+              : []
+          ),
+        ]
+      : [
+          {
+            sourceName: 'Official merchant location directory',
+            sourceUrl: officialLocationUrl ?? row.locationWebsiteUrl ?? row.entityWebsiteUrl,
+            licenseSlug: null,
+            attribution: null,
+            fields: [
+              'name',
+              'addressLine',
+              'locality',
+              'region',
+              'postalCode',
+              'countryCode',
+              'latitude',
+              'longitude',
+              ...(row.locationWebsiteUrl || row.entityWebsiteUrl || officialLocationUrl
+                ? ['websiteUrl']
+                : []),
+              ...(row.phone ? ['phone'] : []),
+              ...(row.openingHours ? ['openingHours'] : []),
+              ...(row.amenities?.length ? ['amenities'] : []),
+              ...(row.description ? ['description'] : []),
+            ],
+          },
+          {
+            sourceName: 'CryptoPayMap normalized place profile',
+            sourceUrl: null,
+            licenseSlug: null,
+            attribution: null,
+            fields: ['categorySlug'],
+          },
+        ];
     return {
       placeSlug: row.locationSlug,
       entitySlug: row.entitySlug,
@@ -339,14 +424,17 @@ async function main() {
       longitude: Number(row.longitude),
       websiteUrl: row.locationWebsiteUrl ?? row.entityWebsiteUrl,
       phone: row.phone,
-      description: row.description,
+      description: publicDescription,
       openingHours: row.openingHours,
       amenities: row.amenities ?? [],
       socialLinks: row.socialLinks ?? [],
       claims: [claim],
       media: [],
       provenance,
-      osm: { osmUrl, osmType: row.osmType, osmId: String(row.osmId) },
+      osm:
+        osmUrl && row.osmType && row.osmId !== null
+          ? { osmUrl, osmType: row.osmType, osmId: String(row.osmId) }
+          : null,
     };
   });
 
@@ -380,23 +468,29 @@ async function main() {
     lastConfirmedAt: place.claims[0]?.lastConfirmedAt,
     thumbnail: null,
   }));
-  const locationsOsm = places.map((place) => ({
-    locationSlug: place.placeSlug,
-    name: place.name,
-    addressLine: place.addressLine,
-    locality: place.locality,
-    region: place.region,
-    postalCode: place.postalCode,
-    countryCode: place.countryCode,
-    latitude: place.latitude,
-    longitude: place.longitude,
-    osmType: place.osm.osmType,
-    osmId: place.osm.osmId,
-    websiteUrl: place.websiteUrl,
-    sourceUrl: place.osm.osmUrl,
-    attribution: '© OpenStreetMap contributors',
-    licenseSlug: 'odbl-1-0' as const,
-  }));
+  const locationsOsm = places.flatMap((place) =>
+    place.osm
+      ? [
+          {
+            locationSlug: place.placeSlug,
+            name: place.name,
+            addressLine: place.addressLine,
+            locality: place.locality,
+            region: place.region,
+            postalCode: place.postalCode,
+            countryCode: place.countryCode,
+            latitude: place.latitude,
+            longitude: place.longitude,
+            osmType: place.osm.osmType,
+            osmId: place.osm.osmId,
+            websiteUrl: place.websiteUrl,
+            sourceUrl: place.osm.osmUrl,
+            attribution: '© OpenStreetMap contributors',
+            licenseSlug: 'odbl-1-0' as const,
+          },
+        ]
+      : [],
+  );
   const publicPlaces = places.map(({ osm: _osm, ...place }) => place);
   const geojson = places.map((place) => ({
     type: 'Feature' as const,
