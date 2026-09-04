@@ -47,7 +47,7 @@ export function PublicPlaceMiniMap({
           zoom: 14,
           minZoom: 3,
           maxZoom: 19,
-          attributionControl: true,
+          attributionControl: {},
           dragRotate: false,
           pitchWithRotate: false,
         });
