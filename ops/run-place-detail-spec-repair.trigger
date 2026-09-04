@@ -1,1 +1,1 @@
-2026-09-03T13:21:00Z quarantine thin public Places, enforce zero thin records, and rematerialize staging
+2026-09-04T03:36:00Z restore source-backed OSM Places, enforce >=950 reviewed records, and rematerialize staging
