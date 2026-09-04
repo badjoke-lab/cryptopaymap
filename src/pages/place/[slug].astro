@@ -1,5 +1,4 @@
 ---
-import { promises as fs } from 'node:fs';
 import { getCollection } from 'astro:content';
 import PlaceDetail from '../../components/public/PlaceDetail.astro';
 import PlaceHistory from '../../components/public/PlaceHistory.astro';
@@ -8,20 +7,23 @@ import { PublicPlaceMiniMap } from '../../components/public/PublicPlaceMiniMap';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { buildPlaceDetailModel, type PublicPlace } from '../../public/place-detail';
 import {
-  publicPlaceHistoryFileSchema,
+  publicPlaceHistoryRecordSchema,
   type PublicPlaceHistoryRecord,
 } from '../../public/place-history';
 import { publicPlaceSchema } from '../../schemas/public-exports';
 
-const historyDataUrl = new URL('../../../public/data/place-history.json', import.meta.url);
-
 export async function getStaticPaths() {
-  const entries = await getCollection('publicPlaces');
-  const historyDocument = publicPlaceHistoryFileSchema.parse(
-    JSON.parse(await fs.readFile(historyDataUrl, 'utf8')),
-  );
+  const [entries, historyEntries] = await Promise.all([
+    getCollection('publicPlaces'),
+    getCollection('publicPlaceHistory'),
+  ]);
   const historyBySlug = new Map(
-    historyDocument.records.map((record) => [record.placeSlug, record] as const),
+    historyEntries.map((entry) => {
+      const history = publicPlaceHistoryRecordSchema.parse(
+        (entry.data as { history: unknown }).history,
+      );
+      return [history.placeSlug, history] as const;
+    }),
   );
 
   return entries.map((entry) => {
