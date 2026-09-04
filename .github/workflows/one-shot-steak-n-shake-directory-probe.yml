@@ -19,60 +19,71 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Probe official WordPress location feed
+      - name: Probe official WordPress location feed directly
         run: |
+          set -o pipefail
           node --input-type=module <<'NODE' | tee steak-directory-probe.json
-          const pageUrl = 'https://www.steaknshake.com/locations/';
-          const headers = { 'user-agent': 'CryptoPayMap-official-directory-probe/1.0' };
-          const page = await fetch(pageUrl, { redirect: 'follow', headers, signal: AbortSignal.timeout(15000) });
-          if (!page.ok) throw new Error(`locations page HTTP ${page.status}`);
-          const html = await page.text();
-          const localized = html.match(/var\s+sns_ajax\s*=\s*(\{[^;]+\});/i)?.[1] ?? null;
-          let ajaxUrl = 'https://www.steaknshake.com/wp-admin/admin-ajax.php';
-          if (localized) {
+          const ajaxUrl = 'https://www.steaknshake.com/wp-admin/admin-ajax.php';
+          const headers = {
+            'user-agent': 'CryptoPayMap-official-directory-probe/1.0',
+            accept: 'application/json,text/plain;q=0.9,*/*;q=0.1',
+            'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
+            origin: 'https://www.steaknshake.com',
+            referer: 'https://www.steaknshake.com/locations/',
+          };
+          let lastError;
+          let data;
+          for (let attempt = 1; attempt <= 5; attempt += 1) {
             try {
-              const parsed = JSON.parse(localized.replace(/&amp;/g, '&'));
-              if (typeof parsed.ajaxurl === 'string') ajaxUrl = new URL(parsed.ajaxurl, page.url).toString();
-            } catch {}
+              const response = await fetch(ajaxUrl, {
+                method: 'POST',
+                redirect: 'follow',
+                headers,
+                body: new URLSearchParams({ action: 'get_location_data_from_plugin' }),
+                signal: AbortSignal.timeout(25000),
+              });
+              const text = await response.text();
+              if (!response.ok) throw new Error(`HTTP ${response.status}`);
+              const parsed = JSON.parse(text);
+              if (!Array.isArray(parsed)) throw new Error('response was not an array');
+              if (parsed.length < 100) throw new Error(`implausibly small location feed: ${parsed.length}`);
+              data = parsed;
+              break;
+            } catch (error) {
+              lastError = error instanceof Error ? error : new Error(String(error));
+              if (attempt < 5) await new Promise((resolve) => setTimeout(resolve, attempt * 1500));
+            }
           }
-          const body = new URLSearchParams({ action: 'get_location_data_from_plugin' });
-          const response = await fetch(ajaxUrl, {
-            method: 'POST',
-            redirect: 'follow',
-            headers: {
-              ...headers,
-              accept: 'application/json,text/plain;q=0.9,*/*;q=0.1',
-              'content-type': 'application/x-www-form-urlencoded;charset=UTF-8',
-              origin: 'https://www.steaknshake.com',
-              referer: page.url,
-            },
-            body,
-            signal: AbortSignal.timeout(20000),
-          });
-          if (!response.ok) throw new Error(`location feed HTTP ${response.status}`);
-          const text = await response.text();
-          const data = JSON.parse(text);
-          if (!Array.isArray(data)) throw new Error('location feed did not return an array');
+          if (!data) throw lastError ?? new Error('location feed failed');
+
+          const scalar = (value) => value === null || ['string','number','boolean'].includes(typeof value) ? value : null;
           const sample = data.slice(0, 3).map((row) => ({
             keys: Object.keys(row).sort(),
-            id: row.id ?? null,
-            name: row.name ?? null,
-            lat: row.lat ?? row.address?.loc?.[1] ?? null,
-            lng: row.lng ?? row.address?.loc?.[0] ?? null,
+            id: scalar(row.id),
+            name: scalar(row.name),
+            lat: scalar(row.lat ?? row.latitude ?? row.address?.loc?.[1]),
+            lng: scalar(row.lng ?? row.lon ?? row.longitude ?? row.address?.loc?.[0]),
             addressKeys: row.address && typeof row.address === 'object' ? Object.keys(row.address).sort() : [],
             address: row.address ?? null,
-            phone: row.phone ?? null,
-            hoursKeys: row.hours && typeof row.hours === 'object' ? Object.keys(row.hours).sort() : [],
-            snapfingerUrl: row.snapfinger_url ?? null,
+            phone: scalar(row.phone),
+            hours: row.hours ?? null,
+            url: scalar(row.url ?? row.location_url ?? row.permalink),
           }));
-          const states = [...new Set(data.map((row) => row.address?.state ?? row.address?.region ?? null).filter(Boolean))].sort();
-          const validCoordinates = data.filter((row) => Number.isFinite(Number(row.lat ?? row.address?.loc?.[1])) && Number.isFinite(Number(row.lng ?? row.address?.loc?.[0]))).length;
+          const stateOf = (row) => row.state ?? row.region ?? row.address?.state ?? row.address?.region ?? null;
+          const latOf = (row) => row.lat ?? row.latitude ?? row.address?.loc?.[1];
+          const lngOf = (row) => row.lng ?? row.lon ?? row.longitude ?? row.address?.loc?.[0];
+          const states = [...new Set(data.map(stateOf).filter((v) => typeof v === 'string' && v.trim()))].sort();
+          const validCoordinates = data.filter((row) => Number.isFinite(Number(latOf(row))) && Number.isFinite(Number(lngOf(row)))).length;
           const withPhone = data.filter((row) => typeof row.phone === 'string' && row.phone.trim()).length;
           const withHours = data.filter((row) => row.hours && typeof row.hours === 'object').length;
-          console.log(JSON.stringify({ ajaxUrl, count: data.length, validCoordinates, withPhone, withHours, stateCount: states.length, states, sample }, null, 2));
+          const keyCounts = {};
+          for (const row of data) for (const key of Object.keys(row)) keyCounts[key] = (keyCounts[key] ?? 0) + 1;
+          console.log(JSON.stringify({ ajaxUrl, count: data.length, validCoordinates, withPhone, withHours, stateCount: states.length, states, keyCounts, sample }, null, 2));
           NODE
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: steak-directory-probe
           path: steak-directory-probe.json
+          if-no-files-found: warn
           retention-days: 3
