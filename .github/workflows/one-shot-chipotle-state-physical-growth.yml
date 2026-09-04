@@ -86,6 +86,13 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - name: Materialize public Place history from recorded verification events
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: npx tsx scripts/materialize-public-place-history-staging.ts
+      - name: Validate public Place history coverage
+        run: node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json
       - run: npm run build
       - run: node scripts/prepare-staging-review-artifact.mjs
       - name: Deploy isolated staging review
