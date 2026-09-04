@@ -19,43 +19,41 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Resolve official locator data bootstrap
+      - name: Resolve official locator data loader
         run: |
           node --input-type=module <<'NODE' | tee steak-directory-probe.json
-          const urls = [
-            'https://www.steaknshake.com/locations/',
-            'https://www.steaknshake.com/wp-content/themes/steaknshake/js/loc.js',
-          ];
-          const result = [];
-          for (const url of urls) {
-            const response = await fetch(url, {
-              redirect: 'follow',
-              headers: { 'user-agent': 'CryptoPayMap-official-directory-probe/1.0' },
-              signal: AbortSignal.timeout(15000),
-            });
-            if (!response.ok) throw new Error(`${url} HTTP ${response.status}`);
-            const text = await response.text();
-            const needles = ['loadLocationData', 'lochash', 'zsapi', 'venue/', 'locations =', 'var locations', 'window.locations', 'locationData', 'venues'];
-            const contexts = {};
-            for (const needle of needles) {
-              const found = [];
-              let from = 0;
-              while (found.length < 50) {
-                const index = text.toLowerCase().indexOf(needle.toLowerCase(), from);
-                if (index < 0) break;
-                found.push(text.slice(Math.max(0, index - 1800), Math.min(text.length, index + needle.length + 3200)));
-                from = index + needle.length;
+          const pageUrl = 'https://www.steaknshake.com/locations/';
+          const headers = { 'user-agent': 'CryptoPayMap-official-directory-probe/1.0' };
+          const page = await fetch(pageUrl, { redirect: 'follow', headers, signal: AbortSignal.timeout(15000) });
+          if (!page.ok) throw new Error(`locations page HTTP ${page.status}`);
+          const html = await page.text();
+          const scriptUrls = [...new Set([...html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)]
+            .map((m) => new URL(m[1].replace(/&amp;/g, '&'), page.url).toString()))];
+          const scanned = [];
+          for (const scriptUrl of scriptUrls) {
+            const host = new URL(scriptUrl).hostname.toLowerCase().replace(/^www\./, '');
+            if (host !== 'steaknshake.com') continue;
+            try {
+              const response = await fetch(scriptUrl, { redirect: 'follow', headers, signal: AbortSignal.timeout(15000) });
+              const text = (await response.text()).slice(0, 2_000_000);
+              const interesting = /loadLocationData|zsapi|lochash|venue\/|locationData|locations\.json|geo\.php/i.test(text);
+              if (!interesting) continue;
+              const matches = [];
+              for (const needle of ['loadLocationData', 'zsapi', 'venue/', 'lochash', 'locationData', 'locations.json', 'geo.php']) {
+                let from = 0;
+                while (matches.length < 100) {
+                  const index = text.toLowerCase().indexOf(needle.toLowerCase(), from);
+                  if (index < 0) break;
+                  matches.push({ needle, context: text.slice(Math.max(0, index - 1600), Math.min(text.length, index + needle.length + 3600)) });
+                  from = index + needle.length;
+                }
               }
-              contexts[needle] = found;
+              scanned.push({ scriptUrl, status: response.status, chars: text.length, matches });
+            } catch (error) {
+              scanned.push({ scriptUrl, error: error instanceof Error ? error.message : String(error) });
             }
-            const inlineScripts = [...text.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/gi)]
-              .map((m) => m[1])
-              .filter((s) => /loadLocationData|lochash|zsapi|venue|locations/i.test(s))
-              .slice(0, 40);
-            const quoted = [...new Set([...text.matchAll(/["']([^"']*(?:zsapi|venue|location)[^"']*)["']/gi)].map((m) => m[1]))].slice(0, 300);
-            result.push({ url, chars: text.length, quoted, inlineScripts, contexts });
           }
-          console.log(JSON.stringify(result, null, 2));
+          console.log(JSON.stringify({ pageUrl: page.url, scriptCount: scriptUrls.length, scanned }, null, 2));
           NODE
       - uses: actions/upload-artifact@v4
         with:
