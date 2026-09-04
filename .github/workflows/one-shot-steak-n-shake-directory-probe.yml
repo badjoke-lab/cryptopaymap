@@ -19,15 +19,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - name: Probe public official directory surfaces
+      - name: Probe official locator implementation
         run: |
           node --input-type=module <<'NODE' | tee steak-directory-probe.json
           const urls = [
-            'https://www.steaknshake.com/locations/',
+            'https://www.steaknshake.com/wp-content/themes/steaknshake/js/loc.js',
+            'https://www.steaknshake.com/geo.php',
             'https://www.steaknshake.com/sitemap.xml',
-            'https://www.steaknshake.com/wp-sitemap.xml',
             'https://www.steaknshake.com/robots.txt',
-            'https://www.steaknshake.com/locations/oh-findlay-broad-avenue/',
           ];
           const out = [];
           for (const url of urls) {
@@ -36,28 +35,27 @@ jobs:
                 redirect: 'follow',
                 headers: {
                   'user-agent': 'CryptoPayMap-official-directory-probe/1.0',
-                  accept: 'text/html,application/xml,text/xml,text/plain;q=0.9,*/*;q=0.1',
+                  accept: 'application/javascript,text/javascript,text/html,application/xml,text/xml,text/plain;q=0.9,*/*;q=0.1',
                 },
                 signal: AbortSignal.timeout(15000),
               });
               const text = (await response.text()).slice(0, 2_000_000);
-              const locationUrls = [...new Set([...text.matchAll(/(?:https?:\/\/www\.steaknshake\.com)?(\/locations\/[a-z0-9][a-z0-9\-/]*\/)/gi)].map((m) => new URL(m[1], response.url).toString()))].slice(0, 50);
-              const scriptSrcs = [...new Set([...text.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map((m) => new URL(m[1], response.url).toString()))].slice(0, 50);
-              const jsonLdTypes = [...text.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].map((m) => {
-                try {
-                  const parsed = JSON.parse(m[1]);
-                  return Array.isArray(parsed) ? parsed.map((v) => v?.['@type'] ?? null) : parsed?.['@type'] ?? null;
-                } catch {
-                  return 'unparseable';
-                }
+              const urlsFound = [...new Set([...text.matchAll(/https?:\/\/[^\s"'<>]+/gi)].map((m) => m[0]))].slice(0, 100);
+              const relativeEndpoints = [...new Set([...text.matchAll(/["']([^"']+\.(?:php|json|xml)(?:\?[^"']*)?)["']/gi)].map((m) => m[1]))].slice(0, 100);
+              const ajaxContexts = [...text.matchAll(/.{0,220}(?:ajax|fetch\s*\(|geo\.php|locations?|wp-json).{0,420}/gi)].map((m) => m[0]).slice(0, 80);
+              const sitemapLocs = [...text.matchAll(/<loc>([^<]+)<\/loc>/gi)].map((m) => m[1].trim()).slice(0, 500);
+              out.push({
+                url,
+                finalUrl: response.url,
+                status: response.status,
+                contentType: response.headers.get('content-type'),
+                bodyChars: text.length,
+                urlsFound,
+                relativeEndpoints,
+                ajaxContexts,
+                sitemapLocs,
+                bodyPrefix: text.slice(0, 30000),
               });
-              const markers = {
-                wpJson: /wp-json/i.test(text),
-                storeLocator: /store.?locator|location.?finder|locations.?api/i.test(text),
-                googleMaps: /maps\.googleapis\.com|google\.maps/i.test(text),
-                jsonLd: jsonLdTypes.length > 0,
-              };
-              out.push({ url, finalUrl: response.url, status: response.status, contentType: response.headers.get('content-type'), bodyChars: text.length, locationUrls, scriptSrcs, jsonLdTypes, markers });
             } catch (error) {
               out.push({ url, error: error instanceof Error ? error.message : String(error) });
             }
