@@ -24,6 +24,7 @@ jobs:
       - run: npm run check
       - run: node --check scripts/prepare-source-first-materializer-staging.mjs
       - run: node --check scripts/validate-public-place-detail-contract.mjs
+      - run: node --check scripts/validate-public-place-history-contract.mjs
       - run: node --check scripts/run-chipotle-incomplete-profile-backfill-staging.mjs
       - name: Quarantine Chipotle Coming Soon locations
         env:
@@ -97,12 +98,25 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: npx tsx scripts/materialize-public-data-from-staging-db.ts
+      - name: Materialize real Place verification and change history
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/materialize-public-place-history-staging.ts 2>&1 | tee place-history-materialize.log
       - name: Validate every published Place detail contract
         id: all_place_contract
         continue-on-error: true
         run: |
           set -o pipefail
           node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee place-detail-contract.log
+      - name: Validate public Place history coverage and privacy
+        id: history_contract
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json 2>&1 | tee place-history-contract.log
       - name: Assert Chipotle official profile and processor repair
         id: chipotle_contract
         continue-on-error: true
@@ -174,12 +188,14 @@ jobs:
             thin-place-quarantine.log
             published-place-depth-audit.log
             place-inventory-guard.log
+            place-history-materialize.log
             place-detail-contract.log
+            place-history-contract.log
             chipotle-place-detail-contract.log
           if-no-files-found: error
           retention-days: 7
       - name: Enforce Place detail contract result
-        if: steps.all_place_contract.outcome == 'failure' || steps.chipotle_contract.outcome == 'failure'
+        if: steps.all_place_contract.outcome == 'failure' || steps.history_contract.outcome == 'failure' || steps.chipotle_contract.outcome == 'failure'
         run: exit 1
       - run: npm run build
       - run: node scripts/prepare-staging-review-artifact.mjs
