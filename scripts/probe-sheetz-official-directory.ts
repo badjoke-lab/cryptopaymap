@@ -165,21 +165,19 @@ async function discoverLiveLocatorApi(): Promise<{ cookie?: string; diagnostics:
     }
   }
 
-  return {
-    cookie,
-    diagnostics: {
-      locatorStatus: page.status,
-      locatorFinalUrl: page.url,
-      locatorBytes: html.length,
-      locatorContentType: page.headers.get('content-type'),
-      setCookiePresent: Boolean(cookie),
-      scriptCount: scripts.length,
-      scriptUrls: scripts,
-      directMatches,
-      bundleStatuses,
-      bundleMatches: [...bundleMatches],
-    },
+  const diagnostics: JsonRecord = {
+    locatorStatus: page.status,
+    locatorFinalUrl: page.url,
+    locatorBytes: html.length,
+    locatorContentType: page.headers.get('content-type'),
+    setCookiePresent: Boolean(cookie),
+    scriptCount: scripts.length,
+    scriptUrls: scripts,
+    directMatches,
+    bundleStatuses,
+    bundleMatches: [...bundleMatches],
   };
+  return cookie ? { cookie, diagnostics } : { diagnostics };
 }
 
 async function fetchJson(url: string, init?: RequestInit, cookie?: string): Promise<unknown> {
