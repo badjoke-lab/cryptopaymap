@@ -5,6 +5,7 @@ on:
     branches:
       - feat/steak-n-shake-btc-growth
     paths:
+      - scripts/ingest-review-steak-n-shake-official-source-first-staging.ts
       - scripts/ingest-review-steak-n-shake-official-physical-staging.ts
       - scripts/seed-steak-n-shake-official-bitcoin-evidence-staging.ts
       - .github/workflows/one-shot-steak-n-shake-directory-probe.yml
@@ -45,7 +46,7 @@ jobs:
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
         run: |
           set -o pipefail
-          npx tsx scripts/ingest-review-steak-n-shake-official-physical-staging.ts 2>&1 | tee steak-n-shake-source-first.log
+          npx tsx scripts/ingest-review-steak-n-shake-official-source-first-staging.ts 2>&1 | tee steak-n-shake-source-first.log
 
       - name: Assert source-first ingestion and branch expansion completed
         run: |
@@ -60,8 +61,8 @@ jobs:
           if (result.validCoordinates !== fetched) {
             throw new Error(`Coordinate completeness failed: ${result.validCoordinates}/${fetched}.`);
           }
-          if (result.withPhone !== fetched || result.withHours !== fetched) {
-            throw new Error(`Directory profile completeness failed: phone=${result.withPhone}, hours=${result.withHours}, fetched=${fetched}.`);
+          if (result.phoneFieldRows !== fetched || result.withHours !== fetched) {
+            throw new Error(`Directory field completeness failed: phoneFieldRows=${result.phoneFieldRows}, hours=${result.withHours}, fetched=${fetched}.`);
           }
           if (result.candidatesResolved !== fetched || result.verifiedOfficialLocations !== fetched) {
             throw new Error(`Source-first Candidate resolution failed: resolved=${result.candidatesResolved}, verified=${result.verifiedOfficialLocations}, fetched=${fetched}.`);
@@ -85,6 +86,8 @@ jobs:
           console.log(JSON.stringify({
             officialDirectoryFetched: fetched,
             validCoordinates: result.validCoordinates,
+            phoneFieldRows: result.phoneFieldRows,
+            withPhone: result.withPhone,
             candidatesCreated: result.candidatesCreated,
             candidatesReplayed: result.candidatesReplayed,
             confirmed,
@@ -97,6 +100,7 @@ jobs:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+          CPM_MAX_PUBLICATION_BATCH: '500'
         run: |
           set -o pipefail
           npx tsx scripts/publish-reviewed-physical-canonical-staging.ts 2>&1 | tee publish-reviewed.log
