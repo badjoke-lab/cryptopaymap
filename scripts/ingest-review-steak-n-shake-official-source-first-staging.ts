@@ -593,7 +593,7 @@ async function main() {
     })
     .onConflictDoNothing();
 
-  for (let index = 0; index < directory.rows.length; index += 1) {
+  const syncDirectoryRow = async (index: number) => {
     const row = directory.rows[index]!;
     const sourceRecordId = sourceRecordIds[index]!;
     const candidateId = candidateIds[index]!;
@@ -675,6 +675,17 @@ async function main() {
       .insert(candidateSourceRecords)
       .values({ candidateId, sourceRecordId, relationship: 'origin' })
       .onConflictDoNothing();
+  };
+
+  // Official directory rows use deterministic, independent source-record/Candidate IDs.
+  // Bound concurrency to reduce hundreds of serialized HTTP DB round trips without changing persistence semantics.
+  const SOURCE_SYNC_CONCURRENCY = 8;
+  for (let offset = 0; offset < directory.rows.length; offset += SOURCE_SYNC_CONCURRENCY) {
+    const indexes = Array.from(
+      { length: Math.min(SOURCE_SYNC_CONCURRENCY, directory.rows.length - offset) },
+      (_, index) => offset + index,
+    );
+    await Promise.all(indexes.map(syncDirectoryRow));
   }
 
   const [[bitcoin], [lightning], [lightningInvoice]] = await Promise.all([
