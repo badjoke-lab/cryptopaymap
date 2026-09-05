@@ -1,4 +1,4 @@
-# Latest-head staging proof with bounded strict-review concurrency.
+# Latest-head staging proof with bounded strict-review concurrency and bounded canonical slugs.
 name: One-shot Steak n Shake BTC growth staging review
 
 on:
@@ -9,6 +9,7 @@ on:
       - scripts/ingest-review-steak-n-shake-official-source-first-staging.ts
       - scripts/ingest-review-steak-n-shake-official-physical-staging.ts
       - scripts/seed-steak-n-shake-official-bitcoin-evidence-staging.ts
+      - scripts/publish-reviewed-physical-canonical-staging.ts
       - .github/workflows/one-shot-steak-n-shake-directory-probe.yml
       - .github/workflows/one-shot-steak-n-shake-btc-growth.yml
 
