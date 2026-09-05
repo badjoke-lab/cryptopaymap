@@ -7,6 +7,7 @@ on:
     paths:
       - scripts/probe-sheetz-official-directory.ts
       - scripts/probe-sheetz-live-bundle-api.ts
+      - scripts/probe-sheetz-browser-directory.mjs
       - .github/workflows/one-shot-sheetz-source-probe.yml
 
 permissions:
@@ -19,7 +20,7 @@ concurrency:
 jobs:
   probe:
     runs-on: ubuntu-24.04
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -41,16 +42,26 @@ jobs:
           set -o pipefail
           npx tsx scripts/probe-sheetz-live-bundle-api.ts 2>&1 | tee sheetz-bundle-api.log
 
-      - name: Probe current official Sheetz directory
+      - name: Install browser probe runtime
+        run: npm install --no-save --no-package-lock playwright-core
+
+      - name: Resolve runner Chrome
+        run: |
+          CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$CHROME_PATH"
+          echo "CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+          "$CHROME_PATH" --version
+
+      - name: Probe current official Sheetz directory through live browser
         run: |
           set -o pipefail
-          npx tsx scripts/probe-sheetz-official-directory.ts 2>&1 | tee sheetz-source-probe.log
+          node scripts/probe-sheetz-browser-directory.mjs 2>&1 | tee sheetz-browser-source-probe.log
 
       - name: Assert official-source identity and profile coverage
         run: |
           node --input-type=module <<'NODE' 2>&1 | tee sheetz-source-probe-guard.log
           import { readFile } from 'node:fs/promises';
-          const lines = (await readFile('sheetz-source-probe.log', 'utf8')).trim().split(/\r?\n/);
+          const lines = (await readFile('sheetz-browser-source-probe.log', 'utf8')).trim().split(/\r?\n/);
           const result = JSON.parse(lines.at(-1));
           if (result.officialDirectoryFetched < 700) throw new Error(`Directory unexpectedly small: ${result.officialDirectoryFetched}`);
           if (result.officialDirectoryFetched !== result.uniqueStoreNumbers || result.duplicateStoreNumbers !== 0) {
@@ -81,7 +92,7 @@ jobs:
           name: sheetz-source-probe
           path: |
             sheetz-bundle-api.log
-            sheetz-source-probe.log
+            sheetz-browser-source-probe.log
             sheetz-source-probe-guard.log
           if-no-files-found: warn
           retention-days: 7
