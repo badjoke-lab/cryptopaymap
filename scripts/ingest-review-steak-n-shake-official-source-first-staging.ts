@@ -937,6 +937,20 @@ async function main() {
       }
     }
 
+    // PostgreSQL default now() retains sub-millisecond precision while JS Date does not.
+    // Align only pending private Evidence before the strict optimistic-lock review guard;
+    // do not relax the guard and do not alter already-reviewed Evidence.
+    const reviewReadyAt = new Date(Math.ceil(Date.now() / 1_000) * 1_000);
+    await db
+      .update(evidence)
+      .set({ updatedAt: reviewReadyAt })
+      .where(
+        and(
+          inArray(evidence.id, [officialEvidenceId, processorEvidenceId]),
+          eq(evidence.reviewStatus, 'pending'),
+        ),
+      );
+
     const processorState = await acceptEvidence(db, reviewer, evidencePolicy, {
       candidateId: candidate.id,
       claimId,
