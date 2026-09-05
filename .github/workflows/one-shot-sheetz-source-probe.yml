@@ -6,6 +6,7 @@ on:
       - feat/sheetz-flexa-growth
     paths:
       - scripts/probe-sheetz-official-directory.ts
+      - scripts/probe-sheetz-live-bundle-api.ts
       - .github/workflows/one-shot-sheetz-source-probe.yml
 
 permissions:
@@ -34,6 +35,11 @@ jobs:
 
       - name: Type-check
         run: npm run check
+
+      - name: Extract live Sheetz bundle API configuration
+        run: |
+          set -o pipefail
+          npx tsx scripts/probe-sheetz-live-bundle-api.ts 2>&1 | tee sheetz-bundle-api.log
 
       - name: Probe current official Sheetz directory
         run: |
@@ -74,6 +80,7 @@ jobs:
         with:
           name: sheetz-source-probe
           path: |
+            sheetz-bundle-api.log
             sheetz-source-probe.log
             sheetz-source-probe-guard.log
           if-no-files-found: warn
