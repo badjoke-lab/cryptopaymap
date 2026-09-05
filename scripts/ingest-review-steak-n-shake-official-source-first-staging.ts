@@ -715,7 +715,7 @@ async function main() {
     processorEvidenceAccepted: 0,
   };
 
-  for (const candidate of candidates) {
+  const processCandidate = async (candidate: (typeof candidates)[number]) => {
     if (!['new', 'triaged', 'promoted'].includes(candidate.status)) {
       throw new Error(`Unexpected Candidate status ${candidate.status}: ${candidate.id}.`);
     }
@@ -984,6 +984,13 @@ async function main() {
         'Confirmed from merchant A2 Terms plus accepted Speed B2 evidence. The source Evidence is brand_region for U.S. stores; this location-specific derived Claim exists only after current first-party directory, all-U.S. rollout, franchise/corporate coverage, and coordinate/hour completeness gates passed.',
     });
     if (merchantState !== 'already_accepted') counters.confirmed += 1;
+  };
+
+  // Each location has its own Candidate, Entity, Location, Claim, Evidence, and review guards.
+  // Bound concurrency so independent strict reviews do not serialize hundreds of HTTP DB round trips.
+  const REVIEW_CONCURRENCY = 8;
+  for (let offset = 0; offset < candidates.length; offset += REVIEW_CONCURRENCY) {
+    await Promise.all(candidates.slice(offset, offset + REVIEW_CONCURRENCY).map(processCandidate));
   }
 
   const branchExpansionGatePassed =
