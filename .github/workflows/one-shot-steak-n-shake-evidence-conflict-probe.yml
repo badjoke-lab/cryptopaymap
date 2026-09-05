@@ -1,0 +1,68 @@
+name: One-shot Steak n Shake Evidence conflict probe
+
+on:
+  push:
+    branches:
+      - feat/steak-n-shake-btc-growth
+    paths:
+      - .github/workflows/one-shot-steak-n-shake-evidence-conflict-probe.yml
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Read-only Evidence conflict aggregate probe
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: |
+          node --input-type=module <<'NODE' | tee steak-evidence-conflict-probe.json
+          import { neon } from '@neondatabase/serverless';
+          const sql = neon(process.env.DATABASE_URL);
+          const sourceName = 'Speed current Steak n Shake implementation material';
+          const rows = await sql`
+            with target as (
+              select e.id, e.claim_id, e.review_status, e.updated_at,
+                     c.claim_status, c.visibility as claim_visibility, c.updated_at as claim_updated_at,
+                     (select count(*) from evidence ae where ae.claim_id = e.claim_id and ae.review_status = 'accepted' and ae.deleted_at is null) as accepted_count,
+                     (select count(*) from claim_assets ca where ca.claim_id = e.claim_id) as asset_count,
+                     (select count(*) from claim_assets ca where ca.claim_id = e.claim_id and ca.is_primary = true) as primary_asset_count
+              from evidence e
+              left join acceptance_claims c on c.id = e.claim_id
+              where e.source_name = ${sourceName}
+                and e.deleted_at is null
+            )
+            select
+              count(*)::int as total,
+              count(*) filter (where review_status = 'pending')::int as pending,
+              count(*) filter (where review_status = 'accepted')::int as accepted,
+              count(*) filter (where claim_id is null)::int as missing_claim,
+              count(*) filter (where review_status = 'pending' and updated_at = date_trunc('milliseconds', updated_at))::int as pending_evidence_ms_aligned,
+              count(*) filter (where review_status = 'pending' and updated_at <> date_trunc('milliseconds', updated_at))::int as pending_evidence_sub_ms,
+              count(*) filter (where review_status = 'pending' and claim_updated_at = date_trunc('milliseconds', claim_updated_at))::int as pending_claim_ms_aligned,
+              count(*) filter (where review_status = 'pending' and claim_updated_at <> date_trunc('milliseconds', claim_updated_at))::int as pending_claim_sub_ms,
+              count(*) filter (where review_status = 'pending' and claim_status = 'candidate')::int as pending_candidate_claims,
+              count(*) filter (where review_status = 'pending' and claim_status = 'confirmed')::int as pending_confirmed_claims,
+              count(*) filter (where review_status = 'pending' and accepted_count = 0)::int as pending_accepted_set_empty,
+              count(*) filter (where review_status = 'pending' and accepted_count > 0)::int as pending_accepted_set_nonempty,
+              count(*) filter (where review_status = 'pending' and asset_count = 1 and primary_asset_count = 1)::int as pending_single_primary_asset
+            from target
+          `;
+          console.log(JSON.stringify({ ...rows[0], payloadExposed: false }, null, 2));
+          NODE
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: steak-evidence-conflict-probe
+          path: steak-evidence-conflict-probe.json
+          retention-days: 3
+          if-no-files-found: warn
