@@ -1,4 +1,4 @@
-declare const process: { env: Record<string, string | undefined> };
+declare const process: { env: Record<string, string | undefined>; exitCode?: number };
 
 type JsonRecord = Record<string, unknown>;
 
@@ -141,7 +141,9 @@ async function main(): Promise<void> {
   const duplicateStoreNumbers = rows.length - storeNumbers.size;
   const duplicateCoordinates = rows.length - coordinateKeys.size;
   const stateCounts = Object.fromEntries(
-    [...byState.entries()].map(([state, items]) => [state, items.length]).sort(([a], [b]) => a.localeCompare(b)),
+    [...byState.entries()]
+      .map(([state, items]): [string, number] => [state, items.length])
+      .sort(([a], [b]) => a.localeCompare(b)),
   );
   const sampleKeys = [...new Set(rows.flatMap((row) => row.rawKeys))].sort();
 
