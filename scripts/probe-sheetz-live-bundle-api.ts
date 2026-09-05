@@ -1,3 +1,5 @@
+export {};
+
 declare const process: { exitCode?: number };
 
 const PAGE_URL = 'https://orders.sheetz.com/findASheetz';
