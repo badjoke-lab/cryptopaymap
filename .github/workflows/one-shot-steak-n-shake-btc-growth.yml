@@ -1,4 +1,4 @@
-# Latest-head staging proof after Evidence timestamp normalization.
+# Latest-head staging proof with bounded strict-review concurrency.
 name: One-shot Steak n Shake BTC growth staging review
 
 on:
@@ -17,7 +17,7 @@ permissions:
 
 concurrency:
   group: one-shot-steak-n-shake-btc-growth
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   grow:
