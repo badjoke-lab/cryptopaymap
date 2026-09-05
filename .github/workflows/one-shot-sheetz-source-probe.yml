@@ -1,0 +1,80 @@
+name: One-shot Sheetz official-directory source probe
+
+on:
+  push:
+    branches:
+      - feat/sheetz-flexa-growth
+    paths:
+      - scripts/probe-sheetz-official-directory.ts
+      - .github/workflows/one-shot-sheetz-source-probe.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: one-shot-sheetz-source-probe
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Type-check
+        run: npm run check
+
+      - name: Probe current official Sheetz directory
+        run: |
+          set -o pipefail
+          npx tsx scripts/probe-sheetz-official-directory.ts 2>&1 | tee sheetz-source-probe.log
+
+      - name: Assert official-source identity and profile coverage
+        run: |
+          node --input-type=module <<'NODE' 2>&1 | tee sheetz-source-probe-guard.log
+          import { readFile } from 'node:fs/promises';
+          const lines = (await readFile('sheetz-source-probe.log', 'utf8')).trim().split(/\r?\n/);
+          const result = JSON.parse(lines.at(-1));
+          if (result.officialDirectoryFetched < 700) throw new Error(`Directory unexpectedly small: ${result.officialDirectoryFetched}`);
+          if (result.officialDirectoryFetched !== result.uniqueStoreNumbers || result.duplicateStoreNumbers !== 0) {
+            throw new Error(`Store-number identity is not unique: rows=${result.officialDirectoryFetched}, unique=${result.uniqueStoreNumbers}`);
+          }
+          if (result.validCoordinates !== result.officialDirectoryFetched) {
+            throw new Error(`Coordinate coverage incomplete: ${result.validCoordinates}/${result.officialDirectoryFetched}`);
+          }
+          if (result.withAddress !== result.officialDirectoryFetched || result.withCity !== result.officialDirectoryFetched) {
+            throw new Error(`Address profile coverage incomplete: address=${result.withAddress}, city=${result.withCity}, rows=${result.officialDirectoryFetched}`);
+          }
+          console.log(JSON.stringify({
+            officialDirectoryFetched: result.officialDirectoryFetched,
+            uniqueStoreNumbers: result.uniqueStoreNumbers,
+            uniqueCoordinates: result.uniqueCoordinates,
+            withPostalCode: result.withPostalCode,
+            withPhone: result.withPhone,
+            explicitlyOpen24x7: result.explicitlyOpen24x7,
+            operatingStates: result.operatingStates,
+            stateCounts: result.stateCounts,
+          }));
+          NODE
+
+      - name: Upload source proof
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheetz-source-probe
+          path: |
+            sheetz-source-probe.log
+            sheetz-source-probe-guard.log
+          if-no-files-found: warn
+          retention-days: 7
