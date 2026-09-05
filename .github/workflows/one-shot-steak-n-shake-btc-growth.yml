@@ -5,7 +5,9 @@ on:
     branches:
       - feat/steak-n-shake-btc-growth
     paths:
+      - scripts/ingest-review-steak-n-shake-official-physical-staging.ts
       - scripts/seed-steak-n-shake-official-bitcoin-evidence-staging.ts
+      - .github/workflows/one-shot-steak-n-shake-directory-probe.yml
       - .github/workflows/one-shot-steak-n-shake-btc-growth.yml
 
 permissions:
@@ -18,7 +20,7 @@ concurrency:
 jobs:
   grow:
     runs-on: ubuntu-24.04
-    timeout-minutes: 30
+    timeout-minutes: 45
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,37 +37,60 @@ jobs:
       - name: Type-check before staging mutation
         run: npm run check
 
-      - name: Seed current Steak n Shake official Bitcoin Evidence
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: |
-          set -o pipefail
-          npx tsx scripts/seed-steak-n-shake-official-bitcoin-evidence-staging.ts 2>&1 | tee steak-n-shake-seed.log
-
-      - name: Assert the staging dataset contains location-scoped Steak n Shake targets
-        run: |
-          node --input-type=module <<'NODE'
-          import { readFile } from 'node:fs/promises';
-          const lines = (await readFile('steak-n-shake-seed.log', 'utf8')).trim().split(/\r?\n/);
-          const result = JSON.parse(lines.at(-1));
-          if (result.matchedLocationScopedCandidates < 1) {
-            throw new Error('No location-scoped Steak n Shake Bitcoin Candidates were found in staging.');
-          }
-          console.log(JSON.stringify(result));
-          NODE
-
-      - name: Strict-review newly available official Evidence
+      - name: Ingest official directory and strict-review Steak n Shake BTC claims
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
           CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
           CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
-          CPM_OFFICIAL_EVIDENCE_MAX_TARGETS: '100'
-          CPM_OFFICIAL_EVIDENCE_MAX_WINDOWS: '5'
         run: |
           set -o pipefail
-          npx tsx scripts/promote-confirm-next-official-evidence-batch.ts 2>&1 | tee strict-review.log
+          npx tsx scripts/ingest-review-steak-n-shake-official-physical-staging.ts 2>&1 | tee steak-n-shake-source-first.log
+
+      - name: Assert source-first ingestion and branch expansion completed
+        run: |
+          node --input-type=module <<'NODE' 2>&1 | tee steak-n-shake-source-first-guard.log
+          import { readFile } from 'node:fs/promises';
+          const lines = (await readFile('steak-n-shake-source-first.log', 'utf8')).trim().split(/\r?\n/);
+          const result = JSON.parse(lines.at(-1));
+          const fetched = result.officialDirectoryFetched;
+          if (!Number.isInteger(fetched) || fetched < 300) {
+            throw new Error(`Official Steak n Shake directory is too small: ${fetched}.`);
+          }
+          if (result.validCoordinates !== fetched) {
+            throw new Error(`Coordinate completeness failed: ${result.validCoordinates}/${fetched}.`);
+          }
+          if (result.withPhone !== fetched || result.withHours !== fetched) {
+            throw new Error(`Directory profile completeness failed: phone=${result.withPhone}, hours=${result.withHours}, fetched=${fetched}.`);
+          }
+          if (result.candidatesResolved !== fetched || result.verifiedOfficialLocations !== fetched) {
+            throw new Error(`Source-first Candidate resolution failed: resolved=${result.candidatesResolved}, verified=${result.verifiedOfficialLocations}, fetched=${fetched}.`);
+          }
+          if (result.directorySourceRecordsCreated + result.directorySourceRecordsReplayed !== fetched) {
+            throw new Error('Official directory source-record accounting does not equal the fetched directory size.');
+          }
+          if (result.candidatesCreated + result.candidatesReplayed !== fetched) {
+            throw new Error('Official directory Candidate accounting does not equal the fetched directory size.');
+          }
+          if (result.branchExpansionGatePassed !== true || result.merchantTermsReverified !== true || result.currentSpeedRolloutReverified !== true || result.franchiseAndCorporateCoverageReverified !== true) {
+            throw new Error('Steak n Shake brand-region expansion evidence gate did not pass.');
+          }
+          const confirmed = result.confirmed + result.alreadyConfirmed;
+          if (confirmed !== fetched) {
+            throw new Error(`Every current official directory location must be confirmed before publish: confirmed=${confirmed}, fetched=${fetched}.`);
+          }
+          if (result.candidatePayloadExposed !== false || result.automaticPublicVisibility !== false) {
+            throw new Error('Private Candidate/public visibility guard failed.');
+          }
+          console.log(JSON.stringify({
+            officialDirectoryFetched: fetched,
+            validCoordinates: result.validCoordinates,
+            candidatesCreated: result.candidatesCreated,
+            candidatesReplayed: result.candidatesReplayed,
+            confirmed,
+            branchExpansionGatePassed: result.branchExpansionGatePassed,
+          }));
+          NODE
 
       - name: Publish reviewed canonical staging records
         env:
@@ -75,14 +100,6 @@ jobs:
         run: |
           set -o pipefail
           npx tsx scripts/publish-reviewed-physical-canonical-staging.ts 2>&1 | tee publish-reviewed.log
-
-      - name: Backfill OSM source-backed Place profiles
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
-        run: |
-          set -o pipefail
-          npx tsx scripts/backfill-osm-published-place-profiles-staging.ts 2>&1 | tee osm-place-profile-backfill.log
 
       - name: Quarantine thin public Place profiles
         env:
@@ -100,18 +117,18 @@ jobs:
           set -o pipefail
           npx tsx scripts/audit-published-place-depth-staging.ts 2>&1 | tee published-place-depth-audit.log
 
-      - name: Assert reviewed inventory did not regress
+      - name: Assert reviewed physical inventory actually grew
         run: |
           node --input-type=module <<'NODE' 2>&1 | tee place-inventory-guard.log
           import { readFile } from 'node:fs/promises';
           const audit = JSON.parse(await readFile('published-place-depth-audit.log', 'utf8'));
-          if (audit.publishedPlaces < 953) {
-            throw new Error(`Reviewed Place inventory regressed: published=${audit.publishedPlaces}, expected at least 953.`);
+          if (audit.publishedPlaces <= 953) {
+            throw new Error(`Reviewed Place inventory did not grow: published=${audit.publishedPlaces}, baseline=953.`);
           }
           if (audit.thinPlaces !== 0) {
             throw new Error(`Thin Place records remain public: ${audit.thinPlaces}.`);
           }
-          console.log(JSON.stringify({ publishedPlaces: audit.publishedPlaces, thinPlaces: audit.thinPlaces, minimumExpected: 953 }));
+          console.log(JSON.stringify({ publishedPlaces: audit.publishedPlaces, thinPlaces: audit.thinPlaces, baseline: 953, growth: audit.publishedPlaces - 953 }));
           NODE
 
       - name: Remove stale generated staging payloads
@@ -143,13 +160,32 @@ jobs:
           set -o pipefail
           node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json 2>&1 | tee place-history-contract.log
 
-      - name: Report materialized Steak n Shake Places
+      - name: Assert materialized Steak n Shake Places and public privacy
         run: |
           node --input-type=module <<'NODE' 2>&1 | tee steak-n-shake-public.log
           import { readFile } from 'node:fs/promises';
-          const data = JSON.parse(await readFile('public/data/places.json', 'utf8'));
+          const sourceLines = (await readFile('steak-n-shake-source-first.log', 'utf8')).trim().split(/\r?\n/);
+          const source = JSON.parse(sourceLines.at(-1));
+          const text = await readFile('public/data/places.json', 'utf8');
+          const data = JSON.parse(text);
           const records = data.records.filter((place) => /steak\s*(?:n|and|'n)\s*shake/i.test(place.name));
-          console.log(JSON.stringify({ publicSteakNShakePlaces: records.length, slugs: records.map((place) => place.slug) }));
+          if (records.length < source.officialDirectoryFetched) {
+            throw new Error(`Materialized Steak n Shake inventory is incomplete: public=${records.length}, directory=${source.officialDirectoryFetched}.`);
+          }
+          if (data.records.length <= 953) {
+            throw new Error(`Materialized physical inventory did not grow above baseline: ${data.records.length}.`);
+          }
+          const forbidden = ['candidateStatus', 'rawPayload', 'importBatchId', 'duplicateGroupId', 'canonicalEntityId', 'canonicalLocationId'];
+          const leaked = forbidden.filter((key) => text.includes(`\"${key}\"`));
+          if (leaked.length > 0) {
+            throw new Error(`Internal Candidate fields leaked into public places payload: ${leaked.join(', ')}`);
+          }
+          console.log(JSON.stringify({
+            publicSteakNShakePlaces: records.length,
+            officialDirectoryFetched: source.officialDirectoryFetched,
+            totalPublishedPhysicalPlaces: data.records.length,
+            internalFieldLeaks: 0,
+          }));
           NODE
 
       - name: Build
@@ -164,10 +200,9 @@ jobs:
         with:
           name: steak-n-shake-btc-growth-proof
           path: |
-            steak-n-shake-seed.log
-            strict-review.log
+            steak-n-shake-source-first.log
+            steak-n-shake-source-first-guard.log
             publish-reviewed.log
-            osm-place-profile-backfill.log
             thin-place-quarantine.log
             published-place-depth-audit.log
             place-inventory-guard.log
