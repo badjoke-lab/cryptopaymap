@@ -1,4 +1,4 @@
-# Queue latest-head proof after bounded source sync and strict review concurrency.
+# Queue latest-head proof after bounded concurrency and already-confirmed return fix.
 name: One-shot Steak n Shake official directory probe
 
 on:
