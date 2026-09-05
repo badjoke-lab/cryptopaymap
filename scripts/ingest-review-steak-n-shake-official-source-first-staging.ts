@@ -981,7 +981,7 @@ async function main() {
     if (!claim) throw new Error('Claim missing after processor Evidence review.');
     if (claim.status === 'confirmed') {
       counters.alreadyConfirmed += 1;
-      continue;
+      return;
     }
     if (claim.status !== 'candidate') throw new Error(`Unexpected Claim status ${claim.status}.`);
 
