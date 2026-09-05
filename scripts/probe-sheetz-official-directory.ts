@@ -16,6 +16,7 @@ type StoreRow = {
 };
 
 const BASE = 'https://orders.sheetz.com';
+const LOCATOR_URL = `${BASE}/findASheetz`;
 const STATES_URL = `${BASE}/anybff/api/stores/getOperatingStates`;
 const SEARCH_URL = `${BASE}/anybff/api/stores/search`;
 const PAGE_SIZE = 100;
@@ -67,22 +68,125 @@ function parseStore(value: unknown): StoreRow | null {
   };
 }
 
-function requestHeaders(): Record<string, string> {
+function requestHeaders(cookie?: string): Record<string, string> {
   return {
     accept: 'application/json, text/plain, */*',
     'accept-language': 'en-US,en;q=0.9',
     'content-type': 'application/json',
     origin: BASE,
-    referer: `${BASE}/findASheetz`,
+    referer: LOCATOR_URL,
+    'user-agent': BROWSER_USER_AGENT,
+    ...(cookie ? { cookie } : {}),
+  };
+}
+
+function htmlHeaders(): Record<string, string> {
+  return {
+    accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+    'accept-language': 'en-US,en;q=0.9',
     'user-agent': BROWSER_USER_AGENT,
   };
 }
 
-async function fetchJson(url: string, init?: RequestInit): Promise<unknown> {
+function cookieHeader(response: Response): string | undefined {
+  const raw = response.headers.get('set-cookie');
+  if (!raw) return undefined;
+  return raw
+    .split(/,(?=\s*[^;,]+=)/)
+    .map((part) => part.trim().split(';', 1)[0])
+    .filter(Boolean)
+    .join('; ');
+}
+
+function scriptSources(html: string): string[] {
+  const sources = new Set<string>();
+  for (const match of html.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)) {
+    const src = match[1];
+    if (!src) continue;
+    try {
+      sources.add(new URL(src, LOCATOR_URL).toString());
+    } catch {
+      // Ignore malformed script URLs from diagnostics.
+    }
+  }
+  return [...sources].slice(0, 80);
+}
+
+function apiStrings(text: string): string[] {
+  const found = new Set<string>();
+  const patterns = [
+    /\/(?:anybff|api)\/[^"'`\\\s<>]{1,180}/gi,
+    /[^"'`\\\s<>]{0,80}(?:getOperatingStates|stateCode|findASheetz|stores\/search)[^"'`\\\s<>]{0,120}/gi,
+  ];
+  for (const pattern of patterns) {
+    for (const match of text.matchAll(pattern)) {
+      const value = match[0]?.trim();
+      if (value && /store|sheetz|location|state/i.test(value)) found.add(value);
+    }
+  }
+  return [...found].slice(0, 120);
+}
+
+async function discoverLiveLocatorApi(): Promise<{ cookie?: string; diagnostics: JsonRecord }> {
+  const page = await fetch(LOCATOR_URL, {
+    redirect: 'follow',
+    signal: AbortSignal.timeout(30_000),
+    headers: htmlHeaders(),
+  });
+  const html = await page.text();
+  const cookie = cookieHeader(page);
+  const scripts = scriptSources(html);
+  const directMatches = apiStrings(html);
+  const bundleMatches = new Set<string>();
+  const bundleStatuses: Array<{ url: string; status: number; bytes: number }> = [];
+
+  for (const scriptUrl of scripts) {
+    try {
+      const response = await fetch(scriptUrl, {
+        redirect: 'follow',
+        signal: AbortSignal.timeout(20_000),
+        headers: {
+          accept: '*/*',
+          referer: LOCATOR_URL,
+          'user-agent': BROWSER_USER_AGENT,
+          ...(cookie ? { cookie } : {}),
+        },
+      });
+      const body = await response.text();
+      bundleStatuses.push({ url: scriptUrl, status: response.status, bytes: body.length });
+      if (!response.ok) continue;
+      for (const value of apiStrings(body)) bundleMatches.add(value);
+    } catch (error) {
+      bundleStatuses.push({
+        url: scriptUrl,
+        status: 0,
+        bytes: error instanceof Error ? error.message.length : 0,
+      });
+    }
+  }
+
+  return {
+    cookie,
+    diagnostics: {
+      locatorStatus: page.status,
+      locatorFinalUrl: page.url,
+      locatorBytes: html.length,
+      locatorContentType: page.headers.get('content-type'),
+      setCookiePresent: Boolean(cookie),
+      scriptCount: scripts.length,
+      scriptUrls: scripts,
+      directMatches,
+      bundleStatuses,
+      bundleMatches: [...bundleMatches],
+    },
+  };
+}
+
+async function fetchJson(url: string, init?: RequestInit, cookie?: string): Promise<unknown> {
   const response = await fetch(url, {
     redirect: 'follow',
     signal: AbortSignal.timeout(30_000),
-    headers: requestHeaders(),
+    headers: requestHeaders(cookie),
     ...init,
   });
   if (!response.ok) throw new Error(`Sheetz official API returned HTTP ${response.status}: ${url}`);
@@ -92,8 +196,8 @@ async function fetchJson(url: string, init?: RequestInit): Promise<unknown> {
   return response.json() as Promise<unknown>;
 }
 
-async function fetchOperatingStates(): Promise<string[]> {
-  const payload = object(await fetchJson(STATES_URL, { method: 'GET' }));
+async function fetchOperatingStates(cookie?: string): Promise<string[]> {
+  const payload = object(await fetchJson(STATES_URL, { method: 'GET' }, cookie));
   const states = object(payload.states);
   const result = Object.keys(states)
     .map((state) => state.trim().toUpperCase())
@@ -103,7 +207,7 @@ async function fetchOperatingStates(): Promise<string[]> {
   return result;
 }
 
-async function fetchState(state: string): Promise<StoreRow[]> {
+async function fetchState(state: string, cookie?: string): Promise<StoreRow[]> {
   const rows: StoreRow[] = [];
   for (let page = 0; page < MAX_PAGES_PER_STATE; page += 1) {
     const url = new URL(SEARCH_URL);
@@ -111,10 +215,14 @@ async function fetchState(state: string): Promise<StoreRow[]> {
     url.searchParams.set('page', String(page));
     url.searchParams.set('size', String(PAGE_SIZE));
     const payload = object(
-      await fetchJson(url.toString(), {
-        method: 'POST',
-        body: '{}',
-      }),
+      await fetchJson(
+        url.toString(),
+        {
+          method: 'POST',
+          body: '{}',
+        },
+        cookie,
+      ),
     );
     const rawStores = Array.isArray(payload.stores) ? payload.stores : [];
     if (rawStores.length === 0) return rows;
@@ -130,10 +238,21 @@ async function fetchState(state: string): Promise<StoreRow[]> {
 }
 
 async function main(): Promise<void> {
-  const states = await fetchOperatingStates();
+  const live = await discoverLiveLocatorApi();
+  console.error(`SHEETZ_LOCATOR_DIAGNOSTICS=${JSON.stringify(live.diagnostics)}`);
+
+  let states: string[];
+  try {
+    states = await fetchOperatingStates(live.cookie);
+  } catch (error) {
+    throw new Error(
+      `Known Sheetz BFF contract failed after live-locator discovery. ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+
   const byState = new Map<string, StoreRow[]>();
   for (const state of states) {
-    byState.set(state, await fetchState(state));
+    byState.set(state, await fetchState(state, live.cookie));
   }
   const rows = Array.from(byState.values()).flat();
   if (rows.length < MIN_EXPECTED_STORES || rows.length > MAX_EXPECTED_STORES) {
