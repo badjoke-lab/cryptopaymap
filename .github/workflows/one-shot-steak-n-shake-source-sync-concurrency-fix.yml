@@ -1,0 +1,42 @@
+name: One-shot Steak n Shake source sync concurrency fix
+
+on:
+  push:
+    branches:
+      - feat/steak-n-shake-btc-growth
+    paths:
+      - .github/workflows/one-shot-steak-n-shake-source-sync-concurrency-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/steak-n-shake-btc-growth
+      - name: Apply bounded concurrency to independent directory rows
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/ingest-review-steak-n-shake-official-source-first-staging.ts')
+          text = path.read_text()
+          start = "  for (let index = 0; index < directory.rows.length; index += 1) {\n"
+          if text.count(start) != 1:
+              raise SystemExit(f'expected one source sync loop, found {text.count(start)}')
+          text = text.replace(start, "  const syncDirectoryRow = async (index: number) => {\n", 1)
+          end = """    await db\n      .insert(candidateSourceRecords)\n      .values({ candidateId, sourceRecordId, relationship: 'origin' })\n      .onConflictDoNothing();\n  }\n\n  const [[bitcoin], [lightning], [lightningInvoice]] = await Promise.all([\n"""
+          replacement = """    await db\n      .insert(candidateSourceRecords)\n      .values({ candidateId, sourceRecordId, relationship: 'origin' })\n      .onConflictDoNothing();\n  };\n\n  // Official directory rows use deterministic, independent source-record/Candidate IDs.\n  // Bound concurrency to reduce hundreds of serialized HTTP DB round trips without changing persistence semantics.\n  const SOURCE_SYNC_CONCURRENCY = 8;\n  for (let offset = 0; offset < directory.rows.length; offset += SOURCE_SYNC_CONCURRENCY) {\n    const indexes = Array.from(\n      { length: Math.min(SOURCE_SYNC_CONCURRENCY, directory.rows.length - offset) },\n      (_, index) => offset + index,\n    );\n    await Promise.all(indexes.map(syncDirectoryRow));\n  }\n\n  const [[bitcoin], [lightning], [lightningInvoice]] = await Promise.all([\n"""
+          if text.count(end) != 1:
+              raise SystemExit(f'expected one source sync terminator, found {text.count(end)}')
+          path.write_text(text.replace(end, replacement, 1))
+          PY
+      - name: Commit and push source sync concurrency
+        run: |
+          git config user.name badjoke-lab
+          git config user.email badjoke.lab@gmail.com
+          git add scripts/ingest-review-steak-n-shake-official-source-first-staging.ts
+          git commit -m "PERF: bound Steak n Shake source sync concurrency"
+          git push origin HEAD:feat/steak-n-shake-btc-growth
