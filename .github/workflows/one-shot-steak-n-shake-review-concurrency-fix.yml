@@ -17,31 +17,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: feat/steak-n-shake-btc-growth
-      - name: Apply bounded concurrency to independent location reviews
+      - name: Replace obsolete loop continue inside processCandidate
         run: |
           python - <<'PY'
           from pathlib import Path
           path = Path('scripts/ingest-review-steak-n-shake-official-source-first-staging.ts')
           text = path.read_text()
-          start = "  for (const candidate of candidates) {\n"
-          if text.count(start) != 1:
-              raise SystemExit(f'expected exactly one candidate loop, found {text.count(start)}')
-          text = text.replace(
-              start,
-              "  const processCandidate = async (candidate: (typeof candidates)[number]) => {\n",
-              1,
-          )
-          end = """    if (merchantState !== 'already_accepted') counters.confirmed += 1;\n  }\n\n  const branchExpansionGatePassed =\n"""
-          replacement = """    if (merchantState !== 'already_accepted') counters.confirmed += 1;\n  };\n\n  // Each location has its own Candidate, Entity, Location, Claim, Evidence, and review guards.\n  // Bound concurrency so independent strict reviews do not serialize hundreds of HTTP DB round trips.\n  const REVIEW_CONCURRENCY = 8;\n  for (let offset = 0; offset < candidates.length; offset += REVIEW_CONCURRENCY) {\n    await Promise.all(candidates.slice(offset, offset + REVIEW_CONCURRENCY).map(processCandidate));\n  }\n\n  const branchExpansionGatePassed =\n"""
-          if text.count(end) != 1:
-              raise SystemExit(f'expected exactly one loop terminator, found {text.count(end)}')
-          text = text.replace(end, replacement, 1)
-          path.write_text(text)
+          old = """    if (claim.status === 'confirmed') {\n      counters.alreadyConfirmed += 1;\n      continue;\n    }\n"""
+          new = """    if (claim.status === 'confirmed') {\n      counters.alreadyConfirmed += 1;\n      return;\n    }\n"""
+          if text.count(old) != 1:
+              raise SystemExit(f'expected exactly one confirmed-claim continue block, found {text.count(old)}')
+          path.write_text(text.replace(old, new, 1))
           PY
-      - name: Commit and push concurrency fix
+      - name: Commit and push review return fix
         run: |
           git config user.name badjoke-lab
           git config user.email badjoke.lab@gmail.com
           git add scripts/ingest-review-steak-n-shake-official-source-first-staging.ts
-          git commit -m "PERF: bound Steak n Shake strict review concurrency"
+          git commit -m "FIX: return from already-confirmed Steak n Shake review"
           git push origin HEAD:feat/steak-n-shake-btc-growth
