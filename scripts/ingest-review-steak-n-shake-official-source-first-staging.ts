@@ -259,8 +259,11 @@ async function fetchDirectory() {
   if (valid.length !== parsed.length) {
     throw new Error(`Official directory profile validation failed: valid=${valid.length}, fetched=${parsed.length}.`);
   }
-  if (new Set(valid.map((row) => row.id)).size !== valid.length) {
-    throw new Error('Official directory contains duplicate location IDs.');
+  if (new Set(valid.map((row) => row.slug)).size !== valid.length) {
+    throw new Error('Official directory contains duplicate location slugs.');
+  }
+  if (new Set(valid.map((row) => `${row.id}|${row.slug}`)).size !== valid.length) {
+    throw new Error('Official directory contains duplicate composite location identities.');
   }
   return { rows: valid, fetchedAt: new Date(), contentHash: await sha256(raw) };
 }
@@ -543,7 +546,7 @@ async function main() {
     contentHash: speed.contentHash,
   });
 
-  const externalIds = directory.rows.map((row) => `steak-n-shake:${row.id}`);
+  const externalIds = directory.rows.map((row) => `steak-n-shake:${row.id}:${row.slug}`);
   const sourceRecordIds = await Promise.all(
     externalIds.map((externalId) => uuid(`source-record:${directorySource.id}:${externalId}`)),
   );
@@ -733,6 +736,7 @@ async function main() {
     );
     const seed = object(object(origin?.rawPayload).reviewSeed);
     const officialLocationId = typeof seed.officialLocationId === 'string' ? seed.officialLocationId.trim() : '';
+    const officialSlug = typeof seed.officialSlug === 'string' ? seed.officialSlug.trim() : '';
     const name = typeof seed.name === 'string' ? seed.name.trim() : '';
     const address = typeof seed.address === 'string' ? seed.address.trim() : '';
     const city = typeof seed.city === 'string' ? seed.city.trim() : '';
@@ -742,7 +746,7 @@ async function main() {
     const hours = typeof seed.openingHours === 'string' ? seed.openingHours.trim() : '';
     const latitude = typeof seed.latitude === 'number' ? seed.latitude : null;
     const longitude = typeof seed.longitude === 'number' ? seed.longitude : null;
-    if (!origin || !officialLocationId || !name || !address || !city || !state || !postalCode || !hours || latitude === null || longitude === null) {
+    if (!origin || !officialLocationId || !officialSlug || !name || !address || !city || !state || !postalCode || !hours || latitude === null || longitude === null) {
       throw new Error(`Official origin profile incomplete for Candidate ${candidate.id}.`);
     }
     counters.verifiedOfficialLocations += 1;
@@ -846,7 +850,7 @@ async function main() {
             id: locationId,
             value: {
               name,
-              slug: `steak-n-shake-${officialLocationId}`.slice(0, 64),
+              slug: `steak-n-shake-${officialLocationId}-${(await sha256(officialSlug)).slice(0, 10)}`.slice(0, 64),
               addressLine: address,
               locality: city,
               region: state,
