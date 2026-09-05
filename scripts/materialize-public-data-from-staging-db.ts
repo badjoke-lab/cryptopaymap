@@ -58,6 +58,31 @@ function publicSlug(value: string): string {
   return normalized.length > 0 ? normalized : 'merchant';
 }
 
+function boundedPublicIdentifier(prefix: string, value: string): string {
+  const candidate = `${prefix}-${value}`;
+  if (candidate.length <= 64) return candidate;
+  const head = candidate.slice(0, 51).replace(/-+$/g, '');
+  return `${head}-${sha256(candidate).slice(0, 12)}`;
+}
+
+function publishableSocialLinks(
+  links: Array<{ platform: string; url: string; handle: string | null }> | null,
+) {
+  return (links ?? []).filter((link) => {
+    const platform = link.platform.trim();
+    if (!/^[a-z0-9][a-z0-9_-]*$/.test(platform) || platform.length > 40) return false;
+    if (link.handle !== null) {
+      const handle = link.handle.trim();
+      if (handle.length < 1 || handle.length > 120) return false;
+    }
+    try {
+      return new URL(link.url).protocol === 'https:';
+    } catch {
+      return false;
+    }
+  });
+}
+
 function categoryFromTags(tags: Record<string, string>): string {
   const amenity = tags.amenity?.toLowerCase();
   if (amenity === 'cafe') return 'cafe';
@@ -427,7 +452,7 @@ async function main() {
       description: publicDescription,
       openingHours: row.openingHours,
       amenities: row.amenities ?? [],
-      socialLinks: row.socialLinks ?? [],
+      socialLinks: publishableSocialLinks(row.socialLinks),
       claims: [claim],
       media: [],
       provenance,
@@ -569,7 +594,7 @@ async function main() {
     topNetworks,
   };
   const updates = places.map((place) => ({
-    updateKey: `confirmed-${place.placeSlug}`,
+    updateKey: boundedPublicIdentifier('confirmed', place.placeSlug),
     updateType: 'newly_confirmed' as const,
     subjectType: 'place' as const,
     subjectSlug: place.placeSlug,
