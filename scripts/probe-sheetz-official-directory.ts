@@ -22,6 +22,8 @@ const PAGE_SIZE = 100;
 const MAX_PAGES_PER_STATE = 20;
 const MIN_EXPECTED_STORES = 700;
 const MAX_EXPECTED_STORES = 1200;
+const BROWSER_USER_AGENT =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36';
 
 function object(value: unknown): JsonRecord {
   return value !== null && typeof value === 'object' && !Array.isArray(value)
@@ -68,9 +70,11 @@ function parseStore(value: unknown): StoreRow | null {
 function requestHeaders(): Record<string, string> {
   return {
     accept: 'application/json, text/plain, */*',
+    'accept-language': 'en-US,en;q=0.9',
     'content-type': 'application/json',
+    origin: BASE,
     referer: `${BASE}/findASheetz`,
-    'user-agent': 'CryptoPayMap-source-first-probe/1.0',
+    'user-agent': BROWSER_USER_AGENT,
   };
 }
 
