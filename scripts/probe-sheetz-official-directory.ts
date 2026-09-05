@@ -1,3 +1,5 @@
+export {};
+
 declare const process: { env: Record<string, string | undefined>; exitCode?: number };
 
 type JsonRecord = Record<string, unknown>;
