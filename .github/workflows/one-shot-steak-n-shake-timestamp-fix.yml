@@ -1,0 +1,38 @@
+name: One-shot Steak n Shake Evidence timestamp fix
+
+on:
+  push:
+    branches:
+      - feat/steak-n-shake-btc-growth
+    paths:
+      - .github/workflows/one-shot-steak-n-shake-timestamp-fix.yml
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/steak-n-shake-btc-growth
+      - name: Normalize pending Evidence timestamp before optimistic review guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('scripts/ingest-review-steak-n-shake-official-source-first-staging.ts')
+          text = path.read_text()
+          needle = """    for (const item of evidenceRows) {\n      if (item.claimId === null) {\n        await db\n          .update(evidence)\n          .set({ claimId })\n          .where(and(eq(evidence.id, item.id), isNull(evidence.claimId)));\n      } else if (item.claimId !== claimId) {\n        throw new Error(`Evidence ${item.id} is bound to another Claim.`);\n      }\n    }\n\n    const processorState = await acceptEvidence(db, reviewer, evidencePolicy, {\n"""
+          replacement = """    for (const item of evidenceRows) {\n      if (item.claimId === null) {\n        await db\n          .update(evidence)\n          .set({ claimId })\n          .where(and(eq(evidence.id, item.id), isNull(evidence.claimId)));\n      } else if (item.claimId !== claimId) {\n        throw new Error(`Evidence ${item.id} is bound to another Claim.`);\n      }\n    }\n\n    // PostgreSQL default now() retains sub-millisecond precision while JS Date does not.\n    // Align only pending private Evidence before the strict optimistic-lock review guard;\n    // do not relax the guard and do not alter already-reviewed Evidence.\n    const reviewReadyAt = new Date(Math.ceil(Date.now() / 1_000) * 1_000);\n    await db\n      .update(evidence)\n      .set({ updatedAt: reviewReadyAt })\n      .where(\n        and(\n          inArray(evidence.id, [officialEvidenceId, processorEvidenceId]),\n          eq(evidence.reviewStatus, 'pending'),\n        ),\n      );\n\n    const processorState = await acceptEvidence(db, reviewer, evidencePolicy, {\n"""
+          if needle not in text:
+              raise SystemExit('target snippet not found')
+          path.write_text(text.replace(needle, replacement, 1))
+          PY
+      - name: Commit and push timestamp fix
+        run: |
+          git config user.name badjoke-lab
+          git config user.email badjoke.lab@gmail.com
+          git add scripts/ingest-review-steak-n-shake-official-source-first-staging.ts
+          git commit -m "FIX: align Steak n Shake Evidence review timestamps"
+          git push origin HEAD:feat/steak-n-shake-btc-growth
