@@ -1,4 +1,5 @@
 import { and, asc, eq, inArray, sql } from 'drizzle-orm';
+import { createHash } from 'node:crypto';
 import { createDerivedStagingServiceIdentity } from '../src/admin/access/identity';
 import {
   authorizeExportPublication,
@@ -43,8 +44,9 @@ async function deterministicUuid(label: string): Promise<string> {
 
 function entitySlug(locationSlug: string): string {
   const value = `merchant-${locationSlug}`;
-  if (value.length > 64) throw new Error('Derived public entity slug exceeds the canonical limit.');
-  return value;
+  if (value.length <= 64) return value;
+  const digest = createHash('md5').update(locationSlug).digest('hex').slice(0, 12);
+  return `${value.slice(0, 51)}-${digest}`;
 }
 
 function isFullyPublic(row: {
@@ -220,14 +222,16 @@ async function main() {
     `),
     db.execute(sql`
       update ${entities} as e
-      set slug = 'merchant-' || l.slug,
+      set slug = case
+            when length('merchant-' || l.slug) <= 64 then 'merchant-' || l.slug
+            else left('merchant-' || l.slug, 51) || '-' || left(md5(l.slug), 12)
+          end,
           visibility = 'public'
       from ${locations} as l
       where l.entity_id = e.id
         and e.id in (${entityList})
         and l.id in (${locationList})
         and e.visibility in ('hidden', 'public')
-        and length('merchant-' || l.slug) <= 64
     `),
     db.update(locations).set({ visibility: 'public' }).where(inArray(locations.id, locationIds)),
     db
