@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { and, eq } from 'drizzle-orm';
 import { createDatabase } from '../src/db/client.ts';
-import { entities, locations, sourceCandidates } from '../src/db/schema.ts';
+import { entities, locations, sourceCandidates } from '../src/db/schema/index.ts';
 
 const TARGET = 'fixed-review-staging';
 const SOURCE_FILE = 'sheetz-official-directory.json';
