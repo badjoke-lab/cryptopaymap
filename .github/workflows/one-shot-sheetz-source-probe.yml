@@ -57,29 +57,50 @@ jobs:
           set -o pipefail
           node scripts/probe-sheetz-browser-directory.mjs 2>&1 | tee sheetz-browser-source-probe.log
 
-      - name: Assert official-source identity and profile coverage
+      - name: Assert official-source identity, profile, and crypto coverage
         run: |
           node --input-type=module <<'NODE' 2>&1 | tee sheetz-source-probe-guard.log
           import { readFile } from 'node:fs/promises';
           const lines = (await readFile('sheetz-browser-source-probe.log', 'utf8')).trim().split(/\r?\n/);
           const result = JSON.parse(lines.at(-1));
-          if (result.officialDirectoryFetched < 700) throw new Error(`Directory unexpectedly small: ${result.officialDirectoryFetched}`);
-          if (result.officialDirectoryFetched !== result.uniqueStoreNumbers || result.duplicateStoreNumbers !== 0) {
-            throw new Error(`Store-number identity is not unique: rows=${result.officialDirectoryFetched}, unique=${result.uniqueStoreNumbers}`);
+          const total = result.officialDirectoryFetched;
+          if (total < 800 || total > 950) throw new Error(`Directory count outside guard range: ${total}`);
+          if (total !== result.uniqueStoreNumbers || result.duplicateStoreNumbers !== 0) {
+            throw new Error(`Store-number identity is not unique: rows=${total}, unique=${result.uniqueStoreNumbers}`);
           }
-          if (result.validCoordinates !== result.officialDirectoryFetched) {
-            throw new Error(`Coordinate coverage incomplete: ${result.validCoordinates}/${result.officialDirectoryFetched}`);
+          if (result.validCoordinates !== total || result.uniqueCoordinates !== total || result.duplicateCoordinates !== 0) {
+            throw new Error(`Coordinate coverage/identity invalid: valid=${result.validCoordinates}, unique=${result.uniqueCoordinates}, rows=${total}`);
           }
-          if (result.withAddress !== result.officialDirectoryFetched || result.withCity !== result.officialDirectoryFetched) {
-            throw new Error(`Address profile coverage incomplete: address=${result.withAddress}, city=${result.withCity}, rows=${result.officialDirectoryFetched}`);
+          if (result.withAddress !== total || result.withCity !== total || result.withPostalCode !== total || result.withPhone !== total) {
+            throw new Error(`Profile coverage incomplete: address=${result.withAddress}, city=${result.withCity}, postal=${result.withPostalCode}, phone=${result.withPhone}, rows=${total}`);
+          }
+          if (result.cryptoFlexaPayMissing !== 0 || result.cryptoFlexaPayTrue + result.cryptoFlexaPayFalse !== total) {
+            throw new Error(`cryptoFlexaPay coverage invalid: true=${result.cryptoFlexaPayTrue}, false=${result.cryptoFlexaPayFalse}, missing=${result.cryptoFlexaPayMissing}, rows=${total}`);
+          }
+          if (result.cryptoFlexaPayTrue < 500) {
+            throw new Error(`Current merchant-owned Pay with Crypto coverage unexpectedly small: ${result.cryptoFlexaPayTrue}/${total}`);
+          }
+          if (result.cryptoCurrencyAcceptanceMissing !== 0 || result.cryptoCurrencyAcceptanceTrue + result.cryptoCurrencyAcceptanceFalse !== total) {
+            throw new Error(`cryptoCurrencyAcceptance coverage invalid: true=${result.cryptoCurrencyAcceptanceTrue}, false=${result.cryptoCurrencyAcceptanceFalse}, missing=${result.cryptoCurrencyAcceptanceMissing}, rows=${total}`);
+          }
+          if (result.cryptoFlagCrossTab.anyMissing !== 0) {
+            throw new Error(`Crypto feature cross-tab has missing flags: ${result.cryptoFlagCrossTab.anyMissing}`);
           }
           console.log(JSON.stringify({
-            officialDirectoryFetched: result.officialDirectoryFetched,
+            officialDirectoryFetched: total,
             uniqueStoreNumbers: result.uniqueStoreNumbers,
             uniqueCoordinates: result.uniqueCoordinates,
-            withPostalCode: result.withPostalCode,
-            withPhone: result.withPhone,
-            explicitlyOpen24x7: result.explicitlyOpen24x7,
+            profileCoverage: {
+              address: result.withAddress,
+              city: result.withCity,
+              postalCode: result.withPostalCode,
+              phone: result.withPhone,
+            },
+            cryptoFlexaPayTrue: result.cryptoFlexaPayTrue,
+            cryptoFlexaPayFalse: result.cryptoFlexaPayFalse,
+            cryptoCurrencyAcceptanceTrue: result.cryptoCurrencyAcceptanceTrue,
+            cryptoCurrencyAcceptanceFalse: result.cryptoCurrencyAcceptanceFalse,
+            cryptoFlagCrossTab: result.cryptoFlagCrossTab,
             operatingStates: result.operatingStates,
             stateCounts: result.stateCounts,
           }));
