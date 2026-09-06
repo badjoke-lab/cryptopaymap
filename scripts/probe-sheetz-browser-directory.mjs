@@ -1,3 +1,4 @@
+import { writeFile } from 'node:fs/promises';
 import { chromium } from 'playwright-core';
 
 const PAGE_URL = 'https://orders.sheetz.com/findASheetz';
@@ -138,13 +139,20 @@ async function main() {
       bothFalse: rows.filter((row) => row?.features?.cryptoFlexaPay === false && row?.features?.cryptoCurrencyAcceptance === false).length,
       anyMissing: rows.filter((row) => typeof row?.features?.cryptoFlexaPay !== 'boolean' || typeof row?.features?.cryptoCurrencyAcceptance !== 'boolean').length,
     };
+    const fetchedAt = new Date().toISOString();
+    await writeFile('sheetz-official-directory.json', JSON.stringify({
+      source: `${API_PREFIX}/stores/search`,
+      locator: PAGE_URL,
+      fetchedAt,
+      rows,
+    }, null, 2));
     const sampleKeys = [...new Set(rows.flatMap((row) => Object.keys(row ?? {})))].sort();
     const featureKeys = [...new Set(rows.flatMap((row) => row?.features && typeof row.features === 'object' ? Object.keys(row.features) : []))].sort();
 
     console.log(JSON.stringify({
       source: `${API_PREFIX}/stores/search`,
       locator: PAGE_URL,
-      fetchedAt: new Date().toISOString(),
+      fetchedAt,
       operatingStatesPayload: statesPayload,
       operatingStates: states,
       officialDirectoryFetched: rows.length,
