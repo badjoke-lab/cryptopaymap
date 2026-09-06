@@ -3,7 +3,65 @@ import { chromium } from 'playwright-core';
 const PAGE_URL = 'https://orders.sheetz.com/findASheetz';
 const API_PREFIX = 'https://orders.sheetz.com/anybff/api';
 const PAGE_SIZE = 100;
-const MAX_PAGES_PER_STATE = 20;
+const MAX_PAGES_PER_STATE = 100;
+const DEFAULT_LATITUDE = 40.47275;
+const DEFAULT_LONGITUDE = -78.42507;
+
+const STATE_BY_NAME = new Map(
+  [
+    ['Alabama', 'AL'],
+    ['Alaska', 'AK'],
+    ['Arizona', 'AZ'],
+    ['Arkansas', 'AR'],
+    ['California', 'CA'],
+    ['Colorado', 'CO'],
+    ['Connecticut', 'CT'],
+    ['Delaware', 'DE'],
+    ['District of Columbia', 'DC'],
+    ['Florida', 'FL'],
+    ['Georgia', 'GA'],
+    ['Hawaii', 'HI'],
+    ['Idaho', 'ID'],
+    ['Illinois', 'IL'],
+    ['Indiana', 'IN'],
+    ['Iowa', 'IA'],
+    ['Kansas', 'KS'],
+    ['Kentucky', 'KY'],
+    ['Louisiana', 'LA'],
+    ['Maine', 'ME'],
+    ['Maryland', 'MD'],
+    ['Massachusetts', 'MA'],
+    ['Michigan', 'MI'],
+    ['Minnesota', 'MN'],
+    ['Mississippi', 'MS'],
+    ['Missouri', 'MO'],
+    ['Montana', 'MT'],
+    ['Nebraska', 'NE'],
+    ['Nevada', 'NV'],
+    ['New Hampshire', 'NH'],
+    ['New Jersey', 'NJ'],
+    ['New Mexico', 'NM'],
+    ['New York', 'NY'],
+    ['North Carolina', 'NC'],
+    ['North Dakota', 'ND'],
+    ['Ohio', 'OH'],
+    ['Oklahoma', 'OK'],
+    ['Oregon', 'OR'],
+    ['Pennsylvania', 'PA'],
+    ['Rhode Island', 'RI'],
+    ['South Carolina', 'SC'],
+    ['South Dakota', 'SD'],
+    ['Tennessee', 'TN'],
+    ['Texas', 'TX'],
+    ['Utah', 'UT'],
+    ['Vermont', 'VT'],
+    ['Virginia', 'VA'],
+    ['Washington', 'WA'],
+    ['West Virginia', 'WV'],
+    ['Wisconsin', 'WI'],
+    ['Wyoming', 'WY'],
+  ].map(([name, code]) => [name.toUpperCase(), code]),
+);
 
 function fail(message) {
   throw new Error(message);
@@ -14,43 +72,35 @@ function stateCodes(payload) {
   if (!states || typeof states !== 'object' || Array.isArray(states)) {
     fail(`Unexpected operating-states payload: ${JSON.stringify(payload)}`);
   }
-  const entries = Object.entries(states);
-  const keyCodes = entries.map(([key]) => key.trim().toUpperCase());
-  if (keyCodes.length > 0 && keyCodes.every((code) => /^[A-Z]{2}$/.test(code))) {
-    return keyCodes.sort();
+
+  const codes = new Set();
+  for (const [rawKey, rawValue] of Object.entries(states)) {
+    const key = String(rawKey).trim().toUpperCase();
+    const value = String(rawValue ?? '').trim().toUpperCase();
+    if (/^[A-Z]{2}$/.test(key)) codes.add(key);
+    if (/^[A-Z]{2}$/.test(value)) codes.add(value);
+    const byKeyName = STATE_BY_NAME.get(key);
+    const byValueName = STATE_BY_NAME.get(value);
+    if (byKeyName) codes.add(byKeyName);
+    if (byValueName) codes.add(byValueName);
   }
-  fail(`Operating-states keys are not state codes: ${JSON.stringify(states)}`);
+
+  if (codes.size === 0) {
+    fail(`Operating states could not be mapped to state codes: ${JSON.stringify(states)}`);
+  }
+  return [...codes].sort();
 }
 
-async function browserFetch(page, path, init = {}) {
-  return page.evaluate(
-    async ({ url, init }) => {
-      const response = await fetch(url, {
-        credentials: 'include',
-        ...init,
-        headers: {
-          accept: 'application/json, text/plain, */*',
-          'content-type': 'application/json',
-          ...(init.headers ?? {}),
-        },
-      });
-      const text = await response.text();
-      let data = null;
-      try {
-        data = text ? JSON.parse(text) : null;
-      } catch {
-        data = null;
-      }
-      return {
-        ok: response.ok,
-        status: response.status,
-        url: response.url,
-        text: text.slice(0, 1000),
-        data,
-      };
-    },
-    { url: `${API_PREFIX}${path}`, init },
-  );
+async function jsonResponse(response, label) {
+  const text = await response.text();
+  if (!response.ok()) {
+    fail(`${label} failed HTTP ${response.status()}: ${text.slice(0, 1000)}`);
+  }
+  try {
+    return text ? JSON.parse(text) : null;
+  } catch {
+    fail(`${label} returned non-JSON: ${text.slice(0, 1000)}`);
+  }
 }
 
 async function main() {
@@ -60,59 +110,77 @@ async function main() {
   const browser = await chromium.launch({
     headless: true,
     executablePath,
-    args: ['--no-sandbox', '--disable-dev-shm-usage'],
+    args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu'],
   });
 
   try {
     const context = await browser.newContext({
       locale: 'en-US',
       timezoneId: 'America/New_York',
-      viewport: { width: 1440, height: 1000 },
+      userAgent:
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36',
+      extraHTTPHeaders: {
+        accept: 'application/json, text/plain, */*',
+        'accept-language': 'en-US,en;q=0.9',
+        referer: PAGE_URL,
+      },
     });
-    const page = await context.newPage();
 
-    const stateResponsePromise = page.waitForResponse(
-      (response) => response.url().includes('/anybff/api/stores/getOperatingStates'),
-      { timeout: 45_000 },
-    );
-    const navigation = await page.goto(PAGE_URL, {
-      waitUntil: 'domcontentloaded',
+    // Bootstrap the merchant-owned origin/cookies without keeping a renderer page alive.
+    const bootstrap = await context.request.get(PAGE_URL, { timeout: 45_000 });
+    if (!bootstrap.ok()) {
+      fail(`Locator bootstrap failed HTTP ${bootstrap.status()}`);
+    }
+
+    const statesResponse = await context.request.get(`${API_PREFIX}/stores/getOperatingStates`, {
       timeout: 45_000,
+      headers: { origin: 'https://orders.sheetz.com' },
     });
-    if (!navigation || !navigation.ok()) {
-      fail(`Locator navigation failed: ${navigation?.status() ?? 'no response'}`);
-    }
-
-    const liveStateResponse = await stateResponsePromise;
-    const liveStateText = await liveStateResponse.text();
-    if (!liveStateResponse.ok()) {
-      fail(`Live locator state request failed ${liveStateResponse.status()}: ${liveStateText.slice(0, 500)}`);
-    }
-    const statesPayload = JSON.parse(liveStateText);
+    const statesPayload = await jsonResponse(statesResponse, 'Operating-states request');
     const states = stateCodes(statesPayload);
 
     const rows = [];
     const stateCounts = {};
+    const statePageSizes = {};
+
     for (const state of states) {
       let count = 0;
+      let firstPageSize = null;
+      const pageSignatures = new Set();
+
       for (let pageNumber = 0; pageNumber < MAX_PAGES_PER_STATE; pageNumber += 1) {
         const params = new URLSearchParams({
           stateCode: state,
           page: String(pageNumber),
           size: String(PAGE_SIZE),
+          latitude: String(DEFAULT_LATITUDE),
+          longitude: String(DEFAULT_LONGITUDE),
         });
-        const response = await browserFetch(page, `/stores/search?${params.toString()}`, {
-          method: 'POST',
-          body: '{}',
-        });
-        if (!response.ok) {
-          fail(`Search failed ${state} page ${pageNumber}: HTTP ${response.status} ${response.text}`);
-        }
-        const stores = Array.isArray(response.data?.stores) ? response.data.stores : null;
+        const response = await context.request.post(
+          `${API_PREFIX}/stores/search?${params.toString()}`,
+          {
+            timeout: 45_000,
+            headers: {
+              origin: 'https://orders.sheetz.com',
+              'content-type': 'application/json',
+            },
+            data: {},
+          },
+        );
+        const payload = await jsonResponse(response, `Search ${state} page ${pageNumber}`);
+        const stores = Array.isArray(payload?.stores) ? payload.stores : null;
         if (!stores) {
-          fail(`Search payload missing stores for ${state} page ${pageNumber}: ${JSON.stringify(response.data)}`);
+          fail(`Search payload missing stores for ${state} page ${pageNumber}: ${JSON.stringify(payload)}`);
         }
+        if (firstPageSize === null) firstPageSize = stores.length;
         if (stores.length === 0) break;
+
+        const signature = stores.map((store) => String(store?.storeNumber ?? '?')).join(',');
+        if (pageSignatures.has(signature)) {
+          fail(`Pagination repeated a page for ${state} at page ${pageNumber}.`);
+        }
+        pageSignatures.add(signature);
+
         for (const store of stores) {
           const actualState = String(store?.state ?? '').trim().toUpperCase();
           if (actualState && actualState !== state) {
@@ -121,12 +189,14 @@ async function main() {
           rows.push(store);
           count += 1;
         }
-        if (stores.length < PAGE_SIZE) break;
+
         if (pageNumber === MAX_PAGES_PER_STATE - 1) {
           fail(`Pagination guard tripped for ${state}`);
         }
       }
+
       stateCounts[state] = count;
+      statePageSizes[state] = firstPageSize ?? 0;
     }
 
     const storeNumbers = rows.map((row) => String(row?.storeNumber ?? '').trim()).filter(Boolean);
@@ -146,7 +216,17 @@ async function main() {
       return typeof value === 'string' && value.trim();
     }).length;
     const explicitlyOpen24x7 = rows.filter((row) => row?.features?.open24x7 === true).length;
+    const cryptoFlexaPayTrue = rows.filter((row) => row?.features?.cryptoFlexaPay === true).length;
+    const cryptoFlexaPayFalse = rows.filter((row) => row?.features?.cryptoFlexaPay === false).length;
+    const cryptoFlexaPayMissing = rows.length - cryptoFlexaPayTrue - cryptoFlexaPayFalse;
     const sampleKeys = [...new Set(rows.flatMap((row) => Object.keys(row ?? {})))].sort();
+    const featureKeys = [
+      ...new Set(
+        rows.flatMap((row) =>
+          row?.features && typeof row.features === 'object' ? Object.keys(row.features) : [],
+        ),
+      ),
+    ].sort();
 
     console.log(
       JSON.stringify({
@@ -167,8 +247,13 @@ async function main() {
         withPostalCode,
         withPhone,
         explicitlyOpen24x7,
+        cryptoFlexaPayTrue,
+        cryptoFlexaPayFalse,
+        cryptoFlexaPayMissing,
         stateCounts,
+        statePageSizes,
         sampleKeys,
+        featureKeys,
       }),
     );
   } finally {
