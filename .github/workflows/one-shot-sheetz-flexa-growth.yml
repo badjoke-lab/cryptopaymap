@@ -1,0 +1,290 @@
+name: One-shot Sheetz Flexa growth staging review
+
+on:
+  push:
+    branches:
+      - feat/sheetz-flexa-growth
+    paths:
+      - scripts/probe-sheetz-browser-directory.mjs
+      - scripts/ingest-review-sheetz-official-source-first-staging.mjs
+      - scripts/publish-reviewed-physical-canonical-staging.ts
+      - scripts/materialize-public-data-from-staging-db.ts
+      - .github/workflows/one-shot-sheetz-flexa-growth.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: one-shot-sheetz-flexa-growth
+  cancel-in-progress: true
+
+jobs:
+  grow:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Type-check before staging mutation
+        run: npm run check
+
+      - name: Install browser probe runtime
+        run: npm install --no-save --no-package-lock playwright-core
+
+      - name: Resolve runner Chrome
+        run: |
+          CHROME_PATH="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$CHROME_PATH"
+          echo "CHROME_PATH=$CHROME_PATH" >> "$GITHUB_ENV"
+          "$CHROME_PATH" --version
+
+      - name: Fetch current merchant-owned Sheetz directory
+        run: |
+          set -o pipefail
+          node scripts/probe-sheetz-browser-directory.mjs 2>&1 | tee sheetz-directory.log
+
+      - name: Assert current merchant crypto flags and source completeness
+        run: |
+          node --input-type=module <<'NODE' 2>&1 | tee sheetz-directory-guard.log
+          import { readFile } from 'node:fs/promises';
+          const lines = (await readFile('sheetz-directory.log', 'utf8')).trim().split(/\r?\n/);
+          const result = JSON.parse(lines.at(-1));
+          const total = result.officialDirectoryFetched;
+          const eligible = result.cryptoFlexaPayTrue;
+          if (!Number.isInteger(total) || total < 800 || total > 950) {
+            throw new Error(`Official Sheetz directory outside guard range: ${total}.`);
+          }
+          if (result.uniqueStoreNumbers !== total || result.duplicateStoreNumbers !== 0) {
+            throw new Error(`Store-number identity failed: ${result.uniqueStoreNumbers}/${total}.`);
+          }
+          if (result.validCoordinates !== total || result.uniqueCoordinates !== total || result.duplicateCoordinates !== 0) {
+            throw new Error(`Coordinate identity/completeness failed for ${total} stores.`);
+          }
+          if (result.withAddress !== total || result.withCity !== total || result.withPostalCode !== total || result.withPhone !== total) {
+            throw new Error(`Official profile completeness failed for ${total} stores.`);
+          }
+          if (eligible < 500 || eligible > 800 || result.cryptoFlexaPayMissing !== 0) {
+            throw new Error(`Current Pay with Crypto coverage invalid: true=${eligible}, missing=${result.cryptoFlexaPayMissing}.`);
+          }
+          if (result.cryptoCurrencyAcceptanceTrue !== eligible || result.cryptoCurrencyAcceptanceMissing !== 0) {
+            throw new Error('Sheetz cryptoCurrencyAcceptance does not match cryptoFlexaPay coverage.');
+          }
+          if (result.cryptoFlagCrossTab.bothTrue !== eligible || result.cryptoFlagCrossTab.bothFalse !== total - eligible || result.cryptoFlagCrossTab.flexaTrueCurrencyFalse !== 0 || result.cryptoFlagCrossTab.flexaFalseCurrencyTrue !== 0 || result.cryptoFlagCrossTab.anyMissing !== 0) {
+            throw new Error(`Sheetz crypto feature cross-tab is inconsistent: ${JSON.stringify(result.cryptoFlagCrossTab)}`);
+          }
+          console.log(JSON.stringify({
+            officialDirectoryFetched: total,
+            eligibleCryptoLocations: eligible,
+            nonEligibleCryptoLocations: total - eligible,
+            uniqueStoreNumbers: result.uniqueStoreNumbers,
+            uniqueCoordinates: result.uniqueCoordinates,
+            profileCoverage: { address: result.withAddress, city: result.withCity, postalCode: result.withPostalCode, phone: result.withPhone },
+            cryptoFlagCrossTab: result.cryptoFlagCrossTab,
+          }));
+          NODE
+
+      - name: Ingest current eligible Sheetz stores and strict-review Flexa BTC claims
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS: ${{ secrets.CPM_ADMIN_CANDIDATE_PROMOTE_SUBJECTS }}
+          CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS: ${{ secrets.CPM_ADMIN_EVIDENCE_REVIEW_SUBJECTS }}
+        run: |
+          set -o pipefail
+          npx tsx scripts/ingest-review-sheetz-official-source-first-staging.mjs 2>&1 | tee sheetz-source-first.log
+
+      - name: Assert location-specific source-first review completed
+        run: |
+          node --input-type=module <<'NODE' 2>&1 | tee sheetz-source-first-guard.log
+          import { readFile } from 'node:fs/promises';
+          const lines = (await readFile('sheetz-source-first.log', 'utf8')).trim().split(/\r?\n/);
+          const result = JSON.parse(lines.at(-1));
+          const eligible = result.eligibleCryptoLocations;
+          if (result.officialDirectoryFetched < 800 || eligible < 500) throw new Error('Sheetz source-first counts are unexpectedly small.');
+          if (result.cryptoFlexaPayTrue !== eligible || result.cryptoCurrencyAcceptanceTrue !== eligible || result.cryptoFlagsCrossChecked !== true) {
+            throw new Error('Current merchant crypto flags were not cross-checked exactly.');
+          }
+          if (result.candidatesResolved !== eligible || result.verifiedOfficialLocations !== eligible) {
+            throw new Error(`Candidate resolution failed: resolved=${result.candidatesResolved}, verified=${result.verifiedOfficialLocations}, eligible=${eligible}.`);
+          }
+          if (result.directorySourceRecordsCreated + result.directorySourceRecordsReplayed !== eligible) {
+            throw new Error('Sheetz source-record accounting does not equal eligible current stores.');
+          }
+          if (result.candidatesCreated + result.candidatesReplayed !== eligible) {
+            throw new Error('Sheetz Candidate accounting does not equal eligible current stores.');
+          }
+          if (result.currentLocationSpecificFlagGatePassed !== true || result.flexaSheetzImplementationReverified !== true || result.flexaBitcoinLightningReverified !== true || result.flexaQrFlowReverified !== true) {
+            throw new Error('Sheetz/Flexa strict evidence gate did not pass.');
+          }
+          const confirmed = result.confirmed + result.alreadyConfirmed;
+          if (confirmed !== eligible) {
+            throw new Error(`Every eligible merchant-marked Sheetz location must be confirmed: confirmed=${confirmed}, eligible=${eligible}.`);
+          }
+          if (result.candidatePayloadExposed !== false || result.automaticPublicVisibility !== false) {
+            throw new Error('Private Candidate/public visibility guard failed.');
+          }
+          console.log(JSON.stringify({
+            officialDirectoryFetched: result.officialDirectoryFetched,
+            eligibleCryptoLocations: eligible,
+            nonEligibleCryptoLocations: result.nonEligibleCryptoLocations,
+            candidatesCreated: result.candidatesCreated,
+            candidatesReplayed: result.candidatesReplayed,
+            confirmed,
+            currentLocationSpecificFlagGatePassed: result.currentLocationSpecificFlagGatePassed,
+          }));
+          NODE
+
+      - name: Publish first reviewed canonical staging batch
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+          CPM_MAX_PUBLICATION_BATCH: '500'
+        run: |
+          set -o pipefail
+          npx tsx scripts/publish-reviewed-physical-canonical-staging.ts 2>&1 | tee publish-reviewed-1.log
+
+      - name: Publish remaining reviewed canonical staging batch
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+          CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS: ${{ secrets.CPM_ADMIN_EXPORT_PUBLISH_ACTOR_IDS }}
+          CPM_MAX_PUBLICATION_BATCH: '500'
+        run: |
+          set -o pipefail
+          npx tsx scripts/publish-reviewed-physical-canonical-staging.ts 2>&1 | tee publish-reviewed-2.log
+
+      - name: Quarantine thin public Place profiles
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/quarantine-thin-public-places-staging.ts 2>&1 | tee thin-place-quarantine.log
+
+      - name: Audit full published Place record depth
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/audit-published-place-depth-staging.ts 2>&1 | tee published-place-depth-audit.log
+
+      - name: Assert reviewed inventory includes all eligible Sheetz stores
+        run: |
+          node --input-type=module <<'NODE' 2>&1 | tee place-inventory-guard.log
+          import { readFile } from 'node:fs/promises';
+          const sourceLines = (await readFile('sheetz-source-first.log', 'utf8')).trim().split(/\r?\n/);
+          const source = JSON.parse(sourceLines.at(-1));
+          const audit = JSON.parse(await readFile('published-place-depth-audit.log', 'utf8'));
+          const minimum = 1351 + source.eligibleCryptoLocations;
+          if (audit.publishedPlaces < minimum) {
+            throw new Error(`Reviewed Place inventory is incomplete: published=${audit.publishedPlaces}, minimum=${minimum}.`);
+          }
+          if (audit.thinPlaces !== 0) throw new Error(`Thin Place records remain public: ${audit.thinPlaces}.`);
+          if (audit.sourceSystems?.sheetz_official_store_locator !== source.eligibleCryptoLocations) {
+            throw new Error(`Sheetz source-system coverage mismatch: ${audit.sourceSystems?.sheetz_official_store_locator}/${source.eligibleCryptoLocations}.`);
+          }
+          console.log(JSON.stringify({ publishedPlaces: audit.publishedPlaces, thinPlaces: audit.thinPlaces, baseline: 1351, eligibleSheetz: source.eligibleCryptoLocations, minimumExpected: minimum, growth: audit.publishedPlaces - 1351 }));
+          NODE
+
+      - name: Remove stale generated staging payloads
+        run: rm -rf public/staging-review
+
+      - name: Materialize current reviewed staging records
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/materialize-public-data-from-staging-db.ts 2>&1 | tee materialize-public.log
+
+      - name: Materialize real Place verification and change history
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/materialize-public-place-history-staging.ts 2>&1 | tee place-history-materialize.log
+
+      - name: Validate every published Place detail contract
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-detail-contract.mjs public/data/places.json 2>&1 | tee place-detail-contract.log
+
+      - name: Validate public Place history coverage and privacy
+        run: |
+          set -o pipefail
+          node scripts/validate-public-place-history-contract.mjs public/data/places.json public/data/place-history.json 2>&1 | tee place-history-contract.log
+
+      - name: Assert materialized Sheetz Places and public privacy
+        run: |
+          node --input-type=module <<'NODE' 2>&1 | tee sheetz-public.log
+          import { readFile } from 'node:fs/promises';
+          const sourceLines = (await readFile('sheetz-source-first.log', 'utf8')).trim().split(/\r?\n/);
+          const source = JSON.parse(sourceLines.at(-1));
+          const text = await readFile('public/data/places.json', 'utf8');
+          const data = JSON.parse(text);
+          const records = data.records.filter((place) => /^Sheetz #/i.test(place.name));
+          if (records.length !== source.eligibleCryptoLocations) {
+            throw new Error(`Materialized Sheetz inventory mismatch: public=${records.length}, eligible=${source.eligibleCryptoLocations}.`);
+          }
+          if (data.records.length < 1351 + source.eligibleCryptoLocations) {
+            throw new Error(`Materialized physical inventory is below expected growth floor: ${data.records.length}.`);
+          }
+          const forbidden = ['candidateStatus', 'rawPayload', 'importBatchId', 'duplicateGroupId', 'canonicalEntityId', 'canonicalLocationId', 'cryptoFlexaPay', 'cryptoCurrencyAcceptance'];
+          const leaked = forbidden.filter((key) => text.includes(`\"${key}\"`));
+          if (leaked.length > 0) throw new Error(`Internal/private source fields leaked into public places payload: ${leaked.join(', ')}`);
+          console.log(JSON.stringify({
+            publicSheetzPlaces: records.length,
+            officialDirectoryFetched: source.officialDirectoryFetched,
+            eligibleCryptoLocations: source.eligibleCryptoLocations,
+            totalPublishedPhysicalPlaces: data.records.length,
+            internalFieldLeaks: 0,
+          }));
+          NODE
+
+      - name: Build
+        run: npm run build
+
+      - name: Prepare isolated staging review artifact
+        run: node scripts/prepare-staging-review-artifact.mjs
+
+      - name: Upload staging proof logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sheetz-flexa-growth-proof
+          path: |
+            sheetz-directory.log
+            sheetz-directory-guard.log
+            sheetz-source-first.log
+            sheetz-source-first-guard.log
+            publish-reviewed-1.log
+            publish-reviewed-2.log
+            thin-place-quarantine.log
+            published-place-depth-audit.log
+            place-inventory-guard.log
+            materialize-public.log
+            place-history-materialize.log
+            place-detail-contract.log
+            place-history-contract.log
+            sheetz-public.log
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Deploy isolated staging review
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name cryptopaymap-staging --branch sheetz-flexa-review
