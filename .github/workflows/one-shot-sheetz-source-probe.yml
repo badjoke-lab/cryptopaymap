@@ -8,7 +8,7 @@ on:
       - scripts/probe-sheetz-official-directory.ts
       - scripts/probe-sheetz-live-bundle-api.ts
       - scripts/probe-sheetz-browser-directory.mjs
-      - scripts/probe-sheetz-staging-overlap.ts
+      - scripts/probe-sheetz-staging-overlap.mjs
       - .github/workflows/one-shot-sheetz-source-probe.yml
 
 permissions:
@@ -113,7 +113,7 @@ jobs:
           CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
         run: |
           set -o pipefail
-          npx tsx scripts/probe-sheetz-staging-overlap.ts 2>&1 | tee sheetz-staging-overlap.log
+          npx tsx scripts/probe-sheetz-staging-overlap.mjs 2>&1 | tee sheetz-staging-overlap.log
 
       - name: Upload source proof
         if: always()
