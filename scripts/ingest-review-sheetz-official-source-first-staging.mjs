@@ -496,7 +496,7 @@ async function main() {
       sourceSchemaVersion: SOURCE_SCHEMA_VERSION,
       importerVersion: IMPORTER_VERSION,
       inputChecksum: directoryFingerprint,
-      inputCount: eligible.length,
+      inputCount: directory.rows.length,
       acceptedCount: candidatesCreated,
       rejectedCount: 0,
       replayedCount: eligible.length - candidatesCreated,
