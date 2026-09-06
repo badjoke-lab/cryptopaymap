@@ -8,6 +8,7 @@ on:
       - scripts/probe-sheetz-official-directory.ts
       - scripts/probe-sheetz-live-bundle-api.ts
       - scripts/probe-sheetz-browser-directory.mjs
+      - scripts/probe-sheetz-staging-overlap.ts
       - .github/workflows/one-shot-sheetz-source-probe.yml
 
 permissions:
@@ -106,6 +107,14 @@ jobs:
           }));
           NODE
 
+      - name: Audit current reviewed staging overlap without mutation
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CPM_CANDIDATE_ACQUISITION_TARGET: fixed-review-staging
+        run: |
+          set -o pipefail
+          npx tsx scripts/probe-sheetz-staging-overlap.ts 2>&1 | tee sheetz-staging-overlap.log
+
       - name: Upload source proof
         if: always()
         uses: actions/upload-artifact@v4
@@ -115,5 +124,6 @@ jobs:
             sheetz-bundle-api.log
             sheetz-browser-source-probe.log
             sheetz-source-probe-guard.log
+            sheetz-staging-overlap.log
           if-no-files-found: warn
           retention-days: 7
