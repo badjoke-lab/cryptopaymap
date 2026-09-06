@@ -20,7 +20,7 @@ async function text(url: string, referer?: string): Promise<string> {
   return response.text();
 }
 
-function contexts(body: string, needle: string, radius = 1600): string[] {
+function contexts(body: string, needle: string, radius = 2200): string[] {
   const result: string[] = [];
   let start = 0;
   while (result.length < 8) {
@@ -44,6 +44,10 @@ async function main(): Promise<void> {
   const needles = [
     '/stores/getOperatingStates',
     '/stores/search',
+    'function ye(',
+    'stateCode',
+    'search:n,state',
+    'z6({',
     'baseURL',
     'axios.create',
     'REACT_APP',
